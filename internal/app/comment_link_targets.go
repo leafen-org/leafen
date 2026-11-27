@@ -16,7 +16,7 @@ import (
 // opens its discussion while the discussion is there. Notion's names the
 // discussion itself (?d=<discussion>), and an old link to one whose first
 // comment was deleted still opens it with the reply that is first now (seen
-// 2026-11-21 twice, two tabs, synthetic page under 한지테스트페이지: a text
+// 2026-11-21 twice, two tabs, synthetic page under a Notion test page: a text
 // discussion whose first comment was deleted with "삭제하기"). Leafen's
 // address names a comment, so one naming a deleted comment is followed
 // through what stays of that comment (comment_tombstones.go) to its

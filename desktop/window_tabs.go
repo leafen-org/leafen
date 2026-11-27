@@ -108,6 +108,10 @@ type tabFrame struct {
 	menu    *stripMenu
 	saved   *savedFrame
 	closing atomic.Bool
+	// atStart: one of the windows the app opened as it started, which stay
+	// hidden when it started behind them (opened at login, or by the
+	// updater in place of such a start) until it is asked for.
+	atStart bool
 }
 
 // windowTabs is every frame the app has open, front ones first by when they
@@ -125,6 +129,10 @@ type windowTabs struct {
 	quitting bool
 	// keepNone: the app ends without keeping its tabs (탭 저장 없이 종료).
 	keepNone bool
+	// asked: a window has been asked forward since the app started — the
+	// icon's or menu's Open, the Dock, a link, a new window — so a start
+	// behind its windows no longer shows one by itself (background_desktop.go).
+	asked bool
 }
 
 var desktopTabs = &windowTabs{}

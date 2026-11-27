@@ -158,6 +158,10 @@ func (renderer *workspaceExportRenderer) blockMarkdown(block *workspaceExportDoc
 	case graphBlockTypeColumnList, graphBlockTypeColumn, graphBlockTypeTab, graphBlockTypeTemplate:
 		return strings.TrimPrefix(text+nested(""), "\n\n")
 	case graphBlockTypeSyncedBlock:
+		// A copy of a page's body is a link to the page (workspace_export_synced_page.go).
+		if page := syncedCopyPage(block.Content); page != "" {
+			return renderer.syncedPageLinkMarkdown(block, page)
+		}
 		source := renderer.document.BlockByID[mapString(block.Content, "syncedBlockId")]
 		if source == nil {
 			return strings.TrimPrefix(nested(""), "\n\n")

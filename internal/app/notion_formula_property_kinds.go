@@ -5,7 +5,7 @@ import (
 )
 
 // A formula's check reads a property it names as Notion's does (seen
-// 2026-11-20 through its API, a synthetic database under 한지테스트페이지): a
+// 2026-11-20 through its API, a synthetic database under a Notion test page): a
 // formula by the type the check gives its expression, so prop("F") * 2 is
 // judged as F written out — text for "a" (math on text and number), array
 // for a list or a person's, undefined for empty() alone,

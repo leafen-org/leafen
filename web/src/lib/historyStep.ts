@@ -2,7 +2,7 @@ import { ROUTE_CHANGE_EVENT } from "./router";
 
 /*
  * Each step of the tab's history is marked in its history state, so what a
- * page keeps for a step — where it was read (pageScrollPlace.ts), the blocks
+ * page keeps for a step — where it was read (pageScrollPlace.ts), what was
  * chosen in it (selectionMemory.ts) — comes back with the way back or forward
  * to that step, or a reload of it. A link's push copies the mark of the step
  * it leaves, so the new step takes a mark of its own as it is made, before
@@ -48,6 +48,14 @@ export function historyArrival(): Readonly<HistoryArrival> {
   return arrival;
 }
 
+const leaving = new Set<(left: string | undefined) => void>();
+
+/** Hears the tab leave a step for a new one (a link's push), with the mark of the step it left. */
+export function onStepLeft(left: (step: string | undefined) => void): () => void {
+  leaving.add(left);
+  return () => { leaving.delete(left); };
+}
+
 if (typeof window !== "undefined") {
   arrival = { count: 0, by: documentArrival() };
   let lastAddress = window.location.href;
@@ -56,7 +64,10 @@ if (typeof window !== "undefined") {
     const moved = window.location.href !== lastAddress;
     lastAddress = window.location.href;
     if (!moved || replaced) return;
+    // The push copied the mark of the step it left.
+    const left = keptHistoryStep();
     historyStep(true);
+    for (const hear of leaving) hear(left);
     arrival = { count: arrival.count + 1, by: null };
   });
   window.addEventListener("popstate", () => {

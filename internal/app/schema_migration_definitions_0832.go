@@ -47,6 +47,9 @@ var productMigrationsFrom0832 = []productMigration{
 	{version: 865, name: "native_notion_migration_second_copy", checksum: nativeNotionMigrationSecondCopyChecksum, impact: schemaMigrationImpact("BPR-018,BPR-021", "instance-product-export"), up: ensureNativeNotionMigrationSecondCopySchema, validate: validateNativeNotionMigrationSecondCopySchema},
 	{version: 866, name: "native_person_connection_rights", checksum: nativePersonConnectionRightsChecksum, impact: schemaMigrationImpact("BPR-020,BPR-021", "instance-product-export"), up: ensureNativePersonConnectionKindsSchema, content: liftAgentConnections, validate: validateAgentConnectionsLifted},
 	{version: 867, name: "native_person_screen_language", checksum: nativePersonScreenLanguageChecksum, impact: schemaMigrationImpact("BPR-038", "instance-product-export"), up: ensureNativePersonScreenLanguageSchema, validate: validateNativePersonScreenLanguageSchema},
+	{version: 868, name: "native_agent_connection_unnarrowed", checksum: nativeAgentConnectionUnnarrowedChecksum, impact: schemaMigrationImpact("BPR-020,BPR-021", "instance-product-export"), content: unnarrowAgentConnections, validate: validateAgentConnectionsUnnarrowed},
+	{version: 869, name: "native_formula_double_quoted_strings", checksum: nativeFormulaDoubleQuotedStringsChecksum, impact: schemaMigrationImpact("BPR-008,BPR-021", "instance-product-export"), content: quoteDatabaseFormulaStrings, validate: validateStoredDatabaseFormulas},
+	{version: 870, name: "native_formula_comparisons_unchained", checksum: nativeFormulaComparisonsUnchainedChecksum, impact: schemaMigrationImpact("BPR-008,BPR-021", "instance-product-export"), content: unchainDatabaseFormulaComparisons, validate: validateStoredDatabaseFormulas},
 }
 
 const (
@@ -84,4 +87,7 @@ const (
 	nativeNotionMigrationSecondCopyChecksum       = "5482d90c808791e66518aa3131f2ced5c99fd4c48b67d489923538bf1d5195f2"
 	nativePersonConnectionRightsChecksum          = "fff3dedb0755e75a2d2793d611600ec02e8b4766f4c76a11c264d7056441bc22"
 	nativePersonScreenLanguageChecksum            = "765f1c1ae7ff84d02a113db9dd4e16da41b043cb794905484385d8af75376d7f"
+	nativeAgentConnectionUnnarrowedChecksum       = "645e706fa6ba25677b5a97afb91a508252e2f9e643ed9880c4a5ff9361ef6e14"
+	nativeFormulaDoubleQuotedStringsChecksum      = "5c6637c2a9201d475e1479d7f1ef8f4836ccbd2d5f188621e0210e2b925481ec"
+	nativeFormulaComparisonsUnchainedChecksum     = "5b7e85703b46bbab7ba0c525e6e4fad0b192190ad35dd7d5177d74b390080687"
 )

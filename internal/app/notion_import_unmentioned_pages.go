@@ -16,7 +16,7 @@ import (
 // an integration took out of that block stays in Notion with the block as
 // its parent, out of its trash and out of its sidebar
 // (mention_anchored_unmentioned.go), and nothing in the page leads to it
-// (seen 2026-11-18 under 한지테스트페이지: the line's has_children false, its
+// (seen 2026-11-18 under a Notion test page: the line's has_children false, its
 // children and words naming no page); only Notion's search finds it, the
 // block as its parent. One made from a page's title or a database page's
 // cell stays so with that page as its parent, its body listing no block of

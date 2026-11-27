@@ -74,8 +74,8 @@ type mcpAuthority struct {
 	PrincipalID string
 	ClientID    string
 	ClientName  string
-	// Scope is what it may do: what the tools its page leaves on need — all
-	// its person may, unless its person turned tools off
+	// Scope is what it may do: all its person may for an agent connection,
+	// what the tools its page leaves on need for an MCP token
 	// (connection_person_rights.go) — held to what its workspaces'
 	// organizations allow keys.
 	Scope              userKeyScope
@@ -91,10 +91,9 @@ type mcpAuthority struct {
 	Agent bool
 	// The tools its page turned off, and whether its page's "모든 페이지" is
 	// off, holding it to the pages chosen there (none chosen: no page) —
-	// mcp_token_tools.go.
-	DisabledTools []string
-	PagesNarrowed bool
-	PageIDs       []string
+	// mcp_token_tools.go: an MCP token's alone, as nothing narrows an agent
+	// connection (connection_person_rights.go).
+	connectionNarrowing
 	// NotionOnlyTools lists Notion's tools Leafen doesn't have (mcp_notion_only_tools.go).
 	NotionOnlyTools bool
 	// NotionTools lists every notion-* tool, beyond those Notion's MCP
@@ -390,8 +389,8 @@ func authenticateMCPRequest(app core.App, request *http.Request) (mcpAuthority, 
 		ClientID:    clientID, ClientName: connections[0].ClientName,
 		ScopedWorkspaces: scopedWorkspaces, ApprovedWorkspaces: approvedWorkspaces,
 		WorkspaceIDs: approvedIDs, AllWorkspaces: connections[0].AllWorkspaces == 1, Agent: connections[0].Agent,
-		DisabledTools: parseMCPNameList(connections[0].DisabledTools),
-		PagesNarrowed: connections[0].AllPages == 0, PageIDs: parseMCPNameList(connections[0].PageIDs),
+		connectionNarrowing: connectionNarrowingOf(connections[0].Agent, connections[0].DisabledTools, connections[0].PageIDs,
+			connections[0].AllPages),
 		NotionOnlyTools: connections[0].NotionOnlyTools == 1, NotionTools: connections[0].NotionTools == 1,
 		Clock: personLocation(app, connections[0].OwnerID),
 	}, true, nil

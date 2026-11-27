@@ -9,6 +9,7 @@ import { isDiagnosticReference, messageWithDiagnosticReference } from "./diagnos
 import { isSignedOutResponse } from "@/lib/signedOutResponse";
 import { isPageBusyRefusal, pageBusyNoticeKey } from "./pageBusy";
 import { optionRefusalText } from "./productErrorOptionMeaning";
+import { serverDiskRefusalText } from "./serverDiskRefusal";
 
 // Well-known backend error messages (thrown as plain Errors by
 // backend/functions/workspace-mutation.ts and collaboration-mutation.ts)
@@ -49,7 +50,6 @@ const KNOWN_BACKEND_ERROR_CODES: Record<string, string> = {
   // An added person the organization deactivated (2026-11-06: it read "couldn't add").
   LEAFEN_WORKSPACE_MEMBER_DEACTIVATED: "memberDeactivated",
   LEAFEN_ORGANIZATION_STORAGE_RECONCILIATION_PENDING: "organizationStorageRecounting",
-  LEAFEN_SERVER_DISK_LOW: "serverDiskLow",
   // Which version, and that another will do (2026-11-04: it read "couldn't change the app").
   LEAFEN_APP_REVOKED: "appVersionRevoked",
   // Someone put the app in the trash while its review stood open.
@@ -140,6 +140,9 @@ function knownErrorText(error: unknown): string | null {
   // A refused change of a column's options says why, as the product's errors say it.
   const optionRefusal = optionRefusalText(code);
   if (optionRefusal) return optionRefusal;
+  // A refusal for the server's disk says which — too full or too small — and what to do, to whoever asked.
+  const disk = serverDiskRefusalText(error);
+  if (disk !== null) return disk;
   const codeKey = typeof code === "string" ? KNOWN_BACKEND_ERROR_CODES[code] : undefined;
   if (codeKey) return i18next.t(`settingsErrors:backend.${codeKey}`);
   const knownKey = KNOWN_BACKEND_ERROR_KEYS[messageText(error).trim()];

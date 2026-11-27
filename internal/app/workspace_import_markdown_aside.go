@@ -15,7 +15,7 @@ import (
 )
 
 // Asides in imported Markdown, as Notion's Markdown import reads them (seen
-// 2026-11-16 twice, under 한지테스트페이지: Leafen's export form "<aside>⏎💡
+// 2026-11-16 twice, under a Notion test page: Leafen's export form "<aside>⏎💡
 // ⏎⏎콜아웃 글⏎⏎</aside>" and Notion's own export "<aside>⏎💡 콜아웃 글⏎⏎안쪽
 // 문단⏎⏎</aside>" came back as one paragraph "💡⏎콜아웃 글" and "💡 콜아웃 글⏎
 // 안쪽 문단"): a line "<aside>" with a line "</aside>" further on, the asides

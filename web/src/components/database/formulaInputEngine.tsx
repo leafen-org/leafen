@@ -18,6 +18,7 @@ import { CompositionEndKey } from "../editor/compositionEndKey";
 import { takeDomSelection } from "@/lib/tiptapDomSelection";
 import { TiptapReadOnlyMark } from "@/lib/tiptapReadOnlyMark";
 import { compositionEnds, fieldKey, imeComposing } from "@/lib/fieldKeyBoundary";
+import { formulaKeyEnter } from "./formulaEditorKeys";
 
 const problemMarks = new PluginKey<DecorationSet>("formulaProblemMarks");
 // A no-break space is read as a space: a browser may put one in for a typed
@@ -66,10 +67,18 @@ export function createFormulaInputEngine(element: HTMLElement, initial: string, 
   };
   const read = () => readFragment(editor.state.doc.firstChild!.content);
   const cursor = () => sourceOffset(editor.state.doc.firstChild!.content, editor.state.selection.head - 1);
-  const publish = () => { if (!initializing && !disposed && !imeComposing(editor.view)) options.changed(read(), cursor()); };
+  // The syllable being composed is published too: the editor's problems and suggestions read it, as Notion's
+  // ("마감" composing names 마감 at [0,2], seen 2026-11-27 with macOS's Korean input method). What a key writes
+  // finds the composition ended first (fieldKeyBoundary.ts); nothing is written into the field while it runs.
+  const publish = () => { if (!initializing && !disposed) options.changed(read(), cursor()); };
+  // Problem marks asked for while composing, put in once it ends.
+  let waitingMarks: { value: string; places: readonly { start: number; end: number; warning?: boolean }[] } | null = null;
   // What a composition finished is published before the next one starts (fieldKeyBoundary.ts), its names read again first.
   const composition = compositionEnds(() => disposed || editor.isDestroyed ? null : editor.view, () => {
     editor.view.dispatch(editor.state.tr.setMeta(normalize, true)); publish();
+    const waiting = waitingMarks;
+    waitingMarks = null;
+    if (waiting && read() === waiting.value) editor.view.dispatch(editor.state.tr.setMeta(problemMarks, waiting.places).setMeta("addToHistory", false));
   });
   const normalize = "formula-native-tokens";
   const editor = new Editor({ element: { mount: element }, injectCSS: false, enableInputRules: false, enablePasteRules: false,
@@ -145,7 +154,7 @@ export function createFormulaInputEngine(element: HTMLElement, initial: string, 
       handleKeyDown: (view, event) => {
         // The input method's key is its own; Enter, Escape and Tab find the formula typed published first (fieldKeyBoundary.ts).
         if (imeComposing(view)) return false;
-        const key = fieldKey(event, { publish, enter: "newline" });
+        const key = fieldKey(event, { publish, enter: () => formulaKeyEnter(event) });
         if (key === "ime") return false;
         // A key on the heels of a click or a caret key (End, an arrow) acts,
         // its suggestion too, where the caret is now: Enter just after End
@@ -156,7 +165,8 @@ export function createFormulaInputEngine(element: HTMLElement, initial: string, 
         options.keyDown?.(event);
         if (event.defaultPrevented) return true;
         if (key === "newline") { view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.hardBreak.create()).scrollIntoView()); return true; }
-        return false;
+        // An Enter the list didn't take does nothing (formulaEditorKeys.ts).
+        return key === "confirm";
       },
       handlePaste: (view, event) => {
         const text = (event.clipboardData?.getData("text/plain") ?? "").replace(/\r\n?/gu, "\n");
@@ -198,8 +208,10 @@ export function createFormulaInputEngine(element: HTMLElement, initial: string, 
     },
     /** Marks where the problems of `value` are, once the field reads `value`. */
     problems(value: string, places: readonly { start?: number; end?: number; warning?: boolean }[]) {
-      if (disposed || imeComposing(editor.view) || read() !== value) return;
+      if (disposed || read() !== value) return;
       const marks = places.flatMap(({ start, end, warning }) => start !== undefined && end !== undefined && end > start ? [{ start, end, warning }] : []);
+      if (imeComposing(editor.view)) { waitingMarks = { value, places: marks }; return; }
+      waitingMarks = null;
       editor.view.dispatch(editor.state.tr.setMeta(problemMarks, marks).setMeta("addToHistory", false));
     },
     sync(value: string) {

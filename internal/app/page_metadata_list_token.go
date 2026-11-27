@@ -14,12 +14,13 @@ import "github.com/pocketbase/pocketbase/core"
 // than the page's own record, and answers without one.
 
 // applyPageMetadataKeepingList applies the change as applyPageMetadataWithLock
-// does and, when it can, returns the list's refresh token after it.
+// does, the pages its place change edits noted with it (page_place_parent_edits.go),
+// and, when it can, returns the list's refresh token after it.
 func applyPageMetadataKeepingList(
 	app core.App, user *core.Record, pageID string, input pageMetadataInput, requestHash string, listToken string,
 ) (pageMetadataResponse, pageMetadataMutationStatus, string, error) {
 	if listToken == "" {
-		response, status, err := applyPageMetadataWithLock(app, user.Id, pageID, input, requestHash, pageLockEnforced)
+		response, status, err := applyPageMetadataInApp(app, user.Id, pageID, input, requestHash)
 		return response, status, "", err
 	}
 	var response pageMetadataResponse
@@ -33,7 +34,7 @@ func applyPageMetadataKeepingList(
 		}
 		current := workspaceID != "" && listCurrent(txApp, user, workspaceID, listToken)
 		var err error
-		response, status, err = applyPageMetadataWithLock(txApp, user.Id, pageID, input, requestHash, pageLockEnforced)
+		response, status, err = applyPageMetadataInApp(txApp, user.Id, pageID, input, requestHash)
 		if err != nil || status != pageMetadataApplied || !current || response.Receipt.Duplicate {
 			return err
 		}
@@ -94,4 +95,23 @@ func pageMovedInList(before, after *core.Record) bool {
 		}
 	}
 	return false
+}
+
+// applyPageMetadataInApp is the app's own page change: applyPageMetadataWithLock's,
+// with the parents its place change edits noted as edited, in one transaction.
+func applyPageMetadataInApp(
+	app core.App, actorID, pageID string, input pageMetadataInput, requestHash string,
+) (pageMetadataResponse, pageMetadataMutationStatus, error) {
+	var response pageMetadataResponse
+	status := pageMetadataApplied
+	err := app.RunInTransaction(func(txApp core.App) error {
+		before := pageHeldPlaceOf(txApp, pageID)
+		var err error
+		response, status, err = applyPageMetadataWithLock(txApp, actorID, pageID, input, requestHash, pageLockEnforced)
+		if err != nil || status != pageMetadataApplied || response.Receipt.Duplicate {
+			return err
+		}
+		return notePlaceEditedParents(txApp, actorID, pageID, before, input.KeepLastEdit)
+	})
+	return response, status, err
 }

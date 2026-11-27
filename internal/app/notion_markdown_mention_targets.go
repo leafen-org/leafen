@@ -119,7 +119,7 @@ func (targets notionMarkdownMentionTargets) missing(app core.App, pageID string)
 
 // learnAhead tells the mentions' targets the pages the blocks written and
 // the references' titles mention — in their text, a caption and a table's
-// cells — and whether "v2" asks of their trash.
+// cells — and the pages links lead to, and whether "v2" asks of their trash.
 func (mentions notionMarkdownMentions) learnAhead(
 	blocks []workspaceExportMarkdownBlock, references map[string]notionMarkdownReference,
 ) {
@@ -138,6 +138,10 @@ func (mentions notionMarkdownMentions) learnAhead(
 		named(block.Spans)
 		for _, spans := range notionMarkdownBlockHeldSpans(block) {
 			named(spans)
+		}
+		// A link to a page reads as its mention does (notion_page_markdown_link_to_page.go).
+		if target := mapString(block.Content, "childPageId"); block.Type == graphBlockTypeLinkToPage && target != "" {
+			pageIDs = append(pageIDs, target)
 		}
 	}
 	for _, reference := range references {

@@ -15,6 +15,7 @@ import type { Page, Session, Workspace } from "../../types";
 import { pagePlace } from "@/lib/pagePath";
 import { PlaceLine } from "@/components/PlaceLine";
 import { PersonAvatar } from "@/components/people/PersonAvatar";
+import { SelfMark } from "@/components/people/SelfMark";
 import { PageIconGlyph } from "@/components/page/PageIcon";
 import { teamspaceGlyph } from "@/components/teamspace/KeptIconGlyph";
 import { SearchDateFilter } from "./SearchDateFilter";
@@ -212,13 +213,13 @@ export function SearchFilterBar({ session, workspace, pages, pagesById, teamspac
   let choices: Choice[] = [];
   if (menu?.kind === "createdBy") {
     // As Notion's (seen 2026-10-30): each person with their picture, the
-    // reader with "(나)"; one chosen goes into the search above as a token
-    // and leaves the list.
+    // reader with the lists' own mark (SelfMark); one chosen goes into the
+    // search above as a token and leaves the list.
     choices = people.filter((person) => !filters.createdBy.some((chosen) => chosen.userId === person.userId)).map((person) => ({
       key: person.userId, text: person.label, role: "menuitem", data: { "data-search-filter-choice": "createdBy" },
       label: <span className={menuStyles.filterMenuMarked}><PersonAvatar userId={person.userId} name={person.label} size={20} />
         <span>{person.label}{person.userId === session.user.id && person.label !== t("searchDialog:filters.me")
-          ? <span className={menuStyles.filterMenuMe}>({t("searchDialog:filters.me")})</span> : null}</span></span>,
+          ? <SelfMark /> : null}</span></span>,
       run: () => onChange({ ...filters, createdBy: [...filters.createdBy, person] }),
     }));
   } else if (menu?.kind === "teamspace") {

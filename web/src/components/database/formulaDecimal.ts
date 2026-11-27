@@ -1,5 +1,5 @@
 // Formula arithmetic as Notion's formulas work it out (read in Notion's
-// formula functions and seen 2026-11-14 under 한지테스트페이지): two whole
+// formula functions and seen 2026-11-14 under a Notion test page): two whole
 // numbers add, subtract and multiply as JavaScript's numbers do, and so does
 // a remainder by a whole number; with a fraction among them the sum,
 // difference, product or remainder is worked out on the numbers' decimal
@@ -15,7 +15,7 @@
 // sqrt(-1) + 0.5, sum(1e308 * 10, 1)), where two whole numbers' sum or
 // product may be infinite (1e308 + 1e308) and a whole remainder no number
 // ((1e308 * 10) % 2). A quotient or a remainder by 0 is empty (1 / 0, 0 / 0,
-// 1 % 0), as Notion's (seen 2026-11-14 under 한지테스트페이지: empty(1 / 0)
+// 1 % 0), as Notion's (seen 2026-11-14 under a Notion test page: empty(1 / 0)
 // is true, format(1 / 0) ""). The server works them out the same way
 // (database_formula_decimal.go).
 

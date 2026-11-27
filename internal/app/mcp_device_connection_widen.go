@@ -5,11 +5,10 @@ import "fmt"
 // A connection's key once asked its person for more with a request to
 // connect (2026-11-23); since 2026-11-26 there is nothing more to ask for
 // with a key (connection_person_rights.go): an agent connection has its
-// person's rights in all their workspaces and turns its page's tools on
-// itself (PATCH /mcp/connections/{id}/settings), and an MCP token, as
-// Notion's, keeps its one workspace and the tools its page leaves on, which
-// an agent connection reaches past — the request sent without the key asks
-// for one. A request sent with a key hears so, in its kind's words
+// person's rights in all their workspaces, every tool and page among them,
+// and an MCP token, as Notion's, keeps its one workspace and the tools its
+// page leaves on, which an agent connection reaches past — the request sent
+// without the key asks for one. A request sent with a key hears so, in its kind's words
 // (connection_kind_ways.go), and no code is made.
 
 // mcpDeviceAskedWithKey is what a connection's key asking to connect hears.
@@ -17,8 +16,7 @@ func mcpDeviceAskedWithKey(kind connectionKind) string {
 	switch kind {
 	case connectionKindAgent:
 		return "This connection already works as your person: an agent connection does everything they may in all their workspaces, " +
-			"so there is nothing more to ask for. To turn a tool on, leafen_call PATCH " + apiRoot + "/mcp/connections/{its id}/settings " +
-			"with its disabledTools (Leafen asks your person in the conversation)."
+			"with every tool and page, so there is nothing more to ask for."
 	case connectionKindToken:
 		return "This key is an MCP token: as Notion's, it keeps its one workspace and the tools its page leaves on, so there is nothing " +
 			"more to ask for with it. An agent connection reaches all your person's workspaces and turns this token's tools on: this same " +

@@ -16,7 +16,7 @@ import {
 import { nativeBoardQueryBounds } from "./boardViewModel";
 import { graphRowsIdentity, nativeDatabaseFilterSnapshot, type DatabaseFilterGraph } from "./databaseFilterSnapshot";
 import { useDatabaseOwnPage } from "./databaseFullPageLink";
-import { GROUPED_TABLE_INITIAL_ROWS, PHONE_GROUP_ROWS, TABLE_LOAD_MORE_ROWS, chosenInitialLoadLimit, firstLoadLimit, tableRowWindow, topRowCount } from "./queryProjection";
+import { TABLE_LOAD_MORE_ROWS, firstLoadLimit, groupRowLoads, tableRowWindow, topRowCount } from "./queryProjection";
 import { useSidebarLayout } from "@/components/shell/AppShell";
 import { useNativePropertyCells } from "./useNativePropertyCells";
 import { projectRows, rowsAsNow, useDeferredPlacing } from "./viewRowProjection";
@@ -155,10 +155,10 @@ export function NativeTableViewMount({
   // An inline table shows its first rows, 50 unless its view says, and as
   // many more at each "더 불러오기", as Notion's "처음 불러오기" (seen
   // 2026-10-01, 11-03);
-  // a row made here shows at once. A grouped one shows each group's first
-  // 25 and 50 more at its own "더 불러오기". A database's own page shows
-  // every row, but on a touch screen, a phone's or a tablet's, its groups'
-  // first 10 and 10 more at a time (PHONE_GROUP_ROWS; an iPad's at 834 as a
+  // a row made here shows at once. A database's own page shows every row. A
+  // grouped one shows each group's first 25 and 50 more at its own "더
+  // 불러오기", on its own page too, but there on a touch screen, a phone's or
+  // a tablet's, 10 and 10 more (groupRowLoads; an iPad's at 834 as a
   // phone's, seen 2026-11-16: a 14-row group 10 and "↓ 더 불러오기").
   const ownPage = useDatabaseOwnPage(), touchGroups = useSidebarLayout(true).touch && ownPage;
   const grouped = properties.some((property) => property.id === view.config.groupBy);
@@ -202,8 +202,8 @@ export function NativeTableViewMount({
     flatSubitems,
     viewRows: loadLimit === undefined ? undefined : projectedRows,
     rowLoadLimit: loadLimit,
-    groupRowLimit: grouped && (!ownPage || touchGroups) ? chosenInitialLoadLimit(view) ?? (touchGroups ? PHONE_GROUP_ROWS : GROUPED_TABLE_INITIAL_ROWS) : undefined,
-    groupRowStep: chosenInitialLoadLimit(view) ?? (touchGroups ? PHONE_GROUP_ROWS : TABLE_LOAD_MORE_ROWS),
+    groupRowLimit: grouped ? groupRowLoads(view, touchGroups).first : undefined,
+    groupRowStep: groupRowLoads(view, touchGroups).more,
     madeRowIds: currentWindow.made,
     rowHasMore: shownRows.hasMore,
     rowNextCursor: null,

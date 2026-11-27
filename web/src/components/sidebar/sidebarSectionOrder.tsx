@@ -191,10 +191,14 @@ export function useMovePageToTop() {
 
 /**
  * The private or shared pages' section taking a page dropped on its heading
- * (or anywhere in it no row takes), as Notion's (seen 2026-11-14): the whole
- * section from its heading's top is tinted while it does, and the page goes
- * to the section's top (sectionTopDropPlan), asking first to put a sorted
- * section in its order by hand.
+ * or its "모두 보기", as Notion's (seen 2026-11-14): the whole section from
+ * its heading's top is tinted while it does, and the page goes to the
+ * section's top (sectionTopDropPlan), asking first to put a sorted section
+ * in its order by hand. Anywhere else in it the sidebar's drop map decides
+ * (sidebarDropSpot): over a row taking nothing — the dragged page's own row,
+ * a row under it, one whose access isn't read yet — nothing is lit and a
+ * drop does nothing, as Notion's (seen 2026-11-27 in Chrome, two tabs at
+ * two times: no tint, no line, no move and no question).
  */
 export function useSectionHeadDrop(section: "private" | "shared", sectionName: string, sort: SidebarSectionSort,
   setManual: () => void, sharedPageIds: ReadonlySet<string>, shown: () => readonly Page[]) {

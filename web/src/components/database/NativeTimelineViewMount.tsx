@@ -15,7 +15,7 @@ import {
 import { nativeBoardQueryBounds } from "./boardViewModel";
 import { useDatabaseOwnPage } from "./databaseFullPageLink";
 import { effectiveOpenPageIn } from "./databaseViewShared";
-import { TABLE_LOAD_MORE_ROWS, firstLoadLimit, topRowCount } from "./queryProjection";
+import { TABLE_LOAD_MORE_ROWS, firstLoadLimit, groupRowLoads, topRowCount } from "./queryProjection";
 import { graphRowsIdentity, type DatabaseFilterGraph } from "./databaseFilterSnapshot";
 import { useNativePropertyCells } from "./useNativePropertyCells";
 import { rowsInViewOrder, viewKeepsOwnRowOrder, viewRowOrderPlacing, type CopiesPlace } from "./viewRowOrder";
@@ -98,14 +98,16 @@ export function NativeTimelineViewMount({
   });
   const dependency = timelineDependencySettings(view, properties);
   // An inline timeline shows its first rows, 50 unless its view says, and as many more at each "더 불러오기",
-  // a row made here at once; a database's own page shows every row (Notion's, seen 2026-10-11).
-  const ownPage = useDatabaseOwnPage();
-  const loadLimit = ownPage ? undefined : firstLoadLimit(view);
-  const windowKey = `${view.id}:${loadLimit ?? "all"}`;
+  // a row made here at once; a database's own page shows every row (Notion's, seen 2026-10-11). A grouped
+  // one, inline or on its own page, each group's first rows and its own "더 불러오기" (seen 2026-11-27: 25, a
+  // group of 30 whole at its press, the other still 25), a row made here at once (TimelineView's useListGroupLoads).
+  const ownPage = useDatabaseOwnPage(), perGroup = properties.some((property) => property.id === view.config.groupBy);
+  const loadLimit = perGroup ? groupRowLoads(view, false).first : ownPage ? undefined : firstLoadLimit(view);
+  const windowKey = `${view.id}:${perGroup ? "groups" : loadLimit ?? "all"}`;
   const [shownRows, setShownRows] = useState<{ key: string; count: number; made: ReadonlySet<string> }>({ key: "", count: 0, made: new Set() });
   const rowWindow = useMemo(() => loadLimit === undefined ? undefined
-    : shownRows.key === windowKey ? { limit: loadLimit, count: shownRows.count, made: shownRows.made } : { limit: loadLimit, count: loadLimit, made: NO_ROWS },
-  [loadLimit, shownRows, windowKey]);
+    : shownRows.key === windowKey ? { limit: loadLimit, count: shownRows.count, made: shownRows.made, perGroup } : { limit: loadLimit, count: loadLimit, made: NO_ROWS, perGroup },
+  [loadLimit, perGroup, shownRows, windowKey]);
   const windowRef = useRef(rowWindow);
   windowRef.current = rowWindow;
   const widen = (change: (current: NonNullable<typeof rowWindow>) => { count: number; made: ReadonlySet<string> }) => {
@@ -166,7 +168,7 @@ export function NativeTimelineViewMount({
           // timeline isn't drawn again for it, ahead of its rows (2026-11-15: a timeline of 31
           // rows drew its every bar again for it inside the press, ~20 ms at CPU ×2).
           const current = windowRef.current;
-          if (current && topRowCount(currentSnapshot.current.rows) >= current.count) widen(() => ({ count: current.count, made: new Set([...current.made, row.id]) }));
+          if (current && (current.perGroup || topRowCount(currentSnapshot.current.rows) >= current.count)) widen(() => ({ count: current.count, made: new Set([...current.made, row.id]) }));
           // In a view keeping its own order it goes after what the view shows, in the same drawing, as
           // Notion's timeline puts it under its other bars by "+ 새로 만들기" (seen 2026-11-15 at 768 and 1440).
           const now = currentSnapshot.current;

@@ -3,7 +3,7 @@ import { choiceOut, choiceStep, type ChoiceEnds } from "./viewChoiceSteps";
 
 /**
  * A choice an inline database's view shares with its page's blocks, as
- * Notion's (seen 2026-11-27 in Chrome at 1440 under 한지테스트페이지, after
+ * Notion's (seen 2026-11-27 in Chrome at 1440 under a Notion test page, after
  * each key only, a table, a grouped table, a board, a list and a gallery):
  * from the line under the view, Shift+↑ chooses the view's last item with
  * the line still chosen, each Shift+↑ after it one item more, and past the

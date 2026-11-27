@@ -18,7 +18,7 @@ type HeldDatabase = {
  * page under its page by its block's ID, in their pages' order: Notion's
  * page lists offer them among the pages — the "@" menu (seen 2026-11-10) and
  * a button's or automation's "열기" list (seen 2026-11-24 in two tabs, a
- * table's icon and "한지테스트페이지 / 〈its page〉" under each). A view
+ * table's icon and "〈test page〉 / 〈its page〉" under each). A view
  * block, which shows another's database, isn't one, nor one whose page
  * isn't listed or that is a page of its own (a full-page database, listed
  * as its page). One of several sources unnamed goes by its sources' names

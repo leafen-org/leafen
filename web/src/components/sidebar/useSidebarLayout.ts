@@ -194,14 +194,27 @@ export async function changeSidebarLayout(session: Session, workspaceId: string,
   return true;
 }
 
+// Where a page let go among the favorites joins them (placeNextFavorite), for as long as its favorite is on its way.
+const favoritePlaces = new Map<string, { order: readonly string[]; at: number }>();
+const FAVORITE_PLACE_KEPT_MS = 60_000;
+
+/** The order the favorites take once `key` joins them where a drop put it, not first (SidebarPageSections). */
+export function placeNextFavorite(key: string, order: readonly string[]) {
+  favoritePlaces.set(key, { order, at: Date.now() });
+}
+
 /**
  * A favorite just added comes first among the reader's favorites, as Notion's
- * (seen 2026-11-06): a page's id, or a database's key (favoriteOrderKey).
+ * (seen 2026-11-06): a page's id, or a database's key (favoriteOrderKey);
+ * one a drop put among them stays where it was let go (placeNextFavorite).
  * The order keeps the latest ones only, so it stays a small part of the layout.
  */
 export function putFavoriteFirst(session: Session, workspaceId: string, key: string) {
+  const placed = favoritePlaces.get(key);
+  favoritePlaces.delete(key);
   void changeSidebarLayout(session, workspaceId, (layout) => {
     const order = layout.favoriteOrder ?? [];
+    if (placed && Date.now() - placed.at < FAVORITE_PLACE_KEPT_MS) return { ...layout, favoriteOrder: placed.order.slice(0, FAVORITE_ORDER_KEPT) };
     if (order[0] === key) return layout;
     return { ...layout, favoriteOrder: [key, ...order.filter((item) => item !== key)].slice(0, FAVORITE_ORDER_KEPT) };
   }).catch(() => undefined);

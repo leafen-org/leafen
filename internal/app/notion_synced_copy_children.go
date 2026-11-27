@@ -47,7 +47,7 @@ func notionSyncedCopyOriginal(app core.App, copyPage pageAuthorization, sourceID
 // notionSyncedCopyOriginalMissing answers a read or an append under a copy
 // whose original sourceID isn't among the page blocks, as Notion's API does
 // (seen 2026-11-21, Notion-Version 2026-03-11, synthetic pages under
-// 한지테스트페이지): one gone, or in the trash itself, is not found, named;
+// a Notion test page): one gone, or in the trash itself, is not found, named;
 // one in the trash inside a block there lists no children for a read and
 // refuses an append, an empty one too, as under an archived ancestor, as a
 // change under it is refused (notion_trash_refusal.go).
@@ -106,9 +106,13 @@ func countNotionSyncedCopyChildren(app core.App, params dbx.Params, placeholders
 			ON [[child]].[[owner]] = [[original]].[[owner]] AND [[child]].[[page_id]] = [[original]].[[page_id]]
 			AND [[child]].[[parent_id]] = [[original]].[[id]] AND ` + blockStandsSQL("child") + `
 		WHERE [[copy]].[[id]] IN (` + placeholders + `) AND [[copy]].[[type]] = 'synced_block'
-			AND TRIM(COALESCE(` + notionSyncedCopyOriginalSQL + `, '')) <> ''
+			AND TRIM(COALESCE(` + notionSyncedCopyOriginalSQL + `, '')) <> '' AND NOT ` + notionSyncedCopyOfPageSQL + `
 		GROUP BY [[copy]].[[id]]
 	`).Bind(params).All(&rows)
+	if err == nil {
+		// A copy of a page's body counts the page's top level (synced_block_page_original.go).
+		err = countNotionSyncedPageCopyChildren(app, params, placeholders, counts)
+	}
 	if err != nil {
 		return err
 	}
@@ -125,7 +129,7 @@ func countNotionSyncedCopyChildren(app core.App, params dbx.Params, placeholders
 // countNotionSyncedCopyTrashedChildren sets the counts of copies whose
 // original isn't among the page blocks to its children in the block trash,
 // as Notion's API reads such a copy (seen 2026-11-21, Notion-Version
-// 2026-03-11, synthetic pages under 한지테스트페이지: has_children true for a
+// 2026-03-11, synthetic pages under a Notion test page: has_children true for a
 // copy of an original holding a block, trashed itself or inside a toggle
 // trashed, and false for one holding none; true too with the original's
 // page in the trash, whose blocks Leafen keeps among the page blocks).

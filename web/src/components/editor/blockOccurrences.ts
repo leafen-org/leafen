@@ -22,7 +22,8 @@ export function occurrenceBlockId(at: string) {
 export function syncedCopyDrawing(block: GraphBlock, pageId: string, blocks: readonly GraphBlock[]) {
   if (block.type !== "synced_block") return null;
   const source = syncedBlockSource(block, pageId, blocks);
-  return source.copy && source.pageId === pageId ? source.blockId : null;
+  // One showing a whole page's body draws it with that page's editor (SyncedPageCopy), here none of it.
+  return source.copy && !source.page && source.pageId === pageId ? source.blockId : null;
 }
 
 /**

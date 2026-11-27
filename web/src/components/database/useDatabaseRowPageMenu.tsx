@@ -35,6 +35,7 @@ import { useProductPages } from "@/components/product/productPagesContext";
 import { menuKeyHint } from "@/lib/menuKeyHint";
 import { pageMenuRows } from "../lockedPageMenu";
 import { noteUnlockedInThisTab } from "@/lib/pageUnlockSession";
+import { copiesPageContents, pageMenuOffers, type PageMenuRowKey } from "@/lib/pageReaderChrome";
 
 /** The open row page the menu acts on. */
 export type RowPageMenuPage = { id: string; title: string; workspaceId: string; session: Session; dataSourceId?: string; sendable?: boolean;
@@ -141,7 +142,7 @@ export function useDatabaseRowPageMenu({
   const { t } = useTranslation(["rowMenu", "topBar", "databaseView"]);
   const { notify } = useProductToast();
   const menu = usePageMenu(query);
-  // As a page's menu: no one who can't edit copies or exports the contents, nor a guest who can.
+  // As a page's menu: a guest, one who edits too, doesn't copy or export the contents; a member who reads does (copiesPageContents).
   const guest = useProductPages()?.workspaces?.find(({ id }) => id === page?.workspaceId)?.guest === true;
   // A template keeps no shares of its own: its connections are read as a page's, all from its database page.
   const shares = useMemo(() => (page && !page.template ? rowPageShares(page.session, page.id) : undefined), [page?.id, page?.session, page?.template]);
@@ -164,6 +165,8 @@ export function useDatabaseRowPageMenu({
   };
   const locked = Boolean(shownLock?.locked && !shownLock.unlockedForMe);
   const lockRows = pageMenuRows(locked, Boolean(suggesting?.active));
+  // One who may only read or comment on the page has the reader's rows alone, the rest left out, as a page's "…" (pageMenuOffers).
+  const offers = (row: PageMenuRowKey) => pageMenuOffers(row, !readOnly);
   // A row with a person property is passed on to a member with "보내기" (Leafen's own).
   const sendable = Boolean(!readOnly && page?.sendable && !page.template);
   const item = pageMenuItem(busy);
@@ -244,10 +247,10 @@ export function useDatabaseRowPageMenu({
             { hint: shortcutCompactLabel("presentPage"), badge: t("rowMenu:actions.beta"), data: { "data-page-present-action": "" } }) : null,
           readOnly || !lockRows.undo ? null : item(show, "undo", t("rowMenu:actions.undo"), <UndoIcon size="regular" aria-hidden="true" />,
             () => { onClose(); requestPageUndo(page.id); }, { hint: menuKeyHint("⌘Z"), data: { "data-page-undo-action": "" } }),
-          onImport && lockRows.import ? item(show, "import", t("rowMenu:actions.import"), <ImportIcon size="regular" aria-hidden="true" />, () => { onClose(); onImport(); },
+          onImport && lockRows.import && offers("import") ? item(show, "import", t("rowMenu:actions.import"), <ImportIcon size="regular" aria-hidden="true" />, () => { onClose(); onImport(); },
             { disabled: readOnly, data: { "data-row-page-import": "" } }) : null,
           onExport ? item(show, "export", t("rowMenu:actions.export"), <ExportIcon size="regular" aria-hidden="true" />, () => { onExport(); onClose(); },
-            { disabled: readOnly || guest, data: { "data-page-export-action": "" } }) : null,
+            { disabled: !copiesPageContents(guest), data: { "data-page-export-action": "" } }) : null,
           // Leafen's read log follows the export, as in a page's menu (RowMenuActions).
           !page.template && !readOnly ? item(show, "read-log", t("rowMenu:actions.readLog"), <EyeIcon size="regular" aria-hidden="true" />,
             () => { onClose(); requestReadLogDialog({ workspaceId: page.workspaceId, scope: `page:${page.id}` }); },
@@ -271,21 +274,21 @@ export function useDatabaseRowPageMenu({
       sendable ? item(visible, "send", t("rowMenu:actions.send"), <SendIcon size="regular" aria-hidden="true" />,
         () => { onClose(); requestSendItemDialog({ rowId: page.id, title: page.title, workspaceId: page.workspaceId, dataSourceId: page.dataSourceId ?? "" }); }, { data: { "data-row-page-send": "" } }) : null,
       item(visible, "contents", t("rowMenu:actions.copyContents"), <ClipboardIcon size="regular" aria-hidden="true" />, () => void copyContents(),
-        { disabled: readOnly || guest, data: { "data-page-copy-contents": "" } }),
-      onDuplicate && lockRows.duplicate ? item(visible, "duplicate", t("rowMenu:actions.duplicate"), <Copy size="regular" aria-hidden="true" />, () => void onDuplicate(),
+        { disabled: !copiesPageContents(guest), data: { "data-page-copy-contents": "" } }),
+      onDuplicate && lockRows.duplicate && offers("duplicate") ? item(visible, "duplicate", t("rowMenu:actions.duplicate"), <Copy size="regular" aria-hidden="true" />, () => void onDuplicate(),
         { hint: menuKeyHint("⌘D"), disabled: readOnly }) : null,
       // A locked page can't move, nor go back to an earlier version, as a page's menu (lockedPageMenu.ts).
-      onMove && lockRows.move ? (
+      onMove && lockRows.move && offers("move") ? (
         <DatabaseRowMoveSubmenu key="move" data-menu-label={t("rowMenu:actions.moveTo")} busy={busy} disabled={readOnly} hint={menuKeyHint("⌘⇧P")} moveTargets={moveTargets}
           searchMoveTargets={searchMoveTargets} onMove={onMove} onPreviewMove={onPreviewMove} onOpen={onOpenMove} />
       ) : null,
       // The history and the updates are found by their own words too (pageMenuSearchWords: "2.0", "수정").
-      onHistory && lockRows.history ? item(visible, "history", t("rowMenu:actions.pageHistory"), <VersionHistoryIcon size="regular" aria-hidden="true" />,
+      onHistory && lockRows.history && offers("history") ? item(visible, "history", t("rowMenu:actions.pageHistory"), <VersionHistoryIcon size="regular" aria-hidden="true" />,
         () => { onHistory(); onClose(); }, { data: { "data-row-page-history": "" }, search: pageMenuSearchWords("pageHistory") }) : null,
       onAnalytics ? item(visible, "analytics", t("topBar:updatesAndAnalytics"), <UpdatesClockIcon size="regular" aria-hidden="true" />, onAnalytics,
         { data: { "data-row-analytics-action": "" }, search: pageMenuSearchWords("updatesAndAnalytics") }) : null,
     ],
-    [lockRows.pageStyle && (locked ? onCustomizeLayout : pageStyle || onCustomizeLayout) ? theme : null],
+    [lockRows.pageStyle && offers("theme") && (locked ? onCustomizeLayout : pageStyle || onCustomizeLayout) ? theme : null],
     [
       // Not on a locked page, as Notion's. Offered (suggesting given) to whoever may suggest on the body, one who may only
       // comment too — the page's own menu offers it them as well — so the page being read-only for them doesn't dim it.
@@ -295,21 +298,21 @@ export function useDatabaseRowPageMenu({
       notifyRow,
     ],
     [
-      shownLock && lockRows.lock ? item(visible, "lock", t("rowMenu:actions.pageLock"), shownLock.locked ? <LockIcon size="regular" aria-hidden="true" /> : <UnlockIcon size="regular" aria-hidden="true" />,
+      shownLock && lockRows.lock && offers("lock") ? item(visible, "lock", t("rowMenu:actions.pageLock"), shownLock.locked ? <LockIcon size="regular" aria-hidden="true" /> : <UnlockIcon size="regular" aria-hidden="true" />,
         turnLock,
         { disabled: readOnly, role: "menuitemcheckbox", checked: shownLock.locked, trailing: menuSwitch(shownLock.locked), data: { "data-row-page-lock": "" } }) : null,
       // No 보관 on a locked page, as a page's menu; an archived one can still come back.
-      onArchive && !(locked && !archived) ? item(visible, "archive", t(archived ? "rowMenu:actions.unarchive" : "rowMenu:actions.archive"),
+      onArchive && offers("archive") && !(locked && !archived) ? item(visible, "archive", t(archived ? "rowMenu:actions.unarchive" : "rowMenu:actions.archive"),
         <ArchiveIcon size="regular" aria-hidden="true" />, () => void onArchive(!archived),
         { disabled: readOnly, data: { "data-row-archive-action": archived ? "archived" : "active" } }) : null,
-      onTrash ? item(visible, "trash", t("rowMenu:actions.moveToTrash"), <Trash size="regular" aria-hidden="true" />, () => void onTrash(),
+      onTrash && offers("trash") ? item(visible, "trash", t("rowMenu:actions.moveToTrash"), <Trash size="regular" aria-hidden="true" />, () => void onTrash(),
         { disabled: readOnly || locked, className: styles.dangerOnHover, data: { "data-page-trash-action": "" } }) : null,
     ],
     [more],
   ];
   // A phone's sheet holds the same actions as Notion's "작업" sheet does a database's page (seen 2026-10-27).
   const phone: RowPagePhoneActions = {
-    kind: "row", canEdit: !readOnly, canExport: !readOnly && !guest, busy, lockedForMe: locked,
+    kind: "row", canEdit: !readOnly, canExport: copiesPageContents(guest), busy, lockedForMe: locked,
     style: { ...(pageStyle?.value ?? page.shownStyle), ...pageLayoutCommentsStyle(layout) },
     onStyle: pageStyle ? (change) => pageStyle.onChange(change as PageStyleChange) : undefined,
     // The comments its database's layout shows, every page's, changed from "페이지 사용자 지정" while that database's lock holds the rest.

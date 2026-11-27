@@ -1,5 +1,5 @@
 import { parseFormulaTokensRecovering } from "./formulaAst";
-import { FormulaSyntaxError, MAX_FORMULA_EXPRESSION_CHARACTERS, tokenizeFormula } from "./formulaCore";
+import { FormulaSyntaxError, MAX_FORMULA_EXPRESSION_CHARACTERS, formulaInvalidCharacters, tokenizeFormula } from "./formulaCore";
 import { formulaErrorKey, type FormulaProblem } from "./formulaEditorModel";
 
 // What keeps a formula being edited from being read, as Notion's editor names
@@ -30,13 +30,20 @@ export function formulaSyntaxProblems(expression: string): FormulaReading {
   const tokens = tokenizeFormula(expression);
   try {
     const { faults, skipped } = parseFormulaTokensRecovering(tokens, expression.length);
-    const problems: FormulaProblem[] = faults.map(({ message, expected, start, end }) => ({ key: formulaErrorKey(message), token: expected, start, end }));
-    // A string with no closing quote is marked at its opening one, as Notion's
-    // editor does ('"abc' is [0,1], seen 2026-11-03), what it reads named first
-    // (seen 2026-11-15: foo + "abc is foo's [0,3], then [6,7]).
+    // What keeps its tokens from being read comes first, by place, as Notion's
+    // reads them before its grammar (seen 2026-11-27 in Chrome: '1 # "abc' is
+    // "#" [2,3], the string [4,5], then the end wanted [4,5]; lower("a the
+    // string [6,7] before ")" [7,8]): a character no token starts with
+    // (formulaSyntax.ts), and a string with no closing quote, marked at its
+    // opening one ('"abc' is [0,1], seen 2026-11-03); the names it reads are
+    // named before them all (formulaDraftProblems.ts — foo + "abc is foo's
+    // [0,3], then [6,7], seen 2026-11-15).
     const open = tokens.find((token) => token.type === "string" && (token.end ?? 0) > expression.length);
-    if (open?.start !== undefined) problems.push({ key: "unclosedString", start: open.start, end: open.start + 1 });
-    return { problems, skipped };
+    const unread: FormulaProblem[] = [
+      ...formulaInvalidCharacters(tokens).map(({ character, start, end }) => ({ key: "invalidCharacter", token: character, start, end })),
+      ...(open?.start !== undefined ? [{ key: "unclosedString", start: open.start, end: open.start + 1 }] : []),
+    ].sort((left, right) => (left.start ?? 0) - (right.start ?? 0));
+    return { problems: [...unread, ...faults.map(({ message, expected, start, end }) => ({ key: formulaErrorKey(message), token: expected, start, end }))], skipped };
   } catch (error) {
     // Too deep a formula is named alone, at the token its reading stopped at;
     // what else stops it is a formula that can't be read.

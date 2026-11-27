@@ -250,6 +250,8 @@ func rewriteWorkspaceImportArchiveNode(db *sql.DB, field string, value any, rich
 		if !richText {
 			workspaceImportArchiveCalloutCustomEmoji(db, typed)
 		}
+		// A copy of a page's body names the restored page twice (synced_block_page_original.go).
+		defer keepSyncedCopyOfPage(typed, syncedCopyPage(typed))
 		renameDatabaseViewSettingProperties(field, typed, func(source string) (string, bool) {
 			target, err := workspaceImportArchiveReference(db, source, workspaceExportItemProperty)
 			return target, err == nil

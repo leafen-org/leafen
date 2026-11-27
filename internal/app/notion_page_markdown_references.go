@@ -431,8 +431,16 @@ func notionIdentityMarkdownReader(
 	if err != nil {
 		return notionMarkdownReader{}, err
 	}
+	return notionIdentityMarkdownReaderAt(event.App, origin, identity, markdownVersion), nil
+}
+
+// notionIdentityMarkdownReaderAt is notionIdentityMarkdownReader for this
+// server at origin.
+func notionIdentityMarkdownReaderAt(
+	app core.App, origin string, identity notionOAuthBearerIdentity, markdownVersion string,
+) notionMarkdownReader {
 	version2 := markdownVersion == notionMarkdownVersion2
-	people, emails := notionIdentityReadsPeople(event.App, identity)
+	people, emails := notionIdentityReadsPeople(app, identity)
 	return notionMarkdownReader{Origin: origin, APIForm: !version2, Version2: version2, PrincipalID: identity.PrincipalID,
 		PeopleEmails: emails, NoPeople: !people, Readable: func(app core.App, pageID string) (bool, error) {
 			current, err := authorizePage(app, identity.PrincipalID, pageID, permissionWorkspaceRead)
@@ -444,7 +452,7 @@ func notionIdentityMarkdownReader(
 			}
 			return current.Workspace.WorkspaceID == identity.WorkspaceID &&
 				notionOAuthIdentityAllowsPage(app, identity, current), nil
-		}}, nil
+		}}
 }
 
 // principalMarkdownReader is someone reading a page's Markdown by Leafen's

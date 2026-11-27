@@ -2,7 +2,6 @@ package app
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 )
 
@@ -69,13 +68,14 @@ const (
 type databaseFormulaToken struct {
 	kind  databaseFormulaTokenKind
 	value string
+	// spaced is whether a space or a comment stands before it, which tells
+	// "not(" — a call — from "not (", the operator (databaseFormulaSyntax.keyword).
+	spaced bool
+	// Where it is written in the formula's characters, from start to end.
+	start, end int
 }
 
 func databaseFormulaASCIIDigit(value rune) bool { return value >= '0' && value <= '9' }
-
-func databaseFormulaIdentifierStart(value rune) bool {
-	return value == '_' || (value >= 'A' && value <= 'Z') || (value >= 'a' && value <= 'z')
-}
 
 // databaseFormulaStringEscape is what a backslash and the next character write
 // in a string, as Notion's (seen 2026-11-04): the quote, a backslash, a new
@@ -104,7 +104,7 @@ func databaseFormulaNumberEnd(runes []rune, index int, legacy bool) int {
 	seenDot := runes[index] == '.'
 	index++
 	for index < len(runes) && (databaseFormulaASCIIDigit(runes[index]) || (runes[index] == '.' && !seenDot &&
-		(legacy && (index+1 >= len(runes) || !databaseFormulaIdentifierStart(runes[index+1])) ||
+		(legacy && (index+1 >= len(runes) || !databaseFormulaNameStart(runes[index+1])) ||
 			index+1 < len(runes) && databaseFormulaASCIIDigit(runes[index+1])))) {
 		if runes[index] == '.' {
 			seenDot = true
@@ -150,10 +150,6 @@ func databaseFormulaCommentEnd(runes []rune, index int) int {
 	return len(runes)
 }
 
-func tokenizeDatabaseFormula(input string) []databaseFormulaToken {
-	return readDatabaseFormulaTokens([]rune(input))
-}
-
 type databaseFormulaNodeKind int
 
 const (
@@ -184,13 +180,18 @@ type databaseFormulaSyntax struct {
 	// notion reads as Notion's parser does, today's way or with legacy its
 	// first kind's (notion_formula_dialect.go).
 	notion, legacy bool
+	// chained reads comparisons chained, noting the parentheses that keep it (database_formula_comparison.go).
+	chained *databaseFormulaChainParens
 }
 
 func parseDatabaseFormula(expression string) (*databaseFormulaNode, error) {
 	if len([]rune(expression)) > maxDatabaseFormulaExpressionRunes {
 		return nil, errDatabaseFormulaLong
 	}
-	tokens := tokenizeDatabaseFormula(expression)
+	tokens, err := tokenizeDatabaseFormulaChecked(expression)
+	if err != nil {
+		return nil, err
+	}
 	// A formula of comments alone reads as nothing, as Notion's does
 	// ("Expression expected"), not as an empty formula.
 	if len(tokens) == 0 && strings.Contains(expression, "/*") {
@@ -231,35 +232,6 @@ func (syntax *databaseFormulaSyntax) match(kind databaseFormulaTokenKind, value 
 	}
 	syntax.index++
 	return true
-}
-
-// keyword matches and/or/not written as words, which are operators unless a
-// call's parenthesis follows.
-func (syntax *databaseFormulaSyntax) keyword(value string) bool {
-	token := syntax.peek()
-	if token == nil || token.kind != databaseFormulaTokenIdentifier || token.value != value {
-		return false
-	}
-	if next := syntax.index + 1; next < len(syntax.tokens) &&
-		syntax.tokens[next].kind == databaseFormulaTokenParen && syntax.tokens[next].value == "(" {
-		return false
-	}
-	syntax.index++
-	return true
-}
-
-// notOperator matches not written as a word as an operator only when a value
-// may follow it; alone it reads as a name, as Notion reads it.
-func (syntax *databaseFormulaSyntax) notOperator() bool {
-	if next := syntax.index + 1; next >= len(syntax.tokens) {
-		return false
-	} else if token := syntax.tokens[next]; token.kind == databaseFormulaTokenComma ||
-		token.kind == databaseFormulaTokenColon || token.kind == databaseFormulaTokenQuestion ||
-		token.kind == databaseFormulaTokenParen && token.value == ")" ||
-		token.kind == databaseFormulaTokenBracket && token.value == "]" {
-		return false
-	}
-	return syntax.keyword("not")
 }
 
 // Notion's parser runs out of room at about 256 parentheses inside one
@@ -387,14 +359,6 @@ func (syntax *databaseFormulaSyntax) binaryLevel(
 	return nil, err
 }
 
-func (syntax *databaseFormulaSyntax) equality() (*databaseFormulaNode, error) {
-	return syntax.binaryLevel(syntax.comparison, "==", "!=")
-}
-
-func (syntax *databaseFormulaSyntax) comparison() (*databaseFormulaNode, error) {
-	return syntax.binaryLevel(syntax.term, ">", ">=", "<", "<=")
-}
-
 func (syntax *databaseFormulaSyntax) term() (*databaseFormulaNode, error) {
 	return syntax.binaryLevel(syntax.factor, "+", "-")
 }
@@ -430,6 +394,9 @@ func (syntax *databaseFormulaSyntax) unary() (*databaseFormulaNode, error) {
 	}
 	operator := ""
 	if syntax.match(databaseFormulaTokenOperator, "-") {
+		if node, signed, err := syntax.signedNumber(); signed {
+			return node, err
+		}
 		operator = "-"
 	} else if syntax.match(databaseFormulaTokenOperator, "!") || syntax.notOperator() {
 		operator = "!"
@@ -454,13 +421,10 @@ func (syntax *databaseFormulaSyntax) primary() (*databaseFormulaNode, error) {
 	switch {
 	case token != nil && token.kind == databaseFormulaTokenNumber:
 		syntax.index++
-		// A number past the largest is Infinity, as JavaScript reads it
-		// (Notion's: 1e309, seen 2026-11-14).
-		number, err := strconv.ParseFloat(databaseFormulaNumberLiteral(token.value), 64)
-		if err != nil && !errors.Is(err, strconv.ErrRange) {
-			return nil, errDatabaseFormulaExpression
+		var err error
+		if node, err = databaseFormulaWrittenNumber(token.value); err != nil {
+			return nil, err
 		}
-		node = &databaseFormulaNode{kind: databaseFormulaNodeNumber, number: number}
 	case token != nil && token.kind == databaseFormulaTokenString:
 		syntax.index++
 		node = &databaseFormulaNode{kind: databaseFormulaNodeString, text: token.value}
@@ -470,6 +434,12 @@ func (syntax *databaseFormulaSyntax) primary() (*databaseFormulaNode, error) {
 			return nil, err
 		}
 		node = &databaseFormulaNode{kind: databaseFormulaNodeList, children: items}
+	// and/or before a parenthesis with a space between is the operator, which
+	// no value starts with ("and (true, false)" is an expression expected at
+	// [0,1], seen 2026-11-28 in Chrome).
+	case token != nil && token.kind == databaseFormulaTokenIdentifier && (token.value == "and" || token.value == "or") &&
+		syntax.index+1 < len(syntax.tokens) && syntax.tokens[syntax.index+1].value == "(" && !syntax.calledRightAfter(syntax.index):
+		return nil, errDatabaseFormulaExpression
 	case token != nil && token.kind == databaseFormulaTokenIdentifier:
 		syntax.index++
 		node = &databaseFormulaNode{kind: databaseFormulaNodeIdentifier, text: token.value}
@@ -493,25 +463,7 @@ func (syntax *databaseFormulaSyntax) primary() (*databaseFormulaNode, error) {
 	default:
 		return nil, errDatabaseFormulaExpression
 	}
-	for syntax.match(databaseFormulaTokenDot, "") {
-		method := syntax.peek()
-		if method == nil || method.kind != databaseFormulaTokenIdentifier {
-			return nil, errDatabaseFormulaMember
-		}
-		syntax.index++
-		arguments := []*databaseFormulaNode{}
-		if syntax.match(databaseFormulaTokenParen, "(") {
-			var err error
-			if arguments, err = syntax.sequence(databaseFormulaTokenParen, ")"); err != nil {
-				return nil, err
-			}
-		}
-		node = &databaseFormulaNode{
-			kind: databaseFormulaNodeMethod, text: method.value,
-			children: append([]*databaseFormulaNode{node}, arguments...),
-		}
-	}
-	return node, nil
+	return syntax.methods(node)
 }
 
 // sequence reads comma-separated expressions up to the closing token; an

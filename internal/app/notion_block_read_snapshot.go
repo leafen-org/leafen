@@ -49,8 +49,8 @@ func loadNotionBlockReadSnapshot(
 // loadNotionBlockChildrenReadSnapshot reads a block's children from the
 // child startCursor names, that child first, and names the child after the
 // last it gives as next_cursor, as Notion's API reads them (seen 2026-11-21,
-// Notion-Version 2026-03-11, synthetic pages under 한지테스트페이지: a page, a
-// toggle and a synced copy at page_size 1 and 2 — a negative one names the
+// Notion-Version 2026-03-11, synthetic pages under a Notion test page: a page,
+// a toggle and a synced copy at page_size 1 and 2 — a negative one names the
 // first child — and an append's answer, which reads from the first block it
 // added, notion_block_append_answer.go). A cursor that names the last child
 // a read gave, as Leafen's named it before, reads it again.

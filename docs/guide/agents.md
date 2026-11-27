@@ -118,15 +118,15 @@ is only for when you are on that screen yourself.
 ### The name Leafen takes in the agent's settings
 
 Leafen goes into the agent's settings named after the server and its
-three-letter code, `leafen-<server>-<code>` (`leafen-tulip-cxb`), the same
+three-letter code, `leafen-<server>-<code>` (`leafen-maple-kdr`), the same
 in every folder and on every computer, so rules and allow lists that name
-its tools (`mcp__leafen-tulip-cxb__…`) hold everywhere, and two servers of
+its tools (`mcp__leafen-maple-kdr__…`) hold everywhere, and two servers of
 the same name differ. A connection the settings already hold to this server
 that works as you is kept, and nothing new is made. Another person's
 connection in the same settings — two people on one computer account — is
 never used for you: Leafen goes in beside it as
 `leafen-<server>-<code>-<your first name in plain letters>`
-(`leafen-tulip-cxb-ann`). Each name stays short enough for Claude's
+(`leafen-maple-kdr-ann`). Each name stays short enough for Claude's
 64-character tool names, and Leafen never renames or removes an entry there.
 Under **Connected agents**, each connection is listed by its program and the
 computer it was made on, and the folder when it is kept to one.

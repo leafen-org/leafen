@@ -83,8 +83,8 @@ export function DatabaseLinkPending({ view, views = [view], readOnly, onConnect,
   useEffect(() => { onDrawn?.(); }, []);
   useInlineDatabaseRequests(name?.blockId ?? "", (request) => {
     const block = frame.current?.getBoundingClientRect(), row = tabs.current?.getBoundingClientRect();
-    if ((request === "rename" || request === "icon") && !readOnly && block && row) {
-      setEditing({ kind: request, at: viewBlockNameAt(block.left, row.bottom, POPOVER_MARGIN) });
+    if ((request === "rename" || request === "title" || request === "icon") && !readOnly && block && row) {
+      setEditing({ kind: request === "icon" ? "icon" : "rename", at: viewBlockNameAt(block.left, row.bottom, POPOVER_MARGIN) });
     }
   }, name ? { blockId: name.blockId, alone: name.alone === true } : undefined);
   return (

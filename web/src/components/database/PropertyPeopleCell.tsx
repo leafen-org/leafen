@@ -134,7 +134,7 @@ export function PropertyPeopleCell({ row, prop, snapshot, operations, context }:
     const chosen = new Set(chosenKey ? chosenKey.split("\u0000") : []);
     const options = new Map<string, { id: string; label: string; description: string }>();
     // The people chosen stand only as chips in the field, out of the list, as
-    // Notion's (seen 2026-11-07, OP-03-c: "〈이름〉 ×" above, gone below).
+    // Notion's (seen 2026-11-07: "〈이름〉 ×" above, gone below).
     const addOption = (id: string | undefined | null, label: string, description: string) => {
       const normalizedId = id?.trim();
       if (!normalizedId || options.has(normalizedId) || chosen.has(normalizedId)) return;

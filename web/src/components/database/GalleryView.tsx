@@ -126,7 +126,7 @@ export interface GalleryViewOperations extends ViewNoResultsCommands {
   openGroupSettings?(trigger: HTMLElement): void;
   setRowProperty(rowId: string, propertyId: string, value: unknown, context: GalleryViewOperationContext): Promise<void>;
   /** Its first cards and how to show more, when the gallery shows only its first. */
-  loadMoreCards?: CardsLoadMoreControl;
+  /** The cards made here since it opened, shown past a group's first ones (useListGroupLoads). */ madeRowIds?: ReadonlySet<string>; loadMoreCards?: CardsLoadMoreControl; setCardLoadLimit?(limit: number): void;
   isCurrent(context: GalleryViewOperationContext): boolean;
   onError(error: unknown, context: GalleryViewOperationContext): void;
   openRow(rowId: string, context: GalleryViewOperationContext): void;
@@ -151,7 +151,7 @@ export function GalleryView({
   const { t } = useTranslation(["galleryView", "boardView", "common"]);
   const rowTitle = useRowDisplayTitle();
   const newItemText = t("galleryView:newInline");
-  const [collapsedGroups, setCollapsedGroups] = useCollapsedGroups(snapshot.view.id), groupLoads = useListGroupLoads(snapshot.view);
+  const [collapsedGroups, setCollapsedGroups] = useCollapsedGroups(snapshot.view.id), groupLoads = useListGroupLoads(snapshot.view, operations.madeRowIds, operations.setCardLoadLimit);
   const [groupMenu, setGroupMenu] = useState<ViewGroupMenuAt | null>(null);
   // A "+ 새 페이지" pressed while its page is still being made makes no
   // other (the coordinator's own), its button not shut meanwhile: shut and
@@ -410,8 +410,8 @@ export function GalleryView({
             return next;
           })}
           count={viewConfig?.showGroupCounts === true ? group.rows.length : undefined}
-          onMenu={readOnly || !operations.updateViewConfig ? undefined : (element) => setGroupMenu({
-            group: { ...group, rows: group.rows.map((row) => ({ row })) }, position: popoverAnchorOf(element), returnTo: element })}
+          onMenu={readOnly || !operations.updateViewConfig ? undefined : (element, naming) => setGroupMenu({
+            group: { ...group, rows: group.rows.map((row) => ({ row })) }, position: popoverAnchorOf(element), returnTo: element, naming })}
           onAdd={adds ? () => void createRow(group.key, { beforeRowId: group.rows[0]?.id }) : undefined} />
       </div>
     );
@@ -421,7 +421,7 @@ export function GalleryView({
         <Plus size="small" aria-hidden="true" /> {newItemText}
       </button>,
     );
-    const shown = (group: (typeof galleryGroups)[number]) => groupLoads.cut(group.key, group.rows), tiles = (group: (typeof galleryGroups)[number]) => shown(group).more ? <>{tile(group)}<CardsLoadMore placement="view" limit={groupLoads.step} onLoadMore={() => groupLoads.loadMore(group.key)} /></> : tile(group);
+    const shown = (group: (typeof galleryGroups)[number]) => groupLoads.cut(group.key, group.rows), tiles = (group: (typeof galleryGroups)[number]) => shown(group).more ? <>{tile(group)}<CardsLoadMore placement="view" limit={groupLoads.step} onLimit={groupLoads.onLimit} onLoadMore={() => groupLoads.loadMore(group.key)} /></> : tile(group);
     const places = galleryGroups.reduce((sum, group) => sum + 1 + (collapsedGroups.has(group.key) ? 0 : shown(group).rows.length + 1), 0);
     return (
       <CardSelectionProvider value={selection.value}>

@@ -26,9 +26,9 @@ import (
 // line: the field's mention gone, it goes to the trash; back, it comes back.
 // A mention an integration takes out of a title or a cell leaves its page
 // there unmentioned, as of a line (mention_anchored_unmentioned.go; seen
-// 2026-11-18 in two tabs of 한지테스트페이지: the page out of the trash, still
-// under that page, out of its sidebar until the title mentions it again, and
-// left so when a person then types in the title or the cell).
+// 2026-11-18 in two tabs of a Notion test page: the page out of the trash,
+// still under that page, out of its sidebar until the title mentions it again,
+// and left so when a person then types in the title or the cell).
 
 const (
 	pageAnchorTitle      = "title"

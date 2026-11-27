@@ -103,7 +103,7 @@ var (
 		"synced-block": true, "synced-block-reference": true, "unknown": true, "empty-block": true, "mention": true,
 		"date": true, "link-preview": true, "b": true, "i": true, "s": true, "u": true, "code": true, "span": true,
 		"br": true, "strong": true, "em": true, "a": true, "meeting-notes": true, "custom-block": true, "mail": true,
-		"external_object_instance": true, "unknown_mention": true,
+		"external_object_instance": true, "unknown_mention": true, "link-to-page": true, "button": true,
 	}
 	// The tags that stand in text; the others are blocks, read only as a
 	// line's tags, and text where text stands with them on their line.
@@ -284,6 +284,17 @@ func (repair *notionMarkdownRepair) text(text string, whole bool, line string) s
 				}
 				out.WriteString(notionMarkdownListTagMark + tag)
 				continue
+			case "link-to-page", "button":
+				// A link, and a button, is a block of its own
+				// (notion_page_markdown_link_to_page.go, notion_page_markdown_button.go).
+				said := "<link-to-page> is a block tag, so it goes on a line of its own; to point to a page inside text, use <mention>."
+				if name == "button" {
+					said = "<button> is a block tag, so it goes on a line of its own."
+				}
+				if !closing && repair.refused == "" {
+					repair.refuse(said)
+					out.WriteString(repair.place(notionMarkdownPlaced{words: said}))
+				}
 			case "page":
 				// A to-do's text Notion reads twice, so says it twice (seen
 				// 2026-11-14: "- [ ] <page />", "- [ ] x <page></page>").

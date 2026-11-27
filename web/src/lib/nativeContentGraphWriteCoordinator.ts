@@ -12,7 +12,9 @@ import { noteBlockChangeSending } from "@/lib/blockChangesInFlight";
 import type { BlockChangeText } from "@/lib/blockChangeText";
 import { textRidingWith } from "@/lib/textBehindBlockChanges";
 import { holdUntilTypingEnds, TYPING_PAUSE_MS } from "@/lib/typedWrites";
-import { newId } from "@/lib/ids";
+import { onTypedRowValueLetGo, sendTypedRowValuesNow, typedRowValueHeldOn } from "@/lib/rowValuesTyped";
+import { typedGraphChange, type TypedGraphClaim } from "@/lib/typedDraftSender";
+import { typedChangeKeeping } from "@/lib/typedGraphChanges";
 
 /**
  * The pages whose writes wait for the server elsewhere (in the outbox): the
@@ -73,9 +75,9 @@ type NativeContentGraphWriteCoordinatorOptions = {
    * aren't answered yet: one waiting behind them was lost when the page went
    * meanwhile (2026-11-04: a table title typed, Enter, and a reload half a
    * second later kept only what an earlier save had sent). `write` sends it
-   * later with the same mutation.
+   * later with the same mutation. Answers once it is kept.
    */
-  keep?: (pageId: string, mutationId: string, operations: GraphOperation[], text?: BlockChangeText) => void;
+  keep?: (pageId: string, mutationId: string, operations: GraphOperation[], text?: BlockChangeText) => Promise<unknown> | void;
   /**
    * Resolves "kept" when the write waits for the server, "sent" when another
    * tab sent it. `text`, the page's text written with its block changes and
@@ -128,6 +130,8 @@ export function createNativeContentGraphWriteCoordinator({
   let blockChangesCollected: BlockChangeSent[] = [];
   // Lets go of the typed values collected, held until the typing ends (lib/typedWrites.ts).
   let releaseTyped: (() => void) | null = null;
+  // What is collected, kept on this device at each change as the change it goes as (lib/typedGraphChanges.ts).
+  const typing = typedChangeKeeping();
   const controllers = new Set<AbortController>();
   let active = true;
   // By page, the writes made here that are being admitted or saved, and how
@@ -137,8 +141,9 @@ export function createNativeContentGraphWriteCoordinator({
   // Reads waiting for a page's writes: this tab's alone (`here`), or the outbox's too.
   const settledWaiters = new Map<string, Set<SettledWaiter>>();
 
+  // A row's value typed and held on the page counts too, and goes ahead of the page's next change (rowValuesTyped.ts).
   function unsavedHere(pageId: string) {
-    return (working.get(pageId) ?? 0) > 0 || (pendingPageId === pageId && pendingOperations.size > 0);
+    return (working.get(pageId) ?? 0) > 0 || (pendingPageId === pageId && pendingOperations.size > 0) || typedRowValueHeldOn(pageId);
   }
 
   function unsaved(pageId: string, here: ReadSettledScope = false) {
@@ -157,7 +162,7 @@ export function createNativeContentGraphWriteCoordinator({
       if (waiters.size === 0) settledWaiters.delete(waitingPageId);
     }
   }
-  const stopWaitingPages = pagesWaiting?.subscribe(releaseSettled);
+  const stopWaitingPages = pagesWaiting?.subscribe(releaseSettled), stopTypedHeld = onTypedRowValueLetGo(releaseSettled);
   // Changes still being collected go as the page goes, not after it.
   const flushLeaving = () => {
     if (!active || stopCollecting === null || !pendingPageId) return;
@@ -191,6 +196,7 @@ export function createNativeContentGraphWriteCoordinator({
     const collected = blockChangesCollected;
     blockChangesCollected = [];
     const generation = pendingGeneration ?? captureGeneration(pageId);
+    const going = typing.take();
     pendingOperations.clear();
     pendingSubjects.clear();
     pendingPageId = null;
@@ -199,19 +205,22 @@ export function createNativeContentGraphWriteCoordinator({
     collectingSoon = false;
     if (operations.length === 0) {
       for (const sent of collected) sent.saved(saveChain);
+      going.kept(saveChain);
       return saveChain;
     }
 
     const controller = new AbortController();
     controllers.add(controller);
     work(pageId, 1);
-    const mutationId = newId();
+    // Collected as typed, or a name's saving, it goes under the ID it was kept on this device as.
+    const { mutationId } = going;
     // The text written with the block changes it sends goes with it, kept
     // with it, whichever tab sends it (2026-11-13: sent apart, another tab's
     // outbox sent the change without it, and its text came after).
     for (const sent of collected) sent.named(mutationId);
     const riding = collected.length ? textRidingWith(pageId, mutationId) : null;
-    keep?.(pageId, mutationId, operations, riding?.text);
+    going.keep(pageId, operations, Boolean(riding?.text?.words || riding?.text?.typing));
+    const kept = keep?.(pageId, mutationId, operations, riding?.text);
     const save = saveChain.catch(() => false).then(async () => {
       try {
         const receipt = await write(pageId, mutationId, operations, controller.signal, riding?.text);
@@ -234,6 +243,7 @@ export function createNativeContentGraphWriteCoordinator({
     });
     saveChain = save;
     for (const sent of collected) sent.saved(save);
+    going.kept(kept ? Promise.resolve(kept).catch(() => undefined) : save);
     return save;
   }
 
@@ -242,12 +252,18 @@ export function createNativeContentGraphWriteCoordinator({
     operations: GraphOperation[],
     immediate: boolean,
     generation: number,
+    claim?: TypedGraphClaim,
   ) {
-    if (!active) return false;
+    if (!active) {
+      claim?.went(Promise.resolve());
+      return false;
+    }
     work(pageId, 1);
     try {
-      return await admitOperations(pageId, operations, immediate, generation);
+      return await admitOperations(pageId, operations, immediate, generation, claim);
     } finally {
+      // Not sent (a change ahead of it refused): its typing goes with it.
+      claim?.went(Promise.resolve());
       work(pageId, -1);
     }
   }
@@ -257,6 +273,7 @@ export function createNativeContentGraphWriteCoordinator({
     operations: GraphOperation[],
     immediate: boolean,
     generation: number,
+    claim?: TypedGraphClaim,
   ) {
     if (pendingPageId && (pendingPageId !== pageId || pendingGeneration !== generation)) {
       const saved = await flush(pendingPageId);
@@ -302,6 +319,8 @@ export function createNativeContentGraphWriteCoordinator({
         pendingGeneration = generation;
       }
     }
+    // A name's saving goes with the change that sends it, under the ID its typing was kept as.
+    if (claim) typing.claimed(claim);
     if (immediate) return flush(pageId);
     return true;
   }
@@ -320,6 +339,7 @@ export function createNativeContentGraphWriteCoordinator({
    */
   function queue(pageId: string, operations: GraphOperation[], soon = false, typed = false): Promise<boolean> {
     if (!active) return Promise.resolve(false);
+    sendTypedRowValuesNow(pageId);
     if (operations.length > 0) writesMade.set(pageId, (writesMade.get(pageId) ?? 0) + 1);
     const generation = captureGeneration(pageId);
     onQueued(pageId, generation);
@@ -341,6 +361,7 @@ export function createNativeContentGraphWriteCoordinator({
         answer(admitted ? saveChain : Promise.resolve(false));
       }
       if (!active || !admitted || pendingOperations.size === 0) return;
+      if (pendingPageId === pageId) typing.collected(pageId, [...pendingOperations.values()], soon && operations.length > 0);
       const send = () => {
         if (pendingPageId) void flush(pendingPageId);
       };
@@ -367,11 +388,14 @@ export function createNativeContentGraphWriteCoordinator({
 
   async function commit(pageId: string, operations: GraphOperation[]) {
     if (!active) return false;
+    // Taken as the call is made, while a name's field sends its saving (typedName.ts).
+    const claim = typedGraphChange(operations);
+    sendTypedRowValuesNow(pageId);
     if (operations.length > 0) writesMade.set(pageId, (writesMade.get(pageId) ?? 0) + 1);
     stopCollecting?.();
     stopCollecting = null;
     collectingSoon = false;
-    return admit(pageId, operations, true, captureGeneration(pageId));
+    return admit(pageId, operations, true, captureGeneration(pageId), claim);
   }
 
   function dispose() {
@@ -385,6 +409,7 @@ export function createNativeContentGraphWriteCoordinator({
     }
     active = false;
     stopWaitingPages?.();
+    stopTypedHeld();
     if (typeof window !== "undefined") window.removeEventListener("pagehide", flushLeaving);
     releaseTyped?.();
     releaseTyped = null;
@@ -405,6 +430,7 @@ export function createNativeContentGraphWriteCoordinator({
     for (const waiters of settledWaiters.values()) for (const waiter of waiters) waiter.resolve();
     for (const sent of blockChangesCollected) sent.saved(saveChain);
     blockChangesCollected = [];
+    typing.drop(saveChain);
     settledWaiters.clear();
   }
 

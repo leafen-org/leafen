@@ -1,5 +1,5 @@
 import { readDatabaseRowPage, setDatabaseRowPagePresentation, writeDatabaseRowPageValues } from "@/databaseRowPageApi";
-import { databaseRowPageErrorCodes, type DatabaseRowPageActionResponse } from "@/databaseRowPageWire.generated";
+import { databaseRowPageErrorCodes, type DatabaseRowPageActionResponse, type DatabaseRowPageValue } from "@/databaseRowPageWire.generated";
 import { markMyTaskDone } from "@/databaseToolbarConfigApi";
 import type { DatabaseMyTaskResult } from "@/databaseToolbarConfigWire.generated";
 import type { Session } from "@/types";
@@ -9,6 +9,10 @@ import { keptChangeRoutes } from "./keptChangeRoutes";
 import { whenKeptChangeWent } from "./keptChangeWent";
 import type { NativeRowValues } from "./nativePageLaneEntries";
 import { pageRowMadeOn, rowNotYetMade, whenRowSaved } from "./rowMadeHere";
+import { isRowValueChanged, rowValueNow } from "./rowTitleSave";
+import { sameTitle, type TitleValue } from "./titleMerge";
+import { sendTitleOverBase } from "./typedTitleSend";
+import { typedRowChange } from "./typedDraftSender";
 
 // A row's values written through its own page's route — a row page opened
 // alone (StandaloneRowPage: a task's side peek in 내 작업, a sidebar row, the
@@ -23,10 +27,14 @@ import { pageRowMadeOn, rowNotYetMade, whenRowSaved } from "./rowMadeHere";
 // server or was refused is the outbox's one rule (graphWriteWaitsForServer)
 // (2026-11-25: sent straight to the server, a title typed in a new task's
 // side peek while its making waited for the server waited in the tab for the
-// row, and a reload took it).
+// row, and a reload took it). A title or a text typed goes so too, under the
+// ID its typing was kept under on the device (typedDraftSender.ts), and is
+// merged as it goes with the value the server holds then (sendKeptRowValues).
 
 /** A row page's values write as its route takes it; its ID, if given, the kept change's. */
 export type RowValuesWrite = NonNullable<NativeRowValues["input"]> & { mutationId?: string };
+/** The server's answer to a row's values, with the value written in place of the one typed when it was merged with another (sendKeptRowValues). */
+export type RowValuesAnswer = DatabaseRowPageActionResponse & { merged?: Record<string, DatabaseRowPageValue> };
 type TaskStatus = NonNullable<NativeRowValues["taskStatus"]>;
 type Presentation = NonNullable<NativeRowValues["presentation"]>;
 
@@ -42,9 +50,13 @@ type Presentation = NonNullable<NativeRowValues["presentation"]>;
  * page to keep it on, it goes at once.
  */
 export async function sendRowValues(session: Session, rowId: string, write: RowValuesWrite, pageId?: string | null,
-  signal?: AbortSignal): Promise<DatabaseRowPageActionResponse | null> {
-  const { mutationId = newId(), ...input } = write;
-  return keepRowWrite(session, { rowId, input }, mutationId, pageId, signal) as Promise<DatabaseRowPageActionResponse | null>;
+  signal?: AbortSignal): Promise<RowValuesAnswer | null> {
+  // One value typed and kept on the device goes as the change its record names (typedDraftSender.ts).
+  const only = Object.keys(write.values), typed = only.length === 1 && !write.mutationId ? typedRowChange(rowId, only[0]) : undefined;
+  const { mutationId = typed?.mutationId ?? newId(), ...input } = write;
+  const sent = keepRowWrite(session, { rowId, input }, mutationId, pageId, signal) as Promise<RowValuesAnswer | null>;
+  typed?.went(sent);
+  return sent;
 }
 
 /** Sets a task's status as 내 작업 does (markMyTaskDone), kept and sent as a row's values are (sendRowValues). */
@@ -68,7 +80,7 @@ export function sendRowPresentation(session: Session, rowId: string, presentatio
 async function keepRowWrite(session: Session, rowValues: NativeRowValues, mutationId: string, pageId?: string | null, signal?: AbortSignal) {
   if (rowNotYetMade(rowValues.rowId) && !pageRowMadeOn(rowValues.rowId)) await whenRowSaved(rowValues.rowId);
   const outbox = contentGraphOutboxOf(session), place = pageRowMadeOn(rowValues.rowId) ?? pageId;
-  if (!outbox || !place) return sendKeptRowValues(session, { mutationId, rowValues }, signal, false);
+  if (!outbox || !place) return sendKeptRowValues(session, { mutationId, rowValues }, signal);
   const delivery = await outbox.admitAndSendGraph({ mutationId, operations: [], pageId: place, rowValues }, signal);
   if (delivery.state === "committed") return delivery.result;
   if (!(await whenKeptChangeWent(outbox, place, mutationId))) throw new Error("The row's kept values were refused.");
@@ -76,18 +88,53 @@ async function keepRowWrite(session: Session, rowValues: NativeRowValues, mutati
 }
 
 /**
- * Sends a row's kept values by its row page's route, or a task's status by 내 작업's (the outbox's routes for them), under the kept
- * change's ID; `kept` false for values the outbox doesn't keep, sent again as the page goes by their own request (writesAsPageGoes.ts).
+ * Sends a row's kept values by its row page's route, or a task's status by
+ * 내 작업's (the outbox's routes for them), under the kept change's ID. A
+ * title or a text written over the value it was typed on (`expected`) meets
+ * the server holding another — saved meanwhile elsewhere, or by this
+ * device's own write that went already, a tab killed before it heard — and
+ * is merged with it and written again over that one, by the one rule a typed
+ * title goes by (typedTitleSend.ts), the answer saying what was written
+ * (`merged`); the server holding what was typed already, nothing is written.
  */
 export function sendKeptRowValues(session: Session, { mutationId, rowValues }: { mutationId: string; rowValues: NativeRowValues },
-  signal?: AbortSignal, kept = true): Promise<unknown> {
+  signal?: AbortSignal): Promise<unknown> {
   const { rowId, input, taskStatus, presentation } = rowValues;
   if (taskStatus) {
     const { workspaceId, ...status } = taskStatus;
     return markMyTaskDone(session, workspaceId, rowId, { ...status, requestId: mutationId }, signal);
   }
   if (presentation) return writePresentationAsHeld(session, rowId, presentation, signal);
-  return writeDatabaseRowPageValues(session, rowId, { values: {}, ...input, mutationId }, signal, kept);
+  const write = (values: NonNullable<NativeRowValues["input"]>, id: string) => writeDatabaseRowPageValues(session, rowId, { ...values, mutationId: id }, signal);
+  const only = Object.keys(input?.values ?? {}), propertyId = only[0], typed = input?.values[propertyId], base = input?.expected?.[propertyId];
+  const words = typed && wordsOf(typed), over = base && wordsOf(base);
+  if (!input || only.length !== 1 || !words || !over || Object.keys(input.expected ?? {}).length !== 1 || input.options) {
+    return write({ values: {}, ...input }, mutationId);
+  }
+  let tries = 0;
+  const value = (title: TitleValue): DatabaseRowPageValue => ({ type: typed.type, value: title.title,
+    ...(title.spans?.length ? { spans: title.spans.map((span) => ({ ...span })) as DatabaseRowPageValue["spans"] } : {}) });
+  return sendTitleOverBase<TitleValue, RowValuesAnswer | null>({
+    base: over, typed: words, changed: isRowValueChanged, overLast: true,
+    readNow: () => rowValueNow(session, rowId, propertyId), titleOf: (now) => now,
+    async write(title, now) {
+      // Each try after the first goes as a change of its own, the same each time this change is sent again.
+      tries += 1;
+      const id = tries === 1 ? mutationId : `${mutationId}:${tries}`;
+      // The server holding it already, nothing is written; it is shown, when it isn't what was typed.
+      if (now && sameTitle(now, title)) return sameTitle(title, words) ? null
+        : { rowId, containerPageId: "", authorityRevision: 0, duplicate: true, merged: { [propertyId]: value(title) } };
+      const answer: RowValuesAnswer = await write({ values: { [propertyId]: value(title) },
+        ...(now === null ? {} : { expected: { [propertyId]: now ? value(now) : base! } }) }, id);
+      return tries === 1 ? answer : { ...answer, merged: { [propertyId]: value(title) } };
+    },
+  });
+}
+
+// A title's or a text's words, which a merge takes; none for any other value.
+function wordsOf(value: DatabaseRowPageValue): TitleValue | null {
+  if ((value.type !== "title" && value.type !== "rich_text") || (value.value !== null && typeof value.value !== "string")) return null;
+  return { title: String(value.value ?? ""), ...(value.spans?.length ? { spans: value.spans as TitleValue["spans"] } : {}) };
 }
 
 // How many times a look met a row changed since it was read is read and sent again.

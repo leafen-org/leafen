@@ -34,8 +34,8 @@ export type MentionItem =
       description: string;
       icon: string;
       userId: string;
-      /** The name the mention keeps in the text, without the menu's "(나)". */
-      name?: string;
+      /** The person themself, their name known: the lists' own mark follows it (SelfMark). */
+      self?: boolean;
       /** Another here has the same name: what tells this one apart, after a dash. */
       distinction?: string;
     }
@@ -207,7 +207,7 @@ type MentionPerson = {
   kind: "person";
   label: string;
   userId: string;
-  name?: string;
+  self?: boolean;
   /** Another here has the same name: what tells this one apart (personDistinction). */
   distinction?: string;
 };
@@ -216,7 +216,7 @@ export function collectMentionPeople({
   collaboratorDescription,
   currentUserId,
   currentUserLabel,
-  currentUserName,
+  currentUserNamed,
   organizationProfiles,
   pagePresencePeers,
   profileDescription,
@@ -226,9 +226,10 @@ export function collectMentionPeople({
 }: {
   collaboratorDescription: string;
   currentUserId: string;
+  /** What the person themself is called: their name, or "나" while it is not known. */
   currentUserLabel: string;
-  /** The person's own name as a mention of them reads, as Notion's: no "(나)". */
-  currentUserName?: string;
+  /** Their name is known: their row reads it with the lists' own mark after it. */
+  currentUserNamed?: boolean;
   organizationProfiles: readonly OrganizationProfile[];
   pagePresencePeers: readonly PagePresencePeerView[];
   profileDescription: (profile: OrganizationProfile) => string;
@@ -292,7 +293,9 @@ export function collectMentionPeople({
   // The person themself is found only by what is typed, never listed before
   // a letter is, as Notion's "@" (seen 2026-11-14 and again 2026-11-15 at
   // 1440: an empty "@" lists the others and "초대"; the first letter of the
-  // person's own name then lists them with "(나)").
+  // person's own name then lists them with "(나)"). Their row is their name
+  // and the mark is its own span after it, as Notion's "〈이름〉" and grey "(나)"
+  // (seen 2026-11-27 in two tabs); a mention of them keeps the name alone.
   const currentRank = !q ? Number.POSITIVE_INFINITY : Math.min(
     personSearchRank(currentUserLabel, q),
     ["you", "나", "본인"].some((alias) => searchLetters(alias).includes(searchLetters(q)))
@@ -306,7 +309,7 @@ export function collectMentionPeople({
     kind: "person" as const,
     label: currentUserLabel,
     userId: currentUserId,
-    ...(currentUserName ? { name: currentUserName } : {}),
+    ...(currentUserNamed ? { self: true } : {}),
   }] : [];
   return [...current, ...otherPeople];
 }

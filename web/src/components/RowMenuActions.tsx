@@ -17,6 +17,7 @@ import { pageMenuSearchWords } from "@/lib/pageMenuSearchWords";
 import { menuKeyHint } from "@/lib/menuKeyHint";
 import { useGuestEditsPageAbove } from "@/lib/pageActionAccessContext";
 import { pageMenuRows } from "./lockedPageMenu";
+import { copiesPageContents, pageMenuOffers, type PageMenuRowKey } from "@/lib/pageReaderChrome";
 
 /** Choices a page menu row opens beside the menu, drawn by the menu that reads them. */
 export type RowMenuPanels = Partial<Record<"notify" | "connections", (row: HTMLElement, onClose: () => void, onCloseAll: () => void) => ReactNode>>;
@@ -74,7 +75,7 @@ export function useRowMenuGroups({
   duplicateToWorkspace?: PageMenuSubmenu;
   onExport(): void;
   onHistory(): void;
-  /** Opens the page's updates and analytics. */
+  /** Opens the page's updates and analytics, for one who may open them (opensPageUpdates). */
   onAnalytics?: () => void;
   /** Opens the page's read log (Leafen's own); the server holds it to full access. */
   onReadLog?: () => void;
@@ -125,6 +126,8 @@ export function useRowMenuGroups({
   const styleLocked = busy || lockedForMe;
   // Locked, or suggested in, the page keeps fewer rows (lockedPageMenu.ts).
   const lockRows = pageMenuRows(lockedForMe, suggesting);
+  // One who may only read or comment on the page is offered the reader's rows alone (pageMenuOffers), as a row's page.
+  const offers = (row: PageMenuRowKey) => pageMenuOffers(row, canEdit);
   // A locked database's menu keeps no lock, move, merge or history row, its
   // lock mark unlocking it, as Notion's (seen 2026-11-11).
   const databaseLocked = databasePage && lockKind !== "page" && locked && lockedForMe;
@@ -183,10 +186,10 @@ export function useRowMenuGroups({
 
   const wikiLabel = t(wikiRoot ? "topBar:undoWiki" : "topBar:turnIntoWiki");
   // Undoing a wiki asks over the closed menu (confirmWikiUndo).
-  const wikiRow = (show: PageMenuShow) => canEdit && onWiki && !guest && lockRows.wiki
+  const wikiRow = (show: PageMenuShow) => offers("wiki") && onWiki && !guest && lockRows.wiki
     ? item(show, "wiki", wikiLabel, <RepeatIcon size="regular" aria-hidden="true" />, onWiki) : null;
 
-  const connections: PageMenuSubmenu | null = onConnections && canEdit && panels.connections && lockRows.connections ? {
+  const connections: PageMenuSubmenu | null = onConnections && offers("connections") && panels.connections && lockRows.connections ? {
     submenu: "connections", label: t("rowMenu:actions.connections"), search: pageMenuSearchWords("connections"),
     icon: <ConnectionsIcon size="regular" aria-hidden="true" />, width: 350,
     value: connectionsValue ?? "", disabled: busy, data: { "data-page-connections-action": "" }, panel: panels.connections,
@@ -200,16 +203,16 @@ export function useRowMenuGroups({
           plainPage ? item(show, "present", t("rowMenu:actions.presentationMode"), <PresentIcon size="regular" aria-hidden="true" />, onPresent,
             { hint: shortcutCompactLabel("presentPage"), badge: t("rowMenu:actions.beta"), data: { "data-page-present-action": "" } }) : null,
           // A guest's "더 보기" has no undo nor wiki, as Notion's (seen 2026-11-16); the server makes no wiki of theirs.
-          canEdit && !wikiRoot && !guest && lockRows.undo ? item(show, "undo", t("rowMenu:actions.undo"), <UndoIcon size="regular" aria-hidden="true" />, onUndo,
+          offers("undo") && !wikiRoot && !guest && lockRows.undo ? item(show, "undo", t("rowMenu:actions.undo"), <UndoIcon size="regular" aria-hidden="true" />, onUndo,
             { hint: menuKeyHint("⌘Z"), data: { "data-page-undo-action": "" } }) : null,
-          canEdit && lockRows.import ? item(show, "import", t("rowMenu:actions.import"), <ImportIcon size="regular" aria-hidden="true" />, onImport,
+          offers("import") && lockRows.import ? item(show, "import", t("rowMenu:actions.import"), <ImportIcon size="regular" aria-hidden="true" />, onImport,
             { data: { "data-page-import-action": "" } }) : null,
           item(show, "export", t("rowMenu:actions.export"), <ExportIcon size="regular" aria-hidden="true" />, onExport,
-            { disabled: !canEdit || guest, data: { "data-page-export-action": "" } }),
+            { disabled: !copiesPageContents(guest), data: { "data-page-export-action": "" } }),
           // Leafen's read log follows the export, so a page's menu is no taller than Notion's and needs no scrolling in a
           // 723px window. It takes full access (read_log_routes.go), which a guest has only where given it; a member may
           // also be a compliance administrator.
-          canEdit && (!guest || canMove) ? item(show, "read-log", t("rowMenu:actions.readLog"), <EyeLineIcon size="regular" aria-hidden="true" />, onReadLog,
+          offers("read-log") && (!guest || canMove) ? item(show, "read-log", t("rowMenu:actions.readLog"), <EyeLineIcon size="regular" aria-hidden="true" />, onReadLog,
             { data: { "data-page-read-log-action": "" } }) : null,
           databasePage ? null : wikiRow(show),
         ],
@@ -224,7 +227,7 @@ export function useRowMenuGroups({
 
   // A guest copies beside the page and throws it away only under a page above they edit (useGuestEditsPageAbove).
   const editsAbove = useGuestEditsPageAbove(page.parentId, guest);
-  const duplicate = canEdit && editsAbove && lockRows.duplicate ? (onDuplicateWithoutContent ? {
+  const duplicate = offers("duplicate") && editsAbove && lockRows.duplicate ? (onDuplicateWithoutContent ? {
     // A database's "복제 ›": with its rows or without them (seen 2026-10-17).
     submenu: "duplicate", label: t("rowMenu:actions.duplicate"), icon: <Copy size="regular" aria-hidden="true" />, width: 275,
     data: { "data-page-duplicate-menu": "" },
@@ -251,37 +254,37 @@ export function useRowMenuGroups({
   return [
     [
       item(visible, "link", t("rowMenu:actions.copyLink"), <LinkIcon size="regular" aria-hidden="true" />, onCopyLink, { hint: shortcutCompactLabel("copyPageLink") }),
-      // Someone who can't edit the page can't copy its contents or export it, nor can a guest who can
-      // edit, without a word of why, as in Notion (seen 2026-10-08, 2026-11-05).
+      // A guest, one who edits too, can't copy its contents or export it, without a word of why; a member who reads does (copiesPageContents).
       plainPage ? item(visible, "contents", t("rowMenu:actions.copyContents"), <ClipboardIcon size="regular" aria-hidden="true" />, onCopyContents,
-        { disabled: !canEdit || guest, data: { "data-page-copy-contents": "" } }) : null,
+        { disabled: !copiesPageContents(guest), data: { "data-page-copy-contents": "" } }) : null,
       guest && canEdit && plainPage && lockRows.duplicate ? duplicateToWorkspace ?? null : null,
       duplicate,
-      canEdit && lockRows.duplicate ? item(visible, "duplicate-private", t("rowMenu:actions.duplicateToPrivate"), <Copy size="regular" aria-hidden="true" />,
+      offers("duplicate-private") && lockRows.duplicate ? item(visible, "duplicate-private", t("rowMenu:actions.duplicateToPrivate"), <Copy size="regular" aria-hidden="true" />,
         onDuplicateToPrivate, { data: { "data-duplicate-to-private": "" } }) : null,
       // A locked page can't move, nor go back to an earlier version, as Notion's (lockedPageMenu.ts).
-      canEdit && lockRows.move ? item(visible, "move", t("rowMenu:actions.moveTo"), <ArrowBendUpRightIcon size="regular" aria-hidden="true" />, onMove,
+      offers("move") && lockRows.move ? item(visible, "move", t("rowMenu:actions.moveTo"), <ArrowBendUpRightIcon size="regular" aria-hidden="true" />, onMove,
         { hint: menuKeyHint("⌘⇧P"), disabled: !canMove }) : null,
-      canEdit && !databaseLocked ? item(visible, "merge-csv", t("rowMenu:actions.mergeCSV"), <MergeCsvIcon size="regular" aria-hidden="true" />, onMergeCSV,
+      offers("merge-csv") && !databaseLocked ? item(visible, "merge-csv", t("rowMenu:actions.mergeCSV"), <MergeCsvIcon size="regular" aria-hidden="true" />, onMergeCSV,
         { disabled: lockedForMe, data: { "data-page-merge-csv-action": "" } }) : null,
       // The history and the updates are found by their own words too (pageMenuSearchWords: "2.0", "수정").
-      canEdit && lockRows.history ? item(visible, "history", t("rowMenu:actions.pageHistory"), <VersionHistoryIcon size="regular" aria-hidden="true" />, onHistory,
+      offers("history") && lockRows.history ? item(visible, "history", t("rowMenu:actions.pageHistory"), <VersionHistoryIcon size="regular" aria-hidden="true" />, onHistory,
         { search: pageMenuSearchWords("pageHistory") }) : null,
-      canEdit ? item(visible, "analytics", t("topBar:updatesAndAnalytics"), <UpdatesClockIcon size="regular" aria-hidden="true" />, onAnalytics,
-        { data: { "data-page-analytics-action": "" }, search: pageMenuSearchWords("updatesAndAnalytics") }) : null,
+      // Given only to one who may open them (opensPageUpdates, RowMenu).
+      item(visible, "analytics", t("topBar:updatesAndAnalytics"), <UpdatesClockIcon size="regular" aria-hidden="true" />, onAnalytics,
+        { data: { "data-page-analytics-action": "" }, search: pageMenuSearchWords("updatesAndAnalytics") }),
     ],
     databasePage ? [
-      canEdit && lockRows.pageStyle ? item(visible, "layout", t("rowMenu:actions.customizeLayout"), <PageLayoutIcon size="regular" aria-hidden="true" />, onCustomizeLayout,
+      offers("theme") && lockRows.pageStyle ? item(visible, "layout", t("rowMenu:actions.customizeLayout"), <PageLayoutIcon size="regular" aria-hidden="true" />, onCustomizeLayout,
         { disabled: lockedForMe, data: { "data-page-customize-layout": "" } }) : null,
       notify,
-    ] : [canEdit ? (lockedForMe ? { ...theme, disabled: true } : theme) : null],
+    ] : [offers("theme") ? (lockedForMe ? { ...theme, disabled: true } : theme) : null],
     databasePage ? [] : [
       // Offered only where it may be used: to one who can comment, and not on a locked page.
       item(visible, "suggest", t("rowMenu:actions.suggestEdits"), <SuggestEditIcon size="regular" aria-hidden="true" />, onSuggesting,
         { data: { "data-page-suggest-action": "" }, trailing: suggesting ? suggestingStop(t("rowMenu:actions.stopSuggesting")) : null }),
       notify,
     ],
-    canEdit ? [
+    offers("lock") ? [
       databaseLocked || !lockRows.lock ? null : item(visible, "lock", t(wikiRoot ? "rowMenu:actions.wikiLock" : lockKind === "views" ? "rowMenu:actions.viewLock"
         : lockKind === "database" ? "rowMenu:actions.databaseLock" : "rowMenu:actions.pageLock"),
         locked ? <LockIcon size="regular" aria-hidden="true" /> : <UnlockIcon size="regular" aria-hidden="true" />,

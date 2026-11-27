@@ -4,7 +4,8 @@ import type { ResolvedPos } from "@tiptap/pm/model";
 import { Decoration, DecorationSet, type EditorView } from "@tiptap/pm/view";
 import { lineArrowStep } from "@/lib/readingDirection";
 import { requestEditorBlockCommand, requestEditorBlockSelection } from "./editorCommands";
-import { mergedCellCaret, tableCellElementAt } from "./simpleTableMerges";
+import { tableCellElementAt } from "./simpleTableMerges";
+import { atAcross, caretAcrossEditors, shown, visibleText } from "./caretAcrossEditors";
 import { caretPlacedByChange, leaveTurnedLine } from "./caretLineTurnedTextless";
 import { fieldEnter, imeComposing } from "@/lib/fieldKeyBoundary";
 
@@ -36,43 +37,6 @@ function blockOf(selection: Selection) {
     if (node.type.name === "nativeBlock") return String(node.attrs.sourceId || node.attrs.id || "");
   }
   return "";
-}
-
-function shown(view: EditorView, pos: number) {
-  const dom = view.domAtPos(pos).node;
-  const element = dom instanceof Element ? dom : dom.parentElement;
-  return !!element && element.getClientRects().length > 0;
-}
-
-/**
- * The next text the reader can see from `pos` that way: a collapsed
- * toggle's lines are skipped; a table cell a merged cell stands over leads
- * into the merged cell, at its near end (Notion, seen 2026-11-10: ← at the
- * start of the cell right of one goes to its end), unless the caret is
- * leaving that merged cell.
- */
-function visibleText(view: EditorView, state: EditorState, pos: number, dir: 1 | -1, leaving?: ResolvedPos) {
-  let found = Selection.findFrom(state.doc.resolve(pos), dir, true);
-  while (found && !shown(view, found.from)) {
-    const merged = mergedCellCaret(view, found.from, dir < 0);
-    if (merged !== null && state.doc.resolve(merged).parent !== leaving?.parent) return TextSelection.create(state.doc, merged);
-    found = Selection.findFrom(state.doc.resolve(dir > 0 ? found.$from.after() : found.$from.before()), dir, true);
-  }
-  return found;
-}
-
-/**
- * A place in `entry`'s text on its line nearest the way the caret came — its
- * first line going down, its last going up — at `left` across, held inside
- * the text's own width.
- */
-function atAcross(view: EditorView, entry: Selection, left: number) {
-  const text = view.nodeDOM(entry.$head.before());
-  const box = text instanceof Element ? text.getBoundingClientRect() : null;
-  const line = view.coordsAtPos(entry.head);
-  const x = box ? Math.min(Math.max(left, box.left + 1), box.right - 1) : left;
-  const hit = view.posAtCoords({ left: x, top: (line.top + line.bottom) / 2 });
-  return hit && view.state.doc.resolve(hit.pos).parent === entry.$head.parent ? TextSelection.create(view.state.doc, hit.pos) : entry;
 }
 
 /** The text straight above or below the caret's line, where the screen shows one near. */
@@ -154,6 +118,8 @@ function arrow(view: EditorView, key: "left" | "right" | "up" | "down") {
   if (!view.endOfTextblock(vertical ? key : dir > 0 ? "forward" : "backward")) return false;
   const from = dir > 0 ? $head.after() : $head.before();
   const entry = visibleText(view, state, from, dir, $head);
+  // Into or out of a synced copy's own editor (caretAcrossEditors).
+  if (caretAcrossEditors(view, $head, dir, vertical, entry)) return true;
   const target = (vertical ? intoTable(view, $head, dir, textAcross(view, $head, dir), entry) : null) ?? entry;
   if (!target) return false;
   view.dispatch(state.tr.setSelection(target).scrollIntoView());

@@ -4,8 +4,10 @@ import { newId } from "@/lib/ids";
 import { keptChangeTaken, takenPageChange } from "@/lib/keptChangeTaken";
 import { publishPageRoomMutation } from "@/lib/pageRoomEvents";
 import { noteTrashMove } from "@/lib/pageTrashMoves";
+import { tellPlaceEditedHere } from "@/lib/pagePlaceEdits";
 import { writeRowTitle } from "@/lib/rowTitleSave";
-import { mergeTitleValues, type TitleValue } from "@/lib/titleMerge";
+import { type TitleValue } from "@/lib/titleMerge";
+import { sendTitleOverBase } from "@/lib/typedTitleSend";
 import { sendKeepingList } from "@/lib/workspaceListToken";
 import type { Page, Session } from "@/types";
 
@@ -111,7 +113,26 @@ export async function commitNativePageMetadata(
   // A page opened while it moves to or out of the trash is read once it has (lib/pageTrashMoves.ts).
   const saved = await (change.inTrash === undefined ? sending : noteTrashMove(page.id, sending));
   announcePageMetadata(page.id);
+  tellPlaceEditedHere(page, change, session.user.id);
   return saved;
+}
+
+/**
+ * A page settings change made away from the page menus — a wiki's page moved
+ * from the move window — kept in the outbox and sent in turn as the menus'
+ * are (usePageMenuActions), sent again as the page goes (2026-11-27: a wiki's
+ * page moved within its wiki and the page reloaded at once stayed where it
+ * was 3 times in 4). Answers the page as saved, or as changed when it is
+ * kept for a server out of reach; refused, it throws. Without an outbox it
+ * goes at once.
+ */
+export async function keepAndSendPageMetadata(session: Session, outbox: { admitAndSendMetadata(input: KeptPageMetadata, signal?: AbortSignal):
+  Promise<{ state: string; result?: unknown }> } | undefined, page: Page, change: NativePageMetadataChange, signal?: AbortSignal): Promise<Page> {
+  const input: KeptPageMetadata = { baseline: pageMetadataBaseline(page), change, mutationId: newId(), pageId: page.id };
+  if (!outbox) return (await sendKeptPageMetadata(session, input, signal)).page;
+  const delivery = await outbox.admitAndSendMetadata(input, signal);
+  return delivery.state === "committed" ? (delivery.result as Awaited<ReturnType<typeof api.updatePageMetadata>>).page
+    : optimisticPageMetadata(page, change, session.user.id);
 }
 
 type KeptPageMetadata = { baseline: PageMetadataBaseline; change: NativePageMetadataChange; mutationId: string; pageId: string; after?: string[];
@@ -138,9 +159,6 @@ async function keptBaseline(session: Session, input: KeptPageMetadata, signal?: 
   return baseline;
 }
 
-// How many times a change meets a page that moved on before it is given up.
-const CURSOR_CONFLICT_TRIES = 4;
-
 /**
  * Sends a page-settings change the outbox kept (nativePageMutationOutbox.ts):
  * on the page as it was when made, or — the page moved on meanwhile, on
@@ -163,7 +181,8 @@ export async function sendKeptPageMetadata(
   signal?: AbortSignal,
 ) {
   let baseline = await keptBaseline(session, input, signal);
-  let change = input.change, mutationId = input.mutationId;
+  const change = input.change;
+  let mutationId = input.mutationId;
   if (isWikiDatabasePage(baseline)) {
     const sent = await keptAsWikiPage(session, input.pageId, baseline, change, mutationId, signal);
     if ("receipt" in sent) return sent;
@@ -171,34 +190,41 @@ export async function sendKeptPageMetadata(
     baseline = sent;
     mutationId = newId();
   }
-  for (let tries = 1; ; tries += 1) {
-    try {
-      const sending = metadataInput(baseline, change, mutationId, input);
-      const saved = await sendKeepingList((token) => api.updatePageMetadata(session, input.pageId, withListToken(sending, token), signal));
-      announcePageMetadata(input.pageId);
-      return saved;
-    } catch (error) {
-      // Taken already, its answer lost — a new document builds it again on
-      // the page its first send made (keptChangeTaken.ts).
-      if (keptChangeTaken(error)) {
-        const taken = await takenPageChange(session, input.pageId, mutationId, signal);
-        announcePageMetadata(input.pageId);
-        return taken;
-      }
-      if (!isCursorConflict(error) || tries >= CURSOR_CONFLICT_TRIES) {
-        const resent = await titleAsDatabasePage(session, input.pageId, baseline, change, mutationId, error, signal);
-        if (resent) return resent;
-        throw error;
-      }
-    }
-    const fresh = await api.readPage(session, input.pageId, signal);
-    if (change.title !== undefined) {
-      const merged = mergeTitleValues({ title: baseline.title, spans: baseline.titleSpans },
-        { title: change.title, spans: change.titleSpans }, { title: fresh.title, spans: fresh.titleSpans });
-      change = { ...change, title: merged.title, ...(change.titleSpans === undefined ? {} : { titleSpans: [...merged.spans ?? []] }) };
-    }
-    baseline = pageMetadataBaseline(fresh);
-    mutationId = newId();
+  // What the last try sent, which a refusal of it is answered with (titleAsDatabasePage).
+  let sent = { baseline, change, mutationId };
+  const typedOn: TitleValue = { title: baseline.title, spans: baseline.titleSpans };
+  try {
+    // A title goes by the one rule a typed title goes by (typedTitleSend.ts); any other change on the page as it now is.
+    return await sendTitleOverBase({
+      base: typedOn, typed: change.title === undefined ? typedOn : { title: change.title, spans: change.titleSpans },
+      readNow: () => api.readPage(session, input.pageId, signal), titleOf: (page: Page) => ({ title: page.title, spans: page.titleSpans }),
+      changed: isCursorConflict,
+      async write(title, now) {
+        if (now) {
+          sent = { baseline: pageMetadataBaseline(now), mutationId: newId(), change: change.title === undefined ? change
+            : { ...change, title: title.title, ...(change.titleSpans === undefined ? {} : { titleSpans: [...title.spans ?? []] }) } };
+        }
+        try {
+          const sending = metadataInput(sent.baseline, sent.change, sent.mutationId, input);
+          const saved = await sendKeepingList((token) => api.updatePageMetadata(session, input.pageId, withListToken(sending, token), signal));
+          announcePageMetadata(input.pageId);
+          // The pages its place change edits show it (lib/pagePlaceEdits.ts).
+          tellPlaceEditedHere(sent.baseline, sent.change, session.user.id);
+          return saved;
+        } catch (error) {
+          // Taken already, its answer lost — a new document builds it again on
+          // the page its first send made (keptChangeTaken.ts).
+          if (!keptChangeTaken(error)) throw error;
+          const taken = await takenPageChange(session, input.pageId, sent.mutationId, signal);
+          announcePageMetadata(input.pageId);
+          return taken;
+        }
+      },
+    });
+  } catch (error) {
+    const resent = await titleAsDatabasePage(session, input.pageId, sent.baseline, sent.change, sent.mutationId, error, signal);
+    if (resent) return resent;
+    throw error;
   }
 }
 

@@ -14,11 +14,12 @@ import { VIEW_CHOICE_ROOT, chooseAllInView, chooseAllKey, choiceKeyFromControl, 
 import { useViewChoiceJoin } from "./viewChoiceJoin";
 import { windowedLines } from "@/lib/useWindowedRows";
 import { useKeptChoice } from "@/lib/selectionMemory";
+import { usePeekSetsChoiceAside } from "@/lib/peekSetsChoiceAside";
 import { openRowMenuByKey, rowMenuChoosesRow } from "./rowMenuByKey";
 import { fieldEnter, imeComposing } from "@/lib/fieldKeyBoundary";
 import { escapeForWindowOver } from "./viewWindowEscape";
 import { useCarried, useChoiceLetGo } from "@/lib/carriedChoice";
-import { chosenRowsOf, groupLine, lineRowId } from "./viewGroupLines";
+import { chosenAsLines, chosenRowsOf, groupLine, lineRowId } from "./viewGroupLines";
 import { pageTookPress } from "@/components/editor/caretShiftPress";
 import { useViewChoicePaste } from "./viewChoicePaste";
 
@@ -98,7 +99,7 @@ type ItemMenu = (rowId: string, element: HTMLElement, duplicate?: () => void) =>
 const CardSelectionContext = createContext<CardSelection | null>(null);
 
 export function useCardSelection({ onTrash, onMenu, onOpen, onDuplicate, room, marqueeIn, keep }: {
-  /** The view whose choice comes back after the tab reloads (selectionMemory.ts). */
+  /** The view whose choice comes back with the way back or forward (selectionMemory.ts). */
   keep?: string;
   /** Its own parts a drag from its empty room starts from though they are a grid's (viewMarquee.tsx). */
   room?: string;
@@ -120,7 +121,8 @@ export function useCardSelection({ onTrash, onMenu, onOpen, onDuplicate, room, m
   const itemOf = (line: string) => Array.from(root.current?.querySelectorAll<HTMLElement>(
     `[data-card-choice="${CSS.escape(line)}"], [data-card-choice="${CSS.escape(lineRowId(line))}"]`) ?? []).find((item) => cardLine(item) === line);
   const shown = (rowId: string) => Boolean(itemOf(rowId) ?? root.current?.querySelector(`[data-card-choice-for="${CSS.escape(rowId)}"]`));
-  useKeptChoice(keep ? `cards:${keep}` : null, chosen, setChosen, shown, () => Boolean(root.current?.querySelector("[data-card-choice]")));
+  // A peek opened beside or over the view sets them aside while it is open (peekSetsChoiceAside.ts).
+  usePeekSetsChoiceAside(root, () => chosenNow.current, setChosen, shown);
   // Where a stretched choice began, and its moving end.
   const ends = useRef<{ anchor: string; head: string } | null>(null);
   const order = () => Array.from(root.current?.querySelectorAll<HTMLElement>("[data-card-choice]") ?? [], (item) => cardLine(item) ?? "");
@@ -323,6 +325,13 @@ export function useCardSelection({ onTrash, onMenu, onOpen, onDuplicate, room, m
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosen, onDuplicate, onMenu, onOpen, onTrash, ownPage]);
+  // A row chosen whole, as its layout switch carries it (selectionMemory.ts), is shown by any of its lines and comes back as the
+  // first of them (chosenAsLines), so a Shift+press stretches from it as from a choice made here (chooseMany) —
+  // taken after the effect above lets the ends of none chosen go, as the view first shows.
+  const lines = () => windowedLines(root.current) ?? order();
+  const rowShown = (id: string) => shown(id) || (lineRowId(id) === id && lines().some((line) => lineRowId(line) === id));
+  useKeptChoice(keep ? `cards:${keep}` : null, chosen, (ids) => chooseNow.current.many([...chosenAsLines(ids, lines())]), rowShown,
+    () => Boolean(root.current?.querySelector("[data-card-choice]")), false, keep);
   useEffect(() => {
     const copied = (event: Event) => {
       const { from = [], copies = [] } = (event as CustomEvent<{ from?: readonly string[]; copies?: readonly string[] }>).detail ?? {};

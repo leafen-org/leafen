@@ -108,7 +108,7 @@ export function moveSelectedBlocks(
     for (const run of direction === "up" ? runs : runs.reverse()) {
       const blocks = run.map((root) => current.blocks.find((block) => block.id === root.id) ?? root);
       const place = stepPlace(current, blocks, direction, selection, rootId, {
-        pageId: adapter.pageId, shownIn,
+        pageId: adapter.pageId, shownIn, wholePage: rootId === null && !!adapter.moveContext?.syncedCopy,
         leaves: () => syncedCopyLeavable(adapter, blocks),
         enters: (copy) => syncedCopyEnterable(adapter, copy, blocks),
       });
@@ -137,6 +137,8 @@ type CopyEdges = {
   pageId: string;
   /** The copy on this page whose content shows the moving line. */
   shownIn: string | null;
+  /** Whether this editor draws a whole page's body inside a synced copy on another page: its top level is the copy's edge. */
+  wholePage: boolean;
   /** Whether they may leave the editor's root for the copy, on another page, it is shown in. */
   leaves(): boolean;
   /** Whether they may go into this copy's original, on another page. */
@@ -171,7 +173,7 @@ function stepPlace(
     const holder = neighbour.type === "column_list" ? (up ? columns.at(-1) : columns[0]) : takesBlocks(graph, neighbour) ? neighbour : undefined;
     return holder ? into(holder) : beside(neighbour);
   }
-  if (rootId !== null && edge.parentId === rootId) return copies.leaves() ? { crossing: { kind: "leave" } } : null;
+  if ((rootId !== null || copies.wholePage) && edge.parentId === rootId) return copies.leaves() ? { crossing: { kind: "leave" } } : null;
   const parent = edge.parentId === rootId ? undefined : byId(edge.parentId);
   if (!parent) return null;
   const shown = parent.type === "synced_block" && copies.shownIn ? byId(copies.shownIn) : undefined;

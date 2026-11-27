@@ -40,7 +40,7 @@ import { PageIconPicker } from "./PageIconPicker";
 import { AnchoredIconPicker, usePageIconPickerAnchor } from "./AnchoredEmojiPicker";
 import { hasExplicitPageIcon, isPagePictureIcon, PageIconGlyph } from "./PageIcon";
 import type { PagePresentationChange } from "./pagePresentation";
-import { PageRenamePopover } from "./PageRenamePopover";
+import { PageRenamePopover } from "./PageRenamePopover"; import { pageTitleKept } from "@/lib/typedDraftSender";
 import { onPageRenameRequest } from "./pageRenameRequest";
 import styles from "./PageHeader.module.css";
 import { fieldEnter, imeComposing } from "@/lib/fieldKeyBoundary";
@@ -620,7 +620,7 @@ function PageHeaderBody({
       {renaming !== null ? (
         <PageRenamePopover page={page} title={renaming} titleSpans={renamingSpans.current} untitled={untitled}
           onTitleChange={(title, spans) => databaseName && spans ? databaseName.onChange(title, spans) : onTitleChange(title, undefined, spans)}
-          onPresentationChange={onPresentationChange} at={renameAt ?? undefined} onTitleShown={onTitleTyped}
+          onPresentationChange={onPresentationChange} at={renameAt ?? undefined} onTitleShown={onTitleTyped} kept={databaseName ? undefined : pageTitleKept(page.id, () => page)}
           onClose={() => {
             const fromPath = renameAt !== null;
             setRenaming(null); setRenameAt(null);

@@ -13,6 +13,7 @@ import { sendPageText } from "@/lib/keptChangeTaken";
 import { sendPageCreationHere } from "@/lib/pageCreationService";
 import { localLockPending } from "@/lib/localLock";
 import { tellKeptChanges } from "@/lib/pageTextBehindKeptChanges";
+import { keepTypedDrafts, recoverTypedDrafts, withTypedDraftsDiscarded } from "@/lib/typedDraftSender";
 import { AuthenticatedAccountGates } from "./AuthenticatedAccountGates";
 import LocalLockGate from "../LocalLockGate";
 import { ProductLoadingScreen } from "../loading/ProductLoadingScreen";
@@ -31,27 +32,33 @@ export function AuthenticatedSession({ session, onSession }: {
   session: Session;
   onSession(session: Session | null): void;
 }) {
-  const outbox = useMemo(() => createNativePageMutationOutboxBrowser({
+  const outbox = useMemo(() => withTypedDraftsDiscarded(session.user.id, createNativePageMutationOutboxBrowser({
     // A page's text taken already, its answer lost, is answered as taken (lib/keptChangeTaken.ts).
     send: (input, signal) => sendPageText(session, input, signal),
     answeredCursor: (result) => result.receipt.cursor,
     // A database start the server makes goes by its own route (databaseStartKept.ts), loaded when one is sent;
-    // so do rows going to the trash or out of it (rowTrashKept.ts), and a row's values written by its page's route (rowValuesKept.ts),
+    // so do rows going to the trash or out of it (rowTrashKept.ts), a row's values written by its page's route (rowValuesKept.ts) and a row's page moved (rowMoveKept.ts),
     // each taken at once when its module is loaded already (keptChangeRoutes.ts).
-    sendGraph: ({ mutationId, operations, pageId, words, typing, pageKind, replacesPage, start, rowTemplates, rowTrash, rowValues }, signal) => start
+    sendGraph: ({ mutationId, operations, pageId, words, typing, pageKind, replacesPage, start, rowTemplates, rowTrash, rowValues, rowMove }, signal) => start
       ? (keptChangeRoutes.start?.(session, { mutationId, pageId, start }, signal)
         ?? import("@/lib/databaseStartKept").then(({ sendKeptDatabaseStart }) => sendKeptDatabaseStart(session, { mutationId, pageId, start }, signal)))
       : rowTrash ? (keptChangeRoutes.rowTrash?.(session, { mutationId, rowTrash }, signal)
         ?? import("@/lib/rowTrashKept").then(({ sendKeptRowTrash }) => sendKeptRowTrash(session, { mutationId, rowTrash }, signal)))
       : rowValues ? (keptChangeRoutes.rowValues?.(session, { mutationId, rowValues }, signal)
         ?? import("@/lib/rowValuesKept").then(({ sendKeptRowValues }) => sendKeptRowValues(session, { mutationId, rowValues }, signal)))
+      : rowMove ? (keptChangeRoutes.rowMove?.(session, { mutationId, rowMove }, signal)
+        ?? import("@/lib/rowMoveKept").then(({ sendKeptRowMove }) => sendKeptRowMove(session, { mutationId, rowMove }, signal)))
       : sendContentGraphChangeNow(session, pageId, { mutationId, operations: operations as GraphOperation[], ...(pageKind ? { pageKind } : {}),
         ...(pageKind && replacesPage ? { replacesPage } : {}), ...blockChangeTextOf({ words, typing }), ...(rowTemplates ? { rowTemplates } : {}) }, signal),
     sendMetadata: (input, signal) => sendKeptPageMetadata(session, input, signal),
     sendPageCreation: (input, signal) => sendPageCreationHere(session, input, signal),
     userId: session.user.id, waitsForServer: graphWriteWaitsForServer,
-  }), [session]);
+    // What a tab gone kept as it was typed goes in as the store opens (lib/typedDraftSender.ts).
+    recoverTyped: (store) => recoverTypedDrafts(session.user.id, store),
+  })), [session]);
   useCommittedResourceDisposal(outbox);
+  // Each key typed in a title-like field is kept on this device for the account (lib/typedDraftSender.ts).
+  useLayoutEffect(() => keepTypedDrafts(session.user.id), [session.user.id]);
   // The outbox in use holds what asks about the pages it makes until made:
   // an outbox this memo made for a screen drawn and thrown away holds none
   // (lib/nativeGraphPagesWaiting.ts). Before any part's own first reads.

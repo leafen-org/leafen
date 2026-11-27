@@ -174,7 +174,7 @@ func (scope notionViewFilterScope) officialViewConfiguration(viewType string, co
 			configuration["subtasks"] = subtasks
 		}
 	}
-	if groupBy, ok := text("groupBy"); ok && (viewType == "table" || viewType == "board") {
+	if groupBy, ok := text("groupBy"); ok && notionViewTakesField(viewType, "group_by") {
 		if group := scope.officialViewGroupBy(groupBy, config); group != nil {
 			configuration["group_by"] = scope.withEmptyGroupsHidden(group, viewType, groupBy, config, false)
 		}
@@ -342,8 +342,7 @@ func (scope notionViewFilterScope) applyOfficialViewConfiguration(viewType strin
 		case field == "type":
 		case field == "properties" && viewType != "form" && viewType != "chart" && viewType != "map":
 			err = scope.applyOfficialViewProperties(value, config)
-		case field == "group_by" && (viewType == "table" || viewType == "board") || field == "sub_group_by" && viewType == "board" ||
-			field == "x_axis" && viewType == "chart":
+		case field == "group_by" || field == "sub_group_by" || field == "x_axis":
 			key := map[string]string{"group_by": "groupBy", "sub_group_by": "subGroupBy", "x_axis": "chartGroupBy"}[field]
 			err = scope.applyOfficialViewGrouping(viewType, key, value, config)
 		case field == "wrap_cells" && viewType == "table":
@@ -465,7 +464,8 @@ func (scope notionViewFilterScope) applyOfficialViewConfiguration(viewType strin
 // API configuration (applyOfficialViewConfiguration); Notion's API leaves
 // out every other. Only a table keeps how it shows sub-items (seen
 // 2026-11-12: a board's subtasks read back without them, its sub-items
-// shown on the screen too), and a map no property list.
+// shown on the screen too), and a map no property list; a list, gallery and
+// timeline group as a table, a calendar, form and chart not (seen 2026-11-27).
 func notionViewTakesField(viewType, field string) bool {
 	in := func(types ...string) bool { return slices.Contains(types, viewType) }
 	switch field {
@@ -474,7 +474,7 @@ func notionViewTakesField(viewType, field string) bool {
 	case "properties":
 		return !in(graphViewTypeForm, graphViewTypeChart, graphViewTypeMap, graphViewTypeDashboard)
 	case "group_by":
-		return in(graphViewTypeTable, graphViewTypeBoard)
+		return in(graphViewTypeTable, graphViewTypeBoard, graphViewTypeList, graphViewTypeGallery, graphViewTypeTimeline)
 	case "sub_group_by":
 		return in(graphViewTypeBoard)
 	case "wrap_cells", "frozen_column_index", "show_vertical_lines", "subtasks":
@@ -526,7 +526,7 @@ func (scope notionViewFilterScope) applyOfficialViewGroup(key string, value any,
 		return err
 	}
 	groupType := notionViewAxisGroupType(scope.byID[id].OfficialType)
-	// A table's and a board's groups take any of their types (notionViewGroupShapeRefusal), and a chart's
+	// A view's groups take any of their types (notionViewGroupShapeRefusal), and a chart's
 	// too, which it draws as its property's own (notion_view_chart_given_group.go).
 	given := key == "groupBy" || key == "subGroupBy"
 	if groupType == "" {

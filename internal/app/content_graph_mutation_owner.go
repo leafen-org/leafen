@@ -27,9 +27,9 @@ func (p *pocketBaseYgoPersistence) applyContentGraphMutationContext(
 	input graphMutationInput,
 	hooks contentGraphMutationHooks,
 ) (graphMutationReceipt, error) {
-	// A change of hundreds of blocks — an agent's, an import's turn — lets
-	// people's edits go first (write_lane.go).
-	if ctx != nil && len(input.Operations)+len(input.TextUpdates) >= writeLaneBulkOperations {
+	// Asked for, it is made whole (madeWhole), and a change of hundreds of
+	// blocks — an agent's, an import's turn — lets people's edits go first (write_lane.go).
+	if ctx = madeWhole(ctx); ctx != nil && len(input.Operations)+len(input.TextUpdates) >= writeLaneBulkOperations {
 		defer writeInBulk(ctx)()
 	}
 	// A public connection's write records what it made and edited.

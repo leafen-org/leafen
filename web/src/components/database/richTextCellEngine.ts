@@ -9,7 +9,7 @@ import { subscribePeopleDirectory, withCurrentMentionName } from "@/lib/peopleDi
 import { followPageName } from "@/lib/pageNameRecords";
 import { pushRoute } from "@/lib/router";
 import { openPressedLink, opensLink } from "../editor/linkOpening";
-import { TYPED_DRAFT_SAVE_MS } from "@/lib/useTypedDraftSave";
+import { fieldTypedSave, type FieldKept } from "./fieldTypedSave";
 import { nativeInlineFieldExtensions } from "../editor/nativeTiptapSchema";
 import { NativeTiptapLinkTarget } from "../editor/nativeTiptapLinkTarget";
 import { NativeFieldInputRules, typedRuleAfter } from "../editor/nativeTiptapInputRules";
@@ -216,6 +216,8 @@ export function createRichTextCellEngine(mount: HTMLElement, initial: TextSpan[]
    * `commitOn` says.
    */
   shown?(words: string, over: string, composing: boolean): void;
+  /** What a field saved as it is left keeps on this device at each key, given its change as it would save it (fieldTypedSave.ts). */
+  kept?(change: RichTextCellChange): FieldKept | null | undefined;
 }) {
   let saved = cellValueFromSpans(initial), projected = saved, dirty = false;
   // The words `shown` named the page by, not saved yet, each in its turn: given back where the page
@@ -236,25 +238,21 @@ export function createRichTextCellEngine(mount: HTMLElement, initial: TextSpan[]
     end: nativeOffsetAt(editor.state.doc.firstChild!.content, editor.state.selection.to - 1) });
   const publish = () => {
     const next = cellValueFromSpans(typed());
-    if (same(next, saved)) return false;
-    saved = next; dirty = true; named.clear(); options.changed(options.follows?.() ? { ...next, typedOn: projected } : next);
+    if (same(next, saved)) { typing.unchanged(); return false; }
+    saved = next; dirty = true; named.clear(); typing.send(() => options.changed(options.follows?.() ? { ...next, typedOn: projected } : next));
     // Saved, it is the page's name: no title stands typed over it.
     show(); return true;
   };
-  // A field that saves on leaving also saves shortly after the typing stops
-  // and as the window hides or the page goes, as a page title does
-  // (useTypedDraftSave) and Notion's row title (seen 2026-11-03: saved while
-  // its caret stayed), so a reload or a closed window keeps what was typed.
-  let typedTimer = 0;
-  const saveTyped = () => {
-    window.clearTimeout(typedTimer); typedTimer = 0;
+  // A field that saves on leaving also saves what is typed meanwhile, a composition's kept too (fieldTypedSave.ts).
+  const typing = fieldTypedSave(() => {
     if (!disposed && !editor.isDestroyed && !imeComposing(editor.view) && options.commitOn() === "blur") publish();
-  };
-  const saveWhenHidden = () => { if (document.visibilityState === "hidden") saveTyped(); };
+  });
+  const typedAgain = () => typing.typed(options.kept?.({ ...cellValueFromSpans(typed()), typedOn: projected }));
   const update = () => {
-    if (disposed || imeComposing(editor.view)) return;
+    if (disposed) return;
+    if (options.commitOn() !== "input") typedAgain();
+    if (imeComposing(editor.view)) return;
     if (options.commitOn() === "input") publish();
-    else { window.clearTimeout(typedTimer); typedTimer = window.setTimeout(saveTyped, TYPED_DRAFT_SAVE_MS); }
     options.updated();
   };
   function dispatchAction(tr: Transaction) {
@@ -301,7 +299,7 @@ export function createRichTextCellEngine(mount: HTMLElement, initial: TextSpan[]
     saved = projected; pending = null;
     if (same(cellValueFromSpans(typed()), projected)) { dirty = false; return; }
     if (options.commitOn() === "input") publish();
-    else { window.clearTimeout(typedTimer); typedTimer = window.setTimeout(saveTyped, TYPED_DRAFT_SAVE_MS); }
+    else typedAgain();
   }
   // What a composition finished is published before the next one starts
   // (fieldKeyBoundary.ts): a frame later, macOS Chrome's Korean was composing
@@ -455,8 +453,6 @@ export function createRichTextCellEngine(mount: HTMLElement, initial: TextSpan[]
   },
   });
   const releaseFocus = registerIndependentTiptapFocus(mount, editor);
-  window.addEventListener("pagehide", saveTyped);
-  document.addEventListener("visibilitychange", saveWhenHidden);
   fieldSchema ??= editor.schema;
   if (!opening) replace(initial, 0, 0, true);
   return { editor, read, selection, replace,
@@ -486,9 +482,7 @@ export function createRichTextCellEngine(mount: HTMLElement, initial: TextSpan[]
     // its page closes or another opens: no blur comes then.
     destroy() {
       if (!disposed && !editor.isDestroyed && options.commitOn() === "blur") publish();
-      window.clearTimeout(typedTimer);
-      window.removeEventListener("pagehide", saveTyped);
-      document.removeEventListener("visibilitychange", saveWhenHidden);
+      typing.stop();
       disposed = true; composition.stop(); releaseFocus(); editor.destroy();
     },
   };

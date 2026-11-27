@@ -4,8 +4,8 @@ import { formulaPropertyShape, formulaValueTypeOf, type FormulaPropertyType, typ
 
 // The editor reads a property a formula names as Notion's does (seen
 // 2026-11-20 in its editor and through its API, a synthetic database under
-// 한지테스트페이지; notion_formula_property_kinds.go): a formula by the type of
-// what it gives, read by the same rule — so prop("F") * 2 is judged as F
+// a Notion test page; notion_formula_property_kinds.go): a formula by the type
+// of what it gives, read by the same rule — so prop("F") * 2 is judged as F
 // written out (math on text and number), the
 // formula being edited by what it gives as saved, one met again while its own
 // is read (a cycle) by none —, and a rollup by its calculation: a date for

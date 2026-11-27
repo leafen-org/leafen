@@ -5,6 +5,7 @@ import { type MouseEvent, type ReactNode, Suspense, useCallback, useRef, useStat
 import { lazyScreen } from "@/lib/lazyScreen";
 import type { DatabaseRowPageSnapshot } from "@/databaseRowPageWire.generated";
 import type { GraphProperty, GraphRow } from "@/contentGraph";
+import { roleOpensPageUpdates } from "@/lib/pageAnalyticsPanelService";
 import type { PageAnalyticsPanelService } from "@/lib/pageAnalyticsView";
 import { popoverRectOf } from "@/lib/popoverPlacement";
 import { useProductPagesSelect } from "@/components/product/productPagesStore";
@@ -140,8 +141,10 @@ export function useRowContextMenu(options: RowContextMenuOptions): {
 } {
   // The menu open and what its lines opened by the row, which only the menu draws (RowContextMenuSurface).
   const [store] = useState(createRowMenuStore);
-  // The row page's updates and analytics, on the tab it opened at.
-  const [analyticsOpen, setAnalyticsOpen] = useState<{ rowId: string; tab: "updates" | "analytics" } | null>(null);
+  // The row page's updates and analytics, on the tab it opened at: shown only to one who may open them, as its page last read
+  // says (opensPageUpdates) — one kept open beside the page, or asked from a peek, stays shut for one who may only read or comment.
+  const [analyticsAsked, setAnalyticsOpen] = useState<{ rowId: string; tab: "updates" | "analytics" } | null>(null);
+  const analyticsOpen = analyticsAsked && roleOpensPageUpdates(rowPageReadOf(options, analyticsAsked.rowId)?.accessRole) ? analyticsAsked : null;
   const [historyVersion, setHistoryVersion] = useState<{ rowId: string; versionId: string; title: string } | null>(null);
   const returnToRef = useRef<HTMLElement | null>(null);
 

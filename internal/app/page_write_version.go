@@ -19,7 +19,8 @@ import (
 // write reads it: its Markdown, which shows its blocks and what its body
 // shows of other pages a write may change — a sub-page's or database's
 // title its tag gives, a synced block's original its reference holds, a
-// mention's name — and, for a body too long to read whole, its body's
+// mention's name, the name of the page or database a link leads to — and,
+// for a body too long to read whole, its body's
 // revision too. Only the same page, read the same, gives the same version;
 // what the Markdown doesn't show (a sub-page's own body or icon, an inline
 // database's rows, the rest of a synced original's page) leaves it be.

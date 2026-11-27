@@ -10,9 +10,7 @@ import {
   type FilterGroup,
   type ViewType,
 } from "@/lib/types";
-import {
-  BoardIcon, CalendarViewIcon, ChartViewIcon, DashboardIcon, FeedIcon, FileBlank, FileText, FormBlockIcon, GalleryIcon, iconPixels, type LeafenIconSize, ListIcon, MapIcon, TableIcon, TimelineIcon,
-} from "@/icons/leafen";
+import { FileBlank, FileText, iconPixels, type LeafenIconSize, ViewTypeMark } from "@/icons/leafen";
 import { databaseViewLabels } from "./databaseViewLabels";
 import { askingLinkedViewHere } from "@/lib/databaseStarterLinked";
 import { BuiltInIconGlyph, IconImage, PageIconGlyph } from "@/components/page/PageIcon";
@@ -129,19 +127,9 @@ export function ViewTabGlyph({ view, className }: { view: { type: string; config
   return <span className={className} data-own-icon={own || undefined}><ViewIcon view={view} size={own ? "small" : "regular"} /></span>;
 }
 
+/** A layout's mark, from the one place every view screen takes it (ViewTypeMark). */
 export function ViewTypeIcon({ type, size = "small" }: { type: ViewType; size?: LeafenIconSize }) {
-  if (type === "table") return <TableIcon size={size} aria-hidden="true" />;
-  if (type === "board") return <BoardIcon size={size} aria-hidden="true" />;
-  if (type === "list") return <ListIcon size={size} aria-hidden="true" />;
-  if (type === "gallery") return <GalleryIcon size={size} aria-hidden="true" />;
-  if (type === "calendar") return <CalendarViewIcon size={size} aria-hidden="true" />;
-  if (type === "timeline") return <TimelineIcon size={size} aria-hidden="true" />;
-  if (type === "form") return <FormBlockIcon size={size} aria-hidden="true" />;
-  if (type === "chart") return <ChartViewIcon size={size} aria-hidden="true" />;
-  if (type === "dashboard") return <DashboardIcon size={size} aria-hidden="true" />;
-  if (type === "feed") return <FeedIcon size={size} aria-hidden="true" />;
-  if (type === "map") return <MapIcon size={size} aria-hidden="true" />;
-  return <TableIcon size={size} aria-hidden="true" />;
+  return <ViewTypeMark type={type} size={size} />;
 }
 
 

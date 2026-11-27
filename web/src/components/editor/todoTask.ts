@@ -114,6 +114,6 @@ export function useTodoMenuPreview(blockId: string): TodoMenuPreview | null {
 /** The preview an "@" row makes in a to-do: a date row its date, a person row its face, nothing else. */
 export function todoMenuPreviewOf(blockId: string, item: MentionItem | null): TodoMenuPreview | null {
   if (item?.kind === "date") return { blockId, due: todoDueOfMention(item) };
-  if (item?.kind === "person") return { blockId, userId: item.userId, name: item.name ?? item.label };
+  if (item?.kind === "person") return { blockId, userId: item.userId, name: item.label };
   return null;
 }

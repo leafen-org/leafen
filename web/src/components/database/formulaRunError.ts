@@ -1,6 +1,6 @@
 // What keeps a formula from working out that Notion's formula editor names
 // under its preview, in red, with where it is (seen 2026-11-14 under
-// 한지테스트페이지): round() to places that are no whole number or more
+// a Notion test page): round() to places that are no whole number or more
 // than 12, toNumber() of a list, a duration unit dateAdd(), dateSubtract()
 // or dateBetween() don't know, a number format formatNumber() doesn't know,
 // and a function failing in its own work — a sum of a number that is not

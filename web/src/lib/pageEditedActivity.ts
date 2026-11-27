@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "@/api";
+import { useProductPagesSelect } from "@/components/product/productPagesStore";
 import { listPageHistoryVersions } from "@/lib/pageHistoryService";
 import { editorName } from "@/lib/peopleDirectory";
 import { pageEditTime } from "@/lib/pageEditedHere";
@@ -8,6 +9,29 @@ import type { Page, Session } from "@/types";
 export type EditedFootPerson = { id: string | null; name: string; at?: string | null };
 /** Who edited a page last and who made it, for the panel its menu's foot opens. */
 export type EditedFootActivity = { editor: EditedFootPerson; creator?: EditedFootPerson };
+
+/**
+ * Whether a page's activity — who edited it last and who made it, the card
+ * under the bar's edited time and beside a menu's foot — is shown to its
+ * reader at all: to the workspace's own people (its owner and members,
+ * whatever they may do on the page), never to its guests, one allowed to
+ * edit it too, as Notion's (seen 2026-11-28 in Chrome at 1440, dpr 1, two
+ * tabs at different times each, nothing in the page before the pointer: the
+ * owner's edited time took the card on a page, a row's page opened whole
+ * and a database opened alone; a guest allowed to edit, to comment or to
+ * read had none, and a guest who edits none beside the "⋯" foot either; a
+ * member reading a page shared with them had the card, seen by an earlier
+ * worker in two tabs). Updates follow their own rule (opensPageUpdates).
+ */
+export function pageActivityShown(guest: boolean): boolean {
+  return !guest;
+}
+
+/** The same for the reader of a page in `workspaceId`, else in the workspace open now. */
+export function usePageActivityShown(workspaceId?: string): boolean {
+  return useProductPagesSelect((pages) => pageActivityShown(
+    pages?.workspaces?.find(({ id }) => id === (workspaceId ?? pages.workspaceId))?.guest === true));
+}
 
 /** A page's last editor and maker, as its menus' feet show them (Notion, seen 2026-10-20). */
 export function pageEditedActivity(page: {

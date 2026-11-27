@@ -78,13 +78,30 @@ The tags: `<p>`, `<h1>`…`<h4>`, `<quote>`, `<ul>`/`<ol>` around `<li>`,
   makes a new one where it stands. Leaving out an existing one's tag deletes
   it only when deleting content is allowed.
 - `<page url="…">` naming a page elsewhere mentions it, as Notion's does.
+- Link to a page: `<link-to-page url="…">Title</link-to-page>` on a line of
+  its own, the address of the page it leads to; a link to a database adds
+  `type="database"`. A target in the trash, one you can't open or one gone
+  reads by its address alone, `<link-to-page url="…" />`. Write the line to
+  make a link to a page or database of the workspace, by the address fetch
+  or search gives; its title is read as nothing (a link shows its target's
+  name now). Written back as fetch gave it, it stays the same link.
 - Synced block: `<synced-block>` around its blocks; a copy of one from
   elsewhere is `<synced-block-reference url="…" />` with the original's address.
+- Button: `<button url="…">Label</button>` on a line of its own, its label
+  as the page shows it and the url naming the button itself (its page's
+  address, `#` and the button's block ID). Written back as fetch gave it, it
+  stays the same button, moved with its line; with another label it is
+  renamed and keeps what it does; `<button>Label</button>` without url makes
+  a new button, which does nothing until it has steps. Its steps are the
+  block's `buttonActionDocument`, not Markdown: read them with leafen_call
+  `GET /pages/{id}/content-graph`, set them with
+  `POST /pages/{id}/content-graph/mutations` (leafen_operations describes
+  the steps), and press the button with
+  `POST /pages/{pageId}/buttons/{blockId}/execute`.
 - A block Markdown can't write reads as `<unknown url="…" alt="type" />`;
-  keep it as it is. Fetch writes a breadcrumb, a button and a link to a
-  page so too (`alt="alias"` for a link), as Notion's does; Markdown makes
-  none of them, and `<breadcrumb>`, `<button>` or `<link-to-page>` written
-  is saved as text.
+  keep it as it is. Fetch writes a breadcrumb and a link to a comment so too
+  (`alt="alias"` for the link), as Notion's does; Markdown makes neither,
+  and `<breadcrumb>` written is saved as text.
 
 Colors: gray, brown, orange, yellow, green, blue, purple, pink, red, and a
 background named `…_bg` (`blue_bg`) — a block's in its tag's `color`.

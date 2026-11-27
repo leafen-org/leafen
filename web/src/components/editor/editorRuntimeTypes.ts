@@ -241,6 +241,8 @@ export type EditorProps = {
   unavailable?: boolean;
   /** An editor inside another editor shows this block's content alone. */
   rootBlockId?: string | null;
+  /** An editor inside another editor shows this page's whole body (a synced copy of it), as a nested one: none of the page's own effects. */
+  embedded?: boolean;
   /** The body is this one top block alone: an inline database opened as a page. */
   onlyBlockId?: string | null;
   showPageStarter: boolean;

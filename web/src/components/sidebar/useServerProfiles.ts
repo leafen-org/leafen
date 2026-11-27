@@ -109,9 +109,8 @@ function otherAccountProfile(account: ServerAccount, server: ServerProfile | und
  * others before it), as Notion's accounts keep their place (seen 2026-10-30).
  * More than one account on the active server shows as a group each.
  */
-export function useServerProfiles({ session, workspace, workspaces, workspacesShown }: {
+export function useServerProfiles({ session, workspaces, workspacesShown }: {
   session: Session;
-  workspace: Workspace | null;
   workspaces: Workspace[];
   /** Whether `workspaces` is a list read or kept, not the empty one before it. */
   workspacesShown: boolean;
@@ -173,14 +172,13 @@ export function useServerProfiles({ session, workspace, workspaces, workspacesSh
       email: local ? "" : session.user.email,
       name: local ? "" : session.user.name,
       workspaces: kept,
-      lastWorkspaceId: workspace?.id ?? "",
     });
     if (!local) {
       rememberServerAccount(session, kept, listProfiles().find((profile) => profile.id === activeId)?.addedAt ?? Date.now());
     }
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- `session` changes with each renewed token
-  }, [activeId, local, refresh, session.user.email, session.user.name, workspace?.id, workspaces, workspacesShown]);
+  }, [activeId, local, refresh, session.user.email, session.user.name, workspaces, workspacesShown]);
 
   // The active server's name, as its runtime settings say it.
   const naming = useServerNaming();

@@ -55,7 +55,7 @@ COPY cmd/leafen ./cmd/leafen
 # it is a development build, its version marked "-dev": a release version
 # without the tag would trust the development keys, and refuses to start.
 ARG LEAFEN_BUILD_TAGS=""
-ARG LEAFEN_VERSION="0.1.0-dev"
+ARG LEAFEN_VERSION="0.2.0-dev"
 RUN --mount=type=cache,target=/root/.cache/go-build --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
     go build -trimpath -buildvcs=false -tags "$LEAFEN_BUILD_TAGS" \

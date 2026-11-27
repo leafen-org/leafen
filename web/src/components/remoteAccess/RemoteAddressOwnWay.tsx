@@ -7,8 +7,9 @@ import type { Session } from "@/types";
 import { remoteAddressPrompt, tailscaleReason, type ServerReach } from "./remoteAddressPrompt";
 import styles from "./RemoteAddressChoice.module.css";
 import { copyText } from "@/lib/copyText";
+import { leafenDocsUrl } from "@/lib/legalLinks";
 
-const DO_IT_YOURSELF = "https://github.com/leafen-org/leafen/blob/main/docs/self-hosting.md#do-it-yourself";
+const DO_IT_YOURSELF = leafenDocsUrl("self-hosting.md#do-it-yourself");
 
 /**
  * The address choice when Tailscale can't be used (the built-in tunnel

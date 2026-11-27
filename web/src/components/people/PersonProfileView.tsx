@@ -16,6 +16,7 @@ import { PersonAvatar } from "./PersonAvatar";
 import { PersonProfileOwnProperties } from "./PersonProfileOwnProperties";
 import { PersonProfileTopBarActions } from "./PersonProfileTopBarActions";
 import { PersonProfileWork } from "./PersonProfileWork";
+import { SelfMark } from "./SelfMark";
 import styles from "./PeopleView.module.css";
 import { KeptIconGlyph } from "@/components/teamspace/KeptIconGlyph";
 import pageStyles from "@/components/page/PageView.module.css";
@@ -113,10 +114,12 @@ export function PersonProfileView({ session, workspace, userId, embedded = false
             <div className={styles.face}>
               <PersonAvatar userId={userId} avatar={profile.avatar} name={profile.displayName} size={140} />
             </div>
+            {/* As Notion's title (seen 2026-11-28 on one's own profile, two tabs): the name in its
+                own box with 8px either side and the lists' own mark (SelfMark) set against that box,
+                in a row that wraps — so the mark's room is the box's, in every language. */}
             <h1 className={styles.profileName} data-self={profile.self || undefined}>
-              {profile.displayName}
-              {profile.self ? <span className={styles.selfMark}>{t("selfMark")}</span> : null}
-
+              <span className={styles.profileNameText}>{profile.displayName}</span>
+              {profile.self ? <SelfMark text={t("selfMark")} /> : null}
             </h1>
             {/* Someone no longer in the workspace says so under their name, as Notion's (seen 2026-11-15). */}
             {deactivated ? <div className={styles.profileStatus} data-person-deactivated>{t("deactivatedStatus")}</div> : null}

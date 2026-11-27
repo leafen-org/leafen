@@ -35,7 +35,7 @@ The published image is a release build (`LEAFEN_BUILD_TAGS=leafen_release` and
 the release's version): it trusts only the production signing keys, reads the
 update notice and sponsor list from Leafen's list address and lists the
 official app catalog. An image built from the source is a development build
-(version `0.1.0-dev`), which does none of these by itself:
+(version `0.2.0-dev`), which does none of these by itself:
 
 ```sh
 docker build -t leafen:local .
@@ -172,6 +172,13 @@ log (Synology: Container Manager → Container → the Leafen container → Log;
 it takes the code itself: the link's, or the one given in `LEAFEN_SETUP_CODE`
 (at least eight characters; hosting templates make one,
 [Hosting templates](hosting-templates.md#the-first-administrator-on-each-platform)).
+A server started with `LEAFEN_SETUP_CODE` shows the code field first
+instead, under the name, with where the code is — on a hosting platform
+Leafen knows (Railway, by the variables it sets), in that platform's words —
+and the setup link's place under "Other ways". On such a platform there is no
+home network to open it from, so the page gives no same-network advice; the
+server's setup state (`GET /api/leafen/v1/setup/status`) says both from
+outside (`codeGiven`, `platform`).
 Wrong codes are limited by address. Once the first administrator exists, no
 way opens the setup again. The desktop app's own server is set up in its
 window alone, which its shell hands the code. Servers run by automation on a
@@ -225,10 +232,12 @@ an iPhone, the app's own server's login page also offers **Log in as this
 device's owner**: Touch ID, Face ID or the device's password on Apple devices,
 Windows Hello or the Windows account's password on Windows, and the app makes
 the code itself (no page can ask for one without that check). The code signs
-one device in, once, within ten minutes: open
-the address it shows (with `LEAFEN_PUBLIC_URL` set), or choose **Log in
-with a code** on the login page and type it. It works while the
-server runs, and the server audit log keeps who made it. The desktop app takes
+one device in, once, within ten minutes: open the link it shows — on
+`LEAFEN_PUBLIC_URL` when it is set, else on the outside address chosen under
+Settings → Server → Access from outside, else on the address Leafen serves
+on, as the setup URL does ([First administrator](#first-administrator)) — or
+choose **Log in with a code** on the login page and type it. It works while
+the server runs, and the server audit log keeps who made it. The desktop app takes
 the same command on its own server's data, run as its program:
 `Leafen.app/Contents/MacOS/leafen-desktop account device-code --name "Your Name"`
 on a Mac.
@@ -265,8 +274,8 @@ email domain), to which workspace, from whom and when — and each device signed
 in to it with its last use and address. Logging one out ends it at once: that
 device is back at the login screen, and the audit log keeps it.
 
-With email delivery set up (Server settings), "Forgot password?" on the login
-screen mails a single-use reset link. A server that sends no mail says so there
+With email delivery set up (Server settings), "Forgot your password?" on the
+login screen mails a single-use reset link. A server that sends no mail says so there
 and asks the person to turn to an administrator, who gives their account a
 one-time password from the server console's accounts; the person chooses a new
 one at the next login. An administrator's agent does the same through
@@ -345,10 +354,15 @@ setting to make:
   everyone; a linked PDF is passed on as it arrives.
 - Background jobs take turns by person, and the same export asked for again
   while it is being made returns the one in progress.
-- When the data folder's disk falls under its floor — 5% of the disk, at
-  least 2 GiB, plus the databases' size — uploads, imports and exports are
-  refused with the reason, editing goes on, and administrators get one notice
-  in their inbox. It lifts on its own once there is room.
+- When the data folder's disk falls under its floor — the databases' size
+  plus a twentieth of the disk, at least 64 MiB and at most 2 GiB — uploads,
+  imports and exports are refused with the reason, editing goes on, and
+  administrators get one notice in their inbox while it stays under, a
+  restart of the server included; another comes only after there was room
+  again. It lifts on its own once there is room. The reason says whether the
+  disk is too full, which freeing space mends, or too small for what was
+  sent, which only a larger disk mends; an administrator is told what to do
+  (on Railway, to grow the service's volume), anyone else whom to ask.
 
 ## How much one server holds
 
@@ -528,7 +542,7 @@ and the redirect carries them on. Settings › Server › Sign-up and login
 (and the administrators' inbox) shows the new redirect address to add at the
 provider; once it is added there, say so with "I've added it", and the first
 login that comes back to it ends the note. If the provider refuses the new
-one, "Go back to the earlier address" sends logins the old way again. An
+one, "Switch back to the earlier address" sends logins the old way again. An
 app's outside logins do the same, from the app's secrets in Settings ›
 Server › Apps, and an organization's SAML login from its identity
 settings: logins start under the entity ID and come back to the ACS the
@@ -558,8 +572,8 @@ the service itself, or one known by the server's client metadata document
 (answered at the old address too), moves to the new address by itself, the
 old client kept until that login succeeds. A client you made on the
 service keeps the address the service has: Settings › Connections shows the
-new return address to add there, with "I've added it" and "Go back to the
-earlier address", as for Google sign-in.
+new return address to add there, with "I've added it" and "Switch back to
+the earlier address", as for Google sign-in.
 
 What still needs a hand, until the follow-ups that take it over land: an
 agent connected with a key rather than OAuth on another computer, browser

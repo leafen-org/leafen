@@ -1,10 +1,9 @@
 import { useFormFavorites } from "@/lib/formFavorites";
 import { SidebarFavoriteFormRow, SidebarFavoriteMyTasksRow } from "./SidebarFavoriteFormRow";
-import type { DatabaseFavoriteProjection } from "@/workspaceMembershipWire.generated";
 import { ArrowUpRightIcon, DotsHorizontal, Plus, SidebarChevronDown, SlidersIcon, type LeafenIconSize } from "@/icons/leafen";
 import { SidebarSectionGlyph } from "./SidebarSectionGlyph";
 import { Fragment, useCallback, useMemo, useRef, useState, type ReactNode } from "react";
-import { sidebarListEdges } from "./sidebarListEdges";
+import { sidebarListWithDrops } from "./sidebarDropMap";
 import { useTranslation } from "react-i18next";
 import type { ContentGraph } from "@/contentGraph";
 import { type DialogTeamspace } from "@/components/teamspace/teamspaceDialogModel";
@@ -12,7 +11,8 @@ import { teamspaceGlyph } from "@/components/teamspace/KeptIconGlyph";
 import { usePageNames } from "@/lib/pageNames";
 import { useEditTimesChange } from "@/lib/pageEditedHere";
 import type { Page, Session } from "@/types";
-import { workspaceMembershipBounds, type SidebarLayout, type SidebarLayoutShortcut } from "@/workspaceMembershipWire.generated";
+import { workspaceMembershipBounds, type DatabaseFavoriteProjection, type SidebarLayout, type SidebarLayoutShortcut } from "@/workspaceMembershipWire.generated";
+import { placeNextFavorite } from "./useSidebarLayout";
 import { PageTreeItem } from "./PageTreeItem";
 import { usePageTreeRowContext } from "./pageTreeContext";
 import { usePageSectionDrop } from "./usePageTreeRowDrag";
@@ -182,9 +182,9 @@ export function SidebarPageSections({
 }) {
   const { t } = useTranslation("sidebar"), pageNames = usePageNames();
   const [collapsedSections, setCollapsedSections] = useState(readCollapsedSections);
-  // A drag held near the list's top or bottom scrolls it, and it fades where it scrolls on, as Notion's (sidebarListEdges).
+  // A drag held near the list's top or bottom scrolls it, it fades where it scrolls on, as Notion's, and a page lands where its drop map says.
   const listEdges = useCallback((element: HTMLElement | null) =>
-    element ? sidebarListEdges(element, !phone) : undefined, [phone]);
+    element ? sidebarListWithDrops(element, !phone) : undefined, [phone]);
   const shared = useMemo(() => new Set(sharedPageIds), [sharedPageIds]);
   // Worked out as the page list changes, not at each drawing: each walked every
   // page of a 44,000-page workspace as the sidebar drew again (2026-11-14).
@@ -389,13 +389,13 @@ export function SidebarPageSections({
   const favoriteList = orderFavorites(groupedFavorites, ({ key }) => key, layout.favoriteOrder);
   const allFavorites = favoriteList.length <= favoritesSection.limit;
   const shownFavorites = allFavorites ? favoriteList : favoriteList.slice(0, favoritesSection.limit);
-  // A favorite's drop stays the same function from one drawing to the next,
-  // so its row draws again only for its own changes; it moves the favorites
-  // as they are listed when the drop lands.
+  // One drop function across drawings (a row redraws for its own changes only): it moves the favorites as shown, or a page joins them there.
   const favoriteDropAt = useRef<(target: string, draggedId: string, edge: "before" | "after") => void>(() => undefined);
-  favoriteDropAt.current = (target, draggedId, edge) => onLayoutChange({
-    ...layout, favoriteOrder: movedFavoriteOrder(favoriteList.map(({ key }) => key), draggedId, target, edge),
-  });
+  favoriteDropAt.current = (target, draggedId, edge) => {
+    const order = movedFavoriteOrder(favoriteList.map(({ key }) => key), draggedId, target, edge);
+    onLayoutChange({ ...layout, favoriteOrder: order });
+    if (!favoritePageIds.includes(draggedId)) { placeNextFavorite(draggedId, order); void onFavoriteChange(draggedId, true); }
+  };
   const favoriteDrops = useRef(new Map<string, (draggedId: string, edge: "before" | "after") => void>());
   const dropFavorite = (target: string) => {
     let drop = favoriteDrops.current.get(target);
@@ -405,15 +405,15 @@ export function SidebarPageSections({
     }
     return drop;
   };
-  // A page no favorite's row takes, dropped on the section — its heading or
-  // between its rows —, joins them (first, as any new favorite).
+  // A page no favorite's row takes, dropped on the section — its heading, or
+  // a row taking nothing —, joins them (first, as any new favorite).
   const { onFavoriteChange } = usePageTreeRowContext();
   const [favoritesDropArea, setFavoritesDropArea] = useState<HTMLElement | null>(null);
   const [favoriteDropOver, setFavoriteDropOver] = useState(false);
   usePageSectionDrop(favoritesDropArea, {
     accepts: (pageId) => !favoritePageIds.includes(pageId) && pages.some((page) => page.id === pageId),
     drop: (pageId) => void onFavoriteChange(pageId, true),
-  }, setFavoriteDropOver);
+  }, setFavoriteDropOver, true);
   // The private and shared pages take a page on their headings, and put by hand a sorted section first asks to be "수동".
   // Turned "수동" by a drop or its menu, a sorted section keeps the order it showed (useKeepShownOrder).
   const toManual = (id: "private" | "shared") => () => onLayoutChange(changeSidebarSection(layout, tab, id, { sort: "manual" }));
@@ -575,7 +575,7 @@ export function SidebarPageSections({
       </section>
     ),
     private: () => (
-      <section ref={privateDrop.ref} className={styles.section} data-section-drop={privateDrop.over || undefined}
+      <section ref={privateDrop.ref} className={styles.section} data-sidebar-private-section data-section-drop={privateDrop.over || undefined}
         data-section-folded={privateCollapsed || undefined}>
         <div className={styles.sectionLabel}>
           <button

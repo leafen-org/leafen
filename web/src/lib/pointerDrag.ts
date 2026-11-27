@@ -4,7 +4,7 @@ import {
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { carriedCopy } from "./dragReorderLine";
 import { letGoCarried } from "./carriedChoice";
-import { DRAG_START, focusBeforePress, pressTaken, takePress } from "./dragReorderPointer";
+import { DRAG_START, focusBeforePress, pressTaken, releaseMoves, takePress } from "./dragReorderPointer";
 import { edgeScrollSpeed } from "./edgeAutoScroll";
 import { underDrag } from "./pageHoverShield";
 
@@ -198,10 +198,14 @@ function follow(args: SourceArgs, press: PointerEvent, start: Input, giveFocusBa
   // The release is the pointer's last move: what it is let go over takes the drop, though no move came
   // before it — a quick hand's moves can all go to the browser's own drag start, which gives way here
   // (2026-11-18: a calendar's "날짜 없음" row dragged onto a day in a few milliseconds and let go at once
-  // came with no pointermove between the press and the release, and dated nothing).
+  // came with no pointermove between the press and the release, and dated nothing). Let go where it last
+  // moved, what that move chose takes the drop, the list having moved under it or not (releaseMoves).
   window.addEventListener("pointerup", (event) => {
     if (event.pointerId !== press.pointerId) return;
-    if (moveTo(event)) swallowClick();
+    if (started && !releaseMoves(last, event)) {
+      last = inputOf(event);
+      swallowClick();
+    } else if (moveTo(event)) swallowClick();
     finish(true);
   }, options);
   window.addEventListener("pointercancel", (event) => { if (event.pointerId === press.pointerId) finish(false); }, options);

@@ -193,11 +193,11 @@ func notionViewGivenConfiguration(viewType string, settings map[string]any, conf
 // of its own, as its API reads it then (seen 2026-11-10): a table's columns
 // changed on the screen (hidden, sized or wrapped) give every column's width,
 // a sub-item scope and no frozen column with them, and a column's own wrap
-// gives every column's wrap and the table's; a table's or board's group the
-// screen picked says whether it hides empty groups, false once its switch is
-// off (seen 2026-11-12 on a table).
+// gives every column's wrap and the table's; a group the screen picked says
+// whether it hides empty groups, false once its switch is off (seen
+// 2026-11-12 on a table, 2026-11-27 on a list).
 func notionViewScreenCompanions(viewType string, settings, configuration map[string]any, given map[string]bool) {
-	if viewType == graphViewTypeTable || viewType == graphViewTypeBoard {
+	if notionViewTakesField(viewType, "group_by") {
 		// It reads true while it hides them (withEmptyGroupsHidden), a sub-group by its own setting.
 		for _, field := range []string{"group_by", "sub_group_by"} {
 			if group, ok := configuration[field].(map[string]any); ok && !given[field] {

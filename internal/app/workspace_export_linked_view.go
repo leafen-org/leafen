@@ -13,7 +13,7 @@ import (
 // (seen 2026-11-11) names the view's CSV after the linked database itself,
 // its own name — "제목 없음" while it has none — and its ID, at the top of
 // the archive, and writes its source's "_all" CSV where the source stands:
-// under the folders of the pages holding it ("한지테스트페이지/<page>/<source>
+// under the folders of the pages holding it ("<test page>/<page>/<source>
 // <id>_all.csv"). A database export asked for by a linked database — its
 // block, or a full-page one's page — exports its first source, named so.
 

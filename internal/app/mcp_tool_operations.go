@@ -160,8 +160,8 @@ var graphBlockContentShapes = map[string]string{
 	graphBlockTypeBreadcrumb:      `{}`,
 	graphBlockTypeTableOfContents: `{}`,
 	graphBlockTypeLinkToPage:      `{"childPageId": the page, or "databaseContainerId": a database}`,
-	graphBlockTypeSyncedBlock:     `{} for an original, holding its blocks; {"syncedBlockId": the original's block ID} for a copy, which holds none: it shows the original's, and blocks go under the original`,
-	graphBlockTypeButton:          `{"label": its name, "buttonActionDocument": {"version": 1, "label": its name, "actions": its steps}}`,
+	graphBlockTypeSyncedBlock:     `{} for an original, holding its blocks; {"syncedBlockId": the original's block ID} for a copy, which holds none: it shows the original's, and blocks go under the original; {"syncedBlockId": a page's ID} shows that page's whole body, edited on the page`,
+	graphBlockTypeButton:          `{"label": its name, "buttonActionDocument": {"version": 1, "label": its name, "actions": its steps, as POST /pages/{pageId}/databases/{databaseId}/automations' actionDocument sets them out, with a button's own kinds}}; pressed with POST /pages/{pageId}/buttons/{blockId}/execute`,
 	graphBlockTypeInlineDatabase:  `{"dataSourceId": its source, "viewId": its view; "linkedDatabaseSource": true and "sourceContainerId": the database it shows for a linked one; "locked": true locks its views and properties for everyone, as the app's "데이터베이스 잠금" does (left out, unlocked; a full-page database locks with its page, PATCH /pages/{id}/metadata isLocked)}`,
 	graphBlockTypeChildPage:       `{"childPageId": the page, whose ID is the block's}`,
 }

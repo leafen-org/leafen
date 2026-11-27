@@ -98,6 +98,7 @@ func firstWindow(desktop *application.App) *application.WebviewWindow {
 		// The first shows itself once its strip is in place, but on a Mac,
 		// whose app shows it as it finishes launching (login_launch_darwin.go).
 		frame := t.newFrame(kept, index > 0 || !windowWaitsForLaunch)
+		frame.atStart = true
 		frame.focused = int64(len(saved) - index)
 		if first == nil {
 			first = frame
@@ -169,19 +170,39 @@ func (t *windowTabs) openFrame(tabs []*appTab, active *appTab, kept *savedFrame,
 		onMain(func() { t.closeAsked(frame) })
 	})
 	frame.window.OnWindowEvent(events.Common.WindowFocus, func(*application.WindowEvent) {
-		onMain(func() {
-			t.focus++
-			frame.focused = t.focus
-			// The keys go back to the shown page, or to the strip's menu
-			// left open over it (Windows keeps it open behind other windows).
-			if menu := frame.menu; menu != nil && !menu.picking {
-				focusStrip(frame)
-			} else if tab := frame.active; tab != nil && tab.window != nil && frame.adopted && tab.host == frame {
-				focusTabView(frame, tab)
-			}
-		})
+		onMain(func() { t.frameFocused(frame) })
 	})
 	return frame
+}
+
+// frameFocused is a frame taking the focus: it is the window in front, and
+// the keys go back to its shown page, or to the strip's menu left open over
+// it (Windows keeps it open behind other windows).
+func (t *windowTabs) frameFocused(frame *tabFrame) {
+	t.focus++
+	frame.focused = t.focus
+	if menu := frame.menu; menu != nil && !menu.picking {
+		focusStrip(frame)
+	} else if tab := frame.active; tab != nil && tab.window != nil && frame.adopted && tab.host == frame {
+		focusTabView(frame, tab)
+	}
+}
+
+// focusFrame brings a frame forward as the app asks for it — shown again
+// from the tray or its menu, by itself once its server is up, from a link
+// or the Dock, or a tab or a page put in it — with the keys on its shown
+// page. Where focusing gives the strip the keys (focusGivesStripKeys), they
+// are handed on here rather than left to the window's focus event: the
+// hidden window a start behind its windows makes is already the app's
+// active window, so showing and focusing it sends no such event, and the
+// keys stayed on the strip (the Windows VM 2026-11-28). A window brought
+// forward so is one asked for (asked).
+func (t *windowTabs) focusFrame(frame *tabFrame) {
+	t.asked = true
+	frame.window.Focus()
+	if focusGivesStripKeys {
+		t.frameFocused(frame)
+	}
 }
 
 // adopt sets a frame's strip in place and shows its tab, once its strip's
@@ -206,10 +227,18 @@ func (t *windowTabs) adopt(frame *tabFrame) {
 	if frame.active != nil {
 		t.selectTab(frame, frame.active)
 	}
-	if frame.show && !openedAtLogin() {
+	if frame.show && !(frame.atStart && openedAtLogin()) {
 		frame.window.Show()
-		frame.window.Focus()
+		t.focusFrame(frame)
 	}
+}
+
+// showOnceAdopted has a frame whose strip isn't in place yet show once it is
+// (adopt): it was asked for, so a start behind its windows no longer holds
+// it back.
+func (frame *tabFrame) showOnceAdopted() {
+	frame.show, frame.atStart = true, false
+	desktopTabs.asked = true
 }
 
 // tabWindow is the window a tab's page is in, made (hidden, never shown)

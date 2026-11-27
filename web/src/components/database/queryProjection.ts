@@ -30,8 +30,8 @@ import {
 import { valueAsRead } from "./valueAsRead";
 
 export const TABLE_INITIAL_LOAD_OPTIONS = [10, 25, 50, 100] as const;
-/** The layouts that keep "처음 불러오기" off their own page (a feed's on any page). */
-export const INITIAL_LOAD_VIEW_TYPES: ReadonlySet<string> = new Set(["table", "board", "list", "gallery", "timeline", "chart", "map"]);
+/** The layouts that keep "처음 불러오기" off their own page (a feed's on any page), grouped on it too (offersInitialLoad). */
+const INITIAL_LOAD_VIEW_TYPES: ReadonlySet<string> = new Set(["table", "board", "list", "gallery", "timeline", "chart", "map"]);
 
 /**
  * "처음 불러오기" as chosen on the view, when it was: every layout then shows
@@ -177,6 +177,20 @@ export function tableInitialLoadLimit(view?: Pick<DbView, "config">, fallback: n
 }
 
 /**
+ * The "처음 불러오기" a view's layout settings show: the one chosen, else a
+ * feed's 10, a board's or a grouped view's 25 — a group's first rows —
+ * whatever its layout, else 50. The grouping is the view's, not its
+ * layout's, as Notion's (seen 2026-11-27 in two tabs at different times: a
+ * table made a board and back stayed grouped and said 25, so did the list,
+ * gallery, timeline, map, chart and calendar made from it after, a table
+ * added in "새 보기" and grouped too; its grouping removed, the table said 50).
+ */
+export function shownInitialLoadLimit(view: Pick<DbView, "type" | "config">, grouped: boolean) {
+  return tableInitialLoadLimit(view, view.type === "feed" ? FEED_INITIAL_LOAD_LIMIT
+    : view.type === "board" || grouped ? GROUPED_TABLE_INITIAL_ROWS : DEFAULT_TABLE_INITIAL_LOAD_LIMIT);
+}
+
+/**
  * A board first shows 25 cards in each column and 20 more in every column
  * at each "더 불러오기", as Notion's (seen 2026-10-01: 25, 45, then all 60);
  * a list or gallery first shows 50 and as many more, as a table does.
@@ -193,6 +207,23 @@ export const BOARD_INITIAL_LOAD_LIMIT = 25;
 export function boardLoadsByButton(view: Pick<DbView, "config"> | undefined, ownPage: boolean) {
   return !ownPage || Boolean(view?.config?.subGroupBy);
 }
+/**
+ * Whether a view's layout settings offer "처음 불러오기": a feed's on any
+ * page; a board's as its columns load (boardLoadsByButton); a chart's
+ * inline; a grouped view's on any page, a calendar's too, which draws every
+ * row whatever it says; a table's, list's, gallery's, timeline's or map's
+ * inline. As Notion's (seen 2026-11-27 in two tabs at different times: a
+ * calendar grouped as a board was offered it inline and on its database's
+ * own page, one never or no longer grouped not, whatever was chosen; a
+ * grouped table, list, gallery, timeline and map on their own page offered
+ * it, a grouped chart there not).
+ */
+export function offersInitialLoad(view: Pick<DbView, "type" | "config">, ownPage: boolean, grouped: boolean) {
+  if (view.type === "feed") return true;
+  if (view.type === "board") return boardLoadsByButton(view, ownPage);
+  if (view.type === "chart") return !ownPage;
+  return view.type === "calendar" ? grouped : INITIAL_LOAD_VIEW_TYPES.has(view.type) && (!ownPage || grouped);
+}
 /** A feed first shows 10 posts, as Notion's (seen 2026-10-05). */
 export const FEED_INITIAL_LOAD_LIMIT = 10;
 export const BOARD_LOAD_MORE_CARDS = 20;
@@ -200,9 +231,9 @@ export const BOARD_LOAD_MORE_CARDS = 20;
  * its next cards draw, as Notion's (seen 2026-11-07). */
 export const BOARD_NEAR_END_DISTANCE = 550;
 
-/** How many more rows a grouped inline table's group "더 불러오기" shows, as Notion's (seen 2026-10-01). */
+/** How many more rows a grouped table's group "더 불러오기" shows, as Notion's (seen 2026-10-01). */
 export const TABLE_LOAD_MORE_ROWS = 50;
-/** A grouped inline table's first rows in each group, as Notion's (seen 2026-10-01). */
+/** A grouped table's first rows in each group, as Notion's (seen 2026-10-01). */
 export const GROUPED_TABLE_INITIAL_ROWS = 25;
 /**
  * On a phone a database's own page shows each group's first 10 rows and 10
@@ -211,6 +242,21 @@ export const GROUPED_TABLE_INITIAL_ROWS = 25;
  * as their end nears); a table's on a tablet too (an iPad's, 2026-11-16).
  */
 export const PHONE_GROUP_ROWS = 10;
+
+/**
+ * A grouped table's, list's or gallery's first rows in each group and how
+ * many more its group's "더 불러오기" shows: its "처음 불러오기" both when
+ * chosen, else 25 and 50 more — inline and on its database's own page alike,
+ * as Notion's (seen 2026-11-27 in two tabs at different times: a grouped
+ * table, list and gallery drew 25 in each group inline and on their own page,
+ * a list's group of 65 all at its first "더 불러오기"); on a touch screen's
+ * own page 10 and 10 more (PHONE_GROUP_ROWS).
+ */
+export function groupRowLoads(view: Pick<DbView, "config">, touchOwnPage: boolean) {
+  const chosen = chosenInitialLoadLimit(view);
+  return touchOwnPage ? { first: chosen ?? PHONE_GROUP_ROWS, more: chosen ?? PHONE_GROUP_ROWS }
+    : { first: chosen ?? GROUPED_TABLE_INITIAL_ROWS, more: chosen ?? TABLE_LOAD_MORE_ROWS };
+}
 
 /**
  * A board's first cards in each column (or each cell of its sub-groups),

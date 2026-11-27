@@ -48,10 +48,10 @@ func (t *windowTabs) reopen() {
 	}
 	// A window behind comes to the front; one in front already is left as
 	// it is, for its keys to stay where they are (on Windows, focusing it
-	// again would hand them to its strip).
+	// again would move them, through its strip).
 	if !frame.window.IsFocused() {
 		frame.window.Show()
-		frame.window.Focus()
+		t.focusFrame(frame)
 	}
 }
 
@@ -177,7 +177,7 @@ func (t *windowTabs) moveTab(from *tabFrame, tab *appTab, to *tabFrame, at int, 
 	to.insertAt(tab, at)
 	t.selectTab(to, tab)
 	to.window.Show()
-	to.window.Focus()
+	t.focusFrame(to)
 }
 
 // dropOutside takes a tab let go out of its window's strip: into another
@@ -267,7 +267,7 @@ func (t *windowTabs) moveGroupTo(from *tabFrame, group *tabGroup, to *tabFrame, 
 	to.groups = append(to.groups, group)
 	t.selectTab(to, shown)
 	to.window.Show()
-	to.window.Focus()
+	t.focusFrame(to)
 }
 
 // dropGroupOutside takes a group let go out of its window's strip: into

@@ -15,6 +15,7 @@ import { lazyScreen } from "@/lib/lazyScreen";
 import { useOpenPageGraphStore } from "@/lib/pageGraphStore";
 import { holdRowsGone, rowsDrawn } from "@/lib/rowsShownAtPress";
 import { sendRowValues } from "@/lib/rowValuesKept";
+import { rowTitleKept } from "@/lib/typedDraftSender";
 import { renameShowing, rowNameShown } from "@/lib/renameShownAtPress";
 import { dropTypedPageTitle, showTypedPageTitle, usePageName, usePageNames } from "@/lib/pageNames";
 import { newId } from "@/lib/ids";
@@ -141,6 +142,9 @@ function FavoriteRowPage({ page, template, href, link, person, session }: {
       return false;
     }
   }
+  // Kept on the device at each key, as the row's title field keeps it, while the row's page is read (lib/typedDraftSender.ts).
+  const titleProperty = snapshot?.properties.find((property) => property.type === "title"), titleHost = snapshot?.row.containerPageId;
+  const titleKept = titleProperty && titleHost ? rowTitleKept(page.id, titleProperty.id, titleHost) : undefined;
   // Each key's name shows at once — here, wherever the row page is named,
   // and the row on the open page — saved once the typing stops; refused, it
   // goes back (lib/renameShownAtPress.ts).
@@ -250,7 +254,7 @@ function FavoriteRowPage({ page, template, href, link, person, session }: {
       ) : null}
       {renameAt ? (
         <PageRenamePopover page={page} title={page.title} titleSpans={page.titleSpans} untitled={pageNames.title({ ...page, title: "" })} at={renameAt}
-          onTitleChange={rename} onTitleShown={showName}
+          kept={titleKept} onTitleChange={rename} onTitleShown={showName}
           onClose={() => { setRenameAt(null); renameSteps.current?.close(); renameSteps.current = null; rowShowing.current?.end(); rowShowing.current = null; }} />
       ) : null}
       {expanded ? (

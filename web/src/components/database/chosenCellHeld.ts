@@ -117,7 +117,8 @@ export function useChosenCellHeld(gridRef: RefObject<HTMLElement | null>) {
       pressed = event.target instanceof Element ? event.target : null;
       window.requestAnimationFrame(() => { pressed = null; });
       shutEditor();
-      if (held() && !(pressed && keepsViewChoice(pressed))) letGo();
+      // A row's "열기" into the side peek lets the cell go, as before it kept ticked rows for the peek (not seen in Notion).
+      if (held() && !(pressed && keepsViewChoice(pressed) && !pressed.closest('[data-table-row-open="side"]'))) letGo();
       const cell = document.activeElement;
       if (!(cell instanceof HTMLElement && cell.matches("[data-table-cell]") && grid.contains(cell))) return;
       // One that leaves the focus where it was ("N개 더 보기", the view bar's "+", data-press-keeps-focus) holds

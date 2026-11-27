@@ -4,7 +4,10 @@
 // each with what the workspace menu shows of it and where it was last. It
 // lives in the page's own storage and holds no server's sign-in; a page a
 // server serves keeps another server's list key here, which reads only the
-// person's workspace and app list there (lib/switcherLists.ts).
+// person's workspace and app list there (lib/switcherLists.ts). The
+// workspace a profile opens on is not kept here: the page it was last at
+// names it, and where none does, the one this browser remembers for the
+// person on that server (lib/landingWorkspace.ts).
 
 import { keepTabSignIn, tabSignIn } from "./tabSignIn";
 
@@ -39,7 +42,6 @@ export type ServerProfile = {
   email: string;
   name: string;
   workspaces: ProfileWorkspace[];
-  lastWorkspaceId: string;
   /** The page address it was last at, on its own server. */
   lastPath: string;
   addedAt: number;
@@ -138,7 +140,6 @@ function profileOf(value: unknown): ServerProfile | null {
     workspaces: (Array.isArray(item.workspaces) ? item.workspaces : [])
       .map(workspaceOf)
       .filter((workspace): workspace is ProfileWorkspace => workspace !== null),
-    lastWorkspaceId: text(item.lastWorkspaceId),
     lastPath: path,
     addedAt: typeof item.addedAt === "number" && Number.isFinite(item.addedAt) ? item.addedAt : 0,
     listKey: validListKey(item.listKey) ? item.listKey : "",
@@ -204,7 +205,7 @@ function saveProfiles(profiles: ServerProfile[], store: ProfileStorage | null): 
 
 /** Keeps what the active server's account looks like, as it stands. */
 export function rememberProfile(
-  update: Pick<ServerProfile, "id" | "email" | "name" | "workspaces" | "lastWorkspaceId"> & { lastPath?: string },
+  update: Pick<ServerProfile, "id" | "email" | "name" | "workspaces"> & { lastPath?: string },
   now = Date.now(),
   store = pageStorage(),
 ): void {
@@ -260,7 +261,7 @@ export function addServerProfile(origin: string, now = Date.now(), store = pageS
   const known = profileAt(id, store);
   if (known) return known;
   const added: ServerProfile = {
-    id, email: "", name: "", workspaces: [], lastWorkspaceId: "", lastPath: "", addedAt: now,
+    id, email: "", name: "", workspaces: [], lastPath: "", addedAt: now,
     listKey: "", apps: [], unread: [], avatar: "", listState: "", checkedAt: 0, address: "", pairAddress: "",
     serverName: "", serverAlias: "", label: "",
   };

@@ -108,7 +108,7 @@ last edited the page, when, and how many words it has.
 | **Duplicate** (Cmd+D while the menu is open) | Copies the page, as above. |
 | **Move to** (Cmd+Shift+P) | Moves the page, as above. |
 | **Version history** | Earlier versions of the page ([Page history](page-history.md)). |
-| **Updates & analytics** | The panel of the page's changes and views. |
+| **Updates & analytics** | The panel of the page's changes and views. A guest of the workspace sees the changes alone, with no analytics. |
 | **Appearance & layout** › | **Font style** (**Default**, **Serif** or **Mono**), **Small text**, **Full width**, **Table of contents**, **Page comments** and **Inline comments**. |
 | **Suggest edits** | Turns on suggesting: your edits become suggestions others accept or reject. |
 | **Notify me** › | **All comments** or **Replies and @mentions**; the menu shows the choice as **Comments** or **Mentions**. |

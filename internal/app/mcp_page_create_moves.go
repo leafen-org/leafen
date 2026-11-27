@@ -229,10 +229,42 @@ func writeMCPCreatedBody(
 	return append(written.Warnings, moves.left...), err
 }
 
+// checkMCPCreatedBody refuses, before any page is made, a body
+// writeMCPCreatedBody would write a new page of workspace that its write
+// would refuse (pageMarkdownReplacement.checkCreatedBody), read as
+// notion-update-page reads it there: so a refused body leaves no page, no
+// database item, no page of the same call, and the pages it would move in
+// where they are.
+func checkMCPCreatedBody(
+	app core.App, authority mcpAuthority, workspace workspaceAuthorization, definition notionMCPCreatePageDefinition, moves mcpCreatePageMoves,
+) error {
+	content := definition.Content
+	if len(moves.pageIDs) > 0 {
+		content = moves.content
+	}
+	change, _, _ := mcpPageMarkdownChange("", mcpUpdatePageInput{Command: "replace_content", NewString: content})
+	request := pageMarkdownReplacement{
+		PrincipalID: authority.PrincipalID, Reader: mcpMarkdownReader(authority), Version2: true,
+		Uploads: mcpMarkdownUploads(authority), CreatesPage: true,
+		Next: func(current string) (string, bool, error) {
+			next, allowDeleting, _, err := applyNotionMarkdownChange(current, change)
+			return next, allowDeleting, err
+		},
+	}
+	preserve := definition.PreserveInternalLinks != nil && *definition.PreserveInternalLinks
+	request.PrepareInput = mcpMarkdownWritePrepare(authority, &request.Reader, true, preserve)
+	if err := request.checkCreatedBody(app, pageAuthorization{Workspace: workspace}, moves.references); err != nil {
+		return mcpPageMarkdownError(err)
+	}
+	return nil
+}
+
 // mcpCreateRowContent reads a new database page's content before any page is
-// made: the pages it moves in, then what it refuses (mcpCreateRowContentRefusal).
+// made: the pages it moves in, then what it refuses (mcpCreateRowContentRefusal),
+// then what its write after the page would (checkMCPCreatedBody).
 func mcpCreateRowContent(
-	app core.App, authority mcpAuthority, location mcpDataSourceLocation, definition notionMCPCreatePageDefinition, origin string, pages, index int,
+	app core.App, authority mcpAuthority, workspace workspaceAuthorization, location mcpDataSourceLocation,
+	definition notionMCPCreatePageDefinition, origin string, pages, index int,
 ) (mcpCreatePageMoves, error) {
 	moves, err := mcpCreatePageMovesOf(app, authority, location.WorkspaceID, location.PageID, definition, origin)
 	if err != nil {
@@ -241,7 +273,10 @@ func mcpCreateRowContent(
 	if refused := mcpCreateRowContentRefusal(moves.content, origin, pages, index); refused != nil {
 		return moves, refused
 	}
-	return moves, nil
+	if definition.Content == "" {
+		return moves, nil
+	}
+	return moves, mcpCreatePagesItemRefusal(checkMCPCreatedBody(app, authority, workspace, definition, moves), pages, index)
 }
 
 // notionMarkdownCreateUnknownPlace is an <unknown/> line of a new page's

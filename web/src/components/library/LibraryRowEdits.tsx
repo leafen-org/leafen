@@ -5,6 +5,7 @@ import { AnchoredIconPicker } from "@/components/page/AnchoredEmojiPicker";
 import { hasExplicitPageIcon } from "@/components/page/PageIcon";
 import type { PagePresentationChange } from "@/components/page/pagePresentation";
 import { useRenameTitleField } from "@/components/page/RenameTitleField";
+import { pageTitleKept } from "@/lib/typedDraftSender";
 import { untitledPageDisplayTitle } from "@/lib/pageTitle";
 import { useProductToast } from "@/lib/productToast";
 import type { TextSpan } from "@/lib/types";
@@ -33,7 +34,7 @@ function LibraryNameEditor({ page, cell, onTitleChange, onClose }: {
 }) {
   const { t } = useTranslation("pageHeader");
   const rename = useRenameTitleField({ title: page.title, spans: page.titleSpans, placeholder: untitledPageDisplayTitle(page),
-    className: styles.input, caret: "end", onTitleChange, onDone: onClose });
+    className: styles.input, caret: "end", kept: page.kind === "database" ? undefined : pageTitleKept(page.id, () => page), onTitleChange, onDone: onClose });
 
   function close() {
     rename.finish();

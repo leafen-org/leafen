@@ -182,10 +182,16 @@ func notionMarkdownSyncedOriginals(
 			continue
 		}
 		blockID, pageID, err := notionMarkdownSyncedOriginal(
-			app, request.PrincipalID, current, request.Allows, request.Reader.Origin, content.address,
+			app, request.PrincipalID, current, request.Allows, request.Reader.Origin, content.address, true,
 		)
 		if err != nil {
 			return "", nil, err
+		}
+		// One showing a page's body leaves that page as it is: Notion's
+		// write of one fails (a 500, seen 2026-11-27); Leafen says why.
+		if blockID == pageID {
+			return "", nil, graphInputError(errorCodeGraphReferenceInvalid, "A synced block reference showing a whole "+
+				"page's body can't change that page: leave the reference as it reads, and edit the page itself.")
 		}
 		if pageID == current.Page.Id {
 			markdown = notionMarkdownSyncedSplice(app, markdown, blockID, content)

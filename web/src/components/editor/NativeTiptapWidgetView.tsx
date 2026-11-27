@@ -119,7 +119,7 @@ export function NativeTiptapWidgetView(props: NodeViewProps) {
   if (!block) return <NodeViewWrapper contentEditable={false} hidden />;
   const source = syncedBlockSource(block, adapter.pageId, adapter.graph.blocks);
   const structural = ["column", "column_list", "table", "tab"].includes(block.type)
-    || block.type === "synced_block" && (!source.copy || source.pageId === adapter.pageId);
+    || block.type === "synced_block" && (!source.copy || source.pageId === adapter.pageId && !source.page);
   const content = block.type === "callout" ? <div className={styles.callout} data-icon-only="true"
     data-no-icon={block.content.iconType === "none" ? "true" : undefined}><CalloutIcon adapter={adapter} block={block} /></div>
     // A widget's depth counts the block it draws too: 1 straight under the page.

@@ -282,6 +282,10 @@ func (renderer *workspaceExportRenderer) blockHTML(block *workspaceExportDocBloc
 	case graphBlockTypeColumnList:
 		return renderer.columnListHTML(block)
 	case graphBlockTypeSyncedBlock:
+		// A copy of a page's body is its page's link alone (workspace_export_synced_page.go).
+		if page := syncedCopyPage(block.Content); page != "" {
+			return renderer.pageLinkHTML(syncedPageLinkBlock(block, page))
+		}
 		return `<div ` + id + ` class="synced-block">` + renderer.syncedHTML(block, children) + "</div>"
 	case graphBlockTypeTab:
 		var tabs strings.Builder

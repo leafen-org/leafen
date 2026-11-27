@@ -158,7 +158,7 @@ export function TrashView({
   // One a database's page holds — a row's body, a template's — sits below
   // that page, which the page list doesn't hold: the path the server reads
   // above it, then its name, as Notion's trash places one from a row's body
-  // (seen 2026-11-15: "한지테스트페이지 / ... / 행 하나").
+  // (seen 2026-11-15: "〈test page〉 / ... / 행 하나").
   const pathsRead = usePagePathsAbove(useMemo(() => deletedDatabases.items
     .filter((item) => item.holderRow && !pagesById[item.pageId]).map((item) => ({ id: item.pageId, workspaceId })),
   [deletedDatabases.items, pagesById, workspaceId]));

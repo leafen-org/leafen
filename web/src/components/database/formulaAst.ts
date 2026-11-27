@@ -1,4 +1,7 @@
-import { FORMULA_NESTING_COST, FORMULA_NESTING_ROOM, FormulaSyntaxError, formulaOnlyComments, type FormulaToken, type FormulaTokenType } from "./formulaSyntax";
+import {
+  FORMULA_NESTING_COST, FORMULA_NESTING_ROOM, FormulaSyntaxError, formulaInvalidCharacters, formulaNameCalled, formulaOnlyComments,
+  type FormulaToken, type FormulaTokenType,
+} from "./formulaSyntax";
 
 // A formula is read into a tree before it is evaluated, so if(), ifs(), the
 // ternary and the boolean operators evaluate only the branches they take.
@@ -34,6 +37,9 @@ const FOLLOWS_CLOSE = new Set<FormulaTokenType>(["comma", "colon", "question", "
 const followsClose = (token: FormulaToken) => FOLLOWS_CLOSE.has(token.type) || (token.type === "bracket" && token.value === "]");
 
 export function parseFormulaTokens(tokens: FormulaToken[]): FormulaNode {
+  // A character no token starts with keeps it from being read, as Notion's (formulaSyntax.ts).
+  const [invalid] = formulaInvalidCharacters(tokens);
+  if (invalid) throw new FormulaSyntaxError("Formula has a character it can't read", invalid.start, invalid.end);
   // An empty formula is empty text; a value missing anywhere else is an
   // error, as Notion reads it, and so is a formula of comments alone.
   if (tokens.length === 0) {
@@ -46,8 +52,8 @@ export function parseFormulaTokens(tokens: FormulaToken[]): FormulaNode {
   return node;
 }
 
-// What keeps a formula from being read, where the editor reads on past it.
-export type FormulaFault = { message: string; expected?: string; start: number; end: number };
+// What keeps a formula from being read, where the editor reads on past it; `ended` when the formula ended first.
+export type FormulaFault = { message: string; expected?: string; start: number; end: number; ended?: true };
 export type FormulaRecovered = { node: FormulaNode; faults: FormulaFault[]; skipped: [number, number][] };
 
 /**
@@ -103,7 +109,7 @@ class FormulaSyntax {
     const length = this.recovery.length;
     const start = token ? token.start ?? 0 : Math.max(0, length - 1);
     if (this.recovery.faults.some((fault) => fault.start === start)) return;
-    this.recovery.faults.push({ message, expected, start, end: token ? start + 1 : length });
+    this.recovery.faults.push({ message, expected, start, end: token ? start + 1 : length, ...(token ? {} : { ended: true as const }) });
   }
 
   // close takes the token a value is closed by, or names it missing and skips
@@ -150,12 +156,11 @@ class FormulaSyntax {
   }
 
   // and/or/not written as words are operators unless a call's parenthesis
-  // follows.
+  // follows right after (formulaSyntax.ts formulaNameCalled).
   private keyword(value: string) {
     const token = this.tokens[this.index];
     if (!token || token.type !== "identifier" || token.value !== value) return false;
-    const next = this.tokens[this.index + 1];
-    if (next?.type === "paren" && next.value === "(") return false;
+    if (formulaNameCalled(this.tokens, this.index)) return false;
     this.index += 1;
     return true;
   }
@@ -214,27 +219,37 @@ class FormulaSyntax {
 
   private and(): FormulaNode {
     const from = this.index;
-    let left = this.binaryLevel(() => this.comparison(), ["==", "!="]);
+    let left = this.equality();
     while (this.match("operator", "&&") || this.keyword("and")) {
-      left = this.spanned(from, {
-        kind: "binary", operator: "&&", left, right: this.binaryLevel(() => this.comparison(), ["==", "!="]),
-      });
+      left = this.spanned(from, { kind: "binary", operator: "&&", left, right: this.equality() });
     }
     return left;
   }
 
-  private binaryLevel(next: () => FormulaNode, operators: string[]): FormulaNode {
+  // once reads one operator of the level at most: the reading stops at a
+  // second, where the formula is then not closed or not ended.
+  private binaryLevel(next: () => FormulaNode, operators: string[], once = false): FormulaNode {
     const from = this.index;
     let left = next();
     while (true) {
       const operator = operators.find((candidate) => this.match("operator", candidate));
       if (!operator) return left;
       left = this.spanned(from, { kind: "binary", operator, left, right: next() });
+      if (once) return left;
     }
   }
 
+  // Comparisons don't chain, as Notion's reading takes them: "1 > 2 > 3",
+  // "1 < 2 <= 3" and "true == false == true" stop at the second, "예상 입력
+  // 끝입니다" there (seen 2026-11-28 through its API and in two Chrome tabs),
+  // while "1 > 2 == true" and "(1 > 2) == true" read. The server reads them
+  // the same (database_formula_comparison.go).
+  private equality(): FormulaNode {
+    return this.binaryLevel(() => this.comparison(), ["==", "!="], true);
+  }
+
   private comparison(): FormulaNode {
-    return this.binaryLevel(() => this.term(), [">", ">=", "<", "<="]);
+    return this.binaryLevel(() => this.term(), [">", ">=", "<", "<="], true);
   }
 
   private term(): FormulaNode {
@@ -255,11 +270,40 @@ class FormulaSyntax {
   private unary(): FormulaNode {
     const from = this.index;
     let operator: "-" | "!" | undefined;
-    if (this.match("operator", "-")) operator = "-";
-    else if (this.match("operator", "!") || this.notOperator()) operator = "!";
+    if (this.match("operator", "-")) {
+      const signed = this.signedNumber(from);
+      if (signed) return signed;
+      operator = "-";
+    } else if (this.match("operator", "!") || this.notOperator()) operator = "!";
     if (!operator) return this.primary();
     const unaryOperator = operator;
     return this.nested(FORMULA_NESTING_COST.unary, () => this.spanned(from, { kind: "unary", operator: unaryOperator, operand: this.unary() }));
+  }
+
+  // A minus right before a number, in parentheses or not, is that number's
+  // sign, which a method after it is called on ("-10.abs()" and
+  // "-(10).abs()" are 10, "-1.5.round()" -1, "-10.add(1)" -9), and the method
+  // is placed from the number ("-10.dateStart()" [1,13]); before anything
+  // else a method is called first and the minus taken of what it gives
+  // ("-prop("Price").abs()" and "-(1 + 2).abs()" are -3, "-(-(10)).abs()"
+  // -10), as Notion reads them (seen 2026-11-28 through its API and in its
+  // editor). The server reads them the same (database_formula_syntax.go).
+  private signedNumber(from: number): FormulaNode | undefined {
+    const operand = this.index;
+    let depth = 0;
+    while (this.tokens[operand + depth]?.type === "paren" && this.tokens[operand + depth].value === "(") depth += 1;
+    const number = this.tokens[operand + depth];
+    if (number?.type !== "number") return undefined;
+    for (let closing = 1; closing <= depth; closing += 1) {
+      const token = this.tokens[operand + depth + closing];
+      if (token?.type !== "paren" || token.value !== ")") return undefined;
+    }
+    if (this.tokens[operand + depth * 2 + 1]?.type !== "dot") return undefined;
+    return this.nested(FORMULA_NESTING_COST.unary, () => {
+      this.index = operand + depth * 2 + 1;
+      const sign: FormulaNode = { kind: "unary", operator: "-", operand: { kind: "number", value: Number(number.value), start: number.start, end: number.end } };
+      return this.methods(this.spanned(from, sign), operand);
+    });
   }
 
   private primary(): FormulaNode {
@@ -274,6 +318,11 @@ class FormulaSyntax {
       node = { kind: "string", value: token.value };
     } else if (this.match("bracket", "[")) {
       node = { kind: "list", items: this.sequence("bracket", "]") };
+    } else if ((token?.value === "and" || token?.value === "or") && token.type === "identifier" &&
+      this.tokens[this.index + 1]?.value === "(" && !formulaNameCalled(this.tokens, this.index)) {
+      // and/or before a space and a parenthesis is the operator, which no value starts with (its left wanted).
+      this.fault("Formula value is missing");
+      node = missingValue(token.start ?? 0);
     } else if (token?.type === "identifier") {
       this.index += 1;
       // true and false are values, a parenthesis after them a call of the value ("true(1)" is boolean's [0,7]).
@@ -293,6 +342,12 @@ class FormulaSyntax {
     // (round(2, 0.5)) [1,14]); a method on it starts at the parenthesis.
     if (token?.type !== "paren" && node.missingAt === undefined) node = this.spanned(from, node);
     else this.openEnd = undefined;
+    return this.methods(node, from);
+  }
+
+  // methods reads the methods called on a value, each placed from `from`.
+  private methods(value: FormulaNode, from: number): FormulaNode {
+    let node = value;
     while (true) {
       if (this.recovery && this.match("paren", "(")) {
         node = this.spanned(from, { kind: "called", callee: node, args: this.sequence("paren", ")") });

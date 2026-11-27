@@ -110,8 +110,8 @@ func (converter *notionImportViewConverter) setting(
 		return converter.viewProperties(value, reasons)
 	case field == "table_properties" && in(graphViewTypeTimeline):
 		return converter.timelineTableProperties(value, reasons)
-	case field == "group_by" && in(graphViewTypeTable, graphViewTypeBoard),
-		field == "sub_group_by" && in(graphViewTypeBoard):
+	case (field == "group_by" || field == "sub_group_by") && notionViewTakesField(viewType, field):
+		// As the API takes them: a list's, gallery's and timeline's group too.
 		return converter.group(value, reasons, "")
 	case field == "x_axis" && in(graphViewTypeChart), field == "stack_by" && in(graphViewTypeChart):
 		// A chart's X axis can leave out its groups at zero; the groups it

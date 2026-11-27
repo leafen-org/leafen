@@ -6,7 +6,10 @@ import { FORMULA_FUNCTIONS } from "./formulaSyntax";
 // seven): the fewest and the most, Infinity where any more may follow.
 // "call" is a function Notion reads with none as a failed call instead
 // (formulaEditor:errors.callFailed here), taking any number after. A method's
-// value counts as its first ("a".upper() is upper("a")). startsWith,
+// value counts as its first ("a".upper() is upper("a")), but a call short of
+// values names the count without it, as Notion's and the server's do (seen
+// 2026-11-28 in Chrome: "a".dateBetween() needs 2 and has 0, [1].splice() 1
+// and 0, "a".padStart(1) 2 and 1). startsWith,
 // endsWith, nextWorkday and addWorkdays are Leafen's own, as their help
 // names them.
 const ANY = Infinity;
@@ -32,7 +35,9 @@ const FORMULA_ARITY: Readonly<Record<string, readonly [number | "call", number]>
 
 export type FormulaCallProblem =
   | { code: "unknownMethod"; name: string; start?: number; end?: number }
-  | { code: "argumentsMissing"; name: string; expected: number; given: number; start?: number; end?: number }
+  // `at` is where Notion's check comes to a call short of values: at its start, before its values are checked, or
+  // a method's after its value, at its name's end.
+  | { code: "argumentsMissing"; name: string; expected: number; given: number; start?: number; end?: number; at?: number }
   // A missing value's place is Notion's [0,1]; `at` is where it is missing, which orders it among the problems.
   | { code: "argumentExtra"; name: string; start?: number; end?: number; at?: number }
   | { code: "callFailed"; name: string; start?: number; end?: number };
@@ -81,7 +86,10 @@ function checkArity(name: string, args: readonly FormulaNode[], before: number, 
     return;
   }
   if (given < fewest) {
-    problems.push({ code: "argumentsMissing", name, expected: fewest, given, start: call.start, end: call.end });
+    // Named before what its values hold, as Notion's (seen 2026-11-28 in Chrome: dateBetween(1, "a") names the
+    // missing value [0,19], then 1 [12,13] and "a" [15,18]; abs("a") + dateBetween(1) abs()'s [4,7] first).
+    const at = call.kind === "method" ? call.nameEnd : call.start;
+    problems.push({ code: "argumentsMissing", name, expected: fewest - before, given: given - before, start: call.start, end: call.end, at });
     return;
   }
   args.slice(Math.max(0, most - before)).forEach((arg) => problems.push({ code: "argumentExtra", name, start: arg.start, end: arg.end,

@@ -173,16 +173,21 @@ function InlineDatabaseView({
   // A view block's lock — its block's, or its own page's — locks its views, not its source.
   const sourceLocked = (structureLocked && !(ownPage && viewBlock)) || (blockLocked && !unlockedForMe && !viewBlock);
   // Its block menu's "아이콘 편집" and "이름 바꾸기" open the icon picker below
-  // its title and select the title, showing a hidden title meanwhile.
-  const [editing, setEditing] = useState<"icon" | "rename" | null>(null);
+  // its title and select the title, showing a hidden title meanwhile. Its
+  // title's "⋯ › 제목 편집" does the same, but a linked view's names its
+  // source in place under its "↗" (`title`), as Notion's (seen 2026-11-28 in
+  // Chrome in two tabs at two times: the source's name chosen in the head and
+  // renamed there, the source's own head with it).
+  const [editing, setEditing] = useState<"icon" | "rename" | "title" | null>(null);
   // Drawn twice (opened alone in a peek over its page), the copy that shows answers.
   const copy = { blockId: block.id, alone: ownPage };
   useInlineDatabaseRequests(block.id, (request) => {
-    if ((request === "icon" || request === "rename") && !readOnly && !locked) setEditing(request);
+    if ((request !== "icon" && request !== "rename" && request !== "title") || readOnly || locked) return;
+    setEditing(request !== "title" ? request : databaseBlockMembers(block).linked.some((member) => member.dataSourceId === source.id) ? "title" : "rename");
   }, copy);
   // Its name has the caret as "이름 바꾸기" draws it, in the same step (RenameTitleField's rule).
   useLayoutEffect(() => {
-    if (editing === "rename") titleField.current?.selectAll();
+    if (editing === "rename" || editing === "title") titleField.current?.selectAll();
   }, [editing]);
   // A linked database's name and icon are its own, its source's staying as
   // they are (Notion's, seen 2026-10-15): "이름 바꾸기" opens Notion's small
@@ -291,6 +296,36 @@ function InlineDatabaseView({
   // database page's dashboard view's, never its source's name (seen 2026-11-18).
   const dashboardTitle = (viewBlock && !linkedBlock) || (ownPage && viewProps.activeView.type === "dashboard");
   const titleIcon = { icon: headSource.icon ?? "", iconType: headSource.iconType ?? "none", workspaceId: viewProps.workspaceId };
+  const nameField = (
+    // Its name is rich text, as Notion's (seen 2026-11-07: ⌘B bolds, ⌘K opens the link box).
+    <DatabaseTitleField handleRef={titleField} className={styles.inlineDatabaseTitle} value={headSource.title}
+      spans={headSource.titleSpans as TextSpan[] | undefined} placeholder={untitledTitle}
+      ariaLabel={i18next.t("databaseView:databaseTitle")} dataAttributes={{ "data-inline-database-title": "" }}
+      onTitleChange={(title, spans) => {
+        titleTyped({ title: headSource.title, spans: headSource.titleSpans as TextSpan[] | undefined }, { title, spans });
+        databaseViewAdapter.changeTitle(headSource, title, spans);
+      }}
+      onFinish={() => { titleBurst.current = null; if (editing === "rename" || editing === "title") setEditing(null); }}
+      // Enter keeps the caret in the title, as Notion's (seen 2026-11-03), unless it was only opened to rename.
+      // Escape takes the caret to the name's start, and from there leaves it (Notion's, seen 2026-11-06).
+      onKeyDown={(event) => {
+        const at = titleField.current?.range();
+        if (event.key === "Escape" && editing !== "rename" && at && at.start + at.end > 0) {
+          titleField.current?.caretAt(0);
+          return true;
+        }
+        if (fieldEnter(event) && editing === "rename") {
+          (event.target as HTMLElement).blur(); return true;
+        }
+        if (primaryModifier(event) && !event.altKey && (chordLetter(event) === "z" || chordLetter(event) === "y")) {
+          // Its ⌘Z is the page's, what was typed here one step of it, as Notion's (seen 2026-11-05).
+          titleBurst.current = null;
+          requestPageUndo(viewProps.pageId, event.shiftKey || chordLetter(event) === "y");
+          return true;
+        }
+        return fieldEnter(event) ? true : undefined;
+      }} />
+  );
   // The view's "데이터 소스 제목 표시" switch hides the title, leaving its tabs first, as Notion's (seen 2026-09-30);
   // on its own page the page's title is the database's.
   // ⌥ makes no other press of its name: Notion's puts the caret in it where pressed, or opens a locked one alone, as
@@ -307,43 +342,14 @@ function InlineDatabaseView({
         <span className={styles.inlineDatabaseTitle} data-inline-database-title data-read-only="true">{i18next.t("databaseTitles:dashboardTitle")}</span>
       ) : linkedMember ? (
         <InlineDatabaseLinkedTitle source={source} containerId={linkedMember.sourceContainerId} className={styles.inlineDatabaseTitle}
-          workspaceId={viewProps.workspaceId} />
+          workspaceId={viewProps.workspaceId} field={editing === "title" ? nameField : undefined} />
       ) : readOnly || locked ? (
         // Held by its own lock, its name opens it alone, as Notion's (seen 2026-11-18 in Chrome, two tabs); unnamed, faint as the field's.
         <span className={styles.inlineDatabaseTitle} data-inline-database-title data-read-only="true" data-inline-database-placeholder={titleDisplay.isPlaceholder || undefined}
           onClick={() => { if (blockLocked && !unlockedForMe && fullPageHref) pushRoute(fullPageHref); }}>
           {linkedName ? titleDisplay.text : <DatabaseTitleText title={headSource.title} spans={headSource.titleSpans as TextSpan[] | undefined} fallback={titleDisplay.text} />}
         </span>
-      ) : (
-        // Its name is rich text, as Notion's (seen 2026-11-07: ⌘B bolds, ⌘K opens the link box).
-        <DatabaseTitleField handleRef={titleField} className={styles.inlineDatabaseTitle} value={headSource.title}
-          spans={headSource.titleSpans as TextSpan[] | undefined} placeholder={untitledTitle}
-          ariaLabel={i18next.t("databaseView:databaseTitle")} dataAttributes={{ "data-inline-database-title": "" }}
-          onTitleChange={(title, spans) => {
-            titleTyped({ title: headSource.title, spans: headSource.titleSpans as TextSpan[] | undefined }, { title, spans });
-            databaseViewAdapter.changeTitle(headSource, title, spans);
-          }}
-          onFinish={() => { titleBurst.current = null; if (editing === "rename") setEditing(null); }}
-          // Enter keeps the caret in the title, as Notion's (seen 2026-11-03), unless it was only opened to rename.
-          // Escape takes the caret to the name's start, and from there leaves it (Notion's, seen 2026-11-06).
-          onKeyDown={(event) => {
-            const at = titleField.current?.range();
-            if (event.key === "Escape" && editing !== "rename" && at && at.start + at.end > 0) {
-              titleField.current?.caretAt(0);
-              return true;
-            }
-            if (fieldEnter(event) && editing === "rename") {
-              (event.target as HTMLElement).blur(); return true;
-            }
-            if (primaryModifier(event) && !event.altKey && (chordLetter(event) === "z" || chordLetter(event) === "y")) {
-              // Its ⌘Z is the page's, what was typed here one step of it, as Notion's (seen 2026-11-05).
-              titleBurst.current = null;
-              requestPageUndo(viewProps.pageId, event.shiftKey || chordLetter(event) === "y");
-              return true;
-            }
-            return fieldEnter(event) ? true : undefined;
-          }} />
-      )}
+      ) : nameField}
       {editing === "icon" && !readOnly && !locked && (!linkedMember || linkedBlock) ? (
         <div className={styles.inlineDatabaseIconPicker}>
           <PageIconPicker placement="anchored" current={linkedBlock ? linkedDatabasePresentation(block) : headSource}
@@ -424,13 +430,13 @@ function InlineDatabaseView({
       {renameAt && editing === "rename" && linkedBlock && !readOnly && !locked ? (
         <PageRenamePopover at={renameAt} iconFallback="database" title={linkedDatabasePresentation(block).title} untitled={linkedDatabaseName(undefined, source.title)}
           titleSpans={linkedDatabasePresentation(block).titleSpans as TextSpan[] | undefined}
-          page={{ ...linkedDatabasePresentation(block), id: block.id, workspaceId: viewProps.workspaceId } as unknown as Page}
+          page={{ ...linkedDatabasePresentation(block), id: block.id, workspaceId: viewProps.workspaceId } as unknown as Page} asTyped
           onTitleChange={(title, spans) => databaseViewAdapter.setLinkedPresentation(block, { title, ...(spans ? { titleSpans: spans as GraphDataSource["titleSpans"] } : {}) })}
           onPresentationChange={(change) => {
             if (change.iconType) databaseViewAdapter.setLinkedPresentation(block, { icon: { icon: change.icon ?? "", iconType: change.iconType as NonNullable<GraphDataSource["iconType"]> } });
           }}
           onClose={() => setEditing(null)} />
-      ) : renameAt && editing && viewBlock && !readOnly && !locked ? (
+      ) : renameAt && editing && editing !== "title" && viewBlock && !readOnly && !locked ? (
         <ViewBlockNameEditor editing={editing} at={renameAt} blockId={block.id} workspaceId={viewProps.workspaceId}
           uploadPageId={linkedBlock ? viewProps.pageId : headSource.pageId ?? viewProps.pageId} title={headSource.title}
           icon={linkedBlock ? linkedDatabasePresentation(block).icon : headSource.icon ?? ""}

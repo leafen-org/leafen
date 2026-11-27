@@ -10,7 +10,7 @@ import (
 // A new source's formulas are checked in the order the request writes them,
 // each against the source's other properties but its rollups and against the
 // formulas written before it, as Notion's API checks them (seen 2026-11-21,
-// databases and data sources alike, a synthetic page under 한지테스트페이지):
+// databases and data sources alike, a synthetic page under a Notion test page):
 // {"B": prop("A") * 2, "A": "x"} is a type error in B naming A as not found,
 // {"A": 1, "B": prop("A") > "a"} a comparison of number and text, a number
 // or a relation named after the formula is there, a rollup isn't even

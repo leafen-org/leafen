@@ -8,6 +8,7 @@ import { NativeTab, useNativeTabs } from "@/lib/nativeTabs";
 
 import { useOverlayLayer } from "@/lib/overlayLayer";
 import { useSidebarLayout } from "@/components/shell/AppShell";
+import { useProductPagesSelect } from "@/components/product/productPagesStore";
 import type { PageAnalyticsPanelService } from "@/lib/pageAnalyticsView";
 
 import type { Session } from "@/types";
@@ -17,6 +18,7 @@ import { TouchPageUpdatesSheet } from "./TouchPageUpdatesSheet";
 import { PageUpdatesList, type PageUpdatesLockTarget, type PageUpdatesSource } from "./PageUpdatesList";
 import type { PageUpdateRecordProperty } from "@/lib/pageUpdateRecord";
 import styles from "./PageAnalyticsPanel.module.css";
+import headStyles from "./PageUpdatesHead.module.css";
 
 type AnalyticsTab = "updates" | "analytics";
 
@@ -67,10 +69,18 @@ export function PageAnalyticsPanel({
 }) {
   const { t } = useTranslation("pageAnalytics");
   const titleId = useId();
-  const [tab, setTab] = useState<AnalyticsTab>(initialTab);
+  // A guest of the page's workspace reads its updates alone: Notion draws a
+  // guest's panel — one who edits the page or has full access alike — with
+  // only its "업데이트" head, no analytics tab (seen 2026-11-28 in Chrome at
+  // 1440, two tabs at different times), and the server keeps the analytics
+  // from them (page_analytics_readers.go).
+  const guest = useProductPagesSelect((pages) => pages?.workspaces?.find(({ id }) => id === workspaceId)?.guest === true);
+  const shownTabs: readonly AnalyticsTab[] = guest ? ["updates"] : ["updates", "analytics"];
+  const [chosen, setTab] = useState<AnalyticsTab>(initialTab);
+  const tab = guest ? "updates" : chosen;
   const tabListRef = useRef<HTMLDivElement>(null);
   const tabList = useNativeTabs<AnalyticsTab>({
-    tabs: (["updates", "analytics"] as const).map((value) => ({ key: value, text: t(`tabs.${value}`) })),
+    tabs: shownTabs.map((value) => ({ key: value, text: t(`tabs.${value}`) })),
     selected: tab, onSelect: setTab, label: t("title"), listRef: tabListRef,
   });
   // A modal layer: Escape closes it once nothing opened over it takes the
@@ -109,25 +119,28 @@ export function PageAnalyticsPanel({
         data-docked={docked ? "true" : undefined}
         data-page-side-panel={docked ? "docked" : undefined}
       >
-        {docked ? <h2 id={titleId} className={styles.dockedTitle}>{t("title")}</h2> : (
+        {docked && guest ? <h2 id={titleId} className={headStyles.head} data-page-updates-head="">{t("tabs.updates")}</h2>
+        : docked ? <h2 id={titleId} className={styles.dockedTitle}>{t("title")}</h2> : (
           <header className={styles.header}>
-            <h2 id={titleId}>{t("title")}</h2>
+            <h2 id={titleId}>{t(guest ? "tabs.updates" : "title")}</h2>
             <button type="button" className={styles.close} aria-label={t("close")} onClick={onClose}>
               <X size="small" aria-hidden="true" />
             </button>
           </header>
         )}
-        <div {...tabList.tabListProps} ref={tabListRef} className={styles.tabs}>
-          {(["updates", "analytics"] as const).map((value) => (
-            <NativeTab key={value} state={tabList.state} tabKey={value} className={styles.tab}
-              data-active={tab === value ? "true" : undefined}>
-              {t(`tabs.${value}`)}
-            </NativeTab>
-          ))}
-        </div>
+        {guest ? null : (
+          <div {...tabList.tabListProps} ref={tabListRef} className={styles.tabs}>
+            {shownTabs.map((value) => (
+              <NativeTab key={value} state={tabList.state} tabKey={value} className={styles.tab}
+                data-active={tab === value ? "true" : undefined}>
+                {t(`tabs.${value}`)}
+              </NativeTab>
+            ))}
+          </div>
+        )}
 
         {tab === "updates" ? (
-          <div className={styles.updates} role="tabpanel">
+          <div className={styles.updates} role={guest ? undefined : "tabpanel"}>
             {updatesList}
           </div>
         ) : <PageAnalyticsTab pageId={pageId} rowId={rowId} containerId={containerId} workspaceId={workspaceId} service={service} />}

@@ -9,6 +9,8 @@ import { openWholeWith } from "@/components/page/usePageSidePanel";
 import { barCommentsLook, barCommentsPress, barDockedPanel, barEditedTimeShown } from "@/components/page/barCommentsButton";
 import type { usePageCommentSummary } from "@/components/page/usePageCommentSummary";
 import type { DatabaseRowPageSnapshot } from "@/databaseRowPageWire.generated";
+import { opensPageUpdates } from "@/lib/pageAnalyticsPanelService";
+import { barOffersShare, useWorkspaceGuest } from "@/lib/pageReaderChrome";
 import type { Page } from "@/lib/types";
 import { usePageReach } from "@/lib/usePageOnlyReader";
 import type { Session } from "@/types";
@@ -79,14 +81,17 @@ export function DatabaseRowPageActions({
   const commentTriggerRef = useRef<HTMLButtonElement>(null);
   // Its comments button and edited time beside a docked panel, as a page's bar's (barCommentsButton.ts).
   const docked = barDockedPanel(topBar?.onClosePanel, topBar?.discussionsDocked), commentsLook = barCommentsLook(docked, discussionsOpen);
+  // A guest who may not edit the page has no share nor link, opened whole or peeked, as a page's bar (barOffersShare).
+  const shares = barOffersShare(canEditPage, useWorkspaceGuest(snapshot.workspaceId));
   return (
     <div className={styles.rowPeekActions} data-row-peek-actions>
       <TopBarOffline active={mode === "full" && !phone} />
       {suggesting.active ? <SuggestingPill compact={mode !== "full"} onStop={() => suggesting.control?.onChange(false)} /> : null}
       {topBar && mode === "full" && !suggesting.active && barEditedTimeShown(docked)
-        ? <TopBarEditedTime updatedAt={snapshot.row.updatedAt} onOpenUpdates={topBar.onOpenUpdates} data-row-peek-edited-time /> : null}
+        ? <TopBarEditedTime updatedAt={snapshot.row.updatedAt} onOpenUpdates={opensPageUpdates(canEditPage) ? topBar.onOpenUpdates : undefined}
+          activity={session ? { session, page: { ...snapshot.row, workspaceId: snapshot.workspaceId } } : undefined} data-row-peek-edited-time /> : null}
       {session && canEditPage ? <PagePresence pageId={snapshot.row.id} containerPageId={snapshot.row.containerPageId} session={session} /> : null}
-      {session ? (
+      {session && shares ? (
         <span style={{ position: "relative", display: "inline-flex" }}>
           {/* The top bar's "공유", as Notion's peek shows it (seen 2026-10-28). */}
           <button ref={shareRef} type="button" className={`${topBarStyles.action} ${topBarStyles.shareAction}`} data-row-peek-share aria-haspopup="dialog"
@@ -99,7 +104,7 @@ export function DatabaseRowPageActions({
           ) : null}
         </span>
       ) : null}
-      {topBar?.onCopyLink && !topBar.onClosePanel ? <RowPageCopyLink onCopyLink={topBar.onCopyLink} session={session} pageId={snapshot.row.id} onOpenShare={() => setShareOpen(true)} /> : null}
+      {topBar?.onCopyLink && !topBar.onClosePanel && shares ? <RowPageCopyLink onCopyLink={topBar.onCopyLink} session={session} pageId={snapshot.row.id} onOpenShare={() => setShareOpen(true)} /> : null}
       {/* As Notion's, the bar offers the page's comments once it has any. */}
       {onOpenComments && comments.any ? (
         <button ref={commentTriggerRef} type="button" className={`${styles.rowPeekIconAction} ${topBarStyles.panelButton}`} data-row-peek-comments

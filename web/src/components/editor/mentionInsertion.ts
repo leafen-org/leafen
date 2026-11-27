@@ -28,8 +28,8 @@ export function mentionInsertion(item: MentionItem): { text: string; attributes:
       };
     }
     case "person":
-      // The menu marks the person themself "(나)"; the mention keeps their name, as Notion's (seen 2026-10-04).
-      return { text: `@${item.name ?? item.label}`, attributes: { mention: "person", userId: item.userId }, spaced: true };
+      // The menu marks the person themself "(나)" after their name; the mention keeps the name alone, as Notion's (seen 2026-10-04).
+      return { text: `@${item.label}`, attributes: { mention: "person", userId: item.userId }, spaced: true };
     case "template":
       return { text: `@${item.label}`, attributes: { mention: "template", template: item.template }, spaced: true };
     case "automation":

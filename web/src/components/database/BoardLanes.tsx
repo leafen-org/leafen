@@ -49,7 +49,8 @@ export function BoardLanes<Row extends { id: string }>({ columns, lanes, laneKey
   addLane?: (className: string) => ReactNode;
   /** The sub-groups whose count shows, hidden until their menu shows it. */
   counted?: ReadonlySet<string>;
-  onLaneMenu?: (lane: BoardBucket<Row>, element: HTMLElement) => void;
+  /** A sub-group's "⋯", or its name chip (`naming`): an option's sub-group renamed in place (useBoardLanes). */
+  onLaneMenu?: (lane: BoardBucket<Row>, element: HTMLElement, naming?: boolean) => void;
   onLaneAdd?: (laneKey: string) => void;
   renderColumn(column: BoardBucket<Row>, part: "head" | "cell", laneKey?: string): ReactNode;
 }) {
@@ -75,9 +76,11 @@ export function BoardLanes<Row extends { id: string }>({ columns, lanes, laneKey
                   </span>
                   {lane.label}
                 </span>
-              ) : statusGroupTitle(lane, lane.label) ?? (lane.color ? <span className={styles.chip} style={chipStyle(lane.color)}><span className={styles.chipText}>{lane.label}</span></span>
-                : lane.key === "__none" ? <span className={styles.boardNoGroup}>{lane.label}</span>
-                : <span className={styles.boardValueGroup}><GroupPageGlyph page={lane.page} pixels={18} />{lane.label}</span>)}
+              ) : onLaneMenu && !lane.statusStage && (lane.statusOption || lane.color) && lane.key !== "__none" ? (
+                // An option's chip is pressed to rename it in place, as a column's (BoardColumn; Notion's, seen 2026-11-28).
+                <button type="button" className={`${styles.boardGroupBtn} ${laneStyles.laneName}`} data-lane-name onClick={(event) => onLaneMenu(lane, event.currentTarget, true)}>
+                  {laneName(lane)}</button>
+              ) : laneName(lane)}
               {counted?.has(lane.key) ? <span className={laneStyles.count}>{lane.rows.length}</span> : null}
               {onLaneMenu ? <button type="button" className={styles.boardGroupMore} data-lane-action aria-label={t("boardView:groupActions", { groupName: lane.label })}
                 onClick={(event) => onLaneMenu(lane, event.currentTarget)}><DotsHorizontal size="small" aria-hidden="true" /></button> : null}
@@ -95,4 +98,11 @@ export function BoardLanes<Row extends { id: string }>({ columns, lanes, laneKey
       {addLane?.(laneStyles.addLane)}
     </div>
   );
+}
+
+/** A sub-group's name as its head shows it: a status's mark or option, an option's chip, no value's words, or its value's. */
+function laneName<Row>(lane: BoardBucket<Row>) {
+  return statusGroupTitle(lane, lane.label) ?? (lane.color ? <span className={styles.chip} style={chipStyle(lane.color)}><span className={styles.chipText}>{lane.label}</span></span>
+    : lane.key === "__none" ? <span className={styles.boardNoGroup}>{lane.label}</span>
+    : <span className={styles.boardValueGroup}><GroupPageGlyph page={lane.page} pixels={18} />{lane.label}</span>);
 }

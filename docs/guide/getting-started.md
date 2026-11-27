@@ -33,7 +33,9 @@ Leafen window that is open follows each step it finishes.
    office network, Tailscale) — no code is asked there — or open the setup
    address the server printed ([Docker](../install.md#docker)), whose
    one-time code comes with it. Opened from the outside internet without
-   that address, the page says where to find it instead. Type your **Name** over the made-up one filled in —
+   that address, the page says where to find it instead; a server started
+   with a setup code (a hosting template makes one) asks for it under the
+   name, with where it is. Type your **Name** over the made-up one filled in —
    "Others see you by this name. You can change it any time." — and choose
    **Continue**. You are the first
    person here, so you look after this Leafen: you are its administrator and
@@ -164,15 +166,18 @@ on the server ([Self-hosting](../self-hosting.md#logging-in-on-another-device)).
 
 ## For agents and the API
 
-- An agent installs Leafen and takes the person through the first run with
-  `leafen setup start`, `leafen setup status` and the other `leafen setup`
-  commands, as [Installing Leafen](../install.md#for-agents) describes.
+- An agent installs Leafen the way
+  [Installing Leafen](../install.md#for-agents) says, looks around it in a
+  browser of its own when asked to try it, and takes the person through the
+  first run with `leafen setup start`, `leafen setup status` and the other
+  `leafen setup` commands.
 - `notion-create-pages` makes pages (at the workspace's top as private pages,
   or under a page, database or teamspace) with Markdown content.
 - `notion-get-setup-guide` gives the guide the server hands every agent when
   it connects.
 - `leafen account device-code` on the server makes a login code for an
-  account, for a person with no logged-in device.
+  account, for a person with no logged-in device or for an agent's own
+  browser ([Installing Leafen](../install.md#for-agents)).
 
 ## Differences from Notion
 

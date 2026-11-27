@@ -117,7 +117,7 @@ func workspacePermissionChange(notice storedWorkspacePermissionNotice, readerID 
 // time as a page's own line says it (workspace_activity_location.go):
 // Notion's "본인 〈page〉의 권한을 업데이트했습니다. · 지금 · 〈위 page〉" (seen
 // 2026-11-16 in a page's updates, two tabs at two times, and in the
-// workspace's updates, "· 리펜테스트페이지"). A page gone for good says none.
+// workspace's updates, "· 〈test page〉"). A page gone for good says none.
 func workspacePermissionPlace(ctx context.Context, app core.App, readerID, pageID string, places workspaceActivityPlaces) ([]workspaceActivityPlace, error) {
 	page, err := app.FindRecordById(pagesCollection, pageID)
 	if errors.Is(err, sql.ErrNoRows) {

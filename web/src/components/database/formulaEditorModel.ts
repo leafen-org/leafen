@@ -1,19 +1,14 @@
 import type { DbProperty } from "@/lib/types";
 import {
-  FORMULA_PAGE_FIELDS,
-  FormulaDate,
-  formulaPageField,
-  formulaPageFieldProperty,
-  isFormulaReference,
-  resolveFormulaPropertyReference,
-  tokenizeFormula,
-  type FormulaToken,
-  type FormulaValue,
+  FORMULA_PAGE_FIELDS, FormulaDate, formulaInText, formulaInvalidCharacters, formulaPageField, formulaPageFieldProperty, isFormulaReference,
+  resolveFormulaPropertyReference, tokenizeFormula, type FormulaToken, type FormulaValue,
 } from "./formulaCore";
 import {
   FORMULA_CATALOG, FORMULA_CATALOG_GROUPS, type FormulaCatalogEntry, type FormulaCatalogGroup, type FormulaValueKind,
 } from "./formulaFunctionCatalog";
-import { formulaPropertyValueType, formulaTypeProblems, formulaValueTypeOf, type FormulaValueType } from "./formulaTypes";
+import { formulaTypeProblems, formulaValueTypeOf, type FormulaValueType } from "./formulaTypes";
+import { formulaHelperContext } from "./formulaHelperContext";
+import type { FormulaMethodPlace } from "./formulaMethodForm";
 import { formulaPropertyTypes } from "./formulaPropertyTypes";
 import { formulaScopeNameType, type FormulaScopeName } from "./formulaScopeNames";
 
@@ -97,8 +92,9 @@ export function formulaTypeProblemsOf(
 // type problems where Notion's one check of the formula comes to them (seen
 // 2026-11-14: (1 - "a") + foo names the math first, foo + (1 - "a") foo
 // first, abs(2, 1 - "a") the extra value before the math in it): a value its
-// function doesn't take before what is inside it, the others once what they
-// are made of is checked; one with no place first.
+// function doesn't take before what is inside it, and a call short of values
+// before its values (formulaArity.ts), the others once what they are made of
+// is checked; one with no place first.
 export function formulaProblemsInOrder(named: readonly FormulaProblem[], types: readonly FormulaProblem[]): FormulaProblem[] {
   const at = (problem: FormulaProblem) => problem.at ?? (problem.key === "argumentExtra" ? problem.start ?? -1 : problem.end ?? -1);
   const waiting = [...named].sort((left, right) => at(left) - at(right));
@@ -132,8 +128,8 @@ export function formulaProblemPlace(problem: FormulaProblem) {
 // if and the word operators as keywords, other called
 // names as functions, numbers and true or false alike, operators, strings,
 // brackets and commas as punctuation, and a closed /* … */ as a comment
-// (#998066 in dark, seen 2026-11-14). Other names and anything the tokens
-// skip keep the text's colour.
+// (#998066 in dark, seen 2026-11-14). Other names keep the text's colour, and
+// so does what the tokens skip but a few characters (formulaSkippedPieces).
 export type FormulaHighlightKind = "keyword" | "function" | "number" | "boolean" | "operator" | "string" | "punctuation" | "comment";
 
 const FORMULA_KEYWORDS = new Set(["if", "ifs", "let", "lets", "and", "or", "not"]);
@@ -173,7 +169,7 @@ export function formulaPieces(
     // A name the formula runs with is a chip of its own, as Notion's "페이지 실행".
     const name = !chip && tokens[index - 1]?.type !== "dot" && !(open?.type === "paren" && open.value === "(") ? named(token) : undefined;
     const end = Math.min((chip ? close!.end : token.end) ?? start, expression.length);
-    if (start > at) pieces.push({ text: expression.slice(at, start) });
+    if (start > at) pieces.push(...formulaSkippedPieces(expression.slice(at, start)));
     pieces.push(chip
       ? { text: expression.slice(start, end), chip }
       : name ? { text: expression.slice(start, end), chip: { name: name.label, type: name.chip ?? name.type } }
@@ -181,8 +177,19 @@ export function formulaPieces(
     at = end;
     if (chip) index += 3;
   }
-  if (at < expression.length) pieces.push({ text: expression.slice(at) });
+  if (at < expression.length) pieces.push(...formulaSkippedPieces(expression.slice(at)));
   return pieces;
+}
+
+// What no token starts with, coloured as Notion's highlighter names it though
+// the formula can't be read (seen 2026-11-28 in Chrome, two tabs): "@", "=",
+// "&" and "|" as operators, ";", "{" and "}" as punctuation; the rest — "#",
+// "$", "~", "×", a single quote, the quote of text left open — and spaces
+// keep the text's colour.
+function formulaSkippedPieces(text: string): FormulaPiece[] {
+  return text.split(/([@=&|;{}])/u).filter(Boolean).map((part) => (
+    /^[@=&|]$/u.test(part) ? { text: part, kind: "operator" } : /^[;{}]$/u.test(part) ? { text: part, kind: "punctuation" } : { text: part }
+  ));
 }
 
 // formulaShownOffset is where a place in the formula's text falls as its
@@ -269,97 +276,6 @@ export function formulaPropertyInsert(property: Pick<DbProperty, "name">) {
   return `prop(${JSON.stringify(property.name)})|`;
 }
 
-export type FormulaHelperContext =
-  | { kind: "start" }
-  | { kind: "operand" }
-  | { kind: "value"; spaced: boolean; dotted: boolean; of: readonly FormulaValueKind[] | null };
-
-// formulaHelperContext is where the cursor stands, as Notion's helper tells
-// it apart (seen 2026-10-08): where an expression starts (nothing yet, or
-// after "(", "," or "["), after an operator, or after a value — right
-// after it, after a space, or after its "." — with the kinds that value is
-// (null when the formula can't tell).
-function formulaHelperContext(
-  expression: string, cursor: number, propertyType: (name: string) => string | undefined,
-  names: readonly FormulaScopeName[] = [],
-): FormulaHelperContext {
-  const before = expression.slice(0, formulaWordAt(expression, cursor).start);
-  const trimmed = before.trimEnd();
-  if (trimmed === "" || /[(,[]$/.test(trimmed)) return { kind: "start" };
-  if (/[-+*/%^=!<>&|?:]$/.test(trimmed) || /\b(?:and|or|not)$/.test(trimmed)) return { kind: "operand" };
-  const dotted = trimmed.endsWith(".");
-  const value = dotted ? trimmed.slice(0, -1) : trimmed;
-  return { kind: "value", spaced: !dotted && trimmed.length < before.length, dotted, of: formulaTrailingKinds(value, propertyType, names) };
-}
-
-const KIND_OF_TYPE: Partial<Record<FormulaValueType, FormulaValueKind>> = {
-  number: "number", text: "text", boolean: "boolean", date: "date", array: "list", block: "page", person: "person",
-};
-
-// The kinds of the value the text ends with: the last operand, with the
-// calls and methods written on it.
-function formulaTrailingKinds(
-  text: string, propertyType: (name: string) => string | undefined, names: readonly FormulaScopeName[] = [],
-): FormulaValueKind[] | null {
-  let tokens: FormulaToken[];
-  try {
-    tokens = tokenizeFormula(text);
-  } catch {
-    return null;
-  }
-  let index = tokens.length - 1;
-  for (;;) {
-    const token = tokens[index];
-    if (!token) return null;
-    if (token.type === "paren" && token.value === ")" || token.type === "bracket" && token.value === "]") {
-      let depth = 0;
-      for (; index >= 0; index -= 1) {
-        const { type, value } = tokens[index];
-        if (type === "paren" || type === "bracket") depth += value === ")" || value === "]" ? 1 : -1;
-        if (depth === 0) break;
-      }
-      if (index < 0) return null;
-      index -= 1;
-      if (tokens[index]?.type === "identifier" && tokens[index + 1].value === "(") index -= 1;
-    } else if (token.type === "number" || token.type === "string" || token.type === "identifier") {
-      index -= 1;
-    } else {
-      return null;
-    }
-    if (tokens[index]?.type !== "dot") break;
-    index -= 1;
-  }
-  const operand = text.slice(tokens[index + 1]?.start ?? 0);
-  const name = names.find((candidate) => candidate.name === operand.trim());
-  if (name && !name.shape) return name.page ? ["page"] : name.type === "person" ? ["person"] : propertyKind(name.type);
-  const named = /^prop\(("(?:[^"\\]|\\.)*")\)$/.exec(operand.trim());
-  if (named) {
-    const kind = propertyKind(propertyType(JSON.parse(named[1]) as string));
-    if (kind) return kind;
-  }
-  // A name holding what its type doesn't say (an automation's variable) is read as it holds it.
-  const shape = formulaValueTypeOf(operand, (name) => formulaPropertyValueType(propertyType(name)), formulaScopeNameType(names));
-  if (!shape) return null;
-  const kind = KIND_OF_TYPE[shape.type];
-  if (!kind) return null;
-  return kind === "list" && shape.items === "number" ? ["list", "numbers"] : [kind];
-}
-
-// A property's values as the helper tells them apart: a created or edited
-// by is one person, where a people property is a list of them.
-function propertyKind(type: string | undefined): FormulaValueKind[] | null {
-  switch (type) {
-    case "created_by": case "last_edited_by": return ["person"];
-    case "number": return ["number"];
-    case "checkbox": return ["boolean"];
-    case "date": case "created_time": case "last_edited_time": return ["date"];
-    case "multi_select": case "relation": case "person": return ["list"];
-    case "title": case "rich_text": case "url": case "email": case "phone": case "select": case "status": case "files":
-      return ["text"];
-    default: return null;
-  }
-}
-
 // formulaPropertyChoices are the properties a formula's editor offers: all
 // but the formula itself, the buttons, which hold no value, and the files, as
 // Notion's list leaves them out (buttons seen 2026-11-02, files 2026-11-03),
@@ -376,15 +292,16 @@ export function formulaPropertyChoices(
 export type FormulaSuggestionGroup =
   | { group: "names"; names: FormulaScopeName[] }
   | { group: "properties"; properties: DbProperty[] }
-  | { group: FormulaCatalogGroup; entries: FormulaCatalogEntry[] };
+  // method: where its functions are called on the value before the caret (formulaMethodForm.ts).
+  | { group: FormulaCatalogGroup; entries: FormulaCatalogEntry[]; method?: FormulaMethodPlace };
 
 export type { FormulaScopeName } from "./formulaScopeNames";
 
 // formulaSuggestions lists what the editor offers at the cursor, by group,
 // as Notion's helper does (seen 2026-10-08): where a value is expected the
 // properties, then where an expression starts not, true and false, then the
-// functions; right after a value only the operators and functions that take
-// it; after a value and a space the properties, the operators that take it
+// functions; right after a value or its "." only the operators and functions that take
+// it (which value each takes, formulaHelperContext.ts); after a value and a space the properties, the operators that take it
 // and the functions but let() and lets(). A typed name keeps whatever has
 // its letters in order (Notion's "abc" finds dateSubtract), those starting
 // with it first, then those holding it, in the same groups (seen again
@@ -394,22 +311,38 @@ export type { FormulaScopeName } from "./formulaScopeNames";
 export function formulaSuggestions(
   expression: string, cursor: number, properties: readonly DbProperty[], names: readonly FormulaScopeName[] = [],
 ): FormulaSuggestionGroup[] {
-  const needle = formulaWordAt(expression, cursor).word.toLowerCase();
+  // In a text value, its closing quote not yet before the caret, there are none ("결과 없음"), as Notion's (formulaEditorKeys.ts).
+  if (formulaInText(expression, cursor)) return [];
+  // Characters no token starts with right before the caret are passed over, as Notion's ("'abc'" offers what abc
+  // finds, "1 + @" what follows the "+"; seen 2026-11-28 in Chrome).
+  const unread = formulaInvalidCharacters(tokenizeFormula(expression.slice(0, cursor))).at(-1);
+  const { start, word } = formulaWordAt(expression, unread?.through === cursor ? unread.start : cursor), needle = word.toLowerCase();
   const typeOf = (name: string) => (formulaPageField(properties, name) ?? resolveFormulaPropertyReference(properties, name))?.type;
-  const context = formulaHelperContext(expression, cursor, typeOf, names);
+  const context = formulaHelperContext(expression.slice(0, start), typeOf, names);
+  if (context.kind === "none") return [];
   // Where a page name stands for the page (an automation's "페이지 실행"), its
   // properties are offered only after its ".", first, as Notion's are (seen
   // 2026-10-23); the names alone elsewhere.
   const paged = names.some((name) => name.page);
   const afterPage = paged && context.kind === "value" && context.dotted && (context.of?.includes("page") ?? false);
-  const takes = (entry: FormulaCatalogEntry) => context.kind === "value" && context.of
-    ? entry.after?.some((kind) => context.of?.includes(kind)) ?? false
-    : entry.after !== undefined;
+  // An operator by the kinds it takes, a function by its own; a value of a type not known takes no operator.
+  const takes = (entry: FormulaCatalogEntry) => {
+    if (context.kind !== "value") return entry.after !== undefined;
+    if (entry.group === "builtins" && context.unchained.includes(entry.label)) return false;
+    const kinds: readonly FormulaValueKind[] = (entry.group === "builtins" ? context.operators : context.of) ?? ["unknown"];
+    return entry.after?.some((kind) => kinds.includes(kind)) ?? false;
+  };
+  // A typed name finds any function and property by its letters, an operator or a value only where one may stand
+  // (Notion's, seen 2026-11-28 in Chrome: "a" and "1 + a" offer false but not and, "1 a" neither, "true o" or).
   const offered = (entry: FormulaCatalogEntry) => {
     if (entry.unlisted) return false;
-    if (needle) return true;
+    // After a value a typed name finds no let() or lets(), which name values, and after its "." only what is called
+    // on it (Notion's, seen 2026-11-28 in Chrome: "1le" and "1 le" offer length() but no let(), "1.da" median() alone).
+    const afterValue = context.kind === "value";
+    if (needle && entry.group !== "builtins" && !(afterValue && context.dotted)) return !(afterValue && entry.names);
     if (context.kind === "start") return entry.group !== "builtins" || entry.start === true;
-    if (context.kind === "operand") return entry.group !== "builtins";
+    if (context.kind === "operand") return entry.group !== "builtins" || (needle !== "" && entry.start === true);
+    if (context.operatorsOnly) return entry.group === "builtins" && takes(entry);
     if (context.dotted) return entry.group !== "builtins" && takes(entry);
     if (context.spaced) return entry.group === "builtins" ? takes(entry) : !entry.names;
     return takes(entry);
@@ -427,21 +360,27 @@ export function formulaSuggestions(
     return items.map((item) => ({ item, rank: rank(item) })).filter(({ rank }) => rank < 3)
       .sort((left, right) => left.rank - right.rank).map(({ item }) => item);
   };
+  // Right after a value with no name typed, or after its ".", a function is called on the value.
+  const method: FormulaMethodPlace | undefined = context.kind !== "value" || context.spaced ? undefined
+    : context.dotted ? "dotted" : needle ? undefined : "after";
   const groups: FormulaSuggestionGroup[] = [];
   for (const group of FORMULA_CATALOG_GROUPS) {
     const entries = ranked(FORMULA_CATALOG.filter((entry) => entry.group === group && offered(entry)), (entry) => entry.label);
-    if (entries.length) groups.push({ group, entries });
+    if (entries.length) groups.push({ group, entries, ...(method && group !== "builtins" ? { method } : {}) });
   }
-  const valueFirst = context.kind === "value" && !context.spaced;
+  // Right after a value with no name typed, or after its ".", nothing but what joins it or is called on it; a name
+  // typed right after a value finds the properties first, as anywhere else (Notion's, seen 2026-11-28 in Chrome:
+  // "1ab", "now()ab" and "(1)ab" list Created By and Last Edited By before abs(), "1.ab" no property).
+  const onValue = context.kind === "value" && !context.spaced && (context.dotted || !needle);
   const pageFields = names.find((name) => name.page && name.fields)?.fields?.map(({ property }) => property);
   const shown = afterPage ? ranked(pageFields ?? properties, (property) => property.name)
-    : paged || (valueFirst && !needle) ? [] : ranked(properties, (property) => property.name);
-  const named = afterPage || (valueFirst && !needle) ? [] : ranked(names, (name) => `${name.label} ${name.name}`);
+    : paged || onValue ? [] : ranked(properties, (property) => property.name);
+  const named = afterPage || onValue ? [] : ranked(names, (name) => `${name.label} ${name.name}`);
   const valueGroups: FormulaSuggestionGroup[] = [
     ...(named.length ? [{ group: "names" as const, names: named }] : []),
     ...(shown.length ? [{ group: "properties" as const, properties: shown }] : []),
   ];
-  return valueFirst && !afterPage ? [...groups, ...valueGroups] : [...valueGroups, ...groups];
+  return [...valueGroups, ...groups];
 }
 
 // The help for a property, as Notion's (seen 2026-11-03, a database of every

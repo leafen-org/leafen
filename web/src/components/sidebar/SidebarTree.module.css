@@ -120,13 +120,17 @@
   line-height: 1;
   pointer-events: none;
 }
-/* Where a drop lands between rows: a 4px line the row's whole width, ending
-   at the lower row's top, as Notion's (seen 2026-11-13: rgba(35,131,226,.43),
-   whatever the rows' depth). */
+/* Where a drop lands between rows: a 4px line the row's whole width, hung
+   from the bottom of the row or open page above — the 1px between them and
+   the lower row's top 3px —, and over a list's first row, ending at its top,
+   as Notion's (seen 2026-11-13: rgba(35,131,226,.43), whatever the rows'
+   depth; 2026-11-27 in two tabs at two times: bottom -4px of the row above,
+   top -4px of a list's first row), drawn over the row below. */
 .treeRow[data-drop="before"]::before,
 .treeRow[data-drop="after"]::after {
   content: "";
   position: absolute;
+  z-index: 1;
   inset-inline: 0;
   height: 4px;
   background: rgba(35, 131, 226, 0.43);
@@ -135,11 +139,34 @@
 .treeRow[data-drop="before"]::before {
   top: -4px;
 }
+.treeRow:not(:first-child)[data-drop="before"]::before {
+  top: -1px;
+}
 .treeRow[data-drop="after"]::after {
-  bottom: -1px;
+  bottom: -4px;
+}
+/* After an open page — a list's end (sidebarDropMap) — the line falls under
+   the pages it shows (its group follows it only while open), as Notion's
+   (seen 2026-11-27: under "하위 페이지 없음"). */
+.treeRow[aria-expanded="true"][data-drop="after"]::after {
+  display: none;
+}
+.treeRow[data-drop="after"] + [role="group"] {
+  position: relative;
+}
+.treeRow[data-drop="after"] + [role="group"]::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
 }
 .treeRow[data-drop-copy="true"][data-drop="before"]::before,
-.treeRow[data-drop-copy="true"][data-drop="after"]::after {
+.treeRow[data-drop-copy="true"][data-drop="after"]::after,
+.treeRow[data-drop-copy="true"][data-drop="after"] + [role="group"]::after {
   height: 3px;
   background: repeating-linear-gradient(
     90deg,

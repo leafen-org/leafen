@@ -29,7 +29,8 @@ import { DatabaseFilterMenu, DatabaseFilterSettings } from "./DatabaseFilterSett
 import { PhoneFilterList, phoneFilterCount, type PhoneOwnQuery } from "./DatabasePhoneFilterList";
 import { DatabaseSortSettings, viewSorts } from "./DatabaseSortSettings";
 import { DatabasePropertiesMenu } from "./DatabasePropertiesMenu";
-import { regroupedViewConfig, switchedLayoutConfig } from "./viewLayoutDefaults";
+import { regroupedViewConfig, switchedLayoutConfig, viewGroupsRows } from "./viewLayoutDefaults";
+import { carryViewChoice } from "@/lib/selectionMemory";
 import { DatabaseViewLayoutOptions } from "./DatabaseViewLayoutOptions";
 import { ChartSettingsPanel } from "./ChartSettingsPanel";
 import { ConditionalColorMenu } from "./ConditionalColorMenu";
@@ -43,7 +44,7 @@ import { databaseViewLabels } from "./databaseViewLabels";
 import { defaultOpenPageIn, effectiveOpenPageIn, renamedView, viewOwnName, ViewTypeIcon } from "./databaseViewShared";
 import type { GraphViewType } from "@/contentGraph";
 import { NotionSelect } from "./NotionSelect";
-import { BOARD_INITIAL_LOAD_LIMIT, boardLoadsByButton, FEED_INITIAL_LOAD_LIMIT, INITIAL_LOAD_VIEW_TYPES, TABLE_INITIAL_LOAD_OPTIONS, tableInitialLoadLimit } from "./queryProjection";
+import { offersInitialLoad, shownInitialLoadLimit, TABLE_INITIAL_LOAD_OPTIONS } from "./queryProjection";
 import { LAYOUT_VIEW_TYPES, layoutViewTypes, propertyPickerOrder, type DatabaseToolbarMenu } from "./databaseToolbarModel";
 import { DatabaseTouchFilterMenu } from "./DatabaseTouchFilterMenu";
 import styles from "./databaseSheet";
@@ -273,7 +274,7 @@ export function DatabaseToolbarMenus({
   const labels = databaseViewLabels();
   // The settings' screens are a phone's wherever the settings are a sheet, and so are the automations' (Notion's iPad sheets).
   const phone = phoneScreen || (wideSheets && (openMenu === "view" || openMenu === "newView" || openMenu === "automations"));
-  const ownPage = useDatabaseOwnPage();
+  const ownPage = useDatabaseOwnPage(), grouped = viewGroupsRows(activeView.config, properties, activeView.type);
   const { t } = useTranslation("propertyCell");
   const { t: chartT } = useTranslation("chartView");
   const layoutTab = usePageLayoutTabMode() !== null, dashboardSources = useDashboardFilterSources();
@@ -309,14 +310,13 @@ export function DatabaseToolbarMenus({
   // Filters know what a rollup of the related values shows, to ask which of them (Notion's "최소 하나의 옵션 ⌄").
   // A dashboard's filters name its widgets' sources' properties too (dashboardFilterSources.ts).
   const filterProperties = withRollupFilterTargets(dashboardSources ? propertyPickerOrder(dashboardFilterProperties(dashboardSources).map(dbProperty)) : dbProperties, filterSnapshot.propertiesByDatabase);
-  // A map, calendar or timeline without the property it places pages by
-  // makes one ("위치", "날짜"), as Notion's switch does, and places by it.
-  // Each layout keeps its own cards, preview and page opening, as Notion's.
-  // A view turns into a dashboard with itself as its first widget — a new
-  // view only takes the layout — and a dashboard turned into another layout
-  // loses its widgets, as Notion's.
+  // A map, calendar or timeline without the property it places pages by makes one ("위치", "날짜"), as Notion's switch does,
+  // and places by it. Each layout keeps its own cards and preview; the view keeps where its pages open (switchedLayoutConfig)
+  // and what it has chosen (carryViewChoice), as Notion's. A view turns into a dashboard with itself as its first widget — a
+  // new view only takes the layout — and a dashboard turned into another layout loses its widgets, as Notion's.
   async function switchLayout(type: GraphViewType) {
     if (type === "dashboard" && openMenu !== "newView" && onTurnIntoDashboard) { onTurnIntoDashboard(); return; }
+    carryViewChoice(activeView.id);
     const switched = (next: GraphView) => activeView.type === "dashboard" && onLeaveDashboard ? onLeaveDashboard(next) : onUpdateView(next);
     const config = switchedLayoutConfig(activeView.config, activeView.type, type, properties);
     // A view still called its layout's name has none of its own: it takes the
@@ -398,19 +398,18 @@ export function DatabaseToolbarMenus({
               />
             </label>
           )}
-          initialLoad={(INITIAL_LOAD_VIEW_TYPES.has(activeView.type) && (activeView.type === "board" ? boardLoadsByButton(activeView, ownPage) : !ownPage)) || activeView.type === "feed" ? (
-            // An inline table's, board's, list's, gallery's or timeline's "처음 불러오기": how many
-            // rows or cards it first shows (a board's in each column, or each cell of its
-            // sub-groups on a database's own page too), as Notion's (seen 2026-10-01; a board's
-            // is 25 unless set; 2026-11-15); a feed's on any page, 10 unless set (seen 2026-10-05).
+          initialLoad={offersInitialLoad(activeView, ownPage, grouped) ? (
+            // "처음 불러오기": how many rows, cards or posts the view first shows (a board's in
+            // each column, a grouped view's in each group), where its layout offers it
+            // (offersInitialLoad), saying the one its layout and grouping take until one is
+            // chosen (shownInitialLoadLimit), as Notion's.
             <label className={`${styles.layoutRow} ${styles.layoutChoiceRow}`}>
               <span>{labels.initialLoad}</span>
               <NotionSelect
                 ariaLabel={labels.initialLoad}
                 className={styles.layoutChoice}
                 buttonClassName={styles.layoutChoiceButton} rowChoice
-                value={String(tableInitialLoadLimit(activeView, activeView.type === "board" ? BOARD_INITIAL_LOAD_LIMIT
-                  : activeView.type === "feed" ? FEED_INITIAL_LOAD_LIMIT : undefined))}
+                value={String(shownInitialLoadLimit(activeView, grouped))}
                 options={TABLE_INITIAL_LOAD_OPTIONS.map((limit) => ({ value: String(limit), label: String(limit) }))}
                 onChange={(limit) => onUpdateView({ ...activeView, config: { ...activeView.config, initialLoadLimit: Number(limit) } })}
               />

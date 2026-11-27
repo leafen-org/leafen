@@ -1,17 +1,15 @@
 import { useId } from "react";
 import {
   ArrowsMerge as PhosphorArrowsMerge,
-  FileCsv as PhosphorFileCsv,
   FilePdf as PhosphorFilePdf,
-  FileZip as PhosphorFileZip,
   SquareSplitHorizontal as PhosphorSquareSplitHorizontal,
-  Tabs as PhosphorTabs,
   TextAlignJustify as PhosphorTextAlignJustify,
 } from "@phosphor-icons/react";
 import { IconSvg, PhosphorIconSvg, type LeafenIconProps } from "./iconPrimitives";
 import { ServiceIcon } from "./serviceIcons";
 
 export * from "./mediaBlockMarks";
+export * from "./blockMenuMarks";
 
 // The blocks' marks in the "/" and "+" menus and "전환", drawn after the
 // shapes Notion uses there (seen 2026-10-07): each names what the block
@@ -19,11 +17,12 @@ export * from "./mediaBlockMarks";
 // boxed T. Leafen draws them itself on its 20-unit grid.
 
 // Notion's feed, map and dashboard views, drawn here from its measures
-// (seen 2026-11-03): a newspaper with a folded flap at its left, lines and a
+// (seen 2026-11-03; the feed's flap 2.4 wide from 2.5 on the 20 box, again
+// 2026-11-27): a newspaper with a folded flap at its left, lines and a
 // box on it; a map folded in three; two wide and two narrow boxes crosswise.
 export const FeedIcon = (p: LeafenIconProps) => (
   <IconSvg {...p} glyph="feed">
-    <path d="M6.9 10V5.8a.8.8 0 0 1 .8-.8h6.6a.8.8 0 0 1 .8.8v8a1.2 1.2 0 0 1-1.2 1.2H5.7a.7.7 0 0 1-.7-.7V10h1.9v4.3a.7.7 0 0 1-.7.7" />
+    <path d="M6.9 10V5.8a.8.8 0 0 1 .8-.8h6.6a.8.8 0 0 1 .8.8v8a1.2 1.2 0 0 1-1.2 1.2H5.2a.7.7 0 0 1-.7-.7V10h2.4v4.3a.7.7 0 0 1-.7.7" />
     <path d="M8.9 7h4.2" />
     <path d="M8.9 9h4.2" />
     <rect x="8.9" y="11" width="4.2" height="1.6" rx=".2" />
@@ -45,10 +44,6 @@ export const DashboardIcon = (p: LeafenIconProps) => (
     <rect x="4.4" y="11" width="3.6" height="3.2" rx=".8" />
     <rect x="10" y="11" width="5.6" height="3.2" rx=".8" />
   </IconSvg>
-);
-
-export const TabsIcon = (p: LeafenIconProps) => (
-  <PhosphorIconSvg {...p} icon={PhosphorTabs} />
 );
 
 export const PdfFileIcon = (p: LeafenIconProps) => (
@@ -112,37 +107,12 @@ export const SlidesRowIcon = (p: LeafenIconProps) => {
   );
 };
 
-export const CsvFileIcon = (p: LeafenIconProps) => (
-  <PhosphorIconSvg {...p} icon={PhosphorFileCsv} />
-);
-
-export const ZipFileIcon = (p: LeafenIconProps) => (
-  <PhosphorIconSvg {...p} icon={PhosphorFileZip} />
-);
-
 export const MarkdownTextIcon = (p: LeafenIconProps) => (
   <PhosphorIconSvg {...p} icon={PhosphorTextAlignJustify} />
 );
 
 export const WordDocumentIcon = (p: LeafenIconProps) => (
   <ServiceIcon {...p} service="word" name="Word" />
-);
-
-export const CalloutBlockIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="callout-block">
-    <rect x="3.8" y="3.8" width="12.4" height="12.4" rx="2.2" />
-    <path d="M7.4 7.4h5.2" />
-    <path d="M10 7.4v5.4" />
-  </IconSvg>
-);
-
-export const PageLinkIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="page-link">
-    <path d="M12.6 8V6.6L10 3.8H5.6a1 1 0 0 0-1 1v10.4a1 1 0 0 0 1 1h3" />
-    <path d="M10 3.8v2.8h2.6" />
-    <path d="M11.2 16.4 16.4 11.2" />
-    <path d="M12.6 11.2h3.8V15" />
-  </IconSvg>
 );
 
 // Notion's form (seen 2026-11-03, drawn here from its measures): a page with
@@ -181,16 +151,16 @@ export const FormSubmittedIcon = (p: LeafenIconProps) => (
 );
 
 // A table standing in a frame's four corners, as Notion's "데이터베이스 -
-// 인라인" (seen 2026-11-07, its 20-unit art read on this 16-unit box): two
-// columns of three cells, taller than wide.
+// 인라인" (read again 2026-11-27 on its 20-unit box at 20px): corners 13.75
+// across in 1.25 lines, and inside them a table 7.2 by 9.2 of two columns and
+// three rows in 1.2 lines.
 export const InlineDatabaseIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="inline-database">
-    <path d="M4.64 6.96V5.92a1.28 1.28 0 0 1 1.28-1.28h1.04" />
-    <path d="M13.04 4.64h1.04a1.28 1.28 0 0 1 1.28 1.28v1.04" />
-    <path d="M15.36 13.04v1.04a1.28 1.28 0 0 1-1.28 1.28h-1.04" />
-    <path d="M6.96 15.36H5.92a1.28 1.28 0 0 1-1.28-1.28v-1.04" />
-    <rect x="7.64" y="6.28" width="4.72" height="7.36" rx="1" />
-    <path d="M10 6.28v7.36M7.64 8.73h4.72M7.64 11.19h4.72" />
+  <IconSvg {...p} viewBox="0 0 20 20" glyph="inline-database" line={1.25}>
+    <path d="M3.75 7.3V5.75a2 2 0 0 1 2-2H7.3M12.7 3.75h1.55a2 2 0 0 1 2 2V7.3M16.25 12.7v1.55a2 2 0 0 1-2 2H12.7M7.3 16.25H5.75a2 2 0 0 1-2-2V12.7" />
+    <g strokeWidth="1.2">
+      <rect x="7" y="6" width="6" height="8" rx="1" />
+      <path d="M10 6v8M7 8.65h6M7 11.35h6" />
+    </g>
   </IconSvg>
 );
 
@@ -201,21 +171,6 @@ export const LinkedViewIcon = (p: LeafenIconProps) => (
     <path d="M7.2 3.6v9.6" />
     <path d="M11.6 16.4 16.4 11.6" />
     <path d="M13.2 11.6h3.2v3.2" />
-  </IconSvg>
-);
-
-export const TableOfContentsIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="table-of-contents">
-    <path d="M4 5.4h12" />
-    <path d="M6.8 10h9.2" />
-    <path d="M9.6 14.6H16" />
-  </IconSvg>
-);
-
-export const MathBlockIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="math-block">
-    <rect x="3.6" y="3.6" width="12.8" height="12.8" rx="2.2" />
-    <path d="M12.6 6.8H7.6l2.8 3.2-2.8 3.2h5" />
   </IconSvg>
 );
 
@@ -243,44 +198,6 @@ export const LinkCaptureIcon = (p: LeafenIconProps) => (
   <IconSvg {...p} viewBox="0 0 20 20" glyph="link-capture">
     <path strokeWidth="1.25" d="M3.75 7.25v-1.5a2 2 0 0 1 2-2h1.5M12.75 3.75h1.5a2 2 0 0 1 2 2v1.5M3.75 12.75v1.5a2 2 0 0 0 2 2h1.5" />
     <path strokeWidth="1.25" d="M15.78 14.09 16.88 12.99A2 2 0 0 0 14.05 10.16L12.95 11.26M11.26 12.95 10.16 14.05A2 2 0 0 0 12.99 16.88L14.09 15.78M12.28 14.76 14.76 12.28" />
-  </IconSvg>
-);
-
-export const ButtonBlockIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="button-block">
-    <path d="M11.6 6V5.6a1.2 1.2 0 0 0-1.2-1.2H4.8a1.2 1.2 0 0 0-1.2 1.2v8.8a1.2 1.2 0 0 0 1.2 1.2h5.6a1.2 1.2 0 0 0 1.2-1.2V14" />
-    <path d="M7.6 10h8.6" />
-    <path d="m13.8 7.6 2.4 2.4-2.4 2.4" />
-  </IconSvg>
-);
-
-export const BreadcrumbIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="breadcrumb">
-    <path d="M14.6 7.8v7.4a1 1 0 0 1-1 1H6.4a1 1 0 0 1-1-1V4.8a1 1 0 0 1 1-1h4.6Z" />
-    <path d="M8.6 9.2 8 14" />
-    <path d="M11.6 9.2 11 14" />
-    <path d="M7.4 10.8h5.2" />
-    <path d="M7 12.6h5.2" />
-  </IconSvg>
-);
-
-/** Columns: a box split into as many parts as it has columns. */
-export function ColumnsSplitIcon({ count = 2, ...p }: LeafenIconProps & { count?: number }) {
-  const parts = Math.min(Math.max(count, 2), 5);
-  const dividers = Array.from({ length: parts - 1 }, (_, index) => 3.6 + (12.8 * (index + 1)) / parts);
-  return (
-    <IconSvg {...p} glyph={`columns-${parts}`}>
-      <rect x="3.6" y="4.4" width="12.8" height="11.2" rx="1.8" />
-      {dividers.map((x) => <path key={x} d={`M${x.toFixed(2)} 4.4v11.2`} />)}
-    </IconSvg>
-  );
-}
-
-export const MermaidIcon = (p: LeafenIconProps) => (
-  <IconSvg {...p} glyph="mermaid">
-    <path d="M10 16V10.4" />
-    <path d="M10 10.4C8.8 8 6.4 6.6 3.8 6.8c.9 2.6 3.4 4.1 6.2 3.6Z" />
-    <path d="M10 10.4c1.2-2.4 3.6-3.8 6.2-3.6-.9 2.6-3.4 4.1-6.2 3.6Z" />
   </IconSvg>
 );
 

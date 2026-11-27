@@ -45,7 +45,7 @@ export function NativeTiptapBlockView(props: NodeViewProps) {
   const synced = block?.type === "synced_block" && occurrenceId ? occurrenceId : null;
   const chosen = useNativeTiptapUi(state => synced ? syncedFrameChoice(state.selection, synced, graphIndex.byId) : null, null);
   const source = block && syncedBlockSource(block, adapter.pageId, adapter.graph.blocks);
-  const localSynced = block?.type === "synced_block" && !!source && (!source.copy || source.pageId === adapter.pageId);
+  const localSynced = block?.type === "synced_block" && !!source && (!source.copy || source.pageId === adapter.pageId && !source.page);
   // A column list as wide as its outer edges were dragged (columnListWidth).
   const [wrapper, setWrapper] = useState<HTMLElement | null>(null);
   const wide = useWideColumnList(wrapper, block?.type === "column_list" ? storedListWidth(block.content) : null);

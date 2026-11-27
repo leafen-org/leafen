@@ -26,7 +26,7 @@ export function timelineGroupAddKind(groupProperty: GraphProperty | undefined, c
  * "⋯" with the group menu, its "+" and "+ 새로 만들기" making a row in the
  * group, and "+ 신규 그룹" adding what its grouping takes (timelineGroupAddKind).
  */
-export function useTimelineGroupActions({ groupProperty, config, writable, groups, environment, createInGroup, createInTable, updateConfig, commitProperty, trashRows, openGroupSettings }: {
+export function useTimelineGroupActions({ groupProperty, config, writable, groups, environment, createInGroup, createInTable, updateConfig, commitProperty, trashRows, openGroupSettings, loadMore, loadLimit }: {
   groupProperty?: GraphProperty;
   config: Record<string, unknown>;
   /** The view's own settings may change. */
@@ -42,6 +42,9 @@ export function useTimelineGroupActions({ groupProperty, config, writable, group
   commitProperty?(property: GraphProperty): Promise<void>;
   trashRows?(rowIds: readonly string[]): void;
   openGroupSettings?(trigger: HTMLElement): void;
+  /** A group's "더 불러오기" and its "⋯" (TimelineGroupActions). */
+  loadMore?(key: string): void;
+  loadLimit?: TimelineGroupActions["loadLimit"];
 }): { actions: TimelineGroupActions; menu: ReactNode } {
   const [menu, setMenu] = useState<ViewGroupMenuAt | null>(null);
   const kind = timelineGroupAddKind(groupProperty, config, writable, Boolean(commitProperty));
@@ -62,8 +65,8 @@ export function useTimelineGroupActions({ groupProperty, config, writable, group
   }
   const actions: TimelineGroupActions = {
     onAdd: createInGroup, onAddInTable: createInTable,
-    onMenu: writable && groupProperty ? (group, element) => setMenu({
-      group: { ...group, rows: group.rowIds.map((id) => ({ row: { id } })) }, position: popoverAnchorOf(element), returnTo: element }) : undefined,
+    onMenu: writable && groupProperty ? (group, element, naming) => setMenu({
+      group: { ...group, rows: group.rowIds.map((id) => ({ row: { id } })) }, position: popoverAnchorOf(element), returnTo: element, naming }) : undefined,
     newGroup: kind && groupProperty ? {
       kind, property: groupProperty, environment,
       taken: kind === "option" ? groupOptionNames(groupProperty) : groups.map((group) => group.label ?? ""),
@@ -71,6 +74,7 @@ export function useTimelineGroupActions({ groupProperty, config, writable, group
       onAdd: addGroup,
     } : undefined,
     showCounts: config.showGroupCounts === true,
+    onLoadMore: loadMore, loadLimit,
   };
   return {
     actions,

@@ -76,13 +76,13 @@ type notionMarkdownMentions struct {
 	// names: whether one is in the trash itself, which "v2" writes by its
 	// address alone (notion_markdown_mention_targets.go); zero names none so.
 	Targets notionMarkdownMentionTargets
-	// SyncedPage is the page a synced block stands on, as the reader names
-	// it, and SyncedBlocks what it holds, for a reference to it, and whether
-	// it holds more than the Markdown's records take.
-	SyncedPage   func(blockID string) string
-	SyncedBlocks func(blockID string) ([]workspaceExportMarkdownBlock, bool)
-	// FileAddress is the address a stored file takes for the reader, with
-	// the block that holds it.
+	// SyncedPage is the page a synced block stands on, as the reader names it, and SyncedBlocks what it holds, for a
+	// reference to it, and whether it holds more than the Markdown's records take; SyncedPageBody reads a page for
+	// a reference to its body (notion_page_markdown_synced_page.go).
+	SyncedPage     func(blockID string) string
+	SyncedBlocks   func(blockID string) ([]workspaceExportMarkdownBlock, bool)
+	SyncedPageBody func(pageID string) notionMarkdownSyncedPage
+	// FileAddress is the address a stored file takes for the reader, with the block that holds it.
 	FileAddress func(blockID, fileID, name string) string
 }
 

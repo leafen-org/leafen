@@ -1,7 +1,8 @@
 import { readDatabaseRowPage } from "@/databaseRowPageApi";
 import { databaseRowPageErrorCodes } from "@/databaseRowPageWire.generated";
 import { rowNotYetMade } from "@/lib/rowMadeHere";
-import { mergeTitleValues, sameTitle, type TitleValue } from "@/lib/titleMerge";
+import type { TitleValue } from "@/lib/titleMerge";
+import { sendTitleOverBase } from "@/lib/typedTitleSend";
 import type { TextSpan } from "@/lib/types";
 import type { Session } from "@/types";
 
@@ -16,10 +17,11 @@ import type { Session } from "@/types";
 // it, and it is merged with that one and sent again (2026-11-11: two saves
 // 20ms apart both read the same title, and the later wrote over the other).
 
-async function rowTitleNow(session: Session, rowId: string): Promise<TitleValue | null> {
+/** A row's title (`propertyId` none) or one of its values as words, as the server holds it now; null when it can't be read. */
+export async function rowValueNow(session: Session, rowId: string, propertyId?: string): Promise<TitleValue | null> {
   try {
     const { row } = await readDatabaseRowPage(session, rowId, { limit: 1 });
-    const cell = Object.values(row.values).find((value) => value.type === "title");
+    const cell = propertyId === undefined ? Object.values(row.values).find((value) => value.type === "title") : row.values[propertyId];
     const title = typeof cell?.value === "string" ? cell.value : "";
     return cell?.spans?.length ? { title, spans: cell.spans as TextSpan[] } : { title };
   } catch {
@@ -32,16 +34,14 @@ export function isRowValueChanged(error: unknown) {
   return typeof error === "object" && error !== null && Reflect.get(error, "code") === databaseRowPageErrorCodes.valueChanged;
 }
 
-// How many times a title meets one saved in between before it is written over whatever is there.
-const CHANGED_TRIES = 4;
-
 /**
  * Writes a row's title `typed` on `base`, the server's title the typing was
- * made on: merged with the server's title now when it has changed since; as
- * typed when it hasn't or can't be read. `write` is given the title the
- * server held (`read`), which the server holds it to; refused for another
- * title saved since, it is read, merged and written again. The last try,
- * and a write that can't hold the server to a title, writes it as merged.
+ * made on, by the one rule a typed title goes by (typedTitleSend.ts): merged
+ * with the server's title now when it has changed since; as typed when it
+ * hasn't or can't be read. `write` is given the title the server held
+ * (`read`), which the server holds it to; refused for another title saved
+ * since, it is read, merged and written again. The last try, and a write
+ * that can't hold the server to a title, writes it as merged.
  * A row made here that the server doesn't have yet has no title elsewhere to
  * meet: it is written as typed, at once (2026-11-12: on a stalled network
  * the title typed in a new row's page waited for the server to be read,
@@ -56,18 +56,8 @@ export async function writeRowTitle<Result>(
   write: (title: TitleValue, read: TitleValue | null) => Promise<Result>,
 ): Promise<Result> {
   if (rowNotYetMade(rowId)) return write(typed, null);
-  try {
-    return await write(typed, base);
-  } catch (error) {
-    if (!isRowValueChanged(error)) throw error;
-  }
-  for (let tries = 2; ; tries += 1) {
-    const now = await rowTitleNow(session, rowId);
-    const title = now && !sameTitle(now, base) ? mergeTitleValues(base, typed, now) : typed;
-    try {
-      return await write(title, tries < CHANGED_TRIES ? now : null);
-    } catch (error) {
-      if (!isRowValueChanged(error) || tries >= CHANGED_TRIES) throw error;
-    }
-  }
+  return sendTitleOverBase<TitleValue, Result>({
+    base, typed, readNow: () => rowValueNow(session, rowId), titleOf: (now) => now, changed: isRowValueChanged, overLast: true,
+    write: (title, now) => write(title, now === undefined ? base : now),
+  });
 }

@@ -9,17 +9,15 @@ import { QuestionCircleIcon } from "@/icons/leafen/automationIcons";
 import { PhoneSheet, PhoneSheetGroup } from "@/components/shell/PhoneSheet";
 import { PropertyIcon } from "./PropertyIcon";
 import { PropertyTypeIcon } from "./PropertyTypeIcon";
-import { evaluateFormulaExpressionResult, FormulaDate, FormulaRichText } from "./formulaCore";
-import { formulaDateText } from "./formulaDateText";
-import { formulaLocale } from "./formulaLocales";
-import { formulaTimeZone } from "./formulaDates";
-import { formatFormulaValue } from "./formulaValues";
-import { FORMULA_EXAMPLE_SAMPLES, FORMULA_SIGNATURES, type FormulaCatalogEntry, type FormulaReturnType } from "./formulaFunctionCatalog";
+import { FORMULA_CATALOG, FORMULA_SIGNATURES, type FormulaCatalogEntry, type FormulaReturnType } from "./formulaFunctionCatalog";
 import { FORMULA_PROPERTY_HELP_KINDS, formulaPieces, formulaPropertyExamples, type FormulaScopeName, type FormulaSuggestionGroup } from "./formulaEditorModel";
+import { formulaMethodExamples, formulaMethodTitle, type FormulaMethodPlace } from "./formulaMethodForm";
+import { formulaHelpResult } from "./formulaHelpResult";
 import { localizedPropertyTypeLabel } from "./propertyTypes";
 import codeStyles from "./FormulaCode.module.css";
 import { FORMULA_CODE, formulaTokenClass } from "./formulaTokenTheme";
 import styles from "./FormulaEditor.module.css";
+import emptyStyles from "./FormulaHelperEmpty.module.css";
 import phoneStyles from "./FormulaEditorPhone.module.css";
 
 // The formula editor's help, as Notion's: the suggestions for the name being
@@ -29,14 +27,15 @@ import phoneStyles from "./FormulaEditorPhone.module.css";
 export type FormulaHelperItem =
   | { kind: "name"; name: FormulaScopeName }
   | { kind: "property"; property: DbProperty }
-  | { kind: "entry"; entry: FormulaCatalogEntry };
+  // method: called on the value before the caret, as its help then writes it (formulaMethodForm.ts).
+  | { kind: "entry"; entry: FormulaCatalogEntry; method?: FormulaMethodPlace };
 
 function formulaHelperItems(groups: FormulaSuggestionGroup[]): FormulaHelperItem[] {
   return groups.flatMap((group): FormulaHelperItem[] => ("names" in group
     ? group.names.map((name) => ({ kind: "name", name }))
     : "properties" in group
     ? group.properties.map((property) => ({ kind: "property", property }))
-    : group.entries.map((entry) => ({ kind: "entry", entry }))));
+    : group.entries.map((entry) => ({ kind: "entry", entry, ...(group.method ? { method: group.method } : {}) }))));
 }
 
 function formulaHelperItemKey(item: FormulaHelperItem) {
@@ -51,8 +50,10 @@ const RETURN_ICON: Record<FormulaReturnType, PropertyType> = {
   number: "number", text: "rich_text", boolean: "checkbox", date: "date", list: "multi_select", person: "person", any: "formula",
 };
 
-export function FormulaEditorHelper({ groups, names = [], edit, ownerRef, phone, onCaretReady, onInsert }: {
+export function FormulaEditorHelper({ groups, names = [], edit, enclosing = "", ownerRef, phone, onCaretReady, onInsert }: {
   groups: FormulaSuggestionGroup[];
+  /** The function whose parentheses the caret is in (formulaHelperContext.ts formulaEnclosingCall), or "". */
+  enclosing?: string;
   /**
    * On a phone the suggestions alone, across the sheet, each with a "?" at its end that opens its help as a sheet
    * of its own, "정의" with a blue "완료" (Notion's, seen 2026-11-14 at 402pt): flat on the sheet's grey where the
@@ -73,6 +74,13 @@ export function FormulaEditorHelper({ groups, names = [], edit, ownerRef, phone,
     keyOf: formulaHelperItemKey, textOf: helperItemLabel, pointerTakesAtOnce: true,
     onPick: onInsert, onClose: () => {} });
   const selected = items[picker.active] ?? null;
+  // With no suggestion ("결과 없음") the help stays: the function the caret is in, else the suggestion last
+  // chosen, as Notion's (seen 2026-11-27 in Chrome, two tabs: lower( with 'Done' chosen, then " shows lower()'s
+  // help; pi() + q chooses equal(), then qqq keeps equal()'s).
+  const lastChosen = useRef<FormulaHelperItem | null>(null);
+  if (selected) lastChosen.current = selected;
+  const around = enclosing ? FORMULA_CATALOG.find((entry) => entry.key === enclosing && entry.group !== "builtins" && !entry.unlisted) : undefined;
+  const shownHelp = selected ?? (around ? { kind: "entry" as const, entry: around } : lastChosen.current);
   const [defined, setDefined] = useState<FormulaHelperItem | null>(null);
   useLayoutEffect(() => { onCaretReady(picker.onCaretKeyDown); return () => onCaretReady(null); }, [picker.onCaretKeyDown, onCaretReady]);
   if (phone) return (
@@ -119,6 +127,8 @@ export function FormulaEditorHelper({ groups, names = [], edit, ownerRef, phone,
   return (
     <div className={styles.helper}>
       <div {...picker.listBoxProps} ref={listRef} className={styles.helperList}>
+        {/* None where the caret is (in a text value, after a name nothing is called): "결과 없음" at the list's head, as Notion's. */}
+        {items.length ? null : <div className={emptyStyles.empty}>{t("noResult")}</div>}
         {groups.map((group, index) => (
           <div key={group.group} role="group" aria-label={t(`groups.${group.group}`)}>
             {/* The names and the properties under one "Properties", as Notion lists an automation's. */}
@@ -142,7 +152,7 @@ export function FormulaEditorHelper({ groups, names = [], edit, ownerRef, phone,
           </div>
         ))}
       </div>
-      <div className={styles.helperDetail}>{selected ? <FormulaHelperDetail item={selected} names={names} /> : null}</div>
+      <div className={styles.helperDetail}>{shownHelp ? <FormulaHelperDetail item={shownHelp} names={names} /> : null}</div>
     </div>
   );
 }
@@ -182,9 +192,11 @@ function FormulaHelperDetail({ item, names }: { item: FormulaHelperItem; names: 
       </>
     );
   }
-  const { entry } = item;
+  const { entry, method } = item;
   const description = entry.group === "builtins" ? t(`operators.${entry.key}`) : t(`functions.${entry.key}`);
-  const title = entry.group === "builtins" ? entry.label : `${entry.key}(${FORMULA_SIGNATURES[entry.key] ?? ""})`;
+  const title = entry.group === "builtins" ? entry.label
+    : method ? formulaMethodTitle(entry.key) : `${entry.key}(${FORMULA_SIGNATURES[entry.key] ?? ""})`;
+  const examples = method ? formulaMethodExamples(entry) : entry.examples.map((text) => ({ text, run: text }));
   return (
     <>
       <div className={styles.detailTitle}>
@@ -192,8 +204,8 @@ function FormulaHelperDetail({ item, names }: { item: FormulaHelperItem; names: 
       </div>
       {/* Keyed by place: a description's blank lines (formatNumber's) are alike. */}
       {description.split("\n").map((line, index) => <p key={index} className={styles.detailText}>{line}</p>)}
-      <div className={styles.examples}>{entry.examples.map((example) => (
-        <FormulaExample key={example} expression={example} evaluate={!entry.bare} chips={SAMPLE_CHIPS} />
+      <div className={styles.examples}>{examples.map(({ text, run }) => (
+        <FormulaExample key={text} expression={text} run={run} evaluate={!entry.bare} chips={SAMPLE_CHIPS} />
       ))}</div>
     </>
   );
@@ -203,34 +215,13 @@ const NO_CHIPS = () => undefined;
 // An example's properties are plain chips, as Notion's help writes them.
 const SAMPLE_CHIPS = (name: string) => ({ name, type: "" as const });
 
-function sampleProperty(name: string) {
-  if (!(name in FORMULA_EXAMPLE_SAMPLES)) throw new Error(`No sample for ${name}`);
-  return FORMULA_EXAMPLE_SAMPLES[name];
-}
-
-function FormulaExample({ expression, evaluate, chips, names }: {
-  expression: string; evaluate: boolean; chips?: (name: string) => { name: string; type: PropertyType | "" } | undefined;
+// run is what works out its result, where it is written otherwise (formulaMethodExamples).
+function FormulaExample({ expression, run = expression, evaluate, chips, names }: {
+  expression: string; run?: string; evaluate: boolean; chips?: (name: string) => { name: string; type: PropertyType | "" } | undefined;
   names?: readonly FormulaScopeName[];
 }) {
   const { t } = useTranslation("formulaEditor");
-  const result = useMemo(() => {
-    if (!evaluate) return "";
-    const outcome = evaluateFormulaExpressionResult(expression, sampleProperty);
-    if (outcome.error) return "";
-    const viewer = { timeZone: formulaTimeZone(undefined), locale: formulaLocale() };
-    // As Notion's help writes a result: text quoted, a date as a mention, a
-    // list in brackets, a number whole (sqrt(7) = 2.6457513110645907),
-    // nothing as "empty".
-    const shown = (value: typeof outcome.value): string => value === null || value === "" ? "empty"
-      : typeof value === "number" && Number.isFinite(value) ? String(value)
-      : value instanceof FormulaDate ? `@${formulaDateText(value, viewer)}`
-      : Array.isArray(value) ? `[${value.map(shown).join(", ")}]`
-      : typeof value === "string" || value instanceof FormulaRichText ? JSON.stringify(formatFormulaValue(value))
-      : formatFormulaValue(value);
-    const result = shown(outcome.value);
-    // A result that only repeats the example is left out (true).
-    return result === expression ? "" : result;
-  }, [evaluate, expression]);
+  const result = useMemo(() => (evaluate ? formulaHelpResult(expression, run) : ""), [evaluate, expression, run]);
   const pieces = useMemo(() => (chips ? formulaPieces(expression, chips, names) : [{ text: expression }]), [chips, expression, names]);
   return (
     <div className={styles.example}>

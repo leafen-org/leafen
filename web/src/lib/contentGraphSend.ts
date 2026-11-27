@@ -4,6 +4,8 @@ import { newId } from "@/lib/ids";
 import type { NativeGraphMutationOutbox } from "@/lib/nativePageMutationBrowser";
 import { rowsMadeBy } from "@/lib/rowMadeHere";
 import { blockChangeTextOf, type BlockChangeText } from "@/lib/blockChangeText";
+import { typedGraphChange } from "@/lib/typedDraftSender";
+import { keepTypedChange, settleTypedChange } from "@/lib/typedGraphChanges";
 import type { Session } from "@/types";
 
 // Every change to a page's content — its blocks, databases, rows and views —
@@ -41,11 +43,22 @@ export function contentGraphOutboxOf(session: Pick<Session, "user">): NativeGrap
  * a row the change writes (`rowTemplates`, lib/rowTemplateChosenHere.ts) is
  * kept with it as the templates of the rows it makes are.
  */
-export async function sendContentGraphChange(
-  session: Session, pageId: string, operations: GraphOperation[],
-  options: { mutationId?: string; signal?: AbortSignal; pageKind?: "database"; replacesPage?: true; rowTemplates?: GraphRowTemplateFill[] }
-    & BlockChangeText = {},
-): Promise<ContentGraphDelivery> {
+export function sendContentGraphChange(session: Session, pageId: string, operations: GraphOperation[], options: SendOptions = {}): Promise<ContentGraphDelivery> {
+  // A name typed in a rename box and kept on the device at each key goes under the ID it was kept as, its record
+  // standing for the change as sent until it is answered or kept (typedDraftSender.ts typedGraphChange).
+  const claim = options.mutationId ? undefined : typedGraphChange(operations);
+  if (!claim) return sendChange(session, pageId, operations, options);
+  const turn = keepTypedChange(claim.recordKey, claim.mutationId, pageId, operations);
+  const sending = sendChange(session, pageId, operations, { ...options, mutationId: claim.mutationId });
+  claim.went(sending);
+  void sending.catch(() => undefined).then(() => settleTypedChange(claim.recordKey, turn));
+  return sending;
+}
+
+type SendOptions = { mutationId?: string; signal?: AbortSignal; pageKind?: "database"; replacesPage?: true; rowTemplates?: GraphRowTemplateFill[] }
+  & BlockChangeText;
+
+async function sendChange(session: Session, pageId: string, operations: GraphOperation[], options: SendOptions): Promise<ContentGraphDelivery> {
   const mutationId = options.mutationId ?? newId();
   // Rows made here that this change makes are made once it reaches the
   // server, filled from the templates they start from, which go with it.

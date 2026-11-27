@@ -12,7 +12,7 @@ import (
 // the first block it added to the end, their first 100 with has_more and
 // next_cursor — one added at the start answers it and every block after it
 // (seen 2026-11-21, Notion-Version 2026-03-11, synthetic pages under
-// 한지테스트페이지: a page and a toggle, with no position, at the start, at
+// a Notion test page: a page and a toggle, with no position, at the start, at
 // the end, after one of its blocks, at 2025-09-03 after one, a sub-page
 // among them, and over 100). An append that adds none reads from the first
 // child the same way (serveNotionBlockAppendCount). The added blocks read as

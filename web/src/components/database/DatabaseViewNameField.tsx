@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { GraphView } from "@/contentGraph";
 import { fieldFocusOnOpen } from "@/lib/screenKind";
-import { useTypedKeptOnLeave } from "@/lib/typedKeptOnLeave";
+import { useTypedName } from "@/lib/typedName";
 import { AnchoredIconPicker } from "../page/AnchoredEmojiPicker";
 import { databaseViewLabels } from "./databaseViewLabels";
 import { DescribeButton } from "./describeButton";
@@ -42,15 +42,13 @@ export function DatabaseViewNameField({ view, newView, locked, describable = tru
     if (next !== description) onUpdateConfig?.({ description: next || undefined });
   }
   // The name is kept as typed, spaces too, as Notion's (seen 2026-11-11).
-  function rename(value: string) {
-    namedKept.settled();
-    if (value !== ownName) onRename(value);
-  }
-  // It is kept too when the settings close another way, or turn to another view (useTypedKeptOnLeave).
-  // A new view's name isn't: its "새 보기" closed by a press outside or Escape leaves it unnamed, its
-  // layout's name on its tab, as Notion's (seen 2026-11-18 in Chrome 1440: "nv" typed, then a press
-  // outside; "nw" typed, then Escape — the tab "표" each time); Enter or "완료" names it.
-  const namedKept = useTypedKeptOnLeave(view.id, (value) => { if (!newView) rename(value); });
+  const rename = (value: string) => namedKept.saved(value);
+  // It is kept too when the settings close another way, or turn to another view, and on this device at
+  // each key (useTypedName). A new view's name isn't: its "새 보기" closed by a press outside or Escape
+  // leaves it unnamed, its layout's name on its tab, as Notion's (seen 2026-11-18 in Chrome 1440: "nv"
+  // typed, then a press outside; "nw" typed, then Escape — the tab "표" each time); Enter or "완료" names it.
+  const namedKept = useTypedName(view.id, "name", (value) => { if (value !== ownName) onRename(value); },
+    (value) => (value === ownName ? null : [{ kind: "upsertView", view: { ...view, name: value } }]));
   useEffect(() => { if (!newView) { setViewName(ownName); namedKept.settled(); } }, [ownName, newView]);
   return (
     <>
@@ -70,7 +68,7 @@ export function DatabaseViewNameField({ view, newView, locked, describable = tru
               the audit and 2026-11-17 in Chrome 1440: "z" typed after it went nowhere). A new view's name takes the
               focus, but not on a touch screen: Notion's phone "새 보기" opens with the keyboard down (seen
               2026-11-15 on a Galaxy A90, no script before the press: one letter typed after it went nowhere). */}
-          <input key={view.id} autoFocus={newView && fieldFocusOnOpen()} data-view-settings-name placeholder={labels.viewName} value={viewName} onChange={event => { setViewName(event.currentTarget.value); namedKept.typed(event.currentTarget.value); }} aria-label={labels.viewName} disabled={locked}
+          <input key={view.id} autoFocus={newView && fieldFocusOnOpen()} data-view-settings-name placeholder={labels.viewName} value={viewName} onChange={event => { setViewName(event.currentTarget.value); if (!newView) namedKept.typed(event.currentTarget.value); }} aria-label={labels.viewName} disabled={locked}
             onFocus={event => event.currentTarget.select()}
             onKeyDown={(event) => {
               if (!fieldEnter(event)) return;

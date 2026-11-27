@@ -13,7 +13,7 @@ import (
 // The pages of a data source in the trash are each a line of the trash, as
 // Notion's trash lists them (seen 2026-11-12, a full-page database's second
 // source, both of another's, its only one, and an inline database sent there
-// whole: "H one row 1 · 한지테스트페이지 / … / H one"), placed through their
+// whole: "H one row 1 · 〈test page〉 / … / H one"), placed through their
 // source. Restoring one takes it out of its database to the person's private
 // pages, as Notion's does after asking first, warning that the page goes to
 // private pages and loses the access its deleted parent gave; deleting one

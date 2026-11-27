@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useSidebarLayout } from "@/components/shell/AppShell";
 import { matchesKeyboardShortcut } from "@/lib/keyboardShortcuts";
+import { opensPageUpdates } from "@/lib/pageAnalyticsPanelService";
 import { forgetSidePanel, keepSidePanel, keptSidePanel, type KeptSidePanel } from "./pageSidePanelKept";
 
 // A side panel's width beside the page (--page-side-panel-width) and the
@@ -97,6 +98,15 @@ export function openWholeWithUpdates(pageId: string, openWhole: () => void) {
 /** The panel the page opening now was asked to show: for a moment, however often it is drawn then. */
 function panelAskedWhole(pageId: string) {
   return panelAsked && panelAsked.pageId === pageId && Date.now() - panelAsked.at < PANEL_ASKED_FOR_MS ? panelAsked.kind : null;
+}
+
+/**
+ * Whether the page's updates, asked open beside it, show: only to one who may
+ * open them (opensPageUpdates) — kept open there, or asked from a peek, before
+ * their access fell to reading or commenting, they stay shut.
+ */
+export function updatesBesideShown(asked: boolean, canEdit: boolean) {
+  return asked && opensPageUpdates(canEdit);
 }
 
 /** The panel the page opens with beside it: the one asked from a peek, else the one kept open there (pageSidePanelKept). */

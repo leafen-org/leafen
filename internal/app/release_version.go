@@ -8,7 +8,7 @@ import (
 
 // leafenReleaseVersion is this build's release version. Release builds set it
 // with -ldflags "-X leafen.org/leafen/internal/app.leafenReleaseVersion=<version>".
-var leafenReleaseVersion = "0.1.0-dev"
+var leafenReleaseVersion = "0.2.0-dev"
 
 var releaseVersionPattern = regexp.MustCompile(`^(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$`)
 

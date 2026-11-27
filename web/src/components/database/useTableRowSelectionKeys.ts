@@ -11,6 +11,7 @@ import { windowedLines } from "@/lib/useWindowedRows";
 import { routeOverlayKeyDown } from "@/lib/overlayLayer";
 import { escapeForWindowOver } from "./viewWindowEscape";
 import { useViewChoicePaste } from "./viewChoicePaste";
+import { usePeekSetsChoiceAside } from "@/lib/peekSetsChoiceAside";
 
 type SelectionKey = Pick<globalThis.KeyboardEvent, "key" | "metaKey" | "ctrlKey" | "shiftKey" | "altKey"
   | "defaultPrevented" | "target" | "preventDefault" | "stopPropagation">;
@@ -89,6 +90,8 @@ export function useTableRowSelectionKeys({ root, readOnly, selectedRows, setSele
   useChoiceLetGo(() => { if (selectedRows.size) letGo(); });
   // A paste of blocks with them chosen goes on the page after the database (viewChoicePaste.ts).
   useViewChoicePaste(root, !readOnly && selectedRows.size > 0, () => setSelectedRows(new Set()));
+  // A peek opened beside or over the table sets them aside while it is open (peekSetsChoiceAside.ts).
+  usePeekSetsChoiceAside(root, () => selectedRows, setSelectedRows, (line) => (windowedLines(root.current) ?? order()).includes(line));
 
   function step(event: SelectionKey) {
     const down = event.key === "ArrowDown";

@@ -37,7 +37,7 @@ import (
 //     from its own and the workspace's, then deleted where it was, so none is
 //     left behind and none copied twice. notion-create-file-upload and
 //     notion-create-attachment keep Notion's input, with no page, and store
-//     into the connection's default workspace (2026-11-24, Tulip: a
+//     into the connection's default workspace (2026-11-24, in daily use: a
 //     connection reaching four workspaces uploaded into its default, and the
 //     row in another refused it as "file not found" under an ID the agent
 //     never gave). A file placed in another workspace stays there.

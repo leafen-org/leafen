@@ -43,6 +43,30 @@ const (
 	connectionKindApp   connectionKind = "app"
 )
 
+// storedConnectionKind is the kind of a connection as it is kept: an agent
+// connection by its mark, else by the OAuth client it was granted to, as
+// mcpConnectionKind reads a call's.
+func storedConnectionKind(agent bool, oauthClientID string) connectionKind {
+	if agent {
+		return connectionKindAgent
+	}
+	return mcpClientKind(oauthClientID)
+}
+
+// connectionKindListed is the word the connection list gives a kind, so its
+// person's screen and an agent reading the list tell an agent connection
+// from an MCP token (2026-11-27: an agent read one reaching four workspaces
+// and one reaching one as the same kind, one of them wrong).
+func connectionKindListed(kind connectionKind) string {
+	switch kind {
+	case connectionKindAgent:
+		return "agent"
+	case connectionKindToken:
+		return "token"
+	}
+	return "app"
+}
+
 // connectionKindOf is the kind of the connection a key is of.
 func connectionKindOf(app core.App, key userKeyAuthority) connectionKind {
 	switch {
@@ -205,12 +229,11 @@ func mcpConnectionWiden(authority mcpAuthority) string {
 	return connectionWiden(mcpConnectionKind(authority))
 }
 
-// nativeOperationWidenAgent is an agent connection's way to do more: its
-// page's tools, its organizations' key policy.
-const nativeOperationWidenAgent = "This agent connection does what its person may in all their workspaces, less the tools its page turned " +
-	"off and what its workspaces' organizations hold keys to. To turn a tool back on: leafen_call PATCH " + apiRoot +
-	"/mcp/connections/{its id}/settings with its disabledTools (Leafen asks your person in the conversation); what keys may do in an " +
-	"organization its administrators set."
+// nativeOperationWidenAgent is an agent connection's way to do more: none
+// but its organizations' key policy, as nothing on its page narrows it
+// (connection_person_rights.go).
+const nativeOperationWidenAgent = "This agent connection does what its person may in all their workspaces, with every tool and page — " +
+	"nothing on its page narrows it —, held only to what its workspaces' organizations let keys do, which their administrators set."
 
 // nativeOperationWidenToken is an MCP token's: its page and every other
 // workspace are an agent connection's to reach.

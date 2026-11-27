@@ -84,6 +84,9 @@ func advanceBlockMove(ctx context.Context, app core.App, jobID string) error {
 						return err
 					}
 				}
+				if err := noteBlockMoveEditedPages(txApp, job); err != nil {
+					return err
+				}
 				if err := completeBlockMove(txApp, job); err != nil {
 					return err
 				}

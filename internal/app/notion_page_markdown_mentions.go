@@ -58,6 +58,9 @@ func (reader notionMarkdownReader) mentions(app core.App, workspaceID string, fa
 		SyncedBlocks: func(blockID string) ([]workspaceExportMarkdownBlock, bool) {
 			return notionMarkdownSyncedBlocks(app, blockID, readable)
 		},
+		SyncedPageBody: func(pageID string) notionMarkdownSyncedPage {
+			return notionMarkdownSyncedPageBody(app, pageID, readable, reader.InternalIDs)
+		},
 		UserName: func(userID string) string {
 			if name, known := people[userID]; known {
 				return name
@@ -443,19 +446,16 @@ func resolveNotionMarkdownCustomEmojis(app core.App, workspaceID string, updates
 	return nil
 }
 
-// notionMarkdownSyncedBlocks are the blocks a synced block holds, on a page
-// the reader may open, with the text they stand with: in the tree's order
-// (each block's path of places from the synced block down), as many as the
-// Markdown's records take, and whether it holds more, which the Markdown says
-// as truncated.
+// notionMarkdownSyncedBlocks are the blocks a synced block holds, on a page the reader may open, with the text they
+// stand with: in the tree's order (each block's path of places from the synced block down), as many as the
+// Markdown's records take, and whether it holds more, which the Markdown says as truncated.
 //
 // The walk steps from each block it holds to that block's children by the
 // page's order index (owner, page, parent), in time with the blocks it
 // reaches: without the owner, SQLite read every block of the original's page
 // for each block, and 20,100 blocks took minutes while every write waited
-// (2026-11-08). It takes the blocks in the tree's order and stops one past
-// the records the Markdown takes, so a larger original isn't walked to its
-// end.
+// (2026-11-08). It takes the blocks in the tree's order and stops one past the records the Markdown takes,
+// so a larger original isn't walked to its end.
 func notionMarkdownSyncedBlocks(app core.App, blockID string, readable func(string) bool) ([]workspaceExportMarkdownBlock, bool) {
 	pageID, owner := "", ""
 	if err := app.DB().NewQuery(`SELECT [[page_id]], [[owner]] FROM {{leafen_blocks}} WHERE [[id]] = {:id}`).

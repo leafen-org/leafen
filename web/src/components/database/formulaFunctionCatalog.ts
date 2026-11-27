@@ -10,8 +10,12 @@ export type FormulaCatalogGroup = "builtins" | "general" | "text" | "number" | "
 
 export type FormulaReturnType = "number" | "text" | "boolean" | "date" | "list" | "person" | "any";
 
-/** A kind of value the editor tells apart where the cursor follows one; "numbers" is a list of numbers. */
-export type FormulaValueKind = "number" | "text" | "boolean" | "date" | "person" | "page" | "list" | "numbers";
+/**
+ * A kind of value the editor tells apart where the cursor follows one; "numbers" is a list of numbers, "unknown" one
+ * whose type it can't tell, which only the functions taking any value take (Notion's, seen 2026-11-27: after
+ * [1, "a"].first() no operator, and(), or(), not(), empty(), format(), equal(), unequal() and toNumber()).
+ */
+export type FormulaValueKind = "number" | "text" | "boolean" | "date" | "person" | "page" | "list" | "numbers" | "unknown";
 
 export type FormulaCatalogEntry = {
   // key names the entry's description; for a function it is its name.
@@ -42,6 +46,7 @@ export const FORMULA_CATALOG_GROUPS: readonly FormulaCatalogGroup[] = [
 ];
 
 const ANY: readonly FormulaValueKind[] = ["number", "text", "boolean", "date", "person", "page", "list"];
+const ANY_VALUE: readonly FormulaValueKind[] = [...ANY, "unknown"];
 const NUMBER: readonly FormulaValueKind[] = ["number"];
 const TEXT: readonly FormulaValueKind[] = ["text"];
 const DATE: readonly FormulaValueKind[] = ["date"];
@@ -91,14 +96,14 @@ export const FORMULA_CATALOG: readonly FormulaCatalogEntry[] = [
 
   call("general", "any", "if", ["boolean"], "if(true, 1, 2)", "if(false, 1, 2)", 'prop("Checked") == true ? "Complete" : "Incomplete"'),
   call("general", "any", "ifs", ["boolean"], "ifs(true, 1, true, 2, 3)", "ifs(false, 1, false, 2, 3)"),
-  call("general", "boolean", "and", ANY, "and(true, true, true)", "and(3 > 2, 2 < 3)"),
-  call("general", "boolean", "or", ANY, "or(true, false, false)", "or(3 > 2, 2 < 3)"),
-  call("general", "boolean", "not", ANY, "not(true)", "not(2 > 3)"),
-  call("general", "boolean", "empty", ANY, "empty()", "empty(0)", "empty([])"),
+  call("general", "boolean", "and", ANY_VALUE, "and(true, true, true)", "and(3 > 2, 2 < 3)"),
+  call("general", "boolean", "or", ANY_VALUE, "or(true, false, false)", "or(3 > 2, 2 < 3)"),
+  call("general", "boolean", "not", ANY_VALUE, "not(true)", "not(2 > 3)"),
+  call("general", "boolean", "empty", ANY_VALUE, "empty()", "empty(0)", "empty([])"),
   call("general", "number", "length", ["text", "list"], 'length("hello")', "length([1, 2, 3])"),
-  call("general", "text", "format", ANY, "format(1234)", "format(now())"),
-  call("general", "boolean", "equal", ANY, "equal(1, 1)", '"a" == "b"'),
-  call("general", "boolean", "unequal", ANY, "unequal(1, 2)", '"a" != "a"'),
+  call("general", "text", "format", ANY_VALUE, "format(1234)", "format(now())"),
+  call("general", "boolean", "equal", ANY_VALUE, "equal(1, 1)", '"a" == "b"'),
+  call("general", "boolean", "unequal", ANY_VALUE, "unequal(1, 2)", '"a" != "a"'),
   call("general", "any", "let", { names: true }, 'let(name, "Doug Engelbart", "Hello, " + name + "!")', "let(radius, 4, round(pi() * radius ^ 2))"),
   call("general", "any", "lets", { names: true }, 'lets(a, "Hello", b, "world", a + " " + b)', "lets(base, 3, height, 8, base * height / 2)"),
 
@@ -149,7 +154,7 @@ export const FORMULA_CATALOG: readonly FormulaCatalogEntry[] = [
   call("number", "number", "sign", NUMBER, "sign(-10)", "sign(10)"),
   call("number", "number", "pi", none, "pi()"),
   call("number", "number", "e", none, "e()"),
-  call("number", "number", "toNumber", ["number", "text", "boolean", "date"], 'toNumber("2")', "toNumber(now())", "toNumber(true)"),
+  call("number", "number", "toNumber", ["number", "text", "boolean", "date", "unknown"], 'toNumber("2")', "toNumber(now())", "toNumber(true)"),
 
   call("date", "date", "now", none, "now()"),
   call("date", "date", "today", none, "today()"),

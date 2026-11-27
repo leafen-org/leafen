@@ -7,6 +7,7 @@ import { sendContentGraphChange } from "@/lib/contentGraphSend";
 import { blockTextsNow, showBlockTextAhead } from "@/lib/blockTextAhead";
 import type { PageGraphStore } from "@/lib/pageGraphStore";
 import { afterPageMade } from "@/lib/pagesNotYetMade";
+import { tellPageEditedHere } from "@/lib/pageEditedHere";
 import { holdRowsShown } from "@/lib/rowsShownAtPress";
 import { selectedRootsInOrder } from "./blockSelectionKeyboard";
 import { editorBlockChildren } from "./editorBlockIndex";
@@ -228,6 +229,9 @@ function pageMove(adapter: NativeEditorGraphAdapter, blockIds: readonly string[]
       if (sync && !(await sync.flush())) throw new Error("The page's changes could not be saved.");
       await afterPageMade(destinationPageId, signal);
       await moveBlocksInOrder(moves, { blockIds, destinationPageId, sourcePageId, signal });
+      // Both pages are edited by it, as the server notes it (block_move_page_edits.go).
+      const edit = { updatedAt: new Date().toISOString(), lastEditedBy: session.user.id };
+      for (const id of new Set([destinationPageId, sourcePageId])) tellPageEditedHere({ id, ...edit });
     } catch (error) {
       shown?.refused();
       throw error;

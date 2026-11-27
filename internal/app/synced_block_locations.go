@@ -21,6 +21,9 @@ const syncedBlockLocationsLimit = 100
 type syncedBlockLocation struct {
 	BlockID string `json:"blockId" db:"id"`
 	PageID  string `json:"pageId" db:"page_id"`
+	// InTrash marks an original that is a page's body while the page is in
+	// the trash (synced_block_page_original.go).
+	InTrash bool `json:"inTrash,omitempty" db:"-"`
 }
 
 type syncedBlockLocations struct {
@@ -70,7 +73,12 @@ func loadSyncedBlockLocations(app core.App, principalID, pageID, blockID, after 
 	content := map[string]any{}
 	_ = json.Unmarshal([]byte(block.Content), &content)
 	result.Original = syncedBlockLocation{BlockID: blockID, PageID: pageID}
-	if originalID, _ := content["syncedBlockId"].(string); strings.TrimSpace(originalID) != "" {
+	if page := syncedCopyPage(content); page != "" {
+		// A copy of a page's body: the page is its original.
+		if result.Original, err = loadSyncedPageOriginal(app, principalID, page); err != nil {
+			return result, err
+		}
+	} else if originalID, _ := content["syncedBlockId"].(string); strings.TrimSpace(originalID) != "" {
 		result.Original.BlockID = strings.TrimSpace(originalID)
 		if err := app.DB().NewQuery(`
 			SELECT [[page_id]] FROM {{leafen_blocks}}

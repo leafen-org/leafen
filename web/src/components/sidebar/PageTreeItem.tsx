@@ -36,7 +36,7 @@ import { SidebarFavoriteDatabaseRow } from "./SidebarFavoriteDatabaseRow";
 import { inlineStartX } from "@/lib/readingDirection";
 import { pressedHere } from "@/lib/ownPresses";
 import { hidePageBlockHalo, showPageBlockHalo } from "@/lib/pageBlockHalo";
-import { openPastPaint } from "@/lib/openPastPaint";
+import { openPastPaint } from "@/lib/openPastPaint"; import { pageTitleKept } from "@/lib/typedDraftSender";
 import { useSettledPage } from "./settledPage";
 import { treeEmptyChildrenIndent, treeRowIndent } from "./pageTreeIndent"; import { addFailedNotice } from "./addFailedNotice";
 
@@ -229,7 +229,7 @@ function PageTreeItemComponent({
       if (typeof result === "object" && !controller.signal.aborted) onPageChange(result);
       return result;
     });
-    renameSteps.current?.saved({ title, titleSpans: titleSpans ?? [] }, saving);
+    renameSteps.current?.saved({ title, titleSpans: titleSpans ?? [] }, saving); return saving;
   }
 
   // A change ⌘Z or ⌘⇧Z saves again, on the page as it is then.
@@ -420,25 +420,25 @@ function PageTreeItemComponent({
     },
   };
   treeDrag.current = treeRowDrag;
-  // Among the favorites a favorite moves only in their order: the page stays
-  // where it is, as Notion's (seen 2026-11-06); a page from elsewhere is the
-  // tree's drop, as before.
+  // Among the favorites a favorite moves only in their order, another page put beside one joins them there, staying where it
+  // is, as Notion's (seen 2026-11-06; 2026-11-27, two tabs at two times); inside a favorite it is the tree's drop, as before.
   if (onFavoriteDrop) {
     const tree = treeRowDrag;
     const edge = (intent: PageTreeDropIntent) => (intent === "before" ? "before" : "after");
-    const among = (data: Parameters<PageTreeRowDrag["accepts"]>[0], copy: boolean) => !copy && isFavoriteRowDrag(data);
+    const among = (data: Parameters<PageTreeRowDrag["accepts"]>[0], intent: PageTreeDropIntent, copy: boolean) => !copy
+      && (isFavoriteRowDrag(data) || (intent !== "inside" && treePageDragId(data) !== null));
     treeDrag.current = {
       ...tree,
       canDrag: (copy) => !renaming && !copy,
-      accepts: (data, intent, copy) => (among(data, copy) ? treePageDragId(data) !== pageId : tree.accepts(data, intent, copy)),
+      accepts: (data, intent, copy) => (among(data, intent, copy) ? treePageDragId(data) !== pageId : tree.accepts(data, intent, copy)),
       over(data, intent, copy) {
-        if (!among(data, copy)) { tree.over(data, intent, copy); return; }
+        if (!among(data, intent, copy)) { tree.over(data, intent, copy); return; }
         setDrop(edge(intent));
         setDropCopy(false);
       },
       drop(data, intent, copy) {
         const draggedId = treePageDragId(data);
-        if (!among(data, copy) || draggedId === null) { tree.drop(data, intent, copy); return; }
+        if (!among(data, intent, copy) || draggedId === null) { tree.drop(data, intent, copy); return; }
         tree.leave();
         onFavoriteDrop(draggedId, edge(intent));
       },
@@ -587,7 +587,7 @@ function PageTreeItemComponent({
       </div>
       {/* Outside the row, so the row hears none of the popover's clicks and keys. */}
       {renameAt ? (
-        <PageRenamePopover page={page} title={page.title} titleSpans={page.titleSpans} untitled={untitledPageDisplayTitle(page)} at={renameAt}
+        <PageRenamePopover page={page} title={page.title} titleSpans={page.titleSpans} untitled={untitledPageDisplayTitle(page)} at={renameAt} kept={pageTitleKept(pageId, () => store.get().pagesById[pageId])}
           onTitleChange={saveTitle} onTitleShown={(title) => showTypedPageTitle(pageId, title, page.title)} onPresentationChange={savePresentation} onClose={endRename} />
       ) : null}
       {expanded ? (

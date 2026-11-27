@@ -18,13 +18,13 @@ import { ICON_SIZES, type LeafenIconProps } from "./iconPrimitives";
  * 2026-11-17 at 1440, the trash's and the search's "검색 범위").
  */
 function PageSheet({ lines, glyph, size = "small", pixels: ownPixels, weight: _weight, frame: _frame, trim = false,
-  glyphWidth = 16, ...rest }: LeafenIconProps & { lines: boolean; glyph: string }) {
+  glyphWidth = 16, artboard = false, ...rest }: LeafenIconProps & { lines: boolean; glyph: string; artboard?: boolean }) {
   const pixels = ownPixels ?? ICON_SIZES[size];
   return (
     <svg
       width={trim ? (pixels * glyphWidth) / 16 : pixels}
       height={pixels}
-      viewBox="2.3 0 15.4 20"
+      viewBox={artboard ? ARTBOARD_VIEW : "2.3 0 15.4 20"}
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
@@ -43,8 +43,14 @@ function PageSheet({ lines, glyph, size = "small", pixels: ownPixels, weight: _w
   );
 }
 
+// A menu row's page (`artboard`: the "/" menu's "페이지", seen 2026-11-27)
+// is the same sheet on Notion's 20-unit menu box, 0.7625 of it and centred
+// (11.75 by 15.25 from 4.13, 2.38 at 20px, lines 1.25 and 1.1), as Notion's
+// "page" glyph stands there rather than filling the row's box.
+const ARTBOARD_VIEW = "-3.115 -3.115 26.23 26.23";
+
 /** A page with something in it: the sheet with its lines (PageSheet). */
-export const FileText = (p: LeafenIconProps) => <PageSheet {...p} lines glyph="page" />;
+export const FileText = (p: LeafenIconProps & { artboard?: boolean }) => <PageSheet {...p} lines glyph="page" />;
 
 /** A page with nothing in it yet, as Notion's empty document: the sheet alone (PageSheet). */
 export const FileBlank = (p: LeafenIconProps) => <PageSheet {...p} lines={false} glyph="page-empty" />;

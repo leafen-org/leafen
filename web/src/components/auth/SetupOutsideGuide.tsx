@@ -4,8 +4,11 @@ import styles from "../AuthGate.module.css";
 import guide from "./SetupOutsideGuide.module.css";
 import { SETUP_CODE_KEYBOARD } from "./codeKeyboard";
 import { ServerLogPlaces } from "./ServerLogPlaces";
+import { SetupCodePlace, useSetupStart } from "./SetupCodePlace";
 import { fieldFocusOnOpen } from "@/lib/screenKind";
 import { useSeenSetupStatus } from "@/lib/useSeenSetupStatus";
+
+export { useSetupStart } from "./SetupCodePlace";
 
 /**
  * A server not set up yet, opened from the outside internet without its
@@ -14,21 +17,25 @@ import { useSeenSetupStatus } from "@/lib/useSeenSetupStatus";
  * code (internal/app/setup_same_network.go), at the address the server knows
  * there if it knows one; from outside, open the setup link the server left in
  * its log, and where that log is. Typing the code is one of the other ways.
- * Leafen's own screen: Notion has no server to set up.
+ * A server on a hosting platform it knows has no home network around it
+ * (2026-11-27): the setup link in its log is the way, named in the
+ * platform's words. A server given a code at its start shows the code field
+ * instead (SetupCodePlace.tsx). Leafen's own screen: Notion has no server to set up.
  */
 export function SetupOutsideGuide({ onEnterCode }: { onEnterCode(): void }) {
   const { t } = useTranslation("authGate");
   const home = useSeenSetupStatus()?.homeAddress ?? "";
+  const { platform } = useSetupStart();
   return (
-    <div className={styles.form} data-setup-outside>
+    <div className={styles.form} data-setup-outside={platform || "home"}>
       <div className={styles.notice}>
         <strong>{t("setupOutsideTitle")}</strong>
-        <p>{t("setupOutsideBody")}</p>
+        <p>{t(platform ? "setupPlatformBody" : "setupOutsideBody")}</p>
         {home ? <p data-setup-home-address>{t("setupOutsideHome")} <a href={home}>{home}</a></p> : null}
       </div>
-      <section className={guide.away} aria-labelledby="setup-outside-away">
-        <h2 id="setup-outside-away" className={guide.head}>{t("setupOutsideAwayTitle")}</h2>
-        <p>{t("setupOutsideAwayBody")}</p>
+      <section className={guide.away} aria-labelledby={platform ? undefined : "setup-outside-away"}>
+        {platform ? null : <h2 id="setup-outside-away" className={guide.head}>{t("setupOutsideAwayTitle")}</h2>}
+        <p>{t(platform ? "setupLogWhere" : "setupOutsideAwayBody")}</p>
         <ServerLogPlaces />
         <p>{t("setupOutsideAgent")}</p>
       </section>
@@ -46,7 +53,8 @@ export function SetupOutsideGuide({ onEnterCode }: { onEnterCode(): void }) {
 /**
  * The setup code's field: under the name where the setup link carried no
  * code — from outside, once the person chose to type it (it then takes the
- * focus), or after a code was refused.
+ * focus), after a code was refused, or at once on a server given a code at
+ * its start, with where that code is and, folded, where the setup link is.
  */
 export function SetupCodeField({ value, onChange, disabled, chosen, rejection }: {
   value: string;
@@ -58,6 +66,7 @@ export function SetupCodeField({ value, onChange, disabled, chosen, rejection }:
 }) {
   const { t } = useTranslation("authGate");
   const field = useRef<HTMLInputElement>(null);
+  const { codeGiven } = useSetupStart();
   useLayoutEffect(() => {
     if (chosen && fieldFocusOnOpen()) field.current?.focus();
   }, [chosen]);
@@ -77,12 +86,26 @@ export function SetupCodeField({ value, onChange, disabled, chosen, rejection }:
         required
         {...rejection}
       />
-      <p id="setup-code-help" className={styles.fieldHelp}>{t("setupCodeHelp")}</p>
-      {/* The variable is for the one who started the server: folded (2026-11-05). */}
-      <details className={styles.moreHelp}>
-        <summary>{t("setupCodeNoLink")}</summary>
-        <p>{t("setupCodeEnvHint")}</p>
-      </details>
+      {codeGiven ? (
+        <>
+          <SetupCodePlace id="setup-code-help" />
+          <details className={styles.moreHelp} data-setup-link-place>
+            <summary>{t("setupOutsideOther")}</summary>
+            <p>{t("setupGivenLink")}</p>
+            <ServerLogPlaces />
+            <p>{t("setupOutsideAgent")}</p>
+          </details>
+        </>
+      ) : (
+        <>
+          <p id="setup-code-help" className={styles.fieldHelp}>{t("setupCodeHelp")}</p>
+          {/* The variable is for the one who started the server: folded (2026-11-05). */}
+          <details className={styles.moreHelp}>
+            <summary>{t("setupCodeNoLink")}</summary>
+            <p>{t("setupCodeEnvHint")}</p>
+          </details>
+        </>
+      )}
     </>
   );
 }

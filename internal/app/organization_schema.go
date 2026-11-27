@@ -81,7 +81,7 @@ func ensureOwnerOrganization(app core.App, ownerID, language string) (*core.Reco
 
 // defaultOrganizationName names a new organization after its owner in the
 // language the server names things in (generatedNameLanguage), as their first
-// workspace is ("〈이름〉님의 워크스페이스"; 2026-10-19: "op01p2-admin
+// workspace is ("〈이름〉님의 워크스페이스"; 2026-10-19: "〈이름〉
 // Organization" stood in Korean settings; 2026-10-27: the first setup made
 // it before the chosen language was saved, in English).
 func defaultOrganizationName(owner *core.Record, language string) string {

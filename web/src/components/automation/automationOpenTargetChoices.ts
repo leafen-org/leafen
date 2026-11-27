@@ -92,7 +92,7 @@ export function visitedRowChoice(detail: LibraryPage, workspaceId: string, title
 /**
  * Where a choice sits, under its title: a page's place as Notion's lists
  * show it (pagePlace); a row's as the "@" menu shows one, "Page / Database"
- * — its source's name for one of several (seen 2026-11-24, "한지테스트페이지
+ * — its source's name for one of several (seen 2026-11-24, "〈test page〉
  * / ... / BothB") once the server read the path above it
  * (databasePagePlace) — its database's page alone while that page isn't
  * among the reader's.

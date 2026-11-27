@@ -1,4 +1,4 @@
-import { tokenizeFormula, type FormulaToken } from "./formulaSyntax";
+import { FORMULA_NAME, FORMULA_NAME_PART, FORMULA_NAME_START, tokenizeFormula, type FormulaToken } from "./formulaSyntax";
 
 function callArguments(tokens: FormulaToken[], openIndex: number): FormulaToken[][] {
   const args: FormulaToken[][] = [];
@@ -37,7 +37,7 @@ function variableNameFromArg(tokens: FormulaToken[]) {
   if (tokens.length !== 1) return "";
   const token = tokens[0];
   if (token.type !== "identifier" && token.type !== "string") return "";
-  return /^[A-Za-z_][A-Za-z0-9_]*$/.test(token.value) ? token.value : "";
+  return FORMULA_NAME.test(token.value) ? token.value : "";
 }
 
 export function formulaVariableNames(tokens: FormulaToken[]) {
@@ -185,13 +185,13 @@ export function rewriteFormulaPropertyReferences(
       index = literal?.end ?? expression.length;
       continue;
     }
-    if (!/[A-Za-z_]/.test(char)) {
+    if (!FORMULA_NAME_START.test(char)) {
       index += 1;
       continue;
     }
     const identifierStart = index;
     index += 1;
-    while (index < expression.length && /[A-Za-z0-9_]/.test(expression[index])) {
+    while (index < expression.length && FORMULA_NAME_PART.test(expression[index])) {
       index += 1;
     }
     if (expression.slice(identifierStart, index) !== "prop") continue;

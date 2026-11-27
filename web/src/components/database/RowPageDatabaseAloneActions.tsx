@@ -13,6 +13,8 @@ import type { DatabaseRowPageSnapshot } from "@/databaseRowPageWire.generated";
 import { DotsHorizontal, LinkIcon, Star, StarFilled } from "@/icons/leafen";
 import { shortcutCompactLabel } from "@/lib/keyboardShortcuts";
 import { pageLinkToCopy } from "@/lib/databasePageLink";
+import { roleOpensPageUpdates } from "@/lib/pageAnalyticsPanelService";
+import { barOffersShare, useWorkspaceGuest } from "@/lib/pageReaderChrome";
 import { useProductToast } from "@/lib/productToast";
 import { usePageLinkCopyNotice } from "@/lib/usePageLinkCopyNotice";
 import { usePageReach } from "@/lib/usePageOnlyReader";
@@ -68,12 +70,14 @@ export function RowPageDatabaseAloneActions({ blockId, readOnly, rowTitle, sessi
     if (await copyPageLink(url, blockId, title)) notifyLinkCopied();
     else notify(t("toast.couldntCopyLink"), "error");
   };
+  // A guest who may not edit the page has no share nor link, as a page's bar (barOffersShare).
+  const shares = barOffersShare(snapshot.accessRole === "edit" || snapshot.accessRole === "full_access", useWorkspaceGuest(snapshot.workspaceId));
   const exportDatabase = alone?.views ? { id: blockId, title, linked: true } : alone ? { id: alone.dataSourceId, title } : undefined;
   return (
     <div className={styles.right} data-mobile={mobile ? "true" : undefined} data-topbar-action-rail data-row-database-alone-actions>
-      <TopBarEditedTime updatedAt={row.updatedAt} data-topbar-edited-time
-        onOpenUpdates={() => { setShareOpen(false); setMenuOpen("updates"); }} />
-      <span style={{ position: "relative", display: "inline-flex" }}>
+      <TopBarEditedTime updatedAt={row.updatedAt} data-topbar-edited-time activity={{ session, page: { ...row, workspaceId: snapshot.workspaceId } }}
+        onOpenUpdates={roleOpensPageUpdates(snapshot.accessRole) ? () => { setShareOpen(false); setMenuOpen("updates"); } : undefined} />
+      {shares ? <><span style={{ position: "relative", display: "inline-flex" }}>
         <button ref={shareRef} type="button" className={`${styles.action} ${styles.shareAction}`} data-topbar-share-action
           data-private={reach === "private" ? "true" : undefined} aria-label={t("sharePage", { pageTitle: rowTitle })} {...shareTip(reach)}
           aria-haspopup="dialog" aria-expanded={shareOpen} onClick={() => { setMenuOpen(false); setShareOpen((open) => !open); }}>
@@ -88,7 +92,7 @@ export function RowPageDatabaseAloneActions({ blockId, readOnly, rowTitle, sessi
         aria-label={t("copyLinkTip")} title={t("copyLinkTip")} data-tip-keys={shortcutCompactLabel("copyPageLink")}
         onClick={() => void copyLink()}>
         <LinkIcon size="regular" aria-hidden="true" />
-      </button>
+      </button></> : null}
       <button type="button" className={styles.iconAction} data-topbar-favorite-action data-favorite={favorite ? "true" : undefined}
         aria-label={t(favorite ? "removeFavorite" : "addFavorite", { pageTitle: title })}
         title={t(favorite ? "removeFavoriteTip" : "addFavoriteTip")} aria-pressed={favorite} disabled={!setFavorite}

@@ -7,6 +7,7 @@ import styles from "@/components/RowMenu.module.css";
 import { RowMenuEditedFoot } from "@/components/RowMenuEditedFoot";
 import { PageIconGlyph } from "@/components/page/PageIcon";
 import { PageRenamePopover, renamePopoverAt } from "@/components/page/PageRenamePopover";
+import { graphNameKept } from "@/lib/typedGraphChanges";
 import type { PagePresentationChange } from "@/components/page/pagePresentation";
 import type { GraphDataSourceIconType } from "@/contentGraphWire.generated";
 import { type MovePopoverAnchor, movePopoverAnchorOf } from "@/components/movePopoverPlacement";
@@ -342,6 +343,9 @@ export function SidebarFavoriteDatabaseRow({ database, session, depth = 0 }: {
       )) : null}
       {renaming ? (
         <PageRenamePopover page={iconPage} iconFallback={tableIcon} title={title} titleSpans={titleSpans} untitled={untitled} at={renaming}
+          // Kept on the device at each key as the change saving it writes (lib/typedGraphChanges.ts).
+          kept={graphNameKept(`database:${database.containerId}/name`, database.pageId, (typed) => (source
+            ? nameOperations({ title: typed.title, titleSpans: typed.spans as GraphDataSource["titleSpans"] }, block, source) : null))}
           onTitleChange={rename} onTitleShown={showName} onPresentationChange={editable && source ? changeIcon : undefined} onClose={endRename} />
       ) : null}
       {menu ? (

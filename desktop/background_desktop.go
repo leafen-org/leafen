@@ -206,13 +206,22 @@ func (background *Background) servesNow() bool {
 
 // watch follows whether the computer serves, about every twenty seconds and
 // whenever something changes, and keeps the tray, the login item and the
-// computer's sleep in step.
+// computer's sleep in step. Its first step is at once, a start behind its
+// windows too: the menu bar's or tray's icon is there from the start, as
+// Notion's (its tray made as the app is ready, at login too), reading as
+// serving nothing until the server answers; its Open shows the window,
+// which waits for the server on the app's own page as a start in front does,
+// rather than leaving the person with neither an icon nor a window until the
+// server answers.
 func (background *Background) watch(hidden bool) {
 	ticker := time.NewTicker(20 * time.Second)
 	defer ticker.Stop()
+	background.step()
 	if hidden {
 		// Started behind its window at login: once its server is up, a
-		// computer that serves nothing shows the window after all.
+		// computer that serves nothing shows the window after all — unless
+		// a window was asked forward meanwhile (the icon, the Dock, a link),
+		// which stays as the person left it.
 		ready, _, _, _ := background.local.current()
 		select {
 		case <-ready:
@@ -223,15 +232,19 @@ func (background *Background) watch(hidden bool) {
 		serving := background.serving
 		background.mu.Unlock()
 		if !serving {
-			application.InvokeSync(background.Open)
+			application.InvokeSync(func() {
+				if !desktopTabs.asked {
+					background.Open()
+				}
+			})
 		}
 	}
 	for {
-		background.step()
 		select {
 		case <-ticker.C:
 		case <-background.wake:
 		}
+		background.step()
 	}
 }
 

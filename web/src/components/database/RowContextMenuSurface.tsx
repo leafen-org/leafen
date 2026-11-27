@@ -13,6 +13,7 @@ import { untitledPageDisplayTitle } from "@/lib/pageTitle";
 import { hasDesktopTabs } from "@/lib/desktopMenuCommands";
 import { pageHref } from "@/lib/navigation";
 import { openPageInNewWindow } from "@/lib/newWindowRequests";
+import { roleOpensPageUpdates } from "@/lib/pageAnalyticsPanelService";
 import { CommentsPanel } from "../CommentsPanel";
 import { AnchoredIconPicker, PICKER_WIDTH as SELECTED_ROWS_PICKER_WIDTH } from "../page/AnchoredEmojiPicker";
 import type { PagePresentationChange } from "../page/pagePresentation";
@@ -339,8 +340,9 @@ export function RowContextMenuSurface({ store, options, close, onAnalytics, sugg
       onArchive={onArchive
         ? async (archived) => { close(); await onArchive(menu.rowId, archived); }
         : undefined}
-      // A peek's page opens whole for its updates, docked beside it, as Notion's (usePageSidePanel); elsewhere they open here.
-      onAnalytics={onAnalytics ? () => {
+      // For one who may open them (opensPageUpdates), a peek's page opens whole for its updates, docked beside it, as Notion's
+      // (usePageSidePanel); elsewhere they open here.
+      onAnalytics={onAnalytics && roleOpensPageUpdates(rowSnapshot?.accessRole) ? () => {
         const whole = menu.rowPage?.openWhole;
         if (whole) { close(); openWholeWithUpdates(menu.rowId, whole); } else { onAnalytics(menu.rowId); close(); }
       } : undefined}

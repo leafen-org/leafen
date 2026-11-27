@@ -46,35 +46,37 @@ func mcpCreatePagesItemRefusal(err error, pages, index int) error {
 }
 
 // mcpCreatePageContentRefusal refuses a new page's content before its
-// blocks are planned: what its "v2" reading refused (read), then a synced
-// block reference that would change its original, then a list item or quote
-// holding an <unknown/> line before any line of its own holds one; nil
-// otherwise.
+// blocks are planned, a page's and a database page's alike: what its "v2"
+// reading refused (read), then a synced block reference that would change
+// its original, then a list item or quote holding an <unknown/> line before
+// any line of its own holds one; nil otherwise. A new page may hold a
+// reference, never change its original, under a page or in a database, as
+// Notion's create refuses one (seen 2026-11-27, the public API's "v1" and
+// "v2", page and data source parents alike, the original as it was); one of
+// several pages is named by its place (mcpCreatePagesItemRefusal). Before
+// (2026-11-27) a database page's body was let through and, written after
+// the page, changed the original on its own page.
 func mcpCreatePageContentRefusal(content string, read error, origin string, pages, index int) error {
 	if read != nil {
 		return mcpCreatePageMarkdownRefusal(pages, index, read.Error())
 	}
-	// It may hold a synced block reference, not change its original.
 	if refused := notionMarkdownSyncedRefusal(content, true, false); refused != "" {
-		return mcpInvalid("%s", refused)
+		return mcpCreatePagesItemRefusal(mcpInvalid("%s", refused), pages, index)
 	}
 	return mcpCreatePageHeldUnknown(content, origin, pages, index)
 }
 
 // mcpCreateRowContentRefusal refuses a new database page's content before
 // any page is made, as Notion's does (seen 2026-11-17: no row made), its
-// body being written after the page is (createMCPDatabasePages): what its
-// "v2" reading refused, then an <unknown/> line an item or quote holds, then
-// one of its own; nil otherwise.
+// body being written after the page is (createMCPDatabasePages): what a
+// page's content refuses (mcpCreatePageContentRefusal), then an <unknown/>
+// line of its own; nil otherwise.
 func mcpCreateRowContentRefusal(content, origin string, pages, index int) error {
 	if content == "" {
 		return nil
 	}
 	read, _, err := notionMarkdownVersion2Input(content)
-	if err != nil {
-		return mcpCreatePageMarkdownRefusal(pages, index, err.Error())
-	}
-	if refused := mcpCreatePageHeldUnknown(content, origin, pages, index); refused != nil {
+	if refused := mcpCreatePageContentRefusal(content, err, origin, pages, index); refused != nil {
 		return refused
 	}
 	_, err = notionMarkdownReplacementPlan(read, &notionPageMarkdownProjection{SitePages: notionMarkdownSitePagesAt(origin, true)}, false)

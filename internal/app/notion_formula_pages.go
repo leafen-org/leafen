@@ -11,7 +11,7 @@ import (
 // A page a relation gives knows its data source ("block@<source>"), and its
 // prop() reads that source's property, as Notion's check reads it (seen
 // 2026-11-21 through its API and editor, synthetic databases under
-// 한지테스트페이지): through a relation to the formula's own source,
+// a Notion test page): through a relation to the formula's own source,
 // prop("Rel").first().prop("Text") * 2 is math on text and number and
 // prop("Rel").first().prop("Nope") names Nope as a property not found; a
 // formula a request writes can't name a property of another source's page —

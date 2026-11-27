@@ -35,7 +35,7 @@ var notionMarkdownTagAttributes = map[string][]string{
 	"date": {"start", "end", "start-time", "end-time", "time-zone"}, "mention": {"url", "type"},
 	"link-preview": {"url", "source"}, "page": {"url", "color"},
 	"database": {"url", "data-source-url", "inline", "icon", "color", "wiki"}, "synced-block-reference": {"url", "notice"},
-	"unknown": {"url", "alt"}, "meeting-notes": {"attendees", "view-url", "legacy"}, "ul": {}, "columns": {}, "tabs": {},
+	"unknown": {"url", "alt"}, "link-to-page": {"url", "type"}, "button": {"url"}, "meeting-notes": {"attendees", "view-url", "legacy"}, "ul": {}, "columns": {}, "tabs": {},
 	"mail": {"to", "cc", "bcc", "from", "subject", "attachments"}, "empty-block": {}, "b": {}, "i": {}, "s": {}, "u": {},
 	"em": {}, "strong": {}, "code": {}, "br": {}, "colgroup": nil, "thead": nil, "tbody": nil,
 }

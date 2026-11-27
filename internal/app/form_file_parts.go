@@ -52,7 +52,7 @@ func prepareFormFileUpload(event *core.RequestEvent) error {
 	if err := normalizeProductFileUploadInput(&input); err != nil {
 		return fileUploadError(event, err, "form-prepare-validate")
 	}
-	if err := requireDataDiskRoom(event.App, input.Size); err != nil {
+	if err := requireDataDiskRoom(event.App, dataDiskPartsBytes(input.Size)); err != nil {
 		return writeServerDiskLow(event, "form-file", err)
 	}
 	release := acquireProductFileOperationLock(productFileOperationScopedNamespace(productFileOperationUploadRequest, grant.actorID), input.RequestID)

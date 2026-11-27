@@ -1,13 +1,17 @@
 import { useEffect, useRef } from "react";
+import { pageLeaving } from "./pageLeaving";
+import { holdUntilTypingEnds } from "./typedWrites";
 
 // A name field that saves when it is left also saves while it is typed in,
-// shortly after the typing stops and when the window is hidden or the page
-// left, as the page title does, so an edit isn't lost when the app is ended
-// mid-edit; the field keeps its focus. Leaving or confirming still saves at
-// once, after settle() stops what is pending; a cancel puts back the value
-// the edit began with when a draft was saved meanwhile. A pause while an
-// input method still composes (`holding`) saves nothing yet: what the field
-// shows typed elsewhere stands over the name it had until the composition ends.
+// shortly after the typing stops, so an edit isn't lost when the app is
+// ended mid-edit; the field keeps its focus. The window hidden or the page
+// left saves at once, through the one place typed fields are held and sent
+// as the page goes (typedWrites.ts holdUntilTypingEnds), as the page title
+// does. Leaving or confirming still saves at once, after settle() stops what
+// is pending; a cancel puts back the value the edit began with when a draft
+// was saved meanwhile. A pause while an input method still composes
+// (`holding`) saves nothing yet: what the field shows typed elsewhere stands
+// over the name it had until the composition ends.
 
 export const TYPED_DRAFT_SAVE_MS = 600;
 
@@ -19,10 +23,12 @@ type DraftState = {
   draft: string;
   save: (draft: string) => void;
   holding?: () => boolean;
+  release: () => void;
 };
 
 function saveNow(current: DraftState) {
   window.clearTimeout(current.timer);
+  current.release();
   if (current.draft === current.last) return;
   current.last = current.draft;
   current.saved = true;
@@ -38,7 +44,7 @@ export function useTypedDraftSave({ active, draft, initial, save, holding }: {
   /** Whether the pause's save waits (an input method composing); a hidden window or a page left saves at once. */
   holding?: () => boolean;
 }) {
-  const state = useRef<DraftState>({ timer: 0, saved: false, initial, last: initial, draft, save, holding });
+  const state = useRef<DraftState>({ timer: 0, saved: false, initial, last: initial, draft, save, holding, release: () => undefined });
   state.current.draft = draft;
   state.current.save = save;
   state.current.holding = holding;
@@ -56,28 +62,23 @@ export function useTypedDraftSave({ active, draft, initial, save, holding }: {
     if (!active || draft === current.last) return undefined;
     const pause = () => { current.timer = window.setTimeout(() => (current.holding?.() ? pause() : saveNow(current)), TYPED_DRAFT_SAVE_MS); };
     pause();
-    return () => window.clearTimeout(current.timer);
-  }, [active, draft]);
-
-  useEffect(() => {
-    if (!active) return undefined;
-    const current = state.current;
-    const onHidden = () => {
-      if (document.visibilityState === "hidden") saveNow(current);
+    // Held as the typing goes on: the page hidden or going saves it at once, a composition too; the typing ended
+    // otherwise (Enter, Escape, Tab, the field left) saves it once the composition ends, as the pause does.
+    const hold = () => {
+      current.release = holdUntilTypingEnds(() => (current.holding?.() && !document.hidden && !pageLeaving() ? hold() : saveNow(current)));
     };
-    const onPageHide = () => saveNow(current);
-    document.addEventListener("visibilitychange", onHidden);
-    window.addEventListener("pagehide", onPageHide);
+    hold();
     return () => {
-      document.removeEventListener("visibilitychange", onHidden);
-      window.removeEventListener("pagehide", onPageHide);
+      window.clearTimeout(current.timer);
+      current.release();
     };
-  }, [active]);
+  }, [active, draft]);
 
   return {
     /** Stops a pending save: the field saves or cancels now. */
     settle() {
       window.clearTimeout(state.current.timer);
+      state.current.release();
     },
     /** The value to put back on a cancel, or null when nothing was saved. */
     restoreValue(): string | null {

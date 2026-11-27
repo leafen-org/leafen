@@ -15,10 +15,12 @@ export type TimelineAwayLane = TimelineHierarchyRow & { start: Date; end: Date; 
 /**
  * A grouped timeline's lanes, as Notion's (seen 2026-11-01 at 1280px): a
  * group's head, then — beside a table — its columns' names, its rows, its
- * "+ 새로 만들기" and a lane's space; "+ 신규 그룹" last.
+ * "더 불러오기" while it holds more (seen 2026-11-27), its "+ 새로 만들기"
+ * and a lane's space; "+ 신규 그룹" last.
  */
-export type TimelineLaneKind = "head" | "columns" | "row" | "add" | "gap" | "newGroup";
-export type TimelineAddLane = { key: string; lane: number };
+export type TimelineLaneKind = "head" | "columns" | "row" | "more" | "add" | "gap" | "newGroup";
+/** A group's "+ 새로 만들기" lane, or, `more`, its "더 불러오기" before it (TimelineGroupMoreLane). */
+export type TimelineAddLane = { key: string; lane: number; more?: true };
 /** Under an open row, the line that adds a sub-item to it: on a table "+ 새 하위 항목", on the canvas a bar's ghost. */
 export type TimelineSubitemAddLane = { parentId: string; depth: number; lane: number };
 /** A sub-item with no date under a bar: its name beside the line from its parent (Notion's, seen 2026-11-05). */
@@ -29,11 +31,11 @@ export type TimelineSubitemElbow = { key: string; parentLane: number; lane: numb
 /** Notion's heights for a grouped timeline without its table, a phone's rows taller; beside one the table's rows are measured. */
 export function timelineLaneHeight(kind: TimelineLaneKind, phone: boolean) {
   if (phone && (kind === "row" || kind === "add")) return 44;
-  return { head: 32, columns: 32, row: 36, add: 36, gap: 36, newGroup: 38 }[kind];
+  return { head: 32, columns: 32, row: 36, more: 33, add: 36, gap: 36, newGroup: 38 }[kind];
 }
 
 /** A table keeps every visible row's lane, even when its date is absent or outside the range; a dated row outside it keeps its lane on the canvas too. */
-export function projectTimelineLanes({ dated, away: awayRows = [], undated, hierarchy, groupProperty, properties, graphRows, pagesById, propsByDatabaseId, config, currentUserId, showTable, collapsed, adds = false, newGroup = false, subitemAddsAfter }: {
+export function projectTimelineLanes({ dated, away: awayRows = [], undated, hierarchy, groupProperty, properties, graphRows, pagesById, propsByDatabaseId, config, currentUserId, showTable, collapsed, adds = false, newGroup = false, subitemAddsAfter, groupCut }: {
   dated: readonly TimelineRenderedRow[]; hierarchy: readonly TimelineHierarchyRow[];
   /** The dated rows wholly past the canvas's window, their lanes yet to be given. */
   away?: readonly Omit<TimelineAwayLane, "lane">[];
@@ -49,6 +51,8 @@ export function projectTimelineLanes({ dated, away: awayRows = [], undated, hier
   newGroup?: boolean;
   /** Which rows' lines an open row's sub-item line follows. */
   subitemAddsAfter?: ReadonlyMap<string, ReadonlyArray<{ parentId: string; depth: number }>>;
+  /** The rows a group shows of its own, and whether more wait behind its "더 불러오기" (useListGroupLoads). */
+  groupCut?(key: string, rows: readonly Page[]): { rows: readonly Page[]; more: boolean };
 }) {
   const rows = hierarchy;
   const datedRows = new Map(dated.map(row => [row.row.id, row]));
@@ -102,9 +106,10 @@ export function projectTimelineLanes({ dated, away: awayRows = [], undated, hier
   const visibleIds = new Set<string>();
   const lane = (kind: TimelineLaneKind) => kinds.push(kind) - 1;
   for (const group of rowGroups) {
-    const groupRows = rowsByGroup.get(group.key) ?? [];
+    const allRows = rowsByGroup.get(group.key) ?? [], cut = grouper ? groupCut?.(group.key, allRows.map(item => item.row)) : undefined;
+    const shownIds = cut && new Set(cut.rows.map(row => row.id)), groupRows = shownIds ? allRows.filter(item => shownIds.has(item.row.id)) : allRows;
     const isCollapsed = Boolean(grouper && collapsed.has(group.key));
-    if (grouper) groups.push({ ...group as TableGroupDescriptor & { count: number }, lane: lane("head"), collapsed: isCollapsed, rowIds: groupRows.map(item => item.row.id) });
+    if (grouper) groups.push({ ...group as TableGroupDescriptor & { count: number }, lane: lane("head"), collapsed: isCollapsed, rowIds: allRows.map(item => item.row.id) });
     if (isCollapsed) continue;
     if (grouper && showTable) lane("columns");
     groupRows.forEach(item => visibleIds.add(item.row.id));
@@ -121,6 +126,7 @@ export function projectTimelineLanes({ dated, away: awayRows = [], undated, hier
       else if (parent) subitemLinks.push({ row: item.row, lane: lane("row"), first: parent.first });
       addsAfter(item.row.id, () => lane("row"));
     }
+    if (cut?.more) addLanes.push({ key: group.key, lane: lane("more"), more: true });
     if (grouper && adds) addLanes.push({ key: group.key, lane: lane("add") });
     if (grouper && showTable) lane("gap");
   }

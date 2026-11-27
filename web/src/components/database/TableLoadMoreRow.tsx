@@ -8,7 +8,8 @@ import styles from "./TableLoadMoreRow.module.css";
  * 2026-10-01): "더 불러오기" anywhere on it shows as many more as the table first
  * shows (seen 2026-11-03), and its "⋯"
  * chooses how many the table first shows ("처음 불러오기에서 보기": 10, 25,
- * 50 or 100 pages).
+ * 50 or 100 pages). A grouped table's group ends in it too, the "⋯" saying
+ * how many each group first shows (seen 2026-11-27 in two tabs).
  */
 export function TableLoadMoreRow({ loading, limit, onLoadMore, onLimit }: {
   loading: boolean;

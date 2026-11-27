@@ -12,7 +12,8 @@ import (
 // "- <details>…", "- <columns>…", "- <table>…", "- <table-of-contents />",
 // "- <image …>c</image>", "- <p>a</p>", "- <h2>a</h2>", "- <empty-block/>" and
 // v1's "- <table_of_contents></table_of_contents>"
-// alike, a line further in after it the item's too ("- <callout>a
+// alike (and so a link or a button, "- <link-to-page url=…/>"), a line further in after
+// it the item's too ("- <callout>a
 // </callout>⏎  b"). Text after the closing tag makes it text ("- <callout>a
 // </callout> b", notionMarkdownVersion2BrokenPairs), and a to-do's is
 // refused as inline ("- [ ] <page></page>"). An <li> so is an item no list
@@ -21,7 +22,7 @@ import (
 // tag text follows ("- <li>a⏎  b</li> c" is inline, as a block's tag so is
 // text, notionMarkdownVersion2BrokenPairs).
 
-var notionMarkdownVersion2ItemTag = regexp.MustCompile(`^<(p|h[1-4]|quote|toggle|callout|ul|ol|li|columns|tabs|table|equation|table-of-contents|table_of_contents|image|file|pdf|video|audio|bookmark|embed|page|database|synced-block|synced-block-reference|details|empty-block)(?:[ \t/>]|$)`)
+var notionMarkdownVersion2ItemTag = regexp.MustCompile(`^<(p|h[1-4]|quote|toggle|callout|ul|ol|li|columns|tabs|table|equation|table-of-contents|table_of_contents|image|file|pdf|video|audio|bookmark|embed|page|database|link-to-page|button|synced-block|synced-block-reference|details|empty-block)(?:[ \t/>]|$)`)
 
 // notionMarkdownVersion2ItemTags puts a block's tag a list item's text starts
 // with on a line of its own, as far in as the item's blocks stand, after the

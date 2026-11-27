@@ -1,7 +1,7 @@
 /**
  * The decimal places a number shows when nothing chooses them, as Notion's
  * cells show a number property's or a formula's number (seen 2026-11-14
- * under 한지테스트페이지): 1/3 kept by a formula shows 0.333333333333, a
+ * under a Notion test page): 1/3 kept by a formula shows 0.333333333333, a
  * number property's 0.30000000000000004 0.300000000000.
  */
 export const SHOWN_DECIMALS = 12;

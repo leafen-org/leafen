@@ -324,6 +324,7 @@ func rewriteWorkspaceImportArchiveBlockTrashValue(db *sql.DB, field string, valu
 			typed[index] = rewritten
 		}
 	case map[string]any:
+		defer keepSyncedCopyOfPage(typed, syncedCopyPage(typed))
 		for key, child := range typed {
 			// A removed button keeps its actions as a live one's are kept.
 			rewrite := rewriteWorkspaceImportArchiveBlockTrashValue

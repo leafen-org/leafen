@@ -10,6 +10,8 @@ import styles from "./PhoneSelectOptionEditor.module.css";
 import sheet from "./databaseSheet";
 import { fieldEnter } from "@/lib/fieldKeyBoundary";
 import { dropOptionNameCommas } from "./optionNameText";
+import { useTypedName } from "@/lib/typedName";
+import type { ContentGraph, GraphOperation } from "@/contentGraph";
 
 /**
  * An option's editor on a phone, as Notion's (seen 2026-11-11 at 402pt in
@@ -17,17 +19,19 @@ import { dropOptionNameCommas } from "./optionNameText";
  * name in a white row with "ⓘ" at its end, which opens "설명" and its field
  * "설명 추가…"; "삭제" in a group of its own, a status's "기본으로 설정" and
  * "그룹화 ›" with it; then "색", each colour a row with its 24px swatch, the
- * chosen one ticked. Its name is kept as it closes. It opens with the caret
+ * chosen one ticked. Its name is kept as it closes, and on the device at
+ * each key (useTypedName). It opens with the caret
  * at the end of its name and the keyboard up, as Notion's (seen 2026-11-18 on
  * a Galaxy A90 in Chrome at 411, a status's, a select's and a multi-select's
  * option pressed in "속성 편집", each in a tab of its own at two times, no
  * script before the press: the keyboard rose and a letter typed after it
  * ended the name).
  */
-export function PhoneSelectOptionEditor({ option, onClose, onRename, onColor, onDescribe, onDelete, onMakeDefault, group }: {
+export function PhoneSelectOptionEditor({ option, onClose, onRename, typedChange, onColor, onDescribe, onDelete, onMakeDefault, group }: {
   option: SelectOption;
   onClose(): void;
   onRename(name: string): void;
+  typedChange?: (name: string, graph: ContentGraph) => GraphOperation[] | null;
   onColor(color: ColorName): void;
   onDescribe?(description: string): void;
   /** Asked first (PropertySelectOptionEditor); it then closes. */
@@ -37,6 +41,7 @@ export function PhoneSelectOptionEditor({ option, onClose, onRename, onColor, on
 }) {
   const { t } = useTranslation(["propertyCell", "propertyTypeConfig", "common", "databaseView"]);
   const name = useRef(option.name);
+  const named = useTypedName(option.id, "option", onRename, typedChange);
   const nameField = useRef<HTMLInputElement>(null);
   // Focused as it is drawn, within the press that opened it, so a phone raises its keyboard.
   useLayoutEffect(() => {
@@ -46,7 +51,7 @@ export function PhoneSelectOptionEditor({ option, onClose, onRename, onColor, on
     field.setSelectionRange(field.value.length, field.value.length);
   }, []);
   const [describing, setDescribing] = useState(false), [grouping, setGrouping] = useState(false);
-  const close = () => { onRename(name.current); onClose(); };
+  const close = () => { named.saved(name.current); onClose(); };
   const chosen = chosenOptionColor(option);
   const groupLabel = group?.choices.find((choice) => choice.id === group.current)?.label ?? "";
   return (
@@ -56,8 +61,8 @@ export function PhoneSelectOptionEditor({ option, onClose, onRename, onColor, on
       <PhoneSheetGroup>
         <span className={styles.nameRow}>
           <input ref={nameField} className={styles.name} defaultValue={option.name} aria-label={t("propertyCell:optionName")}
-            onChange={(event) => { dropOptionNameCommas(event.currentTarget); name.current = event.currentTarget.value; }}
-            onBlur={(event) => onRename(event.currentTarget.value)}
+            onChange={(event) => { dropOptionNameCommas(event.currentTarget); name.current = event.currentTarget.value; named.typed(name.current); }}
+            onBlur={(event) => named.saved(event.currentTarget.value)}
             onKeyDown={(event) => {
               if (!fieldEnter(event)) return;
               event.preventDefault();

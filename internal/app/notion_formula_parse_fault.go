@@ -157,8 +157,8 @@ func notionFormulaReference(runes []rune, index int) int {
 // octal ("0x1F", "0b1", "0o7"); strings in double quotes, in single quotes
 // only when asked, a backslash ending the formula inside one being the
 // fault; a block_property reference as one name; comments left out
-// (databaseFormulaCommentEnd); and the fault of the first character it has
-// no token for.
+// (databaseFormulaCommentEnd), each token marked spaced after a space or a
+// comment; and the fault of the first character it has no token for.
 func notionFormulaTokens(expression string, singleQuotes, legacy bool) ([]databaseFormulaToken, string) {
 	runes := []rune(expression)
 	tokens := []databaseFormulaToken{}
@@ -175,13 +175,19 @@ func notionFormulaTokens(expression string, singleQuotes, legacy bool) ([]databa
 		}
 		return false
 	}
+	gap, marked := false, 0
 	for index := 0; index < len(runes); {
+		if marked < len(tokens) {
+			tokens[marked].spaced, marked, gap = gap, len(tokens), false
+		}
 		current := runes[index]
 		switch {
 		case unicode.IsSpace(current) || current == '\uFEFF':
 			index++
+			gap = true
 		case databaseFormulaCommentEnd(runes, index) >= 0:
 			index = databaseFormulaCommentEnd(runes, index)
+			gap = true
 		case current == '"' || current == '\'' && singleQuotes:
 			value := []rune{}
 			index++
@@ -248,6 +254,9 @@ func notionFormulaTokens(expression string, singleQuotes, legacy bool) ([]databa
 			tokens = append(tokens, databaseFormulaToken{kind: kind, value: string(current)})
 			index++
 		}
+	}
+	if marked < len(tokens) {
+		tokens[marked].spaced = gap
 	}
 	return tokens, ""
 }

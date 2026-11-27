@@ -4,6 +4,7 @@ import { pageHref } from "@/lib/navigation";
 import { libraryHref, replaceRoute } from "@/lib/router";
 import { libraryOpeningView } from "@/components/library/libraryViewOrder";
 import { readLastOpenedPage, readStartPage } from "@/lib/startPage";
+import { accountLastPage, takeUnrememberedLanding } from "@/lib/landingWorkspace";
 import type { Page, Session, Workspace } from "@/types";
 import { pageTrashRoot } from "@/lib/pageTrash";
 import { onReloadKeepingPlace, takeKeptPlace } from "@/lib/reloadKeepingPlace";
@@ -22,6 +23,8 @@ let keptHome = typeof window === "undefined" ? false : takeKeptPlace<boolean>("h
  * Opens a workspace's start page (`lib/startPage.ts`) as Notion does when
  * it starts at its root and when the person switches workspace (seen
  * 2026-10-02), and, for someone new there, its landing page (2026-10-05).
+ * Started where this browser remembers no workspace of the person's, it
+ * opens where their account last was (lib/landingWorkspace.ts).
  * A root opened later inside the product stays home, where "내 작업" lives.
  */
 export function useStartPage({
@@ -30,6 +33,7 @@ export function useStartPage({
   loaded,
   pages,
   workspace,
+  workspaces,
   openPage,
   openLibrary,
 }: {
@@ -38,11 +42,20 @@ export function useStartPage({
   loaded: boolean;
   pages: readonly Page[];
   workspace: Workspace | null;
+  /** Every workspace the person is in, where their account's last place is looked for. */
+  workspaces: readonly Workspace[];
   openPage: (page: Page) => void;
   openLibrary: (workspace: Workspace) => void;
 }) {
   const pagesRef = useRef(pages);
   pagesRef.current = pages;
+  const workspacesRef = useRef(workspaces);
+  workspacesRef.current = workspaces;
+  // A page of the workspace's the list holds, not under a page in the trash (in the trash too).
+  const usablePage = useCallback((id: string | null | undefined, workspaceId: string) => {
+    const page = id ? pagesRef.current.find((item) => item.id === id) : undefined;
+    return page && page.workspaceId === workspaceId && !pageTrashRoot(page, (parentId) => pagesRef.current.find((item) => item.id === parentId)) ? page : null;
+  }, []);
   // The desktop app's command search window holds the search alone, no page.
   const startedAtRoot = useRef(pathname === "/" && !isQuickSearchWindow());
   useEffect(() => onReloadKeepingPlace("home", () => (window.location.pathname === "/" ? true : null)), []);
@@ -56,11 +69,7 @@ export function useStartPage({
   const startTarget = useCallback(async (target: Workspace): Promise<StartTarget> => {
     const choice = readStartPage(session.user.id, target.id);
     if (choice === "library") return { library: true };
-    const usable = (id: string | null | undefined) => {
-      const page = id ? pagesRef.current.find((item) => item.id === id) : undefined;
-      // Not a page under a page in the trash, which is in the trash too.
-      return page && page.workspaceId === target.id && !pageTrashRoot(page, (parentId) => pagesRef.current.find((item) => item.id === parentId)) ? page : null;
-    };
+    const usable = (id: string | null | undefined) => usablePage(id, target.id);
     if (choice === "sidebar_top_page") {
       // The sidebar's first row, once it has this workspace's layout and
       // teamspaces and draws its pages.
@@ -95,7 +104,7 @@ export function useStartPage({
     const first = pagesRef.current.find((page) => page.workspaceId === target.id && page.createdBy === session.user.id
       && !pageTrashRoot(page, (parentId) => pagesRef.current.find((item) => item.id === parentId)));
     return first ? { page: first } : null;
-  }, [session]);
+  }, [session, usablePage]);
 
   useEffect(() => {
     // Loaded with no workspace to open: nothing to choose, nothing to wait for.
@@ -105,16 +114,19 @@ export function useStartPage({
     // Taken by the start that opens a page, not by a mount that didn't get here.
     const home = keptHome;
     keptHome = false;
+    const unremembered = takeUnrememberedLanding(session.user.id);
     if (!startedAtRoot.current || home) {
       setStartChoosing(false);
       return;
     }
-    void startTarget(workspace).then((target) =>
+    // Its page's workspace becomes the one shown (useAuthenticatedBootstrap's route pick).
+    const accountPlace = unremembered ? accountLastPage(session, workspacesRef.current, usablePage) : Promise.resolve(null);
+    void accountPlace.then((page): Promise<StartTarget> | StartTarget => (page ? { page } : startTarget(workspace))).then((target) =>
       target ? ("page" in target ? pageHref(target.page.id) : libraryHref(libraryOpeningView(session.user.id, workspace))) : null).then((href) => {
       // The person may have gone elsewhere while it was read.
       if (href && window.location.pathname === "/") replaceRoute(href);
     }, () => undefined).finally(() => setStartChoosing(false));
-  }, [loaded, session.user.id, startTarget, workspace]);
+  }, [loaded, session, startTarget, usablePage, workspace]);
 
   /** Opens `target`'s start page after switching to it, or else `fallback`. */
   return useCallback(async (target: Workspace, fallback: () => void) => {

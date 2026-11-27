@@ -1,4 +1,5 @@
 import { PersonAvatar } from "@/components/people/PersonAvatar";
+import { SelfMark } from "@/components/people/SelfMark";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, Search } from "@/icons/leafen";
@@ -112,8 +113,10 @@ export function TeamspaceMembersView({ controller, initialInvite = false, onLeav
                   : <span className={styles.avatar} aria-hidden="true">{label.trim().slice(0, 1).toUpperCase() || "?"}</span>}
                 <span className={styles.personText}>
                   <span className={styles.personName}>
-                    <span>{label}</span>
-                    {you ? <span className={styles.youMark}>{t("memberList.youMark")}</span> : null}
+                    <span className={styles.personLabel}>
+                      <span>{label}</span>
+                      {you ? <SelfMark className={styles.youMark} text={t("memberList.youMark")} /> : null}
+                    </span>
                     {option?.workspaceOwner ? <span className={styles.roleBadge}>{t("memberList.workspaceOwner")}</span> : null}
                     {option?.restricted ? <span className={styles.restrictedBadge}>{t("memberList.restricted")}</span> : null}
                   </span>

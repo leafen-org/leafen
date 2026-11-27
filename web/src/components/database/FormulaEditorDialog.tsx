@@ -8,7 +8,7 @@ import { placeAround, popoverPlacementStyle, usePopoverPlacement, type PopoverRe
 import { CheckIcon, ChevronDown, FileText, X } from "@/components/icons";
 import { QuestionCircleIcon } from "@/icons/leafen/automationIcons";
 import { RichTextCellText } from "./RichTextCellText";
-import { formulaEditorPieces } from "./formulaEditorPieces";
+import { formulaEditorPieces, formulaUnderlined } from "./formulaEditorPieces";
 import { formulaNameProblems, formulaNamedProblems } from "./formulaDraftProblems";
 import { evaluateFormulaRun, formulaDisplay, formulaItemText, type FormulaBounds } from "./formula";
 import { FormulaDebugValue } from "./FormulaDebugValue";
@@ -34,6 +34,8 @@ import {
   type FormulaScopeName,
 } from "./formulaEditorModel";
 import { FormulaEditorHelper, type FormulaHelperItem } from "./FormulaEditorHelper";
+import { formulaEnclosingCall } from "./formulaHelperContext";
+import { formulaMethodInsert } from "./formulaMethodForm";
 import { FOOT_PLACEMENT } from "./PropertyCellMenu";
 import { FormulaInput, type FormulaInputHandle } from "./FormulaInput";
 import { useFormulaDraft } from "./useFormulaDraft";
@@ -48,7 +50,7 @@ import { deviceValue, storeDeviceValue } from "@/lib/browserStorage";
 import { fieldFocusOnOpen, phoneScreen } from "@/lib/screenKind";
 import { PhoneSheet, usePhoneSheetHead } from "@/components/shell/PhoneSheet";
 import phoneStyles from "./FormulaEditorPhone.module.css";
-import { fieldEscape, imeComposing } from "@/lib/fieldKeyBoundary";
+import { formulaEditorKey } from "./formulaEditorKeys";
 import { focusOpenedField } from "@/components/editor/openedFieldCaret";
 
 // Notion's formula editor, opened from a formula cell or its property: the
@@ -200,7 +202,7 @@ export function FormulaEditorDialog({ prop, props, pagesById, propsByDb, bounds,
     return formulaEmptyValueCalls(draft, props).map(({ start, end }) => ({ start, end: formulaEmptyCallEnd(draft, pieces, end), warning: true,
       kind: "emptyValue", line: t("emptyValueCall") }));
   }, [debug, preview, problems.length, draft, props, pieces, knownNames, t]);
-  const marks = useMemo(() => emptyCalls.length ? [...problems, ...emptyCalls] : problems, [problems, emptyCalls]);
+  const marks = useMemo(() => [...problems.map((item) => formulaUnderlined(pieces, item)), ...emptyCalls], [problems, emptyCalls, pieces]);
   // After a page name's "." a property may follow too, as Notion says there (seen 2026-10-23).
   const afterPage = problem?.key === "method" && names.some((name) => name.page
     && new RegExp(`(?:^|[^A-Za-z0-9_])${name.name}\\s*\\.\\s*$`, "u").test(draft));
@@ -237,6 +239,7 @@ export function FormulaEditorDialog({ prop, props, pagesById, propsByDb, bounds,
 
   const choices = useMemo(() => formulaPropertyChoices(props, prop), [props, prop]);
   const groups = useMemo(() => formulaSuggestions(draft, cursor, choices, names), [draft, cursor, choices, names]);
+  const enclosing = useMemo(() => groups.length ? "" : formulaEnclosingCall(draft, cursor), [groups, draft, cursor]);
 
   // A modal layer over the cell it opened from: Escape closes its picker,
   // then it, once nothing opened over it takes the key.
@@ -288,32 +291,19 @@ export function FormulaEditorDialog({ prop, props, pagesById, propsByDb, bounds,
   }
 
   function insert(item: FormulaHelperItem) {
-    const text = item.kind === "name" ? item.name.name : item.kind === "property" ? formulaPropertyInsert(item.property) : item.entry.insert;
+    const text = item.kind === "name" ? item.name.name : item.kind === "property" ? formulaPropertyInsert(item.property)
+      : item.method ? formulaMethodInsert(item.entry.key, item.method) : item.entry.insert;
     const next = formulaInsert(draft, cursor, text);
     type(next.text, next.cursor, Boolean(formulaWordAt(draft, cursor).word));
   }
 
+  // Its keys as Notion's (formulaEditorKeys.ts). The editor marks Escape handled itself (ProseMirror does), so the
+  // layer never hears it; here it closes the editor as Escape does elsewhere, and ⌘Enter as Escape does.
   function onEditorKeyDown(event: KeyboardEvent) {
-    // The editor marks Escape handled itself (ProseMirror does), so the layer
-    // never hears it; here it closes the editor as Escape does elsewhere.
-    if (fieldEscape(event) && !pickerOpen) {
-      event.preventDefault(); close();
-      return;
-    }
-    // As Notion's (seen 2026-10-08): the arrows and Enter work the suggestions
-    // wherever the caret is, and Tab picks one only for a name being typed;
-    // elsewhere Tab writes a tab. Other keys, and Shift with them, remain with
-    // Tiptap and the parent modal.
-    if (pickerOpen || event.shiftKey || imeComposing(event)) return;
-    const typing = Boolean(formulaWordAt(draft, cursor).word);
-    if (event.key === "Tab" && !(helperOpen && typing && groups.length)) {
-      event.preventDefault();
-      type(draft.slice(0, cursor) + "\t" + draft.slice(cursor), cursor + 1);
-      return;
-    }
-    if (!helperOpen || !groups.length) return;
-    if (!["Enter", "ArrowDown", "ArrowUp", "Tab"].includes(event.key)) return;
-    helperKeys.current?.(event);
+    const key = formulaEditorKey(event, { menuOpen: pickerOpen, suggesting: helperOpen && groups.length > 0, typing: Boolean(formulaWordAt(draft, cursor).word) });
+    if (key === "close") { event.preventDefault(); close(); }
+    else if (key === "tab") { event.preventDefault(); type(draft.slice(0, cursor) + "\t" + draft.slice(cursor), cursor + 1); }
+    else if (key === "list") helperKeys.current?.(event);
   }
 
   // The rows to preview on, found while the picker is open alone and once for each search, its list drawn around what it shows (usePickerWindow).
@@ -481,7 +471,7 @@ export function FormulaEditorDialog({ prop, props, pagesById, propsByDb, bounds,
           </div>
         </div>}
         {helperOpen ? (
-          <FormulaEditorHelper groups={groups} names={names} edit={`${cursor}:${draft}`} ownerRef={caretRef}
+          <FormulaEditorHelper groups={groups} names={names} edit={`${cursor}:${draft}`} enclosing={enclosing} ownerRef={caretRef}
             phone={phone ? (overSheet ? "grouped" : "flat") : undefined} onCaretReady={setHelperKeys} onInsert={insert} />
         ) : null}
       </section>

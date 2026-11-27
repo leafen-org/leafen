@@ -1,4 +1,4 @@
-import { useCallback, type MouseEvent as ReactMouseEvent } from "react";
+import { useCallback, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import type { GraphDataSource } from "@/contentGraph";
 import { ArrowUpRightIcon } from "@/icons/leafen";
 import { inlineDatabaseFullPageHref } from "@/lib/inlineDatabaseFullPage";
@@ -20,14 +20,21 @@ import styles from "./InlineDatabaseLinkedTitle.module.css";
  * the icon in its 22px slot as a database's own title draws it
  * (INLINE_TITLE_ICON): a built-in icon 0.96 of it, an emoji 0.9, centred
  * (Notion's in Chrome at 1440, dpr 2: People's person in a ring 21.11 seen
- * 2026-11-19, a checkmark 21.12 and an emoji 19.8 on 2026-11-20).
+ * 2026-11-19, a checkmark 21.12 and an emoji 19.8 on 2026-11-20). Its
+ * title's "⋯ › 제목 편집" names the source there (`field`, the source's own
+ * name field, its words chosen), the "↗" staying before it 4px on, as
+ * Notion's (seen 2026-11-28 in Chrome in two tabs at two times); its own
+ * name, which "이름 바꾸기" gives it, shows in that box alone, the head
+ * keeping the source's (seen the same days).
  */
-export function InlineDatabaseLinkedTitle({ source, containerId, className, workspaceId }: {
+export function InlineDatabaseLinkedTitle({ source, containerId, className, workspaceId, field }: {
   source: GraphDataSource;
   /** The database block that owns the source. */
   containerId: string;
   className: string;
   workspaceId?: string;
+  /** The source's name field, drawn in place of its name while "제목 편집" names it. */
+  field?: ReactNode;
 }) {
   const pages = useProductPages();
   const sourcePage = source.pageId ? pages?.pages.find((page) => page.id === source.pageId) : undefined;
@@ -40,15 +47,17 @@ export function InlineDatabaseLinkedTitle({ source, containerId, className, work
     event.preventDefault();
     pushRoute(href);
   };
+  const mark = hasExplicitPageIcon(icon) ? (
+    <span className={styles.icon} data-linked-source-icon>
+      <PageIcon className={INLINE_TITLE_ICON.className} page={icon} size={INLINE_TITLE_ICON.size(icon)} fallback="none" />
+      <ArrowUpRightIcon className={styles.iconArrow} size="small" aria-hidden="true" />
+    </span>
+  ) : <ArrowUpRightIcon className={styles.arrow} size="regular" aria-hidden="true" />;
+  if (field) return <span className={styles.naming} data-linked-source={source.id}>{mark}{field}</span>;
   return (
     <a className={`${className} ${styles.linked}`} href={href} onClick={open}
       data-inline-database-title data-linked-source={source.id}>
-      {hasExplicitPageIcon(icon) ? (
-        <span className={styles.icon} data-linked-source-icon>
-          <PageIcon className={INLINE_TITLE_ICON.className} page={icon} size={INLINE_TITLE_ICON.size(icon)} fallback="none" />
-          <ArrowUpRightIcon className={styles.iconArrow} size="small" aria-hidden="true" />
-        </span>
-      ) : <ArrowUpRightIcon className={styles.arrow} size="regular" aria-hidden="true" />}
+      {mark}
       <span className={styles.name}>{source.title.trim() || inlineDatabasePlaceholderTitle()}</span>
     </a>
   );

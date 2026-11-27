@@ -206,8 +206,10 @@ export function productErrorStorageMeaning(
     "safe-after-action",
     { key: "meanings.safeRetrySameFileOperationAfter" },
   );
-  // Said as the settings and uploads say it (settingsErrors' serverDiskLow):
-  // the disk, whom to ask, and that it works again once there is room.
+  // A full disk, to someone who asks the administrator: the disk, whom to ask,
+  // and that it works again once there is room. A refusal that says to whom
+  // it was made and why — too full or too small — takes its own words
+  // (lib/serverDiskRefusal.ts).
   if (classification === "server-disk-low") return result(
     { key: "meanings.serverDiskAlmostFull" },
     deniedEffect,

@@ -1,0 +1,54 @@
+/* A grouped timeline's group "더 불러오기" lane (TimelineGroupMoreLane), as
+   Notion's (seen 2026-11-27 in Chrome at 1440): 33px; on the canvas its 16px
+   arrow 6px before its faint words and its "⋯" 8px after them, held 3px in
+   at the canvas's start edge as the group's "+ 새로 만들기" is; beside a
+   table across the table over a row's faint line, its "⋯" at the end. */
+.lane {
+  grid-column: 1 / -1;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  height: 33px;
+  cursor: pointer;
+}
+.line {
+  --timeline-offset: inherit;
+  --timeline-table-inset: inherit;
+  position: sticky;
+  inset-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+:global([data-timeline-lanes]) .line {
+  inset-inline-start: calc(var(--timeline-table-inset) + var(--timeline-bleed, 0px) + 3px);
+}
+.lane[data-table="true"] {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.lane[data-table="true"] .line {
+  flex: 1 1 auto;
+  justify-content: space-between;
+  padding-inline: 8px;
+}
+.lane[data-table="true"]:hover {
+  background: var(--bg-hover);
+}
+.loadMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  cursor: pointer;
+}
+.loadMore:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+  border-radius: 4px;
+}

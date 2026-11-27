@@ -471,7 +471,7 @@ export function DatabaseViewTabs({
         act: () => { setMenu(null); router.push(opens); } }] : []),
       ...(blockId ? [
         { id: "title", label: labels.editTitle, icon: <Pencil size="small" />, grouped: !opens,
-          act: () => { setMenu(null); requestInlineDatabase(blockId, "rename"); } },
+          act: () => { setMenu(null); requestInlineDatabase(blockId, "title"); } },
         { id: "icon", label: labels.editIcon, icon: <SmileIcon size="small" />,
           act: () => { setMenu(null); requestInlineDatabase(blockId, "icon"); } },
       ] : []),

@@ -47,7 +47,7 @@ var scheduledBackupMachineOnly = map[string]bool{
 	"bin": true, "updates": true, ".diagnostics": true, ".app-endpoint-bodies": true,
 	"desktop.json": true, "window-background": true, leafenTempDirName: true,
 	".data.db-litestream": true, ".auxiliary.db-litestream": true,
-	replicaHolderName: true, replicaFencedName: true, serverMovedInName: true,
+	replicaHolderName: true, replicaFencedName: true, serverMovedInName: true, dataDiskLowName: true,
 	// The serving process's lock (server_data_lock.go), which Windows keeps
 	// from being read while it is held.
 	serverDataLockName: true,

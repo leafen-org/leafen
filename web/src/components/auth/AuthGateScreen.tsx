@@ -11,7 +11,7 @@ import type { DeviceOwnerSignInState } from "./useDeviceOwnerSignIn";
 import { CompanySignInStep } from "./CompanySignIn";
 import { SetupBackupsOff, SetupRestore } from "./SetupRestore";
 import restoreStyles from "./SetupRestore.module.css";
-import { SetupCodeField, SetupOutsideGuide } from "./SetupOutsideGuide";
+import { SetupCodeField, SetupOutsideGuide, useSetupStart } from "./SetupOutsideGuide";
 import { useChosenSuggestion } from "@/lib/useChosenSuggestion";
 import { useViewEntryFocus } from "@/lib/viewEntryFocus";
 import { CODE_KEYBOARD, inFours } from "./codeKeyboard";
@@ -165,8 +165,9 @@ export function AuthGateScreen(props: AuthGateScreenProps) {
   // the page); the first one is left as the page opens it.
   const panelRef = useRef<HTMLElement>(null);
   const [restoring, setRestoring] = useState(false);
-  // "설정 코드 넣기" pressed on the outside's setup screen: the code field stays.
-  const [codeChosen, setCodeChosen] = useState(false);
+  // From outside, without the setup link, where to open it instead of a code field (2026-11-19) — but on a server given a code at its start (2026-11-27), or once "설정 코드 넣기" was pressed there, the code field.
+  const [codeChosen, setCodeChosen] = useState(false), codeTyped = (useSetupStart().codeGiven || codeChosen) && props.setupCodeNeeded;
+  const outsideGuide = props.setupCodeNeeded && !props.setupCode && !codeTyped;
   // A server's first setup asks its language first, unless the app's first screen did (lib/firstRunLanguage.ts).
   const [languageChosen, setLanguageChosen] = useState(() => firstRunLanguage() !== "");
   // An agent's conversation or another of the person's tabs may set the server up while this shows: the screen then goes on as
@@ -183,7 +184,7 @@ export function AuthGateScreen(props: AuthGateScreenProps) {
   // themselves, as Notion's app names its own ("로그인", "회원가입"; "Log in",
   // "Sign up": its login and signup pages' titles, read 2026-11-14). One inside a window over the app leaves it.
   const screenName = props.inWindow || step === "invitation" ? "" : step === "setup" ? (!languageChosen ? "" : t(restoring ? "authGate:setupRestoreTitle"
-    : props.setupCodeNeeded && !props.setupCode && !codeChosen ? "authGate:setupOutsideTitle" : "authGate:setupTitle"))
+    : outsideGuide ? "authGate:setupOutsideTitle" : "authGate:setupTitle"))
       : t(step === "signup" ? "authGate:windowTitle.signup" : "authGate:windowTitle.signin");
   useLayoutEffect(() => (screenName ? coverDocumentChrome(screenName) : undefined), [screenName]);
   const rejection = (id: string, help?: string) => rejectedField === id
@@ -216,14 +217,13 @@ export function AuthGateScreen(props: AuthGateScreenProps) {
         {step === "setup" && restoring ? (
           <SetupRestore setupCode={props.setupCode} setupCodeNeeded={props.setupCodeNeeded} setSetupCode={props.setSetupCode}
             onBack={() => setRestoring(false)} />
-        ) : step === "setup" && props.setupCodeNeeded && !props.setupCode && !codeChosen ? (
-          // From outside, without the setup link: where to open it instead of a code field (2026-11-19).
+        ) : step === "setup" && outsideGuide ? (
           <SetupOutsideGuide onEnterCode={() => setCodeChosen(true)} />
         ) : step === "setup" ? (
           <form className={styles.form} noValidate onSubmit={props.submitInstanceSetup} data-testid="instance-setup">
             <div className={styles.notice}>
               <strong>{t("authGate:setupTitle")}</strong>
-              <p>{t("authGate:setupBody")}</p><SetupBackupsOff />
+              <p>{t(codeTyped ? "authGate:setupBodyCode" : "authGate:setupBody")}</p><SetupBackupsOff />
             </div>
             <label className={styles.label} htmlFor="setup-display-name">{t("authGate:name")}</label>
             <input

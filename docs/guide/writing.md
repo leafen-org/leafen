@@ -34,7 +34,7 @@ chapter starts from. The [guide map](README.md) lists the chapters.
    `img/` next to the chapters. Each picture has alt text that says what it
    shows. Do not add a picture taken by hand.
 9. **Plain English.** Short sentences, the second person ("you"), present
-   tense. A Korean edition is not part of the 0.1 pre-release.
+   tense. There is no Korean edition yet.
 
 ## Types get their own sections
 

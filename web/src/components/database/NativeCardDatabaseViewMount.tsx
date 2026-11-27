@@ -164,14 +164,16 @@ export function NativeCardDatabaseViewMount({
   // as they are.
   const structureLocked = useDatabaseStructureLocked();
   const lifecycle = useCommittedOperationScope([snapshot.contextIdentity]);
+  // How many it first shows, chosen at the "⋯" of its "더 불러오기" or of a group's.
+  const setCardLoadLimit = snapshot.readOnly || structureLocked || !tableAdapter ? undefined : (limit: number) => {
+    void tableAdapter.updateView({ ...view, config: { ...view.config, initialLoadLimit: limit } }, () => !lifecycle.signal.aborted, true)
+      .catch(onError);
+  };
   const loadMoreCards: CardsLoadMoreControl | undefined = shown.hasMore && loadLimit !== undefined ? {
     limit: loadLimit,
     // As many more as it first loads, as Notion's (seen 2026-11-03).
     onLoadMore: () => setCardWindow({ ...windowRef.current, count: windowRef.current.count + loadLimit }),
-    onLimit: snapshot.readOnly || structureLocked || !tableAdapter ? undefined : (limit) => {
-      void tableAdapter.updateView({ ...view, config: { ...view.config, initialLoadLimit: limit } }, () => !lifecycle.signal.aborted, true)
-        .catch(onError);
-    },
+    onLimit: setCardLoadLimit,
   } : undefined;
   const feedPostService = useMemo(() => session ? createFeedPostService(session) : null, [session]);
   const current = useRef(snapshot);
@@ -233,8 +235,9 @@ export function NativeCardDatabaseViewMount({
     const along = (row: GraphRow) => {
       shown = true;
       // Named among the cards made here only where the cards shown would leave it out: the
-      // view isn't drawn again for it, ahead of its rows (2026-11-14: a list of 30 drew whole).
-      if (loadLimit !== undefined && topRowCount(allRows) >= windowRef.current.count) {
+      // view isn't drawn again for it, ahead of its rows (2026-11-14: a list of 30 drew whole);
+      // a grouped list's or gallery's group shows it past its first ones (useListGroupLoads).
+      if (loadLimit !== undefined ? topRowCount(allRows) >= windowRef.current.count : grouped && !parentId) {
         setCardWindow({ ...windowRef.current, made: new Set([...windowRef.current.made, row.id]) });
       }
       let asking = false;
@@ -302,7 +305,7 @@ export function NativeCardDatabaseViewMount({
       } : {}),
       trashRows,
       duplicateRows,
-      loadMoreCards,
+      loadMoreCards, madeRowIds: currentWindow.made, setCardLoadLimit,
       isCurrent,
       onError,
       openRow: (rowId) => openDefault(rowId),
@@ -331,7 +334,7 @@ export function NativeCardDatabaseViewMount({
     const operations: ListViewOperations = {
       createRow: (seeds, context, parentId, place, atOnce, alongside) => createRow(seedRecord(seeds), context, parentId, place, atOnce, alongside),
       moveRows,
-      loadMoreCards,
+      loadMoreCards, madeRowIds: currentWindow.made, setCardLoadLimit,
       isCurrent,
       loadSubitemRows: (parentId) => Promise.resolve(localWindow(parentId)),
       loadMoreSubitemRows: (parentId) => Promise.resolve(localWindow(parentId)),

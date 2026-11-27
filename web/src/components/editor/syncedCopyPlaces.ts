@@ -48,11 +48,11 @@ export function syncedCopyLeavable(adapter: NativeEditorGraphAdapter, blocks: re
   return crossable(adapter, blocks) && !!page && !page.readOnly && page.graph.blocks.some((block) => block.id === copy!.blockId);
 }
 
-/** Whether blocks beside this copy may go into its original on another page. */
+/** Whether blocks beside this copy may go into its original on another page: its block, or the page whose body it shows. */
 export function syncedCopyEnterable(adapter: NativeEditorGraphAdapter, copy: GraphBlock, blocks: readonly GraphBlock[]) {
   const page = syncedOriginalShown(adapter.pageId, copy.id);
-  const original = syncedBlockSource(copy, adapter.pageId).blockId;
-  return crossable(adapter, blocks) && !!page && !page.readOnly && page.graph.blocks.some((block) => block.id === original);
+  const source = syncedBlockSource(copy, adapter.pageId);
+  return crossable(adapter, blocks) && !!page && !page.readOnly && (source.page || page.graph.blocks.some((block) => block.id === source.blockId));
 }
 
 // One crossing at a time: keys pressed again before the blocks have arrived

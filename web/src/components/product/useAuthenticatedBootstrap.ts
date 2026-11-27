@@ -24,14 +24,11 @@ import { serverIdentity } from "@/lib/serverOrigin";
 import { BOOTSTRAP_CACHE, cacheBehind, clearCacheBehind, markCacheBehind } from "@/lib/cacheStaleness";
 import { observeServerDataEpoch } from "@/lib/dataEpoch";
 import { resumeWorkspaceDeletions } from "@/components/settings/resumeWorkspaceDeletions";
-import { personValue, storePersonValue } from "@/lib/browserStorage";
+import { landingWorkspace, rememberWorkspace } from "@/lib/landingWorkspace";
 import { markSwitcherEntry } from "@/components/sidebar/switcherEntry";
 import { leavingPageHeld, onLeavingPageGone } from "@/lib/pageLeftAfterPaint";
 import { afterNextPaint } from "@/lib/afterPress";
 import { withDatabaseNamesKept } from "@/lib/databaseNamesKept";
-
-/** The workspace a person last used on this browser. */
-const LAST_WORKSPACE_KEY = "last-workspace";
 
 // A list read a later one retired.
 const retiredRead = Symbol("retired bootstrap read");
@@ -187,18 +184,15 @@ export function useAuthenticatedBootstrap({
       takeWorkspaceOpenRequest();
       markSwitcherEntry(askedWorkspace);
     }
-    // Opened again, the app goes back to the workspace last used here, as
-    // Notion does (2026-10-16: it always opened the first one).
-    const remembered = personValue(LAST_WORKSPACE_KEY, { userId: session.user.id });
-    const lastUsed = remembered && normalized.workspaces.some(({ id }) => id === remembered) ? remembered : null;
-    // A link naming its workspace opens there (lib/workspaceAddress.ts).
+    // A link naming its workspace opens there (lib/workspaceAddress.ts);
+    // opened again, the app goes back to where the person last was
+    // (lib/landingWorkspace.ts).
     const addressed = workspaceAskedBy(window.location.search, normalized.workspaces);
     if (addressed) replaceRoute(addressWithoutWorkspace(window.location));
-    setSelectedWorkspaceId((current) => (
-      askedWorkspace || addressed || (current && normalized.workspaces.some(({ id }) => id === current)
-        ? current
-        : requestedPage?.workspaceId ?? lastUsed ?? normalized.workspaces[0]?.id ?? null)
-    ));
+    setSelectedWorkspaceId((current) => landingWorkspace({
+      userId: session.user.id, workspaces: normalized.workspaces, asked: askedWorkspace || addressed || null,
+      current, pageWorkspace: requestedPage?.workspaceId ?? null,
+    }));
     // An address naming a page the list lacks opens no other page in its
     // place, and a screen that draws none opens none (above).
     setSelectedPageId(requestedPage ? requestedPage.id : null);
@@ -423,7 +417,7 @@ export function useAuthenticatedBootstrap({
   // An app's screen opens the app's workspace, which a new member doesn't
   // list yet.
   useEffect(() => {
-    if (selectedWorkspaceId) storePersonValue(LAST_WORKSPACE_KEY, selectedWorkspaceId, { userId: session.user.id });
+    if (selectedWorkspaceId) rememberWorkspace(session.user.id, selectedWorkspaceId);
   }, [selectedWorkspaceId, session.user.id]);
 
   // A link naming its workspace, gone to while the app is open (an inbox

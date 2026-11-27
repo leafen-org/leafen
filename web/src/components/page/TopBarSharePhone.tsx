@@ -34,7 +34,7 @@ export function SharePhoneSearch({ disabled, onOpen }: { disabled: boolean; onOp
 export function SharePhonePersonText({ name, you, guest, role }: { name: string; you: boolean; guest?: ReactNode; role: ReactNode }) {
   const { t } = useTranslation("topBar");
   return <span className={css.personText}>
-    <span className={css.personName}><span>{name}{you ? <SelfMark className={css.you} text={t("youMark")} /> : null}</span>{guest}</span>
+    <span className={css.personName}><span>{name}{you ? <SelfMark text={t("youMark")} /> : null}</span>{guest}</span>
     <span className={css.personRole}>{role}</span>
   </span>;
 }

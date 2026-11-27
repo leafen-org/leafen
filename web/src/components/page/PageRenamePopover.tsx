@@ -2,6 +2,7 @@ import { useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import type { TextSpan } from "@/lib/types";
+import type { TypedKept } from "@/lib/typedDraftSender";
 import type { Page } from "@/types";
 import { hasExplicitPageIcon, PageIconGlyph } from "./PageIcon";
 import { PageIconPicker } from "./PageIconPicker";
@@ -62,7 +63,7 @@ export function renamePopoverUnder(piece: Element, rect: { left: number; right: 
  * 2026-10-20: its row and the page's title follow each key); Enter, Escape
  * or a click outside closes it, keeping what was typed.
  */
-export function PageRenamePopover({ page, iconFallback, title, titleSpans, untitled, at, onTitleChange, onTitleShown, onPresentationChange, onClose }: {
+export function PageRenamePopover({ page, iconFallback, title, titleSpans, untitled, at, kept, asTyped, onTitleChange, onTitleShown, onPresentationChange, onClose }: {
   /** What it renames: a page, a row or a database, by its icon. */
   page: Pick<Page, "id" | "workspaceId" | "icon" | "iconType"> & { kind?: string; hasContent?: boolean };
   /** The icon shown when it has none of its own, as its sidebar row shows it. */
@@ -74,8 +75,12 @@ export function PageRenamePopover({ page, iconFallback, title, titleSpans, untit
   /** Its spans as its reader reads them, while they spell it: its mentions and formatting. */
   titleSpans?: readonly TextSpan[];
   untitled: string;
+  /** How a page's name typed here is kept on the device at each key (lib/typedDraftSender.ts pageTitleKept). */
+  kept?: TypedKept;
+  /** Written at each key, its owner collecting what is typed (useRenameTitleField). */
+  asTyped?: boolean;
   /** The title typed, with its spans (useRenameTitleField): none for plain words it opened without. */
-  onTitleChange: (title: string, spans?: TextSpan[]) => void;
+  onTitleChange: (title: string, spans?: TextSpan[]) => unknown;
   /** The title as each key leaves it, shown before it is saved (lib/renameShownAtPress.ts). */
   onTitleShown?: (title: string, spans?: TextSpan[]) => void;
   /** Changes the icon from its button; without it the icon is only shown. */
@@ -86,7 +91,7 @@ export function PageRenamePopover({ page, iconFallback, title, titleSpans, untit
   const { t } = useTranslation("pageHeader");
   const fieldRef = useRef<HTMLDivElement>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
-  const rename = useRenameTitleField({ title, spans: titleSpans, placeholder: untitled, className: styles.title, onTitleChange, onTitleShown, onDone: onClose });
+  const rename = useRenameTitleField({ title, spans: titleSpans, placeholder: untitled, className: styles.title, kept, asTyped, onTitleChange, onTitleShown, onDone: onClose });
 
   function close() {
     rename.finish();

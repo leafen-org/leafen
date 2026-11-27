@@ -335,12 +335,12 @@ export function TablePropertyMenu({
     }
     if (next !== property) onUpdate(next);
   }
-  // Closing the menu leaves its fields, which keep what was typed.
+  // What its fields hold goes with a column made beside it.
   function keepHead() {
     changeHead({ name: nameRef.current?.value, description: descriptionRef.current?.value });
   }
+  // Closing the menu leaves its fields, which keep what was typed, under the change it was kept on the device as (useTypedName).
   function close() {
-    keepHead();
     onClose();
   }
   const wrapped = tableColumnWrapped(config, property.id);

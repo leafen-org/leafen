@@ -349,30 +349,9 @@ func databaseFormulaReferenceReplacement(
 // rewriteDatabaseAutomationFormulaReferences rewrites the formula values of
 // a button's action document.
 func rewriteDatabaseAutomationFormulaReferences(value any, replace func(string) (string, bool)) (any, bool) {
-	changed := false
-	switch current := value.(type) {
-	case map[string]any:
-		if expression, ok := current["expression"].(string); ok && current["kind"] == "formula" {
-			if next, rewritten := rewriteDatabaseFormulaReferences(expression, replace); rewritten {
-				current["expression"] = next
-				changed = true
-			}
-		}
-		for key, child := range current {
-			if next, rewritten := rewriteDatabaseAutomationFormulaReferences(child, replace); rewritten {
-				current[key] = next
-				changed = true
-			}
-		}
-	case []any:
-		for index, child := range current {
-			if next, rewritten := rewriteDatabaseAutomationFormulaReferences(child, replace); rewritten {
-				current[index] = next
-				changed = true
-			}
-		}
-	}
-	return value, changed
+	return rewriteDatabaseFormulaDocuments(value, func(expression string) (string, bool) {
+		return rewriteDatabaseFormulaReferences(expression, replace)
+	})
 }
 
 // rewriteDatabaseFormulaReferences replaces only complete prop("name")
@@ -476,7 +455,9 @@ func databaseFormulaPropCalls(characters []rune) []databaseFormulaPropCall {
 }
 
 // databaseFormulaStringLiteral reads the quoted string at start the way the
-// evaluator does and returns its value and the index after it.
+// evaluator does and returns its value and the index after it. Text in single
+// quotes, which a formula no longer reads (readDatabaseFormulaTokens), is read
+// here too, so a rename keeps a formula written so naming its property.
 func databaseFormulaStringLiteral(characters []rune, start int) (string, int, bool) {
 	if start >= len(characters) || characters[start] != '"' && characters[start] != '\'' {
 		return "", 0, false
@@ -498,6 +479,5 @@ func databaseFormulaStringLiteral(characters []rune, start int) (string, int, bo
 }
 
 func databaseFormulaIdentifierRune(value rune, allowDigit bool) bool {
-	return value == '_' || value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' ||
-		allowDigit && value >= '0' && value <= '9'
+	return databaseFormulaNameStart(value) || allowDigit && databaseFormulaASCIIDigit(value)
 }

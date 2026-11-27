@@ -30,7 +30,7 @@ export type PickerRowParts = {
  * the words it shows, as Notion's rows are named by what they show (seen
  * 2026-11-18 in Chrome's tree, the move list's and the "@" menu's rows):
  * its label, then the place under it where it shows one ("Nested Beta
- * 한지테스트페이지 / ... / Destination Alpha"); its description describes
+ * 〈test page〉 / ... / Destination Alpha"); its description describes
  * it. A row that draws no label (an icon's cell, a swatch) is named by its
  * own `aria-label`; one that draws it keeps none, as a second name would
  * sit under the label's unread.

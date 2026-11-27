@@ -287,10 +287,10 @@ func (checker *notionFormulaChecker) call(name string, values []*databaseFormula
 		return checker.let(name, values, scope)
 	}
 	arity, counted := notionFormulaArity[name]
-	// Each value that doesn't fit, or is one too many, is named before what
-	// is inside it, value by value, as Notion's (seen 2026-11-14:
-	// dateAdd(abs("a"), 1, "days") names dateAdd's value, then abs's, and
-	// abs(2, 1 - "a") the extra value, then the math).
+	opened := len(checker.problems)
+	// A value that doesn't fit, or one too many, is named before what is inside it, value by value, and a call short of
+	// values before them all, as Notion's (seen 2026-11-14 and 2026-11-28: dateAdd(abs("a"), 1, "days") names dateAdd's
+	// value, then abs's; abs(2, 1 - "a") the extra value, then the math; dateBetween(1, "a") the count, then 1 and "a").
 	for index := len(types); index < len(values); index++ {
 		inner := scope
 		if notionFormulaEachItem[name] && index == 1 {
@@ -315,7 +315,7 @@ func (checker *notionFormulaChecker) call(name string, values []*databaseFormula
 		offset = 1
 	}
 	if counted && given < arity[0] {
-		checker.problem(name + "() is short of arguments: it needs " + strconv.Itoa(arity[0]-offset) + " and has " + strconv.Itoa(given-offset) + ".")
+		checker.problemBefore(opened, name+"() is short of arguments: it needs "+strconv.Itoa(arity[0]-offset)+" and has "+strconv.Itoa(given-offset)+".")
 	}
 	// A pattern written in the formula that repeats a repetition is refused,
 	// as Notion's API refuses it (seen 2026-11-14: test("aaa", "(a+)+"),
@@ -410,8 +410,9 @@ func notionFormulaWith(scope map[string]string, names map[string]string) map[str
 }
 
 // notionFormulaKept is the formula Leafen keeps for one a request writes —
-// as written where it reads and checks as a formula of today, else as
-// Notion rewrites one of its first kind — or Notion's refusal of it.
+// as written where it reads and checks as a formula of today, its text in
+// double quotes, else as Notion rewrites one of its first kind — or Notion's
+// refusal of it.
 func notionFormulaKept(expression, label string, properties map[string]string, pages notionFormulaPages) (string, error) {
 	reading := notionFormulaRead(expression)
 	if expression == "" {
@@ -440,6 +441,9 @@ func notionFormulaKept(expression, label string, properties map[string]string, p
 	default:
 		return "", notionDatabaseRowPageRequestInvalid("Parse error in formula \"%s\": %s", label, reading.fault)
 	}
+	// Text in single quotes, which Notion's API reads, is kept in double
+	// ones, as Notion keeps it (database_formula_double_quoted.go).
+	written, _ = databaseFormulaDoubleQuoted(written)
 	if fault := notionFormulaLeafenFault(written); fault != "" {
 		return "", notionDatabaseRowPageRequestInvalid("Parse error in formula \"%s\": %s", label, fault)
 	}

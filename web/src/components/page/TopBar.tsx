@@ -1,6 +1,6 @@
 import type { ProductStatusSink } from "@/lib/productStatus";
 import { pageLookup } from "@/lib/pageArchive";
-import { pageTrashRoot } from "@/lib/pageTrash";
+import { pageTrashRoot } from "@/lib/pageTrash"; import { barOffersShare, shareAsksEdit } from "@/lib/pageReaderChrome";
 import { Suspense, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react"; import { takeHandedRing } from "@/lib/overlayKinds"; import { focusAsByKeys } from "@/lib/lastPress";
 import { lazyScreen } from "@/lib/lazyScreen";
 import { useTranslation } from "react-i18next";
@@ -44,7 +44,6 @@ import { styles } from "./topBarStyles";
 import { TopBarSidebarToggle } from "./TopBarSidebarToggle";
 import { TopBarShare } from "./TopBarShare";
 import { shareKeyOverMenu, shareTip, TopBarShareFace } from "./TopBarShareFace";
-import { TopBarEditRequest } from "./TopBarEditRequest";
 import { OPEN_PAGE_SHARE_EVENT, takePendingPageShare, type OpenPageShareDetail } from "./pageShareEvents";
 import { usePageCommentSummary } from "./usePageCommentSummary";
 import { barCommentsLook, barCommentsPress, barDockedPanel, barEditedTimeShown } from "./barCommentsButton";
@@ -63,9 +62,6 @@ import { InlineDatabaseMoveDialog } from "../useRowMenuDatabaseBlock";
 import { usePageReach } from "@/lib/usePageOnlyReader";
 import { pageOpened } from "@/lib/typingFade";
 import type { TextSpan } from "@/lib/types";
-
-// The content width below which long access actions go into the page menu.
-const ACCESS_ACTIONS_MIN_BAR_WIDTH = 880;
 
 const MoveToDialog = lazyScreen(() => import("@/components/MoveToDialog").then(({ MoveToDialog: Dialog }) => ({ default: Dialog })), { typedOnOpen: true });
 
@@ -163,12 +159,9 @@ export function TopBar({
   const productPages = useProductPages();
   const pageWorkspace = page ? productPages?.workspaces?.find((workspace) => workspace.id === page.workspaceId) : undefined;
   const appManaged = Boolean(pageWorkspace?.appInstallId);
-  // A guest who can't edit the page sees only its place, edit time, ☆ and "…", as Notion's (seen 2026-10-08): no edit request, share or link button.
-  const readOnlyGuest = !canEdit && pageWorkspace?.guest === true;
-  // Edit access is asked for by the workspace's own members: a guest's bar and
-  // window have no such request, nor a restricted member's, as Notion's (seen
-  // 2026-11-07: "지금 편집 · 공유 · 링크 · 💬 · ☆ · ⋯", no band in the window).
-  const asksEdit = !appManaged && pageWorkspace?.guest !== true && pageWorkspace?.restricted !== true;
+  const readOnlyGuest = !barOffersShare(canEdit, pageWorkspace?.guest === true); // Its place, edit time, ☆ and "…" alone (pageReaderChrome.ts).
+  // Edit access is asked for in the share window's band alone, by the workspace's own members (shareAsksEdit).
+  const asksEdit = shareAsksEdit({ guest: pageWorkspace?.guest === true, restricted: pageWorkspace?.restricted === true, appManaged });
   const { notify } = useProductToast();
   const aloneLock = useOpenedAloneDatabaseLock();
   // An untitled database is "새 데이터베이스", a view block's page "제목 없음", as its page names it —
@@ -203,23 +196,8 @@ export function TopBar({
   const [discussionsOpen, setDiscussionsOpen] = useState(false);
   const commentTriggerRef = useRef<HTMLButtonElement>(null);
   // A narrow bar leaves its long access actions in the page menu.
-  const barRef = useRef<HTMLElement>(null);
   // A page panel beside it, its comments too, whose button stays (Notion's, seen 2026-11-16).
   const docked = barDockedPanel(onClosePanel, commentsPanelOpen), sidePanelOpen = docked !== null, commentsLook = barCommentsLook(docked, discussionsOpen);
-  const [actionsRoomy, setActionsRoomy] = useState(true);
-  useEffect(() => {
-    const bar = barRef.current;
-    if (!bar || typeof ResizeObserver === "undefined") return;
-    // As the observer saw it: measured again, the page was laid out anew for
-    // the styles the page's own observers had just written (some 100ms each
-    // time a row's peek opened or closed beside a page holding a 120-row
-    // table, seen 2026-11-12).
-    const observer = new ResizeObserver(([entry]) => {
-      setActionsRoomy(entry.contentRect.width > ACCESS_ACTIONS_MIN_BAR_WIDTH);
-    });
-    observer.observe(bar);
-    return () => observer.disconnect();
-  }, []);
   // Cmd/Ctrl+Shift+P with no block selected moves the page; with a row's
   // peek open, or its own page shown, its row (RowPeekAddTo). Not in the trash (as the page view reads it), nor locked
   // for the reader — the page, or the database opened alone — whose menu has no 옮기기, as Notion's (seen 2026-11-14).
@@ -247,10 +225,7 @@ export function TopBar({
     session,
   });
   const { mobile, phone, touch } = useSidebarLayout(standalone);
-  // Keep long access actions with the other page actions when the bar is
-  // narrow (including a narrow desktop pane).
-  const requestEditInMenu = phone || !actionsRoomy;
-  // A page an operation holds for now isn't one to ask edit access to (lib/pageBusy.ts).
+  // A page an operation holds for now (lib/pageBusy.ts) shows no app's mark.
   const busy = usePageBusy(page?.id);
   const copyPercent = usePageCopyProgress(page?.id);
 
@@ -360,7 +335,7 @@ export function TopBar({
   }
 
   return (
-    <header ref={barRef} className={styles.topbar} data-phone={phone ? "true" : undefined} data-topbar-bar>
+    <header className={styles.topbar} data-phone={phone ? "true" : undefined} data-topbar-bar>
       <TopBarSidebarToggle />
       <div className={styles.left}>
         {pathPage && session && !phone ? (
@@ -409,7 +384,7 @@ export function TopBar({
         {!standalone && page && session ? (
           <>
             {suggesting?.active ? <SuggestingPill onStop={() => suggesting.onChange(false)} /> : null}
-            {copyPercent !== null ? <PageCopyPercent percent={copyPercent} /> : barEditedTimeShown(docked) && !suggesting?.active ? <PageEditedTime page={page} onOpenUpdates={() => {
+            {copyPercent !== null ? <PageCopyPercent percent={copyPercent} /> : barEditedTimeShown(docked) && !suggesting?.active ? <PageEditedTime page={page} session={session} canEdit={canEdit} onOpenUpdates={() => {
               setShareOpen(false);
               if (onOpenUpdatesPanel) onOpenUpdatesPanel();
               else setMenuOpen("updates");
@@ -417,11 +392,11 @@ export function TopBar({
             {/* Who is here after when it was edited: "1시간 전 편집 · 나 · june · 공유", as Notion's (seen 2026-11-15). */}
             {presence && canEdit ? <PagePresence pageId={page.id} database={inlineDatabase} session={session} /> : null}
             {/* An app's own workspace keeps what people may only view; its account can't be asked. */}
-            {!canEdit && !accessPending && !inTrash && !busy ? (appManaged
+            {!canEdit && !accessPending && !inTrash && !busy && appManaged
               ? <><span className={styles.appManaged} data-topbar-app-managed data-app-openable={pageWorkspace?.appSlug ? "true" : undefined}>{t("topBar:appManaged")}</span>
                 {pageWorkspace?.appSlug ? <button type="button" className={styles.appOpen} data-topbar-app-open
                   onClick={() => pushRoute(`/apps/${pageWorkspace.appSlug}`)}>{t("topBar:openApp")}</button> : null}</>
-              : requestEditInMenu || !asksEdit ? null : <TopBarEditRequest page={page} session={session} onStatus={onStatus} />) : null}
+              : null}
             {/* A page in the trash keeps its share, link and "⋯", a full-page database's too, and no ☆ on a desktop, as Notion's (seen 2026-11-13
                 and 2026-11-15, two loads each); a wider touch screen keeps its ☆, which makes it a favorite, as Notion's iPad (2026-11-17, 834 and 1210). */}
             {readOnlyGuest ? null : <><button
@@ -556,7 +531,6 @@ export function TopBar({
             <TopBarPageMenu
               open={menuOpen}
               warm={menuWarm && !phone}
-              requestEdit={requestEditInMenu && !canEdit && !accessPending && !busy && !inTrash && asksEdit}
               opener={menuTriggerRef}
               page={page}
               databasePage={databasePage}

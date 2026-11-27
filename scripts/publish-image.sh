@@ -10,7 +10,7 @@
 #
 # The version defaults to web/package.json's, without a pre-release.
 # --development builds without the release tag, as a development build whose
-# version names "dev" (0.1.0-dev unless given): to try the procedure on a
+# version names "dev" (0.2.0-dev unless given): to try the procedure on a
 # local registry. --print shows the build command without running it.
 set -eu
 

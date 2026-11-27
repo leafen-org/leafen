@@ -110,7 +110,7 @@ export function SyncedBlockPlaces({ adapter, block, active }: {
   // A synced block sits only in a page's body, so an untitled one is a page.
   const pagesById = adapter.mentionSnapshot?.pagesById;
   const title = (pageId: string) => pagesById?.[pageId]?.title?.trim() || untitledPageDisplayTitle("page");
-  // The pages above it, as Notion's list names them on the right ("한지테스트페이지 / …").
+  // The pages above it, as Notion's list names them on the right ("〈test page〉 / …").
   const above = (pageId: string) => {
     const page = pagesById?.[pageId];
     return page && pagesById ? pagePath(page, pagesById).join(" / ") : "";
@@ -120,7 +120,8 @@ export function SyncedBlockPlaces({ adapter, block, active }: {
   const menu = useNativeMenu({ items: entries, open: open && entries.length > 0, menuRef, label: blockItemText("synced.places"), quietOnPointer: true,
     keyOf: entry => entry.place.pageId, textOf: entry => title(entry.place.pageId), onAction: ({ place }) => {
       setOpen(false);
-      pushRoute(pageHref(place.pageId) + blockAnchor(place.pageId, place.blockId));
+      // An original that is a page's whole body opens the page itself.
+      pushRoute(pageHref(place.pageId) + (place.blockId === place.pageId ? "" : blockAnchor(place.pageId, place.blockId)));
     } });
   // The open list stays on the screen, moved back from the edge it would pass.
   useLayoutEffect(() => {

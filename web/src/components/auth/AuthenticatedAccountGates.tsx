@@ -107,8 +107,6 @@ export function AuthenticatedAccountGates({
   // Checked still, the screen is loading and names nothing yet.
   useLayoutEffect(() => {
     if (gate !== "clear") resetDocumentChrome(gate === "checking");
-    // The account has its language: the first screen's choice is spent (lib/firstRunLanguage.ts).
-    else forgetFirstRunLanguage();
   }, [gate]);
 
   useEffect(() => {
@@ -125,6 +123,13 @@ export function AuthenticatedAccountGates({
         // account has none. One that is hidden now (i18n/languages.ts) can't
         // be saved, so the step asks instead.
         const chosen = state.language?.languageOnboardingCompleted ? state.language.languagePreference : null;
+        // The server says the account has its language: the first screen's
+        // choice is spent (lib/firstRunLanguage.ts) — on the server's word,
+        // not on this window's copy of an account's language alone, which a
+        // sign-in kept from an earlier server at this address has too and
+        // which spent the choice before that server said it knew nobody
+        // (2026-11-27: the first setup asked the language again).
+        if (chosen) forgetFirstRunLanguage();
         const hiddenChoice = Boolean(chosen) && !isSelectableLanguagePreference(chosen);
         const carried = chosen ? (hiddenChoice ? null : chosen) : isSelectableLanguagePreference(fresh) ? fresh : null;
         if (freshAccount && carried && !state.mustChangePassword) {
@@ -312,6 +317,8 @@ export function AuthenticatedAccountGates({
   function goOn(language: AccountLanguagePreference, settled: Settled) {
     if (cleared.current) return;
     operationGeneration.current += 1;
+    // The account has its language now: the first screen's choice is spent.
+    forgetFirstRunLanguage();
     // An invite link's page stays to be answered (components/join): its
     // person came to join that workspace (2026-10-20: a name-only join
     // landed in a new workspace of their own instead).

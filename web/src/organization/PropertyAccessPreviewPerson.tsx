@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useGroupAddPicker } from "@/components/database/useGroupAddPicker";
 import { SearchClearButton } from "@/components/PageActionSearch";
 import { PersonAvatar } from "@/components/people/PersonAvatar";
+import { SelfMark } from "@/components/people/SelfMark";
 import { CheckIcon, ChevronDown } from "@/icons/leafen";
 import { NativePickerOption } from "@/lib/nativeAutocomplete";
 import { directoryPeople, personName } from "@/lib/peopleDirectory";
@@ -38,7 +39,7 @@ export function PreviewPersonPicker({ selfId, value, onChange }: { selfId: strin
   const picker = useGroupAddPicker({ open: Boolean(anchor), rows, query, onQuery: setQuery, onClose: close, inputRef, listRef,
     label: t("previewAs"), onPick: (person) => { onChange(person.id); close(); } });
   const chosen = people.find((person) => person.id === value);
-  const self = (id: string) => (id === selfId ? <span className={styles.self}>{t("peopleProfiles:selfMark")}</span> : null);
+  const self = (id: string) => (id === selfId ? <SelfMark className={styles.self} text={t("peopleProfiles:selfMark")} /> : null);
 
   return <>
     <button type="button" className={styles.button} aria-label={t("previewAs")} aria-haspopup="dialog" aria-expanded={Boolean(anchor)}

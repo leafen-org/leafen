@@ -9,7 +9,7 @@ import (
 )
 
 // Deleting a comment deletes that comment alone, as Notion's "삭제하기" does
-// (seen 2026-11-21, synthetic pages under 한지테스트페이지 — a page
+// (seen 2026-11-21, synthetic pages under a Notion test page — a page
 // discussion, a block discussion and two text discussions, each with
 // replies): its replies stay as their discussion, under the same
 // discussion_id, and a discussion's first comment going leaves its first

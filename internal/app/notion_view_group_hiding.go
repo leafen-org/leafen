@@ -6,7 +6,7 @@ import "encoding/json"
 // as Notion's API takes hide_empty_groups on each (seen 2026-11-12): true
 // leaves them out, false or none shows them, given again too; a chart's own
 // hide_empty_groups says it for its X axis. Natively each is kept as the
-// screen keeps it, only while it hides (a table's and a board's groups:
+// screen keeps it, only while it hides (any other view's groups:
 // applyOfficialViewEmptyGroups). Given in one request with a chart's own
 // another way, an X axis's is kept apart (notionChartAxisHidingKey), as
 // Notion's keeps both (seen 2026-11-12): the chart leaves out its empty
@@ -100,7 +100,7 @@ func notionViewGroupHidingGiven(viewType string, settings, configuration map[str
 		case given[field+".hide_empty_groups"] && chart:
 			group["hide_empty_groups"] = settings[setting] == true
 		case given[field+".hide_empty_groups"]:
-			// A table's or board's group reads true while it hides (withEmptyGroupsHidden).
+			// A view's group reads true while it hides (withEmptyGroupsHidden).
 			if _, hides := group["hide_empty_groups"]; !hides {
 				group["hide_empty_groups"] = false
 			}

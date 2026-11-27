@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Search } from "@/icons/leafen";
 import { positionBetween } from "@/lib/ids";
 import { useOpenPageGraphStore } from "@/lib/pageGraphStore";
-import { commitNativePageMetadata, optimisticPageMetadata, type NativePageMetadataChange } from "@/lib/nativePageMetadata";
+import { keepAndSendPageMetadata, optimisticPageMetadata, type NativePageMetadataChange } from "@/lib/nativePageMetadata";
 import { fullPageDatabaseSource } from "@/lib/relationDatabaseSearch";
 import { MOVE_LOAD_MORE_KEY, MoveLoadMoreRow, moveSearchShown } from "./moveSearchWindow";
 import { productRefusalReason } from "@/lib/productErrorPresentation";
@@ -273,9 +273,9 @@ export function MoveToDialog({
     let latest = answered;
     const moveTo = async (spot: Pick<Page, "parentId" | "teamspaceId" | "position">) => {
       const base = await latest;
-      const next = commitNativePageMetadata(session, base, {
+      const next = keepAndSendPageMetadata(session, productPages?.mutationOutbox, base, {
         parentId: spot.parentId, teamspaceId: spot.teamspaceId ?? "", position: spot.position,
-      }, new AbortController().signal).then(({ page }) => page);
+      });
       latest = next.catch(() => base);
       onPageChange(await next);
     };
@@ -299,7 +299,7 @@ export function MoveToDialog({
     } else {
       close();
     }
-  }, [alsoPageIds.length, close, movingPage, onMoved, onPageChange, onStatus, session, t, toast]);
+  }, [alsoPageIds.length, close, movingPage, onMoved, onPageChange, onStatus, productPages, session, t, toast]);
 
   // The other pages chosen go to the same place one after another, past the
   // first, shown there with it at the press (user decision 2026-11-12: a
@@ -513,10 +513,10 @@ export function MoveToDialog({
     // decision 2026-11-12: a press answers on the next frame); the server's
     // answer follows, past the dialog, and a refusal puts the page back.
     const shown = optimisticPageMetadata(movingPage, change, session.user.id);
-    const sending = commitNativePageMetadata(session, movingPage, change);
+    const sending = keepAndSendPageMetadata(session, productPages?.mutationOutbox, movingPage, change);
     const rest = showRest(parentId, place, shown);
     finishMove(operation, shown, destination.type === "page" ? { label: destination.label, pageId: destination.id, teamspaceId: destination.page.teamspaceId } : { label: destination.label, pageId: "", top: true, teamspaceId: destination.place.teamspaceId },
-      sending.then(({ page }) => page, () => movingPage));
+      sending.catch(() => movingPage));
     let result: Awaited<typeof sending>;
     try {
       result = await sending;
@@ -527,11 +527,11 @@ export function MoveToDialog({
       onStatus?.(moveFailure(error, t("moveToDialog:toast.moveFailed")), "error");
       return;
     }
-    onPageChange(result.page);
+    onPageChange(result);
     try {
-      await rest.send((page, next) => commitNativePageMetadata(session, page, next).then(({ page: moved }) => moved));
+      await rest.send((page, next) => keepAndSendPageMetadata(session, productPages?.mutationOutbox, page, next));
       // The pages under a page moved to another place went with it.
-      if ((result.page.teamspaceId ?? "") !== (movingPage.teamspaceId ?? "") || alsoPageIds.length > 0) productPages?.refreshPages?.();
+      if ((result.teamspaceId ?? "") !== (movingPage.teamspaceId ?? "") || alsoPageIds.length > 0) productPages?.refreshPages?.();
     } catch (error) {
       onStatus?.(moveFailure(error, t("moveToDialog:toast.moveFailed")), "error");
     }

@@ -17,7 +17,7 @@ import (
 // apps' writes queued, Leafen busy: a 429 or a 503) and the app then failed
 // with a server error, the client is told to come back with 503 and
 // Retry-After, as Leafen's own refusals tell it. A request the app was
-// stopped under ends as a stopped app's requests do (2026-10-16 OP11 load:
+// stopped under ends as a stopped app's requests do (2026-10-16, under load:
 // Web Clips answered 500 and the drive 502, nothing saying when to try again,
 // so a clipper dropped its clip and a WebDAV client failed its save).
 

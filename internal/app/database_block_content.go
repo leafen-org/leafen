@@ -17,7 +17,7 @@ import (
 // before; unnamed, by its sources' names). So does what else its block keeps
 // of its own: Notion's API reads such a database by its name, icon and lock
 // as before (seen 2026-11-25 on one of two sources with all three, under
-// 한지테스트페이지: GET /v1/databases after in_trash true, its child_database
+// a Notion test page: GET /v1/databases after in_trash true, its child_database
 // block titled the same), and every reader of its block's content reads it
 // here — the API's database object and MCP's fetch with its row pages'
 // ancestors.

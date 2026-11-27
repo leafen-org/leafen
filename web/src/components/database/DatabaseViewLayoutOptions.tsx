@@ -193,6 +193,8 @@ function ViewTypeLayoutOptions({ view, properties, onUpdateView, disabled, openP
         {toggle("showWeekends", labels.showWeekends, view.config.showWeekends !== false,
           (checked) => update({ showWeekends: checked ? undefined : false }))}
         {openPagesIn}
+        {/* Only while the view stays grouped from another layout; it draws every row whatever it says (offersInitialLoad). */}
+        {initialLoad}
       </>
     );
   }

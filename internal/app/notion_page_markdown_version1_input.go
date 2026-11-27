@@ -13,7 +13,7 @@ import (
 // stand — <p>, <h1>…<h6>, <quote>, <toggle>, <ul>, <ol>, <li>, <todo>,
 // <equation>, <table-of-contents>, <synced-block>, <bookmark> (save a line
 // of one with its caption between its tags, as an <embed>'s, which closed in
-// itself is text too), <breadcrumb>, <button>, <link-to-page>, <b>,
+// itself is text too), <breadcrumb>, <b>,
 // <strong>, <i>, <em>, <s>, <del>, <u>, <code>, <mention> and <date>, and a
 // <link-preview> save one closed in itself with an address. "v1"'s own tags
 // — <details>, <callout>, <columns>, <tabs>, <table>, <table_of_contents/>,
@@ -31,7 +31,7 @@ import (
 // — holds it, its own text empty, and the lines further in stand under that
 // block ("- - b", "- --"), a table aside (notionMarkdownVersion1PipeTable).
 
-var notionMarkdownVersion2OnlyTag = regexp.MustCompile(`^</?(?:p|h[1-6]|quote|toggle|ul|ol|li|todo|equation|table-of-contents|synced-block-reference|synced-block|bookmark|breadcrumb|button|link-to-page|b|strong|i|em|s|del|u|code|mention|date)(?:[ \t/>]|$)`)
+var notionMarkdownVersion2OnlyTag = regexp.MustCompile(`^</?(?:p|h[1-6]|quote|toggle|ul|ol|li|todo|equation|table-of-contents|synced-block-reference|synced-block|bookmark|breadcrumb|b|strong|i|em|s|del|u|code|mention|date)(?:[ \t/>]|$)`)
 
 // notionMarkdownVersion1Reading is "v1" Markdown as Leafen's page Markdown
 // reader takes it; own for Leafen's own (notionMarkdownVersion1OwnInput).

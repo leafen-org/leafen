@@ -12,7 +12,7 @@ import type { NativePageMetadataChange } from "@/lib/nativePageMetadata";
 import { pageDuplicationRefusal, type PageDuplicationOptions } from "@/lib/pageDuplicationService";
 import { offlinePagePinService } from "@/lib/offlinePagePins";
 import { pageArchiveRoot, pageLookup } from "@/lib/pageArchive";
-import { createPageAnalyticsPanelService } from "@/lib/pageAnalyticsPanelService";
+import { createPageAnalyticsPanelService, opensPageUpdates } from "@/lib/pageAnalyticsPanelService";
 import { untitledPageDisplayTitle } from "@/lib/pageTitle";
 import { titleWithClosedMentions } from "@/lib/closedMentions";
 import { editorName } from "@/lib/peopleDirectory";
@@ -30,7 +30,6 @@ import type { PageExportChoice } from "./PageExportDialog";
 import type { PagePresentationChange } from "./page/pagePresentation";
 import { usePageMenu } from "./PageMenu";
 import { useRowMenuGroups } from "./RowMenuActions";
-import { TopBarEditRequest } from "./page/TopBarEditRequest";
 import { RowMenuApps } from "./RowMenuApps";
 import { RowMenuDeveloper } from "./RowMenuDeveloper";
 import { RowMenuDialogs } from "./RowMenuDialogs";
@@ -49,6 +48,7 @@ import { confirmDatabasePageTrash, confirmDatabaseSprintsTrash } from "./editor/
 import { requestPageUndo } from "./editor/pageUndo";
 import { requestPageLayoutBuilder } from "@/lib/databasePageLayout";
 import { canPresentPage, requestPresentation } from "@/lib/pageSlides";
+import { copiesPageContents } from "@/lib/pageReaderChrome";
 import { NativeActionMenu, NativeMenuHeader, NativeMenuSection } from "@/lib/nativeActionMenu";
 import { withLoadDeadline } from "@/lib/lazyScreen";
 import { PlacedPageMenu } from "./RowMenuPlaced";
@@ -94,7 +94,6 @@ function PageRowMenu({
   onOpenUpdatesPanel,
   onOpenAppPanel,
   onShare,
-  requestEdit = false,
   ahead = false,
 }: {
   anchor?: { x: number; y: number } | null;
@@ -154,7 +153,6 @@ function PageRowMenu({
   onOpenAppPanel?: (appId: string) => void;
   /** Opens the page's share, from a phone's sheet as Notion's "공유". */
   onShare?: () => void;
-  requestEdit?: boolean;
   /** Drawn ahead and hidden (TopBarPageMenu): it takes no layer and no focus until it shows. */
   ahead?: boolean;
 }) {
@@ -213,9 +211,9 @@ function PageRowMenu({
   const { copyLink, copyContents, openMove, moveOpen, setMoveOpen, moveAnchor, openInNewTab, rename, wiki } = useRowMenuSharedHandlers({
     page, session, anchor, menuRef, hangsFrom, close, notify, runOperation, runPastMenu, onPageChange, onRename,
   });
-  // "업데이트와 애널리틱스" opens on its updates, as Notion's (seen 2026-10-04):
-  // beside the open page from its own menu, else in a window.
-  const openAnalytics = onOpenUpdatesPanel ? () => { close(); onOpenUpdatesPanel(); }
+  // "업데이트와 애널리틱스" is for one who may open them (opensPageUpdates) — a page in the trash keeps it, its menu edited by no one — and
+  // opens on its updates, as Notion's (seen 2026-10-04): beside the open page from its own menu, else in a window.
+  const openAnalytics = !trashed && !opensPageUpdates(canEdit) ? undefined : onOpenUpdatesPanel ? () => { close(); onOpenUpdatesPanel(); }
     : analyticsService ? () => setAnalyticsOpen("updates") : undefined;
 
   const showMenu = !historyOpen && !exportOpen && !analyticsOpen && !moveOpen && !databaseBlock?.moving;
@@ -547,7 +545,7 @@ function PageRowMenu({
   const phoneActions = (): RowMenuPhoneActions => {
     const wikiRoot = Boolean(page.isWiki && page.wikiRootId === page.id);
     return {
-      kind: databasePage ? "database" : wikiRoot ? "wiki" : "page", canEdit, canExport: (canEdit || trashed) && !guest, busy, lockedForMe, trashed,
+      kind: databasePage ? "database" : wikiRoot ? "wiki" : "page", canEdit, canExport: copiesPageContents(guest), busy, lockedForMe, trashed,
       style: page, onStyle: updatePageStyle,
       favorite: onFavoriteChange ? { on: Boolean(favorite), onToggle: toggleFavorite } : undefined,
       onShare,
@@ -627,7 +625,6 @@ function PageRowMenu({
             <PageActionSearch className={styles.actionSearch} label={t("rowMenu:searchPageActions")} value={query} inputRef={searchRef}
               marker="page-menu-search" onChange={setQuery} />
           </NativeMenuHeader></NativeMenuSection>
-          {requestEdit && !canEdit ? <TopBarEditRequest menu page={page} session={session} onStatus={onStatus} /> : null}
           {pageMenu.list(groups)}
           {trashed ? null : <RowMenuApps session={session} pageId={page.id} query={query} onOpenPanel={onOpenAppPanel} onClose={close} />}
           {query.trim() || trashed ? null : <RowMenuDeveloper page={page} session={session} busy={busy} onClose={close} />}

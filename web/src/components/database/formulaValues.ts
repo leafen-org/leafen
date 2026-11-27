@@ -300,7 +300,7 @@ export function formulaOutputValue(value: FormulaValue, top = true): FormulaValu
 }
 
 // flatFormulaItems is a value's items as Notion's formula cell and Public API
-// take a list (seen 2026-11-12 under 한지테스트페이지): lists within it flat,
+// take a list (seen 2026-11-12 under a Notion test page): lists within it flat,
 // and its empty items — an empty property, an empty list — left out; a value
 // that is no list is its one item.
 export function flatFormulaItems(value: FormulaValue | undefined): FormulaValue[] {

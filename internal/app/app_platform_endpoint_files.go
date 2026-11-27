@@ -109,11 +109,12 @@ func spoolAppEndpointBody(app core.App, head []byte, rest io.Reader) (*os.File, 
 		return discard(err)
 	}
 	// A body is kept only while the disk stays above its floor
-	// (data_disk_floor.go).
+	// (data_disk_floor.go), with its spool and the parts and joined file it
+	// is staged as (dataDiskPartsBytes) on the disk at once.
 	limit := int64(fileTransferMaxFileBytes)
 	room, known := dataDiskRoom(app)
-	if known && room < limit {
-		limit = room
+	if known && room/3 < limit {
+		limit = room / 3
 	}
 	copied, err := io.Copy(spool, io.LimitReader(rest, limit-int64(len(head))+1))
 	if err != nil {
@@ -122,7 +123,7 @@ func spoolAppEndpointBody(app core.App, head []byte, rest io.Reader) (*os.File, 
 	size := int64(len(head)) + copied
 	if size > limit {
 		if limit < fileTransferMaxFileBytes {
-			return discard(errServerDiskLow)
+			return discard(dataDiskRefusal(app, size+dataDiskPartsBytes(size)))
 		}
 		return discard(errFileUploadInvalid)
 	}

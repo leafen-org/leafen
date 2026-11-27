@@ -4,8 +4,8 @@ import type { BlockBoxSize, ResizedBlockKind } from "./BlockCornerHandles";
 
 /** How much wider a kind's figure is drawn than its frame: a picture's and a PDF's 2px each side, the others none. */
 export const FIGURE_INSET: Record<ResizedBlockKind, number> = { image: 4, video: 0, audio: 0, pdf: 4, embed: 0 };
-// A Notion block stands 8px out from its frame either side.
-const BLOCK_INSET = 16;
+/** A Notion block stands 8px out from its frame either side. */
+export const BLOCK_INSET = 16;
 
 /**
  * The width a framed block's side handles left it, as Notion keeps it: its

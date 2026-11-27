@@ -94,20 +94,9 @@ func writeNotionCreatedPageMarkdown(
 	if err != nil {
 		return err
 	}
-	_, err = ygo.replacePageMarkdown(event.Request.Context(), event.App, pageMarkdownReplacement{
-		PrincipalID: identity.PrincipalID, PublicPageID: publicPageID, Reader: reader, Version2: reader.Version2,
-		PrepareInput: notionCreatedBodyEmptyCodeInput(notionMarkdownPublicMentionInput(identity)),
-		Uploads: func(app core.App, _, uploadID string) (string, error) {
-			content, err := resolveNotionCompletedFileUpload(app, identity, uploadID)
-			return content.FileID, err
-		},
-		Allows: func(app core.App, page pageAuthorization) bool {
-			return notionOAuthIdentityAllowsPage(app, identity, page)
-		},
-		MutationID: "notion-public-create-markdown:" + newDiagnosticReference(),
-		Authorize:  authorizeNotionPageMutation(identity, pageID),
-		Next:       func(string) (string, bool, error) { return markdown, false, nil },
-	})
+	request := notionCreatedPageMarkdownWrite(identity, reader, pageID, markdown)
+	request.PublicPageID, request.MutationID = publicPageID, "notion-public-create-markdown:"+newDiagnosticReference()
+	_, err = ygo.replacePageMarkdown(event.Request.Context(), event.App, request)
 	return err
 }
 
@@ -209,16 +198,16 @@ type pageMarkdownReplacement struct {
 	MutationID   string
 	// Reader reads the body's Markdown before and after.
 	Reader notionMarkdownReader
-	// Version2 reads the new Markdown as the public API's "v2" writes do
-	// (notionMarkdownVersion2Input).
+	// Version2 reads the new Markdown as the public API's "v2" writes do (notionMarkdownVersion2Input).
 	Version2 bool
+	// CreatesPage writes a new page's first body, whose synced references may name a page (synced_block_page_original.go).
+	CreatesPage bool
 	// PrepareInput checks the new blocks' mentions as the writer names them.
 	PrepareInput func(core.App, pageAuthorization, *crdt.Doc, graphMutationInput) (graphMutationInput, error)
 	// Uploads finds the file an upload of the writer's connection made, for
 	// a file-upload:// line; nil places none.
 	Uploads func(app core.App, workspaceID, uploadID string) (string, error)
-	// Allows tells whether the writer may reach a page the Markdown makes;
-	// nil allows every page the principal may write.
+	// Allows tells whether the writer may reach a page the Markdown makes; nil allows every page the principal may write.
 	Allows func(core.App, pageAuthorization) bool
 	// RequestHash, when set, tells a replay of one request from another
 	// request under the same mutation ID.
@@ -317,30 +306,12 @@ func (p *pocketBaseYgoPersistence) replacePageMarkdown(
 	if err != nil {
 		return result, pageMarkdownRequestError{message: err.Error()}
 	}
-	// New <unknown> tags are refused first, as written (notionMarkdownUpdateNewUnknown).
-	if request.Version2 || request.Reader.APIForm {
-		if err := notionMarkdownUpdateNewUnknown(markdown, result.Before.UnknownBlocks, request.Version2); err != nil {
-			return result, notionMarkdownPlanFailure(err)
-		}
+	// Read as its plan reads it (notion_page_markdown_write_check.go).
+	markdown, synced, warnings, err := request.readWritten(app, written, result.Before, markdown)
+	if err != nil {
+		return result, err
 	}
-	synced := []notionMarkdownSyncedWrite{}
-	if request.SyncedOriginal != nil {
-		if markdown, synced, err = notionMarkdownSyncedOriginals(app, request, written, result.Before.Markdown, markdown); err != nil {
-			return result, err
-		}
-	}
-	if request.Version2 {
-		if markdown, result.Warnings, err = notionMarkdownVersion2Input(markdown); err != nil {
-			return result, notionMarkdownPlanFailure(err)
-		}
-	} else if request.Reader.APIForm {
-		markdown = notionMarkdownVersion1Input(notionMarkdownVersion1ReadUnknownLines(notionMarkdownVersion1EmptiedUnknownItems(markdown)))
-	}
-	if request.Version2 || request.Reader.APIForm {
-		if markdown, err = notionMarkdownPairedUnknown(markdown, result.Before.UnknownBlocks, request.Version2); err != nil {
-			return result, notionMarkdownPlanFailure(err)
-		}
-	}
+	result.Warnings = warnings
 	if request.SkipUnchanged && sameMarkdownBlocksUntouched(markdown, request.readBefore(result.Before)) {
 		changed, err := p.writeNotionMarkdownSyncedOriginals(ctx, app, request, synced, allowDeleting, &result)
 		result.After = result.Before
@@ -358,6 +329,13 @@ func (p *pocketBaseYgoPersistence) replacePageMarkdown(
 	}
 	if err != nil {
 		return result, notionMarkdownPlanFailure(err)
+	}
+	// What it makes before its blocks — the originals its references change,
+	// the full-page databases its tags ask for — waits for them to pass.
+	if len(synced) > 0 || len(plan.FullPageDatabases) > 0 {
+		if err := request.checkBeforeMaking(app, before, markdown, allowDeleting); err != nil {
+			return result, err
+		}
 	}
 	// The originals the references give blocks are written once the write
 	// here is known to take, and before it, which then reads them.
@@ -407,27 +385,7 @@ func (p *pocketBaseYgoPersistence) replacePageMarkdown(
 		// back: search and the page's readers take what its operations named.
 		SearchFromNamedBlocks: true, StepsKeepGraph: true,
 		PrepareInput: func(txApp core.App, current pageAuthorization, doc *crdt.Doc, input graphMutationInput) (graphMutationInput, error) {
-			// A :name: no custom emoji has is words that stand apart; one a
-			// custom emoji has changes its text.
-			if err := resolveNotionMarkdownCustomEmojis(txApp, current.Workspace.WorkspaceID, plan.TextPieces); err != nil {
-				return graphMutationInput{}, err
-			}
-			input.TextUpdates = notionMarkdownKeptTextUpdates(plan.TextPieces, input.TextUpdates, input.Operations)
-			files := notionMarkdownFiles{WorkspaceID: current.Workspace.WorkspaceID, OnPage: plan.PageFiles, Upload: request.Uploads}
-			if err := files.place(txApp, input.Operations); err != nil {
-				return graphMutationInput{}, err
-			}
-			if err := notionMarkdownSyncedReferences(txApp, request.PrincipalID, current, request.Allows, request.Reader.Origin,
-				request.Version2 || request.Reader.APIForm, input.Operations); err != nil {
-				return graphMutationInput{}, err
-			}
-			if request.PrepareInput == nil {
-				return input, nil
-			}
-			// So are the mentions of the titles tags give databases.
-			return prepareNotionMarkdownSourceTitles(input, func(input graphMutationInput) (graphMutationInput, error) {
-				return request.PrepareInput(txApp, current, doc, input)
-			})
+			return request.preparedBlocks(txApp, plan, current, doc, input)
 		},
 		Authorize: request.Authorize,
 		AfterApply: func(txApp core.App, current pageAuthorization, _ *crdt.Doc) error {

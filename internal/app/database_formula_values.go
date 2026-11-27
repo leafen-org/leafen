@@ -176,7 +176,7 @@ func databaseFormulaSame(left, right any) bool {
 // nil). Text that is empty, written "" or made, is text like any other:
 // "abc" > "" and "" == "" are true, while an empty property > "" and
 // == "" are false and != "" is true (Notion's, seen 2026-11-09 through its
-// API under 한지테스트페이지).
+// API under a Notion test page).
 func databaseFormulaBlank(value any) bool {
 	return value == nil
 }
@@ -247,7 +247,7 @@ func databaseFormulaFormat(value any) string {
 const databaseFormulaShownDecimals = 12
 
 // databaseFormulaShownNumber writes a number as a cell without a number
-// format shows it, as Notion's cells (seen 2026-11-14 under 한지테스트페이지)
+// format shows it, as Notion's cells (seen 2026-11-14 under a Notion test page)
 // and the editor's (numberText.ts shownNumberText): a small number written
 // with an exponent below e-20 with as many decimal places as its exponent
 // says (3.33333e-7 is 0.0000003, 9.9e-11 0.00000000010); any other its own
@@ -482,7 +482,7 @@ func databaseFormulaOutput(value any, top bool) any {
 const databaseFormulaKeptDecimals = 12
 
 // databaseFormulaKept is a formula property's result as Notion keeps it
-// (seen 2026-11-14 under 한지테스트페이지): a number, and each number a list
+// (seen 2026-11-14 under a Notion test page): a number, and each number a list
 // holds itself (not one in a list within it), rounded to 12 decimal places —
 // 1/3 is 0.333333333333, 2/3 0.666666666667, 5e-13 1e-12, 4e-13 0, [1/3,
 // 2/3] "0.333333333333,0.666666666667", [[1/3]] "0.3333333333333333". Its

@@ -41,8 +41,9 @@ type notionPageMarkdownProjection struct {
 	// tags, in body order.
 	References []notionMarkdownReference
 	// UnknownBlocks are the blocks the Markdown writes as <unknown/> lines,
-	// by the ID each line names (notionMarkdownUnknownName).
-	UnknownBlocks map[string]string
+	// by the ID each line names (notionMarkdownUnknownName), and Buttons its
+	// buttons so (notion_page_markdown_button.go).
+	UnknownBlocks, Buttons map[string]string
 	// RenderedBlockIDs are the blocks the Markdown writes, one for each block
 	// it reads back as, in order, save BlankBlockIDs: paragraphs of spaces,
 	// whose lines read back as no block, as in Notion. BlockParents and
@@ -391,7 +392,7 @@ func renderNotionPageMarkdownMarked(
 	return notionPageMarkdownProjection{
 		Markdown: markdown, Lines: written, Truncated: writer.truncated, UnknownBlockIDs: writer.unknownIDs, References: writer.named,
 		UnknownBlocks: writer.unknownBlocks, RenderedBlockIDs: writer.rendered, BlankBlockIDs: writer.blank,
-		KeepLineEnds: mentions.APIForm,
+		Buttons: notionMarkdownButtonNames(blocks, writer.rendered, publicBlockID), KeepLineEnds: mentions.APIForm,
 	}
 }
 

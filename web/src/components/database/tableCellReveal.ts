@@ -6,7 +6,7 @@ const END_ROOM = 64;
 /**
  * Chooses a table's cell from the keys, the table rolled sideways as Notion's
  * (seen 2026-11-16 at 1440 in Chrome, twice in a table of 16 columns, and by
- * the OP-03-a audit in another tab): for a cell starting in the table's last
+ * an audit in another tab): for a cell starting in the table's last
  * 64px or past its end, until its end stands 64px in from it (in a table
  * ending at 1440, a 200px column from 1454 to 1176–1375, then the next from
  * 1376 to 1177–1376; one from 1254 or 1349, partly shown, not at all); for one

@@ -29,6 +29,9 @@ const (
 	// pageKeepsHistory: WebView2 lists no history to the app, so a tab's
 	// page lists its own (web/src/lib/desktopTabPage.ts).
 	pageKeepsHistory = true
+	// focusGivesStripKeys: Wails focuses a window by giving its own web
+	// view — a frame's is the strip — the keys (focusFrame).
+	focusGivesStripKeys = true
 )
 
 // Places in the COM method tables of WebView2.h.

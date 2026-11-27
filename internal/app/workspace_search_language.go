@@ -179,8 +179,8 @@ var (
 	hebrewPrefixes     = "הובלמשכ"
 )
 
-// searchWordParts are a word of letters and digits cut where they meet ("op06":
-// op, 06), each a word of its own to Notion's search, which lists the pages
+// searchWordParts are a word of letters and digits cut where they meet ("page12":
+// page, 12), each a word of its own to Notion's search, which lists the pages
 // holding one after those holding the whole (seen 2026-11-05); none for a word
 // of either alone.
 func searchWordParts(word string) []string {

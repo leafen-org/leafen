@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState, type ReactElement } from "r
 import { useTranslation } from "react-i18next";
 import type { TextSpan } from "@/lib/types";
 import { useTypedDraftSave } from "@/lib/useTypedDraftSave";
+import { typedField, type TypedKept } from "@/lib/typedDraftSender";
 import { RichTextCellEditor, type RichTextCellHandle } from "@/components/database/RichTextCellEditor";
 import { cellSpans } from "@/components/database/richTextCellModel";
 import { useCommentMentionSnapshot } from "@/components/comments/commentMentionContext";
@@ -35,9 +36,10 @@ function oneLine(title: string, spans: readonly TextSpan[] | undefined): Draft {
  * words are shown at once (`onTitleShown`, lib/renameShownAtPress.ts) and
  * saved once the typing stops (`onTitleChange`). Enter or Escape ends it
  * (`onDone`, told which), keeping what was typed; `finish` keeps it where
- * the box closes otherwise.
+ * the box closes otherwise. A page's name (`kept`) is kept on this device at
+ * each key and saved as typed titles are (lib/typedDraftSender.ts).
  */
-export function useRenameTitleField({ title, spans, placeholder, className, caret = "all", onTitleChange, onTitleShown, onDone }: {
+export function useRenameTitleField({ title, spans, placeholder, className, caret = "all", kept, asTyped = false, onTitleChange, onTitleShown, onDone }: {
   title: string;
   /** The title's spans as its reader reads them, while they spell it. */
   spans?: readonly TextSpan[];
@@ -48,7 +50,16 @@ export function useRenameTitleField({ title, spans, placeholder, className, care
    * Notion's library opens a row's name (seen 2026-11-11).
    */
   caret?: "all" | "end";
-  onTitleChange: (title: string, spans?: TextSpan[]) => void;
+  /** How what is typed is kept on the device as each key types it; without, it is saved as the typing pauses alone. */
+  kept?: TypedKept;
+  /**
+   * Its owner's write collects what is typed with the page's other typing
+   * and keeps it on the device at each change (a database's name,
+   * nativeContentGraphWriteCoordinator.ts): it is written at each key.
+   */
+  asTyped?: boolean;
+  /** Saves the title typed; answers what its owner's save answers (a kept one's record goes once that settles). */
+  onTitleChange: (title: string, spans?: TextSpan[]) => unknown;
   /** The words as each key leaves them, to show wherever the title is drawn before they are saved. */
   onTitleShown?: (title: string, spans?: TextSpan[]) => void;
   onDone: (key: "Enter" | "Escape") => void;
@@ -68,19 +79,40 @@ export function useRenameTitleField({ title, spans, placeholder, className, care
   // (2026-11-10: a database's page, renamed after a pause, doubled the words
   // typed when its first write moved the page on).
   const lastSaved = useRef(draftKey(shown));
+  // The title the words typed since the last save were typed on.
+  const savedOn = useRef<Draft>(shown);
+  const keptRef = useRef(kept);
+  keptRef.current = kept;
+  const [typing] = useState(typedField);
+  const spansOf = (next: Draft) => next.spans ?? (shown.spans ? [] : undefined);
   const save = (next: Draft) => {
     lastSaved.current = draftKey(next);
+    savedOn.current = next;
+    const keeping = keptRef.current;
     // Written as typed, the spaces at its ends too, as Notion keeps them (titleMerge.ts).
-    onTitleChange(next.title, next.spans ?? (shown.spans ? [] : undefined));
+    if (keeping) typing.send(() => onTitleChange(next.title, spansOf(next)));
+    else onTitleChange(next.title, spansOf(next));
   };
   const saveRef = useRef(save);
   saveRef.current = save;
   const showRef = useRef(onTitleShown);
   showRef.current = onTitleShown;
   const typed = useTypedDraftSave({
-    active: true, draft: draftKey(draft), initial: draftKey(shown),
+    active: !kept && !asTyped, draft: draftKey(draft), initial: draftKey(shown),
     save: () => saveRef.current(written.current), holding: () => handle.current?.composing() === true,
   });
+  // Kept at each key, the words go once the typing pauses or ends; mid-composition they wait for its end.
+  const keep = (next: Draft) => {
+    const keeping = keptRef.current;
+    if (!keeping) return;
+    const value = { title: next.title, spans: spansOf(next) }, operations = keeping.operations?.(value);
+    typing.key({ recordKey: keeping.recordKey, kind: keeping.kind, hostPageId: keeping.hostPageId, ...(keeping.row ? { row: keeping.row } : {}),
+      ...(operations?.length ? { operations } : {}), value, base: keeping.base(savedOn.current) }, () => {
+      if (handle.current?.composing()) return;
+      if (draftKey(written.current) !== lastSaved.current) saveRef.current(written.current);
+      else typing.sent();
+    });
+  };
 
   // The box has the caret as it is drawn, in the same step: a frame on, an
   // Enter or a letter typed as it showed went to the page's title or text,
@@ -95,6 +127,7 @@ export function useRenameTitleField({ title, spans, placeholder, className, care
   function finish() {
     typed.settle();
     if (draftKey(written.current) !== lastSaved.current) save(written.current);
+    else typing.sent();
   }
 
   const doneRef = useRef((key: "Enter" | "Escape") => { finish(); onDone(key); });
@@ -106,10 +139,13 @@ export function useRenameTitleField({ title, spans, placeholder, className, care
       onChange={(change) => {
         const next = { title: change.value, ...(change.spans ? { spans: change.spans } : {}) };
         setDraft(next);
+        written.current = next;
+        keep(next);
+        if (asTyped) saveRef.current(next);
         showRef.current?.(next.title, next.spans ?? (shown.spans ? [] : undefined));
       }}
-      // A syllable still composing shows where the page is named too, as the title's own field does (pageTitleEngine).
-      onComposed={(words) => showRef.current?.(words, shown.spans ? [] : undefined)}
+      // A syllable still composing shows where the page is named too, as the title's own field does (pageTitleEngine), and is kept.
+      onComposed={(words) => { if (!shown.spans) keep({ title: words }); showRef.current?.(words, shown.spans ? [] : undefined); }}
       onKeyDown={(event) => {
         const key = fieldKey(event);
         if (key !== "confirm" && key !== "escape") return undefined;

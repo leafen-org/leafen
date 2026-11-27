@@ -25,8 +25,8 @@ documents. This guide links to them and does not repeat them.
 | running Leafen for other people | [Self-hosting](../self-hosting.md), then [Outside address](outside-address.md) and [Backups](backups.md) |
 | stuck | [Troubleshooting](troubleshooting.md) |
 
-Chapters without a link are being written for the 0.1 pre-release. Each one
-becomes a link when it is published.
+Chapters without a link are still being written. Each one becomes a link when
+it is published.
 
 ## Everything
 

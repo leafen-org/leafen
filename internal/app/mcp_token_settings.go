@@ -26,7 +26,8 @@ import (
 // hash checking each call (mcp_token_sealed_schema.go). Only its person sees
 // and changes these, signed in — not an administrator, nor a key, which
 // can't widen itself; its agent sets only its own "모두 맡기기", through its
-// own route.
+// own route. An agent connection's page is the same less the tools and the
+// pages: nothing narrows it (connection_person_rights.go).
 
 const (
 	errorCodeMCPTokenInvalid  = "LEAFEN_MCP_TOKEN_INVALID"
@@ -177,6 +178,9 @@ func mcpTokenSettingsRoute(event *core.RequestEvent, action string) error {
 	if errors.Is(err, errMCPTokenInvalid) {
 		return apiError(event, http.StatusBadRequest, errorCodeMCPTokenInvalid, "Check the token's settings.")
 	}
+	if errors.Is(err, errAgentConnectionNotNarrowed) {
+		return agentConnectionNotNarrowedRefusal(event)
+	}
 	// A key's call its person was asked about is answered already.
 	if errors.Is(err, errUserKeyAsked) {
 		return nil
@@ -218,10 +222,11 @@ func loadMCPToken(app core.App, ownerID, id string) (storedMCPToken, error) {
 }
 
 func mcpTokenSettingsViewOf(app core.App, stored storedMCPToken) (mcpTokenSettingsView, error) {
+	narrowing := connectionNarrowingOf(stored.Agent, stored.DisabledTools, stored.PageIDs, stored.AllPages)
 	view := mcpTokenSettingsView{
 		ID: stored.ID, ClientName: stored.ClientName, Description: stored.Description, Icon: stored.Icon,
 		OAuth: stored.OAuthClientID != "", CreatedAt: stored.Created, TokenMadeAt: stored.TokenMadeAt,
-		HandsAllOver: !stored.AsksAction, NotionOnlyTools: stored.NotionOnly, NotionTools: stored.NotionTools, AllPages: stored.AllPages != 0,
+		HandsAllOver: !stored.AsksAction, NotionOnlyTools: stored.NotionOnly, NotionTools: stored.NotionTools, AllPages: !narrowing.PagesNarrowed,
 		Agent:      stored.Agent,
 		KeyKept:    stored.KeyKept && stored.OAuthClientID == "",
 		Workspaces: []mcpConnectionListWorkspace{}, ToolGroups: []mcpTokenToolGroupView{}, Pages: []mcpTokenPageView{},
@@ -246,7 +251,7 @@ func mcpTokenSettingsViewOf(app core.App, stored storedMCPToken) (mcpTokenSettin
 	// token made with a lower scope before scopes gave way to its tools
 	// (connection_person_rights.go).
 	scope, _ := parseUserKeyScope(stored.AccessScope)
-	disabled := parseMCPNameList(stored.DisabledTools)
+	disabled := narrowing.DisabledTools
 	for _, group := range mcpToolGroups {
 		tools := []mcpTokenToolView{}
 		for _, tool := range mcpToolCatalog(app) {
@@ -257,7 +262,7 @@ func mcpTokenSettingsViewOf(app core.App, stored storedMCPToken) (mcpTokenSettin
 		}
 		view.ToolGroups = append(view.ToolGroups, mcpTokenToolGroupView{ID: group, Tools: tools})
 	}
-	pageIDs := parseMCPNameList(stored.PageIDs)
+	pageIDs := narrowing.PageIDs
 	if len(pageIDs) > 0 {
 		encoded, _ := json.Marshal(pageIDs)
 		if err := app.DB().NewQuery(`SELECT [[page]].[[id]], [[page]].[[title]], [[page]].[[icon]], [[page]].[[icon_type]],
@@ -272,8 +277,9 @@ func mcpTokenSettingsViewOf(app core.App, stored storedMCPToken) (mcpTokenSettin
 		func(index int, titles []databaseSourceTitle) { view.Pages[index].SourceTitles = titles })
 }
 
-// changeMCPToken renames it, describes it, sets its icon, chooses its tools,
-// whether it lists Notion's tools or those Leafen doesn't have, or whether it hands
+// changeMCPToken renames it, describes it, sets its icon, chooses an MCP
+// token's tools (an agent connection keeps them all), whether it lists
+// Notion's tools or those Leafen doesn't have, or whether it hands
 // everything over, asking before no action the key rules confirm; the scope
 // it holds on the API follows the tools left on. Its person changes it on
 // their screen, or a key of theirs in the conversation, turning "모두
@@ -315,6 +321,10 @@ func changeMCPToken(event *core.RequestEvent, stored storedMCPToken) error {
 		change["icon"] = icon
 	}
 	if input.DisabledTools != nil {
+		// Its tools are an MCP token's to choose; an agent connection has them all.
+		if stored.Agent {
+			return errAgentConnectionNotNarrowed
+		}
 		known := map[string]bool{}
 		for _, tool := range mcpToolCatalog(event.App) {
 			known[tool.Name] = true
@@ -447,46 +457,4 @@ func revealMCPTokenRoute(event *core.RequestEvent) error {
 	}
 	event.Response.Header().Set("Cache-Control", "no-store")
 	return event.JSON(http.StatusOK, map[string]string{"key": string(key)})
-}
-
-// chooseMCPTokenPages turns its "모든 페이지" on, reaching every page its
-// person reads, or narrows it to pages its person reads in its workspaces
-// and the pages under them — none chosen, no page (MCP token decision of
-// 2026-11-10, 3). Turned on, the pages chosen before are let go.
-func chooseMCPTokenPages(event *core.RequestEvent, ownerID string, stored storedMCPToken) error {
-	input := struct {
-		AllPages bool     `json:"allPages"`
-		PageIDs  []string `json:"pageIds"`
-	}{}
-	if event.BindBody(&input) != nil {
-		return errMCPTokenInvalid
-	}
-	if input.AllPages {
-		_, err := event.App.DB().Update(mcpConnectionsTable, dbx.Params{"all_pages": 1, "page_ids": "[]"}, dbx.HashExp{"id": stored.ID}).Execute()
-		return err
-	}
-	pageIDs := uniqueNonemptyStrings(input.PageIDs)
-	if len(pageIDs) > mcpTokenMostPages {
-		return errMCPTokenInvalid
-	}
-	workspaces := []string{}
-	if err := event.App.DB().NewQuery(`SELECT [[workspace_id]] FROM {{leafen_mcp_connection_workspaces}} WHERE [[connection_id]] = {:id}`).
-		Bind(dbx.Params{"id": stored.ID}).Column(&workspaces); err != nil {
-		return err
-	}
-	for _, pageID := range pageIDs {
-		page, err := authorizePage(event.App, ownerID, pageID, permissionWorkspaceRead)
-		if isPermissionDenied(err) || err == nil && !slices.Contains(workspaces, page.Workspace.WorkspaceID) {
-			return errMCPTokenInvalid
-		}
-		if err != nil {
-			return err
-		}
-	}
-	encoded, err := json.Marshal(pageIDs)
-	if err != nil {
-		return err
-	}
-	_, err = event.App.DB().Update(mcpConnectionsTable, dbx.Params{"all_pages": 0, "page_ids": string(encoded)}, dbx.HashExp{"id": stored.ID}).Execute()
-	return err
 }

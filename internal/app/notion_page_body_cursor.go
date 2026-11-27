@@ -41,7 +41,7 @@ func parseNotionPageBodyCursor(app core.App, raw string) (notionPageBodyCursor, 
 // notionPageBodyNextCursor names the next item a read of a page's body would
 // give, the start_cursor that reads on from it, as Notion's API names it: a
 // block's ID, or a sub-page's (seen 2026-11-21, Notion-Version 2026-03-11,
-// synthetic pages under 한지테스트페이지, page_size 2 over blocks and a
+// synthetic pages under a Notion test page, page_size 2 over blocks and a
 // sub-page; a negative page_size names the first item). A cursor that names
 // the last item a read gave, as Leafen's named it before, reads it again.
 func notionPageBodyNextCursor(app, txApp core.App, current pageAuthorization, next notionPageBodyItemReference) (string, error) {

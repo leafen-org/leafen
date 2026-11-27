@@ -74,7 +74,7 @@ func serveNotionFileUploadCreate(event *core.RequestEvent) error {
 		return notionFileUploadError(event, err)
 	}
 	if err := requireDataDiskRoom(event.App, 0); err != nil {
-		return notionServerDiskLow(event)
+		return notionServerDiskLow(event, err)
 	}
 	if input.Mode == notionFileUploadModeExternal {
 		if err := validateNotionExternalFileUploadSource(
@@ -158,8 +158,14 @@ func serveNotionFileUploadSend(event *core.RequestEvent, publicID string) error 
 	if err != nil {
 		return notionFileUploadError(event, err)
 	}
-	if err := requireDataDiskRoom(event.App, files[0].Size); err != nil {
-		return notionServerDiskLow(event)
+	// A single part is joined at once (dataDiskPartsBytes); a part of many,
+	// when the upload is completed.
+	incoming := files[0].Size
+	if upload.Kind == fileUploadKindNotionSingle {
+		incoming = dataDiskPartsBytes(incoming)
+	}
+	if err := requireDataDiskRoom(event.App, incoming); err != nil {
+		return notionServerDiskLow(event, err)
 	}
 	upload, _, err = persistNotionProductFileUploadPart(
 		event.App, upload, partNumber, files[0], name, contentType,
@@ -389,6 +395,8 @@ func notionFileUploadError(event *core.RequestEvent, err error) error {
 		)
 	// Notion has no error of its own for a storage limit; the validation
 	// error says which limit refused it (2026-10-16: it read only "invalid").
+	case errors.Is(err, errServerDiskLow):
+		return notionServerDiskLow(event, err)
 	case errors.Is(err, errOrganizationStorageLimitExceeded):
 		return notionPageValidationError(event, "The organization's storage limit is reached. Ask an organization admin to raise the limit or remove files.")
 	case errors.Is(err, errFileUploadInvalid), errors.Is(err, errFileUploadIncomplete),
@@ -426,9 +434,9 @@ func notionFileUploadRefusalReason(err error) string {
 
 // notionServerDiskLow answers an upload refused for the server's disk.
 // Notion has no answer of its own for it; 503 says to try again later, and
-// the message says why.
-func notionServerDiskLow(event *core.RequestEvent) error {
-	event.Response.Header().Set("Retry-After", strconv.Itoa(dataDiskRetryAfter))
+// the message says why, to whoever asked (data_disk_refusal.go).
+func notionServerDiskLow(event *core.RequestEvent, refusal error) error {
+	serverDiskRetryAfter(event, refusal)
 	return notionCompatibilityError(event, http.StatusServiceUnavailable, "service_unavailable",
-		"The server's disk is almost full. Ask the server's administrator to free space; uploads work again once there is room.")
+		serverDiskRefusalMessage(event, refusal))
 }

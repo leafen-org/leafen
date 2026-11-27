@@ -1,8 +1,11 @@
 import { ArrowsOutSimple as PhosphorArrowsOutSimple, CalendarDots as PhosphorCalendarDots } from "@phosphor-icons/react";
-import { useId } from "react";
+import { type ComponentType, useId } from "react";
+import { DashboardIcon, FeedIcon, FormBlockIcon, MapIcon } from "./blockIcons";
+import { FormFieldsIcon, ListDashIcon } from "./blockMenuMarks";
 import { ICON_SIZES, IconSvg, PhosphorIconSvg, smallMark, type LeafenIconProps } from "./iconPrimitives";
 
-// A database view's layouts, as the view tabs and the layout menu show them.
+// A database view's layouts, as the view tabs and the layout menu show them;
+// every screen takes a layout's mark from ViewTypeMark below.
 
 // Notion's table and board (seen 2026-10-25 at 20px, in its view tabs, new
 // view menu, layout tiles, search and slash menu alike): a wide rounded frame,
@@ -26,8 +29,10 @@ export const BoardIcon = (p: LeafenIconProps) => (
 );
 
 // Notion's views drawn here from its measures (seen 2026-11-03): the list's
-// three lines with dots before them; the gallery's four boxes; the
-// calendar's frame with a filled head and its days as dots.
+// three lines with dots before them — in its view tabs, views list, new view
+// tiles and layout tiles alike, only its "/" menu putting dashes before them
+// (seen 2026-11-27, ViewTypeMark); the gallery's four boxes; the calendar's
+// frame with a filled head and its days as dots.
 export const ListIcon = (p: LeafenIconProps) => (
   <IconSvg {...p} glyph="list">
     <path d="M7.7 6.4h7.68" />
@@ -85,6 +90,26 @@ export const GalleryIcon = (p: LeafenIconProps) => (
     <rect x="11.2" y="11.2" width="4.4" height="3.6" rx=".8" />
   </IconSvg>
 );
+
+const VIEW_MARKS: Partial<Record<string, ComponentType<LeafenIconProps>>> = {
+  table: TableIcon, board: BoardIcon, list: ListIcon, gallery: GalleryIcon, calendar: CalendarViewIcon,
+  timeline: TimelineIcon, chart: ChartViewIcon, map: MapIcon, form: FormBlockIcon, dashboard: DashboardIcon, feed: FeedIcon,
+};
+
+const BLOCK_MENU_VIEW_MARKS: Partial<Record<string, ComponentType<LeafenIconProps>>> = { list: ListDashIcon, form: FormFieldsIcon };
+
+/**
+ * A view layout's mark, the one place every screen takes it from — the view tabs, the views list, the new view
+ * tiles, the layout tiles and the settings' "레이아웃" row, the view's name field, and the "/" menu's view blocks
+ * (`blockMenu`) — at the size each asks for; a layout it doesn't know takes the table's. Notion draws one mark per
+ * layout in all of these (seen 2026-11-27 at 1440 in dark, dpr 1, two tabs, by its painted area: the same ink at
+ * 20px in the tabs, list and layout tiles, and at 22px in the new view tiles), but for two in its "/" menu, where
+ * the list puts dashes before its lines and the form shows two fields (ListDashIcon, FormFieldsIcon).
+ */
+export function ViewTypeMark({ type, blockMenu = false, ...props }: LeafenIconProps & { type: string; blockMenu?: boolean }) {
+  const Mark = (blockMenu ? BLOCK_MENU_VIEW_MARKS[type] : undefined) ?? VIEW_MARKS[type] ?? TableIcon;
+  return <Mark aria-hidden="true" {...props} />;
+}
 
 /** An open eye, as a menu row shows it, drawn from where Notion inks its eye (seen 2026-11-15: 18.06 by 11.61 from
  * 0.97, 4.19 at 20px in the desktop's "속성 표시 여부", 19.9 by 12.8 from 1.1, 4.6 at 22px in the iPhone sheet's

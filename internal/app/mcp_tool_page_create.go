@@ -233,8 +233,8 @@ func createMCPPagesIn(
 	admissions := make([]pageCreationAdmissionInput, len(input.Pages))
 	bodies := make([][]newRowPageBlock, len(input.Pages))
 	// A body that makes sub-pages or databases is written as notion-update-page
-	// writes it, right after the pages are made, its links made mentions as
-	// here (mcpCreatedBodyInput).
+	// writes it, right after the pages are made — checked before any is
+	// (checkMCPCreatedBody) — its links made mentions as here (mcpCreatedBodyInput).
 	written := make([]bool, len(input.Pages))
 	presentations := make([]*notionPagePresentationRequest, len(input.Pages))
 	said, moves := make([][]mcpMarkdownWarning, len(input.Pages)), make([]mcpCreatePageMoves, len(input.Pages))
@@ -329,6 +329,9 @@ func createMCPPagesIn(
 		}
 		if notionMarkdownMakesObjects(plan) {
 			written[index] = true
+			if err := checkMCPCreatedBody(app, authority, parent.Workspace, definition, moves[index]); err != nil {
+				return nil, notionMCPCreatePagesOutput{}, mcpCreatePagesItemRefusal(err, len(input.Pages), index)
+			}
 			continue
 		}
 		// Code of nothing on a page made with Markdown has no text, as the
@@ -452,10 +455,9 @@ func notionMarkdownMakesObjects(plan notionMarkdownPlan) bool {
 			operation.Block.Type == graphBlockTypeChildPage || operation.Block.Type == graphBlockTypeInlineDatabase {
 			return true
 		}
-		// A synced block reference's original is found as the body is written
-		// (notionMarkdownSyncedReferences).
-		if operation.Block.Type == graphBlockTypeSyncedBlock &&
-			strings.Contains(string(operation.Block.Content), notionMarkdownSyncedAddressKey) {
+		// A synced block reference's original, and a link's page or database,
+		// are found as the body is written (pageMarkdownReplacement.addressedBlocks).
+		if notionMarkdownAddressedBlock(operation.Block) {
 			return true
 		}
 	}

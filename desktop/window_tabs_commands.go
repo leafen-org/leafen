@@ -30,11 +30,11 @@ func showFront() bool {
 		}
 		// One whose strip isn't in place yet shows once it is (adopt).
 		if !frame.adopted {
-			frame.show = true
+			frame.showOnceAdopted()
 			return true
 		}
 		frame.window.Show()
-		frame.window.Focus()
+		desktopTabs.focusFrame(frame)
 		return true
 	})
 }
@@ -70,12 +70,12 @@ func reopenWindows() {
 // showFrame shows a hidden window, once its strip is in place (adopt).
 func showFrame(frame *tabFrame, focus bool) {
 	if !frame.adopted {
-		frame.show = true
+		frame.showOnceAdopted()
 		return
 	}
 	frame.window.Show()
 	if focus {
-		frame.window.Focus()
+		desktopTabs.focusFrame(frame)
 	}
 }
 

@@ -598,9 +598,9 @@ export function NativeDatabaseViewMount({
         onRichTextChange={!rowPage.readOnly && tableAdapter && selectedRow && !trashedRow ? (property, value, spans, read) => {
           const ownerGeneration = generation.current.value, isCurrent = () => generation.current.value === ownerGeneration;
           const row = { ...selectedRow, values: { ...selectedRow.values, [property.id]: { type: property.type, value, ...(spans?.length ? { spans } : {}) } } };
-          // A title typed on the one the server held is written only over that (rowTitleSave.ts).
-          if (read && tableAdapter.commitRowTitleAsRead) return tableAdapter.commitRowTitleAsRead(row, property.id, read, isCurrent);
-          void tableAdapter.commitRows([row], isCurrent);
+          // A title goes through the row's page, over the one it was typed on (rowValuesKept.ts); a text typed goes once its typing ends.
+          if (property.type === "title" && tableAdapter.commitRowTitleAsRead) return tableAdapter.commitRowTitleAsRead(row, property.id, read ?? null, isCurrent);
+          void tableAdapter.commitRows([row], isCurrent, true);
         } : undefined}
         onOpenMode={(mode) => openRow(shownRowPage.row.id, mode)}
         topBar={session ? {

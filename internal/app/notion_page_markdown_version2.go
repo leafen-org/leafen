@@ -20,7 +20,7 @@ import (
 // list's tags once one of them is, numbered items from their list's start
 // and in letters or roman numerals as <ol type> (notion_page_markdown_list_numbers.go);
 // the blocks the API doesn't write —
-// breadcrumbs, links to pages, buttons — are <unknown … />, as in its "v1".
+// breadcrumbs, links to comments — are <unknown … />, as in its "v1".
 
 // notionMarkdownVersion2Escaped escapes text as the API's "v2" does.
 var notionMarkdownVersion2Escaped = strings.NewReplacer(
@@ -307,14 +307,15 @@ func notionMarkdownListOf(blockType string) string {
 
 // version2Unknown writes a block "v2" doesn't, as Notion names it: a link
 // to a page is its "alias". As in "v1" it isn't among the IDs the read
-// couldn't load (seen 2026-11-10).
+// couldn't load (seen 2026-11-10). A link to a page or a database is its
+// <link-to-page> line instead (notion_page_markdown_link_to_page.go), and a
+// button its <button> line (notion_page_markdown_button.go).
 func (w *notionMarkdownWriter) version2Unknown(block workspaceExportMarkdownBlock, prefix, id string) []string {
-	kind := block.Type
-	if kind == graphBlockTypeLinkToPage {
-		kind = "alias"
+	if line, linked := w.ownLine(block); linked {
+		return w.under(block, prefix, line, "  ", false)
 	}
 	w.unknownLine(block, id)
-	line := fmt.Sprintf(`<unknown url="%s" alt="%s" />`, w.unknownAddress(id), kind)
+	line := fmt.Sprintf(`<unknown url="%s" alt="%s" />`, w.unknownAddress(id), notionMarkdownUnknownAlt(block.Type))
 	return w.under(block, prefix, line, "  ", false)
 }
 

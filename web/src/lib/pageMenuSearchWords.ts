@@ -3,8 +3,8 @@ import { i18next } from "@/i18n";
 // The words a page's "…" menu and a database row page's find a few rows by
 // beyond their names: Leafen's own, Korean and English. They were written
 // from what typing showed in Notion's page "…" and row page "…" menus
-// (2026-11-21, a synthetic page and row under 한지테스트페이지: 277 queries on
-// the first account's Korean screen and 168 on the second account's English
+// (2026-11-21, a synthetic page and row under a Notion test page: 277 queries
+// on the first account's Korean screen and 168 on the second account's English
 // one — every row name and its words, 1–3 letter starts in Korean and Latin,
 // and the words Notion was seen to find a row by). The fonts and the small
 // text are found by "글꼴" and "font"; "f" finds the three fonts alike, ahead

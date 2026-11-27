@@ -189,6 +189,10 @@ func serveNotionBlockChildrenFollowing(event *core.RequestEvent, blockID string,
 	// A synced copy's children are its original's, as Notion's API reads
 	// them; with the original gone, in the trash or not the reader's, they
 	// are not found or none (notionSyncedCopyOriginalMissing).
+	// A copy of a page's body lists none, as Notion's API reads one (seen 2026-11-27).
+	if followCopy && authorization.Block.Type == graphBlockTypeSyncedBlock && syncedCopyPageRaw(authorization.Block.Content) != "" {
+		return notionNoChildren(event)
+	}
 	if sourceID := notionSyncedCopySourceID(authorization.Block); followCopy && sourceID != "" {
 		publicID, found, err := notionSyncedCopyOriginal(event.App, authorization.Page, sourceID)
 		if err != nil || !found {

@@ -136,7 +136,7 @@ func (p *pocketBaseYgoPersistence) serveDatabaseRowTrashChange(event *core.Reque
 	}
 	// A change sent as its page goes may go as the row is held (asHeld): it
 	// had no time to read the row's revision first.
-	rowID, input, err := bindDatabaseRowTrashAction(event)
+	rowID, input, err := bindDatabaseRowActionAsHeld(event)
 	if err != nil || input.TargetDataSourceID != "" || input.Preview || len(input.AcceptDroppedPropertyIDs) > 0 || input.Position != "" {
 		return apiError(event, http.StatusBadRequest, errorCodeDatabaseRowPageInvalid, "Check the trash details.")
 	}

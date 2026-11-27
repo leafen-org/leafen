@@ -368,19 +368,15 @@ func updateMCPPage(
 	// The replacements update_content left out are said beside the page,
 	// then what reading the Markdown as "v2" said.
 	matchWarnings := []notionMarkdownWarning{}
-	prepare := narrowedMarkdownMentionInput(authority.PrincipalID, mcpMentionReaches(authority))
 	reader, err := mcpWriteReader(app, authority, pageID)
 	if err != nil {
 		return nil, mcpPageMutationOutput{}, err
 	}
-	if input.CreatedBody {
-		reader.LinksMentioned = !input.PreserveInternalLinks
-		prepare = mcpCreatedBodyInput(authority, input.PreserveInternalLinks, prepare)
-	}
+	prepare := mcpMarkdownWritePrepare(authority, &reader, input.CreatedBody, input.PreserveInternalLinks)
 	mcpBringPageUploads(app, authority, authorize, input) // uploads from other workspaces (mcp_file_attach.go)
 	result, err := persistence.replacePageMarkdown(ctx, app, pageMarkdownReplacement{
 		PrincipalID: authority.PrincipalID, PublicPageID: pageID, MutationID: mutationID,
-		Reader: reader, Version2: true,
+		Reader: reader, Version2: true, CreatesPage: input.CreatedBody,
 		PrepareInput: prepare,
 		Uploads:      mcpMarkdownUploads(authority),
 		// A base_cursor is the version fetch gave (mcp_page_version.go), which the page must still be at.

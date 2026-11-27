@@ -3,7 +3,7 @@ package app
 // A list of Leafen's Notion API names, as next_cursor, the first item its
 // page left out, and a start_cursor reads from that item on, as Notion's
 // lists do (seen 2026-11-21, Notion-Version 2026-03-11, synthetic pages
-// under 한지테스트페이지: a block's comments and the file uploads list read
+// under a Notion test page: a block's comments and the file uploads list read
 // one at a time — each next_cursor was the item the next read gave first —
 // and a block's children, notion_page_body_cursor.go). A start_cursor that
 // names an item the list doesn't hold is refused, as Notion's 400 "The

@@ -199,6 +199,13 @@ func resolveNotionImportLinkedBlock(
 			// it as a row.
 			nativeID, err = resolver.lookup(strings.TrimPrefix(value, reference.prefix), "row")
 		}
+		if err == nil && nativeID == "" && reference.field == "syncedBlockId" {
+			// One showing a Notion page's body shows its page's (synced_block_page_original.go).
+			if page, err := notionImportSyncedPageOriginal(resolver, strings.TrimPrefix(value, reference.prefix)); err != nil || page != "" {
+				content["syncedBlockId"], content["syncedPageId"] = page, page
+				return page != "", reference.reason, err
+			}
+		}
 		if err != nil || nativeID == "" {
 			return false, reference.reason, err
 		}

@@ -39,6 +39,7 @@ import type { MovePopoverAnchor } from "@/components/movePopoverPlacement";
 import type { RowMenuFoot } from "./rowMenuFoot";
 import { untitledPageDisplayTitle } from "../../lib/pageTitle";
 import { inlineEndX, inlineStartX } from "@/lib/readingDirection";
+import { pageMenuShowsEditedFoot } from "@/lib/pageReaderChrome";
 
 /** A database a row can move to, or a page it can move under as a sub-page. */
 export type DatabaseRowMoveTarget = { id: string; title: string; kind?: "database" | "page" };
@@ -433,7 +434,7 @@ function RowOrPageMenu({
         </NativeMenuSection>
         </>}
         </NativeActionMenu>
-        {!normalizedQuery ? footDrawn(page ? "row-page-menu-edited" : "row-menu-edited") : null}
+        {!normalizedQuery && (!page || pageMenuShowsEditedFoot(!readOnly)) ? footDrawn(page ? "row-page-menu-edited" : "row-menu-edited") : null}
       </PlacedRowMenu>
       {pageMenu.overlay}
       {rowMenu.overlay}
@@ -446,7 +447,7 @@ function RowOrPageMenu({
       ...pageMenu.phone,
       favorite: onFavorite ? { on: favorite, onToggle: () => void onFavorite(!favorite) } : undefined,
       onShare: () => { onClose(); requestRowPageShare(page.id); },
-      foot: footDrawn("row-page-menu-edited"),
+      foot: pageMenuShowsEditedFoot(!readOnly) ? footDrawn("row-page-menu-edited") : undefined,
     }} />
   );
   return typeof document === "undefined" ? surface : createPortal(surface, document.body);

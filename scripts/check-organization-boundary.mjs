@@ -21,14 +21,19 @@ for (const entry of ['./cmd/leafen', './desktop']) {
     problems.push(`${entry} does not attach the organization module`)
   }
 }
-try {
-  // There is no Linux desktop app, and building one needs GTK: on Linux (the
-  // CI) the core-only desktop app is built as Windows builds it.
-  const env = process.platform === 'linux' ? { ...process.env, GOOS: 'windows', CGO_ENABLED: '0' } : process.env
-  execFileSync('go', ['build', '-tags', 'leafen_core', '-o', process.platform === 'win32' ? 'NUL' : '/dev/null', './desktop'],
-    { cwd: productRoot, encoding: 'utf8', env })
-} catch (error) {
-  problems.push(`the core-only build fails: ${error.message}`)
+// The core-only desktop app is built as Windows builds it on every system, so
+// this check answers alike on the Linux CI, where there is no desktop app and
+// building one would need GTK, and on a maintainer's Mac before a push. A Mac
+// builds it its own way too, as its app is built.
+const coreBuilds = [{ name: 'as Windows builds it', env: { GOOS: 'windows', GOARCH: 'amd64', CGO_ENABLED: '0' } }]
+if (process.platform === 'darwin') coreBuilds.push({ name: 'as macOS builds it', env: {} })
+for (const { name, env } of coreBuilds) {
+  try {
+    execFileSync('go', ['build', '-tags', 'leafen_core', '-o', process.platform === 'win32' ? 'NUL' : '/dev/null', './desktop'],
+      { cwd: productRoot, encoding: 'utf8', env: { ...process.env, ...env } })
+  } catch (error) {
+    problems.push(`the core-only build ${name} fails: ${error.message}`)
+  }
 }
 
 const webSource = join(productRoot, 'web', 'src')

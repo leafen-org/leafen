@@ -330,7 +330,7 @@ export function DatabaseRowPage({
     return title ? registerEditable(`title:${snapshot.row.id}`, title) : undefined;
   }, [snapshot.row.id, titleEditable]);
   // The heading follows the row as the view holds it, which takes each save at once.
-  const heading = useRowPageTitle({ rowId: snapshot.row.id, session, cell: !titleProperty ? undefined
+  const heading = useRowPageTitle({ rowId: snapshot.row.id, record: titleProperty && { propertyId: titleProperty.id, hostPageId: snapshot.row.containerPageId }, cell: !titleProperty ? undefined
     : typeof valueRow?.title === "string" ? { value: valueRow.title, spans: valueRow.titleSpans } : snapshot.row.values[titleProperty.id],
     write: titleProperty && onRichTextChange ? (value, spans, read) => onRichTextChange(titleProperty, value, spans, read) : undefined, named: snapshot.row }), titleSpans = heading.spans;
   const presentation: RowPagePresentation = {
@@ -661,7 +661,7 @@ export function DatabaseRowPage({
                 // title does in Notion, saving as the typing pauses and as it finishes.
                 // Enter goes to the body's first line, as a page title's does (pageBodyFrame: not a body kept unseen).
                 <RichTextCellEditor key={snapshot.row.id} afterPaint lineRules holds="title" handleRef={titleHandle} element="h1" className={styles.rowPeekTitle} commitOn={titleCommitOn}
-                  spans={titleSpans} value={heading.value} pageId={snapshot.row.id} names={snapshot.row.id} propertyId={titleProperty.id} inviteOn={snapshot.row.id} follows={!template}
+                  spans={titleSpans} value={heading.value} pageId={snapshot.row.id} names={snapshot.row.id} propertyId={titleProperty.id} inviteOn={snapshot.row.id} follows={!template} kept={heading.kept}
                   ariaLabel={t("rowProperties:rowTitle")} placeholder={fullPageDatabase ? inlineDatabasePlaceholderTitle() : untitledRow} onKeyDown={rowTitleKeys(snapshot.row.id, titleHandle, focusRowBody)}
                   onEnter={() => enterBodyOrTitleStart(findRootRef.current?.querySelector<HTMLElement>("[data-row-page-title]") ?? null, focusRowBody)}
                   dataAttributes={{ "data-row-page-title": "", dir: "auto" }} pastedLines={bodyReadOnly === false && !body && !fullPageDatabase ? { titleOf: snapshot.row.id } : undefined}

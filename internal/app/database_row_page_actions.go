@@ -35,11 +35,11 @@ func bindDatabaseRowPageAction(event *core.RequestEvent) (string, databaseRowPag
 	return rowID, input, nil
 }
 
-// bindDatabaseRowTrashAction binds a row's trash or restore, which alone may
-// go as the server holds the row (asHeld) with no revision: a change kept on
-// a device and sent as its page goes, with no time to read the row first
-// (database_row_trash_actions.go).
-func bindDatabaseRowTrashAction(event *core.RequestEvent) (string, databaseRowPageActionInput, error) {
+// bindDatabaseRowActionAsHeld binds a row's trash, restore or move, which
+// alone may go as the server holds the row (asHeld) with no revision: a
+// change kept on a device and sent as its page goes, with no time to read the
+// row first (database_row_trash_actions.go, rowMoveKept.ts).
+func bindDatabaseRowActionAsHeld(event *core.RequestEvent) (string, databaseRowPageActionInput, error) {
 	rowID := strings.TrimSpace(event.Request.PathValue("rowId"))
 	input := databaseRowPageActionInput{}
 	if rowID == "" || event.BindBody(&input) != nil {
@@ -246,10 +246,10 @@ func (p *pocketBaseYgoPersistence) moveDatabaseRowPage(event *core.RequestEvent)
 	if !ok {
 		return apiError(event, http.StatusUnauthorized, errorCodeUnauthorized, "Login required.")
 	}
-	rowID, input, err := bindDatabaseRowPageAction(event)
+	rowID, input, err := bindDatabaseRowActionAsHeld(event)
 	toPage := input.TargetPageID != "" || input.TargetTopLevel
 	if err != nil || (input.TargetDataSourceID == "") == !toPage || input.TargetPageID != "" && input.TargetTopLevel || input.Position != "" ||
-		input.TargetTeamspaceID != nil && !input.TargetTopLevel || input.FromTrash && !toPage {
+		input.TargetTeamspaceID != nil && !input.TargetTopLevel || input.FromTrash && !toPage || input.AsHeld && input.Preview {
 		return apiError(event, http.StatusBadRequest, errorCodeDatabaseRowPageInvalid, "Check the move details: send requestId (1 to 1,024 "+
 			"characters), expectedAuthorityRevision as the row was read, and targetDataSourceId to move it to another database, or "+
 			"targetPageId or targetTopLevel (with targetTeamspaceId, or none for private pages) to move it out as a page, with fromTrash "+
@@ -337,7 +337,8 @@ func (p *pocketBaseYgoPersistence) moveDatabaseRowPage(event *core.RequestEvent)
 				if loadErr != nil {
 					return contentGraphMutationPreparation{}, loadErr
 				}
-				if authority.AuthorityRevision != input.ExpectedAuthorityRevision ||
+				// Sent as the row is held (asHeld), it isn't held to a revision.
+				if !input.AsHeld && authority.AuthorityRevision != input.ExpectedAuthorityRevision ||
 					authority.ContainerPageID != preliminary.ContainerPageID {
 					return contentGraphMutationPreparation{}, errDatabaseRowPageConflict
 				}

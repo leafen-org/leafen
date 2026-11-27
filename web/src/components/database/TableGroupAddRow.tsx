@@ -1,12 +1,8 @@
-import { forwardRef, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { forwardRef, type MouseEvent, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { confirmAction } from "@/components/ConfirmActionDialog";
-import { EnterSign } from "@/components/EnterSign";
 import { FilterIcon } from "@/icons/leafen";
-import { useOverlayLayer } from "@/lib/overlayLayer";
 import { Plus } from "../icons";
 import styles from "./databaseSheet";
-import { POPOVER_MARGIN } from "@/lib/popoverPlacement";
 
 /**
  * A grouped table's "New page" under one group, which makes a row in it, or
@@ -53,55 +49,6 @@ export const TableGroupAddRow = forwardRef<HTMLDivElement, {
  */
 export function keepFocusAtPress(event: MouseEvent<HTMLElement>) {
   if (event.button === 0) event.preventDefault();
-}
-
-// The name field's size, as its stylesheet's, to keep it inside the window.
-const NEW_GROUP_NAME_WIDTH = 300;
-const NEW_GROUP_NAME_HEIGHT = 36;
-
-/**
- * The new group's name, asked under the button that adds it, its left on the
- * button's — over the button, its foot on the button's top, where it would
- * come within 12px of the window's foot (Notion's table, seen 2026-11-12:
- * under a button ending 673 in a 723 window, over one ending 679). A name a
- * group has already is refused with "그룹이 이미 존재합니다." and the name
- * stays to change, as Notion's board says it (seen 2026-10-30); answered,
- * the focus goes back where it was when the notice opened (the notice's own
- * return): the field after Enter in it, "완료 ↵" after a press of it. Notion's,
- * measured 2026-11-16 in Chrome at 1440 in two tabs 7 minutes apart with no
- * script in the page before the action — after "확인", a typed "z" went into
- * the field after Enter and nowhere after the press, the focus on "완료". Added or
- * left with Escape, it gives the focus back to what held it as it opened
- * (ViewGroupAdd).
- */
-export function NewGroupName({ anchor, taken = [], onDone }: {
-  anchor: DOMRect; taken?: readonly string[]; onDone(name: string | null): void;
-}) {
-  const { t } = useTranslation("tableView");
-  const [name, setName] = useState("");
-  const [refusing, setRefusing] = useState(false);
-  const boxRef = useRef<HTMLFormElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const { zIndex } = useOverlayLayer(true, {
-    kind: "picker", ref: boxRef, initialFocus: inputRef,
-    onEscape: refusing ? undefined : () => onDone(null), onOutsidePress: refusing ? undefined : () => onDone(null),
-  });
-  const submit = () => {
-    const value = name.trim();
-    if (!value || !taken.includes(value)) return onDone(value || null);
-    setRefusing(true);
-    void confirmAction({ message: t("groupExists"), confirmLabel: t("groupExistsOk"), cancelLabel: null })
-      .then(() => setRefusing(false));
-  };
-  return (
-    <form ref={boxRef} className={styles.newGroupName} data-table-new-group-name
-      style={{ zIndex, top: anchor.bottom + NEW_GROUP_NAME_HEIGHT > window.innerHeight - POPOVER_MARGIN ? anchor.top - NEW_GROUP_NAME_HEIGHT : anchor.bottom, left: Math.max(POPOVER_MARGIN, Math.min(anchor.left, window.innerWidth - NEW_GROUP_NAME_WIDTH - POPOVER_MARGIN)) }}
-      onSubmit={(event) => { event.preventDefault(); submit(); }}>
-      <input ref={inputRef} value={name} placeholder={t("newGroupName")} aria-label={t("newGroupName")}
-        onChange={(event) => setName(event.target.value)} />
-      <button type="submit">{t("newGroupDone")} <EnterSign /></button>
-    </form>
-  );
 }
 
 /** The names of a grouping property's options, which a new group may not take. */

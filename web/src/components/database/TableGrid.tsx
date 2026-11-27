@@ -107,7 +107,7 @@ type TableGridProps = {
   /** Makes a page first in a group and opens it, from the group head's "+", as Notion's (seen 2026-10-25). */
   onAddGroupRowFirst?(groupKey: string, beforeRowId: string | null): void;
   /** Opens a group's "⋯" beside it. */
-  onGroupMenu?(group: TableGroup<TableProjectedRow>, element: HTMLElement): void;
+  onGroupMenu?(group: TableGroup<TableProjectedRow>, element: HTMLElement, naming?: boolean): void;
   /** Whether group heads show how many pages they hold (Notion's "집계 표시", off at first). */
   groupCounts?: boolean;
   /** "+ 신규 그룹" under the last group (ViewGroupAdd), given the class that places it. */
@@ -470,7 +470,7 @@ export function TableGrid(props: TableGridProps) {
   );
   const lineOf = (target: EventTarget | null) => target instanceof Element ? target.closest("[data-table-line]")?.getAttribute("data-table-line") ?? null : null;
 
-  groupWays.current = { toggle: onToggleGroup, menu: (key, element) => { const group = groups.find((at) => at.key === key); if (group) props.onGroupMenu?.(group, element); },
+  groupWays.current = { toggle: onToggleGroup, menu: (key, element, naming) => { const group = groups.find((at) => at.key === key); if (group) props.onGroupMenu?.(group, element, naming); },
     add: (key) => props.onAddGroupRowFirst?.(key, groups.find((at) => at.key === key)?.rows[0]?.row.id ?? null) };
   function groupHeader(group: TableGroup<TableProjectedRow>, index: number, key: string) {
     return (
@@ -540,7 +540,7 @@ export function TableGrid(props: TableGridProps) {
   function groupMoreRow(group: TableGroup<TableProjectedRow>, index: number, key: string) {
     return (
       <div key={key} ref={measureEntry(key)} data-index={index}>
-        <TableLoadMoreRow loading={loading}
+        <TableLoadMoreRow loading={loading} limit={groupRowLimit} onLimit={onLoadLimit}
           onLoadMore={() => setGroupMore((current) => ({ ...current, [group.key]: (current[group.key] ?? 0) + 1 }))} />
       </div>
     );

@@ -12,6 +12,7 @@ import { letSyncedCopiesGo } from "./syncedBlockCopies";
 import { SYNCED_SOURCELESS, syncedBlockSource, type SyncedBlockSource } from "./syncedBlockModel";
 import { SyncedBlockPlaces } from "./SyncedBlockPlaces";
 import { SyncedOriginalEditor } from "./SyncedOriginalEditor";
+import { SyncedPageCopy } from "./SyncedPageCopy";
 import styles from "./editorStyles.generated.module.css";
 import { confirmAction } from "../ConfirmActionDialog";
 import { ReadFailed } from "@/components/ReadFailed";
@@ -193,12 +194,14 @@ function SyncedCopyContent({ adapter, block, source }: {
     return () => { cancelled = true; };
   }, [adapter.pageId, block.id, readFailed, readPage, session, source.pageId, sourceless]);
   if (sourceless) return null;
+  // One showing a whole page's body draws that page's top level (SyncedPageCopy).
+  if (source.page) return <SyncedPageCopy adapter={adapter} block={block} source={source} />;
   if (readFailed && !source.pageId) {
     return <div className={styles.syncedMissing} contentEditable={false}><ReadFailed message={blockItemText("synced.readFailed")} onRetry={() => setReadFailed(false)} /></div>;
   }
   const pageId = source.pageId || readPage;
   const unavailable = <div className={styles.syncedMissing}>{blockItemText("synced.unavailable")}</div>;
-  if (trail.has(source.blockId) || insideOriginal(adapter.graph.blocks, block, source.blockId)) return unavailable;
+  if (trail.includes(source.blockId) || insideOriginal(adapter.graph.blocks, block, source.blockId)) return unavailable;
   if (pageId === null) return null;
   if (pageId !== adapter.pageId) {
     return session && pageId

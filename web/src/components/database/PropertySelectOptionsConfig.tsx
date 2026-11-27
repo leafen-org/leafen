@@ -15,7 +15,7 @@ import { NotionSelect } from "./NotionSelect";
 import { PhonePropertySection, usePhonePropertySettings } from "./PhonePropertySettings";
 import phoneStyles from "./PhonePropertySettings.module.css";
 import { PropertySelectOptionEditor } from "./PropertySelectCellView";
-import { dropOptionNameCommas } from "./optionNameText";
+import { dropOptionNameCommas, optionRenameChange } from "./optionNameText";
 import { OPTION_SORTS, optionSortOf, sortedOptions, type OptionSort } from "./selectOptionSort";
 import {
   statusGroupColumns,
@@ -87,13 +87,14 @@ export function PropertySelectOptionsConfig({
     });
   }
 
+  // The property's settings with these options, as they are saved.
+  function optionsConfig(next: SelectOption[], patch: Record<string, unknown> = {}) {
+    return prop.type === "status"
+      ? synchronizeStatusGroupMembership({ ...prop.config, ...patch } as DbProperty["config"], next)
+      : { ...prop.config, ...patch, options: next } as DbProperty["config"];
+  }
   function updateOptions(next: SelectOption[], patch: Record<string, unknown> = {}) {
-    void ops.updateProperty(operationContext, prop.id, {
-      config:
-        prop.type === "status"
-          ? synchronizeStatusGroupMembership({ ...prop.config, ...patch } as DbProperty["config"], next)
-          : { ...prop.config, ...patch, options: next } as DbProperty["config"],
-    });
+    void ops.updateProperty(operationContext, prop.id, { config: optionsConfig(next, patch) });
   }
 
   function uniqueOptionName(base: string) {
@@ -147,12 +148,17 @@ export function PropertySelectOptionsConfig({
       : patch.color === undefined ? { ...option, ...patch } : { ...recoloredOption(option, patch.color), ...patch })));
   }
 
-  function commitOptionName(id: string, name: string) {
+  // The options with one renamed as its name is saved, or null when it stays.
+  function optionsNamed(id: string, name: string) {
     const trimmed = name.trim();
     const current = options.find((option) => option.id === id);
-    if (!current || trimmed === current.name) return;
+    if (!current || trimmed === current.name) return null;
     const named = { name: trimmed || uniqueOptionName(t("propertyTypeConfig:defaultOptionName")) };
-    updateOptions(sortedOptions(options.map((option) => (option.id === id ? { ...option, ...named } : option)), sort));
+    return sortedOptions(options.map((option) => (option.id === id ? { ...option, ...named } : option)), sort);
+  }
+  function commitOptionName(id: string, name: string) {
+    const next = optionsNamed(id, name);
+    if (next) updateOptions(next);
   }
 
   function chooseSort(next: string) {
@@ -317,6 +323,10 @@ export function PropertySelectOptionsConfig({
           anchor={editing.anchor}
           onClose={() => setEditing(null)}
           onRename={(name) => commitOptionName(editingOption.id, name)}
+          typedChange={(name, graph) => {
+            const next = optionsNamed(editingOption.id, name);
+            return optionRenameChange(graph, prop.id, next && optionsConfig(next));
+          }}
           onColor={(color: ColorName) => changeOption(editingOption.id, { color })}
           onDescribe={(description) => {
             if ((editingOption.description ?? "") !== description) changeOption(editingOption.id, { description: description || undefined });

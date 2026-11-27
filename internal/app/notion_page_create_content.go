@@ -19,8 +19,10 @@ type notionPageCreateContentPlan struct {
 	// Kind is the new page's kind; empty is a page.
 	Kind string
 	// DeferredMarkdown is a body that makes sub-pages or databases, written
-	// as a page's Markdown update writes it once the page is made.
-	DeferredMarkdown string
+	// as a page's Markdown update writes it once the page is made; checked
+	// first as the page is made (checkDeferred), from origin, in its version.
+	DeferredMarkdown                string
+	deferredOrigin, deferredVersion string
 	// ContentRefused is the faults in the content of the blocks planned, in
 	// Operations, said once what Notion's API says before them has passed
 	// (notionPageCreateContentRefused).
@@ -110,7 +112,9 @@ func planNotionPageCreateContent(
 			return notionPageCreateContentPlan{}, err
 		}
 		if notionMarkdownMakesObjects(plan) {
-			return notionPageCreateContentPlan{DeferredMarkdown: *input.Markdown, BodyPlacement: placement}, nil
+			return notionPageCreateContentPlan{
+				DeferredMarkdown: *input.Markdown, BodyPlacement: placement, deferredOrigin: origin, deferredVersion: input.MarkdownVersion,
+			}, nil
 		}
 		plan.TextUpdates = notionPageCreateEmptyCode(plan)
 		// Mentions name their targets as the connection does until the
@@ -145,6 +149,46 @@ func planNotionPageCreateContent(
 		Operations: plan.Operations, TextUpdates: plan.TextUpdates,
 		AdmissionContent: string(encoded), BodyPlacement: placement,
 	}, nil
+}
+
+// checkDeferred refuses, in the transaction that makes the page pageID, a
+// body DeferredMarkdown whose write once the page is there would refuse it
+// (pageMarkdownReplacement.checkCreatedBody), as identity writes it: so the
+// page isn't made, as Notion's refused create makes none (seen 2026-11-27).
+// nil for a plan that writes no body after.
+func (plan notionPageCreateContentPlan) checkDeferred(app core.App, identity notionOAuthBearerIdentity, pageID string) error {
+	if plan.DeferredMarkdown == "" {
+		return nil
+	}
+	reader := notionIdentityMarkdownReaderAt(app, plan.deferredOrigin, identity, plan.deferredVersion)
+	request := notionCreatedPageMarkdownWrite(identity, reader, pageID, plan.DeferredMarkdown)
+	current, err := request.Authorize(app)
+	if err != nil {
+		return err
+	}
+	return request.checkCreatedBody(app, current, nil)
+}
+
+// notionCreatedPageMarkdownWrite is the write of the first body of a page
+// made just now, pageID, by a public API connection: markdown read as
+// reader reads it, its mentions, files and links as the connection names
+// them (writeNotionCreatedPageMarkdown).
+func notionCreatedPageMarkdownWrite(
+	identity notionOAuthBearerIdentity, reader notionMarkdownReader, pageID, markdown string,
+) pageMarkdownReplacement {
+	return pageMarkdownReplacement{
+		PrincipalID: identity.PrincipalID, Reader: reader, Version2: reader.Version2,
+		PrepareInput: notionCreatedBodyEmptyCodeInput(notionMarkdownPublicMentionInput(identity)),
+		Uploads: func(app core.App, _, uploadID string) (string, error) {
+			content, err := resolveNotionCompletedFileUpload(app, identity, uploadID)
+			return content.FileID, err
+		},
+		Allows: func(app core.App, page pageAuthorization) bool {
+			return notionOAuthIdentityAllowsPage(app, identity, page)
+		},
+		Authorize: authorizeNotionPageMutation(identity, pageID), CreatesPage: true,
+		Next: func(string) (string, bool, error) { return markdown, false, nil },
+	}
 }
 
 // notionPageCreateEmptyCode is a new page's text updates without the empty

@@ -75,7 +75,7 @@ import { readOverMadeHere, rowPageWhileNotYetMade } from "@/lib/rowMadeHere";
 import { sendRowValues } from "@/lib/rowValuesKept";
 import { HANDED_PAGE_READ_AFTER_MS, rowPageHandedOver } from "@/lib/rowPageHandoff";
 import { useReadAgainWhenAnswered } from "@/lib/unansweredRead";
-import { heldTypedWrites } from "@/lib/typedWrites";
+import { holdTypedRowValue } from "@/lib/rowValuesTyped";
 import { RowPageUnavailable } from "./RowPageUnavailable"; import { RowPageReading } from "./RowPageReading";
 import { PageMoveKey, RowPeekAddTo } from "./RowPeekAddTo";
 import type { MovePopoverAnchor } from "../movePopoverPlacement";
@@ -230,7 +230,7 @@ export function StandaloneRowPage({
   // A value shows as soon as it is set and its write follows the ones before it in the outbox's turn;
   // the row is read again once none is on its way, so a read between two writes doesn't put an older
   // value back under the next edit.
-  const writes = useRef({ pending: 0 }), held = useMemo(heldTypedWrites, []);
+  const writes = useRef({ pending: 0 });
   const latestSnapshot = useRef(snapshot);
   latestSnapshot.current = snapshot;
   // Each value saved is a step of the page's ⌘Z, as from its database's table.
@@ -238,7 +238,7 @@ export function StandaloneRowPage({
     session, rowId, workspaceId: snapshot?.workspaceId, shown: () => isCurrent() ? latestSnapshot.current : null,
     changedSince: () => notify(t("databaseView:status.undoChanged")),
   });
-  const writeRowTitleAsRead = useRef<((property: { id: string; type: string }, value: string, spans: TextSpan[] | undefined, read: TitleValue) => Promise<unknown>) | null>(null);
+  const writeRowTitleAsRead = useRef<((property: { id: string; type: string }, value: string, spans: TextSpan[] | undefined, read: TitleValue | null) => Promise<unknown>) | null>(null);
   // Its values or what the person may do there changed elsewhere: the row is read again (useRowPageReadAgain).
   useRowPageReadAgain(rowId, () => void load(), () => writes.current.pending > 0);
   const buttonRuns = useRef(new Map<string, string>());
@@ -290,13 +290,13 @@ export function StandaloneRowPage({
   const propertyCellEnvironment = useMemo<PropertyCellEnvironment | undefined>(() => {
     if (!snapshot || !propertyValueContext) return undefined;
     const newOptions = new Map<string, DatabaseRowPageNewOption[]>();
-    // A value is written as set, or as a step of ⌘Z takes it back or makes it again; given the value read (a title's,
-    // rowTitleSave.ts), only over that, and a refusal for another saved since is passed back. A refused write takes its step out
-    // again, saying a lock's refusal as the lock's; one typed goes once the typing ends (lib/typedWrites.ts). It waits in the
-    // outbox behind the row's making and the page's other changes, read again once it went (rowValuesKept.ts).
+    // A value is written as set, or as a step of ⌘Z takes it back or makes it again; given the value it was typed on, over that,
+    // merged with another saved since; it waits in the outbox behind the row's making and the page's other changes, read again once
+    // it went (rowValuesKept.ts). A refused write takes its step out, a lock's said as such; one typed goes as rowValuesTyped.ts says.
     const send = (propertyId: string, written: DatabaseRowPageValue, options?: DatabaseRowPageNewOption[], read?: DatabaseRowPageValue, withdraw?: () => void, typed = false): Promise<boolean> => {
       setSnapshot((current) => current?.row.id === snapshot.row.id ? { ...current, row: { ...current.row, values: { ...current.row.values, [propertyId]: written } } } : current);
-      if (typed) return held.hold(propertyId, () => send(propertyId, written, options, read)).then((saved) => { if (!saved) withdraw?.(); return saved; });
+      if (typed) return holdTypedRowValue({ rowId: snapshot.row.id, propertyId, value: written, hostPageId: snapshot.row.containerPageId, before: latestSnapshot.current?.row.values[propertyId] },
+        (base) => send(propertyId, written, options, read ?? base ?? undefined)).then((saved) => { if (!saved) withdraw?.(); return saved; });
       const queue = writes.current;
       queue.pending += 1;
       const sent = sendRowValues(session, snapshot.row.id, {
@@ -341,7 +341,7 @@ export function StandaloneRowPage({
       });
       return send(propertyId, written, options, read, withdraw, typed).then(() => undefined);
     };
-    writeRowTitleAsRead.current = (property, value, spans, read) => save(property.id, property.type, value, spans, { type: property.type, value: read.title });
+    writeRowTitleAsRead.current = (property, value, spans, read) => save(property.id, property.type, value, spans, read ? { type: property.type, value: read.title, ...(read.spans?.length ? { spans: read.spans.map((span) => ({ ...span })) } : {}) } : undefined);
     return {
       snapshot: {
         fileDropBounds: FILE_DROP_BOUNDS,
@@ -458,7 +458,7 @@ export function StandaloneRowPage({
         getCurrentFiles: (_rowId, propertyId) => normalizeFileAttachments(snapshot.row.values[propertyId]?.value),
       },
     };
-  }, [held, isCurrent, load, notify, organizationId, product, properties, propertyValueContext, recordValueStep, relationRows, session, snapshot, t]);
+  }, [isCurrent, load, notify, organizationId, product, properties, propertyValueContext, recordValueStep, relationRows, session, snapshot, t]);
 
   // Who may change the database's properties does so here as from its view,
   // through the page that holds the database (Notion's list is the same
@@ -632,8 +632,8 @@ export function StandaloneRowPage({
         onRichTextChange={editable && propertyCellEnvironment ? (property, value, spans, read) => {
           const cellProperty = propertyCellEnvironment.snapshot.propertiesByDataSourceId[snapshot.row.dataSourceId]
             ?.find((candidate) => candidate.id === property.id);
-          // A title typed on the one the server held is written only over that (rowTitleSave.ts).
-          if (cellProperty && read) return writeRowTitleAsRead.current?.(cellProperty, value, spans, read);
+          // A title goes over the one it was typed on, as it is typed (rowValuesKept.ts).
+          if (cellProperty && (read || cellProperty.type === "title")) return writeRowTitleAsRead.current?.(cellProperty, value, spans, read ?? null);
           if (cellProperty) void propertyCellEnvironment.operations.setTextValue?.(snapshot.row.id, cellProperty, value, propertyCellEnvironment.context, spans);
         } : undefined}
         propertyCellEnvironment={editable ? propertyCellEnvironment : undefined}

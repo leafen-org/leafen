@@ -9,6 +9,8 @@ import { readMyTaskViews, saveMyTaskViews } from "@/databaseToolbarConfigApi";
 import { makeMyTask } from "@/lib/myTaskMadeHere";
 import { afterPageMade } from "@/lib/pagesNotYetMade";
 import { sendRowValues, sendTaskStatus } from "@/lib/rowValuesKept";
+import { holdTypedRowValue } from "@/lib/rowValuesTyped";
+import type { DatabaseRowPageValue } from "@/databaseRowPageWire.generated";
 import { DatabaseLockContext, DatabaseStructureLockContext, type DatabaseLockControls } from "../database/databaseStructureLock";
 import type { DatabaseMyTask, DatabaseMyTaskSource } from "@/databaseToolbarConfigWire.generated";
 import { sendRowTrash } from "@/lib/rowTrashKept";
@@ -26,73 +28,9 @@ import { useTaskEditsShownAtOnce } from "./useTaskEditsShownAtOnce";
 import { useMyTasksUndo, type MyTasksStep } from "./useMyTasksUndo";
 import { fitMyTaskViews, orderAsList, orderKept, ownOrderKept, taskIdsNewestFirst, withOrder, withOwnRowOrder, type MyTaskViewOrder } from "./myTasksViewOrder";
 import { myTasksDropGroupOf, type MyTasksPlacing } from "./myTasksDropGroup";
+import { ASSIGNEE, DUE, GROUP_COLORS, GROUPS, groupOf, groupOfOption, MY_TASKS_PATH, MY_TASKS_TAB_ICON, nameOfOption, SOURCE, STATUS, statusChanges,
+  statusOptionOf, statusWrite, taskRow, TITLE, withAssigneeAsMe, withTabIcon, type Group } from "./myTaskRows";
 import styles from "./MyTasksPage.module.css";
-
-const TITLE = "my-tasks-title", STATUS = "my-tasks-status", ASSIGNEE = "my-tasks-assignee", DUE = "my-tasks-due", SOURCE = "my-tasks-source";
-const GROUPS = ["todo", "inProgress", "complete"] as const;
-const MY_TASKS_TAB_ICON = "checkmark-square:lightgray", MY_TASKS_PATH = "/my-tasks";
-const GROUP_COLORS = { todo: "default", inProgress: "blue", complete: "green" } as const;
-
-type Group = (typeof GROUPS)[number];
-const groupOf = (task: DatabaseMyTask): Group =>
-  (GROUPS as readonly string[]).includes(task.statusGroup) ? task.statusGroup as Group : task.done ? "complete" : "todo";
-
-// An option's id is never a group's, so that a filter on "todo" reads the whole group.
-const statusOptionOf = (task: DatabaseMyTask) => `${groupOf(task)}|${task.statusName}`;
-const groupOfOption = (option: string) => option.split("|")[0];
-const nameOfOption = (option: string) => option.slice(option.indexOf("|") + 1);
-
-/**
- * Whether a status written over the one a task shows changes it: a named
- * option — chosen, a card moved to its column, or the one a task had, put
- * back by ⌘Z — when it is another; a group's own when it is another group.
- */
-const statusChanges = (written: string, showing: string) =>
-  nameOfOption(written) ? written !== showing : groupOfOption(written) !== groupOfOption(showing);
-
-/** What sets a task's status to an option of this page's: its group, and its name — the group's first option for a group's own. */
-const statusWrite = (option: string, requestId: string) => {
-  const group = groupOfOption(option), statusName = nameOfOption(option);
-  return { requestId, done: group === "complete", group, ...(statusName ? { statusName } : {}) };
-};
-
-/**
- * A task as the view draws it — one read, or one made here as the server
- * will read it back (myTaskMadeHere.ts) — with what this device changed and
- * hasn't read back yet over it (`shown`).
- */
-const taskRow = (task: DatabaseMyTask, sourceId: string, position: string, shown?: GraphRow["values"]): GraphRow => ({
-  id: task.rowId, dataSourceId: sourceId, subitemParentId: null, position,
-  ...(task.icon && task.iconType !== "none" ? { icon: task.icon, iconType: task.iconType } : {}),
-  // A task in a database the reader may only view takes no check or edit there.
-  ...(task.canEdit ? {} : { readOnlyForMe: true }),
-  values: {
-    [TITLE]: { type: "title", value: task.title },
-    [STATUS]: { type: "status", value: statusOptionOf(task) },
-    [ASSIGNEE]: { type: "person", value: task.assignees ?? [] },
-    [DUE]: { type: "date", value: task.dueStart ? { start: task.dueStart, ...(task.dueEnd ? { end: task.dueEnd } : {}) } : null },
-    [SOURCE]: { type: "rich_text", value: task.databaseTitle },
-    ...shown,
-  },
-});
-
-/**
- * The person's views name them as "나", whoever reads them, as Notion's
- * "담당자: 값을 포함하는 데이터 나" (seen 2026-11-08); a view kept with their own
- * id as its assignee is the same person here, so it reads as "나" too.
- */
-function withAssigneeAsMe(view: GraphView, me: string): GraphView {
-  const filters = view.config.quickFilters;
-  if (!Array.isArray(filters)) return view;
-  const isMe = (filter: { propertyId?: unknown; value?: unknown }) => filter.propertyId === ASSIGNEE
-    && Array.isArray(filter.value) && filter.value.length === 1 && filter.value[0] === me;
-  if (!filters.some(isMe)) return view;
-  return { ...view, config: { ...view.config, quickFilters: filters.map((filter) => isMe(filter) ? { ...filter, value: [currentUserFilterValue()] } : filter) } };
-}
-
-/** Its tab's check is Notion's light grey (seen 2026-11-15: #7f7f7f on dark), a view kept with the earlier grey too. */
-const withTabIcon = (view: GraphView): GraphView =>
-  view.config.icon === "checkmark-square:gray" ? { ...view, config: { ...view.config, icon: MY_TASKS_TAB_ICON } } : view;
 
 /** A task's source, as Notion's row shows it (seen 2026-11-08): its database's icon and name, underlined as a link. */
 function MyTaskSourceValue({ task }: { task: DatabaseMyTask }) {
@@ -313,7 +251,8 @@ export function MyTasksDatabaseView({ session, workspaceId, tasks, sources, newR
     return first ? `${group}|${first.name}` : option;
   }, [sources]);
   // `alongside`: what the same press changed besides the task — its place in the view — taken back and made again with it.
-  const commitRow = useCallback((row: GraphRow, stepped = false, alongside?: MyTasksStep) => {
+  // `typed`: its name typed into its cell, which goes as a database's typed values do (rowValuesTyped.ts).
+  const commitRow = useCallback((row: GraphRow, stepped = false, alongside?: MyTasksStep, typed = false) => {
     const read = latestTasks.current.get(row.id);
     if (!read) return;
     const showing = latestShown.current.get(row.id)?.values ?? {};
@@ -354,7 +293,15 @@ export function MyTasksDatabaseView({ session, workspaceId, tasks, sources, newR
         shown[DUE] = { type: "date", value: due?.start ? due : null };
       }
     }
-    if (Object.keys(values).length) {
+    const titleTyped = typed && holder && task.titlePropertyId && Object.keys(values).length === 1 && values[task.titlePropertyId] ? task.titlePropertyId : "";
+    if (titleTyped) {
+      // Kept on the device at each key and sent once, as the typing pauses or ends, over the name it was typed on: one
+      // save, which the task's database's automations hear once (each key was one, 2026-11-27).
+      const value = values[titleTyped] as DatabaseRowPageValue, write = (base: DatabaseRowPageValue | null) => sendRowValues(session, task.rowId,
+        { values, ...(base ? { expected: { [titleTyped]: base } } : {}) }, holder).then(() => true);
+      steps.push(() => holdTypedRowValue({ rowId: task.rowId, propertyId: titleTyped, value, hostPageId: holder!, before: { type: "title", value: task.title } },
+        write).then((saved) => { if (!saved) throw new Error("The task's name wasn't saved."); }));
+    } else if (Object.keys(values).length) {
       const mutationId = newId();
       steps.push(() => sendRowValues(session, task.rowId, { mutationId, values }, holder));
     }
@@ -401,7 +348,7 @@ export function MyTasksDatabaseView({ session, workspaceId, tasks, sources, newR
     },
     publishCreatedRow: (row: GraphRow) => row,
     // Shown at once and sent behind (useTaskEditsShownAtOnce).
-    commitRows: async (next: readonly GraphRow[]) => { next.forEach((row) => commitRow(row)); },
+    commitRows: async (next: readonly GraphRow[], _isCurrent: () => boolean, typed?: boolean) => { next.forEach((row) => commitRow(row, false, undefined, typed)); },
     // A list's, table's or gallery's tasks moved in the view's own order, a step of ⌘Z; one dropped in
     // another status's group takes its status in that step, as a board's card (commitRow).
     moveRows: async (_rows: readonly GraphRow[], view: GraphView | undefined, rowIds: readonly string[], _isCurrent: () => boolean,

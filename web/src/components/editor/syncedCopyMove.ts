@@ -140,8 +140,9 @@ function crossingPlan(adapter: NativeEditorGraphAdapter, direction: "up" | "down
     };
   }
   const to = syncedOriginalShown(adapter.pageId, crossing.copy.id);
-  const original = syncedBlockSource(crossing.copy, adapter.pageId).blockId;
-  if (!to?.graph.blocks.some((block) => block.id === original)) return null;
+  // Into a copy of a page's body, blocks go to the page's top level.
+  const source = syncedBlockSource(crossing.copy, adapter.pageId), original = source.page ? null : source.blockId;
+  if (!to || original !== null && !to.graph.blocks.some((block) => block.id === original)) return null;
   return {
     to, spot: { parentId: original, afterId: direction === "up" ? editorBlockChildren(to.graph, original).at(-1)?.id ?? null : null },
     stores: { from: copyStore(to, crossing.copy.id), to: to.store },

@@ -18,7 +18,7 @@ export function WorkspaceGroupNameMarks({ group, phone = false }: { group: Works
   return (
     <>
       {group.readerMember ? (
-        <span className={`${tag} ${styles.readerMember}`} data-group-reader-member>{t("groupReaderMemberTag")}</span>
+        <span className={`${tag} ${tags.blue}`} data-group-reader-member>{t("groupReaderMemberTag")}</span>
       ) : null}
       {group.hasRestrictedMember ? (
         <HoverTip label={t("groupRestrictedMemberTip")} placement="top" wide className={`${tag} ${tags.yellow}`}>

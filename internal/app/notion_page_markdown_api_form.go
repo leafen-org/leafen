@@ -15,8 +15,8 @@ import (
 // block's line, <details> for a toggle, **bold** and <span underline="true">,
 // <mention-page> and <mention-date>, <table_of_contents/>, <synced_block>,
 // a table always as tags, a file's address in src and its closing tag always
-// written. A web bookmark, a breadcrumb and a link to a page are unknown there,
-// and an equation's text sits between $` and `$. Each span's marks stand
+// written. A web bookmark and a breadcrumb are unknown there, a link to a page
+// its <link-to-page>, an equation's text between $` and `$. Each span's marks stand
 // around its text with its edge spaces inside them, as Notion's do. A
 // paragraph that would start a heading, a list or a divider is escaped, and
 // so is the whitespace a block's text starts with (notionMarkdownVersion1Lead),
@@ -174,18 +174,18 @@ func (w *notionMarkdownWriter) apiBlock(block workspaceExportMarkdownBlock, dept
 			return notionMarkdownVersion1TagClosed(w.apiUnder(block, depth, line), notionPageMarkdownPlainText(block))
 		}
 	}
-	// A block written as an <unknown/> line isn't among the IDs the read
-	// couldn't load, as in Notion (seen 2026-11-10).
-	id := w.publicBlockID(block.ID)
+	// A link to a page or a database, or a button, is its own line (ownLine);
+	// a block written as an <unknown/> line isn't among the IDs the read
+	// couldn't load, as in Notion, a link to a page its "alias" there too
+	// (seen 2026-11-10).
+	if line, linked := w.ownLine(block); linked {
+		return w.apiUnder(block, depth, line)
+	}
+	id, kind := w.publicBlockID(block.ID), notionMarkdownUnknownAlt(block.Type)
 	if id == "" {
 		id = block.ID
 	}
 	w.unknownLine(block, id)
-	// A link to a page is its "alias" there too (seen 2026-11-10).
-	kind := block.Type
-	if kind == graphBlockTypeLinkToPage {
-		kind = "alias"
-	}
 	line := fmt.Sprintf(`<unknown url="%s" alt="%s"/>`, w.unknownAddress(id), kind)
 	return w.apiUnder(block, depth, line)
 }
@@ -359,14 +359,14 @@ func (w *notionMarkdownWriter) apiEmbed(block workspaceExportMarkdownBlock, inde
 }
 
 func (w *notionMarkdownWriter) apiSyncedBlock(block workspaceExportMarkdownBlock, depth int) []string {
-	indent := strings.Repeat("\t", depth)
-	address := notionMarkdownAPIAttributeEscaped.Replace
+	indent, address := strings.Repeat("\t", depth), notionMarkdownAPIAttributeEscaped.Replace
 	w.rendered = append(w.rendered, block.ID)
 	if original := strings.TrimSpace(mapString(block.Content, "syncedBlockId")); original != "" {
-		lines := []string{indent + `<synced_block_reference url="` + address(w.syncedAddress(syncedBlockNamed(original, block.ID))) + `">`}
-		for _, line := range w.syncedOriginal(original) {
-			lines = append(lines, indent+"\t"+line)
+		if page := syncedCopyPage(block.Content); page != "" {
+			return w.syncedPageReference(page, block.ID, indent, true) // notion_page_markdown_synced_page.go
 		}
+		lines := []string{indent + `<synced_block_reference url="` + address(w.syncedAddress(syncedBlockNamed(original, block.ID))) + `">`}
+		lines = append(lines, notionMarkdownEachIndented(indent+"\t", w.syncedOriginal(original))...)
 		return append(lines, indent+"</synced_block_reference>")
 	}
 	lines := []string{indent + `<synced_block url="` + address(w.syncedAddress(block.ID)) + `">`}

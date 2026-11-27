@@ -56,7 +56,7 @@ import { PageSiteBand, PageTopBands } from "./PageTopBands";
 import { LandingPageBanner } from "./LandingPageBanner";
 import { useAppFileEditAccess } from "@/components/apps/appFileOpening";
 import { TopBar } from "./TopBar";
-import { panelOpeningBeside, usePageSidePanel } from "./usePageSidePanel";
+import { panelOpeningBeside, updatesBesideShown, usePageSidePanel } from "./usePageSidePanel";
 import { PageUpdatesSidePanel } from "./PageUpdatesSidePanel";
 import { PageBodyLead, readPageBodyLead } from "./pageBodyLead";
 import { PageCustomizationContext } from "./pageCustomizationContext";
@@ -191,7 +191,7 @@ export function PageView({
   // An app opened beside the page, in the discussions' place.
   const [appPanel, setAppPanel] = useState<string | null>(null);
   // "업데이트와 애널리틱스" beside the page, as Notion's (seen 2026-11-01).
-  const [updatesPanel, setUpdatesPanel] = useState(false);
+  const [updatesAsked, setUpdatesPanel] = useState(false), updatesPanel = updatesBesideShown(updatesAsked, !viewOnly);
   const docRef = useRef<HTMLDivElement>(null);
   usePageColumn(docRef);
   const bodyLead = useCallback(() => readPageBodyLead(docRef.current), []);

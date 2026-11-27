@@ -62,11 +62,9 @@ type userKeyAuthority struct {
 	OpenedPageID   string
 	OpenedBlockIDs []string
 	DelegationHash string
-	// The tools its token's page turned off, and whether that page held it
-	// to chosen pages (mcp_token_tools.go).
-	DisabledTools []string
-	PagesNarrowed bool
-	PageIDs       []string
+	// What its page narrowed it to: an MCP token's tools and pages, nothing
+	// for an agent connection (connection_person_rights.go).
+	connectionNarrowing
 	// MCP is the agent's call through Leafen's MCP, for the person's approval
 	// it may wait for (mcp_action_approvals.go); nil for a request sent to
 	// the API itself.
@@ -424,8 +422,7 @@ func findUserKeyBy(app core.App, column, value, resource string) (userKeyAuthori
 	return userKeyAuthority{
 		ConnectionID: stored.ID, Name: stored.Name, OwnerID: acting, Scope: scope,
 		WorkspaceIDs: approvedIDs, AllWorkspaces: stored.All == 1, Agent: stored.Agent, Created: stored.Created, ExpiresAt: stored.ExpiresAt,
-		LastUsedAt: stored.LastUsed, DisabledTools: parseMCPNameList(stored.Disabled),
-		PagesNarrowed: stored.AllPages == 0, PageIDs: parseMCPNameList(stored.Pages),
+		LastUsedAt: stored.LastUsed, connectionNarrowing: connectionNarrowingOf(stored.Agent, stored.Disabled, stored.Pages, stored.AllPages),
 	}, true, nil
 }
 

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// What a table's or board's group, or a board's sub-group, says beyond its
+// What a view's group, or a board's sub-group, says beyond its
 // property and sort, as Notion's views API takes it and reads it back (seen
 // 2026-11-12 on boards and tables made with and without each):
 //   - hide_empty_groups: a group made through the API shows its empty
@@ -37,8 +37,8 @@ var notionViewGroupUnits = map[string][]string{
 	"date": notionViewDateGroupings, "created_time": notionViewDateGroupings, "last_edited_time": notionViewDateGroupings,
 }
 
-// notionViewGroupShapeRefusal is Notion's refusal of a table's or board's
-// group (path group_by or sub_group_by, fields as given) by its type, in its
+// notionViewGroupShapeRefusal is Notion's refusal of a view's group (path
+// group_by or sub_group_by, fields as given) by its type, in its
 // words; "" for one it takes.
 func notionViewGroupShapeRefusal(path string, fields map[string]json.RawMessage) string {
 	at := "body.configuration." + path + "."

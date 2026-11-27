@@ -323,7 +323,7 @@ func (document *workspaceExportDocument) add(item workspaceExportInventoryItem) 
 			document.RowBlocks[rowID] = append(document.RowBlocks[rowID], block)
 			return
 		}
-		if syncedPage := mapString(block.Content, "syncedPageId"); syncedPage != "" && syncedPage != block.PageID {
+		if syncedPage := mapString(block.Content, "syncedPageId"); syncedPage != "" && syncedPage != block.PageID && syncedCopyPage(block.Content) == "" {
 			document.SyncedSources[syncedPage] = true
 		}
 		document.Blocks[block.PageID] = append(document.Blocks[block.PageID], block)

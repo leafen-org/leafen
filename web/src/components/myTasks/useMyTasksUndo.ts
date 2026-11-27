@@ -7,8 +7,8 @@ export type MyTasksStep = SurfaceStep;
 
 /**
  * "내 작업"'s own ⌘Z and ⌘⇧Z: a task checked off, renamed or given a date
- * there comes back with ⌘Z, as Notion's "내 작업" (seen 2026-11-09 by the
- * OP-03-c audit and again 2026-11-15 in Chrome at 1440: a task checked off
+ * there comes back with ⌘Z, as Notion's "내 작업" (seen 2026-11-09 by an
+ * audit and again 2026-11-15 in Chrome at 1440: a task checked off
  * left the list and ⌘Z put it back in its place; a name changed with ✎ went
  * back). It is a screen with no editor of its own (useSurfaceUndo).
  */

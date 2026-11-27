@@ -20,6 +20,20 @@ func projectNotionSyncedBlockContent(
 	if sourceID == syncedBlockSourceless {
 		return map[string]any{"synced_from": map[string]any{"type": "block_id"}}
 	}
+	// A copy of a page's body names the page, as Notion's API reads one
+	// (seen 2026-11-27), for a reader who may open it.
+	if page := syncedCopyPage(content); page != "" {
+		authorized, err := authorizePage(app, authorization.Identity.PrincipalID, page, permissionWorkspaceRead)
+		if err != nil || authorized.Workspace.WorkspaceID != authorization.Page.Workspace.WorkspaceID ||
+			!notionOAuthIdentityAllowsPage(app, authorization.Identity, authorized) {
+			return content
+		}
+		publicID, err := notionPagePublicID(app, page)
+		if err != nil {
+			return content
+		}
+		return map[string]any{"synced_from": map[string]any{"type": "block_id", "block_id": publicID}}
+	}
 	source, found, err := loadStoredNotionBlock(app, sourceID)
 	if err != nil {
 		return content

@@ -18,7 +18,7 @@ import (
 // copy.go), as Notion's API does.
 //
 // But a page the database is on, or one above it, is refused, and so is the
-// database itself (2026-11-24, Tulip: an agent making a page in a ledger
+// database itself (2026-11-24, in daily use: an agent making a page in a ledger
 // "from its template" named the page holding the ledger — the template's
 // address then, without its ?tp= — and the page took that page's body, a copy of
 // the whole ledger with its 106 rows and its template, under itself). Notion's

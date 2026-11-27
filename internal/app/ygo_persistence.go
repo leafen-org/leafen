@@ -331,7 +331,8 @@ func (p *pocketBaseYgoPersistence) mutateRoomDocumentContext(
 	mutate func(context.Context, core.App, *crdt.Doc) (bool, error),
 	publish func(context.Context, core.App, []byte, []byte) error,
 ) error {
-	ctx, cancel, startedBeforeShutdown, err := p.operationContext(parent, room)
+	// Asked for, the change is made whole (madeWhole).
+	ctx, cancel, startedBeforeShutdown, err := p.operationContext(madeWhole(parent), room)
 	if err != nil {
 		return err
 	}

@@ -58,7 +58,8 @@ export function ViewBlockNameEditor({ editing, at, blockId, workspaceId, uploadP
   if (editing === "rename") {
     return <PageRenamePopover at={at} iconFallback="database" title={title} titleSpans={titleSpans} untitled={i18next.t("databaseView:untitled")}
       page={{ id: blockId, workspaceId, icon, iconType } as unknown as Page}
-      onTitleChange={onTitleChange}
+      // Its name goes with the page's typing, kept on the device as each key writes it (nativeContentGraphWriteCoordinator.ts).
+      asTyped onTitleChange={onTitleChange}
       onPresentationChange={(change) => { if (change.iconType) onIconChange(change.icon ?? "", change.iconType as IconType); }}
       onClose={onClose} />;
   }

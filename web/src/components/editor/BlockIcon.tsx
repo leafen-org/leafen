@@ -1,6 +1,6 @@
 import type { GraphBlockType, GraphViewType } from "@/contentGraph";
 import {
-  ArrowBendUpRightIcon, AudioIcon, BarChartIcon, PresentIcon, BoardIcon, BookmarkBlockIcon, BreadcrumbIcon, BulletedListBlockIcon, ButtonBlockIcon, CalendarViewIcon, CalloutBlockIcon, ChartViewIcon, ChecklistIcon, ClockIcon, CodeIcon, ColumnsSplitIcon, Copy, CsvFileIcon, DashboardIcon, DividerIcon, DonutChartIcon, FeedIcon, FileText, FormBlockIcon, GalleryIcon, HeadingFourIcon, HeadingOneIcon, HeadingThreeIcon, HeadingTwoIcon, HorizontalBarChartIcon, iconPixels, ImageBlockIcon, ImportIcon, InlineDatabaseIcon, type LeafenIconSize, LineChartIcon, LinkCaptureIcon, LinkedViewIcon, LinkIcon, ListIcon, MapIcon, MarkdownTextIcon, MathBlockIcon, MermaidIcon, NumberChartIcon, NumberedListIcon, OpenInNew, PageLinkIcon, PaperclipIcon, PdfRowIcon, PersonCircleIcon, QuoteIcon, ServerAppsIcon, ServiceIcon, SmileIcon, SquareRootIcon, SyncedBlockIcon, TableIcon, TableOfContentsIcon, TabsIcon, TextIcon, TimelineIcon, ToggleHeadingIcon, ToggleListIcon, Trash, VideoBlockIcon, WordDocumentIcon, ZipFileIcon,
+  ArrowBendUpRightIcon, AudioBlockIcon, BarChartIcon, BookmarkBlockIcon, BreadcrumbIcon, BulletedListBlockIcon, ButtonBlockIcon, CalloutBlockIcon, ChecklistIcon, ClockIcon, CodeIcon, ColumnsSplitIcon, Copy, CsvFileIcon, DataSourceLinkIcon, DividerBlockIcon, DonutChartIcon, FileText, HeadingFourIcon, HeadingOneIcon, HeadingThreeIcon, HeadingTwoIcon, HorizontalBarChartIcon, iconPixels, ImageBlockIcon, ImportIcon, InlineDatabaseIcon, type LeafenIconSize, LineChartIcon, LinkCaptureIcon, LinkIcon, MarkdownTextIcon, MathBlockIcon, MermaidIcon, NumberChartIcon, NumberedListIcon, OpenInNew, PageLinkIcon, PaperclipBlockIcon, PdfRowIcon, PersonCircleIcon, PresentIcon, QuoteIcon, ServerAppsIcon, ServiceIcon, SmileIcon, SquareRootIcon, SyncedBlockIcon, TableIcon, TableOfContentsIcon, TabsIcon, TextIcon, ToggleHeadingIcon, ToggleListIcon, Trash, VideoBlockIcon, ViewTypeMark, WordDocumentIcon, ZipFileIcon,
 } from "@/icons/leafen";
 import type { InlineSlashKind, SlashAction, SlashGroup } from "./blockDefinitions";
 import { embedService } from "./embedServices";
@@ -72,7 +72,7 @@ export function BlockIcon({ def, type, glyph, size = "regular" }: Props) {
 
   // The inline items take Notion's icons: a person, a page, a clock, a face and √x.
   if (def?.inline === "person") return <PersonCircleIcon size={size} aria-hidden="true" />;
-  if (def?.inline === "page") return <FileText size={size} aria-hidden="true" />;
+  if (def?.inline === "page") return <FileText artboard size={size} aria-hidden="true" />;
   if (def?.inline === "date") return <ClockIcon size={size} aria-hidden="true" />;
   if (def?.inline === "emoji") return <SmileIcon size={size} aria-hidden="true" />;
   if (def?.inline === "equation") return <SquareRootIcon size={size} aria-hidden="true" />;
@@ -106,28 +106,20 @@ export function BlockIcon({ def, type, glyph, size = "regular" }: Props) {
   }
 
   if (def?.group === "Database" || blockType === "child_database" || blockType === "inline_database") {
-    if (def?.databaseView === "table") return <TableIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "board") return <BoardIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "list") return <ListIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "timeline") return <TimelineIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "calendar") return <CalendarViewIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "gallery") return <GalleryIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "feed") return <FeedIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "dashboard") return <DashboardIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "map") return <MapIcon size={size} aria-hidden="true" />;
     if (def?.id === "chart_bar") return <BarChartIcon size={size} aria-hidden="true" />;
     if (def?.id === "chart_horizontal_bar") return <HorizontalBarChartIcon size={size} aria-hidden="true" />;
     if (def?.id === "chart_line") return <LineChartIcon size={size} aria-hidden="true" />;
     if (def?.id === "chart_donut") return <DonutChartIcon size={size} aria-hidden="true" />;
     if (def?.id === "chart_number") return <NumberChartIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "chart") return <ChartViewIcon size={size} aria-hidden="true" />;
-    if (def?.databaseView === "form") return <FormBlockIcon size={size} aria-hidden="true" />;
-    if (def?.id === "inline_database_linked") return <LinkedViewIcon size={size} aria-hidden="true" />;
+    // A view's block takes its layout's mark where every view screen does, as the "/" menu draws it.
+    if (def?.databaseView) return <ViewTypeMark type={def.databaseView} blockMenu size={size} />;
+    if (def?.id === "inline_database_linked") return <DataSourceLinkIcon size={size} aria-hidden="true" />;
     if (blockType === "inline_database") return <InlineDatabaseIcon size={size} aria-hidden="true" />;
-    return <TableIcon size={size} aria-hidden="true" />;
+    return <ViewTypeMark type="table" size={size} />;
   }
 
-  if (blockType === "child_page") return <FileText size={size} aria-hidden="true" />;
+  // A page takes the page glyph on the menu's 20-unit box, not one filling the row (blockMenuMarks.tsx).
+  if (blockType === "child_page") return <FileText artboard size={size} aria-hidden="true" />;
   if (blockType === "link_to_page") return <PageLinkIcon size={size} aria-hidden="true" />;
   if (blockType === "paragraph") return <TextIcon size={size} aria-hidden="true" />;
   if (blockType === "heading_1") return <HeadingOneIcon size={size} aria-hidden="true" />;
@@ -144,7 +136,7 @@ export function BlockIcon({ def, type, glyph, size = "regular" }: Props) {
   if (blockType === "toggle") return <ToggleListIcon size={size} aria-hidden="true" />;
   if (blockType === "quote") return <QuoteIcon size={size} aria-hidden="true" />;
   if (blockType === "callout") return <CalloutBlockIcon size={size} aria-hidden="true" />;
-  if (blockType === "divider") return <DividerIcon size={size} aria-hidden="true" />;
+  if (blockType === "divider") return <DividerBlockIcon size={size} aria-hidden="true" />;
   if (blockType === "code" && def?.id === "code_mermaid") return <MermaidIcon size={size} aria-hidden="true" />;
   if (blockType === "code") return <CodeIcon size={size} aria-hidden="true" />;
   if (blockType === "equation") return <MathBlockIcon size={size} aria-hidden="true" />;
@@ -160,7 +152,7 @@ export function BlockIcon({ def, type, glyph, size = "regular" }: Props) {
   if (blockType === "table" || blockType === "table_row") return <TableIcon size={size} aria-hidden="true" />;
   if (blockType === "image") return <ImageBlockIcon size={size} aria-hidden="true" />;
   if (blockType === "video") return <VideoBlockIcon size={size} aria-hidden="true" />;
-  if (blockType === "audio") return <AudioIcon size={size} aria-hidden="true" />;
+  if (blockType === "audio") return <AudioBlockIcon size={size} aria-hidden="true" />;
   if (blockType === "bookmark" || blockType === "link_preview") return <BookmarkBlockIcon size={size} aria-hidden="true" />;
   // An embed takes its service's mark, HTML the ↗ (no AI block mark), any other Notion's link in a capture frame.
   if (blockType === "embed") {
@@ -169,7 +161,7 @@ export function BlockIcon({ def, type, glyph, size = "regular" }: Props) {
     return def?.content?.service === "html" ? <OpenInNew size={size} aria-hidden="true" /> : <LinkCaptureIcon size={size} aria-hidden="true" />;
   }
   if (blockType === "pdf") return <PdfRowIcon size={size} aria-hidden="true" />;
-  if (blockType === "file") return <PaperclipIcon size={size} aria-hidden="true" />;
+  if (blockType === "file") return <PaperclipBlockIcon size={size} aria-hidden="true" />;
 
   return <>{fallback}</>;
 }

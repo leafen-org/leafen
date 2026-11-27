@@ -42,6 +42,22 @@ func (p *pocketBaseYgoPersistence) beginShutdown(ctx context.Context, stop serve
 	p.shutdownCancel()
 }
 
+// madeWhole is the context a change asked for is made under: its asker's
+// values — who makes it, through which connection, its write lane — without
+// its asker's end. A change whose request was read whole is the server's to
+// make though the connection goes before its answer: a browser killed as its
+// last words went in a request that outlives the page, a phone's app ended by
+// its system (2026-11-27: a row's title sent so, waiting for its page's
+// writer behind a larger change, was dropped 4 times in 4, on the content and
+// the row's value routes). Only the closing server stops it
+// (operationContext); a job stopped meanwhile stops between its changes.
+func madeWhole(ctx context.Context) context.Context {
+	if ctx == nil {
+		return nil
+	}
+	return context.WithoutCancel(ctx)
+}
+
 func linkedYgoOperationContext(parent, cancellation context.Context) (context.Context, func()) {
 	ctx, cancel := context.WithCancel(parent)
 	stop := context.AfterFunc(cancellation, cancel)

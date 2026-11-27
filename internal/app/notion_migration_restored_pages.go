@@ -11,7 +11,7 @@ import (
 // A page made from its parent's title's "@" that Notion restored from its
 // trash comes back with a sub-page block at its parent's body end, though
 // the title still mentions it (seen 2026-11-18 in two tabs of
-// 한지테스트페이지, through its trash window, the page's banner and its API),
+// a Notion test page, through its trash window, the page's banner and its API),
 // as Leafen's restore makes it (restoreMentionAnchoredPage). The first run
 // brings such a page with its block (notionImportFieldAnchor); a run again
 // that finds a page an earlier run hung on the title so listed in the body

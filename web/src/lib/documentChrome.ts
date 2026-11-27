@@ -236,7 +236,7 @@ function showIcon(href: string) {
 // keeps the window's name and icon until the screen that comes names
 // itself: tabs behind others that a new build reloaded read "Leafen" in the
 // tab strip for minutes while they started on a busy machine (2026-11-12,
-// OP-15: 25 tabs). Notion's tabs keep their names while a page loads.
+// 25 tabs). Notion's tabs keep their names while a page loads.
 const KEPT_CHROME_KEY = "leafen:window-chrome";
 let keptThroughReload = false;
 if (typeof window !== "undefined" && typeof document !== "undefined") {

@@ -27,22 +27,27 @@ const KEPT = "[data-live-announcer], [data-react-aria-top-layer]";
 // phone drawer, search and sheets leave the page as it is under a backdrop
 // (seen 2026-11-13). What inert did besides is done here: the focus leaves
 // the page as it is shut, and a focus sent there while it is shut goes back
-// to where it was.
+// to where it was. The one opened last decides alone, as it stands over the
+// others and shuts them in turn: a window opened over a phone's drawer is
+// open to the focus wherever it is drawn, in the layers' box or in the app's
+// frame as search and the settings are (2026-11-27, a Galaxy Fold's outer
+// screen: opened from the drawer or its inbox, their fields, shut as the page
+// beside the drawer, took no tap's focus and raised no keyboard).
 const shutters: Array<(node: Element) => boolean> = [];
 
-/** Whether a node is shut from the focus: inert, or behind an open modal window or drawer. */
+/** Whether a node is shut from the focus: inert, or behind the modal window or drawer open on top. */
 export function shutBehindModal(node: Element) {
-  return Boolean(node.closest("[inert]")) || shutters.some(shut => shut(node));
+  return Boolean(node.closest("[inert]")) || Boolean(shutters.at(-1)?.(node));
 }
 
-/** Keeps the focus out of what `shut` names while it lasts; returns what ends it. */
+/** Keeps the focus out of what `shut` names while it lasts and nothing opened over it shuts; returns what ends it. */
 export function keepFocusOut(shut: (node: Element) => boolean): () => void {
   shutters.push(shut);
   const active = document.activeElement;
   if (active instanceof HTMLElement && active !== document.body && shut(active)) active.blur();
   const onFocus = (event: FocusEvent) => {
     const target = event.target;
-    if (!(target instanceof HTMLElement) || !shut(target)) return;
+    if (shutters.at(-1) !== shut || !(target instanceof HTMLElement) || !shut(target)) return;
     const back = event.relatedTarget;
     if (back instanceof HTMLElement && back.isConnected && !shutBehindModal(back)) back.focus({ preventScroll: true });
     else target.blur();

@@ -195,6 +195,10 @@ export function WorkspaceAIConnections({
               <div className={styles.securityInstruction}>
                 <strong>{connection.clientName || connection.clientId}</strong>
                 <span>
+                  {/* Its kind before where it works: an agent connection does what its person may in all
+                      their workspaces, an MCP token is kept to its one workspace and what its page
+                      chooses (internal/app/connection_kind_ways.go). */}
+                  {connection.kind ? <><span data-connection-kind={connection.kind}>{t(`agents.connectionKind.${connection.kind}`)}</span> · </> : null}
                   {workspaceNames(connection)}
                 </span>
                 <span data-connection-key-scope>
@@ -228,10 +232,15 @@ export function WorkspaceAIConnections({
                     {t("agents.blockedByAdmin", { workspaces: blockedNames(connection) })}
                   </span>
                 ) : null}
-                <span data-connection-last-used>
-                  {connection.lastUsedAt
-                    ? t("agents.lastUsed", { date: displayDateTime(connection.lastUsedAt) })
-                    : t("agents.neverUsed")}
+                {/* When it was made, as Notion's connection list dates each, tells two of one name apart. */}
+                <span>
+                  <span data-connection-made>{t("agents.made", { date: displayDate(connection.createdAt) })}</span>
+                  {" · "}
+                  <span data-connection-last-used>
+                    {connection.lastUsedAt
+                      ? t("agents.lastUsed", { date: displayDateTime(connection.lastUsedAt) })
+                      : t("agents.neverUsed")}
+                  </span>
                 </span>
                 {rowNotice(connection.id) ? (
                   <div className={styles.errorText} role="alert" data-connection-error>{rowNotice(connection.id)}</div>

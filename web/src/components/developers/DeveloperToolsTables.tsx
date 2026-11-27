@@ -386,8 +386,11 @@ export function DeveloperMcpTokensTab({ session, workspace }: { session: Session
                 </span>
               </td>
               <td><span className={styles.person}><WorkspaceMark workspace={workspace} />{connection.workspaces.map((place) => place.name).join(", ") || workspace.name}</span></td>
-              {/* A key made by hand lists its own id as its client: an MCP token; an OAuth client has one of its own. */}
-              <td>{connection.clientId && connection.clientId !== connection.id ? t("developerTools.oauth") : t("developerTools.mcpTokenKind")}</td>
+              {/* Its kind as the list says it (internal/app/connection_kind_ways.go): an agent connection, made by
+                  a connection code, `leafen connect` or a chat app's connector, is no MCP token; an app is an
+                  OAuth client's. */}
+              <td data-mcp-connection-kind={connection.kind}>{connection.kind === "agent" ? t("agents.connectionKind.agent")
+                : connection.kind === "app" ? t("developerTools.oauth") : t("developerTools.mcpTokenKind")}</td>
               <td><Me session={session} /></td>
               <td>{date(connection.createdAt)}</td>
             </tr>

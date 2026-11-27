@@ -227,7 +227,7 @@ func mcpDatabaseLinkID(raw string) (string, bool) {
 // template; an older address of one, its database's page
 // with ?tp=, still reads as it (mcpReferencePart). It named the database's
 // page first, and an agent took that page for the template (2026-11-23,
-// Tulip: a ledger copied whole into a row). A full-page database's
+// in daily use: a ledger copied whole into a row). A full-page database's
 // page is its database, at the database's address (mcpDatabaseAddress).
 func mcpPageAddress(app core.App, authority mcpAuthority, pageID string) string {
 	if containerID := mcpFullPageDatabaseContainer(app, pageID); containerID != "" {
@@ -332,7 +332,7 @@ func mcpAncestorStepName(ancestor mcpFetchAncestor) string {
 // Each reads as Notion's search keeps it (seen 2026-11-22: "… / w2322 제목
 // 언급 ‣ 끝", mcpTitleAsIndexed), and an untitled one by what it is called
 // (mcp_untitled_names.go), where Notion's path leaves it out (seen
-// 2026-11-14: "한지테스트페이지 / 〈page〉" under an untitled page or database).
+// 2026-11-14: "〈test page〉 / 〈page〉" under an untitled page or database).
 func mcpAncestorPath(app core.App, ancestors []mcpFetchAncestor) *string {
 	titles := []string{}
 	for index := len(ancestors) - 1; index >= 0; index-- {

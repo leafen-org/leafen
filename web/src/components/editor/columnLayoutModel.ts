@@ -31,6 +31,12 @@ function storedWidth(column: GraphBlock) {
   return Number.isFinite(width) && width > 0 && width <= 100 ? width : null;
 }
 
+/** A column's ratio as Notion keeps it (width_ratio): its stored weight over 100; none where it weighs as the others. */
+export function columnRatio(column: GraphBlock): number | undefined {
+  const width = storedWidth(column);
+  return width === null ? undefined : width / 100;
+}
+
 /** Each column's weight in its row: its stored width, or 100. */
 export function columnWeights(columns: readonly GraphBlock[]) {
   return columns.map((column) => storedWidth(column) ?? 100);

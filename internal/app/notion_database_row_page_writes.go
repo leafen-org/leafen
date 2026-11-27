@@ -244,6 +244,11 @@ func createNotionDatabaseRowPage(
 						return err
 					}
 				}
+				// A body written after the row is checked as the row is made,
+				// its values, icon and cover passed (checkDeferred).
+				if err := creation.Content.checkDeferred(txApp, parent.Identity, rowID); err != nil {
+					return err
+				}
 				if len(creation.Content.Operations) > 0 || creation.Content.ContentRefused != nil {
 					current, err := authorizeNotionDatabaseRowPageCurrent(
 						txApp, parent.Identity, rowID, permissionWorkspaceWrite,

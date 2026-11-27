@@ -10,7 +10,7 @@ import (
 
 // A line lists in the sidebar the sub-pages its words mention where they
 // mention them, as Notion's sidebar does (seen 2026-11-18 in two tabs of
-// 한지테스트페이지, 'W1905 order' and 'W1905 place'): those hanging on the
+// a Notion test page, 'W1905 order' and 'W1905 place'): those hanging on the
 // line, and those whose block sits right inside it — a page restored from
 // the trash keeps its mention there — whatever the block's own place; a
 // callout's words, which Leafen holds as the callout's first line

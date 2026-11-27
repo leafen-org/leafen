@@ -38,6 +38,38 @@
   box-shadow: var(--keyboard-focus-ring);
   border-radius: 4px;
 }
+/* Across a list or a gallery, its own or a group's, as Notion's (seen
+   2026-11-27 in Chrome at 1440 dpr 2, grouped and not, in two tabs): the
+   line's corners 6px round and its "⋯" 4px in from its end; a list's line
+   6px in, its 16px arrow 1px further and 8 before 14px words; a gallery's
+   flush, its 15px arrow 6 before 15px words on a 22.5px line. The phone's
+   own sizes below go before these. */
+.line[data-cards-load-more="view"] {
+  border-radius: 6px;
+}
+.line[data-cards-load-more="view"] > [data-load-limit] {
+  margin-inline: 4px;
+}
+:global([data-view-type="list"]) .line {
+  padding-inline: 6px 8px;
+}
+:global([data-view-type="list"]) .loadMore svg {
+  width: 16px;
+  height: 16px;
+  margin-inline-start: 1px;
+}
+:global([data-view-type="gallery"]) .line {
+  padding-inline: 0;
+}
+:global([data-view-type="gallery"]) .loadMore {
+  gap: 6px;
+  font-size: 15px;
+  line-height: 22.5px;
+}
+:global([data-view-type="gallery"]) .loadMore svg {
+  width: 15px;
+  height: 15px;
+}
 /* On a phone its arrow and words take a phone's sizes, each in the line's
    middle, as Notion's (seen 2026-11-15 in iPhone Safari at 402, a list's and
    a gallery's also on a Galaxy A90 at 411): a list's line 6px in, its 20px
@@ -52,6 +84,11 @@
 }
 :global([data-phone="true"] [data-view-type="list"]) .line[data-cards-load-more="view"] {
   padding-inline: 6px 8px;
+}
+:global([data-phone="true"] [data-view-type="list"]) .loadMore svg {
+  width: 20px;
+  height: 20px;
+  margin-inline-start: 0;
 }
 :global([data-phone="true"] [data-view-type="gallery"]) .line[data-cards-load-more="view"] {
   padding-inline: 0;

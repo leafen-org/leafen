@@ -323,7 +323,7 @@ export function TimelineTableRows({
         {lanes.kinds.map((kind, lane) => {
           const group = groupAt.get(lane), add = addAt.get(lane), item = itemAt.get(lane);
           if (group) return <TimelineGroupLaneHeader key={`head:${group.key}`} group={group} onToggle={toggleGroup} actions={groupActions} table pinned={pinned(lane)} />;
-          if (add) return <TimelineGroupAddLane key={`add:${add.key}`} add={add} actions={groupActions} table />;
+          if (add) return <TimelineGroupAddLane key={`${add.more ? "more" : "add"}:${add.key}`} add={add} actions={groupActions} table />;
           if (kind === "newGroup") return <TimelineNewGroupLane key="new-group" lane={lane} actions={groupActions} table />;
           if (kind === "columns") return <div key={`columns:${lane}`} className={styles.timelineTableHead} data-group-columns="true"
             data-sticky-head={pinned(lane) ? "" : undefined} data-timeline-lane={lane} style={{ gridRow: lane + 1 }}>{heads()}</div>;
@@ -333,7 +333,7 @@ export function TimelineTableRows({
             disabled={!props.onCreateSubitem} onClick={() => props.onCreateSubitem?.(subitemAdd.parentId)}>
             <Plus size="small" aria-hidden="true" />{props.t("tableView:newSubitem")}
           </button>;
-          if (!item) return <div key={`gap:${lane}`} aria-hidden="true" data-timeline-lane={lane} style={{ gridRow: lane + 1, height: 36 }} />;
+          if (!item) return <div key={`gap:${lane}`} aria-hidden="true" className={kind === "gap" ? styles.timelineTableGroupGap : undefined} data-timeline-lane={lane} style={{ gridRow: lane + 1, height: 36 }} />;
           return <TimelineTableRow key={item.line ?? item.row.id} item={item} title={props.rowTitle(item.row)} expanded={props.expandedRows.has(item.row.id)}
             editingNew={props.newTableRowId === item.row.id} columns={steadyColumns} cellSnapshot={propertyCellEnvironment?.snapshot} cellWays={cellWays}
             cellsReadOnly={cellsReadOnly} context={propertyValueContext} ways={rowWays} adds={Boolean(props.onAddBeside)} line={lineOf.get(item.line ?? item.row.id) ?? 0} openIn={openRowIn} closes={Boolean(onCloseRow)}

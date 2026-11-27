@@ -6,6 +6,7 @@ import { saveDownloadsOnDevice } from "./browserFileDownload";
 import { followThemeOnDevice } from "./deviceAppearance";
 import { desktopBackgroundAvailable, followLanguageOnDevice } from "./desktopBackground";
 import { saveFileToDevice, saveUrlToDevice } from "./deviceFiles";
+import { changeKeptSignIn } from "./keptSignIns";
 import { gateWebKitKeySteps, packagedCredentials } from "./packagedCredentials";
 import { isPackagedClient } from "./packagedOrigins";
 import { activeProfileId, LOCAL_PROFILE_ID, profileAddress } from "./profileRegistry";
@@ -106,13 +107,28 @@ function closeEditsWhenSuspended(): void {
  * A server's sign-in — another server's, or the app's own — comes from the
  * app's secret storage and each change goes back there (lib/keptSignIns.ts);
  * one an earlier version kept in the page's storage moves there. Where the
- * app keeps none, it lasts while the window is open.
+ * app keeps none, it lasts while the window is open. The app's own server
+ * not set up yet (`setUp` false) has had nobody sign in on it: a sign-in kept
+ * for it then is an earlier data folder's — the app's data removed, its
+ * secret storage and window storage kept — and goes unopened, or that
+ * account's language, kept in the window, drew the screens before the new
+ * server's first setup and spent the language chosen on the first screen
+ * (2026-11-27, Windows: the language step came back once, in Korean, after
+ * English was chosen). One another tab of the app keeps by then, its setup
+ * done, is this server's and opens.
  */
-async function openKeptSignIn(profile: string): Promise<void> {
+async function openKeptSignIn(profile: string, setUp = true): Promise<void> {
   const credentials = await packagedCredentials();
-  const value = credentials ? await credentials.load(profile).catch(() => "") : "";
-  const kept = sessionFromStored(value);
-  const earlier = kept ? null : loadSession();
+  let value = credentials ? await credentials.load(profile).catch(() => "") : "";
+  let opened = value;
+  if (!setUp && value && credentials) {
+    const earlierFolder = value;
+    value = await changeKeptSignIn(profile, (now) => (now === earlierFolder ? null : undefined))
+      .then((after) => after ?? earlierFolder, () => earlierFolder);
+    opened = value === earlierFolder ? "" : value;
+  }
+  const kept = sessionFromStored(opened);
+  const earlier = kept || !setUp ? null : loadSession();
   keepSessionsInMemory({ initial: kept ?? earlier, profile: credentials ? profile : undefined, kept: value });
   if (earlier && credentials) void keepSessionInApp().catch(() => undefined);
 }
@@ -202,7 +218,8 @@ export async function startPackagedClient(starting?: () => void, slow?: () => vo
     if (profile?.server) {
       setServerOrigin(profile.server, LOCAL_PROFILE_ID);
       rememberAppServerEntry({ capability: profile.capability, setupCode: profile.setupCode, name: profile.name });
-      await openKeptSignIn(LOCAL_PROFILE_ID);
+      // The setup's code comes only while the server isn't set up.
+      await openKeptSignIn(LOCAL_PROFILE_ID, !profile.setupCode);
       // Kept at an earlier start whose settling didn't finish.
       const kept = loadSession();
       if (kept && profile.capability) void settleEarlierOwner(kept);

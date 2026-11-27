@@ -18,7 +18,8 @@ import type { GraphDataSource, GraphProperty, GraphRow, GraphView } from "../../
 import type { PropertyValueReadContext } from "./PropValue";
 import type { DbView, Page, ViewConfig } from "@/lib/types";
 import { usePageNames } from "@/lib/pageNames";
-import { BoardColumn, type BoardDraft } from "./BoardColumn";
+import { BoardColumn } from "./BoardColumn";
+import { useBoardCardDrafts } from "./useBoardCardDrafts";
 import { CardFullLineContext, compactFullLineIds } from "./cardFullLine";
 import { newRowOpensItsPage } from "@/lib/pageTitleFocus";
 import { makeRowThatOpens, newRowSeedsShow } from "./newViewRow";
@@ -29,6 +30,8 @@ import { useViewAddsGroups, viewGroupAddedKey, viewGroupAddKind } from "./viewGr
 import { viewShowsPageIcons } from "./CardTitleIcon";
 import { GroupOptionsMenu } from "./GroupOptionsMenu";
 import { BoardGroupMenu } from "./BoardGroupMenu";
+import { GroupRename } from "./GroupNameField";
+import { optionNamed } from "./optionNameText";
 import type { PageContentPreviewTransport, WorkspaceFileHook } from "./CardPreviewMedia";
 import {
   boardGroupMode,
@@ -180,30 +183,13 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
   const [draggingId, setDraggingId] = useState<string | null>(null);
   // The card (and its column) or column being dragged, read as it drops: a drag let go before the board draws again still lands.
   const dragged = useRef<{ card?: string; from?: string; group?: string; carried?: readonly string[] }>({});
-  // The group whose "+ 새 페이지" card is being named.
-  const [draftGroup, setDraftGroup] = useState<string | null>(null);
-  const [draftSerial, setDraftSerial] = useState(0);
-  // The row a card being made stands for, made as its "+" is pressed.
-  const draftRow = useRef<Promise<GraphRow | null> | null>(null);
   const moveQueue = useRef<Promise<void> | null>(null);
   // The move a queued card makes is this render's, read when its turn comes.
   const moveCardRef = useRef(moveCard);
   moveCardRef.current = moveCard;
-  const [draftRowId, setDraftRowId] = useState<string | null>(null);
-  const [draftMadeTitle, setDraftMadeTitle] = useState("");
-  // Where the cards being made go: the head's "+" puts them at the group's
-  // top, before the card first there as it was pressed; "+ 새 페이지" at its
-  // end. Each after the first (Enter's) is made only once named, the card
-  // before it chosen if it is left empty (Notion's, seen 2026-11-06).
-  const draftPlace = useRef<{ before?: string; chained: boolean }>({ chained: false });
-  const previousDraft = useRef<Promise<GraphRow | null> | null>(null);
-  // Cards made one after another with Enter are written in turn, none dropped.
-  const draftWrites = useRef<Promise<unknown>>(Promise.resolve());
-  const latestAddRow = useRef(addRow);
-  latestAddRow.current = addRow;
   const dragScope = useId();
   const [editGroupMenu, setEditGroupMenu] = useState(false);
-  const [menu, setMenu] = useState<{ option: BoardOption; position: PopoverRect; returnTo: HTMLElement } | null>(null);
+  const [menu, setMenu] = useState<{ option: BoardOption; position: PopoverRect; returnTo: HTMLElement; naming?: boolean } | null>(null);
   const [laneMenu, setLaneMenu] = useState<{ lane: BoardBucket<GraphRow>; position: PopoverRect; returnTo: HTMLElement } | null>(null);
   // An inline board, or a sub-grouped one anywhere, first shows 25 cards in each column (or cell), or as many
   // as its view says, and 20 more at each "더 불러오기" (Notion's, seen 2026-10-01, 2026-11-15); a card
@@ -362,7 +348,7 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
       keepsShown ? { ...snapshot.view, config: { ...snapshot.view.config, groupOrder: orderKeys() } } : undefined));
   }
   const { subgroupProperty, subgroup, subLanes, subValues, ownSubgroup, laneMembership, lanes, laneFolds, foldLane, laneOptions, laneAdd, laneKeyOf,
-    addLane, laneCounts, laneMenuElement, laneRows } = useBoardLanes({ props, view, snapshot, t, activeGroupProperty, cardRows, columns, shownColumns,
+    addLane, laneCounts, laneMenuElement, openLaneMenu, laneRows } = useBoardLanes({ props, view, snapshot, t, activeGroupProperty, cardRows, columns, shownColumns,
     columnKeysOf, ownFolds, setOwnFolds, readOnly, structureLocked, addsGroups, laneMenu, setLaneMenu, writeView, runMutation, operations });
   // What every card draws from stays the same while it is, so a card drawn stays drawn (BoardColumn).
   const cardProps = useMemo(() => visible.filter((property) => property.type !== "title"), [visible]);
@@ -382,10 +368,12 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
     if (mode === "default") operations.openRow(rowId, context); else operations.openRowIn(rowId, mode, context);
   }
   function closeMenu() { setMenu(null); setEditGroupMenu(false); }
-  function openGroupMenu(option: BoardOption, element: HTMLElement) {
-    if (readOnly) return;
+  // Its name chip renames an option's group in place (GroupRename); a group of no option of its own, or a locked one, opens nothing there.
+  const groupGraphProperty = snapshot.properties.find((candidate) => candidate.id === activeGroupProperty.id);
+  function openGroupMenu(option: BoardOption, element: HTMLElement, naming = false) {
+    if (readOnly || naming && !(groupEditable && optionNamed(groupGraphProperty?.config, option.id))) return;
     const position = popoverAnchorOf(element);
-    setEditGroupMenu(false); setMenu({ option, position, returnTo: element });
+    setEditGroupMenu(false); setMenu({ option, position, returnTo: element, naming });
   }
   function fullOptionsWithPatch(option: BoardOption, patch: Partial<BoardOption>) { return allGroupOptions.map((candidate) => candidate.id === option.id ? { ...candidate, ...patch } : candidate); }
   async function writeOptions(options: readonly BoardOption[], _reason: string) { await runMutation(`group-options:${activeGroupProperty.id}`, (context) => operations.updateGroupOptions(activeGroupProperty.id, options, context)); }
@@ -559,85 +547,12 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
       let copies: readonly string[] | void;
       return runMutation("cards-duplicate", async (context) => { copies = await operations.duplicateRows!(rowIds, context, place); }).then(() => copies);
     } });
-  // A draft card sits in one column, or in one sub-group's cell of it.
-  const draftKey = (groupKey: string, laneKey?: string) => laneKey === undefined ? groupKey : `${groupKey}\n${laneKey}`;
-  function makeDraftRow(groupKey: string, title: string, laneKey?: string) {
-    const { before } = draftPlace.current;
-    const made = draftWrites.current.then(() => latestAddRow.current(groupKey, title, laneKey, false, before));
-    draftWrites.current = made.catch(() => null);
-    return made;
-  }
-  // "+ 새 페이지" makes its row at once, counted and seen by others while its
-  // name is typed, which is written apart; left empty, the row stays (Notion's,
-  // seen 2026-11-04: the row there before a key, still there after Escape or
-  // a press elsewhere). The card being made stands in for it meanwhile.
-  const draftTitle = (groupKey: string) => titleGroups ? String(valueGroups?.valueFor(groupKey === "__none" ? null : groupKey) ?? "") : undefined;
-  function startDraftRow(groupKey: string, laneKey?: string) {
-    const made = makeDraftRow(groupKey, draftTitle(groupKey) ?? "", laneKey);
-    draftRow.current = made;
-    setDraftRowId(null);
-    setDraftMadeTitle("");
-    void made.then((row) => {
-      if (draftRow.current !== made) return;
-      setDraftRowId(row?.id ?? null);
-      // Its template's title shows in it, as Notion's card (seen 2026-11-05).
-      const name = titleProperty && row?.values[titleProperty.id]?.value;
-      setDraftMadeTitle(typeof name === "string" ? name : "");
-    });
-    return made;
-  }
-  // A name is written by the view as it is then, after the next card's row:
-  // a row made while another write lands comes back without its id.
-  const latestNameRow = useRef<(rowId: string, title: string) => void>(() => {});
-  latestNameRow.current = (rowId, title) => {
-    if (titleProperty) void runMutation(`row-title:${rowId}`, (context) => operations.setRowProperty(rowId, titleProperty.id, title, context));
-  };
-  function startDraft(groupKey: string, laneKey?: string, atTop = false) {
-    setDraftGroup(draftKey(groupKey, laneKey));
-    draftPlace.current = { before: atTop ? laneRows(groupKey, laneKey)[0]?.id : undefined, chained: false };
-    previousDraft.current = null;
-    startDraftRow(groupKey, laneKey);
-  }
-  // Whatever ends the card, its row keeps the name typed.
-  // `keepEmpty`: an empty card Enter started is made anyway, to be opened.
-  function endDraft(groupKey: string, laneKey: string | undefined, title: string, next = false, keepEmpty = false) {
-    const named = title !== (draftTitle(groupKey) ?? "");
-    const lazy = !draftRow.current && draftPlace.current.chained;
-    const made = draftRow.current ?? (lazy && (named || keepEmpty) ? makeDraftRow(groupKey, named ? title : draftTitle(groupKey) ?? "", laneKey) : Promise.resolve(null));
-    const previous = previousDraft.current;
-    if (next) {
-      setDraftSerial((serial) => serial + 1);
-      previousDraft.current = made; draftPlace.current = { ...draftPlace.current, chained: true };
-      draftRow.current = null; setDraftRowId(null); setDraftMadeTitle("");
-    } else { setDraftGroup(null); draftRow.current = null; setDraftRowId(null); previousDraft.current = null; }
-    return made.then(async (row) => {
-      if (!row) return lazy && previous ? previous.catch(() => null) : null;
-      if (named && !lazy) {
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-        latestNameRow.current(row.id, title);
-      }
-      return row;
-    });
-  }
-  function draftFor(groupKey: string, laneKey?: string): BoardDraft {
-    return {
-      serial: draftSerial,
-      before: draftPlace.current.before,
-      rowId: draftRowId ?? undefined,
-      // A slot pressed on a card Enter started makes its row first.
-      ensureRow: async () => {
-        if (!draftRow.current) startDraftRow(groupKey, laneKey);
-        const row = await (draftRow.current ?? Promise.resolve(null)).catch(() => null);
-        return row?.id ?? null;
-      },
-      title: draftTitle(groupKey),
-      madeTitle: draftMadeTitle,
-      templateIcon: newRowTemplate?.icon,
-      onDone: (title, next, escaped) => void endDraft(groupKey, laneKey, title, next).then((row) => { if (row && escaped) selection.choose(row.id); }),
-      onOpen: (title) => void endDraft(groupKey, laneKey, title, false, true).then((row) => { if (row) openRow(row.id); }),
-      onMenu: (title, element) => void endDraft(groupKey, laneKey, title, false, true).then((row) => { if (row) operations.openRowContextMenuFromElement(row.id, element); }),
-    };
-  }
+  // Cards being made in place, named in them (useBoardCardDrafts).
+  const { draftGroup, draftRowId, draftKey, startDraft, draftFor } = useBoardCardDrafts({ addRow, laneRows, titlePropertyId: titleProperty?.id,
+    draftTitle: (groupKey) => titleGroups ? String(valueGroups?.valueFor(groupKey === "__none" ? null : groupKey) ?? "") : undefined,
+    writeTitle: (rowId, title) => { if (titleProperty) void runMutation(`row-title:${rowId}`, (context) => operations.setRowProperty(rowId, titleProperty.id, title, context)); },
+    templateIcon: newRowTemplate?.icon, choose: (rowId) => selection.choose(rowId), openRow: (rowId) => openRow(rowId),
+    openRowMenu: (rowId, element) => operations.openRowContextMenuFromElement(rowId, element) });
   // A sub-grouped board's head "+" and a sub-group's make the row at the
   // group's top and open it, its title ready for typing; it stays though left
   // empty (Notion's, seen 2026-10-25 and 2026-11-03) — a plain board's head
@@ -681,7 +596,7 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
     // A person's columns have no wash, as Notion's (seen 2026-11-12).
     <div ref={boardRef} className={styles.board} data-board-scroll data-cards-carry={operations.moveCards ? "" : undefined} data-column-colors={valueGroups || activeGroupProperty.type === "person" ? undefined : String(view.config?.boardColumnColors !== false)} data-size={cardSize} data-card-layout={view.config?.cardLayout === "compact" ? "compact" : undefined}>
       {lanes && subLanes ? <BoardLanes columns={windowColumns} lanes={lanes} laneKeysOf={subLanes.keysOf} folded={laneFolds} onFold={foldLane} counted={laneCounts}
-        onLaneMenu={readOnly ? undefined : (lane, element) => setLaneMenu({ lane, position: popoverAnchorOf(element), returnTo: element })}
+        onLaneMenu={readOnly ? undefined : openLaneMenu}
         onLaneAdd={readOnly ? undefined : (laneKey) => addOpenRow(ownSubgroup ? laneKey : "__none", laneKey)}
         addLane={laneAdd && ((className) => <ViewGroupAdd kind={laneAdd} property={subgroupProperty!} environment={snapshot.propertyCellEnvironment} className={className} marker="board-add-lane"
           taken={laneOptions?.map((option) => option.name) ?? subLanes.lanes.map((lane) => lane.label)} has={(value) => subLanes.lanes.some((lane) => lane.key === laneKeyOf(value))} onAdd={addLane} />)} renderColumn={columnElement} />
@@ -696,7 +611,9 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
         onUnpin={readOnly || structureLocked ? undefined : (key) => void writeView(boardConfigAfterGroupPinned(snapshot.view.config ?? {}, key, false))} />
       {operations.rowContextMenu}
       {laneMenuElement}
-      {menu && !editGroupMenu && <GroupOptionsMenu name={menu.option.name} position={menu.position} returnTo={menu.returnTo}
+      {menu?.naming && groupGraphProperty && <GroupRename property={groupGraphProperty} optionId={menu.option.id} name={menu.option.name} returnTo={menu.returnTo}
+        onRename={(options) => void writeOptions(options, `group-option:${menu.option.id}`)} onClose={closeMenu} />}
+      {menu && !menu.naming && !editGroupMenu && <GroupOptionsMenu name={menu.option.name} position={menu.position} returnTo={menu.returnTo}
         countShown={!countHidden(menu.option.id)} structureLocked={structureLocked}
         color={chosenOptionColor(menu.option)}
         onColor={groupEditable && activeGroupProperty.type !== "status" && allGroupOptions.some((option) => option.id === menu.option.id)
@@ -706,7 +623,7 @@ function GroupedBoardView({ snapshot, operations, readOnly = false }: { snapshot
         onHide={() => { if (!structureLocked) setGroupHidden(menu.option.id, true); closeMenu(); }}
         onTrash={operations.trashRows ? () => { const ids = columns.find(column => column.key === menu.option.id)?.rows.map(row => row.id) ?? []; closeMenu();
           if (ids.length) void runMutation(`group-trash:${menu.option.id}`, context => operations.trashRows!(ids, context)); } : undefined} />}
-      {menu && editGroupMenu && groupEditable && <BoardGroupMenu returnTo={menu.returnTo} option={menu.option} position={menu.position} onClose={closeMenu} onChange={(patch) => { const next = fullOptionsWithPatch(menu.option, patch); setMenu({ ...menu, option: { ...menu.option, ...patch } }); void writeOptions(next, `group-option:${menu.option.id}`); }} onRename={(name) => { const next = fullOptionsWithPatch(menu.option, { name }); setMenu({ ...menu, option: { ...menu.option, name } }); void writeOptions(next, `group-option:${menu.option.id}`); }} onDelete={() => { deleteGroup(menu.option); closeMenu(); }} onHide={readOnly || structureLocked ? undefined : () => { setGroupHidden(menu.option.id, true); closeMenu(); }} />}
+      {menu && editGroupMenu && groupEditable && <BoardGroupMenu returnTo={menu.returnTo} option={menu.option} position={menu.position} onClose={closeMenu} onChange={(patch) => { const next = fullOptionsWithPatch(menu.option, patch); setMenu({ ...menu, option: { ...menu.option, ...patch } }); void writeOptions(next, `group-option:${menu.option.id}`); }} onDelete={() => { deleteGroup(menu.option); closeMenu(); }} onHide={readOnly || structureLocked ? undefined : () => { setGroupHidden(menu.option.id, true); closeMenu(); }} />}
     </div>
   );
 

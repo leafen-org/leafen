@@ -60,11 +60,12 @@ it in:
   checked as pages, rows, comments and files are written, and **Block public
   web sharing**, **Block external sharing**, **Block file downloads**,
   **Block exports**.
-- Settings → Security → Members & guests: **Who can invite guests to pages**,
-  **Who can add other members to the workspace** and **Who can request
-  workspace membership** (members may ask and anyone may request until you
-  narrow them); Settings → Security → General → View links: **Allow view
-  links without a secret** off, so a view link also needs a secret sent apart.
+- Settings → Security → Members & guests: **Allow members to invite guests
+  to pages**, **Allow members to request adding other members**, **Allow
+  anyone to request to become a workspace member** and **Allow guests to
+  request to become members** (members may ask and anyone may request until
+  you turn those off); Settings → Security → General → View links: **Allow
+  view links without a secret** off, so a view link also needs a secret sent apart.
 
 A client sees only what is shared with them (below). Leafen doesn't hold a
 change back for approval before a guest sees it, so keep the step that puts

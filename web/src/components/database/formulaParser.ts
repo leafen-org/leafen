@@ -5,8 +5,8 @@ import { dateFunction, formulaTimeZone, parseFormulaDate } from "./formulaDates"
 import { formulaFunction } from "./formulaFunctions";
 import { sortedFormulaList } from "./formulaSort";
 import { FormulaRunError, FormulaWorkError } from "./formulaRunError";
-import { formulaLanguage, formulaLocale, type FormulaViewer } from "./formulaLocales";
-import { MAX_FORMULA_STEPS, type FormulaReference, type FormulaToken, type FormulaValue } from "./formulaSyntax";
+import { formulaLanguage, formulaLocale, type FormulaLocale, type FormulaViewer } from "./formulaLocales";
+import { FORMULA_NAME, MAX_FORMULA_STEPS, type FormulaReference, type FormulaToken, type FormulaValue } from "./formulaSyntax";
 import { type FormulaPropertyResult, formulaPropertyValue, formulaValueBudget, isBlankFormulaValue, isFormulaReference, isFormulaText, listValue, requireList, sameFormulaValue, toBoolean, toNumber, toText, wellFormedValue } from "./formulaValues";
 
 export interface FormulaEvaluationOptions {
@@ -15,6 +15,8 @@ export interface FormulaEvaluationOptions {
   timeZone?: string;
   // The language dates are written in as text; the page's when left out.
   language?: string;
+  // The words and layouts dates are written in, in place of the language's.
+  locale?: FormulaLocale;
   // The row the formula belongs to, which id() without an argument returns.
   pageId?: string;
   // Reads a property of a related page, for .prop() on it; left out, related
@@ -25,7 +27,6 @@ export interface FormulaEvaluationOptions {
 type Scope = Map<string, FormulaValue>;
 
 const LAZY_LIST_FUNCTIONS = new Set(["map", "filter", "find", "findIndex", "some", "every", "count", "sort"]);
-const VARIABLE_NAME = /^[A-Za-z_][A-Za-z0-9_]*$/;
 const DATE_SHAPE = /^\d{4}-\d{2}-\d{2}/;
 
 // Parser evaluates a formula's tokens. The server evaluates formulas the same
@@ -40,7 +41,7 @@ export class Parser {
     private readonly resolveProp: (name: string) => FormulaValue | FormulaPropertyResult,
     private readonly options: FormulaEvaluationOptions = {},
   ) {
-    this.viewer = { timeZone: formulaTimeZone(options.timeZone), locale: formulaLocale(options.language) };
+    this.viewer = { timeZone: formulaTimeZone(options.timeZone), locale: options.locale ?? formulaLocale(options.language) };
   }
 
   parse(): FormulaValue {
@@ -232,7 +233,7 @@ export class Parser {
     for (let index = 0; index < pairs; index += 1) {
       const nameNode = args[index * 2];
       const name = nameNode.kind === "identifier" ? nameNode.name : nameNode.kind === "string" ? nameNode.value : "";
-      if (!VARIABLE_NAME.test(name)) return "";
+      if (!FORMULA_NAME.test(name)) return "";
       const value = this.evaluate(args[index * 2 + 1], bound);
       bound = new Map(bound).set(name, value);
     }

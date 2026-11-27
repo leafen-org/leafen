@@ -205,8 +205,9 @@ export function ImageBlock({ adapter, block, nested = false }: { adapter: Native
           }} />}
         {/* One at its own size keeps its alignment choice even as wide as its column, as Notion's
             (seen 2026-11-06: a 1600px link; 2026-11-27: a 1600px block API upload); one uploaded
-            in the page that wide has none (seen 2026-11-05), nor "맞춤" in its menu (imageAlignPlaces). */}
-        <ImageBlockTools adapter={adapter} block={block} align={chosenAlign} canAlign={places.tools} />
+            in the page that wide has none (seen 2026-11-05), nor "맞춤" in its menu (imageAlignPlaces).
+            They fold to "⋯" by its block's room, or by its own width where its upload drew it narrower (useMediaToolsFold). */}
+        <ImageBlockTools adapter={adapter} block={block} align={chosenAlign} canAlign={places.tools} foldRoom={!ownSize && !imageWidth && !box ? "frame" : "block"} />
       </> : null}
     </div></figure>;
 }

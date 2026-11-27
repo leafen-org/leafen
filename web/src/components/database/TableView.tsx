@@ -260,8 +260,8 @@ function NativeTableView({ snapshot, operations, readOnly = false, staticReadOnl
   // The selection outlasts the rows' changes, its own edits included, as
   // Notion's does; another view or source clears it.
   useEffect(() => setSelectedRows(new Set()), [snapshot.contextIdentity]);
-  // It comes back when the tab reloads, as Notion's (selectionMemory.ts).
-  useKeptChoice(`rows:${snapshot.view.id}`, chosenIds, setSelectedRows, (id) => snapshot.rows.some((row) => row.id === lineRowId(id)), () => snapshot.rows.length > 0);
+  // It comes back with the way back or forward, and goes on into the layout the view is switched to, as Notion's (selectionMemory.ts).
+  useKeptChoice(`rows:${snapshot.view.id}`, chosenIds, setSelectedRows, (id) => snapshot.rows.some((row) => row.id === lineRowId(id)), () => snapshot.rows.length > 0, false, snapshot.view.id);
   // A property's menu stays open while the property changes, as Notion's
   // does, showing it as it now is; another view or source, or the property
   // going away, closes it.
@@ -641,7 +641,7 @@ function NativeTableView({ snapshot, operations, readOnly = false, staticReadOnl
       onAddGroupRow={readOnly ? undefined : (groupKey) => void addRow(null, null, groupKey, newRowOpensItsPage())}
       onEditEmptyGroupFilters={tableViewFiltered(snapshot.view.config) && (!readOnly || snapshot.dataSource?.sourcePageInTrash) ? operations.openFilterSettings : undefined}
       onAddGroupRowFirst={readOnly ? undefined : (groupKey, beforeRowId) => void addRow(null, null, groupKey, true, beforeRowId ?? undefined)}
-      onGroupMenu={readOnly || !groupProperty ? undefined : (group, element) => setGroupMenu({ group, position: popoverAnchorOf(element), returnTo: element })}
+      onGroupMenu={readOnly || !groupProperty ? undefined : (group, element, naming) => setGroupMenu({ group, position: popoverAnchorOf(element), returnTo: element, naming })}
       groupCounts={snapshot.view.config.showGroupCounts === true}
       groupAdd={addKind && groupProperty ? (className) => <ViewGroupAdd kind={addKind} property={groupProperty} environment={snapshot.propertyCellEnvironment}
         className={className} taken={addKind === "option" ? groupOptionNames(groupProperty) : projection.groups.map((group) => group.label ?? "")}

@@ -32,6 +32,18 @@ export type PointerReorderList = {
  * down and went with it from 7px).
  */
 export const DRAG_START = 7;
+/**
+ * Whether a release moved the pointer from where it last was. Let go where
+ * it last moved, a drag lands on what that move chose — the row it was over,
+ * and its side — though the list moved under the pointer at rest since:
+ * someone's write sorting a section again by last edit, say, as Notion's
+ * sidebar keeps on doing during a drag, its drop still going to the page the
+ * pointer last chose (seen 2026-11-27 in Chrome, two tabs at two times; a
+ * move after the list moved chose again from what was then under it). A
+ * release elsewhere is the pointer's last move (pointerDrag, follow below).
+ */
+export const releaseMoves = (last: Input, release: Input) => release.clientX !== last.clientX || release.clientY !== last.clientY;
+
 /** How near a scrolling list's edge the pointer scrolls it, and how fast at most (px a frame); not measured against Notion. */
 const EDGE = 40;
 const EDGE_SPEED = 14;
@@ -187,10 +199,12 @@ function follow(list: () => PointerReorderList, source: string, press: PointerEv
   }, options);
   // The release is the pointer's last move: the row lands where it is let go, though no move came before
   // it — a quick hand's moves can all go to the browser's own drag start, which gives way here (as a
-  // calendar's "날짜 없음" row's did, 2026-11-18, pointerDrag).
+  // calendar's "날짜 없음" row's did, 2026-11-18, pointerDrag). Let go where it last moved, it lands where that move
+  // placed it, the list having moved under it or not (releaseMoves).
   window.addEventListener("pointerup", (event) => {
     if (event.pointerId !== press.pointerId) return;
-    if (moveTo(event)) swallowClick();
+    if (moving && !releaseMoves(last, event)) swallowClick();
+    else if (moveTo(event)) swallowClick();
     finish(true);
   }, options);
   window.addEventListener("pointercancel", (event) => { if (event.pointerId === press.pointerId) finish(false); }, options);

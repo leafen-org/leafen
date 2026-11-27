@@ -42,8 +42,12 @@ func readAdministratorSetupStatus(event *core.RequestEvent) error {
 		status.ContainerFolder = scheduledBackupContainerFolder()
 	}
 	if status.CodeRequired {
-		// Opened from outside: the screen names where the server opens without a code.
-		status.HomeAddress = setupHomeAddress(event.Request)
+		// Opened from outside: what the screen says follows how the server was started (setup_hosting_platform.go) —
+		// and, off a hosting platform, where the server opens without a code.
+		status.CodeGiven, status.Platform = setupCodeGiven(), setupHostingPlatform()
+		if status.Platform == "" {
+			status.HomeAddress = setupHomeAddress(event.Request)
+		}
 	}
 	return event.JSON(http.StatusOK, status)
 }

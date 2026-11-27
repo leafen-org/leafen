@@ -7,7 +7,7 @@ import "github.com/pocketbase/pocketbase/core"
 // line. Notion keeps a callout's words as the callout's own: such a page has
 // the callout as its parent, and once restored from its trash comes back as
 // the last block inside the callout, after its other lines (seen 2026-11-18
-// under 한지테스트페이지: four pages made in callouts' words, three restored
+// under a Notion test page: four pages made in callouts' words, three restored
 // through the API and one through the page's banner). Where Leafen names or
 // fills the line such a page belongs to as Notion does, the callout stands
 // for that first line.

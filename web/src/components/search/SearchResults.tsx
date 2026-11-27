@@ -168,7 +168,7 @@ export function SearchResults({
   // A database opened alone is the page on screen, not the page holding it, as Notion marks it (seen 2026-11-10).
   const shownPageId = inlineDatabaseOpenedAlone() ?? currentPageId;
   // A database's page, and a page under one, is placed by the path the
-  // server names, as Notion's results (seen 2026-11-10: "한지테스트페이지 /
+  // server names, as Notion's results (seen 2026-11-10: "〈test page〉 /
   // ... / 첫 소스", "… / ... / 행 나").
   usePagePathsAbove(hits.flatMap((hit) => hit.row || pathLeavesOwnPages(hit.page, (id) => pagesById[id]) ? [hit.page] : []));
 
@@ -219,15 +219,20 @@ export function SearchResults({
               const teamspace = hit.page.teamspaceId ? teamspaceNames[hit.page.teamspaceId] : undefined;
               const place: Place = found.length ? found : teamspace ? [teamspace] : [];
               if (section.compact) {
-                // One line: the icon, the title and "— its place", as Notion's visited pages.
+                // One line: the icon, the title and "— its place", as Notion's visited pages; the "—" stands
+                // between the two on its own, so they give way by their own widths alone (SearchDialog.module.css).
                 return (
                   <NativePickerOption state={state} itemKey={searchHitKey(hit)} key={searchHitKey(hit)}
                     className={`${styles.result} ${styles.resultCompact}`} data-kind="visit">
                     {({ labelProps }) => card(<>
                       <span className={styles.pageIcon}><SearchHitIcon page={hit.page} row={hit.row} /></span>
-                      <span {...labelProps} className={styles.compactTitle}><PageTitleText page={hit.page} /></span>
-                      {place.length ? <span className={styles.compactPlace}><span className={styles.compactDash} aria-hidden="true">—</span>
-                        <PlaceWithCustomEmoji place={place} titles={emojiTitles} /></span> : null}
+                      <span className={styles.compactLine}>
+                        <span {...labelProps} className={styles.compactTitle}><PageTitleText page={hit.page} /></span>
+                        {place.length ? <>
+                          <span className={styles.compactDash} aria-hidden="true">—</span>
+                          <PlaceWithCustomEmoji place={place} titles={emojiTitles} className={styles.compactPlace} />
+                        </> : null}
+                      </span>
                     </>)}
                   </NativePickerOption>
                 );

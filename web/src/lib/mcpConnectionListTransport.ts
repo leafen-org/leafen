@@ -30,6 +30,8 @@ const statuses = new Set(["active", "revoked"]);
 // A connection carries one scope: "mcp" for an agent, or the content-access
 // scope an app's OAuth grant was given. The server sends exactly one of these.
 const connectionScopes = new Set(["mcp", "read", "content", "structure", "admin"]);
+// Each says its kind: an agent connection, an MCP token or an app's grant.
+const connectionKinds = new Set(["agent", "token", "app"]);
 
 function abortRead(message: string): never {
   throw new DOMException(message, "AbortError");
@@ -55,6 +57,7 @@ function validateConnection(item: MCPConnectionListItem, seenIds: Set<string>) {
     || typeof item.id !== "string" || !item.id || seenIds.has(item.id)
     || typeof item.clientId !== "string" || !item.clientId
     || typeof item.clientName !== "string" || !item.clientName
+    || !connectionKinds.has(item.kind)
     || typeof item.resource !== "string"
     || !Array.isArray(item.scopes) || item.scopes.length !== 1 || !connectionScopes.has(item.scopes[0])
     || !Array.isArray(item.workspaceIds) || item.workspaceIds.length < 1

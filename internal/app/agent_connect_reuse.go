@@ -17,8 +17,8 @@ import (
 
 // Before a connect command takes a key, it looks at the connections the
 // agent holds to Leafen already — mechanically, in the command, not left to
-// the agent (user 2026-11-20: a pasted text added leafen-tulip-2 beside a
-// leafen-tulip that worked, to the same Tulip: "shouldn't it check first
+// the agent (user 2026-11-20: a pasted text added leafen-maple-2 beside a
+// leafen-maple that worked, to the same server: "shouldn't it check first
 // whether it is connected already?"). Each entry the agent holds at an
 // address of this Leafen, whatever its name (one made before the server
 // was renamed too), is checked with its own key: GET /mcp/connections/current with the

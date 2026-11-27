@@ -8,8 +8,9 @@
 
 <p align="center"><img src="assets/readme/leafen-en.png" alt="A Leafen page with a to-do list and a table database" width="800" /></p>
 
-Leafen is an early release (0.1). We have run our own company's daily work on it
-for several weeks, along with a few friends. If something breaks or gets in your
+Leafen is an early release (0.2). From 0.2 on, your data carries over across
+updates. We have run our own company's daily work on it for several weeks,
+along with a few friends. If something breaks or gets in your
 way, tell the agent you connected to Leafen: "report this as an issue." It writes the report with
 made-up data and shows it to you; once you say yes, it files the issue, or gives you
 a link to file it yourself.
@@ -97,7 +98,7 @@ Have Notion's features, and add what Notion can't do.
 
 ## Where it is now
 
-This is the 0.1.0 pre-release. Our company already runs on it: our Notion
+This is the 0.2.0 release. Our company already runs on it: our Notion
 workspace came in through Leafen's Notion import, our staff use it, and
 agents work in it over MCP.
 
@@ -126,16 +127,19 @@ screen by screen, with Notion:
 
 1. Finish comparing area by area, in the order above.
 2. Check everything again from the start.
-3. **1.0** — from then on, your data carries over across updates. Signed
-   desktop builds and the Docker image are already out with 0.1.0.
+3. **1.0** — every area compared with Notion. Your data already carries over
+   across updates from 0.2, and signed desktop builds and the Docker image
+   are already out.
 4. After that — app store releases.
 
 ## Install
 
-We update our own server, with our company's data in it, on every new build,
-and the data has come through each time. Before an update changes how data is
-stored, Leafen first saves a copy of the whole data folder. The promise that
-data carries over starts at 1.0, so until then keep a backup before you update.
+From 0.2 on, your data carries over across updates, data made with 0.1.0
+included: before every release we open data folders that each published
+version made, in its Docker image and its Mac app, with the new one and check
+that everything reads as it did. We also update our own server, with our
+company's data in it, on every new build. Before an update changes how data is
+stored, Leafen first saves a copy of the whole data folder.
 
 ### Let your agent do it
 
@@ -150,8 +154,10 @@ new or log in, your name, the language, whether it opens from anywhere,
 moving from Notion — does each step and connects itself. You press only where
 Leafen asks you to, such as confirming your name and allowing the agent in.
 The [install guide](docs/install.md) is the same document a person can follow
-by hand. Your agent does not bypass the operating system's checks when the
-app first opens; it tells you what to click.
+by hand; its [For agents](docs/install.md#for-agents) part says which way
+your agent installs Leafen and how it looks around Leafen itself. Your agent
+does not bypass the operating system's checks when the app first opens; it
+tells you what to click.
 
 ### Desktop app
 
@@ -179,8 +185,8 @@ One-click hosting templates are in [hosting templates](docs/hosting-templates.md
 
 ### From source
 
-You need Go 1.27, Node.js 22.12 or later, and on macOS the Xcode command line
-tools the window needs.
+To change Leafen or build it yourself, you need Go 1.27, Node.js 22.12 or
+later, and on macOS the Xcode command line tools the window needs.
 
 ```sh
 npm --prefix web ci --ignore-scripts

@@ -102,6 +102,10 @@ func copiedSyncedOriginals(app core.App, jobID string, contents []map[string]any
 				found[id] = block
 			}
 		}
+		// A copy of a page's body shows the page's copy (synced_block_page_original.go).
+		if err := copiedSyncedPageOriginals(app, job, contents, found); err != nil {
+			return nil, err
+		}
 	}
 	return found, nil
 }

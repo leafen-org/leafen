@@ -1,8 +1,12 @@
 import { useEffect, useRef } from "react";
 import { shownBlockCopy } from "./shownBlockCopy";
 
-/** What an inline database's or a sub-page's block menu asks the block itself to do. */
-export type InlineDatabaseRequest = "icon" | "rename" | "subitems" | "view";
+/**
+ * What an inline database's or a sub-page's block menu asks the block itself
+ * to do; "title" is its title's own "⋯ › 제목 편집", which names a linked
+ * view's source in its head where "rename" opens its own name's box.
+ */
+export type InlineDatabaseRequest = "icon" | "rename" | "title" | "subitems" | "view";
 
 /** A database block's copy a listener is part of: the one drawn alone (a peek's, its own page's) or its page's. */
 export type InlineDatabaseCopy = { blockId: string; alone: boolean };

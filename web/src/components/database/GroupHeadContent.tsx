@@ -18,13 +18,16 @@ export type GroupHeadGroup = {
  * and 2026-10-25): its filled triangle, turned down while open; its name — an
  * option's chip, a status's mark, a checkbox's box, a related page's glyph —
  * then its count where the view shows counts, its "⋯" and "+", shown on a
- * desktop while the head is pointed at.
+ * desktop while the head is pointed at. Its chip, where the view has a menu
+ * for it, is pressed to rename its option in place (`onMenu` with `naming`,
+ * ViewGroupOptions' GroupRename), as Notion's table, list and gallery do
+ * (seen 2026-11-28): the chip in a press area 3px around it, where it stood.
  */
 export function GroupHeadContent({ group, collapsed, count, onToggle, onMenu, onAdd }: {
   group: GroupHeadGroup; collapsed: boolean;
   /** How many pages it holds, where the view shows counts. */
   count?: number;
-  onToggle(): void; onMenu?(element: HTMLElement): void; onAdd?(): void;
+  onToggle(): void; onMenu?(element: HTMLElement, naming?: boolean): void; onAdd?(): void;
 }) {
   const { t } = useTranslation(["boardView", "pageTreeItem", "propValue", "databaseView"]);
   const groupName = group.label ?? (group.key === "__no_group__" ? t("boardView:none") : group.key);
@@ -53,8 +56,10 @@ export function GroupHeadContent({ group, collapsed, count, onToggle, onMenu, on
       ) : null}
       <GroupPageGlyph page={group.page} pixels={16} data-table-group-page />
       {group.person ? <PersonAvatar className={`${styles.personAvatar} ${styles.tableGroupPerson}`} userId={group.person} name={groupName} size={20} /> : null}
-      {statusGroupTitle(group, groupName) ?? <span className={styles.tableGroupLabel} data-table-group-chip={group.color ? "true" : undefined}
-        style={group.color ? chipStyle(group.color) : undefined}>{groupName}</span>}
+      {onMenu && !group.statusStage && (group.statusOption || group.color) ? (
+        <button type="button" className={styles.tableGroupNameButton} data-table-group-name onClick={(event) => onMenu(event.currentTarget, true)}>
+          {groupNameChip(group, groupName)}</button>
+      ) : groupNameChip(group, groupName)}
       <span className={styles.tableGroupTail} data-after-chip={group.color ? "true" : undefined}>
         {count !== undefined ? <span className={styles.tableGroupCount} data-table-group-count>{count}</span> : null}
         {onMenu ? (
@@ -68,4 +73,10 @@ export function GroupHeadContent({ group, collapsed, count, onToggle, onMenu, on
       </span>
     </>
   );
+}
+
+/** A group's name as its head shows it: a status's mark or option, an option's chip, or its words. */
+function groupNameChip(group: GroupHeadGroup, groupName: string) {
+  return statusGroupTitle(group, groupName) ?? <span className={styles.tableGroupLabel} data-table-group-chip={group.color ? "true" : undefined}
+    style={group.color ? chipStyle(group.color) : undefined}>{groupName}</span>;
 }

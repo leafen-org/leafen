@@ -173,6 +173,61 @@ const onlyComments = new WeakSet<FormulaToken[]>();
 export const formulaOnlyComments = (tokens: FormulaToken[]) => onlyComments.has(tokens);
 
 /**
+ * A character no token starts with, which keeps a formula from being read,
+ * as Notion's reading refuses it (seen 2026-11-27 in Chrome, two tabs: "1 # 2"
+ * names "#" at [2,3], then the end it wanted at [4,5]; "'a' + 1" each quote):
+ * one for a run of such characters ("1 #@ 2" names "#" alone), its place the
+ * run's first character.
+ */
+export type FormulaInvalidCharacter = { character: string; start: number; end: number; /** Where its run ends. */ through: number };
+const invalidCharacters = new WeakMap<FormulaToken[], FormulaInvalidCharacter[]>();
+
+/** The characters of a formula its tokens leave out because none starts with them. */
+export const formulaInvalidCharacters = (tokens: FormulaToken[]): readonly FormulaInvalidCharacter[] => invalidCharacters.get(tokens) ?? [];
+
+/** The text with each character no token starts with written as a space, for what reads it as a space (the helper's place). */
+export function formulaBlankInvalidCharacters(input: string) {
+  const runs = formulaInvalidCharacters(tokenizeFormula(input));
+  if (!runs.length) return input;
+  const characters = [...input];
+  let text = "", at = 0;
+  for (const character of characters) {
+    const blank = runs.some((run) => at >= run.start && at < run.through);
+    text += blank ? " ".repeat(character.length) : character;
+    at += character.length;
+  }
+  return text;
+}
+
+/**
+ * A name is any letters, "_" and, after its first, digits 0-9, as Notion's
+ * parser reads one: a Korean name typed bare, as dateBetween(마감일, now(),
+ * "days"), is a name not defined at [12,15] (seen 2026-11-27 in Chrome; its
+ * API read names so on 2026-11-12). The server reads them the same
+ * (databaseFormulaNameStart).
+ */
+export const FORMULA_NAME_START = /[\p{L}_]/u, FORMULA_NAME_PART = /[\p{L}_0-9]/u;
+/** A whole name, as a variable a let() names. */
+export const FORMULA_NAME = /^[\p{L}_][\p{L}_0-9]*$/u;
+
+const FORMULA_WORD_OPERATORS = new Set(["and", "or", "not"]);
+
+/**
+ * Whether the name at `index` is called: a parenthesis follows it, right
+ * after it where the name is and, or or not, which before a space and a
+ * parenthesis are their operators, as Notion's reading takes them ("not
+ * (true)" is not before a value in parentheses, "not (true, false)" wants ")"
+ * at [9,10], "true and (false)" reads and "and (true, false)" wants a value
+ * at [0,1], while "abs (1)" is a call; seen 2026-11-28 in Chrome, two tabs).
+ * The server reads them the same (databaseFormulaSyntax.keyword).
+ */
+export function formulaNameCalled(tokens: readonly FormulaToken[], index: number) {
+  const name = tokens[index], next = tokens[index + 1];
+  return name?.type === "identifier" && next?.type === "paren" && next.value === "(" &&
+    (!FORMULA_WORD_OPERATORS.has(name.value) || next.start === name.end);
+}
+
+/**
  * A formula's tokens. Comments are left out, as Notion's parser reads them;
  * `shown` keeps them as "comment" tokens where its editor colours them.
  */
@@ -180,6 +235,7 @@ export function tokenizeFormula(input: string, shown = false): FormulaToken[] {
   const tokens: FormulaToken[] = [];
   let commented = false;
   let i = 0;
+  const invalid: FormulaInvalidCharacter[] = [];
   const push = (token: FormulaToken, start: number) => tokens.push({ ...token, start, end: i });
   while (i < input.length) {
     const ch = input[i];
@@ -188,7 +244,10 @@ export function tokenizeFormula(input: string, shown = false): FormulaToken[] {
       i += 1;
       continue;
     }
-    if (ch === "\"" || ch === "'") {
+    // Only a double quote starts text: Notion's editor names a single one an
+    // invalid character ("'a'" is "'" at [0,1], a at [1,2] not defined and "'"
+    // at [2,3], seen 2026-11-27 and 2026-11-28 in Chrome).
+    if (ch === "\"") {
       const quote = ch;
       let value = "";
       i += 1;
@@ -200,6 +259,14 @@ export function tokenizeFormula(input: string, shown = false): FormulaToken[] {
           value += input[i];
           i += 1;
         }
+      }
+      // Text left open is not text where the editor colours it: its quote
+      // keeps the text's colour and what follows is read on, as Notion's
+      // highlighter does ('"abc + 1' colours + and 1, seen 2026-11-28 in
+      // Chrome, two tabs); its reading names it (formulaSyntaxProblems.ts).
+      if (shown && i >= input.length) {
+        i = start + 1;
+        continue;
       }
       i += 1;
       push({ type: "string", value }, start);
@@ -226,10 +293,10 @@ export function tokenizeFormula(input: string, shown = false): FormulaToken[] {
       push({ type: "number", value }, start);
       continue;
     }
-    if (/[A-Za-z_]/.test(ch)) {
+    if (FORMULA_NAME_START.test(ch)) {
       let value = ch;
       i += 1;
-      while (i < input.length && /[A-Za-z0-9_]/.test(input[i])) {
+      while (i < input.length && FORMULA_NAME_PART.test(input[i])) {
         value += input[i];
         i += 1;
       }
@@ -279,8 +346,20 @@ export function tokenizeFormula(input: string, shown = false): FormulaToken[] {
       push({ type: ch === "?" ? "question" : "colon", value: ch }, start);
       continue;
     }
-    i += 1;
+    // No token starts here: one invalid character for the run it starts or goes on with.
+    const character = String.fromCodePoint(input.codePointAt(i) ?? 0);
+    const run = invalid[invalid.length - 1];
+    if (run?.through === i) run.through += character.length;
+    else invalid.push({ character, start: i, end: i + character.length, through: i + character.length });
+    i += character.length;
   }
   if (commented && tokens.length === 0) onlyComments.add(tokens);
+  if (invalid.length) invalidCharacters.set(tokens, invalid);
   return tokens;
+}
+
+/** Whether `at` stands in a text value of `input`, its closing quote not before it ("da|ys" and an unclosed "da|). */
+export function formulaInText(input: string, at: number) {
+  const tokens = tokenizeFormula(input.slice(0, at)), last = tokens[tokens.length - 1];
+  return last?.type === "string" && (last.end ?? 0) > at;
 }

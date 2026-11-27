@@ -24,7 +24,7 @@ export type MovedOffCaret = { readonly forward: boolean; readonly land: CaretLan
  * went with it (`withCaret`: a line that held it, lines made pages), and
  * none otherwise, nothing chosen, the next key going nowhere; taken back by
  * ⌘Z they leave none, chosen blocks chosen again where they stand (seen in
- * Chrome at 1440 under 한지테스트페이지, pages made by "/페이지", nothing in the
+ * Chrome at 1440 under a Notion test page, pages made by "/페이지", nothing in the
  * page before the keys and a letter typed after each: to another page
  * 2026-11-05, 2026-11-16 and 2026-11-24; into a database 2026-11-24 — a line
  * chosen by Escape, its ⌘Z choosing it back and its ⌘⇧Z leaving none, and a

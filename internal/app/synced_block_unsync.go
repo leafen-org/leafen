@@ -116,6 +116,10 @@ func planSyncedBlockUnsync(
 	if err != nil {
 		return graphMutationInput{}, nil, refusedUnlessStorage(errSyncedBlockUnsyncUnavailable, err)
 	}
+	// A copy of a page's body takes the page's top level, under "" there
+	// (synced_block_page_original.go); Notion's own unsync of one leaves it
+	// as it is (seen 2026-11-27, three times), which Leafen doesn't follow.
+	root := syncedOriginalRoot(strings.TrimSpace(sourceID), sourcePageID)
 	blocks := []storedSyncedBlockSource{}
 	if err := app.DB().NewQuery(`
 		WITH RECURSIVE [[tree]]([[id]]) AS (
@@ -137,7 +141,7 @@ func planSyncedBlockUnsync(
 		FROM [[tree]] CROSS JOIN {{leafen_blocks}} [[block]] ON [[block]].[[id]] = [[tree]].[[id]]
 		ORDER BY [[block]].[[parent_id]], [[block]].[[position]], [[block]].[[id]]
 	`).Bind(dbx.Params{
-		"sourceId": sourceID, "pageId": sourcePageID, "owner": source.Workspace.OwnerID,
+		"sourceId": root, "pageId": sourcePageID, "owner": source.Workspace.OwnerID,
 		"limit": syncedBlockUnsyncMaxBlocks + 1,
 	}).All(&blocks); err != nil {
 		return graphMutationInput{}, nil, err
@@ -145,14 +149,14 @@ func planSyncedBlockUnsync(
 	if len(blocks) > syncedBlockUnsyncMaxBlocks {
 		return graphMutationInput{}, nil, graphInputError(errorCodeGraphInvalid, "The synced block is too large to unsync.")
 	}
-	blocks = syncedBlockSourceLevels(sourceID, blocks)
-	var original int
+	blocks = syncedBlockSourceLevels(root, blocks)
+	original := 1
 	if err := app.DB().NewQuery(`
 		SELECT COUNT(*) FROM {{leafen_blocks}} WHERE [[id]] = {:id} AND [[page_id]] = {:pageId} AND [[owner]] = {:owner}
 	`).Bind(dbx.Params{"id": sourceID, "pageId": sourcePageID, "owner": source.Workspace.OwnerID}).Row(&original); err != nil {
 		return graphMutationInput{}, nil, err
 	}
-	if original == 0 {
+	if original == 0 && root != "" {
 		return graphMutationInput{}, nil, errSyncedBlockUnsyncUnavailable
 	}
 	document, _, err := loadYgoDoc(app, sourcePageID)
@@ -160,12 +164,12 @@ func planSyncedBlockUnsync(
 		return graphMutationInput{}, nil, err
 	}
 
-	targets := map[string]string{sourceID: copyBlock.ParentID}
+	targets := map[string]string{root: copyBlock.ParentID}
 	for _, block := range blocks {
 		digest := sha256.Sum256([]byte(strings.Join([]string{"synced-unsync", principalID, page.Id, blockID, block.ID}, "\x00")))
 		targets[block.ID] = "b" + hex.EncodeToString(digest[:12])
 	}
-	previous := map[string]string{sourceID: blockID}
+	previous := map[string]string{root: blockID}
 	operations := make([]graphOperation, 0, len(blocks)+1)
 	roots := []string{}
 	updates := []graphTextUpdate{}
@@ -184,7 +188,7 @@ func planSyncedBlockUnsync(
 			afterID = &after
 		}
 		previous[block.ParentID] = target
-		if block.ParentID == sourceID {
+		if block.ParentID == root {
 			roots = append(roots, target)
 		}
 		operations = append(operations, graphOperation{Kind: graphOperationKindUpsertBlock, Block: &graphBlock{

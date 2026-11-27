@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// Each colour token has its role, as Notion's (seen 2026-10-11, 한지테스트페이지):
+// Each colour token has its role, as Notion's (seen 2026-10-11 on a Notion test page):
 //
 // - An icon paints with an icon token (--icon-primary, --icon-secondary,
 //   --icon-tertiary), not the faint text one (--text-tertiary) nor the

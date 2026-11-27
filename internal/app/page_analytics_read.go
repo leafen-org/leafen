@@ -107,6 +107,13 @@ func readPageAnalytics(
 		if err != nil {
 			return err
 		}
+		// A guest reads none of the workspace's analytics (page_analytics_readers.go).
+		if member, err := pageAnalyticsReader(txApp, user.Id, authorization.Workspace.WorkspaceID); err != nil {
+			return err
+		} else if !member {
+			notFound = true
+			return nil
+		}
 		// A database row page reads its own views, through the page that
 		// holds it.
 		dailyQuery, recentQuery, daysQuery, targetID := pageAnalyticsDailyTotalsSQL, pageAnalyticsRecentViewersSQL, pageAnalyticsDaysSQL, input.PageID

@@ -7,7 +7,6 @@ import {
   Columns as PhosphorColumns,
   ListBullets as PhosphorListBullets,
   Minus as PhosphorMinus,
-  TextT as PhosphorTextT,
   WarningCircle as PhosphorWarningCircle,
   ImageBroken as PhosphorImageBroken,
 } from "@phosphor-icons/react";
@@ -18,10 +17,6 @@ export * from "./blockTypeIcons";
 // A text block's and the selection's marks — the block types, headings,
 // lists, quote, code, the selection bar's formatting and equation, divider,
 // columns and callout — as Notion draws them (moved out of index.tsx).
-
-export const TextIcon = (p: LeafenIconProps) => (
-  <PhosphorIconSvg {...p} icon={PhosphorTextT} />
-);
 
 export const BulletedListIcon = (p: LeafenIconProps) => (
   <PhosphorIconSvg {...p} icon={PhosphorListBullets} />

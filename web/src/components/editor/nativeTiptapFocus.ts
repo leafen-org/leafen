@@ -2,6 +2,7 @@ import { invalidateNativeDomSelection } from "@/lib/tiptapDomSelection";
 import { Selection, TextSelection } from "@tiptap/pm/state";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import type { Editor } from "@tiptap/core";
+import type { EditorView } from "@tiptap/pm/view";
 import { childrenScope } from "./blockOccurrences";
 import { projectedBlocks } from "./nativeTiptapBinding";
 import { nativeOffsetAt, pmOffsetAt } from "./nativeTiptapInline";
@@ -85,6 +86,24 @@ export function focusNativeTiptapBlock(key: string, position: Position = "end", 
     return true;
   }
   return false;
+}
+
+/**
+ * The views of the editors standing inside an element other than `except`,
+ * each in none of the others: a synced copy's own, drawing its original
+ * from another page.
+ */
+export function nativeTiptapEditorsWithin(element: Element, except: EditorView) {
+  const inside = [...views.values()].map((controller) => controller.editor)
+    .filter((editor) => !editor.isDestroyed && editor.view !== except && element.contains(editor.view.dom)).map((editor) => editor.view);
+  return inside.filter((view) => !inside.some((other) => other !== view && other.dom.contains(view.dom)));
+}
+
+/** The view of the editor a view stands in, the innermost; null for a page's own. */
+export function nativeTiptapEditorAround(view: EditorView) {
+  return [...views.values()].map((controller) => controller.editor)
+    .filter((editor) => !editor.isDestroyed && editor.view !== view && editor.view.dom.contains(view.dom))
+    .sort((a, b) => Number(a.view.dom.contains(b.view.dom)) - Number(b.view.dom.contains(a.view.dom)))[0]?.view ?? null;
 }
 
 /** The focus back in the view an element is in, its caret where the view's selection stands; false in none. */

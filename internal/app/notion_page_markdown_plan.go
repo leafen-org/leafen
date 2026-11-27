@@ -168,6 +168,7 @@ func notionMarkdownReplacementPlan(
 
 	ids := make(map[string]string, len(items))
 	used := map[string]bool{}
+	claimed := notionMarkdownClaimedBlocks(oldIDs, matched, edited)
 	for index, item := range items {
 		switch {
 		case matched[index] >= 0:
@@ -180,6 +181,9 @@ func notionMarkdownReplacementPlan(
 			} else if _, ok := tags.NewPages[item.ID]; ok {
 				// A sub-page is its block, and its ID is a page's.
 				ids[item.ID] = newPageID()
+			} else if button := current.keptButton(item, claimed); button != "" {
+				// A button's line names its button (notion_page_markdown_button.go).
+				ids[item.ID] = button
 			} else {
 				ids[item.ID] = uuid.NewString()
 			}

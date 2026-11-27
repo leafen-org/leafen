@@ -78,7 +78,7 @@ function insideLine(line: HTMLElement, rect: DOMRect, top: number) {
 
 /**
  * The place right after a block, as deep as the pointer reaches, as Notion's
- * (seen 2026-11-07, OP-02-b): right of the start of the text of a block that
+ * (seen 2026-11-07): right of the start of the text of a block that
  * takes blocks, the place is inside it — its first block when it holds none
  * (a line of text only when it already holds some), else after its last one,
  * looked at the same way; left of it, after the block.

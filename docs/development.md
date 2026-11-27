@@ -238,7 +238,7 @@ and the disk image people download (`dmg`). Windows gets the program folder
 zipped (`zip`), which people download; it is not in the update list, as
 Windows updates only through the Microsoft Store. The package is a release build
 (`leafen_release`) of web/package.json's version; `--development` packages a
-development build (version `0.1.0-dev`) instead, which starts without the
+development build (version `0.2.0-dev`) instead, which starts without the
 production keys, to try the steps.
 
 On macOS the app is signed with the hardened runtime and
@@ -377,5 +377,5 @@ registry of your own and run it from there:
 ```sh
 docker run -d --name registry -p 127.0.0.1:5000:5000 registry:2
 scripts/publish-image.sh --development --image 127.0.0.1:5000/leafen
-LEAFEN_IMAGE=127.0.0.1:5000/leafen:0.1.0-dev docker compose up -d
+LEAFEN_IMAGE=127.0.0.1:5000/leafen:0.2.0-dev docker compose up -d
 ```

@@ -16,7 +16,7 @@ import (
 
 // Leafen's entry in an agent's settings is named after the server, the same
 // in every folder and on every computer, so a person's rules, skills and
-// allow lists that name its tools (mcp__leafen-tulip-cxb__…) hold everywhere
+// allow lists that name its tools (mcp__leafen-maple-kdr__…) hold everywhere
 // (user 2026-11-27): leafen-<server>-<code>, its name in plain letters and
 // its code (server_code.go, from the server's own ID, kept through backups,
 // restores and moves), so two servers of one name differ — leafen-<code>

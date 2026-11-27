@@ -105,7 +105,7 @@ export function agentInstructionLines(origin: string): string {
  * Leafen still takes for all the person's workspaces, as that person:
  * another person's in the same settings is never kept (2026-11-27) — and
  * trades nothing, the code left unused (user 2026-11-20: a text added
- * leafen-tulip-2 beside a leafen-tulip that worked; agentConnectCommands).
+ * leafen-maple-2 beside a leafen-maple that worked; agentConnectCommands).
  * It asks how to start —
  * moving their Notion workspace here, or from an empty workspace — only
  * where the server says nothing has come into the workspace yet (offerStart,

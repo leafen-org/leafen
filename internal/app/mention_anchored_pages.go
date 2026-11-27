@@ -34,7 +34,7 @@ import (
 // the first, as every one made from a table row's cell or a caption does:
 // Notion's sends the page already hanging on that line or title to the
 // trash, its mention left saying so, though its own sidebar keeps listing
-// it (seen 2026-11-18 in two tabs of 한지테스트페이지); Leafen keeps every
+// it (seen 2026-11-18 in two tabs of a Notion test page); Leafen keeps every
 // page a person made there (an approved difference).
 
 type mentionAnchoredPage struct {
@@ -155,7 +155,7 @@ const (
 // anchoredPageStepOf is what a change does to a page hanging on its parent's
 // line, block or field, by whether that still mentions it (holds) and
 // stands (live), as Notion's does (seen 2026-11-12 and, for the pages left
-// unmentioned, 2026-11-18 in two tabs of 한지테스트페이지,
+// unmentioned, 2026-11-18 in two tabs of a Notion test page,
 // mention_anchored_unmentioned.go):
 //   - mentioned again, one in the trash for its anchor's sake comes back
 //     and one hanging unmentioned is listed again;
@@ -312,7 +312,7 @@ func alignMentionAnchoredPages(app core.App, parentPageID string, pageIDs []stri
 // it stands for one that went with it unmentioned there. One sent
 // to the trash by itself comes back as Notion's restore brings it (its trash
 // window, the trashed page's banner and its API alike, seen 2026-11-18 in
-// two tabs of 한지테스트페이지): no longer hanging, with a block of its own
+// two tabs of a Notion test page): no longer hanging, with a block of its own
 // though its field still mentions it — the last inside its line, for a line
 // that takes blocks inside (restoredLineHoldsPage), and at the body's end
 // for one on the title or any other line. One on a table row's cells or a

@@ -59,6 +59,8 @@ type StructuredEditorProps = {
   staticReadOnlySemantics?: boolean;
   /** Edits this block's content alone, inside another page's editor. */
   rootBlockId?: string | null;
+  /** Edits this page's whole body inside another page's editor, as a synced copy showing it does. */
+  embeddedBody?: boolean;
   /** Shows this one top block as the whole body: an inline database opened alone. */
   onlyBlockId?: string | null;
   moveContext?: EditorMoveContext;
@@ -127,6 +129,7 @@ export function StructuredEditor({
   readOnly = false,
   staticReadOnlySemantics = false,
   rootBlockId = null,
+  embeddedBody = false,
   onlyBlockId = null,
   rowComments = false,
   starterHint,
@@ -155,7 +158,7 @@ export function StructuredEditor({
   const graph = useGraphRowNames(givenGraph);
   const customization = useContext(PageCustomizationContext);
   // One block's content has no page starter of its own.
-  const onlyBlock = rootBlockId === null && onlyBlockId === null && graph.blocks.length === 1 ? graph.blocks[0] : null;
+  const onlyBlock = rootBlockId === null && !embeddedBody && onlyBlockId === null && graph.blocks.length === 1 ? graph.blocks[0] : null;
   // The only line's emptiness, followed as it is typed and erased: its
   // "시작하기" row comes back once its text is gone, as Notion's does (seen
   // 2026-10-31).
@@ -173,7 +176,7 @@ export function StructuredEditor({
   const [dismissedStarterBlockId, setDismissedStarterBlockId] = useState<string | null>(null);
   // A full-page database's body, its database still being made by the
   // server (startChosenDatabaseHere), offers no starter.
-  const showPageStarter = pageStarter && !fixedBody && rootBlockId === null && onlyBlockId === null && (graph.blocks.length === 0
+  const showPageStarter = pageStarter && !fixedBody && rootBlockId === null && !embeddedBody && onlyBlockId === null && (graph.blocks.length === 0
     || (pagePlaceholderBlockId !== null && dismissedStarterBlockId !== pagePlaceholderBlockId));
   const outerMentionSnapshot = useMentionSnapshot();
   const generationRef = useRef(0);
@@ -278,10 +281,10 @@ export function StructuredEditor({
   const fieldPages = useMemo(() => !readOnly && moveContext ? { moveContext, workspaceId: adapter.workspaceId, pageId } : null,
     [adapter.workspaceId, moveContext, pageId, readOnly]);
   const surface = <><Editor adapter={adapter} loading={loading} unavailable={unavailable} showPageStarter={showPageStarter}
-    rootBlockId={rootBlockId} onlyBlockId={onlyBlockId} staticReadOnlySemantics={staticReadOnlySemantics}
+    rootBlockId={rootBlockId} embedded={embeddedBody} onlyBlockId={onlyBlockId} staticReadOnlySemantics={staticReadOnlySemantics}
     pagePlaceholderBlockId={pagePlaceholderBlockId} starter={starter} starterHint={starterHint}
     onAddParagraph={addParagraphFromStarter} onAddDatabase={onAddDatabase} />
-    {(showPageOutline ?? customization.outlineEnabled) && rootBlockId === null && onlyBlockId === null && !fixedBody
+    {(showPageOutline ?? customization.outlineEnabled) && rootBlockId === null && !embeddedBody && onlyBlockId === null && !fixedBody
       ? <FloatingPageOutline adapter={adapter} /> : null}</>;
   const editor = session
     ? <BlockCommentCountsProvider pageId={pageId} workspaceId={workspaceId} row={rowComments} session={session}>{surface}</BlockCommentCountsProvider>

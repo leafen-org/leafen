@@ -5,7 +5,8 @@ import styles from "./databaseSheet";
 /** What a grouped table's group heads do, read as one is pressed (TableGrid keeps them current). */
 export type TableGroupHeadWays = {
   toggle(groupKey: string): void;
-  menu(groupKey: string, element: HTMLElement): void;
+  /** Its "⋯", or its name chip (`naming`, GroupHeadContent). */
+  menu(groupKey: string, element: HTMLElement, naming?: boolean): void;
   add(groupKey: string): void;
 };
 
@@ -28,7 +29,7 @@ export const TableGroupHeadCell = memo(function TableGroupHeadCell({ group, span
   return (
     <div className={styles.tableGroupHeaderInner} role="gridcell" aria-colspan={span}>
       <GroupHeadContent group={group} collapsed={collapsed} count={count} onToggle={() => ways.current?.toggle(group.key)}
-        onMenu={menu ? (element) => ways.current?.menu(group.key, element) : undefined}
+        onMenu={menu ? (element, naming) => ways.current?.menu(group.key, element, naming) : undefined}
         onAdd={add ? () => ways.current?.add(group.key) : undefined} />
     </div>
   );

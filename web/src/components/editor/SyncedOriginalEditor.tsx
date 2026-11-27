@@ -21,12 +21,18 @@ const noStatus = () => {};
  * Blocks move by keys across the copy's edge between the two pages
  * (syncedCopyMove).
  */
-export function SyncedOriginalEditor({ session, pageId, blockId, workspaceId, readOnly, copy }: {
+export function SyncedOriginalEditor({ session, pageId, blockId, workspaceId, readOnly, copy, wholePage = false }: {
   session: Session;
   /** The original's page. */
   pageId: string;
-  /** The original. */
+  /** The original: a block, or the page itself when it shows the page's whole body. */
   blockId: string;
+  /**
+   * Whether it shows the page's whole body: its editor then draws the page's
+   * top level, inside the copy as a nested editor does, none of the page's
+   * own (its title's caret, starter, outline, presence) coming with it.
+   */
+  wholePage?: boolean;
   workspaceId: string;
   readOnly: boolean;
   /** The copy that shows it, and the copy's page as its editor has it. */
@@ -34,7 +40,9 @@ export function SyncedOriginalEditor({ session, pageId, blockId, workspaceId, re
 }) {
   const product = useProductPages() ?? noPages;
   const trail = useContext(SyncedOriginalTrail);
-  const inner = useMemo(() => new Set([...trail, blockId]), [trail, blockId]);
+  // The way in from the open page, which a copy standing on it starts.
+  const openPage = trail.length ? null : copy?.page().pageId ?? null;
+  const inner = useMemo(() => [...trail.length ? trail : openPage ? [openPage] : [], blockId], [trail, openPage, blockId]);
   // Held apart, so blocks crossing the copy's edge show where they go at the press (syncedCopyMove).
   const store = usePageGraphStore();
   const graph = usePageGraph(store);
@@ -57,13 +65,14 @@ export function SyncedOriginalEditor({ session, pageId, blockId, workspaceId, re
   const copyPageId = copy?.page().pageId, copyId = copy?.blockId;
   useEffect(() => copyPageId && copyId ? registerSyncedOriginalShown(copyPageId, copyId, () => side.current!) : undefined, [copyId, copyPageId]);
   const moveContext = body.editorBridge && copy ? { ...body.editorBridge.moveContext, syncedCopy: copy } : body.editorBridge?.moveContext;
-  if (!graph.blocks.some((block) => block.id === blockId)) {
+  if (wholePage ? body.graphUnavailable : !graph.blocks.some((block) => block.id === blockId)) {
     return body.graphLoading ? null : <div className={styles.syncedMissing}>{blockItemText("synced.unavailable")}</div>;
   }
   return (
     <SyncedOriginalTrail.Provider value={inner}>
       <StructuredEditor
-        rootBlockId={blockId}
+        rootBlockId={wholePage ? null : blockId}
+        embeddedBody={wholePage}
         readOnly={!canEdit}
         pageId={pageId}
         workspaceId={workspaceId}

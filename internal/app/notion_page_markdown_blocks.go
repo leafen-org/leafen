@@ -9,23 +9,24 @@ import (
 
 // Beside Notion's tags, a page's Markdown writes the blocks people make on the
 // screen that Notion's writes as unknown (seen 2026-11-04: breadcrumb, alias):
-// <breadcrumb />, <link-to-page url="…" /> and <button>Label</button>, so an
-// agent makes what a person does. A synced block is Notion's: <synced-block>
-// around its blocks, and <synced-block-reference url="…#block-…" /> showing one
-// from elsewhere, which Leafen's reading puts as these lines first
+// <breadcrumb />, and in every form <link-to-page url="…">Title</link-to-page>
+// (notion_page_markdown_link_to_page.go) and <button url="…">Label</button>
+// (notion_page_markdown_button.go), so an agent makes what a person does. A
+// synced block is Notion's: <synced-block> around its blocks, and
+// <synced-block-reference url="…#block-…" /> showing one from elsewhere,
+// which Leafen's reading puts as these lines first
 // (notion_page_markdown_containers.go).
 
-var (
-	notionMarkdownOwnBlockPattern = regexp.MustCompile(`^<(breadcrumb|link-to-page|synced-block-reference|synced-block)((?:[ \t]+[a-z-]+="[^"]*")*)[ \t]*/>$`)
-	notionMarkdownButtonPattern   = regexp.MustCompile(`^<button[ \t]*>(.*)</button>$`)
-)
+var notionMarkdownOwnBlockPattern = regexp.MustCompile(`^<(breadcrumb|synced-block-reference|synced-block)((?:[ \t]+[a-z-]+="[^"]*")*)[ \t]*/>$`)
 
 // notionMarkdownOwnBlockLine reads a line holding one of these blocks.
 func notionMarkdownOwnBlockLine(line string) (string, json.RawMessage, bool) {
 	trimmed := strings.TrimSpace(line)
-	if match := notionMarkdownButtonPattern.FindStringSubmatch(trimmed); match != nil {
-		content, err := json.Marshal(map[string]string{"label": strings.TrimSpace(unescapeNotionMarkdown(match[1]))})
-		return graphBlockTypeButton, content, err == nil
+	if kind, content, button := notionMarkdownButtonLine(trimmed); button {
+		return kind, content, true
+	}
+	if kind, content, linked := notionMarkdownLinkToPageLine(trimmed); linked {
+		return kind, content, true
 	}
 	match := notionMarkdownOwnBlockPattern.FindStringSubmatch(trimmed)
 	if match == nil {
@@ -37,19 +38,6 @@ func notionMarkdownOwnBlockLine(line string) (string, json.RawMessage, bool) {
 		return graphBlockTypeBreadcrumb, json.RawMessage(`{}`), true
 	case "synced-block":
 		return graphBlockTypeSyncedBlock, json.RawMessage(`{}`), true
-	case "link-to-page":
-		// Its page by Leafen's ID, which its address at /p/ names with a
-		// UUID's dashes or without, as the reading writes it now
-		// (notionMentionURL); any other address by the ID it ends in.
-		pageID, _ := mcpInternalPageID(address)
-		if pageID == "" {
-			pageID = notionMarkdownAddressID(address)
-		}
-		if !validPageRecordID(pageID) {
-			return "", nil, false
-		}
-		content, err := json.Marshal(map[string]string{"childPageId": pageID})
-		return graphBlockTypeLinkToPage, content, err == nil
 	}
 	// A reference keeps its address until the write resolves it
 	// (notionMarkdownSyncedReferences); Leafen's own form names its original's
@@ -74,23 +62,23 @@ func (w *notionMarkdownWriter) ownBlock(block workspaceExportMarkdownBlock, pref
 		return []string{prefix + "<breadcrumb />"}, true
 	case graphBlockTypeButton:
 		w.rendered = append(w.rendered, block.ID)
-		return []string{prefix + "<button>" + notionMarkdownEscaped.Replace(mapString(block.Content, "label")) + "</button>"}, true
+		return []string{prefix + w.button(block)}, true
 	case graphBlockTypeLinkToPage:
-		pageID := strings.TrimSpace(mapString(block.Content, "childPageId"))
-		if pageID == "" || w.mentions.Page == nil {
-			return nil, false
-		}
-		target, ok := w.mentions.Page(pageID)
-		if !ok {
+		line, linked := w.linkToPage(block)
+		if !linked {
 			return nil, false
 		}
 		w.rendered = append(w.rendered, block.ID)
-		return []string{prefix + `<link-to-page url="` + address(target) + `" />`}, true
+		return []string{prefix + line}, true
 	case graphBlockTypeSyncedBlock:
 		w.rendered = append(w.rendered, block.ID)
 		// A reference reads with what its original holds, as Notion's does;
 		// written back as read that changes nothing, and with other blocks it
 		// writes them into its original (notion_page_markdown_synced_content.go).
+		// One showing a page's body reads the page's top level (notion_page_markdown_synced_page.go).
+		if page := syncedCopyPage(block.Content); page != "" {
+			return w.syncedPageReference(page, block.ID, prefix, false), true
+		}
 		if original := strings.TrimSpace(mapString(block.Content, "syncedBlockId")); original != "" {
 			opening := prefix + `<synced-block-reference url="` + address(w.syncedAddress(syncedBlockNamed(original, block.ID))) + `"`
 			// One syncing from no block reads as Notion's, its tags with

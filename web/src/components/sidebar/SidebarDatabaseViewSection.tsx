@@ -5,6 +5,7 @@ import { galleryPresentationPage } from "@/components/database/galleryViewModel"
 import { projectRows } from "@/components/database/viewRowProjection";
 import { PageIconGlyph } from "@/components/page/PageIcon";
 import { PageRenamePopover, renamePopoverAt } from "@/components/page/PageRenamePopover";
+import { graphNameKept } from "@/lib/typedGraphChanges";
 import { TitleWithCustomEmoji } from "@/components/page/TitleWithCustomEmoji";
 import { presentationBefore, type PagePresentationChange } from "@/components/page/pagePresentation";
 import { DotsHorizontal, OpenInNew, Plus, SidebarChevronDown } from "@/icons/leafen";
@@ -346,6 +347,11 @@ export function SidebarDatabaseViewSection({ view, limit, session, workspaceId, 
                 </button>
                 {renaming?.rowId === row.id ? (
                   <PageRenamePopover page={{ ...page, icon: page.icon ?? "", iconType: page.iconType ?? "none" }} title={page.title} titleSpans={page.titleSpans} untitled={pageNames.title({ ...page, title: "", untitledName })} at={renaming.at}
+                    // Kept on the device at each key as the change saving it writes (lib/typedGraphChanges.ts).
+                    kept={graphNameKept(`row:${row.id}/title`, view.pageId, (typed) => {
+                      const change = served && sidebarViewRowNameChange(view, served, row.id, { title: typed.title, ...(typed.spans ? { spans: typed.spans } : {}) });
+                      return change ? [change.operation] : null;
+                    })}
                     onTitleChange={(next, spans) => void saveRowTitle(row.id, next, spans)} onTitleShown={(next, spans) => showRowTitle(row.id, next, spans)} onClose={endRename}
                     onPresentationChange={read.status === "ready" && read.canEdit ? (change) => void saveRowIcon(row.id, change, presentationBefore({ icon: page.icon ?? "", iconType: page.iconType ?? "none" }, change)) : undefined} />
                 ) : null}

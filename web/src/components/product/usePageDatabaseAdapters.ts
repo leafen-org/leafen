@@ -1,4 +1,4 @@
-import { useMemo, useRef, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useMemo, useRef, type Dispatch, type SetStateAction } from "react";
 import type { ContentGraph, GraphProperty } from "@/contentGraph";
 import { createNativeBoardProductAdapter, type NativeBoardProductAdapter } from "@/lib/nativeBoardProductAdapter";
 import { createNativeDatabaseViewProductAdapter } from "@/lib/nativeDatabaseViewProductAdapter";
@@ -10,6 +10,7 @@ import { TYPED_VALUE_MS, typingRun, valueStepRecorder } from "@/lib/valueSteps";
 import type { ProductStatusSink } from "@/lib/productStatus";
 import type { Session } from "@/types";
 import type { PageGraphStore } from "@/lib/pageGraphStore";
+import { sendTypedGraphChangesBy, typedGraphChangeOn } from "@/lib/typedGraphChanges";
 import type { useContentGraphWrites } from "./useContentGraphWrites";
 import type { useDatabaseDateCommandHistory } from "./useDatabaseDateCommandHistory";
 
@@ -56,6 +57,11 @@ export function usePageDatabaseAdapters(input: {
     isLatest: (key) => latest.current.dateCommands.isLatestCommand(key),
     drop: (key) => latest.current.dateCommands.dropCommand(key),
   }), []);
+  // A name typed in its field is kept as the change its saving makes on the graph as drawn (typedName.ts).
+  useEffect(() => sendTypedGraphChangesBy((make) => {
+    const drawn = readGraph();
+    return typedGraphChangeOn(drawn, pageId, make(drawn));
+  }), [pageId, readGraph]);
   const editedProperties = useRef<{ key: string; ids: string; at: number; run: number; before: readonly GraphProperty[]; after: readonly GraphProperty[] } | null>(null);
   const setMessage: ProductStatusSink = useMemo(() => (message, tone) => latest.current.onStatus(message, tone), []);
   const form = useMemo(() => createNativeFormProductAdapter({

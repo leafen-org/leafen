@@ -14,8 +14,9 @@ import (
 // read, one that changes pages, rows, comments or files needs content, and
 // one that changes a database's structure or its views needs structure. A
 // tool not named here changes content. A connection does what its person
-// may with the tools its page leaves on (mcpScopeForTools), held to what its
-// workspaces' organizations allow keys (connection_person_rights.go).
+// may — an MCP token with the tools its page leaves on (mcpScopeForTools) —,
+// held to what its workspaces' organizations allow keys
+// (connection_person_rights.go).
 var mcpToolScopes = map[string]userKeyScope{
 	"leafen_fetch": userKeyScopeRead, "leafen_search": userKeyScopeRead, "leafen_list_workspaces": userKeyScopeRead,
 	"leafen_get_file": userKeyScopeRead, "leafen_workday": userKeyScopeRead,

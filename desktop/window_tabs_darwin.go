@@ -43,6 +43,10 @@ const stripPlatform = "mac"
 // pageKeepsHistory: WebKit lists a tab's page's history (tabHistoryList).
 const pageKeepsHistory = false
 
+// focusGivesStripKeys: Wails makes a window key with its first responder
+// left where it was, the shown page's view (focusFrame).
+const focusGivesStripKeys = false
+
 // The frame and its tabs' web views on macOS (window_tabs_darwin.m). Each
 // runs on the main thread, where the tabs live.
 

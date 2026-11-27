@@ -32,7 +32,7 @@ var userKeyPersonOnlySteps = map[string]userKeyPersonOnlyStep{
 	"/account/passkeys":                        {screen: []string{"settings", "accountSecurity"}, step: "they remove a passkey there, on their own device"},
 	"/account/sessions/current/second-factor":  {step: "they enter it in the browser that is logging in"},
 	"/mcp/connections/{id}/token/reveal":       {screen: []string{"settings", "agents", "agentsConnected"}, step: "they see its key on this connection's page there"},
-	"/mcp/connections/{id}/pages":              {screen: []string{"settings", "agents", "agentsConnected"}, step: "they choose its pages on this connection's page there"},
+	"/mcp/connections/{id}/pages":              {screen: []string{"settings", "agents", "agentsConnected"}, step: "they choose an MCP token's pages on its page there (an agent connection reaches every page, with none to choose)"},
 	"/mcp/device-connections/find":             {screen: []string{"settings", "agents", "agentsOtherComputer"}, step: "they type the other agent's code there"},
 	"/mcp/device-connections/decide":           {screen: []string{"settings", "agents", "agentsOtherComputer"}, step: "they type the other agent's code there"},
 }

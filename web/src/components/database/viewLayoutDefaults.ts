@@ -124,13 +124,28 @@ function withAddedViewSubitems(config: Record<string, unknown>, properties: read
 /**
  * What each layout keeps of its own, as Notion's views do (seen 2026-10-04:
  * a table turned into a board, a gallery and a list showed each layout's
- * own cards, not the table's columns): its shown properties, its card
- * preview, size and layout, and where its pages open.
+ * own cards, not the table's columns; seen 2026-11-27: a gallery's cards
+ * made large and their preview the page's content showed a board's medium
+ * and none, and large again back in the gallery): its shown properties, its
+ * card preview, size and layout, and its wrapping.
  */
 const LAYOUT_KEYS = [
   "visibleProperties", "hiddenProperties", "visiblePropertyIds",
-  "coverProperty", "cardSize", "cardLayout", "fitImage", "openPageIn", "wrap",
+  "coverProperty", "cardSize", "cardLayout", "fitImage", "wrap",
 ] as const;
+
+/**
+ * Where a view opens its pages is the view's, not a layout's, as Notion's
+ * (seen 2026-11-27 in Chrome at 1440, dark, after each switch by its
+ * "페이지 보기 선택", in two tabs at different times): a table set to open
+ * them whole opened them whole as a board, a gallery, a list, a calendar, a
+ * timeline, a feed and a map, and as a table again; one set to its own
+ * default, the side, kept the side as a gallery, whose own is the middle;
+ * one never set took each layout's own (defaultOpenPageIn) — the middle as a
+ * gallery, the side as a board. A view saved while each layout kept its own
+ * takes the one its new layout kept when it has none of its own.
+ */
+const OPEN_PAGE_IN = "openPageIn";
 
 /**
  * Grouping is the view's, not a layout's, as Notion's (seen 2026-10-24: a
@@ -168,9 +183,52 @@ function hidesEmptyGroups(config: ViewConfig, layout: GraphViewType, properties:
  * a board or a table again the view groups by it, its empty groups as they
  * showed — a grouping picked on the chart's screen meanwhile goes, as any
  * chart's does. A board's grouping stays the chart's own (its grouping
- * screen shows it, GROUPING_KEYS).
+ * screen shows it, GROUPING_KEYS), its sub-groups kept here (subGroupingOf).
  */
 const GROUPING_BEFORE_CHART = "groupingBeforeChart";
+
+/** A board's sub-groups' property and their own settings, a grouping's keys (boardSubgroupConfig). */
+const SUB_GROUPING_KEYS = ["subGroupBy", "subGroup"] as const;
+
+/** Of a grouping, what lies beside GROUPING_KEYS: how its dates and weeks group, and the groups made by hand. */
+const GROUPING_DETAIL_KEYS = ["dateGroupBy", "startDayOfWeek", "keptGroups"] as const;
+
+/**
+ * A board's sub-groups as the grouping they are off the board, as Notion's
+ * (seen 2026-11-27 in Chrome, its views' own records read after each switch,
+ * in two tabs at different times): a board keeps its columns apart from the
+ * one grouping every other layout reads, and its sub-groups are that
+ * grouping — a board by 상태 sub-grouped by 종류 made a table grouped by
+ * 종류, hiding its empty groups as the sub-groups did, and made a board again
+ * its columns were 종류, with no sub-groups; made a chart, it said a group's
+ * 25 and the table it became grouped by 종류. A board's columns never group
+ * another layout while it has sub-groups.
+ */
+function subGroupingOf(config: ViewConfig, properties: readonly PropertyLike[]): Record<string, unknown> | undefined {
+  const by = config.subGroupBy;
+  if (typeof by !== "string" || !properties.some((property) => property.id === by)) return undefined;
+  const sub = typeof config.subGroup === "object" && config.subGroup !== null && !Array.isArray(config.subGroup)
+    ? config.subGroup as Record<string, unknown> : {};
+  // Folded sub-groups stay with the board's lanes; a grouping folds its groups on each device (useCollapsedGroups).
+  const { collapsedGroups: _folded, ...settings } = sub;
+  void _folded;
+  return { ...settings, groupBy: by };
+}
+
+/**
+ * Whether a view's rows are grouped, whatever its layout draws: by a
+ * property it names that is still there, a chart's grouping kept apart for
+ * its return too — a calendar or a chart still is, as Notion's keep it (seen
+ * 2026-11-27: their "처음 불러오기" said a group's 25, shownInitialLoadLimit).
+ * A chart's own grouping, its grouping screen's — a board's columns it was
+ * made from — groups none of its rows: a board made a chart said 50 (seen
+ * 2026-11-27 in two tabs), the table it became not grouped.
+ */
+export function viewGroupsRows(config: ViewConfig | undefined, properties: readonly { id: string }[], layout?: GraphViewType) {
+  const before = config?.[GROUPING_BEFORE_CHART] as ViewConfig | undefined;
+  const by = layout !== "chart" && typeof config?.groupBy === "string" ? config.groupBy : before?.groupBy;
+  return typeof by === "string" && properties.some((property) => property.id === by);
+}
 
 /** The layouts whose first settings show the title alone (layoutDefaults). */
 const TITLE_ALONE_LAYOUTS = new Set<GraphViewType>(["board", "gallery", "list", "calendar", "timeline", "feed"]);
@@ -338,9 +396,17 @@ export function switchedLayoutConfig(
     delete next[GROUPING_BEFORE_CHART];
   }
   if (axis) next.chartGroupBy = axis;
-  // A board's grouping goes on as the group it shows, its default when its settings name none (boardGroupPropertyId).
+  // A board's grouping goes on as the group it shows, its default when its settings name none (boardGroupPropertyId),
+  // or as its sub-groups where it has them, apart while it is a chart (subGroupingOf); a view made a board has none.
   const shown = from === "board" ? boardGroupPropertyId(config, properties) : undefined;
   if (shown) next.groupBy = shown;
+  const sub = from === "board" ? subGroupingOf(config, properties) : undefined;
+  if (from === "board" || to === "board") for (const key of SUB_GROUPING_KEYS) delete next[key];
+  if (sub && to === "chart") next[GROUPING_BEFORE_CHART] = { ...sub, hideEmptyGroups: hidesEmptyGroups(sub, "table", properties) };
+  else if (sub) {
+    for (const key of [...GROUPING_KEYS, ...GROUPING_DETAIL_KEYS]) delete next[key];
+    Object.assign(next, sub);
+  }
   // A table's, list's or gallery's grouping is kept apart while it is a chart, hiding its empty groups or not as it did.
   if (to === "chart" && from !== "board" && typeof next.groupBy === "string") {
     const grouping: Record<string, unknown> = { hideEmptyGroups: hidesEmptyGroups(next, from, properties) };
@@ -352,14 +418,15 @@ export function switchedLayoutConfig(
   }
   // Its empty groups stay as they showed, each layout reading its setting its own way (seen 2026-11-18:
   // a board by a select showing its empty groups made a table and a chart showing them, "빈 그룹 숨기기" off;
-  // a table hiding them made a board without its empty column).
+  // a table hiding them made a board without its empty column) — sub-groups' as a table reads them.
   if (typeof next.groupBy === "string") {
-    const hides = hidesEmptyGroups(next, from, properties);
+    const hides = hidesEmptyGroups(next, sub && to !== "chart" ? "table" : from, properties);
     if (hidesEmptyGroups(next, to, properties) !== hides) next.hideEmptyGroups = hides;
   }
-  // A layout's kept settings never bring back a grouping (views saved before kept one there).
+  // A layout's kept settings never bring back a grouping (views saved before kept one there),
+  // nor where pages open over the view's own (OPEN_PAGE_IN).
   const returning = kept[to] && Object.fromEntries(Object.entries(kept[to])
-    .filter(([key]) => !(GROUPING_KEYS as readonly string[]).includes(key)));
+    .filter(([key]) => !(GROUPING_KEYS as readonly string[]).includes(key) && !(key === OPEN_PAGE_IN && OPEN_PAGE_IN in next)));
   const { [to]: _taken, ...others } = kept;
   void _taken;
   next[LAYOUT_SETTINGS] = { ...others, [from]: leaving };

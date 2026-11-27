@@ -35,6 +35,16 @@ export function holdUntilTypingEnds(send: () => void): () => void {
   return () => { holding.delete(send); };
 }
 
+// A field saved as it closes whose page going closes it (typedName.ts): sent as the page goes, and not before.
+const untilPageGoes = new Set<() => void>();
+
+/** Holds a field's saving until the page goes (pagehide), as one closed then; what it gives lets it go. */
+export function holdUntilPageGoes(send: () => void): () => void {
+  untilPageGoes.add(send);
+  listen();
+  return () => { untilPageGoes.delete(send); };
+}
+
 type HeldWrite = { write: () => Promise<boolean>; answers: Array<(saved: boolean) => void>; timer: number; release: () => void };
 
 /**
@@ -79,7 +89,8 @@ function sendHeld() {
 // what was held after its own frame: the press shows first, and a change the
 // key itself sends meanwhile takes the held writes ahead of it.
 const ENDING_KEYS = new Set(["Enter", "Escape", "Tab"]);
-function endsTyping(event: KeyboardEvent) {
+/** Whether a key ends the typing: Enter, Escape or Tab, or a step of the page's history (⌘Z, ⌘⇧Z, ⌘Y). */
+export function endsTyping(event: KeyboardEvent) {
   if (ENDING_KEYS.has(event.key)) return true;
   const key = event.key.toLowerCase();
   return (event.metaKey || event.ctrlKey) && (key === "z" || key === "y");
@@ -100,5 +111,11 @@ function listen() {
   window.addEventListener("focusout", soon, { capture: true, passive: true });
   // Hidden or going, the page sends at once: it may not paint again.
   document.addEventListener("visibilitychange", () => { if (document.hidden) sendHeld(); });
-  window.addEventListener("pagehide", sendHeld);
+  window.addEventListener("pagehide", () => {
+    sendHeld();
+    for (const send of [...untilPageGoes]) {
+      untilPageGoes.delete(send);
+      send();
+    }
+  });
 }

@@ -135,7 +135,7 @@ export interface ListViewOperations extends ViewNoResultsCommands {
   duplicateRows?(rowIds: readonly string[], place?: CopiesPlace): Promise<readonly string[] | void>;
   openGroupSettings?(trigger: HTMLElement): void;
   /** Its first cards and how to show more, when the list shows only its first. */
-  loadMoreCards?: CardsLoadMoreControl;
+  /** The cards made here since it opened, shown past a group's first ones (useListGroupLoads). */ madeRowIds?: ReadonlySet<string>; loadMoreCards?: CardsLoadMoreControl; setCardLoadLimit?(limit: number): void;
   isCurrent(context: ListViewOperationContext): boolean;
   loadSubitemRows(parentId: string, context: ListViewOperationContext): Promise<ListSubitemWindow | null>;
   loadMoreSubitemRows(parentId: string, cursor: string, context: ListViewOperationContext): Promise<ListSubitemWindow | null>;
@@ -176,7 +176,7 @@ export function ListView({
   // A row shown for a sub-item the filter keeps opens onto it, as Notion's (seen 2026-10-11).
   useEffect(() => { const faded = snapshot.fadedRowIds; if (faded?.size && subitemFilterScope(snapshot.view.config) !== "parents") setExpandedRows((current) => new Set([...current, ...faded])); }, [snapshot.fadedRowIds, snapshot.view.config]);
   const [createBusy, setCreateBusy] = useState(false);
-  const [collapsedGroups, setCollapsedGroups] = useCollapsedGroups(snapshot.view.id), groupLoads = useListGroupLoads(snapshot.view), cutGroup = groupLoads.cut;
+  const [collapsedGroups, setCollapsedGroups] = useCollapsedGroups(snapshot.view.id), groupLoads = useListGroupLoads(snapshot.view, operations.madeRowIds, operations.setCardLoadLimit), cutGroup = groupLoads.cut;
   const [groupMenu, setGroupMenu] = useState<ViewGroupMenuAt | null>(null);
   // A row just made here, its title edited in place as Notion's list does.
   const [editingRowId, setEditingRowId] = useState<string | null>(null);
@@ -552,8 +552,8 @@ export function ListView({
                 <GroupHeadContent group={group} collapsed={collapsedGroups.has(group.key)}
                   onToggle={() => setCollapsedGroups((current) => { const next = new Set(current); if (next.has(group.key)) next.delete(group.key); else next.add(group.key); return next; })}
                   count={snapshot.view.config?.showGroupCounts === true ? topRows.length : undefined}
-                  onMenu={readOnly || !operations.updateViewConfig ? undefined : (element) => setGroupMenu({ group: { ...group, rows: group.rows.map((row) => ({ row })) },
-                    position: popoverAnchorOf(element), returnTo: element })}
+                  onMenu={readOnly || !operations.updateViewConfig ? undefined : (element, naming) => setGroupMenu({ group: { ...group, rows: group.rows.map((row) => ({ row })) },
+                    position: popoverAnchorOf(element), returnTo: element, naming })}
                   onAdd={!adds || viewingArchived ? undefined : () => void createRow(null, false, { key: group.key, beforeRowId: topRows[0]?.id })} />
               </div>
             );

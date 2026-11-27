@@ -14,7 +14,7 @@ import (
 // An inline database whose block alone went to the trash, its page out of
 // it, opens alone under the trash's banner — from the trash's list and from
 // its mentions — as Notion's does (seen 2026-11-24 in Chrome at 1440 under
-// 한지테스트페이지, two tabs: "W2559 블록 DB" opened by its mention at
+// a Notion test page, two tabs: "W2559 블록 DB" opened by its mention at
 // /p/<its ID> with "… 님이 이 페이지를 휴지통으로 이동했습니다", "페이지 복원"
 // and "영구 삭제하기"; restored, it stays open, out of the trash). Its page's
 // graph, asked for it (trashedDatabase=<its ID>, content_graph.go), carries

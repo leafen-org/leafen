@@ -6,7 +6,9 @@ import "encoding/json"
 // checks them, each in its form (seen 2026-11-12, every field given out of
 // form at once and taken away one by one as refused): a chart's type and
 // axes first, then its look; a board's groups before its properties; a
-// calendar's and a timeline's date first; a map's height before its place.
+// calendar's and a timeline's date first; a map's height before its place;
+// a list's, gallery's and timeline's group_by, as a table's, after their
+// properties (seen 2026-11-27).
 // An enum's choices are listed in Notion's order and words: a chart's color
 // themes are its eleven (brown, which charts made on the screen before
 // kept, is none of them), and a field that may be null takes it as unset,
@@ -64,15 +66,16 @@ func notionViewConfigurationFields(viewType string) []notionViewFormField {
 	case graphViewTypeBoard:
 		return append([]notionViewFormField{group("group_by", required), group("sub_group_by", nullable), list("properties")}, cards...)
 	case graphViewTypeGallery:
-		return append([]notionViewFormField{list("properties")}, cards...)
+		return append([]notionViewFormField{list("properties"), group("group_by", nullable)}, cards...)
 	case graphViewTypeList:
-		return []notionViewFormField{list("properties")}
+		return []notionViewFormField{list("properties"), group("group_by", nullable)}
 	case graphViewTypeCalendar:
 		return []notionViewFormField{field("date_property_id", notionViewFormOf("string", required)), list("properties"),
 			enum("view_range", "week", "month"), flag("show_weekends")}
 	case graphViewTypeTimeline:
 		return []notionViewFormField{field("date_property_id", notionViewFormOf("string", required)),
-			field("end_date_property_id", notionViewFormOf("string", nullable)), list("properties"), flag("show_table"), list("table_properties"),
+			field("end_date_property_id", notionViewFormOf("string", nullable)), list("properties"), group("group_by", nullable),
+			flag("show_table"), list("table_properties"),
 			field("preference", notionViewFormObject(nullable, field("zoom_level", notionViewFormEnum(required, notionViewTimelineZooms...)),
 				field("center_timestamp", notionViewFormOf("whole", optional)))),
 			field("arrows_by", notionViewFormObject(nullable, field("property_id", notionViewFormOf("string", nullable)))), flag("color_by")}

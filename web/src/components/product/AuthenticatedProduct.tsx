@@ -272,7 +272,7 @@ export default function AuthenticatedProduct({
     selectedWorkspace ? workspacePageListsOf(data.pages, selectedWorkspace.id).trashed : []
   ), [data.pages, selectedWorkspace]);
   const openStartPage = useStartPage({
-    session, pathname, loaded: data.snapshotRevision > 0 && !consent, pages: data.pages, workspace: selectedWorkspace,
+    session, pathname, loaded: data.snapshotRevision > 0 && !consent, pages: data.pages, workspace: selectedWorkspace, workspaces: data.workspaces,
     openPage: (page) => openPage(page, false), openLibrary: (workspace) => pushRoute(libraryHref(libraryOpeningView(session.user.id, workspace))),
   });
   // A body edited away from the page view reads the page list again through

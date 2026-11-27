@@ -36,6 +36,10 @@ func validateStructuralGraphPlaces(
 	if storedBlocks {
 		return nil
 	}
+	// A copy naming a page shows that page's body (synced_block_page_original.go).
+	if err := nameSyncedPageOriginals(app, owner, pageID, operations); err != nil {
+		return err
+	}
 	return refuseBlocksUnderSyncedCopies(app, owner, pageID, projection, operations)
 }
 
@@ -88,7 +92,7 @@ func refuseBlocksUnderSyncedCopies(
 		if parentID != "" && original != "" {
 			return graphRefused(errorCodeGraphReferenceInvalid, "A synced copy can't hold blocks.",
 				"operations[%d].%s.parentId %q is a synced block copy, which shows its original's blocks: "+
-					"put the block under the original, block %q", index, field, parentID, original)
+					"put the block %s", index, field, parentID, syncedOriginalPlace(app, original))
 		}
 	}
 	made := []string{}

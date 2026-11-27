@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { GraphBlock } from "@/contentGraph";
 import { ArrowUpRightIcon, CaptionIcon, CommentSmallIcon, CropIcon, DotsHorizontal, ExpandDiagonalIcon, ImageAlignIcon, ImportIcon, ZoomInIcon } from "@/icons/leafen";
 import { blockItemText } from "./blockItemLabels";
@@ -8,6 +8,7 @@ import { useOpenCommentCard } from "@/components/comments/openCommentCard";
 import { openBlockToolMenu, requestEditorBlockCommand } from "./editorCommands";
 import type { NativeEditorGraphAdapter } from "./editorRuntimeTypes";
 import { focusBlockControlSettled } from "./focus";
+import { mediaColumnRatio, type MediaToolsMode, type MediaToolsRoom, useMediaToolsFold } from "./mediaToolsFold";
 import styles from "./editorStyles.generated.module.css";
 
 const ALIGNMENTS = ["left", "center", "right"] as const;
@@ -18,8 +19,9 @@ const ALIGNMENTS = ["left", "center", "right"] as const;
  * right below it), the caption, full screen, download and the block's menu,
  * each named in Notion's short dark tip above it ("댓글", "정렬", "캡션", "자르기",
  * "펼치기", "다운로드하기", "원본 보기", "더 보기"; the alignments none, seen 2026-11-06).
+ * Where its block is narrow they fold to the menu alone (useMediaToolsFold).
  */
-export function ImageBlockTools({ adapter, block, align, mode = "image", canAlign = true }: {
+export function ImageBlockTools({ adapter, block, align, mode = "image", canAlign = true, foldRoom }: {
   adapter: NativeEditorGraphAdapter;
   block: GraphBlock;
   align: (typeof ALIGNMENTS)[number];
@@ -29,12 +31,16 @@ export function ImageBlockTools({ adapter, block, align, mode = "image", canAlig
    * text or other file's, 2026-11-12: comment, alignment, caption, "원본
    * 미디어 소스 보기" and the menu).
    */
-  mode?: "image" | "video" | "pdf" | "embed" | "web";
+  mode?: MediaToolsMode;
   /** A picture as wide as its column has nothing to align, as Notion's. */
   canAlign?: boolean;
+  /** Where a picture's room that folds its tools is read: its block's, or its frame's (useMediaToolsFold). */
+  foldRoom?: MediaToolsRoom;
 }) {
   const [aligning, setAligning] = useState(false);
   const groupRef = useRef<HTMLDivElement>(null);
+  const ratio = useMemo(() => mediaColumnRatio(adapter.graph, block), [adapter.graph, block]);
+  const folded = useMediaToolsFold(groupRef, mode, block, ratio, foldRoom);
   // A picture's open discussions are counted on its comment tool, not beside
   // the block, and the tool then opens them (Notion's, seen 2026-11-09).
   const discussions = useBlockCommentCount(block.id);
@@ -43,9 +49,10 @@ export function ImageBlockTools({ adapter, block, align, mode = "image", canAlig
   const cardOpen = Boolean(useOpenCommentCard(block.id)) && counted;
   const original = mode === "video" || mode === "web" || mode === "embed";
 
-  // The alignment choices close on Escape or a press outside the tools.
+  // The alignment choices close on Escape or a press outside the tools; folded tools have none.
+  const choosing = aligning && !folded;
   useEffect(() => {
-    if (!aligning) return undefined;
+    if (!choosing) return undefined;
     const outside = (event: PointerEvent) => {
       if (!groupRef.current?.contains(event.target as Node)) setAligning(false);
     };
@@ -58,7 +65,7 @@ export function ImageBlockTools({ adapter, block, align, mode = "image", canAlig
       document.removeEventListener("pointerdown", outside, true);
       document.removeEventListener("keydown", escape, true);
     };
-  }, [aligning]);
+  }, [choosing]);
 
   function toggleCaption() {
     adapter.updateBlock(block, { captionVisible: true });
@@ -67,7 +74,8 @@ export function ImageBlockTools({ adapter, block, align, mode = "image", canAlig
 
   return (
     <div ref={groupRef} className={styles.imageActions} contentEditable={false} data-image-tools={mode}
-      data-open={aligning ? "true" : undefined}>
+      data-open={choosing ? "true" : undefined} data-folded={folded ? "true" : undefined}>
+      {folded ? null : <>
       {adapter.session ? (
         <button type="button" className={styles.imageToolComment} aria-label={blockItemText("image.tools.comment")}
           data-icon-tip={blockItemText("image.tips.comment")} data-tip-side="top" data-image-tool="comment"
@@ -118,6 +126,7 @@ export function ImageBlockTools({ adapter, block, align, mode = "image", canAlig
         onClick={event => requestEditorBlockCommand(block.id, "mediaOriginal", undefined, event.currentTarget)}>
         <ArrowUpRightIcon size="small" aria-hidden="true" />
       </button> : null}
+      </>}
       <button type="button" aria-label={blockItemText("image.tools.menu")} data-icon-tip={blockItemText("image.tips.menu")} data-tip-side="top"
         data-image-tool="menu" onClick={(event) => openBlockToolMenu(block.id, event)}>
         <DotsHorizontal size="small" aria-hidden="true" />

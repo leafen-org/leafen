@@ -31,6 +31,7 @@ import { pageMapOf } from "@/lib/pageIndex";
 import { noteTrashMove } from "@/lib/pageTrashMoves";
 import { dropTypedPageTitle, knownPageName, showTypedPageTitle, typedPageTitle } from "@/lib/pageNames";
 import { notePageWriteOnItsWay, sendTypedPageTitles } from "@/lib/pageKindChange";
+import { typedChangeIdFor } from "@/lib/typedDraftSender";
 
 const COPY_OPENS_BY_MS = 1_600;
 // A copy not in the list yet is looked for again after this, twice as long
@@ -137,7 +138,8 @@ export function usePageMenuActions({
     // meanwhile (as the content graph's writes, 2026-11-04). A change that
     // may be called off (a signal) waits its turn to be kept. A wiki's page's
     // goes so too, sent as its wiki database's page (sendKeptPageMetadata).
-    const mutationId = newId();
+    // A title typed and kept on this device goes as the change its record names (lib/typedDraftSender.ts).
+    const mutationId = (change.title === undefined ? undefined : typedChangeIdFor(page.id)) ?? newId();
     const queued = newestPage(page);
     // Made after the page's changes not yet answered here, it names them: the
     // server takes it on the page as they leave it, whose cursor this device

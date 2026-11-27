@@ -24,6 +24,7 @@ import { keepRowPage, rowPageInPlaceOf } from "./keptRowPage";
 import { keptSentFor } from "./keptSentFor";
 import { lockForMeShownFirst, withUnlockedForMe } from "./lockForMeShownFirst";
 import { pageWritesSent } from "./pageKindChange";
+import { sendRowMove } from "./rowMoveKept";
 import { sendRowPresentation } from "./rowValuesKept";
 
 export type DatabaseRowPageOpenMode = "side" | "center" | "full";
@@ -288,9 +289,20 @@ export function createDatabaseRowPageService(
     }
   }
 
+  // A row's page moved is kept in the outbox and sent in turn by the row's
+  // move route (rowMoveKept.ts), once a title typed before it went: moved out
+  // as a page, or into another database, a wiki's page goes after it
+  // (pageKindChange.ts).
+  async function move(rowId: string, target: DatabaseRowMoveDestination, acceptDroppedPropertyIds: string[]) {
+    await pageWritesSent();
+    if (!alive()) return null;
+    const holder = currentSnapshot?.row.id === rowId ? currentSnapshot.row.containerPageId : null;
+    return sendRowMove(session, rowId, { ...moveTargetInput(target), ...(acceptDroppedPropertyIds.length ? { acceptDroppedPropertyIds } : {}) }, holder);
+  }
+
   function runAction(
     rowId: string,
-    action: "duplicate" | "move" | "trash" | "restore" | "deletePermanently",
+    action: "duplicate" | "trash" | "restore" | "deletePermanently",
     target?: DatabaseRowMoveDestination,
     acceptDroppedPropertyIds: string[] = [],
   ) {
@@ -298,8 +310,6 @@ export function createDatabaseRowPageService(
     const inflight = actionInflight.get(key);
     if (inflight) return inflight;
     const request = (async () => {
-      // Moved out as a page, or into another database, a wiki's page goes once its title typed before has (pageKindChange.ts).
-      if (action === "move") await pageWritesSent();
       let snapshot = await refresh(rowId);
       // A copy is of the row as the server holds it, once what this device wrote of it went (keptSentFor).
       if (snapshot && action === "duplicate" && await keptSentFor(session, snapshot.row.containerPageId)) snapshot = await refresh(rowId);
@@ -316,7 +326,6 @@ export function createDatabaseRowPageService(
       pendingActionInputs.set(key, input);
       const operation = {
         duplicate: duplicateDatabaseRowPage,
-        move: moveDatabaseRowPage,
         trash: trashDatabaseRowPage,
         restore: restoreDatabaseRowPage,
         deletePermanently: deleteDatabaseRowPagePermanently,
@@ -353,9 +362,7 @@ export function createDatabaseRowPageService(
     setLockForMe,
     duplicate: (rowId: string) => runAction(rowId, "duplicate"),
     previewMove,
-    move: (rowId: string, target: DatabaseRowMoveDestination, acceptDroppedPropertyIds: string[] = []) => (
-      runAction(rowId, "move", target, acceptDroppedPropertyIds)
-    ),
+    move: (rowId: string, target: DatabaseRowMoveDestination, acceptDroppedPropertyIds: string[] = []) => move(rowId, target, acceptDroppedPropertyIds),
     // Trash state changes the row page's revision, so it is read again.
     trash: async (rowId: string) => {
       const result = await runAction(rowId, "trash");

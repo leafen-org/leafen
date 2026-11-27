@@ -15,9 +15,10 @@ import { automationVariableKind, automationVariableScopeName, type AutomationVar
 // it was worked out, its type kept.
 
 /**
- * A variable's name in a formula: its own where formulas take it as a name
- * (letters, digits and _), else one made from it, as the server binds it
- * (automationVariableFormulaName). Its chip shows the variable's own name.
+ * A variable's name in a formula: its own where it is of the letters a-z and
+ * A-Z, digits and _, else one made from it, as the server binds it
+ * (automationVariableFormulaName) and as saved formulas hold it, though a
+ * formula reads a name of any letters. Its chip shows the variable's own name.
  */
 function automationVariableFormulaName(name: string) {
   if (/^[A-Za-z_][A-Za-z0-9_]*$/u.test(name)) return name;

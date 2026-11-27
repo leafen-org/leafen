@@ -1,7 +1,7 @@
 import type { NativePageMetadataChange, PageMetadataBaseline } from "./nativePageMetadata";
 import type { NativePageMutationBounds } from "./nativePageMutationOutbox";
 import type { GraphOperation, GraphRow, GraphRowTemplateFill } from "@/contentGraphWire.generated";
-import type { DatabaseRowPagePresentationInput, DatabaseRowPageValuesInput } from "@/databaseRowPageWire.generated";
+import type { DatabaseRowPageActionInput, DatabaseRowPagePresentationInput, DatabaseRowPageValuesInput } from "@/databaseRowPageWire.generated";
 import type { Page, PageCreateInput } from "@/workspaceMembershipWire.generated";
 
 // The outbox's ordered lane of a page's changes besides its plain text
@@ -64,6 +64,28 @@ export interface NativeGraphMutation {
    * making waited for the server went with the tab at a reload (2026-11-25).
    */
   rowValues?: NativeRowValues;
+  /**
+   * A row's page moved by its row's own route, with no `operations`
+   * (rowMoveKept.ts): out under a page or to the top of a place, or into
+   * another database. Sent straight to the server after reading the row, a
+   * move then a reload or a closed tab was lost (2026-11-27, 2 of 2).
+   */
+  rowMove?: NativeRowMove;
+}
+
+/** A row's page's move as its row's move route takes it, but for its revision, which goes as it is sent (rowMoveKept.ts). */
+export interface NativeRowMove {
+  rowId: string;
+  target: Pick<DatabaseRowPageActionInput, "targetPageId" | "targetTopLevel" | "targetTeamspaceId" | "targetDataSourceId" | "leaveDatabase"
+    | "fromTrash" | "acceptDroppedPropertyIds">;
+}
+
+function rowMoveOf(value: unknown, bounds: NativePageMutationBounds): NativeRowMove {
+  const kept = recordOf(value), target = recordOf(kept?.target);
+  if (!kept || !target || [target.targetPageId, target.targetTopLevel, target.targetDataSourceId].filter(Boolean).length !== 1) {
+    throw new RangeError("Row move is not one row's.");
+  }
+  return { rowId: boundedIdentity(kept.rowId, bounds.maxPageIdCharacters, "rowId"), target: target as NativeRowMove["target"] };
 }
 
 /**
@@ -272,8 +294,10 @@ export function validateGraphMutation(
   // Rows going to or out of the trash, and a row's values, go by their own routes, with no operations.
   const rowTrash = input?.rowTrash === undefined ? undefined : rowTrashOf(input.rowTrash, bounds, maximum);
   const rowValues = input?.rowValues === undefined ? undefined : rowValuesOf(input.rowValues, bounds);
-  if (!input || !Array.isArray(input.operations) || (input.operations.length === 0 && !start && !rowTrash && !rowValues)
-    || input.operations.length > maximum || ((rowTrash || rowValues) && input.operations.length > 0) || (rowTrash && rowValues)) {
+  const rowMove = input?.rowMove === undefined ? undefined : rowMoveOf(input.rowMove, bounds);
+  const byRoute = [rowTrash, rowValues, rowMove].filter(Boolean).length;
+  if (!input || !Array.isArray(input.operations) || (input.operations.length === 0 && !start && !byRoute)
+    || input.operations.length > maximum || (byRoute && input.operations.length > 0) || byRoute > 1) {
     throw new RangeError("Graph mutation exceeds its configured operation bound.");
   }
   return {
@@ -287,6 +311,7 @@ export function validateGraphMutation(
     ...(rowTemplates.length ? { rowTemplates } : {}),
     ...(rowTrash ? { rowTrash } : {}),
     ...(rowValues ? { rowValues } : {}),
+    ...(rowMove ? { rowMove } : {}),
   };
 }
 
@@ -312,6 +337,7 @@ export function graphMutationOf(
       ...(value.rowTemplates !== undefined ? { rowTemplates: value.rowTemplates as GraphRowTemplateFill[] } : {}),
       ...(value.rowTrash !== undefined ? { rowTrash: value.rowTrash as NativeRowTrash } : {}),
       ...(value.rowValues !== undefined ? { rowValues: value.rowValues as NativeRowValues } : {}),
+      ...(value.rowMove !== undefined ? { rowMove: value.rowMove as NativeRowMove } : {}),
     }, bounds);
   } catch {
     return "unreadable";

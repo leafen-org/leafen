@@ -11,7 +11,7 @@ import (
 // A person picker in a workspace offers that workspace's people, as Notion's
 // person property tags "other members or guests in your workspace" (its
 // database properties help, read 2026-11-12; seen 2026-11-12 under
-// 한지테스트페이지: the picker lists the workspace's member and its guests,
+// a Notion test page: the picker lists the workspace's member and its guests,
 // no one else). An organization holds its owner's workspaces, so its people
 // are more than one workspace's: a search asked for one workspace
 // (?workspace=) finds only the people of that workspace among them.

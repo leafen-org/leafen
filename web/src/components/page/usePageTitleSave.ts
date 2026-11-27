@@ -7,18 +7,17 @@ import type { Page } from "@/types";
 import type { PageTitleEngine as TitleEngine } from "./pageTitleEngine";
 import { imeComposing } from "@/lib/fieldKeyBoundary";
 import { holdTypedPageTitle } from "@/lib/pageKindChange";
+import { pageTitleDraftBase, pageTitleRecord, typedField } from "@/lib/typedDraftSender";
 type TitleFollow = ReturnType<typeof createPageTitleFollow>;
 
-// How long after typing stops a typed title is saved.
-const TYPED_TITLE_SAVE_MS = 600;
-
 /**
- * A page title's saving (PageHeader): what is typed is saved shortly after
- * typing stops, and at once when the page is left, the window is hidden (an
- * app going to the background) or the page is unloaded, so it survives the
- * app being ended mid-word, and before a write that changes what the page is
- * (lib/pageKindChange.ts); leaving a page saves to the page left. The field
- * follows the titles saved elsewhere as they come (pageTitleFollow.ts).
+ * A page title's saving (PageHeader): each key keeps what is typed on this
+ * device at once, and it is saved as typed titles are (lib/typedDraftSender.ts)
+ * — once the typing pauses or ends, the window is hidden (an app going to the
+ * background) or the page is unloaded — so it survives the app or the
+ * browser being ended mid-word, and before a write that changes what the
+ * page is (lib/pageKindChange.ts); leaving a page saves to the page left.
+ * The field follows the titles saved elsewhere as they come (pageTitleFollow.ts).
  */
 export function usePageTitleSave({ page, readOnly, engine, onTitleChange, onTitleTyped }: {
   page: Page;
@@ -34,14 +33,17 @@ export function usePageTitleSave({ page, readOnly, engine, onTitleChange, onTitl
 }) {
   const latest = useRef({ page, onTitleTyped });
   latest.current = { page, onTitleTyped };
-  const state = useRef<{ timer: number | null; save: () => void; held: { core: TitleEngine; follow: TitleFollow } | null }>({
-    timer: null, save: () => undefined, held: null,
+  const state = useRef<{ save: () => void; held: { core: TitleEngine; follow: TitleFollow } | null; typing: ReturnType<typeof typedField> }>({
+    save: () => undefined, held: null, typing: typedField(),
   });
   const [saving] = useState(() => {
+    // What the field holds is kept on the device now, and saved once the typing pauses or ends.
     const saveSoon = () => {
-      const current = state.current;
-      if (current.timer !== null) window.clearTimeout(current.timer);
-      current.timer = window.setTimeout(() => current.save(), TYPED_TITLE_SAVE_MS);
+      const follow = state.current.held?.follow, { page: now } = latest.current;
+      if (!follow) return;
+      const { value, base } = follow.peek();
+      state.current.typing.key({ recordKey: pageTitleRecord(now.id), kind: "pageTitle", hostPageId: now.id,
+        value: { title: value.title, spans: [...value.spans ?? []] }, base: pageTitleDraftBase(now, base) }, () => state.current.save());
     };
     // The follow of the field as it is: one for each field the page makes.
     const follow = (): TitleFollow | null => {
@@ -62,8 +64,8 @@ export function usePageTitleSave({ page, readOnly, engine, onTitleChange, onTitl
       follow,
       /** Saves what is new in the title now. */
       save: () => state.current.save(),
-      /** The title was typed in: saved after the pause, and what waited for a composition to end comes. */
-      typed: () => { saveSoon(); follow()?.resume(); },
+      /** The title was typed in: kept, saved after the pause, and what waited for a composition to end comes. */
+      typed: () => { follow(); saveSoon(); follow()?.resume(); },
     };
   });
 
@@ -105,25 +107,19 @@ export function usePageTitleSave({ page, readOnly, engine, onTitleChange, onTitl
     const change = onTitleChange;
     const follow = saving.follow();
     const current = state.current;
+    const { typing } = current;
     const save = () => {
-      if (current.timer !== null) window.clearTimeout(current.timer);
-      current.timer = null;
       const sending = follow?.next();
-      // A title of plain words says so: spans it held before go.
-      if (sending) follow!.sent(sending.value, change(sending.value.title, sending.base, [...sending.value.spans ?? []]));
+      // A title of plain words says so: spans it held before go. It goes as
+      // the change its typing was kept under; one mid-composition waits.
+      if (sending) follow!.sent(sending.value, typing.send(() => change(sending.value.title, sending.base, [...sending.value.spans ?? []])));
+      else if (!follow || !imeComposing(engine.current?.editor.view)) typing.sent();
     };
     current.save = save;
     // A write changing what the page is sends the title first (lib/pageKindChange.ts).
     const letGo = holdTypedPageTitle(save);
-    const onVisibility = () => {
-      if (document.visibilityState === "hidden") save();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    window.addEventListener("pagehide", save);
     return () => {
       letGo();
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("pagehide", save);
       save();
     };
     // The handler is this page's: a new title change callback alone doesn't start it over.

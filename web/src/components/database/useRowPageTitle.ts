@@ -1,47 +1,45 @@
 import { useEffect, useRef, useState } from "react";
 import { dropTypedPageTitle, useOwnPageName, useTypedPageTitle } from "@/lib/pageNames";
-import { pageLeaving } from "@/lib/pageLeaving";
-import { writeRowTitle } from "@/lib/rowTitleSave";
-import { sendAsPageGoes } from "@/lib/writesAsPageGoes";
 import type { TitleValue } from "@/lib/titleMerge";
+import { rowValueRecord } from "@/lib/typedDraftSender";
 import type { TextSpan } from "@/lib/types";
-import type { Session } from "@/types";
+import type { FieldKept } from "./fieldTypedSave";
 import type { RichTextCellChange } from "./RichTextCellEditor";
 import { cellSpans } from "./richTextCellModel";
 
 type Cell = { value?: unknown; spans?: unknown } | undefined;
 /**
- * Writes the row's title; given the title the server held (`read`), only
- * over that one, failing with the server's refusal when another was saved
- * since (rowTitleSave.ts). One that can't hold the server to it writes it.
+ * Writes the row's title; given the title it was typed on (`read`), over
+ * that one, merged with another the server holds by then (rowValuesKept.ts).
  */
 export type RowTitleWrite = (value: string, spans?: TextSpan[], read?: TitleValue | null) => Promise<unknown> | void;
 
 /**
  * A row page's title (DatabaseRowPage): the heading shows a rename from the
  * path's popover as it is typed, then the row's title as it is saved, here
- * or elsewhere; what is typed in the heading is written one save after
- * another, merged with the title the server holds then and written only
- * over that one (rowTitleSave.ts) — as typed, the spaces at its ends too
- * (titleMerge.ts).
+ * or elsewhere. What is typed in the heading is kept on this device at each
+ * key (`kept`, as the row's value `record` names it, its changes going with
+ * the page `record` names) and written as the typing pauses or ends, each
+ * save in its turn in the outbox behind the ones before it, over the title
+ * it was typed on — merged with another the server holds by then
+ * (rowValuesKept.ts), as typed, the spaces at its ends too (titleMerge.ts).
  */
-export function useRowPageTitle({ rowId, cell, session, write, named }: {
+export function useRowPageTitle({ rowId, cell, write, named, record }: {
   rowId: string;
   cell: Cell;
   /** The row's icon and last edit as its page holds them, which name it everywhere with its title (useOwnPageName). */
   named?: { icon?: string; iconType?: string; updatedAt?: string };
-  /** Who reads the server's title when a save goes; none writes as typed. */
-  session: Session | undefined;
   write: RowTitleWrite | undefined;
+  /** The row's title property and the page its changes go with: what the heading keeps typed on the device. */
+  record?: { propertyId: string; hostPageId: string };
 }) {
   const [renamed, setRenamed] = useState<{ rowId: string; title: string; spans?: TextSpan[] } | null>(null);
   // A rename shows until the row's title is written again, by it or after
   // it: the heading then follows the row's title as others save it too.
   useEffect(() => setRenamed(null), [cell?.value, cell?.spans]);
   const shown = renamed?.rowId === rowId ? renamed : null;
-  const latest = useRef({ rowId, session, write });
-  latest.current = { rowId, session, write };
-  const queue = useRef(Promise.resolve());
+  const latest = useRef({ rowId, write });
+  latest.current = { rowId, write };
   const held = shown ? shown.title : cell?.value ?? "";
   const heldSpans = shown ? cellSpans(shown.spans, shown.title) : cellSpans(cell?.spans as TextSpan[] | undefined, cell?.value);
   // The row is named everywhere as its page holds it: a title typed in its
@@ -59,25 +57,17 @@ export function useRowPageTitle({ rowId, cell, session, write, named }: {
       setRenamed({ rowId, title, spans });
       write?.(title, spans);
     },
+    /** The row's title as typed, over the title it was typed on, as the heading keeps it on the device. */
+    kept: record ? (change: RichTextCellChange): FieldKept => ({ recordKey: rowValueRecord(rowId, record.propertyId), kind: "rowValue",
+      hostPageId: record.hostPageId, row: { rowId, propertyId: record.propertyId, type: "title" },
+      value: { title: change.value, ...(change.spans?.length ? { spans: [...change.spans] } : {}) },
+      base: change.typedOn ? { type: "title", value: change.typedOn.value, ...(change.typedOn.spans?.length ? { spans: [...change.typedOn.spans] } : {}) } : null })
+      : undefined,
     save(change: RichTextCellChange) {
-      const { rowId: id, session: reader, write: send } = latest.current;
-      const typed = { value: change.value, spans: change.spans };
-      // A window going away writes at once: a read first might not finish.
-      if (!send || !reader || !change.typedOn || document.visibilityState === "hidden" || pageLeaving()) {
-        send?.(typed.value, typed.spans);
-        return;
-      }
-      const base = change.typedOn;
-      // Waiting behind an earlier save as the page goes, it goes at once
-      // then; one on its way goes again (writesAsPageGoes.ts).
-      const going = sendAsPageGoes(() => send(typed.value, typed.spans));
-      queue.current = queue.current.then(() => {
-        going();
-        return writeRowTitle(reader, id, { title: typed.value, spans: typed.spans },
-          { title: base.value, spans: base.spans }, async (title, read) => send(title.title, title.spans ? [...title.spans] : undefined, read));
-      })
-        // Refused, the row is named as it was again wherever it showed typed.
-        .then(() => undefined, () => dropTypedPageTitle(id));
+      const { rowId: id, write: send } = latest.current, base = change.typedOn;
+      // Refused, the row is named as it was again wherever it showed typed.
+      void Promise.resolve(send?.(change.value, change.spans, base ? { title: base.value, spans: base.spans } : null))
+        .catch(() => dropTypedPageTitle(id));
     },
   };
 }

@@ -17,6 +17,7 @@ import type { GeneralAccessChange } from "./TopBarShareGeneralAccess";
 import type { WebLinkRole } from "./TopBarShareWebRole";
 import { useShareInheritanceActions } from "./TopBarShareInheritanceActions";
 import { TopBarEditRequest } from "./TopBarEditRequest";
+import { TopBarShareHead } from "./TopBarShareHead";
 import access from "./TopBarShareAccess.module.css";
 import { publishSheetFill } from "./TopBarSitePublishIntro";
 import { copyText } from "@/lib/clipboard";
@@ -416,16 +417,17 @@ function ShareWindow({
     returnFocusRef, restoreFocus: true, onEscape: close });
   const { dialogProps } = useDialog({ "aria-label": t("topBar:shareDialog", { pageTitle: pageTitle(page, untitled) }) }, dialogRef);
 
+  const headHidden = ((invite.inviting && !phone) || advanced) && activeShareTab === "share";
   const tabs = (
       <Tabs selectedKey={activeShareTab} keyboardActivation="manual" className={fill.tabs}
         onSelectionChange={key => { setActiveShareTab(key as ShareTab); setErrorCode(""); }}>
-        <TabList className={styles.shareTabs} data-share-tabs="true" aria-label={t("topBar:share")}
-          style={((invite.inviting && !phone) || advanced) && activeShareTab === "share" ? { display: "none" } : undefined}>
+        <TopBarShareHead phone={phone} hidden={headHidden}><TabList className={styles.shareTabs} data-share-tabs="true" aria-label={t("topBar:share")}
+          style={headHidden ? { display: "none" } : undefined}>
           {(["share", "publish"] as ShareTab[]).map(tab => <Tab key={tab} id={tab} className={styles.shareTab}
             data-active={activeShareTab === tab ? "true" : undefined}>{t(tab === "share" ? "topBar:share" : "topBar:publish")}
             {/* A published page's "게시" carries a blue dot, as Notion's (seen 2026-11-05). */}
             {tab === "publish" && state?.site?.published ? <span className={styles.shareTabDot} aria-hidden="true" /> : null}</Tab>)}
-        </TabList>
+        </TabList></TopBarShareHead>
         <TabPanel id="share">
           <TopBarShareAccessPanel state={state} currentUser={session.user} disabled={controlsDisabled} busy={busy} visible={Boolean(placement)} policyRefused={policyRefused} loading={loading} inTrash={state?.inTrash === true && !restoring}
             dialogRef={dialogRef} {...invite.panel} onMore={() => void loadMorePrincipalOptions()} onPermission={updatePermission}

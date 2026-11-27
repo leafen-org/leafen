@@ -10,6 +10,12 @@ export type SyncedBlockSource = {
   pageId: string;
   /** Whether this block is a copy that shows the original. */
   copy: boolean;
+  /**
+   * Whether the original is a whole page's body: a copy naming one page as
+   * its original and as the original's page, as one Notion's public API
+   * makes from a page's address does (seen 2026-11-27).
+   */
+  page: boolean;
 };
 
 /**
@@ -31,10 +37,10 @@ function text(value: unknown) {
  */
 export function syncedBlockSource(block: GraphBlock, pageId: string, pageBlocks?: readonly GraphBlock[]): SyncedBlockSource {
   const blockId = text(block.content.syncedBlockId) || text(block.content.sourceId);
-  if (!blockId) return { blockId: block.id, pageId, copy: false };
+  if (!blockId) return { blockId: block.id, pageId, copy: false, page: false };
   const named = text(block.content.syncedPageId);
-  if (named || !pageBlocks) return { blockId, pageId: named || pageId, copy: true };
-  return { blockId, pageId: pageBlocks.some((candidate) => candidate.id === blockId) ? pageId : "", copy: true };
+  if (named || !pageBlocks) return { blockId, pageId: named || pageId, copy: true, page: named === blockId };
+  return { blockId, pageId: pageBlocks.some((candidate) => candidate.id === blockId) ? pageId : "", copy: true, page: false };
 }
 
 /**

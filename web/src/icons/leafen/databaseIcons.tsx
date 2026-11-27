@@ -5,7 +5,6 @@ import {
   CheckSquare as PhosphorCheckSquare,
   At as PhosphorAt,
   ArrowUpRight as PhosphorArrowUpRight,
-  UserCircle as PhosphorUserCircle,
   UserCircleDashed as PhosphorUserCircleDashed,
   FileLock as PhosphorFileLock,
   SealCheck as PhosphorSealCheck,
@@ -49,8 +48,15 @@ export const RelationIcon = (p: LeafenIconProps) => (
   <PhosphorIconSvg {...p} icon={PhosphorArrowUpRight} glyphWidth={8.68} />
 );
 
+// A person in a ring, as Notion's personCircle (read 2026-11-27 in its "/"
+// menu's "사용자 멘션하기" at 20px): a ring 15.3 across on the 20-unit box,
+// a head and the shoulders' curve inside it, Leafen's own 1.25 lines.
 export const PersonCircleIcon = (p: LeafenIconProps) => (
-  <PhosphorIconSvg {...p} icon={PhosphorUserCircle} />
+  <IconSvg {...p} viewBox="0 0 20 20" glyph="person-circle" line={1.25}>
+    <circle cx="10.02" cy="10" r="7.02" />
+    <ellipse cx="10" cy="8.45" rx="2.35" ry="2.65" />
+    <path d="M6.45 15.25c.7-1.3 2-2.05 3.55-2.05s2.85.75 3.55 2.05" />
+  </IconSvg>
 );
 
 /**

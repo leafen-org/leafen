@@ -24,6 +24,13 @@ import (
 // is for the writers that read it (Leafen's MCP); the public API reads it
 // as Notion does, the page its path names.
 //
+// A new page's first body may hold a reference to a page, a database's page
+// too, as Notion's create makes one (seen 2026-11-27, "v1" and "v2", page and
+// data source parents): a copy of that page's body
+// (synced_block_page_original.go). Any other write naming a page is refused,
+// as Notion's insert and replace are. One naming a database is refused on
+// every write (notion_page_markdown_synced_database.go).
+//
 // One of Notion's web addresses (notion.so, app.notion.com, notion.site)
 // names its block or page by the same parts, as Notion takes it (seen
 // 2026-11-21, "v2": a page's address with the block after #, with the page's
@@ -53,10 +60,11 @@ var notionMarkdownSyncedKinds = map[string]string{
 
 // notionMarkdownSyncedReferences names the original of each synced block
 // reference the Markdown's operations make by its address, or refuses the
-// write; public is whether the public API writes it.
+// write; public is whether the public API writes it, creates whether it
+// writes a new page's first body.
 func notionMarkdownSyncedReferences(
 	app core.App, principalID string, current pageAuthorization, allows func(core.App, pageAuthorization) bool,
-	origin string, public bool, operations []graphOperation,
+	origin string, public, creates bool, operations []graphOperation,
 ) error {
 	for _, operation := range operations {
 		if operation.Kind != graphOperationKindUpsertBlock || operation.Block == nil ||
@@ -73,7 +81,7 @@ func notionMarkdownSyncedReferences(
 		}
 		delete(content, notionMarkdownSyncedAddressKey)
 		if kept, _ := content["syncedBlockId"].(string); kept == "" || public {
-			blockID, pageID, err := notionMarkdownSyncedOriginal(app, principalID, current, allows, origin, address)
+			blockID, pageID, err := notionMarkdownSyncedOriginal(app, principalID, current, allows, origin, address, creates)
 			if err != nil {
 				return err
 			}
@@ -89,10 +97,10 @@ func notionMarkdownSyncedReferences(
 }
 
 // notionMarkdownSyncedOriginal is the original synced block, and its page,
-// an address names.
+// an address names; a page named where pages may be (creates) is both.
 func notionMarkdownSyncedOriginal(
 	app core.App, principalID string, current pageAuthorization, allows func(core.App, pageAuthorization) bool,
-	origin, address string,
+	origin, address string, creates bool,
 ) (string, string, error) {
 	invalid := graphInputError(errorCodeGraphReferenceInvalid, "Not the URL of a page or block here: "+address)
 	parsed, err := url.Parse(address)
@@ -134,8 +142,12 @@ func notionMarkdownSyncedOriginal(
 		return "", "", err
 	}
 	found = found && block.WorkspaceID == current.Workspace.WorkspaceID
-	pageID, pageErr := resolvePageOwnPublicID(publicID)
+	pageID, pageErr := resolveNotionPageRecordID(app, publicID)
 	page := !found && pageErr == nil && reads(pageID)
+	// A sub-page's block names its page by the page's own ID.
+	if found && block.Type == graphBlockTypeChildPage && creates {
+		found, pageID, page = false, block.ID, reads(block.ID)
+	}
 	if !found && !page {
 		// One a Notion move brought names what the move made.
 		moved, err := notionMentionedIn(app, current.Workspace.WorkspaceID, publicID)
@@ -143,7 +155,7 @@ func notionMarkdownSyncedOriginal(
 		case err != nil:
 			return "", "", err
 		case moved.kind == "page":
-			page = reads(moved.nativeID)
+			pageID, page = moved.nativeID, reads(moved.nativeID)
 		case moved.kind == "block" || moved.kind == "database":
 			if block, found, err = loadStoredNotionBlock(app, moved.nativeID); err != nil {
 				return "", "", err
@@ -167,8 +179,16 @@ func notionMarkdownSyncedOriginal(
 			kind = named
 		} else if kind == graphBlockTypeSyncedBlock {
 			kind = "transclusion_reference"
+		} else if kind == graphBlockTypeInlineDatabase {
+			return "", "", notionMarkdownSyncedDatabase(address, block.ParentID == "" && isDatabasePage(app, block.PageID))
 		}
 		return "", "", points(kind)
+	}
+	if page && isDatabasePage(app, pageID) {
+		return "", "", notionMarkdownSyncedDatabase(address, true)
+	}
+	if page && creates {
+		return pageID, pageID, nil
 	}
 	if page {
 		return "", "", points("page")

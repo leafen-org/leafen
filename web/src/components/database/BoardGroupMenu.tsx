@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { createFocusManager } from "@react-aria/focus";
 import { FocusScope, useDialog } from "react-aria";
@@ -11,7 +11,6 @@ import { placeAround, type PopoverRect, popoverPlacementStyle, usePopoverPlaceme
 import { COLOR_NAMES, chipStyle } from "./colors";
 import type { BoardOption } from "./boardViewModel";
 import groupStyles from "./databaseSheet";
-import { fieldEnter } from "@/lib/fieldKeyBoundary";
 
 export function BoardGroupMenu({
   option,
@@ -20,7 +19,6 @@ export function BoardGroupMenu({
   onClose,
   onDelete,
   onHide,
-  onRename,
   returnTo,
 }: {
   returnTo: HTMLElement;
@@ -31,7 +29,6 @@ export function BoardGroupMenu({
   onClose: () => void;
   onDelete: () => void;
   onHide?: () => void;
-  onRename: (name: string) => void;
 }) {
   const { t } = useTranslation(["boardView", "tableView"]);
   const menuRef = useRef<HTMLDivElement>(null), colorsRef = useRef<HTMLDivElement>(null), actionsRef = useRef<HTMLDivElement>(null);
@@ -46,18 +43,6 @@ export function BoardGroupMenu({
   const actionMenu = useNativeMenu({ items: actions, open: Boolean(place), menuRef: actionsRef, label: t("boardView:groupOptions", { groupName: option.name }),
     keyOf: action => action.id, textOf: action => action.label, onAction: action => action.act(),
     focusOnOpen: false });
-  const committedNameRef = useRef(option.name);
-  const [name, setName] = useState(option.name);
-
-  function commitName() {
-    const next = name.trim();
-    if (next && next !== committedNameRef.current) {
-      committedNameRef.current = next;
-      onRename(next);
-    }
-    else if (!next) setName(option.name);
-  }
-
   useEffect(() => {
     if (!place || entered.current) return;
     entered.current = true; createFocusManager(menuRef).focusFirst({ tabbable: true });
@@ -71,20 +56,6 @@ export function BoardGroupMenu({
       style={{ position: "fixed", ...popoverPlacementStyle(place) }}
     >
       <FocusScope contain>
-      <label className={groupStyles.boardGroupName}>
-        <span>{t("boardView:groupName")}</span>
-        <input
-          value={name}
-          onBlur={commitName}
-          onChange={(event) => setName(event.target.value)}
-          onKeyDown={(event) => {
-            if (fieldEnter(event)) {
-              commitName();
-              onClose();
-            }
-          }}
-        />
-      </label>
       <span className={groupStyles.boardGroupLabel}>{t("boardView:groupColor")}</span>
       <NativeChoiceGrid items={COLOR_NAMES} keyOf={color => color} textOf={color => color}
         listRef={colorsRef} checkedKey={option.color ?? "default"} open={Boolean(place)} autoFocus={false}

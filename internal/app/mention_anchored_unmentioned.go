@@ -11,7 +11,7 @@ import (
 // or a database page's cell (mention_anchored_pages.go,
 // mention_anchored_fields.go) whose mention there an integration took out
 // through the Public API stays there unmentioned, as Notion's does (seen
-// 2026-11-18 in two tabs of 한지테스트페이지): it is no page in the trash,
+// 2026-11-18 in two tabs of a Notion test page): it is no page in the trash,
 // Notion's API still gives that block or page as its parent, and Notion's
 // sidebar leaves it out until a mention of it is back there, put in through
 // the API or typed. Later edits of the block or field leave it so; the

@@ -149,6 +149,21 @@ func mcpLinkTargetReadable(app core.App, authority mcpAuthority, ownerID, worksp
 	}
 }
 
+// mcpMarkdownWritePrepare is how an agent's Markdown write to a page checks
+// its mentions as the agent may name them (narrowedMarkdownMentionInput),
+// for a body notion-create-pages gives a page it made as that body's
+// (mcpCreatedBodyInput), its reader then making links mentions unless kept.
+func mcpMarkdownWritePrepare(
+	authority mcpAuthority, reader *notionMarkdownReader, created, preserve bool,
+) func(core.App, pageAuthorization, *crdt.Doc, graphMutationInput) (graphMutationInput, error) {
+	prepare := narrowedMarkdownMentionInput(authority.PrincipalID, mcpMentionReaches(authority))
+	if !created {
+		return prepare
+	}
+	reader.LinksMentioned = !preserve
+	return mcpCreatedBodyInput(authority, preserve, prepare)
+}
+
 // mcpCreatedBodyInput writes a body notion-create-pages gives a page it made
 // as any other it writes: its links to pages and databases the writer can
 // read become their mentions (mentionMCPInternalLinks), kept links with

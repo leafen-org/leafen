@@ -215,7 +215,7 @@ export function mentionGhostRest(query: string, item: MentionItem | MorePagesRow
   if (only === "date" && !item) return blockItemText("mention.dateHint");
   if (!item) return "";
   const reminder = item.kind === "date" && item.dateReminder !== undefined;
-  const words = item.kind === "person" ? item.name ?? item.label : item.label;
+  const words = item.label;
   if (!query) return reminder ? blockItemText("mention.commentHint") : item.kind === "invite" ? "" : words;
   if (!first || reminder || !["date", "person", "page"].includes(item.kind)) return "";
   return words.startsWith(query) ? words.slice(query.length) : "";
@@ -273,7 +273,7 @@ export function mentionMenuItems({
       description: mentionDateDescription(1), icon: "@", date: localIsoDate(1), dateReminder: "0" });
   }
   const currentUserId = snapshot.currentUserId || "local-user";
-  const currentUserLabel = personLabel(currentUserId, snapshot.currentUserId);
+  const currentUserLabel = personLabel(currentUserId, snapshot.currentUserId, false);
   // A guest's empty "@" lists no one, its dates, pages and new pages alone, as
   // Notion's (seen 2026-11-24 in two tabs: a guest with edit or full access in
   // a page's lines, with comment access in its comment box); a typed name
@@ -282,7 +282,7 @@ export function mentionMenuItems({
     collaboratorDescription: blockItemText("person.collaborator"),
     currentUserId,
     currentUserLabel,
-    currentUserName: personName(currentUserId) || undefined,
+    currentUserNamed: Boolean(personName(currentUserId)),
     organizationProfiles: snapshot.organizationProfiles,
     pagePresencePeers: snapshot.pagePresencePeers,
     profileDescription: organizationProfileMentionDescription,

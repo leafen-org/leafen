@@ -168,6 +168,12 @@ func streamAndPublishProductFileUpload(
 	upload storedProductFileUpload,
 	parts []storedProductFileUploadPart,
 ) (*core.Record, error) {
+	// The joined file is written beside its parts: the room asked for when
+	// the upload was prepared, unless other writes took it since
+	// (dataDiskPartsBytes).
+	if err := requireDataDiskRoom(app, upload.TotalSize); err != nil {
+		return nil, err
+	}
 	reader := newProductFileUploadPartsFileReader(app, parts, upload.TotalSize)
 	file := &filesystem.File{
 		Reader: reader, Name: "payload.bin", OriginalName: upload.OriginalName,

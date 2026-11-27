@@ -50,7 +50,8 @@ func (p *pocketBaseYgoPersistence) moveDatabaseRowPageOut(
 			"a move under a page or to the top of a place takes this database page out of its database, as a page of its own; "+
 			"send leaveDatabase true to do it, or targetDataSourceId to move it to another database.")
 	}
-	if preliminary.AuthorityRevision != input.ExpectedAuthorityRevision {
+	// Sent as the row is held (asHeld, a move kept and sent as its page went), it isn't held to a revision.
+	if !input.AsHeld && preliminary.AuthorityRevision != input.ExpectedAuthorityRevision {
 		return writeDatabaseRowPageActionError(event, errDatabaseRowPageConflict, "to-page")
 	}
 	receipt, err := p.convertDatabaseRowToPage(event.Request.Context(), databaseRowToPageRequest{

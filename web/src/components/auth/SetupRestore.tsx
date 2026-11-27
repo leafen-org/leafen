@@ -17,6 +17,7 @@ import { keepSetupRestoreSignIn, takeSetupRestoreSignIn, type SetupRestoreChoice
 import styles from "../AuthGate.module.css";
 import own from "./SetupRestore.module.css";
 import { SETUP_CODE_KEYBOARD } from "./codeKeyboard";
+import { SetupCodePlace, useSetupStart } from "./SetupCodePlace";
 import { SetupRestoreAgent } from "./SetupRestoreAgent";
 import { backupFailureDetails, backupPlaceUnavailable } from "../admin/scheduledBackupFailure";
 import { BackupProgressLine } from "../admin/BackupProgress";
@@ -69,6 +70,7 @@ export function SetupRestore({ setupCode, setupCodeNeeded, setSetupCode, onBack 
   const [restoreProgress, setRestoreProgress] = useState<AdministratorBackupProgress | null>(null);
   const [failureReason, setFailureReason] = useState("");
   const containerFolder = useSeenSetupStatus()?.containerFolder ?? "";
+  const codeGiven = useSetupStart().codeGiven;
   const field = (name: string) => fields[name] ?? "";
   const change = (name: string, value: string) => {
     setFields((current) => ({ ...current, [name]: value }));
@@ -304,6 +306,8 @@ export function SetupRestore({ setupCode, setupCodeNeeded, setSetupCode, onBack 
             onChange={(event) => { setSetupCode(event.target.value); setError(""); }} data-setup-restore-code />
         </label>
       ) : null}
+      {/* A server given a code at its start says where that code is, as the setup's own field does. */}
+      {codeAsked && codeGiven ? <SetupCodePlace /> : null}
       {place ? (
         <div className={own.found} data-setup-restore-found>
           {!place.replica.present && !place.snapshots.length ? <p className={styles.fieldHelp}>{t("setupRestoreNone")}</p> : null}

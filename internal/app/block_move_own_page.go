@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"time"
 
 	"github.com/pocketbase/dbx"
@@ -52,6 +53,10 @@ func moveBlockToOwnPageEnd(
 			return storedBlockMoveJob{}, err
 		}
 		if err := saveServerStructuralBatch(app, ownerID, pageID, actorID, "block-move-own-page:"+blockID, batch, history); err != nil {
+			return storedBlockMoveJob{}, err
+		}
+		// A change to its blocks, which edits the page (block_move_page_edits.go).
+		if err := notePageContentEdited(context.Background(), app, pageID, actorID); err != nil {
 			return storedBlockMoveJob{}, err
 		}
 	}

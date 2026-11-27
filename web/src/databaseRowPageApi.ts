@@ -2,7 +2,6 @@ import { request } from "@/apiTransport";
 import { derivedPageId } from "@/lib/ids";
 import { followPageDatabaseCopies } from "@/lib/pageDatabaseCopies";
 import { pageWritesSent } from "@/lib/pageKindChange";
-import { sentOutlivingPage } from "@/lib/writesAsPageGoes";
 import type { Session } from "@/types";
 import {
   databaseRowPageBounds,
@@ -277,24 +276,20 @@ export function mutateDatabaseRowPagePermission(
 }
 
 /**
- * Writes a row page's values through the row page's own authority; one on
- * its way as the page goes is sent again then, outliving it (writesAsPageGoes.ts)
- * — but the outbox's own (`kept`, rowValuesKept.ts), which goes again then
- * with its page's changes (nativePageMutationLeaving.ts): sent again by both,
- * the two copies reached the server in either order with the change going
- * after it, and the earlier value could land last (2026-11-27).
+ * Writes a row page's values through the row page's own authority. A row's
+ * values a person writes go kept in the outbox (rowValuesKept.ts), which
+ * sends them again as the page goes with its page's other changes
+ * (nativePageMutationLeaving.ts).
  */
 export function writeDatabaseRowPageValues(
   session: Session,
   rowId: string,
   input: DatabaseRowPageValuesInput,
   signal?: AbortSignal,
-  kept = false,
 ) {
-  const send = () => request<DatabaseRowPageActionResponse>(
+  return request<DatabaseRowPageActionResponse>(
     rowPagePath(databaseRowPageOperations.writeValues.path, rowId),
     { method: databaseRowPageOperations.writeValues.method, body: JSON.stringify(input), signal },
     session,
   );
-  return kept ? send() : sentOutlivingPage(send);
 }

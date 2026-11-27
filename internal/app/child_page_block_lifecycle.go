@@ -35,7 +35,7 @@ func endOfChildPageContainer(doc *crdt.Doc, container string) (childPageBlockSpo
 // trash: last inside the block it was in (container), as Notion's restore
 // puts it, after the blocks added behind its old place since — through its
 // API and the trashed page's banner alike (seen 2026-11-18 in two tabs of
-// 한지테스트페이지, 'W1905 place': a callout's, a toggle's and a line's) —
+// a Notion test page, 'W1905 place': a callout's, a toggle's and a line's) —
 // and at the body's end from the top level, or once that block is gone or
 // takes no blocks inside. A callout's words line stands for the callout
 // (callout_words_line.go).

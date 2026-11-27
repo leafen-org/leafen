@@ -5,7 +5,7 @@ import { Plus } from "../icons";
 import { BoardPersonGroupAdd } from "./BoardPersonGroupAdd";
 import styles from "./databaseSheet";
 import { RelationGroupAdd } from "./RelationGroupAdd";
-import { NewGroupName } from "./TableGroupAddRow";
+import { NewGroupName } from "./GroupNameField";
 import type { PropertyCellEnvironment } from "./propertyCellTypes";
 import type { ViewGroupAddKind } from "./viewGroupAddKind";
 

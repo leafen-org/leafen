@@ -99,6 +99,9 @@ func main() {
 		Mac: application.MacOptions{
 			ApplicationShouldTerminateAfterLastWindowClosed: false,
 		},
+		// Started behind its windows, the app stays out of the front until it
+		// shows one (login_launch_windows.go).
+		Windows: windowsOptions(),
 		// An iPhone's or iPad's video plays in its block with its own
 		// controls, as in Notion's app; WebKit there otherwise plays every
 		// video only in full screen.
@@ -132,7 +135,8 @@ func main() {
 	go forgetGoneTabPagesWhenUp(local)
 	// Opened at login, it starts behind its window (background_desktop.go):
 	// Windows says so before the window is made, macOS as the app finishes
-	// launching (login_launch_darwin.go).
+	// launching (login_launch_darwin.go). Started so, it stays out of the
+	// front until it shows a window.
 	watchLoginLaunch()
 	// A Mac's and Windows' windows hold tabs and open as the app last left
 	// them (window_tabs_frames.go); a phone's one window opens on the start

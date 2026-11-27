@@ -47,6 +47,8 @@ export const buildChecks = [
   // A word the server writes into a contract's field of words is one it names.
   ["../scripts/check-wire-values.mjs"],
   ["../scripts/check-not-found-codes.mjs"],
+  // No line points at the maintainers' private notes, which the repository doesn't carry.
+  ["../scripts/check-private-doc-markers.mjs"],
   ["scripts/check-raw-error-text.mjs"],
   ["scripts/check-menu-edges.mjs"],
   ["scripts/check-button-line.mjs"],

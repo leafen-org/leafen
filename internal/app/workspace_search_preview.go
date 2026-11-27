@@ -247,8 +247,8 @@ func workspaceSearchTermTexts(app core.App, pageID, term string) ([]string, erro
 // (pageOutOfTrashPathSQL), or its block gone from the page holding it — which
 // its mentions say after its name, as a page's do, and which opens under the
 // trash's banner (Notion's, seen 2026-11-24 in Chrome at 1440 under
-// 한지테스트페이지: a full-page database sent to the trash, an inline one sent
-// there alone and one under a page sent there) — but one sent there alone
+// a Notion test page: a full-page database sent to the trash, an inline one
+// sent there alone and one under a page sent there) — but one sent there alone
 // from a page out of it (trashedAlone), whose page opens without it. A reader
 // sees it while the page holding it opens to them, as the mention's words do
 // (pageReader).

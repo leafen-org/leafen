@@ -1,24 +1,25 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { TFunction } from "i18next";
 import type { GraphRow, GraphView } from "../../contentGraph";
-import type { PopoverRect } from "@/lib/popoverPlacement";
+import { popoverAnchorOf, type PopoverRect } from "@/lib/popoverPlacement";
 import type { DbProperty, DbView } from "@/lib/types";
 import { laneCell } from "./BoardLanes";
 import { GroupOptionsMenu } from "./GroupOptionsMenu";
+import { GroupRename } from "./GroupNameField";
 import { boardGroupValueIds, isBoardSubGroupProperty, type BoardMainGroupProperty } from "./boardGrouping";
 import type { BoardBucket, BoardOption } from "./boardViewModel";
 import {
   boardFoldedSubgroups, boardSubgroupConfig, boardSubgroupConfigAfterFold, boardSubgroupMode, boardSubgroupSettings, boardSubgroupLanes,
   boardSubgroupOrderType, viewConfigWithSubgroup,
 } from "./boardSubgroupModel";
-import { newNamedOption } from "./optionNameText";
+import { newNamedOption, optionNamed } from "./optionNameText";
 import { tableConfigAfterGroupKept, tableConfigAfterGroupShown } from "./tableGroupSettingsModel";
 import { useKeepNewGroup } from "./useKeepNewGroup";
 import { valueAsRead } from "./valueAsRead";
 import { viewGroupAddedKey, viewGroupAddKind } from "./viewGroupAddKind";
 import type { BoardViewOperationContext, BoardViewOperations, BoardViewSnapshot } from "./BoardView";
 
-type LaneMenu = { lane: BoardBucket<GraphRow>; position: PopoverRect; returnTo: HTMLElement };
+type LaneMenu = { lane: BoardBucket<GraphRow>; position: PopoverRect; returnTo: HTMLElement; naming?: boolean };
 
 /**
  * A board's sub-groups (BoardView): the property its rows are split by, its
@@ -85,7 +86,16 @@ export function useBoardLanes({ props, view, snapshot, t, activeGroupProperty, c
     void writeView(viewConfigWithSubgroup(snapshot.view.config, next));
   }
   const toggled = (keys: Iterable<string>, key: string) => { const next = new Set(keys); if (next.has(key)) next.delete(key); else next.add(key); return next.size ? [...next] : undefined; };
-  const laneMenuElement = laneMenu && subgroupProperty ? <GroupOptionsMenu name={laneMenu.lane.label} position={laneMenu.position} returnTo={laneMenu.returnTo}
+  // A sub-group's name chip renames its option in place (GroupRename), as a column's; one of no option of its own, or a locked one, opens nothing.
+  const subgroupGraphProperty = subgroupProperty && !subValues ? snapshot.properties.find((candidate) => candidate.id === subgroupProperty.id) : undefined;
+  function openLaneMenu(lane: BoardBucket<GraphRow>, element: HTMLElement, naming = false) {
+    if (naming && (readOnly || structureLocked || !optionNamed(subgroupGraphProperty?.config, lane.key))) return;
+    setLaneMenu({ lane, position: popoverAnchorOf(element), returnTo: element, naming });
+  }
+  const laneMenuElement = laneMenu?.naming && subgroupGraphProperty ? <GroupRename property={subgroupGraphProperty} optionId={laneMenu.lane.key} name={laneMenu.lane.label}
+    returnTo={laneMenu.returnTo} onClose={() => setLaneMenu(null)}
+    onRename={(options) => void runMutation(`group-options:${subgroupGraphProperty.id}`, (context) => operations.updateGroupOptions(subgroupGraphProperty.id, options, context))} />
+    : laneMenu && !laneMenu.naming && subgroupProperty ? <GroupOptionsMenu name={laneMenu.lane.label} position={laneMenu.position} returnTo={laneMenu.returnTo}
     countShown={laneCounts.has(laneMenu.lane.key)} structureLocked={structureLocked} color={laneMenu.lane.color}
     onColor={laneColors?.some((option) => option.id === laneMenu.lane.key) ? (color) => { setLaneMenu(null); void runMutation(`group-options:${subgroupProperty.id}`, (context) => operations.updateGroupOptions(subgroupProperty.id,
       laneColors.map((option) => option.id === laneMenu.lane.key ? { ...option, color, colorFromGroup: undefined } : option), context)); } : undefined}
@@ -99,5 +109,5 @@ export function useBoardLanes({ props, view, snapshot, t, activeGroupProperty, c
     return laneKey === undefined || !lanes || !subLanes ? rows : laneCell(rows, laneKey, subLanes.keysOf);
   };
   return { subgroupProperty, subgroup, subLanes, subValues, ownSubgroup, laneMembership, lanes, laneFolds, foldLane, laneOptions, laneAdd, laneKeyOf,
-    addLane, laneCounts, laneMenuElement, laneRows };
+    addLane, laneCounts, laneMenuElement, openLaneMenu, laneRows };
 }

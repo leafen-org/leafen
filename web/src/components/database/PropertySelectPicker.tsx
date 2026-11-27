@@ -20,7 +20,7 @@ import { useDatabaseStructureLocked } from "./databaseStructureLock";
 import { useDatabasePropertySettings } from "./databasePropertySettings";
 import { NativePickerOption, useNativeAutocomplete } from "@/lib/nativeAutocomplete";
 import { useCellText } from "./cellText";
-import { optionNameWithoutCommas } from "./optionNameText";
+import { optionNameWithoutCommas, optionRenameChange } from "./optionNameText";
 
 /**
  * A select's, a multi-select's or a status's open picker (PropertySelectCell):
@@ -130,13 +130,11 @@ export function PropertySelectPicker({
     setQ("");
     setNewColor(newOptionColor());
   }
+  // The property's settings with these options, as they are saved.
+  const optionsConfig = (next: SelectOption[], patch: Record<string, unknown> = {}) => prop.type === "status"
+    ? synchronizeStatusGroupMembership(prop.config, next) : { ...prop.config, ...patch, options: next } as DbProperty["config"];
   function updateOptions(next: SelectOption[], patch: Record<string, unknown> = {}) {
-    void operations.updateProperty(prop.id, {
-      config:
-        prop.type === "status"
-          ? synchronizeStatusGroupMembership(prop.config, next)
-          : { ...prop.config, ...patch, options: next } as DbProperty["config"],
-    }, context);
+    void operations.updateProperty(prop.id, { config: optionsConfig(next, patch) }, context);
   }
   function reorderOption(sourceId: string, targetId: string, side: "before" | "after") {
     if (!sourceId || !targetId || sourceId === targetId) return;
@@ -162,10 +160,12 @@ export function PropertySelectPicker({
   function setOptionColor(id: string, color: ColorName) {
     updateOptions(options.map((o) => (o.id === id ? recoloredOption(o, color) : o)));
   }
+  // The options with one renamed as it is saved, or null for no name.
+  const optionsRenamed = (id: string, name: string) => name.trim()
+    ? sortedOptions(options.map((o) => (o.id === id ? { ...o, name: name.trim() } : o)), optionSortOf(prop.config)) : null;
   function renameOption(id: string, name: string) {
-    const trimmed = name.trim();
-    if (!trimmed) return;
-    updateOptions(sortedOptions(options.map((o) => (o.id === id ? { ...o, name: trimmed } : o)), optionSortOf(prop.config)));
+    const next = optionsRenamed(id, name);
+    if (next) updateOptions(next);
   }
   function describeOption(id: string, description: string) {
     if ((options.find((o) => o.id === id)?.description ?? "") === description) return;
@@ -337,6 +337,10 @@ export function PropertySelectPicker({
               // letter went into the picker's field).
               onClose={() => { inputRef.current?.focus({ preventScroll: true }); setColorPickerFor(null); }}
               onRename={(name) => renameOption(option.id, name)}
+              typedChange={(name, graph) => {
+                const next = name.trim() !== option.name ? optionsRenamed(option.id, name) : null;
+                return optionRenameChange(graph, prop.id, next && optionsConfig(next));
+              }}
               onColor={(color) => setOptionColor(option.id, color)}
               onDescribe={(description) => describeOption(option.id, description)}
               onDelete={prop.type === "status" && options.length <= 1 ? undefined : () => deleteOption(option.id)}

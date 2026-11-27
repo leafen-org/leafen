@@ -135,7 +135,7 @@ const {
   updateDatabaseFavorite: databaseFavoriteUpdate,
 } = workspaceMembershipOperations;
 
-export type SyncedBlockLocation = { blockId: string; pageId: string };
+export type SyncedBlockLocation = { blockId: string; pageId: string; /** An original that is a page's whole body, in the trash. */ inTrash?: boolean };
 export type SyncedBlockLocations = {
   original: SyncedBlockLocation;
   copies: SyncedBlockLocation[];

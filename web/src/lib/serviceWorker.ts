@@ -180,9 +180,10 @@ function requestOfflineWarm() {
 // holds the code and styles the worker keeps first. Registered as the page
 // loaded, its script, its list and the files it starts with that the page
 // hadn't (the shell, English, the manifest) went out while the start's reads
-// waited for a connection (2026-11-13). A registration that fails, or a
-// worker that stops before it has installed (the server gone while it kept
-// the build's files), is said in the diagnostic log and tried again when the
+// waited for a connection (2026-11-13). A registration that fails without the
+// server (registrationFailed), or a worker that stops before it has installed
+// (the server gone while it kept the build's files), is said in the
+// diagnostic log and tried again when the
 // page shows again or the server answers again, not only as a page loads: a
 // web app on a phone's home screen stays open for days. One that has not
 // answered in a minute is said too: a home screen web app on iOS can leave a
@@ -193,9 +194,62 @@ function requestOfflineWarm() {
 const REGISTRATION_SILENT_MS = 60_000;
 let registering = false;
 
+// A browser that turns the worker down while the server serves its script —
+// an app's own browser view, as an agent's (2026-11-27: every page it went
+// to tried again and left an error and a warning) — is asked no more in that
+// tab, its reloads and the pages it goes to included; a new tab asks again.
+// The page learns of new builds as one with no worker does. A failure is said
+// in the diagnostic log once in the tab; one that the server's absence made
+// is still tried again as above, unsaid.
+const REFUSED_KEY = "leafen.sw.refused";
+const FAILURE_SAID_KEY = "leafen.sw.failure-said";
+
+function tabNoted(key: string): boolean {
+  try {
+    return window.sessionStorage.getItem(key) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function noteTab(key: string) {
+  try {
+    window.sessionStorage.setItem(key, "1");
+  } catch {
+    // Without the tab's storage it holds for this page alone.
+  }
+}
+
+let refused = typeof window !== "undefined" && tabNoted(REFUSED_KEY);
+let failureSaid = typeof window !== "undefined" && tabNoted(FAILURE_SAID_KEY);
+
+// Whether the server serves the worker's script now: a registration that
+// failed while it does was the browser's refusal.
+async function serverServesWorker(): Promise<boolean> {
+  try {
+    return (await fetch("/sw.js", { cache: "no-store" })).ok;
+  } catch {
+    return false;
+  }
+}
+
+function registrationFailed(error: unknown, notify: ServiceWorkerUpdateReadyNotifier) {
+  if (!failureSaid) {
+    failureSaid = true;
+    noteTab(FAILURE_SAID_KEY);
+    logProductError("warn", "service-worker.register", error, { errorCode: error instanceof Error ? error.name : undefined });
+  }
+  void serverServesWorker().then((serves) => {
+    if (!serves || refused) return;
+    refused = true;
+    noteTab(REFUSED_KEY);
+    watchBuildWithoutWorker(notify);
+  });
+}
+
 function registerWorker(notify: ServiceWorkerUpdateReadyNotifier) {
   const current = registeredWorker;
-  if (registering || current?.active || current?.installing || current?.waiting) return;
+  if (refused || registering || current?.active || current?.installing || current?.waiting) return;
   registering = true;
   const silent = globalThis.setTimeout(() => {
     logProductError("warn", "service-worker.register", new Error("The offline worker's registration has not answered."), { errorCode: "unanswered" });
@@ -208,9 +262,7 @@ function registerWorker(notify: ServiceWorkerUpdateReadyNotifier) {
         watchForUpdates(registration, notify);
       }
       scheduleOfflineWarm();
-    }, (error: unknown) => {
-      logProductError("warn", "service-worker.register", error, { errorCode: error instanceof Error ? error.name : undefined });
-    })
+    }, (error: unknown) => registrationFailed(error, notify))
     .finally(() => {
       globalThis.clearTimeout(silent);
       registering = false;
@@ -237,6 +289,11 @@ export function registerServiceWorker(notify: ServiceWorkerUpdateReadyNotifier) 
       .getRegistration()
       .then((registration) => registration?.unregister())
       .catch(() => {});
+    return;
+  }
+  // Turned down earlier in this tab (registrationFailed).
+  if (refused) {
+    watchBuildWithoutWorker(notify);
     return;
   }
   const register = () => registerWorker(notify);

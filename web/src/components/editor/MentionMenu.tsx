@@ -17,6 +17,7 @@ import { stopTapAtLayer } from "@/lib/lastPress";
 import type { OrganizationProfile } from "@/lib/types";
 import { AlarmIcon, ArrowUpRightIcon, BellSlashIcon, ChevronLeft, ChevronRight, ClockIcon, DotsHorizontal, PersonInviteIcon, Plus, UserPlusIcon } from "@/icons/leafen";
 import { PersonAvatar } from "@/components/people/PersonAvatar";
+import { SelfMark } from "@/components/people/SelfMark";
 import { AutomationMentionIcon } from "./AutomationMentionIcon";
 import { PageIconGlyph } from "../page/PageIcon";
 import { MentionPageText } from "./MentionPageText";
@@ -446,7 +447,8 @@ export function MentionMenu({
                 ) : (
                   <span className={styles.mentionLine}>
                     <span className={styles.slashName} {...labelProps}><span className={styles.slashNameText}>
-                      {(item.kind === "sub_page" || item.kind === "add_page") && item.title ? <NewPageLabel item={item} /> : item.label}</span></span>
+                      {(item.kind === "sub_page" || item.kind === "add_page") && item.title ? <NewPageLabel item={item} /> : item.label}
+                      {item.kind === "person" && item.self ? <SelfMark /> : null}</span></span>
                     {item.kind === "person" && marks.badges.get(item.userId)
                       ? <SharePersonMark guest={marks.badges.get(item.userId) === "guest"} restricted={marks.badges.get(item.userId) === "restricted"} /> : null}
                     {item.kind === "automation" && item.opens ? <ChevronRight size="small" className={styles.mentionOpens} aria-hidden="true" /> : null}

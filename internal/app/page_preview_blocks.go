@@ -331,7 +331,7 @@ func (walk *pagePreviewWalk) original(copy pagePreviewCopy) error {
 	}
 	after := walk.blocks[copy.at:]
 	walk.blocks = append([]pagePreviewBlock{}, walk.blocks[:copy.at]...)
-	if err := walk.page(pageID, copy.originalID, copy.depth); err != nil {
+	if err := walk.page(pageID, syncedOriginalRoot(copy.originalID, pageID), copy.depth); err != nil {
 		return err
 	}
 	walk.blocks = append(walk.blocks, after...)

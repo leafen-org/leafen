@@ -146,9 +146,9 @@ func (q *quickSearchWindow) openPage(path string) {
 	}
 	if frame.adopted {
 		frame.window.Show()
-		frame.window.Focus()
+		desktopTabs.focusFrame(frame)
 	} else {
-		frame.show = true
+		frame.showOnceAdopted()
 	}
 	bringAppForward()
 }
@@ -214,7 +214,7 @@ func openCommandSearchSettings() {
 		}
 		if frame.adopted {
 			frame.window.Show()
-			frame.window.Focus()
+			desktopTabs.focusFrame(frame)
 		}
 		bringAppForward()
 		if tab != nil && tab.window != nil {

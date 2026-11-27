@@ -547,9 +547,12 @@ button.subitemToggle:focus-visible {
   color: var(--text-tertiary);
 }
 
-/* "+ 신규 그룹"'s name field right under the button, as Notion's (seen
-   2026-10-30): a 300x36 card with 10px corners and a faint fill 6px around
-   a bare 14px field and the blue "완료 ↵", kept inside the window. */
+/* A group's name window (GroupNameField): "+ 신규 그룹"'s right under the
+   button, a group's renamed 4px under its chip, as Notion's (seen 2026-10-30,
+   2026-11-28): a 300x36 card with 10px corners and a faint fill 6px around a
+   bare 14px field and the blue "완료 ↵" — 24px high, 14px/500, 6px in from
+   each side and 6 between its word and its sign, 6px corners — kept inside
+   the window. */
 .newGroupName {
   position: fixed;
   display: flex;
@@ -575,14 +578,27 @@ button.subitemToggle:focus-visible {
   outline: none;
 }
 .newGroupName button {
+  display: inline-flex;
   flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
   height: 24px;
-  padding: 0 8px;
-  border-radius: 5px;
+  padding: 0 6px;
+  border-radius: 6px;
   background: var(--accent-blue);
   color: var(--accent-blue-text);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
+  line-height: 1.2;
+}
+/* Its return mark a 12px glyph beside the 14px word, as the equation's "완료 ↵" (Notion's). */
+.newGroupName button > span {
+  font-size: 12px;
+}
+.newGroupName button:hover,
+.newGroupName button:focus-visible {
+  filter: brightness(0.95);
+  outline: none;
 }
 
 /* A touch screen's "+ 새 페이지" is a 45px line of a 20px "+" and 16px words 8px on, as Notion's phone (375px,

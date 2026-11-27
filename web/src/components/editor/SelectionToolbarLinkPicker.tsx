@@ -172,7 +172,7 @@ function LinkPicker({ inputRef, value, onValue, source, onPage, onAddress, onClo
   }, [pages, pagesById, query, rowPages, source, visits, pageNames]);
   const rows = value === current ? [] : query ? choices : recent;
   // A database's page is placed by the path the server names, its database
-  // last ("한지테스트페이지 / ... / DB"), as Notion's link field (seen
+  // last ("〈test page〉 / ... / DB"), as Notion's link field (seen
   // 2026-11-15) and its search place one.
   const databasePlaceOf = (page: Page) => foundDatabasePages[page.id]
     ?? (rowPages.has(page.id) ? { containerPageId: page.parentId ?? "" } : undefined);

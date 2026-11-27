@@ -368,7 +368,7 @@ func createMCPDatabasePages(
 	for index, definition := range definitions {
 		// A body it refuses stops the call before any page is made, as
 		// Notion's does, the pages it moves in found first (mcpCreateRowContent).
-		if moved[index], err = mcpCreateRowContent(app, authority, location, definition, origin, len(definitions), index); err != nil {
+		if moved[index], err = mcpCreateRowContent(app, authority, workspace, location, definition, origin, len(definitions), index); err != nil {
 			return notionMCPCreatePagesOutput{}, err
 		}
 		if presentations[index], _, err = mcpPagePresentation(

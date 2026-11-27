@@ -2,10 +2,10 @@ import { type RefObject, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { GraphProperty } from "@/contentGraph";
 import { keyCameLast } from "@/lib/lastPress";
-import { useTypedKeptOnLeave } from "@/lib/typedKeptOnLeave";
+import { useTypedName } from "@/lib/typedName";
 import { PropertyIcon, propertyOwnIcon } from "./PropertyIcon";
 import { propertyNameButtonClass } from "./PropertyTypeIcon";
-import { propertyDescription } from "./propertyDescription";
+import { configWithDescription, propertyDescription } from "./propertyDescription";
 import menuStyles from "./TablePropertyMenu.module.css";
 import type { IconPickerAnchor } from "../page/AnchoredEmojiPicker";
 import { menuIconButtonProps } from "./menuIconButton";
@@ -22,9 +22,10 @@ export type TablePropertyHeadChange = { name?: string; description?: string };
  * icon, its name with an "i" at its end that opens a line for the
  * property's description under it, shown whenever there is one. Enter or
  * leaving a field keeps what it holds, and the menu stays; so does closing
- * what holds it (useTypedKeptOnLeave): Notion's view settings › 속성 편집
- * keep a name typed there after a press outside (seen 2026-11-18 in Chrome
- * 1440: "단계p" on the column as the panel closed).
+ * what holds it (useTypedName): Notion's view settings › 속성 편집 keep a
+ * name typed there after a press outside (seen 2026-11-18 in Chrome 1440:
+ * "단계p" on the column as the panel closed). What is typed is kept on this
+ * device at each key as the change keeping it makes.
  */
 export function TablePropertyMenuHead({
   property,
@@ -48,8 +49,14 @@ export function TablePropertyMenuHead({
   const iconButtonRef = useRef<HTMLButtonElement>(null);
   const [iconAnchor, setIconAnchor] = useState<IconPickerAnchor | null>(null);
   const description = propertyDescription(property);
-  const namedKept = useTypedKeptOnLeave(property.id, (name) => onChange({ name }));
-  const describedKept = useTypedKeptOnLeave(property.id, (value) => onChange({ description: value }));
+  const namedKept = useTypedName(property.id, "name", (name) => onChange({ name }), (value) => {
+    const name = value.trim();
+    return name && name !== property.name ? [{ kind: "upsertProperty", property: { ...property, name } }] : null;
+  });
+  const describedKept = useTypedName(property.id, "description", (value) => onChange({ description: value }), (value) => {
+    const written = value.trim();
+    return written !== description ? [{ kind: "upsertProperty", property: { ...property, config: configWithDescription(property.config, written) } }] : null;
+  });
   // The description's line shows once ⓘ is pressed, a written one too (seen
   // 2026-11-06: Notion's menu opens without it; the header's ⓘ says it is
   // there), and then stays while the menu is open, even as it is cleared.
@@ -89,10 +96,9 @@ export function TablePropertyMenuHead({
             onKeyDown={(event) => {
               if (!fieldEnter(event)) return;
               event.preventDefault();
-              namedKept.settled();
-              onChange({ name: event.currentTarget.value });
+              namedKept.saved(event.currentTarget.value);
             }}
-            onBlur={(event) => { namedKept.settled(); onChange({ name: event.target.value }); }} />
+            onBlur={(event) => namedKept.saved(event.target.value)} />
           <DescribeButton className={menuStyles.describe} disabled={readOnly}
             name={t("addPropertyDescription")} open={showDescription} data-property-description-button
             onClick={() => {
@@ -109,10 +115,9 @@ export function TablePropertyMenuHead({
           onKeyDown={(event) => {
             if (!fieldEnter(event) || event.shiftKey) return;
             event.preventDefault();
-            describedKept.settled();
-            onChange({ description: event.currentTarget.value });
+            describedKept.saved(event.currentTarget.value);
           }}
-          onBlur={(event) => { describedKept.settled(); onChange({ description: event.target.value }); }} />
+          onBlur={(event) => describedKept.saved(event.target.value)} />
       )}
       {iconAnchor ? (
         <PropertyIconPicker anchor={iconAnchor} marker="property-icon-picker" onClose={() => (keyCameLast() ? escapeIconPicker() : closeIconPicker())}

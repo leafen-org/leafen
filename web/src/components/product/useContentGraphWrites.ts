@@ -351,9 +351,9 @@ export function useContentGraphWrites({
           }).finally(() => stepsReady(null));
         }
       },
-      keep: mutationOutbox ? (pageId, mutationId, operations, text) => {
-        void mutationOutbox.keepGraph({ mutationId, operations, pageId, ...text }).catch(() => undefined);
-      } : undefined,
+      keep: mutationOutbox ? (pageId, mutationId, operations, text) => (
+        mutationOutbox.keepGraph({ mutationId, operations, pageId, ...text }).catch(() => undefined)
+      ) : undefined,
       // A change is kept in the outbox first and goes out after every older
       // one; when the server can't be reached it waits there, on screen.
       write: (pageId, mutationId, operations, signal, text) => sendContentGraphChange(session, pageId, operations, { mutationId, signal, ...text }),

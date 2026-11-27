@@ -135,7 +135,7 @@ export type BoardColumnProps = {
   onDropGroup: (targetGroupId: string) => void;
   onGroupDragStart: (groupId: string) => void;
   onGroupKeyDown: (groupId: string, direction: -1 | 1) => void;
-  onGroupMenu: (option: BoardOption, element: HTMLElement) => void;
+  /** Its "⋯", or its name chip (`naming`): an option's group renamed in place (BoardView). */ onGroupMenu: (option: BoardOption, element: HTMLElement, naming?: boolean) => void;
   onMoveCardByKeyboard: (rowId: string, groupKey: string, index: number, direction: "up" | "down" | "left" | "right", laneKey?: string) => void;
   onOpenRow: (rowId: string, mode?: "default" | "new_tab" | "side") => void;
   onOpenRowContextMenu: (rowId: string, event: ReactMouseEvent<HTMLElement>) => void;
@@ -473,7 +473,7 @@ export function BoardColumn(props: BoardColumnProps) {
             className={styles.boardGroupBtn}
             aria-keyshortcuts="Alt+ArrowLeft Alt+ArrowRight"
             disabled={readOnly}
-            onClick={(event) => onGroupMenu(option, event.currentTarget)}
+            onClick={(event) => onGroupMenu(option, event.currentTarget, true)}
             onKeyDown={(event) => {
               if (!event.altKey || event.metaKey || event.ctrlKey) return;
               if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;

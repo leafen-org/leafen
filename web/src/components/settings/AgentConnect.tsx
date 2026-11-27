@@ -117,7 +117,7 @@ export function AgentConnect({
   useEffect(() => () => request.current?.abort(), []);
   // A text whose code is spent — an agent connected since it was made, or its
   // ten minutes ran out — is let go: the box no longer shows a code the server
-  // refuses, and "Copy text" makes a new one (2026-11-07, OP-06).
+  // refuses, and "Copy text" makes a new one (2026-11-07).
   const connectedSince = connectedNow.length;
   useEffect(() => { if (connectedSince) setPrompt(""); }, [connectedSince]);
   useEffect(() => {

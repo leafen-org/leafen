@@ -25,7 +25,7 @@ import (
 //
 // One Notion restored from its trash comes back as a sub-page block, the
 // last inside its line, though the line still mentions it (seen 2026-11-18
-// in two tabs of 한지테스트페이지, as Leafen's restore makes it,
+// in two tabs of a Notion test page, as Leafen's restore makes it,
 // restoreMentionAnchoredPage), and Notion's API lists it among the line's
 // children. The line's mention is read before its children are, so the page
 // is staged as hanging first; once the line's children list it, that
@@ -33,8 +33,8 @@ import (
 // (releaseNotionImportListedLinePages). A callout's words are a line of its
 // own in Leafen (notionImportCalloutFirstLine): a page made from their "@"
 // hangs on that line, and one Notion restored comes back the last inside the
-// callout, after its other lines (seen 2026-11-18 under 한지테스트페이지, three
-// pages restored through the API, the callout's children listing each and
+// callout, after its other lines (seen 2026-11-18 under a Notion test page,
+// three pages restored through the API, the callout's children listing each and
 // its screen showing the block there).
 
 // notionImportBlockAnchor marks a staged page found by a block's mention

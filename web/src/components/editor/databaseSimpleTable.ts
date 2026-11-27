@@ -42,7 +42,7 @@ export type SimpleTableDatabaseNames = {
  * "제목", "1열", "2열" … without one; every other row, empty ones too,
  * becomes a row with its cells' text and formatting. Its columns keep the
  * table's widths and its view doesn't wrap, a title cell's line break
- * becoming a space (seen 2026-11-07, OP-02-b: 240px columns stayed 240, a
+ * becoming a space (seen 2026-11-07: 240px columns stayed 240, a
  * long title one line, "E⏎S" the title "E S"). Its one view has no name,
  * so each reader sees its layout's name in their own language, as Notion
  * leaves it (seen 2026-11-11: an empty name field, its tab "표"). Null when

@@ -2,6 +2,7 @@
 
 <!-- guide-sources:
 web/src/components/page/TopBarShare.tsx
+web/src/components/page/TopBarShareHead.tsx
 web/src/components/page/TopBarShareGeneralAccess.tsx
 web/src/components/page/TopBarShareInviteField.tsx
 web/src/components/page/TopBarShareWebRole.tsx
@@ -28,7 +29,8 @@ words workspace, teamspace, member and guest are explained in
 ## The share menu
 
 **Share** in a page's top bar (Cmd+Shift+O, Ctrl+Shift+O) opens the share
-menu. Its **Share** tab holds:
+menu. Beside its **Share** and **Publish** tabs, **Learn about sharing** opens
+this chapter in a new tab. Its **Share** tab holds:
 
 - a field, "Email or group, separated by commas", and **Share**;
 - the people and groups the page is shared with, each with their level. The

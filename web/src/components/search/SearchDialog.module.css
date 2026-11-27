@@ -350,21 +350,26 @@
   font-weight: inherit;
 }
 
+/* Room runs out on the place alone: the dots, who edited the page and when
+   keep their whole width, and a line too narrow even for those is cut at its
+   end, as Notion's, a window's and a phone's alike (seen 2026-11-27 at 1440
+   and in an Android phone's Chrome at 344, 360 and 411: its name and time
+   never shrink). A name given a sliver of the shrink ended in "…" while the
+   place still had room. */
 .resultMeta {
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
+  overflow: hidden;
   color: var(--text-tertiary);
   font-size: 12px;
   line-height: 16.8px;
 }
 
-/* Room runs out on the place first, then the editor's name, never the time,
-   as Notion's (baseline "검색 창(⌘K)" 4; seen 2026-10-31). */
 .resultPath {
   min-width: 0;
-  flex: 1 1000 auto;
+  flex: 0 1 auto;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -375,13 +380,6 @@
   flex: 0 0 auto;
   color: var(--text-tertiary);
   white-space: nowrap;
-}
-
-.resultEditor {
-  flex-shrink: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* Dots part a result's place, editor and time; a top-level page has no place. */
@@ -536,12 +534,8 @@
   line-height: 20px;
 }
 .resultCard .compactPlace {
-  margin-inline-start: 4px;
   font-size: 14px;
   line-height: 20.4px;
-}
-.resultCard .compactDash {
-  font-size: 12px;
 }
 
 /* A visited page before a search: one 36px line, the title in 14px/500 and
@@ -551,6 +545,21 @@
   min-height: 36px;
   padding-top: 0;
   padding-bottom: 0;
+}
+
+/* The title, "—" and the place in one line 4px apart, as Notion's (seen
+   2026-11-14), where the row sets its icon 8px from the title. While the line
+   is too narrow the title and the place each give way by the same share of
+   their own widths and "—" keeps its own, as Notion's, a window's and a
+   phone's alike (seen 2026-11-27 at 1440 and in an Android phone's Chrome at
+   344, 360 and 411); the place's own titles share its cut so (PlaceLine). */
+.compactLine {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 /* The title texAccPri, "—" texSec and the place texTer, as Notion's (seen 2026-10-11). */
@@ -565,25 +574,16 @@
   white-space: nowrap;
 }
 
-/* "—" 4px after the title and the place 4px after it, as Notion's (seen
-   2026-11-14: one row of the three, 4px apart), where the row sets its icon 8px
-   from the title. */
 .compactPlace {
-  display: inline-flex;
   flex: 0 1 auto;
-  gap: 4px;
-  margin-inline-start: -4px;
-  min-width: 0;
-  overflow: hidden;
   color: var(--text-tertiary);
   font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .compactDash {
   flex: none;
   color: var(--text-secondary);
+  font-size: 12px;
 }
 
 /* In a dark theme the frosted ground is rgb(32, 32, 32) at 0.9, raised by a ring (the window's shadow), as Notion's (seen 2026-11-05). */

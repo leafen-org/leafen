@@ -8,7 +8,7 @@ import (
 )
 
 // Which blocks Notion's API puts blocks under (seen twice 2026-11-21,
-// Notion-Version 2026-03-11, synthetic pages under 한지테스트페이지): an
+// Notion-Version 2026-03-11, synthetic pages under a Notion test page): an
 // append under a plain heading (heading_1 to heading_4 without
 // is_toggleable), a code, divider, equation, bookmark, embed, image, video,
 // audio, file, PDF, table of contents, breadcrumb or link-to-page block, or a

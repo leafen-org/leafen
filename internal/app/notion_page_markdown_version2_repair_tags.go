@@ -139,6 +139,9 @@ func (repair *notionMarkdownRepair) check(name, tag string, attributes map[strin
 		repair.missing = append(repair.missing, "<"+name+`> needs a url, as in <`+name+` url="...">...</`+name+">.")
 	case name == "synced-block-reference" && address == "":
 		repair.missing = append(repair.missing, `<synced-block-reference> needs a url, as in <synced-block-reference url="..."/>.`)
+	case name == "link-to-page" && strings.TrimSpace(address) == "":
+		// A link leads to a page (notion_page_markdown_link_to_page.go).
+		repair.missing = append(repair.missing, `<link-to-page> needs the url of the page it leads to, as in <link-to-page url="..." />.`)
 	case (name == "link-preview" || name == "unknown_mention" || name == "custom-block") && !selfClosed:
 		repair.missing = append(repair.missing, notionMarkdownSelfClosingOnly(name))
 	case name == "custom-block":

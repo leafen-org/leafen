@@ -25,7 +25,7 @@ import { pageLeaving } from "./pageLeaving";
 import { BOOTSTRAP_CACHE, markCacheBehind } from "./cacheStaleness";
 import { serverScopedName } from "./serverOrigin";
 import { isDeviceStoreLockWaitExceeded } from "./deviceStoreLock";
-import { createNativePageLeavingChanges, type LeavingPageChange } from "./nativePageMutationLeaving";
+import { createNativePageLeavingChanges, type LeavingChangesStore, type LeavingPageChange } from "./nativePageMutationLeaving";
 import { createNativePageMutationPastStore } from "./nativePageMutationPastStore";
 import { createNativeGraphPagesTracker, type NativeGraphPagesWaiting } from "./nativeGraphPagesWaiting";
 import { createNativePageTextChains } from "./nativePageTextChain";
@@ -149,6 +149,8 @@ export function createNativePageMutationOutboxBrowser<TResult>(options: {
   userId: string;
   /** Whether a change kept here that failed waits for the server rather than being refused (nativePageMutationFailure.ts graphWriteWaitsForServer). */
   waitsForServer?: (error: unknown) => boolean;
+  /** Puts in the store, as it opens, what a tab gone kept as it was typed (typedDraftSender.ts recoverTypedDrafts). */
+  recoverTyped?: (store: Pick<LeavingChangesStore, "keepGraph" | "keepMetadata" | "replay"> & { pendingGraph(): Promise<Map<string, NativeGraphMutation[]>> }) => Promise<void>;
 }): NativePageMutationBrowser<TResult> {
   let disposed = false;
   // Each page's texts take turns however the store opens, or without it.
@@ -214,9 +216,11 @@ export function createNativePageMutationOutboxBrowser<TResult>(options: {
       for (const subscription of runtimeSubscriptions) {
         subscription.attach(result.runtime);
       }
-      // A change kept past the store as a page went is one kept before this tab opened (ownUnanswered).
-      void leaving.moveInto({ keepMetadata: owner.keepMetadata, replay: owner.replay,
-        keepGraph: (input) => owner.keepGraph(input).then((kept) => { if (kept) tracker.keptBefore(input); return kept; }) });
+      // A change kept past the store as a page went is one kept before this tab opened (ownUnanswered), and so is a value a tab gone typed.
+      const keptBefore = { keepMetadata: owner.keepMetadata, replay: owner.replay,
+        keepGraph: (input: NativeGraphMutation) => owner.keepGraph(input).then((kept) => { if (kept) tracker.keptBefore(input); return kept; }) };
+      void leaving.moveInto(keptBefore);
+      void options.recoverTyped?.({ ...keptBefore, pendingGraph: owner.pendingGraph }).catch(() => undefined);
       return { ...result, legacy, owner };
     });
     // Another tab kept the store past the wait (deviceStoreLock.ts): it is

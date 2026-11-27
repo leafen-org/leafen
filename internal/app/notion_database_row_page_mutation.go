@@ -108,8 +108,8 @@ func serveNotionDatabaseRowPageCreate(
 	if err != nil {
 		return notionDatabaseRowPageMutationError(event, err)
 	}
-	// A body that makes sub-pages or databases is written once the page is
-	// there, as its Markdown update writes it.
+	// A body that makes sub-pages or databases, checked as the page was made
+	// (checkDeferred), is written once it is there, as its Markdown update writes it.
 	if contentPlan.DeferredMarkdown != "" {
 		if err := writeNotionCreatedPageMarkdown(
 			event, ygo, workspace.Identity, rowID, contentPlan.DeferredMarkdown, input.MarkdownVersion,

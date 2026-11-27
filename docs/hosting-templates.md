@@ -26,7 +26,18 @@ may say "for Leafen", not "Leafen" ([TRADEMARKS.md](../TRADEMARKS.md)).
 
 On Railway the template also sets `PORT=8090` and `RAILWAY_RUN_UID=0`: Railway
 mounts the volume owned by root, and the image runs as a non-root user, so
-without it Leafen can't write to `/data`.
+without it Leafen can't write to `/data`. It also sets `LEAFEN_SETUP_LINK` to
+`https://${{RAILWAY_PUBLIC_DOMAIN}}/setup#code=${{LEAFEN_SETUP_CODE}}`, which
+Railway fills in: the first setup's link with its code in it, so opening it
+asks only for a name.
+
+Railway's Trial and Free plans give the volume 0.5 GB: a new server's
+databases and the room Leafen keeps free beside them take under 100 MB of it,
+and the rest holds files. A volume
+grows on the Hobby and Pro plans, 5 GB and 50 GB to start (open the volume
+and choose Live Resize; [docs](https://docs.railway.com/reference/volumes)).
+A file the volume has no room for is refused with that reason, and the
+server's administrator is told to grow the volume.
 
 Nothing else is required. Leafen's thanks in the app (the workspace menu's GitHub line, and the sponsor list and the row at
 the bottom of Home that come in an early update after the first release) stay on by default; a host may set
@@ -37,27 +48,37 @@ the bottom of Home that come in an early update after the first release) stay on
 A server on a hosting platform is opened from the internet, through the
 platform's proxy, so its first setup asks for a code; a server opened from
 its own network (the same computer, a home or office network, Tailscale)
-asks none ([Self-hosting](self-hosting.md#first-administrator)). Opened from
-outside, the setup page says where the setup link is, and "Other ways" takes
-the code. Either of these works:
+asks none ([Self-hosting](self-hosting.md#first-administrator)). A server
+started with a setup code, as every template starts it, shows the code field
+first from outside, under the name, with one line saying where the code is:
+on Railway, which Leafen knows by the variables Railway sets in every
+deployment (`RAILWAY_PROJECT_ID` and the like), in Railway's words; elsewhere,
+among the service's variables. "Other ways" under it says where the setup
+link is. On Railway without a code the page names the deploy logs, and gives
+no advice about a home network. Either of these works:
 
+- the template's `LEAFEN_SETUP_CODE`, typed in the setup code field;
 - the setup link in the deploy logs, `…/setup#code=…`, which opens the page
   with its code (the link names the platform's address when the template
-  sets `LEAFEN_PUBLIC_URL`; otherwise open the same `/setup#code=…` on it);
-- the template's `LEAFEN_SETUP_CODE`, typed under "Other ways" → "Enter setup
-  code".
+  sets `LEAFEN_PUBLIC_URL`; otherwise open the same `/setup#code=…` on it).
 
 Where to find them:
 
 | Platform | The code | The setup link |
 | --- | --- | --- |
-| Railway | the Leafen service → Variables → `LEAFEN_SETUP_CODE` | the Leafen service → Deployments → the latest deployment → Deploy Logs |
+| Railway | the Leafen service → Variables → open `LEAFEN_SETUP_LINK` (or enter `LEAFEN_SETUP_CODE`) | the Leafen service → Deployments → the latest deployment → Deploy Logs |
 | PikaPods | the pod's settings → Env Vars → `LEAFEN_SETUP_CODE` | the pod's card → More → Show Logs |
 | Elestio | the service's overview → Update config (the `.env` file) → `LEAFEN_SETUP_CODE` | the service's overview → View app logs |
 | Any other | wherever the platform lists a service's environment variables | the container's or service's logs |
 
 An agent with access to the platform (its CLI or API) can be asked to find
-the link: "Find my Leafen setup link." Once the first administrator exists,
+the link: "Find my Leafen setup link." It can first read
+`GET <address>/api/leafen/v1/setup/status`, which takes no login: from
+outside, before the first administrator, `codeGiven` says the server was
+started with `LEAFEN_SETUP_CODE` and `platform` names the platform where
+Leafen knows it (`railway`); the table above says where each is, as Railway's
+CLI shows them (`railway variables`, `railway logs`). The code and the link
+are the person's alone. Once the first administrator exists,
 neither opens the setup again; a lost device or password is recovered as
 [Self-hosting](self-hosting.md#lost-devices-and-forgotten-passwords) says,
 with `leafen` commands run in the platform's shell for the service where it

@@ -29,7 +29,7 @@ import (
 
 var notionViewGroupSorts = []string{"manual", "ascending", "descending"}
 
-// applyOfficialViewGrouping writes a table's or board's group (key groupBy),
+// applyOfficialViewGrouping writes a view's group (key groupBy),
 // a board's sub-group (subGroupBy) or a chart's axis, then, for the first
 // two, whether it hides its empty groups and the order its groups come in.
 func (scope notionViewFilterScope) applyOfficialViewGrouping(viewType, key string, value any, config map[string]any) error {
@@ -113,9 +113,10 @@ func (scope notionViewFilterScope) applyOfficialViewGrouping(viewType, key strin
 	}
 	delete(settings, "groupSort")
 	delete(settings, "groupOrder")
-	none := mcpBoardNoValueGroup
-	if viewType == "table" {
-		none = mcpTableNoValueGroup
+	// A board's columns key no value their own way; a list's, gallery's and timeline's groups a table's (listGroups.ts).
+	none := mcpTableNoValueGroup
+	if viewType == graphViewTypeBoard {
+		none = mcpBoardNoValueGroup
 	}
 	switch notionViewSortingGroupType(groupType, group) {
 	case "person", "created_by", "last_edited_by", "checkbox":

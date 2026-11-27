@@ -292,6 +292,10 @@ func readRowPageAnalyticsViews(event *core.RequestEvent, user *core.Record, inpu
 		`).Bind(dbx.Params{"workspaceId": input.WorkspaceID, "ids": string(encoded)}).All(&rows); err != nil {
 			return err
 		}
+		// A guest reads none of the workspace's analytics (page_analytics_readers.go).
+		if member, err := pageAnalyticsReader(txApp, user.Id, input.WorkspaceID); err != nil || !member {
+			return err
+		}
 		// Where the organization names no one, the views are only counted.
 		display, err := workspaceViewDisplay(txApp, input.WorkspaceID)
 		if err != nil {

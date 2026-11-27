@@ -336,7 +336,7 @@ func notionRollupReadFunction(config databaseComputedConfig) string {
 }
 
 // notionFormulaListText is a formula's list as Notion's API serves it (seen
-// 2026-11-12 under 한지테스트페이지): its items with lists within it flat and
+// 2026-11-12 under a Notion test page): its items with lists within it flat and
 // its empty items left out, nothing left being no value. People alone, or
 // pages alone, are their names between spaces, an untitled page left out;
 // other items are between commas, each as it is joined to text: a person or

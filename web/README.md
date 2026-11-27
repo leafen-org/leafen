@@ -3,9 +3,8 @@
 This directory contains the React interface embedded in the native Leafen Go
 binary. It is not deployed separately from the Leafen server.
 
-`src/` is the only executable product interface. It retains Leafen's established
-React behavior and visual structure while using typed native persistence, auth,
-transport, and collaboration adapters.
+`src/` is the whole interface. It reaches the Leafen server through typed
+persistence, auth, transport, and collaboration adapters.
 
 ## Build
 
@@ -39,7 +38,7 @@ uses the embedded same-origin bundle on Leafen's single public port.
 
 ## Active ownership
 
-- `src/components/` owns migrated UI surfaces.
+- `src/components/` owns the UI surfaces.
 - `src/api.ts` owns the typed browser API adapter.
 - `contracts/` in the repository root is the machine-readable Go/React wire
   authority; generated files must be regenerated together.

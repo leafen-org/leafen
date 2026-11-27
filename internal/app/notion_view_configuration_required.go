@@ -23,9 +23,9 @@ var notionViewConfigurationTypes = []string{"table", "board", "calendar", "timel
 // 2026-11-12): first its type, one of nine — a dashboard takes none — then
 // its type's fields in order (notionViewConfigurationFields): a board needs
 // its group_by, a calendar and a timeline their date_property_id, a chart
-// its chart_type; a map nothing. A group — a table's or board's group_by, a
-// board's sub_group_by, a chart's x_axis and stack_by — is in its own form
-// (notionViewGroupForm); a table's group_by, a board's sub_group_by and a
+// its chart_type; a map nothing. A group — a view's group_by, a board's
+// sub_group_by, a chart's x_axis and stack_by — is in its own form
+// (notionViewGroupForm); a group_by but a board's, its sub_group_by and a
 // chart's axes may be null, which takes the grouping away, but a board's
 // group_by may not.
 func notionViewConfigurationRefusal(raw json.RawMessage) string {

@@ -4,7 +4,7 @@ import "strings"
 
 // The check knows a list's items where they share a type, and the pages and
 // people a formula holds, as Notion's does (seen 2026-11-21 through its API
-// and editor, a synthetic database under 한지테스트페이지): [1, 2].first() > "a"
+// and editor, a synthetic database under a Notion test page): [1, 2].first() > "a"
 // is a comparison of number and text, ["a"].map(current * 2) math on text
 // and number, a relation's page is "block" (math on block and number), a
 // person "person"; a list is "array" whatever its items (a comparison of

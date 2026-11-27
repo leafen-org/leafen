@@ -88,12 +88,15 @@
   cursor: grabbing;
 }
 /* Its count 6px after its 3px padding, 9 after the pill (Notion's, seen
-   2026-11-15 at 1440: every column of a new task tracker's "상태별"). */
+   2026-11-15 at 1440: every column of a new task tracker's "상태별"); its
+   6px corners take the keys' ring, as Notion's chip after its name window
+   was left with Escape (seen 2026-11-28). */
 .boardGroupBtn {
   display: flex;
   align-items: center;
   min-width: 0;
   padding: 3px;
+  border-radius: 6px;
 }
 .boardGroupBtn .chip {
   font-weight: 500;
@@ -109,6 +112,9 @@
 .boardGroupBtn:focus-visible,
 .boardGroupBtn[aria-expanded="true"] {
   outline: none;
+}
+.boardGroupBtn:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
 }
 /* A group's name stays on one line and ends in "…" where the head runs
    out of room before its "⋯ +", as Notion's (seen 2026-11-12 at 1440px:
@@ -218,31 +224,10 @@
   background: var(--bg-elevated);
   box-shadow: var(--shadow-menu);
 }
-.boardGroupName {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding-bottom: 8px;
-}
-.boardGroupName span,
 .boardGroupLabel {
   color: var(--text-tertiary);
   font-size: 12px;
   font-weight: 500;
-}
-.boardGroupName input {
-  width: 100%;
-  height: 30px;
-  padding: 1px 9px;
-  border: 0; box-shadow: var(--name-field-ring);
-  border-radius: 4px;
-  outline: none;
-  background: var(--name-field-bg);
-  color: var(--text-default);
-  font-size: 13px;
-}
-.boardGroupName input:focus {
-  box-shadow: var(--name-field-ring-focus);
 }
 .boardColorGrid {
   display: grid;

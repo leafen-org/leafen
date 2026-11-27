@@ -21,10 +21,8 @@ import {
   type ProductErrorContext as ProductErrorContextKey,
   type ProductErrorText as LocalizedText,
 } from "@/lib/productErrorContextCatalog";
-import {
-  administratorErrorMeaning,
-  type ProductErrorRetryDisposition,
-} from "@/lib/productErrorMeaningCatalog";
+import { administratorErrorMeaning, type ProductErrorRetryDisposition } from "@/lib/productErrorMeaningCatalog";
+import { withServerDiskWords } from "@/lib/serverDiskRefusal";
 import {
   persistentWriteStorageFailureClass,
   type ProductErrorRecovery,
@@ -390,9 +388,10 @@ function presentationWithReference(
   });
   const classification = failureClass(identity.code, identity.status, contextKey);
   const found = administrator ?? meaningFor(classification, spec, recovery);
-  // A limit says the wait its refusal named, not "a moment" (lib/retryWait.ts).
+  // A limit says the wait its refusal named, not "a moment" (lib/retryWait.ts); the disk, too full or too small,
+  // what the server said of it to whoever asked (lib/serverDiskRefusal.ts).
   const limited = classification === "rate-limited" ? limitWithWait(safeProperty(error, "retryAfter")) : null;
-  const meaning = limited ? { ...found, cause: limited.cause, nextAction: limited.wait } : found;
+  const meaning = limited ? { ...found, cause: limited.cause, nextAction: limited.wait } : withServerDiskWords(found, error);
   // No screen shows the diagnosis: what went wrong and what to do, the
   // reference under it (the sign-in screen 2026-10-28, every screen 2026-11-04)
   // only when no one foresaw the failure — no answer, a server fault, a cause

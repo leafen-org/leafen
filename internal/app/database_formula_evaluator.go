@@ -314,7 +314,7 @@ func databaseFormulaCompareText(left, right string) int {
 	return databaseFormulaOrder(float64(len(leftUnits)), float64(len(rightUnits)))
 }
 
-var databaseFormulaVariableName = regexp.MustCompile(`^[A-Za-z_][A-Za-z0-9_]*$`)
+var databaseFormulaVariableName = regexp.MustCompile(`^[\p{L}_][\p{L}_0-9]*$`)
 
 // databaseFormulaBindingName is a let() name: one identifier or one quoted
 // name.

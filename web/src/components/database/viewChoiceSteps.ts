@@ -99,11 +99,11 @@ export const VIEW_CHOICE_KEEPING_PRESS = "[data-database-toolbar] [aria-haspopup
  * then choosing the cell under it and a letter going into it
  * (chosenCellHeld.ts) — as Notion's whose window has no field to describe a
  * view to its AI (seen 2026-11-26 and 2026-11-27 in Chrome at 1440 under
- * 한지테스트페이지, a Plus workspace, judged after the press only: by the tabs
- * and by a lone view's title, in two tabs at different times). Where Notion's
- * AI is on (its business trial, seen 2026-11-26), that window opens with the
- * caret in its "또는 보기를 설명하세요..." field and the cell let go; Leafen has
- * no built-in AI, so its window is the one without the field. Not
+ * a Notion test page, a Plus workspace, judged after the press only: by the
+ * tabs and by a lone view's title, in two tabs at different times). Where
+ * Notion's AI is on (its business trial, seen 2026-11-26), that window opens
+ * with the caret in its "또는 보기를 설명하세요..." field and the cell let go;
+ * Leafen has no built-in AI, so its window is the one without the field. Not
  * one of the controls the chosen items' keys go on from
  * (VIEW_CHOICE_KEEPING_PRESS): it takes no focus as it is pressed.
  */
@@ -112,7 +112,7 @@ export const VIEW_ADD_PRESS = "[data-add-view-opener], [data-add-view-menu]";
 /**
  * Whether a press keeps a view's choice: one of VIEW_CHOICE_KEEPING_PRESS
  * or VIEW_ADD_PRESS, one in a menu, dialog or list open over the view, a
- * row's "열기" that opens it in the middle, or one beside a menu or window
+ * row's "열기" in the middle or beside, or one beside a menu or window
  * open on top — a row's center peek, a template's being edited, the
  * automation window, a toolbar's menu, the view bar's menus — that closes
  * only it (pressBesideWindow). A press beside one of the view's own windows
@@ -125,15 +125,16 @@ export const VIEW_ADD_PRESS = "[data-add-view-opener], [data-add-view-menu]";
  * times, judged after the press only: a row ticked, another row's "열기"
  * opening its center peek and a template's window opened from "새로 만들기
  * ⌄", each closed with a press beside it, "1개 선택됨" stayed; closed with
- * Escape too, the template's in one tab and the peek's in the other). A row
- * opened in the side peek lets them go (seen once, the same day). Any press
+ * Escape too, the template's in one tab and the peek's in the other). The
+ * peek a row's "열기" opens, in the middle or beside, sets them aside while it
+ * is open and gives them back as it closes (peekSetsChoiceAside.ts). Any press
  * while an item's menu is open closes only the menu: a right press's on a
  * list's row, a gallery's card or a table's row, closed by a press on the
  * page's margin, left the item chosen and focused (seen 2026-11-24 at 1685
  * in two tabs at different times; chosenItemFocus.ts).
  */
 export function keepsViewChoice(target: Element) {
-  return Boolean(target.closest(`[role="menu"], [role="dialog"], [role="listbox"], [data-row-peek-backdrop], [data-table-row-open="center"], ${VIEW_CHOICE_KEEPING_PRESS}, ${VIEW_ADD_PRESS}`)
+  return Boolean(target.closest(`[role="menu"], [role="dialog"], [role="listbox"], [data-row-peek-backdrop], [data-table-row-open="center"], [data-table-row-open="side"], ${VIEW_CHOICE_KEEPING_PRESS}, ${VIEW_ADD_PRESS}`)
     || itemMenuDrawn(target.ownerDocument) || pressBesideWindow(target));
 }
 

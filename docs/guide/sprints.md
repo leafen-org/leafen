@@ -75,7 +75,7 @@ Sprint board shows "Next sprint starts in 〈n〉 days (〈date〉)" and:
 | **Duration** | 1 to 8 weeks | 2 weeks |
 | **Start on** | a day of the week | Monday |
 | **Incomplete tasks** | **Next sprint**, **Backlog** or **Current sprint**: where a finished sprint's unfinished tasks go | **Next sprint** |
-| **Automated sprints** | "The current sprint is marked complete automatically just before the next one starts." | off |
+| **Automated sprints** | "Each sprint completes automatically just before the next one starts." | off |
 
 A view of the tasks can also show the current sprint with
 **Manage sprint from this view** ("Show the current sprint in this view if

@@ -16,6 +16,8 @@ import styles from "./databaseSheet";
 import { focusedOpener } from "@/lib/lastPress";
 import { fieldEnter, fieldEscape, imeComposing } from "@/lib/fieldKeyBoundary";
 import { dropOptionNameCommas } from "./optionNameText";
+import { useTypedName } from "@/lib/typedName";
+import type { ContentGraph, GraphOperation } from "@/contentGraph";
 
 /**
  * Notion's notice in place of deleting a status's default (seen 2026-11-08):
@@ -67,6 +69,7 @@ function OptionEditorPopover({
   anchor,
   onClose,
   onRename,
+  typedChange,
   onColor,
   onDescribe,
   onDelete,
@@ -79,6 +82,8 @@ function OptionEditorPopover({
   anchor: DOMRect;
   onClose: () => void;
   onRename: (name: string) => void;
+  /** The change of its property saving a name typed makes, on the page's graph as drawn: kept on the device at each key (useTypedName). */
+  typedChange?: (name: string, graph: ContentGraph) => GraphOperation[] | null;
   onColor: (color: ColorName) => void;
   onDescribe?: (description: string) => void;
   onDelete?: () => void;
@@ -115,6 +120,9 @@ function OptionEditorPopover({
   // scope is set: taken as it is drawn, a cell picker's scope took it back.
   const nameRef = useRef<HTMLInputElement>(null);
   useEffect(() => { nameRef.current?.focus({ preventScroll: true }); }, []);
+  // Its name is kept however it closes — Enter, a press outside, Escape, the page left — as Notion's option editor
+  // keeps it (seen 2026-11-28 in Chrome, two tabs: a name typed, then Escape, stayed, from 속성 편집 and from a cell's "⋯").
+  const named = useTypedName(option.id, "option", onRename, typedChange);
   useEffect(() => {
     const editor = editorRef.current;
     return () => {
@@ -167,19 +175,19 @@ function OptionEditorPopover({
             aria-label={t("propertyCell:optionName")}
             ref={nameRef}
             onFocus={(event) => event.currentTarget.select()}
-            onInput={(event) => dropOptionNameCommas(event.currentTarget)}
+            onInput={(event) => { dropOptionNameCommas(event.currentTarget); named.typed(event.currentTarget.value); }}
             onKeyDown={(event) => {
               if (imeComposing(event)) return;
               if (fieldEnter(event)) {
                 event.preventDefault();
-                onRename(event.currentTarget.value);
+                named.saved(event.currentTarget.value);
                 onClose();
               } else if (event.key === "Escape") {
                 event.preventDefault();
                 closeByKey();
               }
             }}
-            onBlur={(event) => onRename(event.target.value)}
+            onBlur={(event) => named.saved(event.target.value)}
           />
           {onDescribe && (
             <DescribeButton className={styles.optionDescribe}

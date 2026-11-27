@@ -484,7 +484,7 @@ func appEndpointKeepBody(event *core.RequestEvent, actor func() (appEndpointActo
 		return refuse(http.StatusRequestEntityTooLarge, "The request is larger than Leafen keeps.")
 	}
 	if errors.Is(err, errServerDiskLow) {
-		return refuse(http.StatusInsufficientStorage, "The server's disk is almost full; ask its administrator to free space.")
+		return refuse(http.StatusInsufficientStorage, serverDiskRefusalMessage(event, err))
 	}
 	if err != nil {
 		return refuse(http.StatusBadRequest, "Leafen couldn't read the request.")
@@ -507,7 +507,7 @@ func appEndpointKeepBody(event *core.RequestEvent, actor func() (appEndpointActo
 			return refuse(http.StatusForbidden, "You can't keep files in this app's space.")
 		}
 		if errors.Is(err, errServerDiskLow) {
-			return refuse(http.StatusInsufficientStorage, "The server's disk is almost full; ask its administrator to free space.")
+			return refuse(http.StatusInsufficientStorage, serverDiskRefusalMessage(event, err))
 		}
 		event.App.Logger().Warn("leafen app endpoint body failed", "error", err)
 		return fileTransferFile{}, false, appEndpointFailure(event, "Leafen couldn't keep the request's body.", err)

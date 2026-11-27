@@ -50,7 +50,7 @@ import { viewShowsPageIcons } from "./CardTitleIcon";
 import { NotionSelect } from "./NotionSelect";
 import { DatabaseViewControls } from "./DatabaseViewControls";
 import { UndatedRowsMenu } from "./UndatedRowsMenu";
-import { TableLoadMoreRow } from "./TableLoadMoreRow";
+import { TableLoadMoreRow } from "./TableLoadMoreRow"; import { useListGroupLoads } from "./ListGroupLoads";
 import { dateTimeValue, endMoment, moment, shownDay } from "./timelineDateValues";
 import { useUndatedTimelineDrag } from "./useUndatedTimelineDrag";
 import { listenTimelineBarDrag } from "./timelineBarDrag";
@@ -102,7 +102,7 @@ export interface TimelineViewSnapshot {
   dependencyNextCursor: string | null;
   dependencyHasMore: boolean;
   /** An inline timeline's first rows: how many it shows now, of the first `limit`, with those made here. */
-  rowWindow?: { limit: number; count: number; made: ReadonlySet<string> };
+  rowWindow?: { limit: number; count: number; made: ReadonlySet<string>; /** Grouped: each group shows its own first rows (useListGroupLoads). */ perGroup?: boolean };
 }
 
 export interface TimelineViewOperationContext {
@@ -267,7 +267,7 @@ export function TimelineView({ snapshot, operations, readOnly = false }: { snaps
   }, [pagesById, placing, snapshot.contextPageId, snapshot.currentUserId, snapshot.properties, snapshot.workspaceId]);
   // An inline timeline shows its first rows and "더 불러오기", as a table does (Notion's, seen 2026-10-11).
   const rowWindow = snapshot.rowWindow;
-  const { rows: shown, hasMore } = useMemo(() => rowWindow ? tableRowWindow(scoped, rowWindow.count, rowWindow.made) : { rows: scoped, hasMore: false }, [rowWindow, scoped]);
+  const { rows: shown, hasMore } = useMemo(() => rowWindow && !rowWindow.perGroup ? tableRowWindow(scoped, rowWindow.count, rowWindow.made) : { rows: scoped, hasMore: false }, [rowWindow, scoped]);
   useEffect(() => { if (faded.size && subitemFilterScope(view.config) !== "parents") setExpandedRows((current) => new Set([...current, ...faded])); }, [faded, view.config]);
   const barColor = useMemo(() => conditionalColorResolver(view.config as Record<string, unknown>, properties, {
     pagesById, currentPageId: snapshot.contextPageId, currentUserId: snapshot.currentUserId,
@@ -340,7 +340,7 @@ export function TimelineView({ snapshot, operations, readOnly = false }: { snaps
   usePageWideTable(timelineRef, Number.POSITIVE_INFINITY, { wide: tableShown });
   // Its controls, dates and table's head stay at the page's top as it scrolls (useStickyViewHeads).
   useStickyViewHeads(timelineRef, { own: true, shape: `${tableShown}:${String(snapshot.view.config.groupBy ?? "")}` });
-  const groupProperty = snapshot.properties.find(property => property.id === snapshot.view.config.groupBy);
+  const groupProperty = snapshot.properties.find(property => property.id === snapshot.view.config.groupBy), groupLoads = useListGroupLoads(snapshot.view, rowWindow?.made);
   const creates = Boolean(startProperty) && !readOnly && offersNewRows;
   const viewWritable = !readOnly && !structureLocked;
   const lanes = useMemo(() => projectTimelineLanes({ dated: datedItems, away: awayItems, undated: projected.undated, hierarchy: hierarchy.items,
@@ -348,8 +348,8 @@ export function TimelineView({ snapshot, operations, readOnly = false }: { snaps
     graphRows: snapshot.rows, pagesById: groupingPages, propsByDatabaseId: propertyValueContext.propsByDatabaseId,
     config: snapshot.view.config, currentUserId: snapshot.currentUserId,
     showTable: tableShown, collapsed: collapsedGroups, adds: creates, subitemAddsAfter,
-    newGroup: Boolean(timelineGroupAddKind(groupProperty, snapshot.view.config, viewWritable, Boolean(operations.commitProperty))),
-  }), [subitemAddsAfter, collapsedGroups, creates, datedItems, awayItems, groupProperty, groupingPages, hierarchy.items, operations.commitProperty, projected.undated, propertyValueContext.propsByDatabaseId, snapshot.currentUserId, snapshot.properties, snapshot.rows, snapshot.view.config, tableShown, viewWritable]);
+    newGroup: Boolean(timelineGroupAddKind(groupProperty, snapshot.view.config, viewWritable, Boolean(operations.commitProperty))), groupCut: rowWindow?.perGroup ? groupLoads.cut : undefined,
+  }), [subitemAddsAfter, collapsedGroups, creates, groupLoads.cut, rowWindow?.perGroup, datedItems, awayItems, groupProperty, groupingPages, hierarchy.items, operations.commitProperty, projected.undated, propertyValueContext.propsByDatabaseId, snapshot.currentUserId, snapshot.properties, snapshot.rows, snapshot.view.config, tableShown, viewWritable]);
   const items = lanes.bars;
   // Its bars are chosen as a board's cards are (cardSelection.tsx), a drag from the canvas's empty room choosing those it touches; a chosen bar's row beside it in the table
   // wears the halo too (Notion's, seen 2026-11-12). A bar let go after a move, or brought back, stays chosen, its days marked over the bars (seen 2026-11-15 at 1440: "가 막대"
@@ -592,7 +592,7 @@ export function TimelineView({ snapshot, operations, readOnly = false }: { snaps
     updateConfig: next => updateView(next as ViewConfig, "view:group"),
     commitProperty: operations.commitProperty ? property => runOperation(`property:${property.id}`, context => operations.commitProperty!(property, context), undefined, true) : undefined,
     trashRows: operations.trashRows ? ids => { if (ids.length) void operations.trashRows?.(ids); } : undefined,
-    openGroupSettings: operations.openGroupSettings });
+    openGroupSettings: operations.openGroupSettings, loadMore: groupLoads.loadMore, loadLimit: { limit: groupLoads.step, onLimit: operations.setRowLoadLimit } });
   const monthSpans = timelineTopSpans(range.days, zoom, activeDateLocale());
   const showTable = !!view.config?.timelineShowTable;
   const toggleGroup = (key: string) => setCollapsedGroups(current => { const next = new Set(current); if (next.has(key)) next.delete(key); else next.add(key); return next; });

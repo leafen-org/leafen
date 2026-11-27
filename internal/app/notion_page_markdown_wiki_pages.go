@@ -17,7 +17,7 @@ import (
 // Markdown and MCP's fetch name it with a <page> tag, and Markdown written
 // back keeps it where its tag stands and gives the page the title its tag
 // gives, as a sub-page's; Leafen's own Markdown keeps writing it as the link
-// it is (<link-to-page url="…" />).
+// it is (<link-to-page url="…">title</link-to-page>).
 
 // notionMarkdownBlockReference starts a block's reference, and names the page
 // it stands for: a sub-page's block its page, a link marked as a wiki's its

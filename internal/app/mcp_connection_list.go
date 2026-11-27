@@ -55,6 +55,8 @@ type storedMCPConnectionListRow struct {
 	// Its page's "모든 페이지", off holding it to PageIDs (mcp_token_tools.go).
 	AllPages int64  `db:"all_pages"`
 	PageIDs  string `db:"page_ids"`
+	// Agent marks an agent connection (connection_person_rights.go).
+	Agent bool `db:"agent_connection"`
 }
 
 type storedMCPConnectionListScope struct {
@@ -188,8 +190,9 @@ func loadMCPConnectionListPage(
 				return err
 			}
 			// Held to chosen pages, it says how many its page shows, so it reads
-			// apart from one reaching every page (2026-11-13: both read "권한 전부").
-			if row.AllPages == 0 {
+			// apart from one reaching every page (2026-11-13: both read "권한 전부");
+			// an agent connection never is (connection_person_rights.go).
+			if connectionNarrowingOf(row.Agent, "[]", row.PageIDs, row.AllPages).PagesNarrowed {
 				pages, err := mcpConnectionChosenPages(txApp, row.PageIDs)
 				if err != nil {
 					return err
@@ -256,7 +259,7 @@ func loadMCPConnectionListRows(
 	err := app.DB().NewQuery(`
 		SELECT [[id]], [[client_name]], [[description]], [[icon]], [[token_expires_at]], [[refresh_expires_at]], [[oauth_client_id]],
 			[[oauth_resource]], [[oauth_scope]], [[access_scope]], [[created]], [[revoked_at]], [[last_used_at]],
-			[[reached_via]], [[all_pages]], [[page_ids]]
+			[[reached_via]], [[all_pages]], [[page_ids]], [[agent_connection]]
 		FROM {{leafen_mcp_connections}} INDEXED BY [[idx_leafen_mcp_connections_owner_created]]
 		WHERE [[owner_id]] = {:ownerId} AND [[app_install_id]] = '' AND [[request_id]] NOT LIKE 'agent-session:%' AND (
 			{:afterId} = '' OR [[created]] < {:afterCreated}
@@ -398,6 +401,7 @@ func mcpConnectionListWireItem(
 	}
 	return mcpConnectionListItem{
 		ID: row.ID, ClientID: clientID, ClientName: row.ClientName, Description: row.Description, Icon: row.Icon,
+		Kind:     connectionKindListed(storedConnectionKind(row.Agent, row.OAuthClientID)),
 		Resource: resource, Scopes: scopes, AccessScope: mcpConnectionListAppScope(row), WorkspaceIDs: workspaceIDs, Workspaces: workspaces,
 		Status: status, CreatedAt: row.Created, ExpiresAt: expiresAt, RevokedAt: revokedAt, LastUsedAt: lastUsedAt,
 	}, nil

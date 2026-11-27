@@ -437,10 +437,10 @@ func compareNotionMigrationView(
 		}
 	}
 
-	// The group and, on a board, the sub-group: their property.
+	// The group of a view that takes one (a list's, gallery's and timeline's too) and, on a board, the sub-group: their property.
 	for official, native := range map[string]string{"group_by": "groupBy", "sub_group_by": "subGroupBy"} {
 		group, _ := settings[official].(map[string]any)
-		if group == nil || plan.Type != graphViewTypeTable && plan.Type != graphViewTypeBoard {
+		if group == nil || !notionViewTakesField(plan.Type, official) {
 			continue
 		}
 		id, found, inSource := resolve(group["property_id"])

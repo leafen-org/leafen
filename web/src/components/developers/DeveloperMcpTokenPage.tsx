@@ -41,7 +41,10 @@ const longDate = (value: number) => new Intl.DateTimeFormat(activeDateLocale(), 
  * copy, as Notion's integration token field (seen 2026-11-13): the server
  * keeps it sealed for its person alone (decided 2026-11-13). One made before
  * keys were kept says that refreshing it makes one that shows again. The
- * server's address and the key's expiry sit under it, as Leafen's own.
+ * server's address and the key's expiry sit under it, as Leafen's own. An
+ * agent connection's page is the same less 도구 and 콘텐츠 사용 권한: it works
+ * as its person, with every tool and page, and nothing narrows it — only an
+ * MCP token chooses its tools and pages (internal/app/connection_person_rights.go).
  */
 export function DeveloperMcpTokenPage({ session, connectionId }: { session: Session; connectionId: string }) {
   const { t } = useTranslation(["workspaceSettingsDialog", "common"]);
@@ -128,13 +131,13 @@ export function DeveloperMcpTokenPage({ session, connectionId }: { session: Sess
       <main className={styles.page} data-mcp-token={connectionId}>
         {settings === null ? <p className={styles.description}>{error || t("developerTools.mcpToken.missing")}</p> : settings ? <>
           <h1 className={styles.title}>{settings.clientName}</h1>
-          <nav className={styles.tabs} role="tablist" aria-label={settings.clientName}>
+          {settings.agent ? null : <nav className={styles.tabs} role="tablist" aria-label={settings.clientName}>
             {(["config", "access"] as const).map((candidate) => (
               <button key={candidate} type="button" role="tab" aria-selected={candidate === tab} className={styles.tab}
                 data-mcp-token-tab={candidate} onClick={() => setTab(candidate)}>{t(`developerTools.mcpToken.tabs.${candidate}`)}</button>
             ))}
-          </nav>
-          {tab === "config" ? <>
+          </nav>}
+          {tab === "config" || settings.agent ? <>
             <section className={styles.card} data-mcp-token-card="display">
               <h2 className={styles.cardTitle}>{t("developerTools.connection.display")}</h2>
               <div className={styles.fieldGrid}>
@@ -157,10 +160,13 @@ export function DeveloperMcpTokenPage({ session, connectionId }: { session: Sess
             </section>
             <section className={styles.card} data-mcp-token-card="token">
               <h2 className={styles.cardTitle}>{t("developerTools.mcpToken.token")}</h2>
-              {/* Notion's words for its token of one workspace; one reaching several says how many (the chips under it name them). */}
-              <p className={`${styles.description} ${own.description}`} data-mcp-token-description>{settings.workspaces.length > 1
-                ? t("developerTools.mcpToken.tokenDescriptionSeveral", { number: settings.workspaces.length })
-                : t("developerTools.mcpToken.tokenDescription")}</p>
+              {/* Notion's words for its token of one workspace; one reaching several says how many (the chips under it name them);
+                  an agent connection says it works as its person, with every tool and page. */}
+              <p className={`${styles.description} ${own.description}`} data-mcp-token-description>{settings.agent
+                ? t("developerTools.mcpToken.agentDescription")
+                : settings.workspaces.length > 1
+                  ? t("developerTools.mcpToken.tokenDescriptionSeveral", { number: settings.workspaces.length })
+                  : t("developerTools.mcpToken.tokenDescription")}</p>
               <div className={styles.fieldGrid}>
                 <McpTokenWorkspaces settings={settings} />
                 <div className={styles.cardField}>
@@ -204,7 +210,7 @@ export function DeveloperMcpTokenPage({ session, connectionId }: { session: Sess
               {settings.previousUntil ? <p className={own.note} data-mcp-token-previous>
                 {t("developerTools.mcpToken.previousUntil", { date: dateAndTime(settings.previousUntil) })}</p> : null}
             </section>
-            <McpTokenTools settings={settings} onChange={(disabledTools) => void save({ disabledTools })} />
+            {settings.agent ? null : <McpTokenTools settings={settings} onChange={(disabledTools) => void save({ disabledTools })} />}
             <McpTokenNotionOnlyTools settings={settings} onChange={(notionOnlyTools) => void save({ notionOnlyTools }, { notionOnlyTools })} />
             <McpTokenAsks settings={settings} onChange={(handsAllOver) => void save({ handsAllOver }, { handsAllOver })} />
             <DeveloperDangerZone kind="mcpToken" description={t("developerTools.mcpToken.dangerDescription")} onRemove={() => void remove()} />

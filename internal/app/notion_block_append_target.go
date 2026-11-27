@@ -15,8 +15,8 @@ type notionBlockAppendTarget struct {
 
 // notionAppendUnderOriginal sends an append under a synced copy to the
 // copy's original, as Notion's API does (seen 2026-11-21, Notion-Version
-// 2026-03-11, synthetic pages under 한지테스트페이지: blocks appended to a copy
-// on the original's page or another, at the end or the start, go under the
+// 2026-03-11, synthetic pages under a Notion test page: blocks appended to a
+// copy on the original's page or another, at the end or the start, go under the
 // original, every copy reads them, and the answer reads the original's
 // children from the first of them, each naming the original as its parent;
 // an empty append reads the original's children). Its place was checked
@@ -41,6 +41,9 @@ func notionAppendUnderOriginal(
 	sourceID := notionSyncedCopySourceID(copied)
 	if !found || sourceID == "" {
 		return target, false, nil
+	}
+	if page := syncedCopyPageRaw(copied.Content); page != "" {
+		return notionAppendToPageOriginal(event, target, position, afterID, page)
 	}
 	if afterID != nil && position != nil && position.AfterBlock != nil {
 		return target, true, notionBodyAnchorError(event, errNotionBodyAnchorOutside, position.AfterBlock.ID)

@@ -13,7 +13,8 @@ import {
   type GraphView,
 } from "@/contentGraph";
 import { distinctGraphPropertyNames, graphPropertiesAfterCommit } from "@/lib/graphFormulaReferences";
-import { sendRowValues } from "@/lib/rowValuesKept";
+import { sendRowValues, type RowValuesAnswer } from "@/lib/rowValuesKept";
+import { typedRowValueIn, typedRowValueSent } from "@/lib/rowValuesTyped";
 import { isRowValueChanged } from "@/lib/rowTitleSave";
 import type { TitleValue } from "@/lib/titleMerge";
 import { newId } from "@/lib/ids";
@@ -53,10 +54,10 @@ export type NativeTableProductAdapter = {
   commitRows(rows: readonly GraphRow[], isCurrent: () => boolean, typed?: boolean): Promise<void>;
   /**
    * Saves a row's title as commitRows does, shown at once and a step of ⌘Z,
-   * only over the title its writer read: refused when another was saved
-   * since, it takes its step back and fails (rowTitleSave.ts).
+   * through the row's page's route over the title it was typed on (`read`),
+   * merged there with another saved since, which it then shows (rowValuesKept.ts).
    */
-  commitRowTitleAsRead?(row: GraphRow, propertyId: string, read: TitleValue, isCurrent: () => boolean): Promise<void>;
+  commitRowTitleAsRead?(row: GraphRow, propertyId: string, read: TitleValue | null, isCurrent: () => boolean): Promise<void>;
   /** The row's own page body was edited here: it shows itself last edited now, by this person (rowBodyEdits.ts). */
   rowEditedHere?(rowId: string): void;
   /** Puts back what a change of values replaced (or, made again, what it gave), over the cells still as it left them. */
@@ -228,13 +229,24 @@ export function createNativeTableProductAdapter({
   // its own. The step is there as the edit shows, so a ⌘Z right after typing
   // takes it back (2026-11-09: it came only with the server's answer, and the
   // first ⌘Z found nothing); a save the server refuses takes its step back.
+  // A value typed into its cell goes through the row's page, kept on the device at each key, in its database's turn (rowValuesTyped.ts);
+  // a refused one reads the graph again.
   async function saveRows(rows: readonly GraphRow[], isCurrent: () => boolean, record: boolean, typed = false) {
     const changes = peopleRowsWritten(graph, rows.map((row) => rowChange(graph.rows, row)));
     if (!changes.length) return false;
     let written = false;
     const steps = record ? valueChangesOf(graph, changes) : [];
     const withdraw = steps.length ? recordValues?.(steps) : undefined;
-    const shown = await saveRowsShownAtOnce(graph, pageId, changes, async (operations) => (written = await persistRows(operations, typed)), isCurrent, setGraph, session?.user.id);
+    // People's rows keep to the way its own values go (peopleSourceCells.ts).
+    const cell = typed && session && changes.length === 1 && graph.dataSources.find(({ id }) => id === changes[0].dataSourceId)?.peopleDatabase !== true
+      ? typedRowValueIn(changes[0]) : null;
+    const lane = cell && graphDataSourceAuthorityPageId(graph, pageId, changes[0].dataSourceId);
+    const persisted = cell && session && lane ? async () => (written = await typedRowValueSent(session, cell, lane,
+      graph.rows.find(({ id }) => id === cell.rowId)?.values[cell.propertyId], (value) => setGraph((current) => ({ ...current, rows: current.rows.map((row) =>
+        row.id === cell.rowId ? { ...row, values: { ...row.values, [cell.propertyId]: value as GraphRow["values"][string] } } : row) })))
+      .then((saved) => { if (!saved) { setMessage(i18next.t("databaseView:toast.couldntSaveChanges"), "error"); if (pageId) void rereadGraph?.(pageId); } return saved; }))
+      : async (operations: GraphOperation[]) => (written = await persistRows(operations, typed));
+    const shown = await saveRowsShownAtOnce(graph, pageId, changes, persisted, isCurrent, setGraph, session?.user.id);
     if (!written) withdraw?.();
     if (shown) setMessage(i18next.t("databaseView:status.saved"));
     return written;
@@ -244,20 +256,26 @@ export function createNativeTableProductAdapter({
     await saveRows(rows, isCurrent, true, typed);
   }
 
-  // Written through the row's page, which holds the write to the title read, kept in the outbox behind the page's other changes (rowValuesKept.ts).
-  async function commitRowTitleAsRead(row: GraphRow, propertyId: string, read: TitleValue, isCurrent: () => boolean) {
+  // Written through the row's page over the title it was typed on, kept in the outbox behind the page's other changes (rowValuesKept.ts);
+  // its step of ⌘Z is the typing's, taken as the typing paused or ended, whatever the server makes of it.
+  async function commitRowTitleAsRead(row: GraphRow, propertyId: string, read: TitleValue | null, isCurrent: () => boolean) {
     const value = row.values[propertyId], reader = session;
     if (!value || !reader || peopleOwnValue(graph, row, propertyId)) return;
     const changes = [rowChange(graph.rows, row)];
     const steps = valueChangesOf(graph, changes);
     const withdraw = steps.length ? recordValues?.(steps) : undefined;
     try {
+      let answer: RowValuesAnswer | null = null;
       await saveRowsShownAtOnce(graph, pageId, changes, async () => {
-        await sendRowValues(reader, row.id, {
-          values: { [propertyId]: value }, expected: { [propertyId]: { type: value.type, value: read.title } },
-        }, pageId);
+        answer = await sendRowValues(reader, row.id, { values: { [propertyId]: value }, ...(read ? { expected: { [propertyId]: {
+          type: value.type, value: read.title, ...(read.spans?.length ? { spans: read.spans.map((span) => ({ ...span })) } : {}) } } } : {}) },
+        graphDataSourceAuthorityPageId(graph, pageId, row.dataSourceId));
         return true;
       }, isCurrent, setGraph, reader.user.id);
+      // Merged with a title saved elsewhere meanwhile, the row shows the title written.
+      const merged = (answer as RowValuesAnswer | null)?.merged?.[propertyId];
+      if (merged && isCurrent()) setGraph((current) => ({ ...current, rows: current.rows.map((shown) => shown.id === row.id
+        ? { ...shown, values: { ...shown.values, [propertyId]: merged as GraphRow["values"][string] } } : shown) }));
     } catch (error) {
       withdraw?.();
       if (!isRowValueChanged(error)) {

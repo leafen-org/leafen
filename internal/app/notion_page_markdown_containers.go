@@ -20,7 +20,7 @@ import (
 // before reads as it did.
 
 var (
-	notionMarkdownContainerOpen   = regexp.MustCompile(`^<(p|h[1-4]|quote|toggle|callout|li|todo|column|tab|equation|bookmark|embed|image|file|pdf|video|audio|synced-block-reference|synced-block|ul|ol|columns|tabs|page|database)((?:[ \t]+[a-z-]+="[^"]*")*)[ \t]*>(.*)$`)
+	notionMarkdownContainerOpen   = regexp.MustCompile(`^<(p|h[1-4]|quote|toggle|callout|li|todo|column|tab|equation|bookmark|embed|image|file|pdf|video|audio|synced-block-reference|synced-block|ul|ol|columns|tabs|page|database|link-to-page|button)((?:[ \t]+[a-z-]+="[^"]*")*)[ \t]*>(.*)$`)
 	notionMarkdownSelfClosedMedia = regexp.MustCompile(`^<(image|file|pdf|video|audio)((?:[ \t]+[a-z-]+="[^"]*")*)[ \t]*/>$`)
 	notionMarkdownAttributeValue  = regexp.MustCompile(`([a-z-]+)="([^"]*)"`)
 	notionMarkdownEmptyParagraph  = regexp.MustCompile(`^<p[ \t]*/>$`)
@@ -266,12 +266,12 @@ func notionMarkdownContainer(lines []string, start, column int, match []string, 
 	name, attributes, rest := match[1], notionMarkdownAttributes(match[2]), strings.TrimSpace(match[3])
 	tabs := strings.Repeat("\t", level)
 	closing := "</" + name + ">"
-	// A sub-page's or database's title on a line of its own reads as the tag
-	// on one line, as Notion's MCP reads it (seen 2026-11-04); a title of one
+	// A sub-page's, database's, link's or button's title on a line of its own
+	// reads as the tag on one line, as Notion's MCP reads it (seen 2026-11-04); a title of one
 	// line keeps the spaces at its ends, its indent aside, spaces alone too,
 	// as Notion's "v2" does (seen 2026-11-13: "  v2쪽  " and "   " name a page
 	// so).
-	if name == "page" || name == "database" {
+	if name == "page" || name == "database" || name == "link-to-page" || name == "button" {
 		if rest != "" {
 			return nil, 0
 		}

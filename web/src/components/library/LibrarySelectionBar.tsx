@@ -7,6 +7,7 @@ import { AnchoredIconPicker } from "@/components/page/AnchoredEmojiPicker";
 import { confirmDatabasePagesTrash, confirmDatabasePageTrash, confirmDatabaseSprintsTrash } from "@/components/editor/databaseBlockRemoval";
 import { hasExplicitPageIcon } from "@/components/page/PageIcon";
 import { PageRenamePopover } from "@/components/page/PageRenamePopover";
+import { pageTitleKept } from "@/lib/typedDraftSender";
 import type { TextSpan } from "@/lib/types";
 import type { PagePresentationChange } from "@/components/page/pagePresentation";
 import type { MovePopoverAnchor } from "@/components/movePopoverPlacement";
@@ -297,6 +298,7 @@ export function LibrarySelectionBar({
       ) : null}
       {rename && single ? (
         <PageRenamePopover page={single} title={single.title} titleSpans={single.titleSpans} untitled={untitledPageDisplayTitle(single)} at={rename}
+          kept={single.kind === "database" ? undefined : pageTitleKept(single.id, () => single)}
           onTitleChange={(title, spans) => void actions.changePageTitle(single, title, undefined, spans)}
           onPresentationChange={(change) => changeIcon(change, [single])}
           onClose={() => { setRename(null); onClear(); }} />

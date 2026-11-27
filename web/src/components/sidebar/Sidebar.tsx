@@ -5,7 +5,7 @@ import type { DatabaseStarterSourceLoader } from "@/components/database/Database
 import type { ProductStatusSink } from "@/lib/productStatus";
 import { Suspense, useCallback, useEffect, useRef, useState, useSyncExternalStore, type PointerEvent as ReactPointerEvent } from "react";
 import { signedInLinkNoticeShown, subscribeSignedInLinkNotice } from "@/lib/signedInLinkNoticeShown";
-import { searchIsOpen, subscribeSearchOpen } from "@/lib/searchOpen";
+import { usePhoneInboxGoesWithDrawer } from "./usePhoneInboxGoesWithDrawer";
 import { settingsWindowStore, trashPanelStore } from "@/lib/productWindows";
 import { lazyScreen } from "@/lib/lazyScreen";
 import { useTranslation } from "react-i18next";
@@ -343,7 +343,7 @@ export function Sidebar({
   // 2026-11-17 in a 606px Chrome window, the narrowest Chrome draws, two tabs: the focus on its toggle, a
   // section's head or the workspace switcher); a menu or sheet opened from it closes alone (escapeTopSheet).
 
-  const profiles = useServerProfiles({ session, workspace, workspaces, workspacesShown });
+  const profiles = useServerProfiles({ session, workspaces, workspacesShown });
   const { phone, touch } = useShellLayout();
   const homeRow = useSidebarHomeRow(session.user.id, workspace, workspacesShown, phone);
   const pathname = usePathname();
@@ -378,27 +378,15 @@ export function Sidebar({
   // A phone drawer's "알림과 설정", "멤버" and "휴지통" open over the drawer,
   // there again at the same scroll as they close — Notion's (seen 2026-11-14
   // and 2026-11-16 in iPhone Safari: "‹", "완료" and Escape come back to the
-  // drawer open; its search's "취소하기" leaves it closed).
+  // drawer open).
   const overDrawer = (run: () => void) => () => {
     setUpdatesOpen(false);
     run();
   };
-  // Its search opens over it too, as a sheet, and takes it along as it
-  // closes — Notion's (seen 2026-11-14 in iPhone Safari: the drawer behind
-  // the sheet; "취소하기" or the shade leaves the page, the drawer shut).
-  const searchOverDrawer = useRef(false);
-  const openSearch = phone ? overDrawer(() => {
-    searchOverDrawer.current = true;
-    onOpenSearch();
-  }) : thenClose(onOpenSearch);
-  // Followed as search closes, not drawn with it: its press draws the search alone (lib/searchOpen.ts).
-  const shutDrawer = useRef(() => {});
-  shutDrawer.current = () => { if (phone && open) onToggle(); };
-  useEffect(() => subscribeSearchOpen(() => {
-    if (searchIsOpen() || !searchOverDrawer.current) return;
-    searchOverDrawer.current = false;
-    shutDrawer.current();
-  }), []);
+  // Its search, from its tab bar or its inbox's foot, opens over them and goes back
+  // to them as it is cancelled; a result opened takes them along (usePhoneInboxGoesWithDrawer.ts).
+  const openSearch = phone ? onOpenSearch : thenClose(onOpenSearch);
+  usePhoneInboxGoesWithDrawer(phone, pathname, () => setUpdatesOpen(false));
   const footPlaces = {
     onOpenLibrary: workspace ? thenClose(() => onOpenLibrary(libraryOpeningView(session.user.id, workspace))) : undefined,
     onOpenApps: appPlatform ? thenClose(() => pushRoute("/apps")) : undefined,

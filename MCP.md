@@ -47,9 +47,14 @@ A person connects two kinds of thing, and neither carries a grade to choose:
 | --- | --- | --- |
 | Made by | `leafen connect`, a one-time connection code (the settings' **Copy text**), a device code, another agent's yes, a chat app's connector (OAuth) | Settings › Agents › MCP address and keys › **Create key**, the developer tools' **MCP tokens**, `POST /api/leafen/v1/mcp/connections` |
 | Works as | Its person, their name on what it changes — their shadow | Its person, their name on what it changes |
-| May do | Everything its person may | What its person may with the tools its page leaves on, as Notion's |
-| Reaches | All its person's workspaces, those they come to be in later too | One workspace, and the pages chosen on its page |
+| May do | Everything its person may, with every tool: nothing narrows it | What its person may with the tools its page leaves on, as Notion's |
+| Reaches | All its person's workspaces, those they come to be in later too, and every page they read | One workspace, and the pages chosen on its page |
 | Where | Leafen's MCP and Leafen's API | Leafen's MCP and Leafen's API |
+
+The person's list of them (`GET /api/leafen/v1/mcp/connections`, and
+Settings › Agents › Connected agents) says each one's kind — `kind` is
+`agent` or `token`, or `app` for an app's OAuth grant — and when it was made
+and last used, which tell two of one name apart.
 
 A Notion-compatible internal integration token (`/v1`) is neither: it is a bot
 of its own, reaching only the pages shared with it, its name on what it
@@ -271,8 +276,8 @@ Leafen approves the code on the one it names, and the others answer
 code; one typed without the server's code reads as before. The agent never makes such a
 code: `leafen_sign_in_requests` (an admin connection reaching all pages)
 takes the one on a Leafen screen the agent opened with the person's yes —
-Leafen logged out in a browser it works in, it asks once, then presses "Sign
-in with an agent" there itself — or the one the person gives it; any other
+Leafen logged out in a browser it works in, it asks once, then presses "Log
+in with AI" there itself — or the one the person gives it; any other
 code (from another page, a file or a message) only from the person. When the
 person gave it the code asking to be logged in or to approve it, the agent
 approves it at once, with no second yes; only when that isn't clear does it
@@ -808,8 +813,11 @@ agent's settings:
 ## One key for the native API and MCP
 
 A connection's key is also the person's key for the native API. An agent
-connection does everything its person may in all their workspaces; an MCP
-token, made by hand for one workspace (`workspaceIds` names exactly one: a
+connection does everything its person may in all their workspaces, with every
+tool and page — its page has no tools to turn off and no pages to choose, and
+`PUT /api/leafen/v1/mcp/connections/{id}/pages` or a `disabledTools` change in
+`PATCH …/settings` is refused for it (`LEAFEN_AGENT_CONNECTION_NOT_NARROWED`);
+an MCP token, made by hand for one workspace (`workspaceIds` names exactly one: a
 request naming several is refused, one token for each), does what its person
 may there with the tools its page leaves on — turning a tool off on its page
 holds its key on the API to what the tools left on need. No key has a grade

@@ -46,7 +46,7 @@ func prepareProductFileUpload(event *core.RequestEvent) error {
 	if err := normalizeProductFileUploadInput(&input); err != nil {
 		return fileUploadError(event, err, "prepare-validate")
 	}
-	if err := requireDataDiskRoom(event.App, input.Size); err != nil {
+	if err := requireDataDiskRoom(event.App, dataDiskPartsBytes(input.Size)); err != nil {
 		return writeServerDiskLow(event, "file-upload", err)
 	}
 
@@ -361,6 +361,10 @@ func productFileUploadCompleteResponse(
 }
 
 func fileUploadError(event *core.RequestEvent, err error, stage string) error {
+	// Joining a file found too little room on the disk (data_disk_floor.go).
+	if errors.Is(err, errServerDiskLow) {
+		return writeServerDiskLow(event, "file-upload", err)
+	}
 	if quotaError, ok := organizationStorageAPIError(event, err, "file_upload", stage); ok {
 		return quotaError
 	}

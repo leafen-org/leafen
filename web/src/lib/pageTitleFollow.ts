@@ -104,17 +104,26 @@ export function createPageTitleFollow(initial: PageTitleBase, field: TitleField)
     }
   }
 
+  // The server's title the field's text was typed on: the last one sent, or the server's.
+  function typedOn(): PageTitleBase {
+    const on = sending[sending.length - 1] ?? titleOf(base);
+    return { title: on.title, cursor: base.cursor, ...(on.spans?.length ? { titleSpans: [...on.spans] } : {}) };
+  }
+
   return {
     /** What a save sends now — the title, its spans and the title it was typed on — or null with nothing new. */
     next(): { value: TitleValue; base: PageTitleBase } | null {
       if (field.composing()) return null;
       const value = field.read();
       if (sameTitle(value, last)) return null;
-      const typedOn = sending[sending.length - 1] ?? titleOf(base);
-      const made = { title: typedOn.title, cursor: base.cursor, ...(typedOn.spans?.length ? { titleSpans: [...typedOn.spans] } : {}) };
+      const made = typedOn();
       last = value;
       sending.push(value);
       return { value, base: made };
+    },
+    /** The field's title as it stands, a syllable composing too, and what it was typed on: what a key keeps on the device. */
+    peek(): { value: TitleValue; base: PageTitleBase } {
+      return { value: field.read(), base: typedOn() };
     },
     /** A save on its way, answered with the page as the server keeps it, a kept change, or false when refused. */
     sent(value: TitleValue, answer: unknown) {

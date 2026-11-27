@@ -6,14 +6,14 @@ we want to hear about one privately and fix it before it is public.
 
 ## Supported versions
 
-Leafen is in its 0.1 pre-release. Security fixes go into the latest release
+Leafen hasn't reached 1.0 yet. Security fixes go into the latest release
 only; please check that a weakness is still present there before reporting
 it. Once 1.0 is released this section will say which release lines receive
 fixes and for how long.
 
 | Version | Supported |
 | --- | --- |
-| Latest 0.1.x release | Yes |
+| The latest release | Yes |
 | Older releases, unreleased branches | No |
 
 ## Reporting a vulnerability

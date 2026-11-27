@@ -17,6 +17,7 @@ import { activeNumberLocale } from "@/lib/i18n";
 import { useOptionalProductToast } from "@/lib/productToast";
 import { cellRangeFormat, cellSpansOrText, colorCellRange, linkCellRange, toggleCellMark, unlinkCellRange } from "./richTextCellModel";
 import { createRichTextCellEngine, fieldElementAttributes, type CellCommentPending, type RichTextCellEngine, type RichTextCellChange } from "./richTextCellEngine";
+import type { FieldKept } from "./fieldTypedSave";
 import { printedFieldHtml } from "./RichTextCellShown";
 import { afterNextPaint } from "@/lib/afterPress";
 import { sleepUntilWoken } from "@/lib/sleepingFields";
@@ -141,6 +142,8 @@ export function RichTextCellEditor(props: {
   typedRules?: boolean;
   /** A title that takes titles saved elsewhere as they come, merged with the typing here (the engine's `follows`). */
   follows?: boolean;
+  /** What a field saved as it is left keeps on this device at each key: a row's page's title (the engine's `kept`). */
+  kept?: (change: RichTextCellChange) => FieldKept | null;
   /**
    * The page whose sharing a cell's "@" invite opens, where it isn't the page
    * the cell is on (a row page's own properties); see `invitePage`.
@@ -274,7 +277,7 @@ export function RichTextCellEditor(props: {
           return holds === "title" ? graphWireBounds.titleRunes : holds === "text" ? graphWireBounds.textCharacters : undefined;
         },
         datePressed: mention => menusRef.current.datePressed(mention, mention.closest<HTMLElement>("[data-rich-cell-editor]") ?? mention),
-        follows: () => latest.current.follows === true,
+        follows: () => latest.current.follows === true, ...(latest.current.kept ? { kept: (change: RichTextCellChange) => latest.current.kept?.(change) } : {}),
         // A database's text value: a table's text cell and a row page's text (the engine's opensLinks).
         opensLinks: () => latest.current.lineRules === true && latest.current.titleCell !== true && latest.current.holds !== "title",
         commentPending: () => latest.current.commentPending, editable: () => latest.current.readOnly !== true,

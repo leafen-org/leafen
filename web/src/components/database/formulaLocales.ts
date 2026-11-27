@@ -54,6 +54,13 @@ const ENGLISH: FormulaLocale = {
   },
 };
 
+// The help's examples write in English on a 24-hour clock, as Notion's help
+// writes them whatever the screen's language (FormulaEditorHelper.tsx).
+export const FORMULA_HELP_LOCALE: FormulaLocale = {
+  ...ENGLISH,
+  layouts: { ...ENGLISH.layouts, LT: "HH:mm", LLL: "MMMM D, YYYY HH:mm" },
+};
+
 const KOREAN_MONTHS = Array.from({ length: 12 }, (_, index) => `${index + 1}월`);
 const KOREAN_WEEKDAYS_SHORT = ["일", "월", "화", "수", "목", "금", "토"];
 

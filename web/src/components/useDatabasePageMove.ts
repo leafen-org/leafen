@@ -1,8 +1,8 @@
 import { useMemo, useRef, type Dispatch, type SetStateAction } from "react";
 import type { GraphRow } from "@/contentGraph";
 import { api } from "@/api";
-import { changeWikiPage, movePageIntoDatabase } from "@/databaseRowPageApi";
-import { commitNativePageMetadata } from "@/lib/nativePageMetadata";
+import { movePageIntoDatabase } from "@/databaseRowPageApi";
+import { commitNativePageMetadata, keepAndSendPageMetadata } from "@/lib/nativePageMetadata";
 import { createDatabaseRowPageService, type DatabaseRowMoveDestination } from "@/lib/databaseRowPageService";
 import { newId } from "@/lib/ids";
 import { holdPageThroughMove } from "@/lib/pageBecomingRow";
@@ -38,7 +38,7 @@ export function useDatabasePageMove(
   pagesRef.current = pagesById;
   // The sidebar and the page's path read the wiki again for where it went.
   const productPages = useProductPages();
-  const refreshPages = productPages?.refreshPages, setData = productPages?.setData;
+  const refreshPages = productPages?.refreshPages, setData = productPages?.setData, outbox = productPages?.mutationOutbox;
   const store = useOpenPageGraphStore();
   return useMemo<MoveToDialogRow | undefined>(() => {
     const page = databasePage;
@@ -49,11 +49,12 @@ export function useDatabasePageMove(
     // and drawn at the press, for "실행 취소".
     let source = "", listedBefore: Page | undefined, drawn: readonly GraphRow[] = [];
     // Out of the database or the wiki's place it went to, back where it was.
+    // Moved within its wiki, it is a change of its place kept and sent as its
+    // menu's changes are (keepAndSendPageMetadata, by the wiki's route).
+    const placeInWiki = (change: { parentId: string; position?: number }) => keepAndSendPageMetadata(session, outbox, page, change);
     const putBack = async (target: DatabaseRowMoveDestination) => {
       if (withinWiki(target)) {
-        await changeWikiPage(session, page.id, {
-          requestId: newId(), parentId: page.parentId ?? page.wikiRootId ?? "", position: page.position,
-        });
+        await placeInWiki({ parentId: page.parentId ?? page.wikiRootId ?? "", position: page.position });
         await refreshPages?.();
         return;
       }
@@ -88,7 +89,7 @@ export function useDatabasePageMove(
       preview: (target: DatabaseRowMoveDestination) => withinWiki(target) ? Promise.resolve([]) : service.previewMove(page.id, target),
       move: async (target: DatabaseRowMoveDestination, accepted: string[]) => {
         if (withinWiki(target)) {
-          const moved = await changeWikiPage(session, page.id, { requestId: newId(), parentId: target.id });
+          const moved = await placeInWiki({ parentId: target.id });
           await refreshPages?.();
           return moved;
         }
@@ -110,7 +111,7 @@ export function useDatabasePageMove(
         }
       },
     };
-  }, [databasePage, given, refreshPages, service, session, setData, store]);
+  }, [databasePage, given, outbox, refreshPages, service, session, setData, store]);
 }
 
 /**

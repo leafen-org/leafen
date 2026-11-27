@@ -9,9 +9,9 @@ import { isInertMenuKey } from "@/lib/menuKeyboard";
 import { goRoundMenuStops } from "@/lib/menuTabStops";
 import { usePeopleDirectoryRevision } from "@/lib/workspacePeopleDirectory";
 import { menuFootEditedTime } from "@/lib/menuFootWords";
-import type { EditedFootActivity, EditedFootPerson, PageLastEditVia } from "@/lib/pageEditedActivity";
+import { type EditedFootActivity, type EditedFootPerson, type PageLastEditVia, usePageActivityShown } from "@/lib/pageEditedActivity";
 import { PopoverLayer } from "@/lib/popoverLayer";
-import { placeBeside, popoverPlacementStyle, usePopoverPlacement } from "@/lib/popoverPlacement";
+import { placeAround, placeBeside, popoverPlacementStyle, popoverRectOf, usePopoverPlacement } from "@/lib/popoverPlacement";
 import { relativeAgoLabel } from "@/lib/relativeTime";
 import styles from "./RowMenu.module.css";
 import activityStyles from "./RowMenuEditedFoot.module.css";
@@ -110,7 +110,9 @@ export function RowMenuEditedFoot({ name, editorId, via, at, marker, words, coun
   // Redrawn as the directory learns who the editor is (an app's own account).
   usePeopleDirectoryRevision(Boolean(editorId));
   const footRef = useRef<HTMLDivElement>(null);
-  const { open, pointed } = useFootActivityHover(Boolean(activity));
+  // None for a guest of the workspace, one who edits the page too (pageActivityShown).
+  const shown = usePageActivityShown() ? activity : undefined;
+  const { open, pointed } = useFootActivityHover(Boolean(shown));
   const time = at ? Date.parse(at) : Number.NaN;
   // Its time, words and characters in the language's own digits, as Notion's
   // foot writes them (Arabic "اليوم الساعة ٩:٤٥ ص", "٢٣ من الكلمات", seen
@@ -123,19 +125,11 @@ export function RowMenuEditedFoot({ name, editorId, via, at, marker, words, coun
   // An app's own account is no person: named alone on a connection's face,
   // with no connection beside it (the app is the one that edited).
   const app = !integration && Boolean(editorId) && personIsBot(editorId ?? "");
-  // A connection's face where one is known, else the directory's (PersonAvatar).
-  const rows: FootActivityRow[] = activity ? [
-    { key: "editor", label: t("blockHandle:footer.activityEditor"),
-      person: integration ? { ...activity.editor, id: null, name: integration } : activity.editor, bot: integration ? true : undefined },
-    ...(activity.creator ? [{ key: "creator", label: t("blockHandle:footer.activityCreator"),
-      ...(via?.maker && via.maker.actorId === activity.creator.id
-        ? { person: { ...activity.creator, id: null, name: via.maker.name }, bot: true } : { person: activity.creator }) }] : []),
-  ] : [];
   return (
     <>
       <div className={styles.divider} role="separator" />
       <div ref={footRef} className={styles.menuFoot} {...{ [`data-${marker}`]: "" }}
-        onMouseEnter={activity ? () => pointed(true) : undefined} onMouseLeave={activity ? () => pointed(false) : undefined}>
+        onMouseEnter={shown ? () => pointed(true) : undefined} onMouseLeave={shown ? () => pointed(false) : undefined}>
         {shownName && editorId !== undefined ? (
           <>
             <span className={styles.menuFootLabel}>{t("blockHandle:footer.lastEdited")}</span>
@@ -147,9 +141,25 @@ export function RowMenuEditedFoot({ name, editorId, via, at, marker, words, coun
         {words ? <span>{ownDigits(words)}</span> : null}
         {counts ? <span>{ownDigits(counts)}</span> : null}
       </div>
-      {open ? <FootActivityPanel foot={footRef} head={t("blockHandle:footer.activity")} rows={rows} pointed={pointed} /> : null}
+      {open && shown ? <FootActivityPanel foot={footRef} head={t("blockHandle:footer.activity")} rows={footActivityRows({ editor: t("blockHandle:footer.activityEditor"), creator: t("blockHandle:footer.activityCreator") }, shown, via)} pointed={pointed} /> : null}
     </>
   );
+}
+
+/**
+ * The activity panel's two lines for a page: its last editor, and its maker
+ * where known — a connection's name and face where the edit or the making
+ * came through one (usePageLastEditVia), else the person's.
+ */
+export function footActivityRows(labels: { /** "편집자:" */ editor: string; /** "생성자" */ creator: string }, activity: EditedFootActivity, via?: PageLastEditVia): FootActivityRow[] {
+  const integration = via?.integration ? via.name : "";
+  return [
+    { key: "editor", label: labels.editor,
+      person: integration ? { ...activity.editor, id: null, name: integration } : activity.editor, bot: integration ? true : undefined },
+    ...(activity.creator ? [{ key: "creator", label: labels.creator,
+      ...(via?.maker && via.maker.actorId === activity.creator.id
+        ? { person: { ...activity.creator, id: null, name: via.maker.name }, bot: true } : { person: activity.creator }) }] : []),
+  ];
 }
 
 // Notion's panel comes a quarter of a second after the pointer comes to the
@@ -201,11 +211,20 @@ export function useFootActivityHover(enabled: boolean) {
  * (holdsPlaced), so a press beside both is the menu's, which takes it away
  * with the foot.
  */
-export function FootActivityPanel({ foot, head, rows, pointed }: {
+export function FootActivityPanel({ foot, head, rows, pointed, under = false }: {
   foot: RefObject<HTMLElement | null>; head: string; rows: FootActivityRow[]; pointed: (on: boolean) => void;
+  /**
+   * Under what it tells of — the bar's edited time (TopBarEditedTime) — 6px
+   * below it from its start, moved in to keep 12px from the window's edge
+   * (POPOVER_MARGIN), as Notion's (seen 2026-11-28 at 1440: the time's left
+   * 1206.5, 1194.4 and 1154.5 drew the card's at 1127.5, 1128.4 and 1127.5).
+   */
+  under?: boolean;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
   const place = usePopoverPlacement(panelRef, (size, viewport) => {
+    if (under) return placeAround(popoverRectOf(foot.current) ?? { top: 0, bottom: 0, left: 0, right: 0 }, size, viewport,
+      { gap: 6, align: "start", appear: "none" });
     const at = foot.current?.getBoundingClientRect();
     const menu = (foot.current?.parentElement ?? foot.current)?.getBoundingClientRect();
     const top = at?.top ?? 0, bottom = at?.bottom ?? 0;

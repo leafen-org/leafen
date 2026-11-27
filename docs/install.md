@@ -1,19 +1,19 @@
 # Installing Leafen
 
 This guide is for people and for the agents they ask to install Leafen. Both
-follow the same steps. Leafen is a 0.1 pre-release: before 1.0 there is no
-guarantee that your data carries over after an update, so try it with data
-you can recreate.
+follow the same steps. From 0.2 on, your data carries over when you update
+Leafen, data made with 0.1.0 included.
 
-Pick one way:
+Pick one way ([For agents](#for-agents) says which one an agent takes):
 
 - **Desktop app** (macOS, Windows) — for one person, or a few people on one
-  computer that stays on. The app is the server; phones and other devices
-  join it.
+  computer that stays on, and to try Leafen: it needs nothing else
+  installed. The app is the server; phones and other devices join it.
 - **Docker** — for a server that is always on, such as a company server or a
   hosted machine, and for Linux, which has no desktop app: Leafen runs in
   Docker there and is used in a browser.
-- **From source** — to build it yourself.
+- **From source** — to change Leafen or build it yourself. Trying it needs
+  no build.
 
 Running a server for others (proxies, backups, restores, upgrades, settings)
 is covered in the [self-hosting guide](self-hosting.md); this guide stops once
@@ -67,8 +67,38 @@ so a person who looks sees where things stand.
   answer. When the old data is in a backup zip or a snapshot folder and the
   server can't start at all, `leafen restore` (the
   [self-hosting guide](self-hosting.md#restore)) is the way.
-- **Then follow the steps below** for the one way the person chose, or ask
-  which way when it isn't clear, and go on with "The first run by commands".
+- **Which way: on macOS and Windows, the desktop app.** Install the
+  [desktop app](#desktop-app) there, also when the person only asks you to
+  try Leafen or to see what it is like: it needs nothing else on the
+  computer, and you can look around it yourself (next). Copying the app
+  into Applications (on Windows, unzipping its folder), by command or as
+  its steps say, is the install. Take Docker or a build from source only
+  when the person asks for one, or on Linux, which has no desktop app;
+  don't install Docker, Go or Node.js to try Leafen. Of the install, the
+  person's hands do one thing at most: the system's question or warning
+  when the app first opens (below). Ask them for that one press and wait,
+  then go on with "The first run by commands".
+- **Looking around yourself.** To try Leafen or compare it with Notion in a
+  browser of your own (such as the Claude app's), log that browser in once
+  the first run has the person's name (step 1 below):
+  `leafen account device-code --name "<their name>"` prints a one-time link
+  for ten minutes, `http://127.0.0.1:<port>/device/<code>` until Leafen has
+  an address of its own. Open it in a tab of your own: the tab logs in as
+  the person, as one more of their devices, follows the first run's steps
+  until they are done or left for later, and then opens their workspace.
+  The app's window stays theirs. `leafen setup status` names the same
+  address ("Address on this computer").
+- **Asked for a new server's setup link** ("Find my Leafen setup link"): from
+  elsewhere, `GET <address>/api/leafen/v1/setup/status` takes no login and,
+  before the first administrator, says whether the server was started with
+  `LEAFEN_SETUP_CODE` (`codeGiven`) and the hosting platform where Leafen
+  knows it (`platform`). On Railway it is the Leafen service → Variables →
+  open `LEAFEN_SETUP_LINK` (or enter `LEAFEN_SETUP_CODE`), as
+  `railway variables` shows them, and the link is also in Deployments → the
+  latest deployment → Deploy Logs (`railway logs`); on
+  Docker the link is in `docker compose logs leafen`; other platforms are in
+  [Hosting templates](hosting-templates.md#the-first-administrator-on-each-platform).
+  Give the link or the code to the person alone.
 - Do not bypass the operating system's checks. The Mac app is signed and
   notarized by Apple, so its first launch only asks whether to open an app
   downloaded from the internet; the Windows build is not signed yet, so its
@@ -90,7 +120,8 @@ so a person who looks sees where things stand.
   and when the move is done, tell them to delete that connection in Notion
   or make it a new token, since the conversation keeps it. A one-time
   login link or code (`leafen account device-code`) is the person's: give
-  it to them alone; one they give you for the app goes only to
+  it to them alone, or open it in a tab of your own to look around (above);
+  one they give you for the app goes only to
   `leafen setup sign-in --code`.
   `leafen setup` prints no secret but one: while no administrator has Leafen
   open on a device, `leafen setup status` shows the administrator's one-time
@@ -276,10 +307,13 @@ They work while Leafen runs.
    | --- | --- |
    | macOS, Apple silicon (M1 or later) | `leafen-desktop-<version>-darwin-arm64.dmg` |
    | macOS, Intel | `leafen-desktop-<version>-darwin-amd64.dmg` |
-   | Windows | `leafen-desktop-<version>-windows-amd64.zip` |
+   | Windows, Intel or AMD (x64) | `leafen-desktop-<version>-windows-amd64.zip` |
+   | Windows on Arm | `leafen-desktop-<version>-windows-arm64.zip` |
 
    On macOS, Apple silicon or Intel is shown under Apple menu › About This Mac
    (**Chip** or **Processor**). The Mac app needs macOS 13 Ventura or later.
+   On Windows, Settings › System › About shows it under **System type**
+   (x64-based or ARM-based processor).
    There is no Linux desktop app: on Linux, use [Docker](#docker) and a
    browser.
 3. Open it:

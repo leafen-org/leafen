@@ -187,7 +187,7 @@ func createNotionPage(
 			}
 			createdPageID = created.Page.ID
 			if presentation.Icon == nil && presentation.Cover == nil && input.IsLocked == nil {
-				return nil
+				return contentPlan.checkDeferred(txApp, workspace.Identity, createdPageID)
 			}
 			if err := validateNotionPagePresentationReferences(
 				txApp, workspace.Identity.PrincipalID, workspace.Identity.WorkspaceID, &presentation,
@@ -208,11 +208,14 @@ func createNotionPage(
 			if err == nil && metadataStatus != pageMetadataApplied {
 				err = graphConflictError(errorCodeGraphPageCursorConflict, "The page presentation could not be applied.")
 			}
+			if err == nil {
+				err = contentPlan.checkDeferred(txApp, workspace.Identity, createdPageID)
+			}
 			return err
 		})
 	}
-	// A body that makes sub-pages or databases is written once the page is
-	// there, as its Markdown update writes it.
+	// A body that makes sub-pages or databases, checked as the page was made
+	// (checkDeferred), is written once it is there, as its Markdown update writes it.
 	if err == nil && createdPageID != "" && contentPlan.DeferredMarkdown != "" {
 		err = writeNotionCreatedPageMarkdown(
 			event, ygo, workspace.Identity, createdPageID, contentPlan.DeferredMarkdown, input.MarkdownVersion,
@@ -462,7 +465,7 @@ func serveNotionPageMove(
 		InTrash:    page.GetBool("in_trash"),
 		MutationID: "notion-public-move:" + newDiagnosticReference(), BaseCursor: page.GetInt("cursor"),
 	}
-	result, status, err := applyPageMetadata(
+	result, status, err := applyNotionPageMove(
 		event.App, authorization.Identity.PrincipalID, page.Id, metadata,
 		pageMetadataRequestHash(page.Id, metadata),
 	)
