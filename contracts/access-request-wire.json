@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "name": "access-request",
+  "operations": [
+    { "goName": "accessRequestPageCreate", "tsName": "requestPage", "method": "POST", "path": "/pages/{pageId}/access-requests" },
+    { "goName": "accessRequestGuestCreate", "tsName": "requestGuest", "method": "POST", "path": "/pages/{pageId}/guest-requests" },
+    { "goName": "accessRequestMemberCreate", "tsName": "requestMember", "method": "POST", "path": "/workspaces/{workspaceId}/member-requests" },
+    { "goName": "accessRequestList", "tsName": "list", "method": "GET", "path": "/workspaces/{workspaceId}/access-requests" },
+    { "goName": "accessRequestApprove", "tsName": "approve", "method": "POST", "path": "/access-requests/{requestId}/approve" },
+    { "goName": "accessRequestDecline", "tsName": "decline", "method": "POST", "path": "/access-requests/{requestId}/decline" },
+    {"goName": "accessRequestMembershipCreate", "tsName": "requestMembership", "method": "POST", "path": "/workspaces/{workspaceId}/membership-requests"},
+    {"goName": "accessRequestMembershipRead", "tsName": "membershipStatus", "method": "GET", "path": "/workspaces/{workspaceId}/membership-requests"},
+    { "goName": "workspaceInviteLinkRead", "tsName": "readInviteLink", "method": "GET", "path": "/workspaces/{workspaceId}/invite-link" },
+    { "goName": "workspaceInviteLinkUpdate", "tsName": "updateInviteLink", "method": "PUT", "path": "/workspaces/{workspaceId}/invite-link" },
+    { "goName": "workspaceInviteLinkRotate", "tsName": "rotateInviteLink", "method": "POST", "path": "/workspaces/{workspaceId}/invite-link/rotate" },
+    { "goName": "workspaceInviteRead", "tsName": "readInvite", "method": "POST", "path": "/workspace-invites/read" },
+    { "goName": "workspaceInviteJoin", "tsName": "joinInvite", "method": "POST", "path": "/workspace-invites/join" },
+    { "goName": "teamspaceInviteLinkRead", "tsName": "readTeamspaceInviteLink", "method": "GET", "path": "/workspaces/{workspaceId}/teamspaces/{teamspaceId}/invite-link" },
+    { "goName": "teamspaceInviteLinkUpdate", "tsName": "updateTeamspaceInviteLink", "method": "PUT", "path": "/workspaces/{workspaceId}/teamspaces/{teamspaceId}/invite-link" },
+    { "goName": "pageGuestLinkCreate", "tsName": "createPageGuestLink", "method": "POST", "path": "/workspaces/{workspaceId}/page-guest-links" },
+    { "goName": "pageGuestLinkList", "tsName": "listPageGuestLinks", "method": "GET", "path": "/pages/{pageId}/page-guest-links" },
+    { "goName": "pageGuestLinkRevoke", "tsName": "revokePageGuestLink", "method": "POST", "path": "/page-guest-links/{linkId}/revoke" }
+  ],
+  "bounds": [
+    { "goName": "accessRequestMaxBodyBytes", "tsName": "bodyBytes", "value": 4096 },
+    { "goName": "accessRequestListWindow", "tsName": "listWindow", "value": 200 },
+    { "goName": "accessRequestEmailRunes", "tsName": "emailRunes", "value": 320 },
+    { "goName": "accessRequestMessageRunes", "tsName": "messageRunes", "value": 1000 },
+    { "goName": "workspaceInviteTokenRunes", "tsName": "inviteTokenRunes", "value": 64 },
+    { "goName": "pageGuestLinkMaxPages", "tsName": "guestLinkPages", "value": 50 },
+    { "goName": "pageGuestLinkMaxDays", "tsName": "guestLinkDays", "value": 30 }
+  ],
+  "errors": [
+    { "goName": "errorCodeAccessRequestInvalid", "tsName": "invalid", "value": "LEAFEN_ACCESS_REQUEST_INVALID" },
+    { "goName": "errorCodeAccessRequestNotFound", "tsName": "notFound", "value": "LEAFEN_ACCESS_REQUEST_NOT_FOUND" },
+    { "goName": "errorCodeAccessRequestNotAllowed", "tsName": "notAllowed", "value": "LEAFEN_ACCESS_REQUEST_NOT_ALLOWED" },
+    { "goName": "errorCodeAccessRequestDecided", "tsName": "decided", "value": "LEAFEN_ACCESS_REQUEST_DECIDED" },
+    { "goName": "errorCodeAccessRequestFailed", "tsName": "failed", "value": "LEAFEN_ACCESS_REQUEST_FAILED" },
+    { "goName": "errorCodeGuestInviteRequiresApproval", "tsName": "guestInviteRequiresApproval", "value": "LEAFEN_GUEST_INVITE_REQUIRES_APPROVAL" },
+    { "goName": "errorCodeWorkspaceInviteLinkInvalid", "tsName": "inviteLinkInvalid", "value": "LEAFEN_WORKSPACE_INVITE_LINK_INVALID" },
+    { "goName": "errorCodePageGuestLinkInvalid", "tsName": "guestLinkInvalid", "value": "LEAFEN_PAGE_GUEST_LINK_INVALID" },
+    { "goName": "errorCodePageGuestLinkNotFound", "tsName": "guestLinkNotFound", "value": "LEAFEN_PAGE_GUEST_LINK_NOT_FOUND" },
+    { "goName": "errorCodePageGuestLinkRequestInvalid", "tsName": "guestLinkRequestInvalid", "value": "LEAFEN_PAGE_GUEST_LINK_REQUEST_INVALID" },
+    { "goName": "errorCodePageGuestLinkFailed", "tsName": "guestLinkFailed", "value": "LEAFEN_PAGE_GUEST_LINK_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "accessRequestPageInput",
+      "tsName": "AccessRequestPageInput",
+      "fields": [
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\"" }
+      ]
+    },
+    {
+      "goName": "accessRequestGuestInput",
+      "tsName": "AccessRequestGuestInput",
+      "fields": [
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "\"user\" | \"email\"" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\"" }
+      ]
+    },
+    {
+      "goName": "accessRequestMemberInput",
+      "tsName": "AccessRequestMemberInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accessRequestMembershipInput",
+      "tsName": "AccessRequestMembershipInput",
+      "fields": [
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accessRequestDecisionInput",
+      "tsName": "AccessRequestDecisionInput",
+      "fields": [
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "accessRequestResponse",
+      "tsName": "AccessRequest",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"page\" | \"guest\" | \"member\" | \"membership\"" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"approved\" | \"declined\"" },
+        { "goName": "RequesterID", "jsonName": "requesterId", "goType": "string", "tsType": "string" },
+        { "goName": "RequesterName", "jsonName": "requesterName", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "\"user\" | \"email\"", "optional": true },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PrincipalLabel", "jsonName": "principalLabel", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\" | \"member\"" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "DecidedBy", "jsonName": "decidedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DecidedAt", "jsonName": "decidedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "DecidedByName", "jsonName": "decidedByName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "External", "jsonName": "external", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Mine", "jsonName": "mine", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "accessRequestListResponse",
+      "tsName": "AccessRequestList",
+      "fields": [
+        { "goName": "Requests", "jsonName": "requests", "goType": "[]accessRequestResponse", "tsType": "AccessRequest[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceMembershipRequestStatus",
+      "tsName": "WorkspaceMembershipRequestStatus",
+      "fields": [
+        {
+          "goName": "CanRequest",
+          "jsonName": "canRequest",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Pending",
+          "jsonName": "pending",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "workspaceInviteLink",
+      "tsName": "WorkspaceInviteLink",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceInviteLinkInput",
+      "tsName": "WorkspaceInviteLinkInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceInviteTokenInput",
+      "tsName": "WorkspaceInviteTokenInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceInviteResponse",
+      "tsName": "WorkspaceInvite",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "Member", "jsonName": "member", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Pending", "jsonName": "pending", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TeamspaceName", "jsonName": "teamspaceName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TeamspaceIcon", "jsonName": "teamspaceIcon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TeamspaceMember", "jsonName": "teamspaceMember", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageGuestLinkInput",
+      "tsName": "PageGuestLinkInput",
+      "fields": [
+        { "goName": "PageIDs", "jsonName": "pageIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"edit\" | \"comment\" | \"view\"" },
+        { "goName": "ExpiresInDays", "jsonName": "expiresInDays", "goType": "int", "tsType": "number" },
+        { "goName": "Reusable", "jsonName": "reusable", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageGuestLinkPage",
+      "tsName": "PageGuestLinkPage",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageGuestLinkResponse",
+      "tsName": "PageGuestLink",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"edit\" | \"comment\" | \"view\"" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]pageGuestLinkPage", "tsType": "PageGuestLinkPage[]" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Reusable", "jsonName": "reusable", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Uses", "jsonName": "uses", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedByName", "jsonName": "createdByName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Mine", "jsonName": "mine", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Revocable", "jsonName": "revocable", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageGuestLinkCreated",
+      "tsName": "PageGuestLinkCreated",
+      "fields": [
+        { "goName": "Link", "jsonName": "link", "goType": "pageGuestLinkResponse", "tsType": "PageGuestLink" },
+        { "goName": "Path", "jsonName": "path", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageGuestLinkListResponse",
+      "tsName": "PageGuestLinkList",
+      "fields": [
+        { "goName": "Links", "jsonName": "links", "goType": "[]pageGuestLinkResponse", "tsType": "PageGuestLink[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ]
+}

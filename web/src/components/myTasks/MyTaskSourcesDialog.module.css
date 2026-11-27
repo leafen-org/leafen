@@ -1,0 +1,263 @@
+/* "작업 소스 추가", as Notion's (dark seen 2026-11-08 at 1303×873): a centered
+   660×538 window, 24px in and 20px over its foot; its 17px title and the
+   line under it centered; 20px under them the databases to pick on the left
+   (286px, a 250px search 20px in and 22px down, the rows from 64px down) and
+   the picked ones on the right in a 286px black panel 8px into its 302px
+   column; the foot's "작업이 보이지 않나요?" and blue "완료" 8px in. A row is
+   36px (45 with its path), its 20px icon 8px in and its name 8px after; under
+   the pointer it shows a 24px "+" or "−" at its end. Light colours are the
+   page's own; Notion's light window is not yet seen. */
+.overlay {
+  --sources-panel: var(--bg-sidebar);
+  --sources-field: var(--filter-field-bg);
+  --sources-close: var(--bg-hover);
+  --sources-quiet: var(--text-tertiary);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+:global([data-theme="dark"]) .overlay {
+  --sources-panel: rgb(0, 0, 0);
+  --sources-field: rgba(252, 252, 252, 0.03);
+  --sources-close: rgba(255, 255, 255, 0.055);
+  --sources-quiet: rgb(142, 139, 134);
+}
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--modal-shade);
+}
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(660px, 100%);
+  height: min(538px, calc(100dvh - 32px));
+  padding: 24px 24px 20px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+.close {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--sources-close);
+  color: var(--text-secondary);
+}
+.close:hover {
+  background: var(--bg-active);
+}
+.title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+}
+.lead {
+  margin: 8px 0 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 18px;
+  text-align: center;
+}
+.columns {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 286px 302px;
+  gap: 24px;
+  min-height: 0;
+}
+.pick,
+.picked {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.picked {
+  margin: 0 8px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  background: var(--sources-panel);
+}
+.search {
+  flex: none;
+  width: 250px;
+  height: 30px;
+  margin-block: 22px 12px;
+  margin-inline: 20px 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--sources-field);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+.search:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.count {
+  margin: 10px 4px 9px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+.list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+.pick .list {
+  padding-block: 0;
+  padding-inline: 12px 8px;
+}
+.picked .list {
+  padding: 0 4px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding: 0 8px;
+  border-radius: 6px;
+  text-align: start;
+}
+.item[data-described="true"] {
+  align-items: flex-start;
+  min-height: 45px;
+  padding-top: 5px;
+}
+.item:hover:not(:disabled),
+.item:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.itemIcon {
+  display: inline-flex;
+  flex: none;
+}
+.itemText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.itemName,
+.itemPath {
+  overflow: hidden;
+  line-height: 16.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.itemName {
+  color: var(--text-default);
+  font-size: 14px;
+}
+.itemPath {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.item[data-described="true"] .mark {
+  align-self: center;
+}
+/* "+" to pick, "−" to put back: 24px at the row's end, on the panel's ground with its line. */
+.mark {
+  display: none;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--sources-panel);
+  box-shadow: 0 2px 4px rgba(25, 25, 25, 0.08);
+  color: var(--text-secondary);
+}
+.item:hover:not(:disabled) .mark,
+.item:focus-visible .mark {
+  display: inline-flex;
+}
+.none {
+  padding: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.help,
+.error {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.error {
+  color: var(--danger);
+}
+.foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  margin-top: 20px;
+  padding: 0 8px;
+}
+.helpLink {
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--sources-quiet);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+.helpLink:hover {
+  background: var(--bg-hover);
+}
+.done {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+.done:hover {
+  background: var(--accent-blue-hover);
+}
+@media (max-width: 600px) {
+  .columns {
+    grid-template-columns: 1fr;
+  }
+  .search {
+    width: auto;
+    margin-inline-end: 16px;
+  }
+}

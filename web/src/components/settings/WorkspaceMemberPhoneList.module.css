@@ -1,0 +1,141 @@
+/* Notion's phone member lines (seen 2026-11-12 at 402pt; measured again
+   2026-11-15, iPhone Safari): the name and address 10px under and over a
+   line under each, 63px with both, the face 10px in and 6px before the
+   words, the role ending 2px from the screen's end, all centred down the line. */
+/* Across the screen: out past the phone settings' 18px sides (SettingsWindow.module.css). */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin-inline: -18px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-block: 10px;
+  padding-inline: calc(10px + var(--phone-safe-start, 0px)) calc(2px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.avatar {
+  flex: 0 0 auto;
+}
+
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me {
+  color: var(--text-secondary);
+}
+
+/* The role's tag beside the name: the owner's in grey, a restricted
+   member's "제한됨" in yellow, as Notion's. */
+.tag {
+  composes: tag phone from "../people/NameTag.module.css";
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.restrictedTag {
+  composes: tag phone yellow from "../people/NameTag.module.css";
+}
+
+.sub,
+.failed {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.failed {
+  color: var(--danger);
+}
+
+.role {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.action {
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* A filled button keeps outside it the 8px a role's bare button keeps
+   inside, so its edge ends where the members' roles and ⌄ do, 10px from the
+   screen's end (measured 2026-11-17 at 402, iPhone Safari), not 2px. */
+.action:last-child {
+  margin-inline-end: 8px;
+}
+
+/* A line that opens what it names (a group's window) across the whole line,
+   out to the line's own sides. */
+.lineButton {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-block: -10px;
+  margin-inline: -10px -2px;
+  padding-block: 10px;
+  padding-inline: calc(10px + var(--phone-safe-start, 0px)) calc(2px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+/* A group's people on a phone, in the members' lines (WorkspaceGroupDetailDialog):
+   10px over and under, the face 6px before the words, the name 16px over the address 14px. */
+.personLine[data-phone] {
+  gap: 6px;
+  min-height: 0;
+  padding-block: 10px;
+}
+
+.personLine .personWords {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.personLine .personWordsName {
+  font-size: 16px;
+  line-height: 22px;
+}

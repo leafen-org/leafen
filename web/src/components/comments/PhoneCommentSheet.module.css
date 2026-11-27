@@ -1,0 +1,64 @@
+/* A new comment on a phone, the page's or a line's, is written in a sheet at
+   the foot of what shows of the screen over the page darkened, as Notion's
+   phone (seen 2026-11-10 in iPhone Safari 402 and Android Chrome 411, light
+   and dark): a shade of rgba(15,15,15,.6) in both themes; the sheet the
+   screen's width with the menus' ground and shadow and no corners; the
+   writer's 24px face 12px in and 9px down with the words beside it, and on a
+   line of their own under them 📎 and a 28px send 16px apart (no "@"). What
+   they stand in is as wide as Notion's: min(470px, 90vw), the send ending 8px
+   short of its end; the send 11px over the sheet's foot on an iPhone, 15px on
+   Android, past the screen's safe edges (Notion's code: 8 or 12 under the
+   field's 3, seen 2026-11-17 as 76 high in iPhone Safari 402 and 80 on the
+   Galaxy A90 411). Both are laid on the page, not fixed to the screen
+   (phoneBarGround.ts); the sheet's top is written as it is placed
+   (phoneCommentSheet.ts). */
+.shade.shade {
+  position: absolute;
+  background: rgba(15, 15, 15, 0.6);
+}
+
+.sheet.sheet[data-comments-mode="phone-sheet"] {
+  position: absolute;
+  inset-inline: 0;
+  bottom: auto;
+  width: auto;
+  max-height: none;
+  overflow: visible;
+  padding-block: 9px calc(15px + env(safe-area-inset-bottom));
+  padding-inline: calc(12px + env(safe-area-inset-left)) calc(100% - min(470px, 90vw) + 8px + env(safe-area-inset-right));
+  border: 0;
+  border-radius: 0;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+:global(body[data-apple-touch]) .sheet.sheet[data-comments-mode="phone-sheet"] {
+  padding-block-end: calc(11px + env(safe-area-inset-bottom));
+}
+
+.sheet.sheet [data-comments-composer][data-comments-composer] {
+  grid-template-columns: 24px minmax(0, 1fr);
+  padding: 0;
+  border-bottom: 0;
+}
+
+.sheet.sheet [data-comment-composer-foot] {
+  flex-basis: 100%;
+  justify-content: flex-end;
+  min-height: 28px;
+  margin-top: 1px;
+}
+
+.sheet.sheet [data-comment-composer-foot] > div {
+  gap: 16px;
+}
+
+.sheet.sheet [data-comment-mention] {
+  display: none;
+}
+
+.sheet.sheet [data-comment-composer-foot] > div > button:last-child {
+  width: 26px;
+  height: 26px;
+  margin: 1px;
+}

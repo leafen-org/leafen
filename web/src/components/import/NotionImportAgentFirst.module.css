@@ -1,0 +1,221 @@
+/* The Notion window's entry, one thing to do at each step: the agent's card
+   at the start, Notion's steps and the token, the saved connection. */
+.agentFirst {
+  display: grid;
+  gap: 14px;
+}
+
+/* "에이전트에게 맡기기": the remote address choice's large card, holding
+   its one line, the steps before an agent is connected and the button. */
+.handoff {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 55%, var(--border-default));
+  border-radius: 8px;
+}
+
+.handoff > strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.handoff > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* The words' ink sits high in their line box: a pixel more above it than
+   below keeps the ink as far from the pill's top as from its bottom
+   (2026-11-13, with one and one: 2 above, 4 below at 1440 in Chrome). */
+.badge {
+  padding: 1.5px 6px 0.5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  color: var(--accent-blue);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ① connect the agent → ② start the move: the step to do now in the default color. */
+.stages {
+  display: grid;
+  gap: 2px;
+  margin: 4px 0 0;
+  padding-inline-start: 20px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.stages li[data-current] {
+  color: var(--text-default);
+  font-weight: 500;
+}
+
+.stages li[data-done] {
+  text-decoration: line-through;
+}
+
+.stages small {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.agents {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+
+.action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+
+/* The button's place while the agents are first read. */
+.actionPlace {
+  height: 38px;
+}
+
+.status {
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.steps {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding-inline-start: 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* The token's field and, under it, why the last save failed. */
+.tokenField {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* A failure line under its field (the token's, the roots' search), in the
+   error colour the alert takes. */
+.fieldFailure {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+/* The saved connection: what is true now, then the one thing next. */
+.saved {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+}
+
+.saved > strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.saved > strong svg {
+  flex: 0 0 auto;
+  color: var(--c-green);
+}
+
+.saved > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* A line above Notion's steps: why this screen asks for the token. */
+.head {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.head strong {
+  display: block;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Small ways out: "직접 가져오기", "에이전트에게 맡기기", "다른 토큰 사용". */
+.directLink {
+  flex: 0 0 auto;
+  justify-self: start;
+  height: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.directLink:hover {
+  color: var(--text-default);
+}
+
+.directLink:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.directLink:focus-visible {
+  border-radius: 3px;
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* The card's button where it is the screen's second thing (the end, after
+   "가져온 페이지 열기"): a line around it, not the filled one. */
+.quietButton {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-default);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.quietButton:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.quietButton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}

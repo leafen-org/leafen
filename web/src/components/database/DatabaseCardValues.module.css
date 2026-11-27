@@ -1,0 +1,483 @@
+/* A board's and gallery's card values, split from DatabaseBoardCards.module.css
+   (the card's box, edge, sizes and title stay there): the values under a
+   card's title, links, loading columns, "+ 신규 그룹" and a phone's board.
+   Merged after it in databaseSheet.ts, which keeps the cascade's order. */
+/* Each value on its own 28px line, 11px in, in the page's words, as Notion's
+   (seen 2026-11-04: 40 for the title alone, then 37 + 28 a line + 7.5). A
+   line keeps 5px over and under what it holds, its chips 6px apart and 4px
+   between their lines when they wrap (seen 2026-11-11: seven tags over two
+   lines from 5px in, 22px apart, the line 50 high). */
+.cardMeta {
+  display: flex;
+  flex-direction: column;
+  padding: 0 5px 8px;
+}
+.cardLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  min-height: 28px;
+  padding: 5px 6px;
+  color: var(--text-default);
+  font-size: 12px;
+}
+.cardLine:empty {
+  display: none;
+}
+/* A button's line holds its ringed 24px button 10px in, 32 high (Notion's, seen 2026-11-12). */
+.cardLine[data-card-button] {
+  padding: 4px 5px;
+}
+.cardLine[data-card-button] > button {
+  margin: 0;
+}
+/* Unwrapped, a value's chips stay on one line, each narrowing with the others
+   and ending its name in "…" (Notion's board and gallery, seen 2026-11-12:
+   "가…", "알파 베타 감마 …" and "Long option name …" across a 288 line). */
+:is(.card, .galleryCard):not([data-wrap="true"]) .cardLine {
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+/* A rollup's options keep their whole widths there and the card cuts the
+   line, as its pages do (Notion's board and gallery, seen 2026-11-12: a
+   rollup's "In progress" cut at the card's edge over a multi-select's "가…"). */
+:is(.card, .galleryCard):not([data-wrap="true"]) .cardLine .chip[data-rollup-option] {
+  flex: none;
+  max-width: none;
+}
+.cardMeta .chip {
+  --chip-height: 18px;
+  font-size: 12px;
+}
+/* Wrapped, a value shows its line breaks as lines; unwrapped, one line with a
+   space for each, as Notion's card (seen 2026-11-11). */
+.card[data-wrap="true"] .cardField {
+  white-space: pre-wrap;
+}
+.cardField {
+  font-size: 12px;
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  min-width: 0;
+}
+.cardCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  color: transparent;
+  vertical-align: -2px;
+}
+.cardCheckboxName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cardCheckbox[data-checked="true"] {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+  color: #fff;
+}
+/* A link's line keeps its text inline so its faint line sits under the
+   text, as Notion's card (seen 2026-11-03). */
+.cardField.cardLinkField {
+  display: block;
+}
+.cardLink {
+  color: var(--text-default);
+  text-decoration: none;
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+.viewEmpty {
+  grid-column: 1 / -1;
+  display: flex;
+  min-height: 120px;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  padding: 22px 8px;
+  color: var(--text-secondary);
+}
+.viewEmptyTitle {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.viewEmptyDesc {
+  max-width: 360px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.viewEmptyAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  margin-top: 8px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+.viewEmptyAction:hover,
+.viewEmptyAction:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* A column's "+ 새 페이지" is a card of its own: 40px, its "+" 10px in and its
+   15px words at 32, 10px round, ringed as the column's cards, in the tertiary
+   text without washes (Notion's, seen 2026-11-15: 260x40, rgb(125,122,117)
+   ringed rgba(255,255,243,.082) in dark, as its cards). */
+.boardAdd {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--card-ring, var(--c-card-ring-gray));
+  color: var(--text-tertiary);
+  font-size: 15px;
+}
+.boardAdd:hover,
+.boardAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* "+ 신규 그룹": as wide as its words, 30px, its 16px "+" 6px in and 8px
+   before them, in the tertiary text and icon colors, its top 10px under
+   the columns' — 4px into a 38px band 6px under them — on a board and in
+   the layout builder's alike (Notion's, seen 2026-10-11 and 2026-11-12). */
+.boardAddGroup {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+  height: 30px;
+  margin-top: 10px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+/* Under "⋯ 그룹 더 불러오기", which takes the first place. */
+.boardAddGroup + .boardAddGroup {
+  margin-top: 0;
+}
+.boardAddGroup svg {
+  flex: 0 0 auto;
+  color: var(--icon-tertiary);
+}
+.boardAddGroup:hover,
+.boardAddGroup:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+/* The layout builder's, which does nothing: no hover tint, the plain arrow cursor (Notion's, seen 2026-11-12). */
+.boardAddGroup[aria-disabled="true"] {
+  cursor: default;
+}
+.boardAddGroup[aria-disabled="true"]:hover {
+  background: none;
+  color: var(--text-tertiary);
+}
+
+/* A page's own icon before a card's title, while "페이지 아이콘 표시" is on (seen 2026-10-05). */
+.cardTitleIcon {
+  display: inline-flex;
+  margin-inline-end: 6px;
+  vertical-align: -3px;
+}
+.card > .cardTitle .cardTitleIcon {
+  margin-inline-end: 2px;
+}
+/* A card's own name being typed sits 1px lower, its values 2px (Notion's,
+   seen 2026-11-06: the field at 8.8, its icon at 11, values from 45 against 43.5). */
+.card > .cardTitle:has([data-row-title-editor]) {
+  padding-top: 9px;
+  padding-bottom: 7px;
+}
+/* Its icon 11px in, the field 7px past it (the field at 36). */
+.card > .cardTitle:has([data-row-title-editor]) .cardEditingIcon {
+  margin: 0 1px;
+}
+/* The empty page's icon by a name being typed, in the icons' grey (Notion's, seen 2026-11-06). */
+.cardEditingIcon {
+  color: var(--icon-secondary);
+}
+
+/* "열 배경색": each column, its head and cards, on a faint wash of its
+   option's color, as Notion's board (seen 2026-10-05: 276px columns with
+   8px sides, 10px corners; its washes and accents measured 2026-11-02 —
+   default, gray and no value on one wash). */
+.board[data-column-colors="true"] .boardCol {
+  --board-col-wash: var(--board-col-bg);
+  background: var(--board-col-wash);
+}
+/* With its washes switched off a board's columns sit 4px higher (Notion's,
+   seen 2026-11-06); a board whose groups have no colors, by people or by
+   what cards hold, sits where a washed one does (seen 2026-11-12: heads at
+   186, as a board by options with its washes), and so does one split by
+   sub-groups (seen 2026-11-15: heads at 174.4 with or without washes, 170.4
+   without sub-groups). */
+.board[data-column-colors="false"]:not(:has(> [data-board-lanes])) {
+  padding-top: 4px;
+}
+
+.board[data-column-colors="true"] .boardCol[data-group-color="gray"] { --group-accent: var(--c-accent-gray); }
+.board[data-column-colors="true"] .boardCol[data-group-color="brown"] { --group-accent: var(--c-accent-brown); --board-col-wash: var(--board-col-bg-brown); }
+.board[data-column-colors="true"] .boardCol[data-group-color="orange"] { --group-accent: var(--c-accent-orange); --board-col-wash: var(--board-col-bg-orange); }
+.board[data-column-colors="true"] .boardCol[data-group-color="yellow"] { --group-accent: var(--c-accent-yellow); --board-col-wash: var(--board-col-bg-yellow); }
+.board[data-column-colors="true"] .boardCol[data-group-color="green"] { --group-accent: var(--c-accent-green); --board-col-wash: var(--board-col-bg-green); }
+.board[data-column-colors="true"] .boardCol[data-group-color="blue"] { --group-accent: var(--c-accent-blue); --board-col-wash: var(--board-col-bg-blue); }
+.board[data-column-colors="true"] .boardCol[data-group-color="purple"] { --group-accent: var(--c-accent-purple); --board-col-wash: var(--board-col-bg-purple); }
+.board[data-column-colors="true"] .boardCol[data-group-color="pink"] { --group-accent: var(--c-accent-pink); --board-col-wash: var(--board-col-bg-pink); }
+.board[data-column-colors="true"] .boardCol[data-group-color="red"] { --group-accent: var(--c-accent-red); --board-col-wash: var(--board-col-bg-red); }
+.board[data-column-colors="true"] .boardCol[data-group-color="gray"] { --card-bg: var(--c-card-bg-gray); --card-hover: var(--c-card-hover-gray); --card-ring: var(--c-card-ring-gray); }
+.board[data-column-colors="true"] .boardCol[data-group-color="brown"] { --card-bg: var(--c-card-bg-brown); --card-hover: var(--c-card-hover-brown); --card-ring: var(--c-card-ring-brown); }
+.board[data-column-colors="true"] .boardCol[data-group-color="orange"] { --card-bg: var(--c-card-bg-orange); --card-hover: var(--c-card-hover-orange); --card-ring: var(--c-card-ring-orange); }
+.board[data-column-colors="true"] .boardCol[data-group-color="yellow"] { --card-bg: var(--c-card-bg-yellow); --card-hover: var(--c-card-hover-yellow); --card-ring: var(--c-card-ring-yellow); }
+.board[data-column-colors="true"] .boardCol[data-group-color="green"] { --card-bg: var(--c-card-bg-green); --card-hover: var(--c-card-hover-green); --card-ring: var(--c-card-ring-green); }
+.board[data-column-colors="true"] .boardCol[data-group-color="blue"] { --card-bg: var(--c-card-bg-blue); --card-hover: var(--c-card-hover-blue); --card-ring: var(--c-card-ring-blue); }
+.board[data-column-colors="true"] .boardCol[data-group-color="purple"] { --card-bg: var(--c-card-bg-purple); --card-hover: var(--c-card-hover-purple); --card-ring: var(--c-card-ring-purple); }
+.board[data-column-colors="true"] .boardCol[data-group-color="pink"] { --card-bg: var(--c-card-bg-pink); --card-hover: var(--c-card-hover-pink); --card-ring: var(--c-card-ring-pink); }
+.board[data-column-colors="true"] .boardCol[data-group-color="red"] { --card-bg: var(--c-card-bg-red); --card-hover: var(--c-card-hover-red); --card-ring: var(--c-card-ring-red); }
+/* A coloured column counts its cards, and offers "+ 새 페이지", in its
+   option's accent; a default one or one without an option in dark grey
+   (Notion's, seen 2026-10-24 and 2026-11-02). */
+.board[data-column-colors="true"] .boardCol .boardColHead .boardCount { color: var(--group-accent, var(--text-accent-secondary)); }
+/* Its head's "⋯ +" take the accent its "+ 새 페이지" has, pointed at too (Notion's,
+   seen 2026-11-15: rgb(39,131,222) on a blue column, rgb(188,186,182) on a default one). */
+.board[data-column-colors="true"] .boardCol .boardColHead .boardGroupMore { color: var(--group-add, var(--text-accent-secondary)); }
+/* A coloured column's "+ 새 페이지" in the option's accent — the same in both
+   themes, as a number's bar — or dark grey without one (Notion's, seen
+   2026-11-05 in dark, 8 under the last card). */
+.board[data-column-colors="true"] .boardCol .boardAdd {
+  color: var(--group-add, var(--text-accent-secondary));
+}
+/* A relation tab's "↗ 기존 항목 연결" under it in the same accent (Notion's, seen 2026-11-12). */
+.board[data-column-colors="true"] .boardCol .boardAddLink > button { color: var(--group-add, var(--text-accent-secondary)); }
+/* A default option's column rings its cards and "+ 새 페이지" as a grey one does
+   (Notion's, seen 2026-11-05: rgba(255,255,243,.082) in dark). */
+.board[data-column-colors="true"] .boardCol[data-group-color="default"] { --card-ring: var(--c-card-ring-gray); }
+.board[data-column-colors="true"] .boardCol[data-group-color="gray"] { --group-add: rgb(142, 139, 134); }
+.board[data-column-colors="true"] .boardCol[data-group-color="brown"] { --group-add: rgb(182, 137, 101); }
+.board[data-column-colors="true"] .boardCol[data-group-color="orange"] { --group-add: rgb(213, 128, 59); }
+.board[data-column-colors="true"] .boardCol[data-group-color="yellow"] { --group-add: rgb(216, 163, 47); }
+.board[data-column-colors="true"] .boardCol[data-group-color="green"] { --group-add: rgb(70, 161, 113); }
+.board[data-column-colors="true"] .boardCol[data-group-color="blue"] { --group-add: rgb(39, 131, 222); }
+.board[data-column-colors="true"] .boardCol[data-group-color="purple"] { --group-add: rgb(181, 119, 214); }
+.board[data-column-colors="true"] .boardCol[data-group-color="pink"] { --group-add: rgb(219, 105, 153); }
+.board[data-column-colors="true"] .boardCol[data-group-color="red"] { --group-add: rgb(229, 100, 88); }
+
+/* Compact cards, as Notion's card layout offers: the values side by side,
+   each in its own 28px box 5px in on both sides, wrapping to the next row
+   (seen 2026-11-05: title 36.5, values from 6 in, their text 11 in, four of
+   글·날짜·상태·선택 on the first row of a 260px card, 8 under the last row). */
+:global([data-card-layout="compact"]) .card .cardMeta {
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 6px 8px;
+}
+:global([data-card-layout="compact"]) .card .cardLine {
+  padding: 0 5px;
+}
+
+/* A card's related pages, as Notion's board and gallery cards (seen
+   2026-11-11): side by side on the value's line, 6px apart and 4px between
+   lines, each its 16px icon and 3px after it its name, 12px/500 on an 18px
+   line; within the card's width, a long name wrapping when the card wraps
+   its values ("Tone Ttwo" on one line, a long one over two). */
+.cardLine > .relationChips {
+  flex: 1 1 100%;
+  min-width: 0;
+  gap: 4px 6px;
+}
+.cardLine .relationChip {
+  align-items: flex-start;
+  gap: 3px;
+  height: auto;
+  min-height: 18px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+.cardLine .relationChip .relationPageIcon {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+.cardLine .relationChip .relationPageIcon :is(svg, img) {
+  width: 14.4px;
+  height: 14.4px;
+}
+:is(.card, .galleryCard)[data-wrap="true"] .cardLine .relationChip :is(.relationChipLink, .relationChipText) {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+/* Unwrapped, they stay on one line, cut at the card's edge (Notion's
+   gallery, seen 2026-11-11: a long name, then nothing more of the line). */
+:is(.card, .galleryCard):not([data-wrap="true"]) .cardLine > .relationChips {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+:is(.card, .galleryCard):not([data-wrap="true"]) .cardLine .relationChip {
+  flex: none;
+  max-width: none;
+}
+
+/* A compact card's relation shows its first page and "+N" for the rest, 6px
+   after it in the secondary grey (Notion's, seen 2026-11-05: "다 +1"). */
+.relationMore {
+  display: none;
+}
+:global([data-card-layout="compact"]) .card [data-row-relation-chip] ~ [data-row-relation-chip] {
+  display: none;
+}
+:global([data-card-layout="compact"]) .card .relationMore {
+  display: inline;
+  /* 6px after the page: the chips' own 8px gap, less 2. */
+  margin-inline-start: -2px;
+  color: var(--text-secondary);
+}
+
+/* Wider than the page's text, an inline board runs across the page, its
+   first column where the text starts, the page's margin after its last one's
+   12px (the reach less 8, as a table's), its box where its table's is (usePageWideTable;
+   Notion's, seen 2026-11-02, 2026-11-12 and 2026-11-15 at 1440: 264–1419, scrolled 164). */
+.board[data-page-wide="true"] {
+  width: var(--page-wide-width);
+  max-width: none;
+  margin-inline-start: calc(var(--page-wide-reach, var(--page-wide-offset)) * -1);
+  padding-inline-start: var(--page-wide-reach, var(--page-wide-offset));
+  padding-inline-end: calc(var(--page-wide-reach, var(--page-wide-offset)) - 8px);
+}
+/* A phone's stands 6px left of the screen (usePageWideTable's edge) and ends 6px short of it, its last group's gap
+   its end (Notion's, measured 2026-11-16 at 402pt in iPhone Safari's Web Inspector: −6..396, first column 26..302). */
+:global([data-phone="true"]) .board[data-page-wide="true"] { padding-inline-end: 0; }
+
+/* "전체 줄 표시": a compact card's property on a line of its own, as
+   Notion's (seen 2026-11-03), the others still packed around it — a 28px
+   line with its value 5px in, as a packed value's box (seen 2026-11-12: the
+   line 248 wide 6 in a 260 card, its text 11 in). */
+.cardFullLine {
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+  padding: 5px;
+}
+.cardFullLine:empty {
+  display: none;
+}
+/* A card being made's property slot (BoardColumn's draft card): its value,
+   or an empty one's 14px icon and "이름 추가" in grey 6px past it, a box and
+   its name for a checkbox; pointed at, lit (Notion's, seen 2026-11-06). */
+/* Its lit box 6px in from the card's edge, the words still 11px (Notion's, seen 2026-11-06: 248 wide at 6 in a 260 card). */
+.draftSlot {
+  margin: 0 1px;
+  padding: 0 5px;
+  border-radius: 4px;
+}
+.draftSlot[role="button"] {
+  cursor: pointer;
+}
+.draftSlot[role="button"]:hover {
+  background: var(--bg-hover);
+}
+/* Its lines 2px higher than a card's values, its values where a card's are;
+   an empty one's icon 1.4px out of them and its words 5.4px past it
+   (Notion's draft card, seen 2026-11-06: lines from 255.4, the icon at 967.6,
+   the words at 989, a box at 969 in a card at 958). */
+.card[data-board-draft-card] > [data-board-draft-slots] {
+  margin-top: -2px;
+}
+.draftSlotEmpty {
+  display: inline-flex;
+  align-items: center;
+  gap: 5.4px;
+  margin-inline-start: -1.4px;
+  color: var(--text-tertiary);
+}
+.draftSlotEmpty > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+.draftSlotBox {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-inline-end: 6px;
+  border: 1.5px solid var(--icon-secondary);
+  border-radius: 3px;
+  vertical-align: -2px;
+}
+/* A checkbox's name 5px past its box (Notion's draft card, seen 2026-11-06). */
+.draftSlot[data-draft-checkbox] .cardCheckboxName {
+  margin-inline-start: 1px;
+}
+
+/* A phone's board, as Notion's mobile web (seen 2026-11-12 at 402pt): a
+   card's title 17px on its 25.5px line, 12 under the card's top, and 12 over
+   its bottom alone (49.5 high) or 6 over its values; the values 14px, a chip
+   20 high, so a line of words is 31 and one of chips 30. Cards and "+ 새
+   페이지" stand 10 apart, and "+ 새 페이지" is a 52px card of its own with its
+   17px words 5 after a 22px "+" 8 in, with column colors or without. */
+:global([data-phone="true"]) .boardCards,
+:global([data-phone="true"]) .boardCardSlot {
+  gap: 10px;
+}
+:global([data-phone="true"]) .boardCardsEnd {
+  margin-top: -10px;
+}
+:global([data-phone="true"]) .card > .cardTitle {
+  padding: 12px 10px 6px;
+  font-size: 17px;
+}
+:global([data-phone="true"]) .card:not(:has(> .cardMeta :is(.cardLine, .cardFullLine):not(:empty), > .cardMeta [data-subitem-count])) > .cardTitle,
+:global([data-phone="true"]) .card[data-board-draft-card] [data-board-draft-title] {
+  padding-bottom: 12px;
+}
+:global([data-phone="true"]) .card .cardLine,
+:global([data-phone="true"]) .card .cardField {
+  font-size: 14px;
+}
+:global([data-phone="true"]) .card .cardMeta .chip {
+  --chip-height: 20px;
+  font-size: 14px;
+}
+:global([data-phone="true"]) .board .boardCol .boardAdd {
+  gap: 5px;
+  height: 52px;
+  padding: 0 8px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--card-ring, var(--border-default));
+  font-size: 17px;
+}
+:global([data-phone="true"]) .board .boardCol .boardAdd svg {
+  width: 22px;
+  height: 22px;
+}
+/* Without the washes a phone's columns sit 4 higher too (Notion's, seen
+   2026-11-15 at 411 on the A90: padding-top 16 against 20 with them). */
+:global([data-phone="true"]) .board:not([data-column-colors="true"]):not(:has(> [data-view-no-results], > [data-board-lanes])) {
+  padding-top: 16px;
+}

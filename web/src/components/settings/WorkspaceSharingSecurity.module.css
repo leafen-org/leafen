@@ -1,0 +1,56 @@
+/* 보안's tab panel under the tabs; its rows keep the settings' 24px apart (seen 2026-10-12). */
+.panel {
+  margin-top: 28px;
+}
+
+/* 멤버 및 게스트 is 요청's "제어" column with the restricted member rows after it, as Notion's (seen
+   2026-11-21 at 1440, dpr 1): the first row 44 under the tabs, every row 32 apart, the column's last
+   and the rows after it too. */
+.panel[data-security-panel="members"] {
+  --settings-row-gap: 32px;
+  margin-top: 44px;
+}
+
+.panel [data-request-controls] + [data-security-members] > :first-child:not(.ownerControls) {
+  margin-top: var(--settings-row-gap, 24px);
+}
+
+/* A value the workspace can't change, as Notion's greyed "30일". */
+.fixedValue {
+  justify-self: end;
+  padding: 2px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* Leafen's own groups after Notion's rows, and the organization's guest
+   controls after 멤버 및 게스트, 48px on as the settings' groups are. */
+.panel [data-view-link-policy],
+.panel [data-user-html-policy],
+.ownerControls {
+  margin-top: 48px;
+}
+
+/* A row's "베타" after its name, as Notion's (seen 2026-11-21 at 1440, dpr 1, dark): 6 after the name,
+   11/14.3 500 on a 4-round tag 2px 4px in, grey on the same tint as its round close button. */
+.badged {
+  display: inline-flex;
+  justify-self: start;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A <b>, which the row's grey description rule for its spans leaves alone. */
+.badge {
+  flex: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--round-close-bg);
+  color: var(--text-gray-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}

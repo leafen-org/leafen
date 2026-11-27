@@ -1,0 +1,134 @@
+{
+  "language": "en",
+  "names": {
+    "ko": {
+      "Vault accounts": "금고 계정",
+      "Vault devices": "금고 기기",
+      "Vault folders": "금고 폴더",
+      "Vault shared vaults": "공유 금고",
+      "Vault shared vault members": "공유 금고 멤버",
+      "Vault collections": "금고 컬렉션",
+      "Vault items": "금고 항목",
+      "Vault settings": "금고 설정",
+      "Email": "이메일",
+      "Person": "사람",
+      "Status": "상태",
+      "pending": "대기",
+      "active": "사용 중",
+      "closed": "닫힘",
+      "invited": "초대됨",
+      "accepted": "수락함",
+      "confirmed": "확인됨",
+      "revoked": "취소됨",
+      "Name": "이름",
+      "Hint": "힌트",
+      "Key": "키",
+      "Public key": "공개 키",
+      "Private key": "개인 키",
+      "Stamp": "보안 도장",
+      "Hash": "해시",
+      "Salt": "솔트",
+      "Kdf": "키 유도 방식",
+      "Iterations": "반복 횟수",
+      "Memory": "메모리",
+      "Parallelism": "병렬 수",
+      "Created": "만든 때",
+      "Revision": "개정",
+      "Expires": "만료",
+      "Identifier": "식별자",
+      "Account": "계정",
+      "Type": "유형",
+      "Refresh": "갱신 토큰",
+      "Seen": "마지막 접속",
+      "Billing email": "청구 이메일",
+      "Groups": "그룹",
+      "Organization": "조직",
+      "Role": "역할",
+      "Source": "출처",
+      "Access all": "모두 접근",
+      "Collections": "컬렉션",
+      "External id": "외부 ID",
+      "Kind": "구분",
+      "Folder": "폴더",
+      "Favorite": "즐겨찾기",
+      "Data": "데이터",
+      "Deleted": "삭제",
+      "Places": "위치",
+      "Value": "값"
+    }
+  },
+  "steps": [
+    {
+      "key": "accounts",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault accounts",
+        "schema": "CREATE TABLE (\"Email\" TITLE, \"Person\" RICH_TEXT, \"Status\" SELECT('pending':yellow, 'active':green, 'closed':gray), \"Name\" RICH_TEXT, \"Hint\" RICH_TEXT, \"Key\" RICH_TEXT, \"Public key\" RICH_TEXT, \"Private key\" RICH_TEXT, \"Stamp\" RICH_TEXT, \"Hash\" RICH_TEXT, \"Salt\" RICH_TEXT, \"Kdf\" NUMBER, \"Iterations\" NUMBER, \"Memory\" NUMBER, \"Parallelism\" NUMBER, \"Created\" NUMBER, \"Revision\" NUMBER, \"Expires\" NUMBER)"
+      }
+    },
+    {
+      "key": "devices",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault devices",
+        "schema": "CREATE TABLE (\"Identifier\" TITLE, \"Account\" RELATION('{{accounts.data_source_id}}'), \"Name\" RICH_TEXT, \"Type\" NUMBER, \"Refresh\" RICH_TEXT, \"Stamp\" RICH_TEXT, \"Created\" NUMBER, \"Seen\" NUMBER)"
+      }
+    },
+    {
+      "key": "folders",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault folders",
+        "schema": "CREATE TABLE (\"Name\" TITLE, \"Account\" RELATION('{{accounts.data_source_id}}'), \"Revision\" NUMBER)"
+      }
+    },
+    {
+      "key": "organizations",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault shared vaults",
+        "schema": "CREATE TABLE (\"Name\" TITLE, \"Billing email\" RICH_TEXT, \"Public key\" RICH_TEXT, \"Private key\" RICH_TEXT, \"Groups\" RICH_TEXT, \"Status\" SELECT('active':green, 'closed':gray), \"Created\" NUMBER, \"Revision\" NUMBER)"
+      }
+    },
+    {
+      "key": "members",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault shared vault members",
+        "schema": "CREATE TABLE (\"Email\" TITLE, \"Organization\" RICH_TEXT, \"Account\" RELATION('{{accounts.data_source_id}}'), \"Person\" RICH_TEXT, \"Status\" SELECT('invited':yellow, 'accepted':orange, 'confirmed':green, 'revoked':gray), \"Role\" NUMBER, \"Key\" RICH_TEXT, \"Source\" RICH_TEXT, \"Access all\" CHECKBOX, \"Collections\" RICH_TEXT, \"Groups\" RICH_TEXT, \"Created\" NUMBER, \"Revision\" NUMBER)"
+      }
+    },
+    {
+      "key": "collections",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault collections",
+        "schema": "CREATE TABLE (\"Name\" TITLE, \"Organization\" RICH_TEXT, \"External id\" RICH_TEXT, \"Revision\" NUMBER)"
+      }
+    },
+    {
+      "key": "ciphers",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault items",
+        "schema": "CREATE TABLE (\"Kind\" TITLE, \"Account\" RELATION('{{accounts.data_source_id}}'), \"Type\" NUMBER, \"Folder\" RICH_TEXT, \"Favorite\" CHECKBOX, \"Data\" RICH_TEXT, \"Created\" NUMBER, \"Revision\" NUMBER, \"Deleted\" NUMBER, \"Organization\" RICH_TEXT, \"Collections\" RICH_TEXT, \"Places\" RICH_TEXT)"
+      }
+    },
+    {
+      "key": "config",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "Vault settings",
+        "schema": "CREATE TABLE (\"Name\" TITLE, \"Value\" RICH_TEXT)"
+      }
+    }
+  ]
+}

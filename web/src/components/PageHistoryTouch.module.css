@@ -1,0 +1,237 @@
+/* A page's version history on a touch screen, as Notion's iPad (measured
+   2026-11-14 in Safari 834 × 1124 and 1210 × 748, light). The head's three
+   parts, title and blue words are the phone sheets' (PhoneSheet.module.css). */
+.root {
+  position: fixed;
+  inset: 0;
+}
+
+/* The shade of Notion's touch windows, the same in dark (TouchPickerCard). */
+.shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.6);
+}
+
+/* "기록" is a card on the soft ground in the middle, up to 414 wide: in a
+   tall window 60% of the screen's height with the browser's bars folded
+   (Notion's 60vh, Safari's large viewport: 692 at 834 × 1124, the window's
+   1153), centered over a 20px foot (its top 206); in a wide one from 44
+   under the top to 20 over the foot (684 at 1210 × 748). 12 round, the
+   menus' shadow. lvh, as the build turns vh into the window's dvh. */
+.card {
+  position: absolute;
+  inset: 0 0 20px;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 414px;
+  max-height: 60lvh;
+  margin: auto;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-soft);
+  box-shadow: var(--shadow-menu);
+}
+
+@media (orientation: landscape) {
+  .card {
+    top: 44px;
+    max-height: none;
+  }
+}
+
+/* A phone's is the whole screen, square, as Notion's touch cards
+   (TouchPickerCard). */
+:global([data-phone="true"]) .card {
+  inset: 0;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* The head's line under it, outside its 44px (Notion's 1px shadow). */
+.head,
+.versionHead {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 0 var(--border-default);
+}
+
+/* One time a line, 45 high in a 4px list, 1px apart, 14px words 16px in
+   (Notion's menu lines: 4px 8px round 6, the words 8px past). */
+.list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-height: 0;
+  padding: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 45px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: start;
+  cursor: pointer;
+}
+
+.row:active {
+  background: var(--bg-hover);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--accent-blue));
+  outline-offset: -2px;
+}
+
+.rowText {
+  min-width: 0;
+  margin-inline-start: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.more {
+  color: var(--text-secondary);
+}
+
+/* A phone's list is a table of white lines 28 under the head, as Notion's
+   iPhone (measured 2026-11-14 in Safari 402 × 714): each 65 high, its 16px
+   words 8 in, 1px lines over the first and between them. */
+:global([data-phone="true"]) .list {
+  gap: 0;
+  padding: 28px 0 0;
+}
+
+:global([data-phone="true"]) .row {
+  min-height: 65px;
+  margin-block: 1px -1px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-default);
+  border-radius: 0;
+  background: var(--bg-app);
+  font-size: 16px;
+}
+
+:global([data-phone="true"]) .list > :first-child .row {
+  box-shadow: 0 -1px 0 var(--border-default);
+}
+
+:global([data-phone="true"]) .list > :last-child .row {
+  border-bottom-color: transparent;
+}
+
+:global([data-phone="true"]) .rowText {
+  margin-inline: 8px 16px;
+}
+
+/* No version yet: a white box 28 down, its words centered, as Notion's
+   note that the page has no snapshot yet. */
+.empty {
+  margin: 24px -4px 0;
+  padding: 16px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}
+
+/* A version over the whole screen on the page's white, as Notion's: its
+   head, then the page as it read, its column the touch page's (28 under the
+   head, 96 in, up to 708, PageHistoryPreview.module.css; 18 in on a phone,
+   Notion's iPhone at 402). */
+.version {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app);
+}
+
+/* Leafen's own undo of a connection's changes, which Notion's
+   head has no room for: a line of its buttons under the head. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+  box-shadow: 0 1px 0 var(--border-default);
+}
+
+.versionBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 24px 96px 380px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+:global([data-phone="true"]) .versionBody {
+  padding-inline: 18px;
+}
+
+.error {
+  margin: 0;
+  padding: 8px 16px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* "복원 중…" with a turning ring in a small card in the middle while the
+   restore runs, as Notion's. */
+.progress {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 15, 15, 0.6);
+}
+
+.progressCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  min-width: 180px;
+  height: 60px;
+  margin: 0;
+  padding: 0 24px;
+  border-radius: 12px;
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-default);
+  border-top-color: var(--text-secondary);
+  border-radius: 50%;
+  animation: historyTouchSpin 800ms linear infinite;
+}
+
+@keyframes historyTouchSpin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,227 @@
+/* A subscription's card, as Notion's (measured live 2026-11-21 at 1440, dpr
+   2, dark): 20px under the tabs, the page's width with a faint line, 10px
+   round, 24px in; each part a bold 14/20 name, a 14/20 gray line 4px under
+   it and, 12px under that, its value in a dimmed text field (the shared
+   .textField, 4px above and below a 26px line: 34 high, 15px faint words);
+   the parts 32px apart. The kinds of events 40px rows 8px
+   apart on the fields' ground, 8px round, 12px in, the name 500, the count
+   gray at the end in at most 76px, a 14px › in the words' colour 12px after
+   it. The yellow card 20px under the last row, 10px round, 15px in: an 18px
+   yellow ⚠ 6px before a bold line, under them a faint 14/21 line 25px in. A
+   line across the card 24px under that, the buttons 20px under the line and
+   above the edge: "⚠ 인증" outlined 12px in with its ⚠ yellow, then 8px
+   apart the red words and the blue button, 8px in. */
+.card {
+  margin-top: 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.section + .section {
+  margin-top: 32px;
+}
+
+.label {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.note {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The shared text field with the card's taller line; named by element as
+   well so it wins over that sheet's rules whatever their order. */
+.value {
+  composes: textField from "./InternalConnectionWebhooks.module.css";
+}
+
+input.value,
+input.value:disabled {
+  height: 34px;
+  margin-top: 12px;
+  color: var(--text-tertiary);
+  font-size: 15px;
+  line-height: 26px;
+  text-overflow: ellipsis;
+}
+
+/* "실패한 이벤트 보기" under the address at its end, as Notion's: 8px under
+   the field, 20px high, 6px in, 12px blue words; the next part starts 24px
+   under it. */
+.failures {
+  display: flex;
+  align-self: flex-end;
+  align-items: center;
+  height: 20px;
+  margin-top: 8px;
+  margin-bottom: -8px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--accent-blue);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.failures:hover {
+  background: var(--bg-hover);
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+
+.group:hover {
+  background: var(--bg-hover);
+}
+
+.groupName {
+  color: var(--text-default);
+  font-weight: 500;
+}
+
+.groupCount {
+  overflow: hidden;
+  max-width: 76px;
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.events {
+  margin: 4px 0 0;
+  padding-block: 0;
+  padding-inline: 24px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.warning {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 4px 6px;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  background: var(--c-pal-yellow-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.warning svg {
+  color: var(--c-accent-yellow);
+}
+
+.warning strong {
+  font-weight: 600;
+}
+
+/* Notion's line ends 640px from the card's inside with its 25px indent,
+   0.2em over the card's foot. */
+.warning span {
+  grid-column: 1 / -1;
+  max-width: 640px;
+  margin-bottom: 0.2em;
+  padding-inline-start: 25px;
+  color: var(--text-tertiary);
+  line-height: 21px;
+}
+
+/* The red words and the blue button together at the end, as Notion's; on a
+   card too narrow for all three they go under "⚠ 인증" rather than past the
+   card's edge. */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.verify,
+.delete,
+.edit {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.verify {
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  color: var(--text-default);
+}
+
+.verify svg {
+  margin-top: 2px;
+  color: var(--c-accent-yellow);
+}
+
+.verify:hover,
+.delete:hover {
+  background: var(--bg-hover);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.delete {
+  color: var(--danger-soft-text);
+}
+
+.edit {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.edit:hover {
+  background: var(--accent-blue-hover);
+}

@@ -1,0 +1,608 @@
+/* The inbox's rows, as Notion's (seen 2026-10-07). */
+
+/* An empty list's mark and words, in the middle of the whole panel under its
+   head, the list's foot room too: 32px mark, 6px, then the words, as
+   Notion's (seen 2026-11-13). Notion wraps them 32px in from each edge; the
+   wider bundled Noto Sans KR (the font decision) broke its one-line
+   "보관된 알림을 보려면 …" there, so they run to the list's own edges. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: calc(100% + 12px);
+  margin-bottom: -12px;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* A phone's whole-screen sheet keeps its list's own room. */
+[data-placement="phone"] .empty {
+  min-height: 100%;
+  margin-bottom: 0;
+  padding: 24px;
+}
+
+/* With every type turned off: a 500 title, its note 2px under it, then
+   "모든 유형 표시" 20px under that, outlined, 28px (Notion's, seen 2026-11-13). */
+.emptyTitle {
+  font-weight: 500;
+}
+
+.emptyNote {
+  margin-top: -4px;
+}
+
+.emptyAction {
+  height: 28px;
+  margin-top: 14px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+  white-space: nowrap;
+}
+
+.emptyAction:focus-visible {
+  background: var(--bg-hover);
+}
+
+@media (hover: hover) {
+  .emptyAction:hover {
+    background: var(--bg-hover);
+  }
+}
+
+.empty > svg {
+  color: var(--text-disabled);
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px 8px;
+}
+
+.skeletonRow {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px 12px;
+}
+
+.skeletonRow > span {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--bg-soft);
+}
+
+.skeletonRow > span:first-child {
+  grid-row: span 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.skeletonRow > span:last-child {
+  width: 70%;
+}
+
+.section + .section {
+  margin-top: 8px;
+}
+
+/* "오늘"·"이번 주"·"이전" in Notion's group gray (seen 2026-10-27: light
+   rgb(145,145,142), dark rgb(155,155,155) — a gray of its own, no text token). */
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  color: #91918e;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+:global([data-theme="dark"]) .sectionLabel {
+  color: #9b9b9b;
+}
+
+.sectionList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each notification, a line below it. */
+.row {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-default) 60%, var(--bg-app));
+}
+
+.rowMain {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding-block: 8px;
+  padding-inline: 8px 10px;
+  border-radius: 8px;
+  color: var(--text-default);
+  text-align: start;
+}
+
+.rowMain:hover,
+.rowMain:focus-visible {
+  background: color-mix(in srgb, var(--text-default) 5%, transparent);
+  outline: none;
+}
+
+.lead {
+  display: inline-flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  overflow: hidden;
+  color: var(--icon-secondary);
+}
+
+.lead[data-person="true"] {
+  border-radius: 50%;
+  background: var(--bg-soft);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  margin-top: 4px;
+}
+
+.line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.sentence {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+}
+
+.name {
+  font-weight: 500;
+}
+
+/* A workspace update names other people and integrations in 600, as
+   Notion's (seen 2026-11-06); a notification's line stays 500. */
+.activityName {
+  font-weight: 600;
+}
+
+/* The page a sentence names: its small icon, then its title. */
+.pageMark {
+  display: inline;
+  font-weight: 500;
+}
+
+.pageMark > svg,
+.pageMark > span:first-child:not(.pageMarkTitle) {
+  display: inline-block;
+  margin-block: 0;
+  margin-inline: 2px 3px;
+  vertical-align: -2px;
+}
+
+/* A page's own icon sits in a box (an emoji is bare text): a drawn one fills
+   it, so it lines up as the bare mark beside it does. */
+.pageMarkIcon > svg,
+.pageMarkIcon > img {
+  display: block;
+}
+
+/* A workspace without an icon of its own goes by its letter on a tint, as at
+   its switcher. */
+.pageMarkIcon[data-workspace-letter] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: var(--letter-icon-bg);
+  color: var(--text-secondary);
+  font-size: 9.5px;
+  line-height: 1;
+}
+
+.trail {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  height: 21px;
+}
+
+/* Notion's time is the faint text color (light rgb(161,158,153), dark rgb(125,122,117); 2026-10-27). */
+.time {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+/* Without the dot the time keeps a little more room at the right, as Notion's. */
+.time:last-child {
+  margin-inline-end: 4px;
+}
+
+.unreadDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+
+.preview {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+}
+
+/* On hover, a small group of buttons at the row's top right: Notion's
+   butGroBac in a 1px borPri line with a faint shadow, 10px in from the
+   row's top and right (seen 2026-11-06). */
+.tools {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: none;
+  gap: 1px;
+  padding: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-button-group);
+  box-shadow: 0 2px 4px rgb(22 29 27 / 2%);
+}
+
+/* Under the pointer, or with the keyboard's focus in the row: a pressed
+   button doesn't keep them up once the pointer leaves, as Notion's (seen
+   2026-11-06). */
+.row:hover .tools,
+.row[data-keys-within] .tools {
+  display: flex;
+}
+
+/* On a touch screen there is no hover: the buttons stay under the row's
+   text, 30px with 22px icons from 46px in, as Notion's mobile web inbox
+   (seen 2026-10-27); a phone shows none, as Notion's Android app
+   (InboxRowTouch.module.css). The row is 8px in already. */
+:global([data-touch="true"]) .tools,
+:global([data-touch="true"]) .row:focus-within .tools {
+  position: static;
+  display: flex;
+  gap: 1px;
+  padding-block: 0 10px;
+  padding-inline: 38px 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+:global([data-touch="true"]) .tools .tool {
+  width: 30px;
+  height: 30px;
+}
+
+:global([data-touch="true"]) .tools .tool svg {
+  width: 22px;
+  height: 22px;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 4px;
+  /* Notion's row tools are icoSec, light and dark (seen 2026-10-27). */
+  color: var(--icon-secondary);
+}
+
+.tool:hover,
+.tool:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.requestActions {
+  display: flex;
+  gap: 6px;
+  padding-block: 0 10px;
+  padding-inline: 44px 8px;
+}
+
+.requestAction {
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--bg-default);
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.requestAction[data-primary="true"] {
+  border-color: transparent;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.requestAction:disabled {
+  opacity: 0.5;
+}
+
+/* An automation's "1개 보기", as Notion's (seen 2026-10-24): 16px under its
+   message and 16px over the row's end, 24px, 14px/500, a faint 1px line
+   round it, nothing behind it; the message's lines are 20px. */
+.viewPagesActions {
+  display: flex;
+  padding-block: 8px 16px;
+  padding-inline: 44px 8px;
+}
+
+.viewPages {
+  height: 24px;
+  padding: 0 6px;
+  background: transparent;
+  font-size: 14px;
+}
+
+.row[data-sentence="automation"] .preview {
+  line-height: 20px;
+}
+
+.requestState {
+  padding-block: 0 10px;
+  padding-inline: 44px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.requestActionNote {
+  align-self: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* An access request under its sentence, as Notion's inbox row (seen
+   2026-11-09): 9px under the text, the warning box 4px round with 5/8px in,
+   12/16px in the palette's yellow and 13px over the buttons; the buttons 24px,
+   6px round and 6px apart, 14px/500 — the role and "승인" in a 1px line,
+   "거부" plain — and the row's 8px under them. Once decided, a 14/21px line in
+   the secondary color stands where the warning was. */
+.requestBlock {
+  padding-block: 0 8px;
+  padding-inline: 44px 10px;
+}
+
+.requestWarning {
+  margin-block-end: 13px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: var(--c-pal-yellow-bg);
+  color: var(--c-pal-yellow-text);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.accessActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.requestRole,
+.requestRole [data-share-permission-root] {
+  display: inline-flex;
+}
+
+.accessAction,
+.requestRole [data-share-permission-root] > button {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+  white-space: nowrap;
+}
+
+.accessAction[data-tone="outlined"] {
+  border: 1px solid var(--button-outline);
+}
+
+/* The name's trailing space and 1px keep the chevron Notion's 4px off. */
+.requestRole [data-share-permission-root] > button {
+  gap: 1px;
+  border: 1px solid var(--button-outline);
+}
+
+.requestRole [data-share-permission-root] > button > svg {
+  width: 14px;
+  height: 14px;
+  color: var(--icon-secondary);
+}
+
+.accessAction:hover,
+.accessAction:focus-visible,
+.requestRole [data-share-permission-root] > button:hover,
+.requestRole [data-share-permission-root] > button:focus-visible,
+.requestRole [data-share-permission-root] > button[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.accessAction:disabled {
+  opacity: 0.5;
+}
+
+.requestDecision {
+  padding-block: 0 8px;
+  padding-inline: 44px 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* A deadline not to miss (Leafen's own) leads with a red flag. */
+.deadlineMark {
+  color: var(--c-accent-red);
+}
+
+/* Where it is, as Notion's (seen 2026-11-13): "·" and each "/" 4px apart from
+   the names, the names whole and the line cut where it ends. */
+.activityPlace { display: flex; min-width: 0; overflow: hidden; }
+.activityPlace > * { flex: none; }
+.activityPlaceDot { margin-inline-end: 4px; }
+.activityPlaceSlash { padding-inline: 4px; }
+.activityPlacePiece { color: inherit; }
+.activityContinue { width: 100%; padding: 12px; color: var(--text-secondary); font-size: 12px; }
+
+/* An edit's changed lines under it, as Notion's (seen 2026-10-19): blue on a
+   pale blue band when added, struck and faded under "삭제됨" when deleted. */
+/* Each line a link the line's width, its words 2px past the sentence's and 16px from the end (Notion's, seen 2026-11-16). */
+.activityChanges:not(:empty) { display: flex; flex-direction: column; align-items: stretch; padding-inline: 54px 16px; }
+.activityChange { display: block; margin-inline: -54px -16px; padding-inline: 54px 16px; padding-bottom: 3px; color: var(--c-accent-blue); font-size: 14px; line-height: 21px; text-decoration: none; overflow-wrap: anywhere; }
+/* A line's band 29px, its words 4px in above and below, 32px apart, as the page's updates tab and Notion's (seen 2026-11-13); its own breaks kept as that tab keeps them. */
+.activityChangeText { display: block; padding-block: 4px; white-space: pre-wrap; }
+.activityChangeText > svg { margin-inline-end: 4px; vertical-align: -2px; }
+/* A line added whole on the faint blue band, words added to a line on Notion's faint blue mark, as the page's updates tab (seen 2026-11-13). */
+.activityChange[data-change="added"]:not([data-blank]) .activityChangeText,
+.activityChange:is([data-change="page"], [data-change="database"]) .activityChangeText { background: var(--bg-block-selected); color: var(--c-accent-blue); }
+.activityChange [data-added] { background: var(--action-mark-blue-bg); color: var(--c-accent-blue); }
+.activityChange[data-change="changed"],
+.activityChange[data-change="deleted"],
+.activityChange[data-change="deletedPage"] { color: var(--text-default); }
+.activityChange[data-change="deleted"] .activityChangeText,
+.activityChange[data-change="deletedPage"] .activityChangeText { margin-bottom: 6px; text-decoration: line-through; opacity: .4; }
+.activityChange:hover .activityChangeText { filter: brightness(1.08); }
+.activityChangeLabel { display: block; padding-top: 8px; color: var(--text-tertiary); font-size: 12px; line-height: 12px; }
+/* A boxed line is its box (updates/UpdateLine), which carries the band itself. */
+.activityChange[data-boxed][data-change] .activityChangeText { background: none; text-decoration: none; opacity: 1; margin-bottom: 0; padding-block: 0; }
+/* A property's name over its value (updates/UpdatePropertyValue); a text's added words marked, a cleared one struck. */
+.activityChangeProperty { display: flex; align-items: center; gap: 6px; padding-top: 7px; margin-bottom: 4px; color: var(--text-tertiary); font-size: 12px; line-height: 1; }
+.activityChangeProperty svg { flex: none; }
+/* Its value's row 24px, the name's and the value's 49px in all, the next property right under it (Notion's, seen 2026-11-13). */
+.activityChange[data-change="property"],
+.activityChange[data-change="clearedProperty"] { padding-bottom: 0; color: var(--text-default); }
+.activityChange[data-change="property"] .activityChangeText,
+.activityChange[data-change="clearedProperty"] .activityChangeText { padding-block: 1.5px; white-space: normal; }
+.activityChange[data-change="clearedProperty"] .activityChangeText { text-decoration: line-through; opacity: .4; }
+.activityChangesRest { margin-top: 10px; color: var(--text-tertiary); font-size: 12px; line-height: 18px; }
+
+/* "✓ 해결" under a notice whose discussion is resolved, faint and small,
+   as Notion's (seen 2026-11-06). */
+.resolved {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.resolved svg {
+  flex: 0 0 auto;
+  color: var(--icon-tertiary);
+}
+
+/* Comments on two discussions or more say how many, 6px under the words: a
+   16px bubble (faint icon colour) 4px before "토론 N건", 12px/16 in the faint
+   text colour, as Notion's (seen 2026-11-11; icoTer bubble 2026-11-17). */
+.discussionCount {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-block-start: 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.discussionCount svg {
+  flex: 0 0 auto;
+  color: var(--icon-tertiary);
+}
+
+/* The reader's own mention in a comment's line, as Notion's inbox marks it
+   (seen 2026-11-06: #cb9434 in both themes, its "@" at 60%). */
+.readerMention {
+  color: var(--c-yellow);
+}
+
+/* A person property's line: its kind's icon 6px before its name, the
+   people after it each with a fainter "@" (Notion's, seen 2026-11-09). */
+.propertyName {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.propertyName > svg {
+  flex: none;
+  align-self: center;
+}
+
+.lineMention > span {
+  color: color-mix(in srgb, currentcolor 60%, transparent);
+}
+
+.readerMention > span {
+  color: color-mix(in srgb, currentcolor 60%, transparent);
+}
+
+/* "✓ 해결" 6px under the line it follows. */
+.resolved {
+  margin-top: 1px;
+  line-height: 16px;
+}
+
+/* A mention of a page closed to the reader keeps the line's gray, its eye
+   and "사용 권한 없음" in medium weight over the underline, as Notion's
+   inbox draws it (seen 2026-11-09, a guest: rgb(173,169,163) in dark). */
+.preview [data-mention][data-mention-unavailable] {
+  color: inherit;
+}

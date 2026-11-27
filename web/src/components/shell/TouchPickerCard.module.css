@@ -1,0 +1,93 @@
+/* A page's cover or icon picker on a touch screen wider than a phone, as
+   Notion's iPad (seen 2026-11-13 and 2026-11-14 in iPad Safari, light): a
+   card up to 414 wide, 12px round on the page's white with the menus'
+   shadow, over a shade of rgba(15, 15, 15, 0.6), placed by the rule of
+   Notion's touch windows, as the page history's card (PageHistoryTouch):
+   in a tall window 60% of the screen's height with the browser's bars
+   folded, centered over a 20px foot (692 from 183 in a 1078 high window at
+   834 wide); in a wide one from 44 under the top to 20 over the foot (638
+   from 44 in a 702 high window at 1210 wide). lvh, as the build turns vh
+   into the window's dvh. The picker's own placement writes nothing here.
+   Its ground is the menus' raised one, white in light as the page's. */
+.card {
+  position: fixed !important;
+  inset-block: 0 20px !important;
+  inset-inline: 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(414px, calc(100% - 24px)) !important;
+  max-width: none !important;
+  height: min(60lvh, calc(100% - 20px)) !important;
+  max-height: none !important;
+  margin: auto !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+  background: var(--bg-elevated) !important;
+  box-shadow: var(--shadow-menu);
+  outline: none;
+}
+
+@media (orientation: landscape) {
+  .card {
+    inset-block-start: 44px !important;
+    height: auto !important;
+  }
+}
+
+.shade {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.6) !important;
+}
+
+/* A phone's is the whole screen, square, as Notion's iPhone (seen
+   2026-11-13 in Safari 402 wide: 402 × 714 from the page's top), on a phone
+   sheet's ground with its bands in the raised white (PhoneSheet.module.css;
+   seen 2026-11-17: rgb(37, 37, 37) on rgb(32, 32, 32) in dark). */
+:global([data-phone="true"]) .card {
+  --bg-app: var(--bg-elevated);
+  inset-block: 0 auto !important;
+  width: 100% !important;
+  height: var(--app-height, 100dvh) !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  background: var(--bg-soft) !important;
+  box-shadow: none;
+}
+
+/* The head across the card on the soft ground, its line a shadow taking no
+   room: 1px of the faint border over the tab row's top, as Notion's iPhone,
+   Android and iPad (seen 2026-11-17 at 402 dark, 411 light and 834 light: a
+   44px head, position relative over the tab row, box-shadow 0 1px 0 of
+   rgba(255,255,243,.082) in dark and rgba(42,28,0,.07) in light, rgb(249,
+   248, 247) under it in light; the tab row from 44). */
+.head {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  background: var(--bg-soft);
+  box-shadow: 0 1px 0 var(--border-subtle);
+}
+
+/* A card's tab row (the icon picker's and the cover picker's): a 44px band
+   of the card's white, its 28px tabs 16 in and 8 under its top, the chosen
+   one's line at the band's foot (--tab-line-drop, which the pickers' tabs
+   draw their line by), a line of the faint border inside its foot, as
+   Notion's iPhone, Android and iPad (seen 2026-11-17 at 402, 411 and 834:
+   the icon card's emoji, icon and upload tabs and, on the phones, the cover
+   card's gallery, upload, link and Unsplash ones alike; the iPad's row
+   2px 16px 0 in, its chosen line at 42–44). Within the card, so it outweighs
+   the pickers' own desk rows (PageIconPicker .head, PageCover .menuHeader). */
+.card .tabRow {
+  --tab-line-drop: 8px;
+  display: flex;
+  flex: 0 0 44px;
+  align-items: center;
+  box-sizing: border-box;
+  height: 44px;
+  padding-block: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  background: var(--bg-app);
+  box-shadow: inset 0 -1px 0 var(--border-subtle);
+}

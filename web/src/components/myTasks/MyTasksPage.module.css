@@ -1,0 +1,178 @@
+/* "내 작업", as Notion's page (seen 2026-11-03 at 1280×900, 2026-11-08 at
+   1303×873): a database page's 32px title 36px under the top bar, its view
+   tab 12px under it on the left of the toolbar line and the filter, sort,
+   search and view settings with a blue "새 작업" on the right, then the tasks
+   as a list — title and view 104px in from each side. */
+.page {
+  --page-gutter: 104px;
+  padding: 36px var(--page-gutter) 96px;
+}
+@media (max-width: 720px) {
+  .page {
+    --page-gutter: 20px;
+  }
+}
+.title {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+  border-bottom: 1px solid var(--border-default);
+}
+.viewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-start: auto;
+}
+.newButton {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  margin-inline-start: 6px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+.newButton:hover:not(:disabled) {
+  background: var(--accent-blue-hover);
+}
+.newButton:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* No source yet, as Notion's: under the view's tools, 120px down, its 48px
+   picture, 16px under it the line in the faint grey, 16px under that the
+   blue "작업 출처 구성하기" (28px, 8px in), then 32px. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 112px 16px 32px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}
+.empty p {
+  margin: 0;
+}
+.emptyArt {
+  color: var(--text-tertiary);
+}
+.emptyButton {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.emptyButton:hover {
+  background: var(--bg-hover);
+}
+.emptyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+.emptyLink:hover {
+  background: var(--bg-hover);
+}
+.note {
+  padding: 16px 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* A task's source in its row, as Notion's (seen 2026-11-08): the database's
+   20px icon, 6px after it its name 14px/500, a little lighter than the
+   title, on the faint line of a link. */
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.sourceName {
+  overflow: hidden;
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  background-size: 100% 1px;
+  color: color-mix(in srgb, var(--text-default) 87%, var(--bg-app));
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "새 작업"'s menu, as Notion's (seen 2026-11-08): its sources 36px rows
+   (45px with their path), "작업 출처" and the new database in the secondary
+   grey, the first row lit as it opens, with the keyboard's ring until the
+   pointer takes it. */
+:global([data-my-task-menu]) [data-my-task-menu-source] {
+  height: 36px;
+}
+:global([data-my-task-menu]) [data-my-task-menu-source][data-described="true"] {
+  height: auto;
+  min-height: 45px;
+  padding-top: 5px;
+}
+:global([data-my-task-menu]) [data-my-task-menu-quiet] {
+  color: var(--text-secondary);
+}
+:global([data-my-task-menu]) [data-focused="true"] {
+  background: var(--bg-hover);
+}
+:global([data-my-task-menu]) [data-focused="true"]:not(:hover) {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* My tasks' view tab, as Notion's (seen 2026-11-08 at 1303 and 2026-11-15
+   at 1440, with a source and without: 80.5×32): words 12px regular at 1.2
+   in the secondary grey, its 16px check from 10px in, the name 6px after
+   it and 4px more after the name before the tab's own 10px. A database's
+   own tabs stay 14/500, 12px in, the icon drawn 1.2 times over. */
+.page :global([data-view-tab-wrap] [role="tab"]) {
+  padding-inline: 10px 14px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+.page :global([data-view-tab-wrap] [role="tab"] [data-own-icon] > *) {
+  transform: none;
+}

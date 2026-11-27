@@ -1,0 +1,126 @@
+/* The choices "일반 사용 권한" opens on a phone, as Notion's (seen
+   2026-10-27; its rows read 2026-11-18 on a Galaxy A90's Chrome at 411,
+   w1945 and w1949): right under the head a white 12px-round group with a 1px
+   edge. A row is a 24px box for its mark, 5 under the row's padding and 4
+   over it, 13 in — the lock dark, the workspace's letter on a tint — and its
+   label after it, 16px/22, 4 on and 16 short of the ✓ (18px, 16 from the
+   end); 8px over and under, a line beneath (49.76 on a 2.625 screen). The
+   web's row is 12px over and under, 2 apart from the group's foot, its globe
+   22px grey with its label 6 on, 14px/21 (57). */
+.choices {
+  --share-tint: rgba(42, 28, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-top: -16px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  background: var(--bg-elevated);
+}
+
+/* In dark the group is the sheet's own colour, its edge #2c2c2b. */
+:global([data-theme="dark"]) .choices {
+  --share-tint: rgba(255, 255, 243, 0.082);
+  border-color: var(--border-subtle);
+  background: var(--bg-soft);
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 8px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  line-height: 22px;
+  text-align: start;
+}
+
+.choice:last-child {
+  border-bottom: 0;
+}
+
+.choice:disabled {
+  color: var(--text-secondary);
+}
+
+.choiceIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-block: 5px 4px;
+  margin-inline: 13px 0;
+  color: var(--icon-primary);
+}
+
+.choiceIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* The lock in a 20×22 box a pixel down, as Notion's draws it. */
+.choice[data-share-general-choice="invited"] .choiceIcon svg {
+  height: 22px;
+  margin-top: 1px;
+}
+
+.choiceLabel {
+  flex: 1;
+  min-width: 0;
+  margin-inline: 4px 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.choice[data-share-general-choice="web"] {
+  margin-bottom: 2px;
+  padding-block: 12px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.choice[data-share-general-choice="web"] .choiceIcon {
+  margin-inline-end: 6px;
+  color: var(--icon-secondary);
+}
+
+.choice[data-share-general-choice="web"] .choiceIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.choice[data-share-general-choice="web"] .choiceLabel {
+  margin-inline-start: 0;
+}
+
+.choiceMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3.5px;
+  background: var(--share-tint);
+  color: var(--text-secondary);
+  font-size: 13.75px;
+}
+
+.choiceCheck {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 16px;
+}
+
+/* The checked choice pressed again, lit, the sheet left open (Notion's, 2026-11-18). */
+.choice[data-lit="true"] {
+  background: var(--bg-hover);
+}

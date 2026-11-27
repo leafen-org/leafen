@@ -1,0 +1,465 @@
+/* A dashboard's "다중 출처 필터링", as Notion's (seen twice on 2026-11-17 at
+   1440, dark, in the Business trial's synthetic dashboard). */
+
+/* On a dashboard's bar each filter's pill stands at the top of a 26px box,
+   the box centred in the line with "+ 필터", and its windows (the condition,
+   "다중 출처 필터링") open 4px under the box, 6px under the pill — on a view's
+   bar the box is the 24px pill itself (Notion's, seen 2026-11-17 at 1440:
+   the dashboard's pill 13 under the bar's line, "+ 필터" 14, the line's row
+   42 high, the condition's window 6 under the pill and "+ 필터"'s list 4
+   under it; a table view's pill and "+ 필터" both 13 under, windows 4). */
+:global([data-dashboard-filter-bar] [data-quick-filter-box]) {
+  align-items: flex-start;
+  height: 26px;
+}
+
+/* The sources' list's foot: a 1px line 16px in from the window's sides over
+   "⚙ 다중 출처 필터링", a 28px row 8px in, the window's 45px foot under the
+   list it ends (Notion's: the list 48–355, the line at 355, the row at 364). */
+.footer {
+  flex: none;
+  margin: 0 -12px -4px;
+  padding: 1px 8px 8px;
+}
+
+.footer::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: -1px 8px 8px;
+  background: var(--menu-divider);
+}
+
+.footerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.footerRow:hover,
+.footerRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.footerRow > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The card the row opens in the same window: its 28px head 8px in, the title
+   in 600 and a round 22px "×"; a 120px picture 4px in and 8px under the head;
+   a line of 12px grey words; the blue "+ 필터에 추가하기", 4px in, 12px over
+   the window's foot (Notion's: the window 290 × 249). */
+.card {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+/* The toolbar's window pads its foot 8px where a bar's pads 4px. */
+:global([data-toolbar-menu-input-modality]) > .card {
+  margin-bottom: -4px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+}
+
+.title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+
+/* A sample pill over three tables of three marks, in the page's ground. */
+.picture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 120px;
+  margin: 8px 4px 0;
+  padding: 16px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-app);
+}
+
+.sample {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  padding: 4px 12px;
+  box-sizing: border-box;
+  border-radius: 24px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--border-default), 0 4px 12px -2px rgb(25 25 25 / 8%);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.sample > svg {
+  color: var(--icon-primary);
+}
+
+.tables {
+  display: flex;
+  gap: 20px;
+}
+
+.table {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  color: color-mix(in srgb, var(--icon-tertiary) 50%, var(--bg-app));
+}
+
+.table > svg {
+  width: 32px;
+  height: 32px;
+}
+
+.badge {
+  position: absolute;
+  top: 18px;
+  inset-inline-start: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg-soft);
+}
+
+.badge > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.text {
+  margin: 5px 0 0;
+  padding: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  margin: 8px 4px 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+/* Notion's plus is 12.8px, 6px before the words. */
+.primary > svg,
+.more > svg {
+  flex: none;
+  width: 12.8px;
+  height: 12.8px;
+}
+
+/* The sources' list "필터에 추가하기" opens: a window of its own 4px from the
+   button, over it where it has no room under it, at most 315px tall (Notion's,
+   seen twice: 290 × 315 over the button both times). */
+.pickerWindow {
+  width: 290px;
+  padding: 8px 8px 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.pickerWindow [data-dashboard-filter-picker] {
+  max-height: 303px;
+}
+
+/* The filter's own window under its pill: 290 wide, its head as the card's;
+   its name field after a 28px icon button, 8px in and 12px from the end; a
+   12px grey line saying the kind it applies to; a row for each source's
+   property, its name over its source; then "+ 더 추가하기" and "완료하기",
+   28px each and 9px apart (Notion's: the window 290 × 263.8 with one row). */
+.window {
+  width: 290px;
+  padding: 8px 0 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.window > .head {
+  margin: 0 8px 4px;
+}
+
+/* With no property left it holds the card as a list's window does. */
+.window.windowCard {
+  padding: 8px 8px 4px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 8px 0;
+  padding-inline: 8px 12px;
+}
+
+.nameRow input:disabled {
+  color: var(--text-default);
+  opacity: 1;
+}
+
+.nameRow input:disabled::placeholder {
+  color: var(--text-tertiary);
+}
+
+.kind {
+  margin: 20px 12px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.kind strong {
+  font-weight: 500;
+}
+
+/* Leafen's Korean letters run about 6% wider than Notion's (font decision B),
+   so the line breaks where Notion's does at 266px × 1.06 (as the pills' cut). */
+.kind:lang(ko) {
+  margin-inline-end: calc(12px - 266px * 0.06);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+  margin-top: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.rowIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+.rowText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rowName {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowSource {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: -1px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+  white-space: nowrap;
+}
+
+.rowSource > :first-child,
+.rowSource > :first-child svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+
+.rowRemove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 5px;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.rowRemove:hover,
+.rowRemove:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px 12px 8px;
+}
+
+.actions > .primary {
+  margin: 0;
+}
+
+.more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.more:hover,
+.more:focus-visible,
+.more[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Its pill: its property's mark with how many properties it names in a
+   12px tag at the mark's foot, cut out of the pill's ground, and its words
+   2px further on (Notion's: the mark's 16px box 8px in, the tag at 17,10,
+   "2" in 10px 600 tertiary grey, the words at 32). The tag's ring is the
+   pill's ground over the page's, as its states paint it (DatabaseQuickFilterBar). */
+.pill [data-quick-filter] {
+  --multi-source-ground: var(--action-mark-blue-bg);
+}
+
+.pill [data-quick-filter]:hover:not(:disabled),
+.pill [data-quick-filter]:focus-visible,
+.pill [data-quick-filter][aria-expanded="true"] {
+  --multi-source-ground: var(--action-mark-blue-bg-hover);
+}
+
+.pill [data-quick-filter][data-awaits-value="true"] {
+  --multi-source-ground: transparent;
+}
+
+.pill [data-quick-filter][data-awaits-value="true"]:hover:not(:disabled),
+.pill [data-quick-filter][data-awaits-value="true"]:focus-visible,
+.pill [data-quick-filter][data-awaits-value="true"][aria-expanded="true"] {
+  --multi-source-ground: var(--bg-hover);
+}
+
+.pill[data-multi-source-count] [data-quick-filter] > :first-child {
+  margin-inline-end: 3px;
+}
+
+.pill[data-multi-source-count] [data-quick-filter]::before {
+  content: var(--multi-source-count);
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 17px;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background:
+    linear-gradient(var(--multi-source-tag), var(--multi-source-tag)) padding-box,
+    linear-gradient(var(--multi-source-ground), var(--multi-source-ground)) border-box,
+    var(--bg-default);
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 12px;
+  text-align: center;
+  --multi-source-tag: rgb(255 255 243 / 8.2%);
+}
+
+:global([data-theme="light"]) .pill[data-multi-source-count] [data-quick-filter]::before {
+  --multi-source-tag: rgb(42 28 0 / 7%);
+}
+
+/* With none of its properties left it is "필터" alone, no mark (Notion's). */
+.pill[data-multi-source-empty] [data-quick-filter] > :first-child {
+  display: none;
+}
+
+/* In a phone's sheet the card stands in the sheet's rows, its head the sheet's. */
+.card.sheetCard {
+  padding: 4px 0 8px;
+}

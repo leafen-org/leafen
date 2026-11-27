@@ -1,0 +1,46 @@
+/* A code block's or an equation's line in an update, as Notion's (seen 2026-11-13, dark): a box 6px 8px in, 4px apart,
+   rounded 4, a faint ring; its kind 12px over its words in the line's own colour; code 12px/18px mono in its lines;
+   an added one on the band, a deleted one's words struck, a changed equation's gone part struck. */
+.box {
+  display: block;
+  margin-block: 4px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+/* An added one's tint is Notion's rgba(35, 131, 226, .1) in light and dark alike, a shade under the added line's
+   band (.14) an added callout's box sits on (seen 2026-11-17 in a page's updates tab, both themes, worker w1670). */
+.box[data-change="added"] {
+  background: rgba(35, 131, 226, 0.1);
+  color: var(--c-accent-blue);
+}
+.kind {
+  display: block;
+  margin-block: 2px 4px;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 12px;
+}
+/* Its own formatting box, so empty words — a callout's, a nameless deleted button's — keep their margin under the kind (Notion's 36px box, seen 2026-11-17). */
+.words {
+  display: flow-root;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.box[data-block-type="code"] .words {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+}
+.box[data-change="deleted"] .words,
+.words [data-deleted] {
+  text-decoration: line-through;
+  opacity: .4;
+}
+/* A deleted one's words keep a struck line's 6px under them (Notion's, seen 2026-11-13: its box 54px for one line). */
+.box[data-change="deleted"] .words {
+  margin-block-end: 6px;
+}

@@ -1,0 +1,70 @@
+.tip {
+  position: fixed;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  max-width: 240px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(15, 15, 15, 0.92);
+  box-shadow: var(--shadow-menu);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+  overflow-wrap: anywhere;
+}
+
+.tip strong {
+  font-weight: 500;
+}
+
+/* Its lines wrap at its own width minus its padding: the placement's limit on
+   the box is the window's room, which would let a long line run on. */
+.tip > * {
+  max-width: 224px;
+}
+:global([data-theme="dark"]) .tip > * {
+  max-width: 284px;
+}
+
+.tip span {
+  color: rgba(255, 255, 255, 0.62);
+  white-space: pre-wrap;
+}
+
+/* An option's, as Notion's in a cell's picker (seen 2026-11-06): 5px 8px, its name at 400. */
+.tip[data-option-description-tip] {
+  padding: 5px 8px;
+}
+.tip[data-option-description-tip] strong {
+  font-weight: 400;
+}
+
+/* Dark, Notion's dark tip (seen 2026-11-07 on a property's ⓘ): 5px 8px on
+   rgb(44, 44, 43), a soft shadow and a faint ring inside it (computed
+   "… 0px 0px 0px 1px inset" on a property's, a table "+" type's and a row
+   page window type's tips, seen 2026-11-21 at 1440, dpr 1), its name at 400 in the
+   text's color and its description in the secondary, 16.8px lines, up to 300px. */
+:global([data-theme="dark"]) .tip {
+  max-width: 300px;
+  padding: 5px 8px;
+  background: rgb(44, 44, 43);
+  box-shadow: var(--shadow-tip);
+  color: rgb(240, 239, 237);
+  line-height: 16.8px;
+}
+:global([data-theme="dark"]) .tip strong {
+  font-weight: 400;
+}
+:global([data-theme="dark"]) .tip span {
+  color: rgb(173, 169, 163);
+}
+
+/* A type's words, alone in its tip, in the tip's own text color, not a
+   description's secondary (Notion's, seen 2026-11-21 at 1440, dark: the
+   number type's in rgb(240, 239, 237), in a database page's new property
+   window and a table's "+"). */
+.tip[data-property-type-tip] span {
+  color: inherit;
+}

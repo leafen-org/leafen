@@ -1,0 +1,580 @@
+.header {
+  position: relative;
+  /* An untitled title's "새 페이지" in Notion's title placeholder color. */
+  --page-title-placeholder: var(--text-title-placeholder);
+  padding-top: 40px;
+}
+/* On a touch screen, a phone's or wider, the buttons row is Notion's: 16px
+   over its buttons and 12px under, the 28px title 16px over the first block
+   (seen 2026-10-31 on a phone; 2026-11-12/13 on an iPad at 834 and 1210,
+   the page's margins a desktop's), its row ending at the words' end. */
+:global(:is([data-phone="true"], [data-touch="true"])) .header[data-has-cover="false"][data-has-icon="false"] { padding-top: 16px; }
+:global(:is([data-phone="true"], [data-touch="true"])) .header { margin-bottom: 16px; --page-title-inset: 2px; }
+:global(:is([data-phone="true"], [data-touch="true"])) .header .title { font-size: 28px; line-height: 1.2; text-wrap: wrap; }
+:global(:is([data-phone="true"], [data-touch="true"])) .header .controls { opacity: 1; pointer-events: auto; min-height: 24px; margin-bottom: 12px; margin-inline-end: 0; }
+/* A database page's title stands 8px over its properties there, as Notion's
+   at every width (seen 2026-11-14: its title's own 8px, the properties right
+   under, at 411 on a Galaxy A90 and at 834 and 1210 on an iPad). */
+:global([data-touch="true"]) .header[data-row-page-header] { margin-bottom: 8px; }
+.header[data-has-cover="true"][data-has-icon="true"] {
+  padding-top: 0;
+  /* Contain .iconWrap's -42px pull: without a BFC the negative margin
+     collapses through this header (and .doc), silently extending their hover
+     hit boxes over the cover's bottom strip and swallowing the cover action
+     buttons' :hover wherever the doc column overlaps them. */
+  display: flow-root;
+}
+/* A cover without an icon keeps the title 48px under the cover, as
+   Notion's (seen 2026-10-10: cover bottom 324, its 28px controls row at
+   340, title at 372); the controls row takes 28px of that gap. */
+.header[data-has-cover="true"][data-has-icon="false"]:not(:global(:is([data-phone="true"], [data-touch="true"])) *) {
+  padding-top: 15.5px;
+}
+.header[data-has-cover="true"][data-has-icon="false"]:not(:has(.controls:not(:empty))):not(:global(:is([data-phone="true"], [data-touch="true"])) *) {
+  padding-top: 46.5px;
+}
+/* A database page's empty row keeps its own place instead (below). */
+.header[data-row-page-header][data-has-cover="true"][data-has-icon="false"]:not(:has(.controls:not(:empty))):not(:global(:is([data-phone="true"], [data-touch="true"])) *) {
+  padding-top: 15.5px;
+}
+:global(
+    [data-page-search-root][data-kind="page"]:not([data-database-page="true"])[data-has-cover="false"]
+  ):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .header[data-has-icon="false"]:has(.controls:not(:empty)) {
+  /* Current Notion keeps 112px between its 44px topbar and the title on an
+     editable, no-cover/no-icon desktop page (seen again 2026-10-31: title
+     at 156). The document's 12px and the controls' 32px in flow (a 28px row
+     4px over the title) leave this 68px, without changing mobile,
+     cover/icon or database layouts. */
+  padding-top: 68px;
+}
+:global(
+    [data-page-search-root][data-kind="page"]:not([data-database-page="true"])[data-has-cover="false"]
+  ):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .header[data-has-icon="false"]:not(:has(.controls:not(:empty))) {
+  /* A page that can't be edited has no controls; its title stays at the same
+     156, as Notion's locked page (seen 2026-11-04). */
+  padding-top: 100px;
+}
+:global(
+    [data-page-search-root][data-kind="page"]:not([data-database-page="true"])[data-has-cover="false"][data-public-read-only="true"]
+  ):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .header[data-has-icon="false"]:not(:has(.controls:not(:empty))) {
+  /* A page read in public (a published site, a web link) sits higher than in
+     the app, as Notion's (seen 2026-11-06 at 1280×683): its title 109px under
+     the site's 44px bar, or under a web link's bar, 27px less than the app's. */
+  padding-top: 73px;
+}
+/* A database page that can't be edited has no controls; its name keeps the
+   place it has with them, as Notion's locked database (seen 2026-11-07: its
+   name at 80 locked or not). */
+:global([data-page-search-root][data-database-page="true"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .header:not(:has(.controls:not(:empty))) {
+  /* Its own 4 and the row's 28 with the 4 under it. */
+  padding-top: 36px;
+}
+/* Under a cover the row stands 15.5px down; with nothing in it — locked
+   where no verification is offered, say — the row's 28px go and the 4 under
+   it stay, the name 19.5 under the cover, as Notion's (seen 2026-11-14 in a
+   free workspace: 47.6 → 19.6 locked; in one that offers verification its
+   "인증 추가" stays, and the name with it, 48 locked or not, seen 2026-11-13
+   and 2026-11-16). */
+:global([data-page-search-root][data-database-page="true"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .header[data-has-cover="true"]:not([data-compact="true"]):not(:has(.controls:not(:empty))) {
+  padding-top: 19.5px;
+}
+/* The buttons sit side by side in a 28px row, as Notion's (seen 2026-10-17),
+   the first one 9px before the title's text and its mark 1px before it, on a
+   page and a database's page, full, in a side or center peek and in the
+   sidebar "+" window alike (seen 2026-11-08 at 768: 95/104, 279/288 in a peek
+   from 204, 197/206 in one from 72): the row runs from 9px out of the title's
+   words to 8px past their end, the title's own box (seen 2026-11-16 at 1440:
+   795–1349 for words 804–1341 in a side peek, 494–1215 for 503–1207 on a
+   page). What doesn't fit goes on to the next row, as Notion's (flex-wrap,
+   read 2026-11-16 at 1440 and 606), never pushing a narrow window sideways;
+   a page beside a side peek keeps its column (PageView.module.css). They keep
+   the screen's face in a serif or mono page, as Notion's (seen 2026-11-16). */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  min-height: 28px;
+  margin-bottom: 4px;
+  margin-inline: calc(var(--page-title-inset, 0px) - 9px) calc(var(--page-title-inset, 0px) - 8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+  font-family: var(--font-ui);
+}
+.controls > * { flex: none; }
+.header[data-layout-heading="true"] .controls {
+  pointer-events: auto;
+}
+/* Shown under the pointer, or with a key's focus on one of them (not a
+   press's: a button pressed or given focus back after its window closes
+   leaves the row to the pointer, as Notion's, seen 2026-11-14), or while a
+   window one of them opened is open; not for the caret in the title nor for
+   an untitled page alone, as Notion's (seen 2026-10-31 on a new page and an
+   untitled one), nor over the page's own discussion under the title
+   (Notion's, seen 2026-11-09), nor over a page layout's pinned properties
+   under the title (Notion's, seen 2026-11-14 on a database page opened
+   whole: over its title and the band above the row, not its pinned line). */
+.header:not([data-layout-heading="true"]):hover:not(:has(:is([data-page-comments-inline-host], [data-row-pinned-zone]):hover)) .controls,
+/* A database page's heading in a peek or a template's window only over the
+   buttons' own row, its layout customized or not (Notion's, seen 2026-11-14
+   and 2026-11-16 in a side peek and a template), which takes the pointer
+   while they are hidden for that. */
+.header[data-layout-heading="true"] .controls:hover,
+/* and over the cover above them, as Notion's (seen 2026-11-07), and over a
+   peek's own bar, side or center (Notion's, seen 2026-11-07). */
+:global([data-native-page-cover]:hover) ~ * .header .controls,
+:global([data-row-peek-top]:hover) ~ * .header .controls,
+.controls[data-keys-within],
+.controls:has([aria-expanded="true"]),
+.controls:has([data-backlinks-open="true"]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A key pressed in the title or the text puts the row away with the rest of
+   the page's chrome until the mouse moves, as Notion's (seen 2026-11-05: it
+   stayed under a still pointer while the top bar went; typingFade.ts) — not
+   a row a key's focus is in. */
+:global(:root[data-typing]) .header:hover .controls:not([data-keys-within]):not(:has([aria-expanded="true"])):not(:has([data-backlinks-open="true"])) {
+  opacity: 0;
+  pointer-events: none;
+}
+/* A row with nothing in it — backlinks alone, and none — takes no room. */
+.controls:empty {
+  display: none;
+}
+/* A database page's row with nothing in it (its edits being suggested) keeps
+   the space around it without its 28px, its title 28px higher, as Notion's
+   options keep their padding without their buttons (seen 2026-11-14 at
+   1440: the title from 156 to 128 in full, 180 to 152 in a center peek, 80
+   to 52 in a side one) — not the band a page keeps for its hidden options. */
+.header[data-row-page-header]:not(:global(:is([data-phone="true"], [data-touch="true"])) *) > .controls:empty {
+  display: flex;
+  min-height: 0;
+}
+/* A head option as Notion's (seen 2026-10-17): 28px, 8px in, a 14px mark
+   6px before its 14px name, all in the tertiary text color, which a hover
+   keeps on a soft fill. */
+.ctrlBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+.ctrlBtn:hover,
+.ctrlBtn:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.ctrlBtn svg {
+  flex: 0 0 auto;
+}
+.ctrlBtn span {
+  min-width: 0;
+  overflow: hidden;
+  line-height: 16.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iconWrap {
+  position: relative;
+}
+/* An icon heads the page where its title's words start, whatever sets
+   their inset — a page, a database page full, in a peek or on a phone (Notion,
+   seen 2026-11-01 and 2026-11-14: the icon's box and the title's words on one
+   line) — and the options take a 40px band under it — 8px down, a 28px row,
+   4px over the title — that stays while they are hidden, so revealing them
+   moves nothing (Notion, seen 2026-10-17, with a cover or without). */
+.header[data-has-icon="true"] .bigIcon {
+  margin-inline-start: calc(var(--page-icon-inset, var(--page-title-inset, 0px)) + var(--page-icon-shift, 0px));
+}
+/* A database page's title keeps no inset of its own (DatabaseRowPeekBody
+   .rowPeekTitle), on a phone too: its icon stands on its words, and its
+   options start 9px before them, as a page's (Notion's iPad, seen
+   2026-11-14 at 834: "아이콘 추가" at 95 for words at 104 on a row page and
+   a page alike; a touch screen's 2px inset is a page title's own). */
+.header[data-row-page-header] { --page-icon-inset: 0px; --page-title-inset: 0px; }
+/* A phone draws an emoji 2.5 out of the title's words, as Notion's does on
+   a page and a database page alike (seen 2026-11-14 at 402pt: the icon's 78
+   box at 23.5, the words at 26). */
+:global([data-phone="true"]) .header { --page-icon-shift: -2.5px; }
+.bigIcon[data-icon-picture="true"] { --page-icon-shift: 0px; }
+.header[data-has-icon="true"] > .controls {
+  padding-top: 6px;
+}
+.header[data-has-icon="true"]:not(:has(> .controls:not(:empty))) .iconWrap {
+  margin-bottom: 38px;
+}
+.header[data-row-page-header][data-has-icon="true"]:not(:has(> .controls:not(:empty))):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .iconWrap {
+  margin-bottom: 0;
+}
+.header[data-has-cover="true"][data-has-icon="true"] .iconWrap {
+  margin-top: -42px;
+  /* The wrap is a full-width block overlapping the cover; only its real
+     children (icon button, picker) may take pointer events so the empty strip
+     keeps the cover's :hover — and its action buttons — alive. */
+  pointer-events: none;
+}
+.header[data-has-cover="true"][data-has-icon="true"] .iconWrap > * {
+  pointer-events: auto;
+}
+/* A picture's 140px box rises 80px over the cover, as Notion's (measured
+   2026-11-01: its top 80 over the cover's foot, an emoji's 42). */
+.header[data-has-cover="true"][data-has-icon="true"] .iconWrap:has(> [data-icon-picture="true"]) {
+  margin-top: -80px;
+}
+/* A side peek's head is compact, as Notion's (seen 2026-10-17): its options
+   first, 4px under the peek's bar (16px under a cover), then a 36px icon over
+   the title's words, beside nothing over a cover, then the 32px title right
+   under it. */
+.header[data-compact="true"] {
+  display: flex;
+  flex-direction: column;
+  padding-top: 4px;
+  --page-title-size: 32px;
+}
+.header[data-compact="true"][data-has-cover="true"] {
+  display: flex;
+  padding-top: 16px;
+}
+.header[data-compact="true"] > .controls {
+  order: -1;
+  padding-top: 0;
+}
+.header[data-compact="true"][data-has-icon="true"] .iconWrap {
+  margin: 0;
+  pointer-events: auto;
+}
+.header[data-compact="true"][data-has-icon="true"] .bigIcon {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  margin-bottom: 0;
+  font-size: 36px;
+}
+/* A full-page database's icon, 36px in a 36px box 2px in, its name's words
+   8px after it, as Notion's (seen 2026-11-08: a built-in icon's and an
+   emoji's alike, x 374 to 410, words at 418) — a linked database's page and
+   an inline one opened alone too (InlineDatabasePageTitle). */
+.header[data-database-head="true"] .bigIcon {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  margin-bottom: 0;
+  margin-inline-start: 2px;
+  font-size: 36px;
+}
+.header[data-database-head="true"] .titleRow {
+  gap: calc(8px - var(--page-title-inset, 0px));
+}
+/* A touch screen stacks the icon over the name, as Notion's phone and iPad
+   do a full-page database's and People's (seen 2026-11-14 at 402pt and 834:
+   the 36px box at 100 where the name's words start, 8px over the 28px name
+   at 144). */
+:global(:is([data-phone="true"], [data-touch="true"])) .header[data-database-head="true"] .titleRow {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+.addIconWrap {
+  position: relative;
+  display: inline-flex;
+}
+/* Top-aligned: on the line's baseline a picture or workspace emoji filling
+   the box would hang the line's descender under it (4.5px lower title). */
+.bigIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: top;
+  font-size: 78px;
+  line-height: 1;
+  min-width: 78px;
+  height: 78px;
+  margin-bottom: 2px;
+  border-radius: 8px;
+  padding: 0;
+  overflow: visible;
+}
+/* A picture icon's box is 140, the picture 124 in it, as Notion's (measured
+   2026-11-01: the title 62px lower than under an emoji's 78). */
+.bigIcon[data-icon-picture="true"] {
+  min-width: 140px;
+  height: 140px;
+}
+/* An icon's page without a cover has its title where Notion's is (seen
+   2026-10-31 at 800: the title's middle at 281.5 under the 44px bar). */
+:global([data-page-search-root][data-has-cover="false"]) .header[data-has-icon="true"] {
+  padding-top: 84px;
+}
+/* A phone's head is Notion's phone's (seen 2026-11-10, iPhone Safari 402pt):
+   without a cover the option row heads it, its buttons 16 down and 12 over
+   the icon, the icon 8 over the title (buttons 16, icon 56, title 142);
+   under its 200px cover the row follows the cover, or the icon that rises 42
+   over the cover and stands 8 over the row, its buttons 16 down and 5 over
+   the title (title 49 under a bare cover, 93 under one with an icon). A head
+   without the row keeps those places. */
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-cover="false"][data-has-icon="true"] {
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-cover="false"][data-has-icon="true"] > .controls {
+  order: -1;
+  padding-top: 0;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-cover="false"][data-has-icon="true"]:not(:has(> .controls:not(:empty))) {
+  padding-top: 56px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-icon="true"] .iconWrap {
+  margin-bottom: 6px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"]):not([data-database-head="true"])[data-has-cover="true"][data-has-icon="false"] {
+  padding-top: 16px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"]):not([data-database-head="true"])[data-has-cover="true"][data-has-icon="false"]:not(:has(> .controls:not(:empty))) {
+  padding-top: 49px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"]):not([data-database-head="true"])[data-has-cover="true"] > .controls {
+  margin-bottom: 5px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-cover="true"][data-has-icon="true"] > .controls {
+  padding-top: 16px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .header:not([data-compact="true"])[data-has-cover="true"][data-has-icon="true"]:not(:has(> .controls:not(:empty))) .iconWrap {
+  margin-bottom: 55px;
+}
+/* A database's page opened full stands where a page does, as Notion's (seen
+   2026-10-17: its options and title at the page's 124 and 156), its options'
+   row there with none in it too (above). */
+:global([data-row-page-mode="full"][data-has-cover="false"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .header[data-has-icon="false"]:is(:has(> .controls:not(:empty)), [data-row-page-header]) {
+  padding-top: 68px;
+}
+:global([data-row-page-mode="full"][data-has-cover="false"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .header[data-has-icon="true"] {
+  padding-top: 84px;
+}
+/* In a center peek a page's or a database page's head is the full page's
+   with an icon, its options 32px under the bar without one (Notion, seen
+   2026-11-01 at 1280×900: the title 214 and 64 under the peek's bar); a
+   database page's empty row there too (above). */
+:global(:is([data-row-page-mode="center"], [data-peek-mode="center"])[data-has-cover="false"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .header[data-has-icon="true"] {
+  padding-top: 84px;
+}
+:global(:is([data-row-page-mode="center"], [data-peek-mode="center"])[data-has-cover="false"]):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .header[data-has-icon="false"]:is(:has(> .controls:not(:empty)), [data-row-page-header]) {
+  padding-top: 20px;
+}
+.bigIcon:hover,
+.bigIcon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.titleHeading {
+  min-width: 0;
+  margin: 0 calc(-1 * var(--page-column-inset, 0px));
+  font: inherit;
+}
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+/* The whole row is the title's, as Notion's: a click right of its text puts
+   the caret at its end (2026-10-16: it reached nothing). */
+.titleRow .titleHeading {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.title {
+  display: block;
+  padding-inline: calc(var(--page-title-inset, 0px) + var(--page-column-inset, 0px));
+  font-size: var(--page-title-size, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--text-default);
+  outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  caret-color: var(--text-default);
+}
+:global([data-kind="page"]:not([data-row-page="true"])):not(:global(:is([data-phone="true"], [data-touch="true"])) *) .title {
+  text-wrap: wrap;
+}
+/* Out of the line, so an empty title stays one line with the caret before
+   its hint, as Notion's (seen 2026-10-31). */
+.title[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--page-title-placeholder);
+  pointer-events: none;
+}
+
+.pageCommentsInlineHost {
+  min-width: 0;
+}
+.pageCommentsInlineHost:has(> :not([data-side-only])) {
+  margin-top: 20px;
+}
+/* On a phone the page's discussion starts 12px under the title, with
+   comments or its reactions alone (Notion's at 411px, seen 2026-11-14). */
+:global(body[data-phone="true"]) .pageCommentsInlineHost:has(> :not([data-side-only])) {
+  margin-top: 12px;
+}
+
+/* Backlinks as Notion's (seen 2026-10-29, 902px): "N개의 백링크" heads the
+   options, its arrow a narrow 9px mark 8px in; under it a 500px popover,
+   "이 페이지에 연결됨" 12px in, then a 33px line per source page — a 16px
+   arrow 10px in, the page's 18px icon, its underlined 14px/500 title 4px
+   from the line's top and, 22px from the end, its path in the faint 12px. */
+.backlinksWrap {
+  position: relative;
+  display: inline-flex;
+}
+.backlinkButton svg {
+  margin-inline: -2.5px;
+}
+.backlinkPopover {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  z-index: 60;
+  width: 500px;
+  max-width: calc(100vw - 32px);
+  padding-bottom: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  outline: none;
+}
+.backlinkPopoverTitle {
+  padding-block: 12px 8px;
+  padding-inline: 12px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.backlinkList {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+/* Rows 33.2px tall, 2px apart, as Notion's (seen 2026-11-01: names at 40,
+   75.2, 110.4 and 145.6 in a 180.8px window). */
+.backlinkRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 33.2px;
+  padding-block: 0;
+  padding-inline: 10px 22px;
+  color: var(--text-default);
+}
+.backlinkRow + .backlinkRow {
+  margin-top: 2px;
+}
+.backlinkRow:hover,
+.backlinkRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.backlinkRow[data-private="true"] {
+  color: var(--text-secondary);
+}
+.backlinkRow[data-private="true"]:hover {
+  background: none;
+}
+.backlinkRow > svg {
+  flex: 0 0 auto;
+}
+.backlinkIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+  font-size: 16px;
+  line-height: 1;
+}
+.backlinkTitle {
+  align-self: flex-start;
+  min-width: 0;
+  margin-top: 4px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--backlink-underline);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18.2px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.backlinkRow[data-private="true"] .backlinkTitle {
+  border-bottom: 0;
+}
+/* A backlink's place, as Notion's path (seen 2026-10-31): 12px in the third
+   color at most 40% of the row, 8px after the title, cut at its end with "…";
+   "/" 4px from either side. */
+.backlinkPath {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.backlinkPathSlash {
+  padding: 0 4px;
+}
+.backlinkWindow {
+  display: flex;
+  gap: 4px;
+  padding: 4px 10px 0;
+}
+.backlinkMore {
+  min-height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 15px;
+}
+.backlinkMore:hover,
+.backlinkMore:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+:global([data-touch="true"]) .controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A narrow screen keeps the 28px options side by side, as Notion's phone
+   does (seen 2026-10-29): 8px in, a 16px mark 6px before a 14px name. */
+:global(:is([data-phone="true"], [data-touch="true"])) .ctrlBtn {
+  flex: 0 1 auto;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .ctrlBtn svg {
+  width: 16px;
+  height: 16px;
+}

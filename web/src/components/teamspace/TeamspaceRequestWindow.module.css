@@ -1,0 +1,137 @@
+/* Notion's teamspace request window (its code, read 2026-11-17): 420 wide
+   and 15 in, centered; the title row 10 above the message, the team's icon
+   22 with 4 each side; the foot 15 under the message, its caption (small, grey) and
+   the blue button (Notion's large: 36 tall) 20 apart, centered on each other. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-shade);
+}
+
+.window {
+  position: relative;
+  box-sizing: border-box;
+  width: min(420px, 100%);
+  max-height: 100%;
+  overflow: visible;
+  padding: 15px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-inline: 4px;
+  border-radius: 4px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1;
+  vertical-align: -6px;
+}
+
+:global([data-theme="dark"]) .glyph {
+  background: rgba(255, 255, 235, 0.1);
+}
+
+/* "메시지(선택사항)", Notion's input as a textarea (its code drawn with its
+   styles, 2026-11-17, dark: 8 in, a faint fill rgba(252,252,252,.03) and a 1px ring
+   rgba(255,255,235,.1), round 6, three 14/20 lines 60 tall, 76 in all; focused,
+   a blue ring 1 in and 1 out). */
+.messageField {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  cursor: text;
+}
+
+.messageField:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.message {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  resize: none;
+  outline: none;
+}
+
+.message::placeholder {
+  color: var(--text-placeholder);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-start: 15px;
+}
+
+.caption {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.send {
+  flex: 0 0 auto;
+  height: 36px;
+  margin-inline-start: 20px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.send:hover,
+.send:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+.send:disabled {
+  cursor: default;
+  opacity: 0.4;
+}

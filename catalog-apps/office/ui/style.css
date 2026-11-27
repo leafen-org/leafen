@@ -1,0 +1,26 @@
+:root { color-scheme: light; --ink: #191919; --muted: #6b6b6b; --line: #e3e2e0; --back: #f1f1ef; --bar: rgba(247, 247, 245, .94); }
+:root[data-theme="dark"] { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94); }
+/* The theme arrives once the app connects; until then the system's, so a dark window doesn't flash white. */
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94); } }
+html, body { margin: 0; height: 100%; background: var(--back); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+body { display: flex; flex-direction: column; }
+.state { color: var(--muted); font-size: 14px; text-align: center; margin: 40px 16px; }
+.state[hidden] { display: none; }
+/* Whether the file is saved, and the save button. */
+.bar { flex: none; min-height: 36px; display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 0 12px; font-size: 13px; color: var(--muted); background: var(--bar); border-bottom: 1px solid var(--line); }
+.bar[hidden], .save[hidden], .editor[hidden] { display: none; }
+.save { font: inherit; font-size: 13px; color: #fff; background: #2383e2; border: 0; border-radius: 4px; padding: 4px 12px; cursor: pointer; }
+.save:disabled { opacity: .6; cursor: default; }
+/* As wide as the longest word, so the save button stays put as the status changes. */
+.status { min-width: 11em; text-align: end; white-space: nowrap; }
+.editor { position: relative; flex: 1 1 auto; min-height: 0; }
+.editor iframe { display: block; border: 0; }
+/* The line saying the document is opening, where .state stood, over the bar
+   and the editor while the editor draws itself in a dark Leafen (app.js open). */
+.editor[data-opening]::after { content: attr(data-opening); position: fixed; inset: 0; z-index: 1; box-sizing: border-box;
+  padding: 40px 16px; background: var(--back); color: var(--muted); font-size: 14px; text-align: center; }
+/* Without a save button showing, the status stands alone in the middle. The bar
+   keeps a hidden button too (editInstead), so "some button hidden" would always
+   hold and let the save button move as the status changes. */
+.bar:not(:has(.save:not([hidden]))) .status { min-width: 0; text-align: center; }

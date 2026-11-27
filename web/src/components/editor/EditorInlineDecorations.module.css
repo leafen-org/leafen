@@ -1,0 +1,82 @@
+/* ── Underline and strikethrough ────────────────────────────── */
+/* As Notion's (seen 2026-11-15 in Chrome, dark): an underline 0.05em thick and
+   10% of the type below the words (its span's own style); a strikethrough in
+   the type's own thickness, but over inline code 0.11em (its
+   `.notion-inline-code-strikethrough` rule); each in the words' color. The
+   editor and the reader draw them inside the code and the colors
+   (nativeTiptapSchema.ts, richtext.ts), so their color is the words'. */
+:is(.editable, .richMarks) u {
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 10%;
+}
+:is(.editable, .richMarks) code:not([data-node-view-content-react]):not(:global(.code-highlight)) s {
+  text-decoration-thickness: 0.11em;
+}
+/* ── A link window's words ─────────────────────────────────── */
+/* The words a link window is open on (nativeTiptapLinkTarget), as Notion's
+   span (measured 2026-11-14 and 2026-11-15 in Chrome at 1440): its gray
+   ground, light #2a1c0012 and dark #ffffeb1a, 2.5px over and under the
+   words, and a link among them in full, its fade and underline gone. */
+:is(.editable, .richMarks) [data-link-target] {
+  background: var(--action-mark-gray-bg);
+  padding-block: 2.5px;
+}
+:is(.editable, .richMarks) a:has(> [data-link-target]) {
+  opacity: 1;
+  text-decoration: none;
+}
+/* ── A suggested block's name ──────────────────────────────── */
+/* An empty block suggested in names itself in Notion's disabled blue (its
+   bluTexDis: #264a72 measured 2026-11-18 in Chrome, dark, on a suggested
+   heading's "제목2" and a list item's "리스트", which show always, and on a
+   suggested to-do's "@를 입력하여…" under the caret, in a page and a
+   database row's side peek; #9dc0ea is its light sheet's value, read from
+   the sheet), whenever its hint shows; a suggested text line's "/" hint
+   keeps the hints' grey. */
+.editable[data-suggested-block="true"][data-empty="true"]:not([data-slash-hint="true"])::before {
+  color: #9dc0ea;
+}
+:global([data-theme="dark"]) .editable[data-suggested-block="true"][data-empty="true"]:not([data-slash-hint="true"])::before {
+  color: #264a72;
+}
+/* Its list marker is the suggestion's blue with it: Notion colors the whole
+   suggested block (its palUiBlu700 on the block, seen 2026-11-18 on a
+   suggested bullet and a suggested "1."). */
+.bullet:has(> .editable[data-suggested-block="true"]) > :is(.bulletDot, .numDot) {
+  color: var(--suggestion-insert-text);
+}
+/* ── A suggested line break ────────────────────────────────── */
+/* It ends its line as Notion's "⏎" (2026-11-15, two ways): text suggested
+   in, no gap after the words, in the editor's content element so it keeps
+   their line; an empty line's at its start, with no hint. A line ending in
+   a mention, an equation or another inline atom has ProseMirror's trailing
+   break after it, which would put the "⏎" on a line of its own: the break
+   is not drawn while the "⏎" is, which holds the line's end instead, as
+   Notion's sits right after the atom (seen 2026-11-18 in Chrome at 1440, a
+   page and a database row's side peek: a date, a page mention and an
+   equation each with its "⏎" at once after it, on its line). */
+.editable[data-suggested-break="true"][data-empty="true"]::before { content: none; }
+.editable[data-suggested-break="true"]:not([data-empty="true"]) > [data-node-view-content-react]::after,
+.editable[data-suggested-break="true"][data-empty="true"] > [data-node-view-content-react]::before {
+  content: "⏎"; color: var(--suggestion-insert-text); background: var(--suggestion-insert-tint);
+  border-bottom: 2px solid var(--suggestion-insert-line); padding-bottom: 1px;
+}
+.editable[data-suggested-break="true"]:not([data-empty="true"]) > [data-node-view-content-react] > br:global(.ProseMirror-trailingBreak):last-child {
+  display: none;
+}
+/* ── A data source's mention ──────────────────────────────── */
+/* Notion's data source mark, the cylinder (seen 2026-11-22 in Chrome at
+   1440, dark: its "collection" icon, 20px in icoSec), before a source's name,
+   or "찾을 수 없음" for one of nothing, where a page's or a database's of
+   nothing has the page; drawn as a data source's row draws it
+   (DataSourceMark); named as the page rule is, or its page wins. A source's
+   own icon takes its place (DataSourceMentionStyles.tsx). The pointer shows
+   over it, as over Notion's and a page's of nothing. */
+:is(.editable, .richMarks) span[data-mention="database"][data-mention-data-source] {
+  cursor: pointer;
+}
+:is(.editable, .richMarks) :is(a, span)[data-mention="database"][data-mention-data-source]:not([data-mention-unavailable])::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 16 16' fill='none' stroke='black' stroke-width='1.04' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='10' cy='6.18' rx='5' ry='1.78'/%3E%3Cpath d='M5 6.18v7.64a5 1.78 0 0 0 10 0V6.18M5 10a5 1.78 0 0 0 10 0'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 16 16' fill='none' stroke='black' stroke-width='1.04' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='10' cy='6.18' rx='5' ry='1.78'/%3E%3Cpath d='M5 6.18v7.64a5 1.78 0 0 0 10 0V6.18M5 10a5 1.78 0 0 0 10 0'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}

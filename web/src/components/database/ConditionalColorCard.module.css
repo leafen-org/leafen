@@ -1,0 +1,477 @@
+/* A conditional color setting as Notion's card (seen 2026-10-24 at 1280px,
+   290px panel): a #f9f8f7 card 10px round with a 1px edge of its own
+   ground, 12px apart; its head 26px high 4px in — the property faint
+   12px, the condition 12px/500 grey with a 12px ⌄, a 24px trash at the
+   end; the value 232px under it; then 24px rows of 14px label and grey
+   value with ›, 12px in and 8px apart. A drag handle shows at its left
+   while the pointer is over it. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bg-secondary);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+}
+
+.handle {
+  position: absolute;
+  top: 4px;
+  inset-inline-start: -11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 26px;
+  border-radius: 4px;
+  background: var(--bg-secondary);
+  color: var(--icon-secondary);
+  cursor: grab;
+  opacity: 0;
+}
+
+.card:hover > .handle,
+.handle:focus-visible {
+  opacity: 1;
+  outline: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  height: 26px;
+  margin: 4px 4px 4px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.contents {
+  display: contents;
+}
+
+.property {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.operatorButton {
+  grid-template-columns: minmax(0, auto) 12px;
+  gap: 2px;
+  width: auto;
+  height: 18px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.operatorButton > svg {
+  width: 12px;
+  height: 12px;
+  color: var(--icon-tertiary);
+}
+
+.operatorButton:hover,
+.operatorButton:focus-visible,
+.operatorButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.delete {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-start: auto;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.delete:hover,
+.delete:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Conditions the card can't show as one pill: the filter editor's rows. */
+.conditions {
+  padding: 0 8px 8px;
+}
+
+.value {
+  padding: 1px 12px 12px;
+}
+
+/* A listed value's box, as Notion's (seen 2026-11-22 at 1440 dark, dpr 1): 232
+   by 30 on bacSecTra, unchanged while pointed at or open; its words or 18px
+   chips on a 20px line 2 under its inside's top, its filled ⌄ at 16 in a 20px
+   box at the inside's end — 8 from the box's end and 6 under its top. */
+
+.valueBox,
+.valueField {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 28px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--bg-block-empty);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.valueBox {
+  align-items: flex-start;
+  min-height: 30px;
+  padding: 4px 6px;
+}
+
+.valueBox > svg {
+  flex: none;
+  margin-block-start: 2px;
+  margin-inline: auto 2px;
+  color: var(--icon-tertiary);
+}
+
+.valueField:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* The typed value's own field sits bare in the card's. */
+.valueField > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.valueField :is(input, button) {
+  height: 20px;
+  min-height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.valueChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding-block-start: 2px;
+  line-height: 20px;
+}
+
+.valueChip {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  overflow: hidden;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valuePlaceholder {
+  color: var(--text-tertiary);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A row reaches the panel's edge, as Notion's, so its list opens there,
+   under its words. */
+.card .settingRow {
+  gap: 5px;
+  width: calc(100% + 16px);
+  min-height: 24px;
+  margin-block: 0 8px;
+  margin-inline: 0 -16px;
+  padding-block: 0;
+  padding-inline: 12px 28px;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.card .settingRow:not(:disabled):hover,
+.card .settingRow:focus-visible,
+.card .settingRow[aria-expanded="true"] {
+  background: transparent;
+}
+
+.card .settingRow:hover [data-property-setting-value],
+.card .settingRow[aria-expanded="true"] [data-property-setting-value] {
+  color: var(--text-default);
+}
+
+.card .settingRow > svg {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-tertiary);
+  transform: rotate(-90deg);
+}
+
+.card .settingRow > svg:dir(rtl) {
+  transform: rotate(90deg);
+}
+
+.card .settingRow[aria-expanded="true"] > svg {
+  transform: none;
+}
+
+.swatch.rowSwatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.card .settingRow [data-property-setting-value] {
+  gap: 7px;
+}
+
+.popover {
+  z-index: 1003;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.popover:focus {
+  outline: none;
+}
+
+.colors {
+  width: 190px;
+  padding: 12px;
+}
+
+.colorAuto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 28px;
+  margin: -8px 0 16px;
+  color: var(--text-default);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(5, 30px);
+  gap: 8px 4px;
+}
+
+.swatches[data-faint="true"] .swatch {
+  opacity: 0.4;
+}
+
+.swatchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+}
+
+.swatchButton:hover,
+.swatchButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.swatch {
+  --swatch: transparent;
+  display: inline-block;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--swatch);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--swatch), var(--text-default) 11%);
+}
+
+/* A phone sheet's swatch, at a row's start or by a color's name: 22px, 6px round (Notion's, seen 2026-10-24 at 375px). */
+.swatch[data-phone="true"] {
+  width: 22px;
+  height: 22px;
+}
+
+/* The chosen color's swatch in the "색상 선택" sheet, ringed 2px darker. */
+[data-chosen="true"] .swatch[data-phone="true"] {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--swatch), var(--text-default) 22%);
+}
+
+[data-chosen="true"] .swatch[data-phone="true"][data-color="default"] {
+  box-shadow: inset 0 0 0 2px var(--text-default);
+}
+
+.swatch[data-color="gray"] { --swatch: var(--c-bg-gray); }
+.swatch[data-color="brown"] { --swatch: var(--c-bg-brown); }
+.swatch[data-color="orange"] { --swatch: var(--c-bg-orange); }
+.swatch[data-color="yellow"] { --swatch: var(--c-bg-yellow); }
+.swatch[data-color="green"] { --swatch: var(--c-bg-green); }
+.swatch[data-color="blue"] { --swatch: var(--c-bg-blue); }
+.swatch[data-color="purple"] { --swatch: var(--c-bg-purple); }
+.swatch[data-color="pink"] { --swatch: var(--c-bg-pink); }
+.swatch[data-color="red"] { --swatch: var(--c-bg-red); }
+
+.swatchButton[aria-pressed="true"] .swatch {
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--swatch), var(--text-default) 22%);
+}
+
+.swatchButton[aria-pressed="true"] .swatch[data-color="default"] {
+  box-shadow: inset 0 0 0 2px var(--text-default);
+}
+
+/* The box's place: the box 4 in from its ends and 4 over its foot, as Notion's 240 by 34 (the list opens from it). */
+.valuePlace {
+  margin: 0 -4px -4px;
+  padding: 0 4px 4px;
+}
+
+/* A listed value's list, as Notion's (seen 2026-11-22 at 1440 dark, dpr 1): 240 wide, 4 in all round. A
+   select's is a pill editor's options without its head — the search a 216 by 30 field 12 in and 4 down,
+   the options' 28px rows from 16 under it (DatabaseQuickFilterBar.module.css, valuePanel); a checkbox's
+   its two 28px rows a pixel apart. */
+.valueList {
+  --value-panel-top: 0px;
+  width: 240px;
+  padding: 4px;
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* "+ 더 추가하기" across the panel under the cards, in a hairline. */
+.addMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.addMore:hover,
+.addMore:focus-visible,
+.addMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.addMore > svg,
+.addFirst > svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* With no settings, as Notion's (seen 2026-10-24): a 258x128 preview 10px
+   round, its words in grey 12px 16px under it, and a blue 28px button 16px
+   under them. */
+.preview {
+  display: block;
+  width: 100%;
+  height: 128px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  background: var(--bg-secondary);
+}
+
+.emptyText {
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.addFirst {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.addFirst:hover,
+.addFirst:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+.picker {
+  z-index: 1003;
+  width: 258px;
+  padding-bottom: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The screen sits 16px in and 12px under its heading's 42px row, as Notion's
+   (its first card 54 under the panel's top, seen 2026-11-22 at 1440 dark, dpr
+   1); the panel gives it 8px and 8px. Its foot is 12 under its last row,
+   docked or a popover (Notion's, seen 2026-11-21 at 1440: its own 12 under
+   the button), 4 more than the panel's. A phone's sheet keeps its own spacing. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  margin: 12px 8px 4px;
+}
+
+/* Opened on its own, with its heading inside, it keeps 10px over that heading. */
+.screen[data-heading] {
+  margin-top: 10px;
+}
+
+.sheet {
+  display: contents;
+}

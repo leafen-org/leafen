@@ -1,0 +1,153 @@
+/* The calendar "날짜 선택" opens, touching the expiry list's side, as
+   Notion's (seen 2026-11-15 at 1440 dark): a 268 by 293 box whose month
+   line starts 22.5px in and 21.5px down, the first week's day 24.5px in
+   and the last week 24.5px over the bottom. The days keep the date editor's
+   28px days in 32px cells; only the room round them is this box's own. */
+.calendar {
+  width: 268px;
+  padding: 18.5px 12px 22.5px;
+}
+
+/* Its month line 4.5px further in than the date editor's, and 2px more
+   over the weekdays. */
+.calendar .head {
+  margin-block-end: 2px;
+  padding-inline-start: 10.5px;
+}
+
+/* A touch screen's month (TopBarShareWebExpiryPhone), as Notion's iPhone and
+   iPad draw it (seen 2026-11-16 at 402 and 834): the phone date editor's
+   308pt month (DateFilterEditor), its head 26pt so the month's line stands
+   35pt over the weekdays' middle, the weekdays a 44pt row and the first
+   week's middle 44pt under theirs. The days before today press nothing and
+   are faint, as the computer's calendar has them (the iPad's, light); in
+   dark they are the other months' grey (the iPhone's, rgb(139, 152, 152)
+   at the glyphs' core, as its next month's). */
+.touchCalendar .touchHead.touchHead {
+  height: 26px;
+  padding-inline-start: 14px;
+}
+
+.touchDays [aria-disabled="true"] {
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  cursor: default;
+}
+
+:global([data-theme="dark"]) .touchDays [aria-disabled="true"] {
+  color: var(--date-outside-text);
+  opacity: 1;
+}
+
+/* "링크 만료 시점" in a phone's "사용 권한 변경" sheet keeps one line by the
+   computer's menu row's rule (TopBarShareAccess.module.css), as Notion's
+   (A90 Chrome at 411, its styles read in two tabs 2026-11-18): the words
+   take what is left and end in "…", the value and "⌄" keep their width.
+   At 411 Notion's "2026년 11월 26일 오전 12:00" leaves its words whole
+   (118.6px), its value being 16px on a 22px line (198.9px); Leafen's wider
+   digits (font decision B) still cut a letter or two there. The words stand
+   on a 20.4px line (17px × 1.2), the value's 22px line and its underline
+   making the row 22.76 high there (Notion's, as above). */
+.phoneLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* The row heads "제거"'s group in a box of its own (TopBarSharePhoneRole
+   .removeHeaded), as Notion's touch screens (A90 Chrome at 411 light,
+   2026-11-18; iPhone 402 and iPad 834 Safari dark, 2026-11-13): 16px in on
+   both sides, the row 13px under the box's top and its underline 11px over
+   the box's line, that line across the whole group and "제거" a pixel under
+   it, the group 92.7 high at 411. The box is white in light and the sheet's
+   own ground in dark, so in dark the row stands on the sheet over the line,
+   as Notion's iPhone and iPad draw it. */
+.phoneSection {
+  flex: none;
+  padding: 13px 16px 11px;
+  border-block-end: 1px solid var(--border-secondary);
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+  background: var(--bg-element);
+}
+
+/* Its value, 16px on a 22px line beside the 17px words, and its 18px "⌄"
+   fainter than the value, as Notion's phone row (seen 2026-11-18, as above;
+   light: value #7d7a75, "⌄" #ada9a3). */
+.phoneValue {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.phoneValue > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+/* A phone's month is a sheet of its own with no head or grip, rounded at
+   its top, the month 28pt under its top and 22pt under the last week; the
+   month line 14pt in from the days (Notion's iPhone Safari, seen once,
+   2026-11-16 at 402: 385pt high). */
+.dateSheet {
+  padding: 28px 0 calc(22px + env(safe-area-inset-bottom));
+  border-radius: 12px 12px 0 0;
+}
+
+/* A wider touch screen's list is the iPad's middle window (PhoneSheetWindow:
+   414 wide, at most 692 high), its rows the computer's list's — 14px words
+   12pt in over 13px grey times, 28px for one line, each over a line, and
+   "날짜 선택" set apart by a line — with the month in a raised box 28pt
+   under "날짜 선택" and 31pt in, 22pt round its days, its month line 6pt in
+   (Notion's iPad Safari, seen twice 2026-11-16 at 834 portrait: 353×378). */
+.window {
+  padding: 2px 4px 0 !important;
+  overflow-y: auto !important;
+}
+
+.window.window [data-share-web-expiry-option] {
+  flex: none;
+  min-height: 28px;
+  padding-block: 4px;
+  padding-inline: 8px;
+  border: 0;
+  border-bottom: 1px solid var(--border-default);
+  border-radius: 0;
+  background: transparent;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.window.window [data-described="true"] > span {
+  min-height: 0;
+  padding: 0;
+  line-height: 20px;
+}
+
+.window.window [data-described="true"] > span > span:last-child {
+  margin-top: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.window.window [data-share-web-expiry-option="date"] {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-default);
+}
+
+.windowCalendar {
+  flex: none;
+  align-self: flex-start;
+  margin-block-start: 28px;
+  margin-inline-start: 27px;
+  padding: 22px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.windowCalendar .touchCalendar .touchHead.touchHead {
+  padding-inline-start: 6px;
+}

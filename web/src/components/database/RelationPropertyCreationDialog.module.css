@@ -1,0 +1,334 @@
+/* The relation creation window, as Notion's (seen 2026-11-02 at 1280px): a
+   290px window, "관계형 대상" — a search and the existing data sources — then
+   "새 관계형": the name, a row each for the database, the limit and the
+   related property's switch, and the blue button. Opened by a new property's
+   button or line (a row's page, the layout builder's "+"), it has no head:
+   the search, or the name, first (seen 2026-11-14). */
+.relationCreateOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: start end;
+  padding-block: min(25vh, 180px) 24px;
+  padding-inline: 16px min(7vw, 96px);
+}
+.relationCreateBackdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: rgba(15, 15, 15, 0.08);
+}
+.relationCreateDialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(290px, calc(100vw - 24px));
+  max-height: min(520px, calc(100vh - 48px));
+  overflow: hidden;
+  padding-bottom: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+}
+/* An inline database's, where its view settings open. */
+.relationCreateDialog[data-place="popover"] {
+  position: fixed;
+  max-height: none;
+}
+/* A database's own page's, in its settings panel's column (--dock-gap). */
+.relationCreateDialog[data-place="docked"] {
+  position: fixed;
+  z-index: 1001;
+  top: var(--page-panel-top, var(--topbar-height));
+  inset-inline-end: 0;
+  bottom: 0;
+  /* Its column and ground beyond: dockedPanelColumn.module.css. */
+  width: min(291px, 100vw);
+  max-height: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-inline-start: 1px solid var(--border-default);
+  border-radius: 0;
+  background: var(--bg-app);
+  box-shadow: none;
+}
+/* Its name on the left 15px down and 16px in, and the round 20px close. */
+.relationCreateHeader {
+  position: relative;
+  flex: none;
+  padding-block: 15px 6px;
+  padding-inline: 16px 36px;
+}
+.relationCreateHeader strong {
+  display: block;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Listing the databases again from "새 관계형", a "←" before the name: 24×22
+   and 6px round, 10px in and 14px down, its 16px arrow in the value's grey,
+   the name 8px after it (Notion's, seen 2026-11-16 at 1440). */
+.relationCreateHeader[data-back="true"] {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-inline-start: 10px;
+}
+.relationCreateHeader[data-back="true"] strong {
+  min-width: 0;
+}
+.relationCreateBack {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  margin-block: -1px 0;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+.relationCreateBack:hover:not(:disabled),
+.relationCreateBack:focus-visible:not(:disabled) {
+  background: var(--bg-hover);
+  outline: none;
+}
+.relationCreateClose {
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+.relationCreateClose:hover:not(:disabled),
+.relationCreateClose:focus-visible:not(:disabled) {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+/* The search, and the name: a 28px box 12px in, ringed in blue while typed in. */
+.relationCreateFieldRow {
+  flex: none;
+  padding: 12px 12px 8px;
+}
+.relationCreateBox {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--relation-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+.relationCreateBox:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+.relationCreateBox input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.relationCreateTargets {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 0 4px;
+}
+.relationCreateSection {
+  padding: 10px 8px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+/* A source (DataSourceListRow); the database the relation is made in ends
+   with its ⓘ, in the text's color, centred in the line (RelationCreateTargetRow). */
+.relationCreateTargetOwn {
+  display: flex;
+  flex: none;
+  align-self: center;
+  color: var(--text-default);
+}
+/* A pixel between sources, none under the heading. */
+.relationCreateTarget + .relationCreateTarget,
+.relationCreateTarget + .relationCreateMore {
+  margin-top: 1px;
+}
+.relationCreateMore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+.relationCreateMore > svg {
+  color: var(--icon-secondary);
+}
+.relationCreateTarget:hover,
+.relationCreateTarget:focus-visible,
+.relationCreateMore:hover,
+.relationCreateMore:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* "결과 없음" as a line of the list, from where its head starts, in the
+   head's 12px grey, as Notion's (seen 2026-11-16 at 1440: a 26.8px row of
+   4px by 8px, its words 12px/16.8 at the head's start in its colour). */
+.relationCreateEmpty {
+  padding: 4px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: start;
+}
+/* "새 관계형"'s rows: 28px, 4px in, a 20px mark 8px in, the 14px name, the
+   value in gray and a 16px "›". */
+.relationCreateRows {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  padding: 7px 4px 0;
+}
+.relationCreateRow,
+.relationCreateSwitch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+.relationCreateRow > span:first-child {
+  flex-basis: 20px;
+  width: 20px;
+  height: 20px;
+}
+.relationCreateRow > svg {
+  width: 16px;
+  height: 16px;
+  margin-inline-start: -2px;
+  color: var(--icon-tertiary);
+}
+/* Its name as wide as its words and ⓘ, which its tip is centred under
+   (SettingInfoTip), and the switch at the row's end. */
+.relationCreateSwitch > span:not([aria-hidden]) {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.relationCreateSwitch > [data-switch-mark] {
+  margin-inline-start: auto;
+}
+/* Its rows 28px apart, as Notion's here (seen 2026-11-14: 55, 83, 111 under
+   the name), not the 29 of a property's settings (PropertySettingRow). */
+.relationCreateRows .relationCreateRow {
+  margin-bottom: 0;
+}
+/* "관계형 대상"'s value is its target's mark with its name right after it,
+   no room between them, its own icon or the cylinder alike (Notion's, seen
+   2026-11-15 in Chrome 1440: the 20px box's end the name's start) — not a
+   property setting's 5px, nor the 4px and 2px of a relation's settings,
+   whose target is a link (PropertyRelationConfig). */
+.relationCreateRows .relationCreateRow > [data-property-setting-value] {
+  gap: 0;
+}
+.relationCreateSwitch:hover:not(:disabled),
+.relationCreateSwitch:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.relationCreateLimitMenu[data-notion-select-menu] {
+  z-index: 1101;
+}
+/* The related property's name, under its switch. */
+.relationCreateRelated {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 10px 16px 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.relationCreateActions {
+  flex: none;
+  padding: 6px 16px 4px;
+}
+.relationCreateSubmit {
+  width: 100%;
+  min-height: 28px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.relationCreateSubmit:hover:not(:disabled),
+.relationCreateSubmit:focus-visible:not(:disabled) {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+.relationCreateSubmit:disabled {
+  opacity: 0.45;
+}
+@media (max-width: 720px) {
+  .relationCreateOverlay {
+    place-items: start center;
+    padding: 72px 16px 24px;
+  }
+}
+
+/* The switch's name with its ⓘ 6px after it, as Notion's "양방향 관계형 ⓘ". */
+.relationCreateLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.relationCreateTip {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-tertiary);
+}
+/* Its mark in a 20px place as the other rows', its name 40px in (seen 2026-11-14). */
+.relationCreateSwitchIcon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+.relationCreateSwitchIcon > svg {
+  width: 16px;
+  height: 16px;
+}

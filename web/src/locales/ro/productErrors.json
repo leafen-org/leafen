@@ -1,0 +1,905 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Încărcarea adreselor de e-mail ale contului",
+        "deniedEffect": "Adresele de e-mail nu au fost încărcate; adresele salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma adresele de e-mail actuale.",
+        "stateCheckAction": "Reconectați-vă și reîmprospătați lista de e-mailuri înainte de a face o modificare."
+      },
+      "update": {
+        "operation": "Administrarea adreselor de e-mail ale contului",
+        "deniedEffect": "Solicitarea de e-mail nu a fost acceptată; adresele salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă solicitarea de e-mail a fost finalizată.",
+        "stateCheckAction": "Reîmprospătați lista de e-mailuri și verificați mesajul de verificare înainte de a încerca din nou."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Încărcarea setărilor de notificare",
+        "deniedEffect": "Setările de notificare nu au putut fi încărcate, iar setările salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma ce notificări primiți.",
+        "stateCheckAction": "Închideți și redeschideți setările pentru a încărca setările de notificare înainte de a le modifica."
+      },
+      "update": {
+        "operation": "Modificarea setărilor de notificare",
+        "deniedEffect": "Setările de notificare nu au fost modificate, iar setările anterioare sunt păstrate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă setările de notificare s-au modificat.",
+        "stateCheckAction": "Închideți și redeschideți setările pentru a verifica setările de notificare înainte de a le modifica din nou."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Încărcarea profilului contului",
+        "deniedEffect": "Numele și fotografia nu au putut fi încărcate, iar profilul salvat nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma numele și fotografia actuale.",
+        "stateCheckAction": "Închideți și redeschideți setările pentru a încărca profilul înainte de a-l modifica."
+      },
+      "update": {
+        "operation": "Salvarea profilului contului",
+        "deniedEffect": "Profilul nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă profilul contului a fost salvat.",
+        "stateCheckAction": "Reîncărcați profilul contului și istoricul de audit înainte de a încerca din nou."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Modificarea verificării în doi pași",
+        "deniedEffect": "Modificarea solicitată a verificării în doi pași nu a fost acceptată; setarea anterioară rămâne în vigoare.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a verificării în doi pași.",
+        "stateCheckAction": "Reîncarcă securitatea contului înainte de a încerca altă modificare la verificarea în doi pași."
+      },
+      "password": {
+        "operation": "Schimbare parolă cont",
+        "deniedEffect": "Parola nu a fost schimbată, iar sesiunile curente rămân valabile.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă parola a fost schimbată și dacă alte sesiuni au fost închise.",
+        "stateCheckAction": "Reîncărcați securitatea contului și conectați-vă din nou dacă sesiunea actuală nu mai funcționează."
+      },
+      "read": {
+        "operation": "Încărcare securitate cont",
+        "deniedEffect": "Setările de securitate și sesiunile nu au fost încărcate; starea salvată a contului nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a verificării în doi pași și a sesiunilor.",
+        "stateCheckAction": "Reîncarcă securitatea contului înainte de a face o modificare."
+      },
+      "recovery": {
+        "operation": "Înlocuire coduri de recuperare",
+        "deniedEffect": "Codurile de recuperare noi nu au fost acceptate; codurile nefolosite anterior sunt încă valabile.",
+        "uncertainEffect": "Leafen nu a putut confirma care coduri de recuperare sunt active.",
+        "stateCheckAction": "Reîncarcă securitatea contului înainte de a decide dacă să înlocuiești din nou codurile."
+      },
+      "sessionRevoke": {
+        "operation": "Revocare sesiune cont",
+        "deniedEffect": "Revocarea sesiunii selectate nu a fost confirmată; celelalte sesiuni nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă sesiunea selectată a fost revocată.",
+        "stateCheckAction": "Reîncarcă lista de sesiuni înainte de a decide dacă să reîncerci."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Anulare backup server",
+        "deniedEffect": "Anularea backupului nu a fost confirmată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă backupul a fost anulat.",
+        "stateCheckAction": "Verifică starea actuală a backupului înainte de a anula din nou."
+      },
+      "create": {
+        "operation": "Creare backup server",
+        "deniedEffect": "Crearea noului backup nu a fost confirmată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă cererea de backup a fost acceptată.",
+        "stateCheckAction": "Verifică backupul actual înainte de a trimite o altă cerere."
+      },
+      "download": {
+        "operation": "Descărcare backup server",
+        "deniedEffect": "Nu a fost descărcat niciun fișier de backup verificat.",
+        "uncertainEffect": "Leafen nu a putut verifica sau transmite fișierul de backup.",
+        "stateCheckAction": "Verifică starea backupului finalizat înainte de a descărca din nou."
+      },
+      "retry": {
+        "operation": "Reîncearcă backupul serverului",
+        "deniedEffect": "Backupul eșuat nu a fost repornit.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă backupul a fost repornit.",
+        "stateCheckAction": "Verifică starea actuală a backupului înainte de a reîncerca."
+      },
+      "status": {
+        "operation": "Încarcă starea backupului serverului",
+        "deniedEffect": "Starea backupului nu a fost încărcată; nicio stare de backup nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a backupului.",
+        "stateCheckAction": "Reîncarcă starea backupului înainte de a face altă acțiune."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Încarcă raportul serverului",
+        "deniedEffect": "Raportul nu a fost încărcat; nicio stare a raportului nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma instantaneul actual al raportului.",
+        "stateCheckAction": "Reîncarcă raportul actual înainte de a-l reîmprospăta."
+      },
+      "refresh": {
+        "operation": "Reîmprospătează raportul serverului",
+        "deniedEffect": "Un nou instantaneu al raportului nu a fost confirmat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă instantaneul raportului s-a modificat.",
+        "stateCheckAction": "Încarcă raportul actual înainte de a reîmprospăta din nou."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Încarcă programul de backup",
+        "deniedEffect": "Programul de backup nu a fost încărcat; nicio setare nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma programul actual de backup.",
+        "stateCheckAction": "Reîncarcă programul de backup înainte de a-l modifica."
+      },
+      "restore": {
+        "operation": "Restaurează serverul dintr-un backup",
+        "deniedEffect": "Datele serverului nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă restaurarea a fost pregătită.",
+        "stateCheckAction": "Reîncarcă setările de backup pentru a vedea dacă o restaurare este în așteptare înainte de a încerca din nou."
+      },
+      "save": {
+        "operation": "Salvează programul de backup",
+        "deniedEffect": "Programul de backup nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă programul de backup a fost salvat.",
+        "stateCheckAction": "Reîncarcă programul de backup pentru a vedea setările în vigoare înainte de a salva din nou."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Încarcă setările jurnalului de solicitări",
+        "deniedEffect": "Setările jurnalului de solicitări nu au fost încărcate; nicio setare nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma setările actuale ale jurnalului de cereri.",
+        "stateCheckAction": "Reîncărcați setările jurnalului de cereri înainte de a le modifica."
+      },
+      "save": {
+        "operation": "Salvarea setărilor jurnalului de cereri",
+        "deniedEffect": "Setările jurnalului de cereri nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă setările jurnalului de cereri au fost salvate.",
+        "stateCheckAction": "Reîncărcați setările jurnalului de cereri pentru a vedea setările în vigoare înainte de a salva din nou."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Încărcarea proxy-ului de rețea",
+        "deniedEffect": "Proxy-ul de rețea nu a fost încărcat; nicio setare nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma proxy-ul de rețea actual.",
+        "stateCheckAction": "Reîncărcați proxy-ul de rețea înainte de a-l modifica."
+      },
+      "save": {
+        "operation": "Salvarea proxy-ului de rețea",
+        "deniedEffect": "Proxy-ul de rețea nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă proxy-ul de rețea a fost salvat.",
+        "stateCheckAction": "Reîncărcați proxy-ul de rețea pentru a vedea cel în vigoare înainte de a salva din nou."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Încărcare setări server",
+        "deniedEffect": "Setările nu au fost încărcate, iar setările salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma setările actuale ale serverului.",
+        "stateCheckAction": "Reîncărcați setările înainte de a face modificări."
+      },
+      "save": {
+        "operation": "Salvare setări server",
+        "deniedEffect": "Setările noi nu au fost acceptate; setările salvate anterior rămân în vigoare.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă setările noi au fost salvate.",
+        "stateCheckAction": "Reîncărcați setările și comparați valorile actuale înainte de a încerca din nou."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Verificare stare de conectare",
+        "deniedEffect": "Nu a fost stabilită nicio sesiune de conectare, iar datele contului nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală de conectare.",
+        "stateCheckAction": "Reîncărcați pagina, apoi conectați-vă din nou."
+      },
+      "deviceCode": {
+        "operation": "Conectarea acestui dispozitiv",
+        "deniedEffect": "Nu v-ați conectat, iar datele contului nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă acest dispozitiv a fost conectat.",
+        "stateCheckAction": "Conectați-vă din nou cu un cod nou."
+      },
+      "emailVerification": {
+        "operation": "Verificare adresă de e-mail",
+        "deniedEffect": "Adresa de e-mail nu a fost verificată, iar conectarea la cont nu s-a efectuat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă verificarea adresei de e-mail a fost finalizată.",
+        "stateCheckAction": "Încercați să vă conectați; dacă nu funcționează, deschideți din nou linkul din e-mail."
+      },
+      "mfa": {
+        "operation": "Finalizare verificare în doi pași",
+        "deniedEffect": "Nu v-ați conectat, iar solicitarea MFA rămâne nefinalizată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă verificarea în doi pași a fost finalizată.",
+        "stateCheckAction": "Începeți din nou procesul de conectare."
+      },
+      "passwordResetConfirm": {
+        "operation": "Modificare parolă",
+        "deniedEffect": "Parola nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă parola a fost modificată.",
+        "stateCheckAction": "Încercați să vă conectați cu noua parolă; dacă nu funcționează, obțineți un link de resetare nou."
+      },
+      "passwordResetRequest": {
+        "operation": "Solicitare resetare parolă",
+        "deniedEffect": "Niciun mesaj de resetare a parolei nu a fost acceptat pentru livrare.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă solicitarea de resetare a fost acceptată.",
+        "stateCheckAction": "Așteptați e-mailul înainte de a face o altă solicitare."
+      },
+      "providerExchange": {
+        "operation": "Conectare cu un cont extern",
+        "deniedEffect": "Nu v-ați conectat, iar datele contului nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma rezultatul conectării externe.",
+        "stateCheckAction": "Conectați-vă din nou în același mod."
+      },
+      "serverSetup": {
+        "operation": "Configurare server Leafen",
+        "deniedEffect": "Contul de administrator nu a fost creat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă configurarea serverului a fost finalizată.",
+        "stateCheckAction": "Reîncărcați pagina și verificați starea configurării înainte de a încerca din nou."
+      },
+      "signIn": {
+        "operation": "Conectare",
+        "deniedEffect": "Nu v-ați conectat, iar datele contului nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă conectarea s-a finalizat.",
+        "stateCheckAction": "Reîmprospătează pagina și conectează-te din nou."
+      },
+      "signUp": {
+        "operation": "Creare cont",
+        "deniedEffect": "Nu a fost creat un cont nou.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă contul a fost creat.",
+        "stateCheckAction": "Încearcă să te conectezi; dacă nu funcționează, înregistrează-te din nou."
+      },
+      "passkey": {
+        "operation": "Conectează-te cu o cheie de acces",
+        "deniedEffect": "Conectarea nu a fost acceptată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă conectarea s-a finalizat.",
+        "stateCheckAction": "Conectează-te din nou cu cheia de acces."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Încărcare conținut pagină",
+        "deniedEffect": "Conținutul paginii nu a fost încărcat, iar conținutul salvat nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma conținutul actual al paginii.",
+        "stateCheckAction": "Reîncărcați pagina înainte de a edita."
+      },
+      "update": {
+        "operation": "Salvare conținut pagină",
+        "deniedEffect": "Modificarea nu a fost acceptată; cel mai recent conținut de pe server rămâne în vigoare.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă conținutul a fost salvat.",
+        "stateCheckAction": "Reîncărcați conținutul cel mai recent și comparați-l înainte de a încerca din nou."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Salvare automatizare bază de date",
+        "deniedEffect": "Automatizarea nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă modificarea automatizării bazei de date a fost salvată.",
+        "stateCheckAction": "Reîncărcați automatizarea înainte de a încerca din nou."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Salvare politică DLP",
+        "deniedEffect": "Noua politică DLP nu a fost salvată; politica anterioară rămâne în vigoare.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă politica DLP a fost salvată.",
+        "stateCheckAction": "Reîncărcați politica DLP și istoricul de audit al organizației înainte de a încerca din nou."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Verificare domeniu SAML",
+        "deniedEffect": "Domeniul rămâne în așteptare; configurația SAML, istoricul de audit și sesiunile de conectare nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a verificării domeniului SAML.",
+        "stateCheckAction": "Reîncărcați starea domeniului SAML înainte de a încerca din nou."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Ștergere fișier",
+        "deniedEffect": "Fișierul nu a fost șters și nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă fișierul a fost șters.",
+        "stateCheckAction": "Reîncărcați fișierul și referințele sale înainte de a decide dacă să reîncercați."
+      },
+      "upload": {
+        "operation": "Încarcă fișierul",
+        "deniedEffect": "Fișierul nou nu a fost salvat; fișierele existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă fișierul a fost salvat.",
+        "stateCheckAction": "Reîncarcă lista de fișiere înainte de a decide dacă să reîncerci."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Aplică mapările persoanelor",
+        "deniedEffect": "Noile mapări nu au fost acceptate.",
+        "uncertainEffect": "Leafen nu a putut confirma ce mapări au fost aplicate.",
+        "stateCheckAction": "Reîncarcă rezultatele mapării înainte de a le aplica din nou."
+      },
+      "refresh": {
+        "operation": "Actualizează mapările persoanelor",
+        "deniedEffect": "Cele mai recente mapări nu au fost încărcate; mapările salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a mapărilor.",
+        "stateCheckAction": "Reîncarcă panoul de mapare înainte de a continua."
+      },
+      "scan": {
+        "operation": "Scanează persoanele importate",
+        "deniedEffect": "Persoanele importate nu au fost listate, iar mapările existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma lista actuală de persoane importate.",
+        "stateCheckAction": "Reîncarcă panoul de mapare înainte de a face modificări."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Execută automatizarea butonului",
+        "deniedEffect": "Acțiunile butonului nu s-au executat, iar conținutul paginii nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă automatizarea butonului a fost executată.",
+        "stateCheckAction": "Reîncarcă conținutul afectat și starea execuției înainte de a încerca din nou."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Copiază tokenul API al organizației",
+        "deniedEffect": "Tokenul nu a fost confirmat în clipboard; tokenul în sine nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă scrierea în clipboard s-a finalizat.",
+        "stateCheckAction": "Verifică clipboardul înainte de a copia din nou tokenul."
+      },
+      "create": {
+        "operation": "Creează un token API pentru organizație",
+        "deniedEffect": "Un token nou nu a fost confirmat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă tokenul a fost creat.",
+        "stateCheckAction": "Reîncarcă lista de tokenuri înainte de a crea un alt token."
+      },
+      "list": {
+        "operation": "Încarcă tokenurile API ale organizației",
+        "deniedEffect": "Tokenurile nu au fost încărcate, iar tokenurile existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma lista actuală de tokenuri.",
+        "stateCheckAction": "Reîncarcă lista de tokenuri înainte de a face modificări."
+      },
+      "revoke": {
+        "operation": "Revocare token API al organizației",
+        "deniedEffect": "Revocarea tokenului nu a fost confirmată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă tokenul a fost revocat.",
+        "stateCheckAction": "Reîncarcă lista de tokenuri înainte de a încerca o altă revocare."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Încărcare pagini din spațiul de lucru",
+        "deniedEffect": "Paginile nu au fost încărcate, iar datele salvate ale spațiului de lucru nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma paginile actuale ale spațiului de lucru.",
+        "stateCheckAction": "Reîncarcă spațiul de lucru înainte de a edita."
+      },
+      "create": {
+        "operation": "Creare pagină",
+        "deniedEffect": "O pagină nouă nu a fost creată, iar paginile existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă pagina a fost creată.",
+        "stateCheckAction": "Reîncarcă lista de pagini și verifică dacă apare pagina nouă înainte de a încerca din nou."
+      },
+      "title": {
+        "update": {
+          "operation": "Salvare titlu pagină",
+          "deniedEffect": "Modificarea titlului nu a fost acceptată; titlul salvat rămâne valabil.",
+          "uncertainEffect": "Leafen nu a putut confirma dacă modificarea a fost salvată.",
+          "stateCheckAction": "Reîncarcă pagina și verifică titlul actual."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Încărcare statistici pagină",
+        "deniedEffect": "Statisticile nu au fost încărcate, iar datele paginii nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma statisticile actuale.",
+        "stateCheckAction": "Reîncarcă statisticile înainte de a trage concluzii."
+      },
+      "policyUpdate": {
+        "operation": "Salvare politică de statistici",
+        "deniedEffect": "Noua politică de statistici nu a fost acceptată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă politica a fost salvată.",
+        "stateCheckAction": "Reîncarcă politica și compară-o înainte de a încerca din nou."
+      },
+      "preferencesRead": {
+        "operation": "Încărcare preferințe de statistici",
+        "deniedEffect": "Preferințele de statistici nu au fost încărcate, iar setările salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma preferințele actuale de statistici.",
+        "stateCheckAction": "Reîncarcă preferințele înainte de a le edita."
+      },
+      "preferencesUpdate": {
+        "operation": "Salvare preferințe de statistici",
+        "deniedEffect": "Noile preferințe nu au fost acceptate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă preferințele au fost salvate.",
+        "stateCheckAction": "Reîncărcați preferințele și comparați-le înainte de a încerca din nou."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Salvare în siguranță a unei modificări offline",
+        "deniedEffect": "Modificarea nu a fost salvată pe acest dispozitiv.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă modificarea a fost salvată pe acest dispozitiv sau pe server.",
+        "stateCheckAction": "Copiați conținutul editat, apoi reîncărcați și comparați starea salvată."
+      },
+      "legacy": {
+        "operation": "Migrare modificări offline",
+        "deniedEffect": "Modificările offline mai vechi rămân în locul în care au fost stocate și nu au fost trimise.",
+        "uncertainEffect": "Leafen nu a putut confirma care modificări offline mai vechi au fost migrate.",
+        "stateCheckAction": "Păstrați acest tab deschis și reîncărcați înainte de a edita din nou."
+      },
+      "refresh": {
+        "operation": "Reîncărcare modificări recuperate",
+        "deniedEffect": "Modificările recuperate nu au fost afișate, iar datele salvate nu au fost înlocuite.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a paginii după recuperare.",
+        "stateCheckAction": "Reîncărcați pagina înainte de a face o altă modificare."
+      },
+      "replay": {
+        "operation": "Trimitere modificări offline",
+        "deniedEffect": "Modificarea din coadă rămâne în așteptare și nu a fost confirmată de server.",
+        "uncertainEffect": "Leafen nu a putut confirma care modificări din coadă au ajuns la server.",
+        "stateCheckAction": "Păstrați acest tab deschis, reconectați-vă și reîncărcați înainte de a edita din nou."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Căutare site public",
+        "deniedEffect": "Rezultatele căutării nu au fost încărcate, iar conținutul publicat nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma rezultatele actuale ale căutării.",
+        "stateCheckAction": "Verificați starea site-ului înainte de a căuta din nou."
+      },
+      "sharedPage": {
+        "operation": "Încărcare pagină partajată",
+        "deniedEffect": "Pagina partajată nu a fost încărcată, iar conținutul publicat nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a paginii partajate.",
+        "stateCheckAction": "Verificați linkul de partajare înainte de a încerca din nou."
+      },
+      "site": {
+        "operation": "Încărcare site public",
+        "deniedEffect": "Site-ul public nu a fost încărcat, iar conținutul publicat nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma site-ul public actual.",
+        "stateCheckAction": "Verificați adresa site-ului înainte de a încerca din nou."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Restabilește conectarea la formular",
+        "deniedEffect": "Formularul pentru membri nu a fost deschis și nu a fost trimis niciun răspuns.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a conectării la acest formular.",
+        "stateCheckAction": "Reîncarcă formularul și conectează-te din nou."
+      },
+      "configurationWrite": {
+        "operation": "Salvare setări formular",
+        "deniedEffect": "Setările formularului nu au fost confirmate ca salvate.",
+        "uncertainEffect": "Leafen nu a putut confirma configurația actuală a formularului.",
+        "stateCheckAction": "Reîncărcați setările formularului înainte de a salva din nou."
+      },
+      "definitionRead": {
+        "operation": "Încărcare formular",
+        "deniedEffect": "Formularul nu a fost încărcat și nu a fost trimis niciun răspuns.",
+        "uncertainEffect": "Leafen nu a putut confirma definiția actuală a formularului.",
+        "stateCheckAction": "Reîncărcați formularul înainte de a introduce un răspuns."
+      },
+      "optionsRead": {
+        "operation": "Încărcare opțiuni formular",
+        "deniedEffect": "Opțiunile solicitate nu au fost încărcate, iar răspunsul în curs de redactare nu a fost trimis.",
+        "uncertainEffect": "Leafen nu a putut confirma opțiunile actuale.",
+        "stateCheckAction": "Reîncărcați opțiunile înainte de a trimite formularul."
+      },
+      "responseSubmit": {
+        "operation": "Trimitere răspuns formular",
+        "deniedEffect": "Răspunsul nu a fost acceptat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă răspunsul a fost acceptat.",
+        "stateCheckAction": "Verificați rezultatul formularului înainte de a trimite din nou răspunsul."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Încărcare configurație runtime",
+        "deniedEffect": "Configurația runtime nu a fost încărcată; setările serverului salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma configurația runtime actuală, așa că sunt active valori de rezervă sigure.",
+        "stateCheckAction": "Reîncărcați pagina pentru a citi configurația actuală a serverului."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Sincronizare modificări în așteptare",
+        "deniedEffect": "Modificările în așteptare rămân în coadă și nu au fost confirmate de server.",
+        "uncertainEffect": "Leafen nu a putut confirma care modificări în așteptare au ajuns la server.",
+        "stateCheckAction": "Păstrați acest tab deschis, reconectați-vă și verificați starea salvată înainte de a reîncerca."
+      },
+      "pendingRead": {
+        "operation": "Verificare modificări în așteptare",
+        "deniedEffect": "Numărul modificărilor în așteptare nu a fost încărcat; modificările din coadă nu au fost eliminate.",
+        "uncertainEffect": "Leafen nu a putut confirma câte modificări sunt încă în așteptare.",
+        "stateCheckAction": "Păstrați acest tab deschis și verificați din nou starea sincronizării."
+      },
+      "retry": {
+        "operation": "Reîncercare sincronizare",
+        "deniedEffect": "Sincronizarea nu a fost confirmată; modificările în așteptare rămân în coadă.",
+        "uncertainEffect": "Leafen nu a putut confirma rezultatul ultimei sincronizări.",
+        "stateCheckAction": "Verificați starea salvată și conexiunea înainte de a reîncerca."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Creare spațiu de lucru",
+        "deniedEffect": "Un spațiu de lucru nou nu a fost creat, iar datele existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă spațiul de lucru a fost creat.",
+        "stateCheckAction": "Reîncărcați lista spațiilor de lucru și verificați dacă noul spațiu de lucru apare înainte de a încerca din nou."
+      },
+      "delete": {
+        "operation": "Ștergere definitivă a spațiului de lucru",
+        "deniedEffect": "Ștergerea nu a fost acceptată; spațiul de lucru și datele existente nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă spațiul de lucru a fost șters.",
+        "stateCheckAction": "Reîncărcați lista spațiilor de lucru înainte de a încerca din nou."
+      },
+      "member": {
+        "add": {
+          "operation": "Adăugare membru în spațiul de lucru",
+          "deniedEffect": "Membrul nu a fost adăugat și nimic nu a fost modificat.",
+          "uncertainEffect": "Leafen nu a putut confirma dacă membrul spațiului de lucru a fost adăugat.",
+          "stateCheckAction": "Reîncărcați membrii, activitatea și istoricul de audit înainte de a încerca din nou."
+        },
+        "revoke": {
+          "operation": "Eliminare membru din spațiul de lucru",
+          "deniedEffect": "Membrul nu a fost eliminat și nimic nu a fost modificat.",
+          "uncertainEffect": "Leafen nu a putut confirma dacă membrul spațiului de lucru a fost eliminat.",
+          "stateCheckAction": "Reîncărcați membrii, activitatea și istoricul de audit înainte de a încerca din nou."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Salvare setări spațiu de lucru",
+          "deniedEffect": "Modificarea setărilor nu a fost salvată; setările anterioare rămân în vigoare.",
+          "uncertainEffect": "Leafen nu a putut confirma dacă setările spațiului de lucru au fost salvate.",
+          "stateCheckAction": "Reîncărcați setările spațiului de lucru, activitatea și istoricul de audit înainte de a încerca din nou."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Anulare export spațiu de lucru",
+        "deniedEffect": "Exportul nu a fost anulat și este posibil să ruleze în continuare.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă exportul a fost anulat.",
+        "stateCheckAction": "Reîmprospătați starea exportului înainte de a anula din nou."
+      },
+      "download": {
+        "operation": "Descărcare export spațiu de lucru",
+        "deniedEffect": "Arhiva nu a fost descărcată; exportul de pe server nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă descărcarea arhivei s-a finalizat.",
+        "stateCheckAction": "Verificați lista de descărcări înainte de a descărca din nou."
+      },
+      "job": {
+        "operation": "Export spațiu de lucru",
+        "deniedEffect": "Arhiva nu a fost creată; spațiul de lucru sursă nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma existența unei arhive utilizabile pentru această sarcină.",
+        "stateCheckAction": "Porniți un export de înlocuire din spațiul de lucru actual."
+      },
+      "poll": {
+        "operation": "Așteptare export spațiu de lucru",
+        "deniedEffect": "Cea mai recentă stare a exportului nu a fost încărcată; sarcina de export nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a exportului.",
+        "stateCheckAction": "Reîmprospătați starea exportului înainte de a efectua altă acțiune."
+      },
+      "retry": {
+        "operation": "Reîncercare export spațiu de lucru",
+        "deniedEffect": "Reîncercarea nu a fost acceptată; sarcina de export existentă nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă reîncercarea a fost acceptată.",
+        "stateCheckAction": "Reîmprospătați starea exportului înainte de a reîncerca."
+      },
+      "start": {
+        "operation": "Pornire export spațiu de lucru",
+        "deniedEffect": "O nouă sarcină de export nu a fost acceptată; spațiul de lucru nu a fost modificat.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă o sarcină de export a fost acceptată.",
+        "stateCheckAction": "Reîmprospătați cea mai recentă stare a exportului înainte de a porni o altă sarcină."
+      },
+      "status": {
+        "operation": "Încărcare stare export spațiu de lucru",
+        "deniedEffect": "Cea mai recentă stare a exportului nu a fost încărcată; sarcina de export nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a exportului.",
+        "stateCheckAction": "Reîncărcați dialogul de export înainte de a efectua altă acțiune."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Anulare import",
+        "deniedEffect": "Importul nu a fost anulat și este posibil să ruleze încă.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă importul a fost anulat.",
+        "stateCheckAction": "Reîmprospătați starea importului înainte de a anula din nou."
+      },
+      "job": {
+        "operation": "Importă un fișier",
+        "deniedEffect": "Nu a fost creată nicio pagină; conținutul importat parțial a fost eliminat.",
+        "uncertainEffect": "Leafen nu a putut confirma o pagină utilizabilă pentru acest import.",
+        "stateCheckAction": "Păstrează referința de diagnostic și începe un import nou din fișierul sursă."
+      },
+      "start": {
+        "operation": "Începe importul",
+        "deniedEffect": "Un import nou nu a fost acceptat și nu a fost creată nicio pagină.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă importul a fost acceptat.",
+        "stateCheckAction": "Reîncearcă cu același fișier, fără a-l modifica, pentru ca Leafen să se poată reconecta la aceeași cerere."
+      },
+      "status": {
+        "operation": "Încarcă starea importului",
+        "deniedEffect": "Cea mai recentă stare a importului nu a fost încărcată; sarcina de import nu a fost modificată.",
+        "uncertainEffect": "Leafen nu a putut confirma starea actuală a importului.",
+        "stateCheckAction": "Redeschide dialogul de import pentru a te reconecta la sarcina salvată înainte de a face altă acțiune."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Încarcă cheile de acces ale contului",
+        "deniedEffect": "Lista de chei de acces nu a fost încărcată; cheile salvate nu au fost modificate.",
+        "uncertainEffect": "Leafen nu a putut confirma lista actuală de chei de acces.",
+        "stateCheckAction": "Reconectează-te și reîmprospătează lista de chei de acces înainte de a face o modificare."
+      },
+      "update": {
+        "operation": "Gestionează cheile de acces ale contului",
+        "deniedEffect": "Serverul nu a modificat cheile de acces salvate.",
+        "uncertainEffect": "Leafen nu a putut confirma dacă modificarea cheii de acces s-a finalizat.",
+        "stateCheckAction": "Reîmprospătează lista de chei de acces înainte de a încerca din nou. Verifică managerul de chei al dispozitivului dacă a fost creată o cheie nouă, dar nu a fost salvată aici."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Parola actuală este incorectă.",
+    "currentPasswordNext": "Dacă ai uitat-o, deconectează-te și resetează-o din pagina de conectare.",
+    "code": "Codul este greșit sau a fost deja folosit.",
+    "codeNext": "Introdu codul afișat acum de aplicația de autentificare.",
+    "recoveryCode": "Codul de recuperare este greșit sau a fost deja folosit.",
+    "recoveryCodeNext": "Introdu un cod de recuperare pe care nu l-ai folosit.",
+    "accountDeactivated": "Acest cont a fost dezactivat de administratorul serverului.",
+    "accountDeactivatedNext": "Cere administratorului să îl activeze din nou.",
+    "organizationSSO": "Această organizație permite conectarea doar prin single sign-on (SSO).",
+    "organizationSSONext": "Conectează-te în schimb cu contul companiei.",
+    "organizationPasswordTwoStep": "Organizația ta necesită conectarea cu parolă și verificare în doi pași, nu cu un cod de dispozitiv.",
+    "organizationPasswordTwoStepNext": "Conectează-te cu adresa de e-mail și parola; dacă nu ai parolă, cere unui administrator o parolă de unică folosință.",
+    "deviceCode": "Codul este greșit, a fost deja folosit, a expirat sau fereastra care îl afișa a fost închisă.",
+    "deviceCodeNext": "Obține un cod nou și introdu-l din nou.",
+    "setupCode": "Codul de configurare este incorect.",
+    "setupCodeNext": "Deschide din nou linkul de configurare afișat de server sau introdu codul cu care a fost pornit.",
+    "setupCodeMissing": "Introdu codul de configurare.",
+    "setupCodeMissingNext": "Dacă deschizi linkul de configurare afișat de server, câmpul se completează; funcționează și codul cu care a fost pornit serverul.",
+    "sessionCapacity": "Acest cont a atins limita de dispozitive.",
+    "sessionCapacityNext": "Deconectează un dispozitiv pe care nu îl mai folosești din Setări → Cont → Dispozitive, apoi încearcă din nou.",
+    "signInEnded": "Această cerere de conectare s-a încheiat: fie a expirat, fie codul a fost introdus greșit de prea multe ori.",
+    "signInEndedNext": "Conectează-te din nou cu adresa de e-mail și parola.",
+    "emailNotVerified": "E-mailul acestui cont nu este încă confirmat.",
+    "emailNotVerifiedNext": "Deschide linkul din e-mailul primit la înregistrare, apoi conectează-te.",
+    "registrationFailed": "Contul nu a putut fi creat.",
+    "registrationFailedNext": "Încearcă din nou într-un moment. Dacă eșuează în continuare, anunță administratorul acestui server."
+  },
+  "labels": {
+    "reference": "Referință"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Această organizație nu creează conturi noi la conectarea cu contul companiei.",
+    "samlAccountCreationOffNext": "Roagă administratorul organizației să te invite.",
+    "samlRetryAfterInvite": "Conectează-te din nou după ce ai fost invitat.",
+    "samlIdentityDenied": "Acest e-mail nu poate folosi conectarea prin companie a acestei organizații.",
+    "samlIdentityDeniedNext": "Roagă administratorul organizației să verifice domeniul de e-mail și apartenența ta.",
+    "samlRetryAfterAdministrator": "Conectează-te din nou după ce administratorul a verificat.",
+    "samlResponseInvalid": "Nu s-a putut verifica răspunsul de conectare al companiei.",
+    "samlResponseInvalidNext": "Reia procesul de conectare. Dacă problema persistă, cere administratorului organizației să verifice setările SAML.",
+    "accountAlreadyExistsForEmailAddress": "Există deja un cont pentru această adresă de e-mail.",
+    "accountEmailCouldNotAdmittedFor": "E-mailul contului nu a putut fi trimis.",
+    "administratorSettingsDoNotMeetServer": "Setările administratorului nu îndeplinesc cerințele serverului.",
+    "administratorSettingsNotAvailableCurrentAccount": "Setările de administrator nu sunt disponibile pentru contul actual.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Un alt administrator a finalizat deja configurarea serverului.",
+    "anotherServerOperationTemporarilyLockedAccount": "O altă operațiune a serverului a blocat temporar stocarea contului.",
+    "anotherServerOperationTemporarilyLockedDatabase": "O altă operațiune a serverului a blocat temporar baza de date, așa că exportul nu a putut continua.",
+    "anotherServerOperationTemporarilyLockedDlp": "O altă operațiune de server a blocat temporar stocarea politicilor DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "O altă operațiune de server a blocat temporar stocarea fișierelor.",
+    "anotherServerOperationTemporarilyLockedPage": "O altă operațiune de server a blocat temporar stocarea conținutului paginilor.",
+    "anotherServerOperationTemporarilyLockedProduct": "O altă operațiune de server a blocat temporar stocarea produselor.",
+    "askOrganizationAdministratorToAllow": "Rugați un administrator al organizației sau proprietarul spațiului de echipă să permită acest lucru.",
+    "askServerAdministratorCheckEmailDelivery": "Rugați administratorul serverului să verifice livrarea e-mailurilor, apoi încercați din nou.",
+    "backupArtifactNotCompleteYet": "Fișierul copiei de rezervă nu este încă complet.",
+    "backupStateNoLongerPermitsControl": "Starea actuală a copiei de rezervă nu mai permite această acțiune.",
+    "causeCouldNotDetermined": "Cauza nu a putut fi determinată.",
+    "changeSaveReceiptAndSynchronizationState": "Modificarea nu a fost salvată, iar conținutul paginii a rămas neschimbat.",
+    "checkCurrentBackupBeforeRetrying": "Verificați copia de rezervă actuală înainte de a încerca din nou.",
+    "checkCurrentJobStateBeforeDeciding": "Verificați starea actuală a sarcinii înainte de a decide dacă reîncercați.",
+    "checkCurrentListBeforeTryingDifferent": "Verificați lista actuală înainte de a încerca un alt element.",
+    "checkCurrentServerSettingsBeforeTrying": "Verificați setările actuale ale serverului înainte de a încerca din nou.",
+    "checkCurrentServerSetupStateBefore": "Verificați starea actuală a configurării serverului înainte de a încerca din nou.",
+    "checkCurrentStateAndUseNew": "Verificați starea actuală și porniți o copie de rezervă nouă numai dacă aveți nevoie de ea.",
+    "checkEmailAndPassword": "Verificați e-mailul și parola.",
+    "checkServerSecretStorageThenSave": "Verificați stocarea secretelor pe server, apoi salvați din nou aceleași setări.",
+    "checkServerStateThenLoadSettings": "Verificați starea serverului, apoi încărcați din nou setările.",
+    "createNewBackupAndInspectServer": "Creați o copie de rezervă nouă și inspectați stocarea serverului dacă eroarea se repetă.",
+    "currentAccountNotAuthorizedForOperation": "Contul actual nu este autorizat pentru această operațiune.",
+    "currentStateMustCheckedBeforeRetry": "Starea actuală trebuie verificată înainte de a putea considera reîncercarea sigură.",
+    "currentStateMustCheckedBeforeRetrying": "Starea actuală trebuie verificată înainte de a reîncerca.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Serviciul de verificare DNS este temporar indisponibil.",
+    "doNotAssumeUnchangedRetrySafe": "Nu presupuneți că reîncercarea este sigură înainte de a fi reparată stocarea serverului.",
+    "doNotKeepRetryingIdentifierNew": "Nu continuați să reîncercați această solicitare; reîncărcați mai întâi, apoi o nouă încercare este sigură.",
+    "doNotResumeFailedJobStart": "Nu reluați sarcina eșuată; porniți în schimb un export nou.",
+    "doNotRetryBeforeLoadingLatest": "Nu reîncercați înainte de a încărca cele mai recente setări ale serverului.",
+    "doNotRetryDirectRequestUnchanged": "Nu reîncercați această încărcare ca atare; folosiți încărcarea reluabilă.",
+    "doNotRetryDirectRequestUnchanged2": "Nu reîncercați această încărcare ca atare; folosiți încărcarea reluabilă a arhivei.",
+    "doNotRetrySetupRequestSign": "Nu reîncerca această cerere de configurare; conectează-te cu contul de administrator existent.",
+    "doNotReuseInvalidArtifactCreate": "Nu reutiliza fișierul de backup invalid; creează un backup nou.",
+    "doNotReuseLinkNewAction": "Nu reutiliza acest link; o acțiune nouă este sigură.",
+    "emailOrPasswordDidNotMatch": "Adresa de e-mail sau parola nu se potrivesc.",
+    "externalSignInProviderCouldNot": "Furnizorul extern de conectare nu a putut finaliza cererea.",
+    "fileLargerThanOneDirectUpload": "Acest fișier este prea mare pentru o singură încărcare directă.",
+    "formStorageTemporarilyLockedByAnother": "Stocarea formularelor a fost blocată temporar de o altă operațiune a serverului.",
+    "leafenArchiveLargerThanOneDirect": "Această arhivă Leafen este prea mare pentru un singur import direct.",
+    "leafenDidNotReceiveServerResponse": "Leafen nu a primit un răspuns de la server.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen reconstruiește starea de utilizare a spațiului de stocare al organizației.",
+    "leafenServiceCouldNotCompleteOperation": "Serviciul Leafen nu a putut finaliza operațiunea.",
+    "isolatedRecordNotAppliedYourRequested": "Înregistrarea incompletă a fost pusă deoparte, modificarea ta nu a fost salvată, iar conținutul paginii a rămas neschimbat.",
+    "jobCannotRetriedStartReplacementExport": "Această sarcină nu poate fi reîncercată; pornește un export de înlocuire.",
+    "jobSArchiveNotPublishedAnd": "Arhiva acestei sarcini nu a fost creată, iar spațiul de lucru sursă nu a fost modificat.",
+    "keepDiagnosticReferenceAndAskServer": "Păstrează referința de diagnostic și roagă administratorul serverului să repare stocarea serverului.",
+    "lastConfirmedSavedStateRestoredSo": "Ultima stare salvată confirmată a fost restaurată, așa că este sigur să reîncerci aceeași modificare.",
+    "loadCurrentReportAndUseNew": "Încarcă raportul curent, apoi reîmprospătează din nou.",
+    "loadCurrentReportBeforeRefreshingAgain": "Încarcă raportul curent înainte de a reîmprospăta din nou.",
+    "loadCurrentReportBeforeTryingAgain": "Încarcă raportul curent înainte de a încerca din nou.",
+    "newerOrIncompatibleStatePreventedOperation": "O stare mai nouă sau incompatibilă a împiedicat această operațiune.",
+    "noNewArchivePublishedAndSource": "Nu a fost creată nicio arhivă nouă, iar spațiul de lucru sursă și arhivele anterioare au rămas neschimbate.",
+    "noNewSignInSessionCreated": "Nu a fost creată nicio sesiune nouă de conectare, iar sesiunile existente nu au fost modificate.",
+    "notKnownWhetherRetryingSafeUntil": "Nu se știe dacă reîncercarea este sigură până când nu se verifică starea curentă.",
+    "organizationStorageAuthorityInconsistent": "Înregistrarea utilizării spațiului de stocare al organizației este inconsistentă.",
+    "organizationDlpBlocksOperation": "Politica de prevenire a pierderii datelor a organizației tale blochează acest lucru.",
+    "takeOutTermOrAskAboutDlp": "Elimină orice termen sensibil și încearcă din nou sau întreabă un administrator al organizației dacă nu ești sigur.",
+    "organizationSettingsDoNotAllowOperation": "Setările organizației sau ale spațiului tău de echipă nu permit acest lucru.",
+    "organizationStorageLimitWouldExceeded": "Limita de stocare a organizației ar fi depășită.",
+    "serverDiskAlmostFull": "Discul serverului este aproape plin.",
+    "askServerAdministratorToFreeSpace": "Rugați administratorul serverului să elibereze spațiu; funcționează din nou după ce există loc.",
+    "safeRetryOnceServerHasRoom": "Este sigur să încercați din nou aceeași operațiune după ce serverul are spațiu.",
+    "readDoesNotChangeSavedData": "Această citire nu modifică datele salvate, așa că este sigur să reîncerci.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Reîncarcă backupul curent înainte de a alege o altă acțiune.",
+    "reloadCurrentBackupStateBeforeContinuing": "Reîncarcă starea backupului actual înainte de a continua.",
+    "reloadCurrentStateBeforeDecidingWhether": "Reîncarcă starea actuală înainte de a decide dacă să reîncerci.",
+    "reloadSignInPageAndStart": "Reîmprospătează pagina de conectare și conectează-te din nou.",
+    "removeUnneededFilesOrAskOrganization": "Șterge fișierele inutile sau cere unui administrator de facturare al organizației să mărească limita.",
+    "reportChangedAfterScreenLoaded": "Raportul s-a modificat după încărcarea acestui ecran.",
+    "requestIdentifierBelongsDifferentOperation": "Această solicitare a fost deja folosită pentru o altă acțiune.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Această solicitare a fost deja folosită pentru o altă reîmprospătare a raportului.",
+    "requestedItemNoLongerExistsOr": "Elementul solicitat nu mai există sau nu este vizibil pentru acest cont.",
+    "retryExportAfterOtherServerOperation": "Reîncearcă acest export după ce se încheie cealaltă operațiune pe server.",
+    "retryExportJobAfterServerStorage": "Reîncearcă această operațiune de export după ce stocarea serverului se restabilește.",
+    "retryOnlyAfterAccountOrPermission": "Reîncearcă numai după ce contul sau permisiunile se schimbă.",
+    "retryOnlyAfterOrganizationSettingChanges": "Reîncearcă numai după ce se modifică setarea respectivă.",
+    "retrySameContentChangeAfterOther": "Reîncearcă aceeași modificare de conținut după ce se încheie cealaltă operațiune pe server.",
+    "retrySameContentChangeAfterServer": "Reîncearcă aceeași modificare de conținut după ce stocarea serverului se restabilește.",
+    "retrySameContentChangeNow": "Reîncearcă acum aceeași modificare de conținut.",
+    "changeTooLargeForOneChange": "Este prea mare pentru a fi modificat dintr-o dată. O modificare poate avea până la 64 MB, inclusiv textul.",
+    "pageKeepsWhatItHadBefore": "Pagina este așa cum era înainte.",
+    "makeTheChangeInParts": "Fă modificarea în părți: șterge mai întâi pe părți blocurile din interiorul unui comutator sau al unei secțiuni mari și lipește textul lung pe părți.",
+    "sameSizeIsRefusedAgain": "Aceeași dimensiune este respinsă din nou; după împărțire, poți reîncerca în siguranță.",
+    "linkCannotBeKeptHere": "Această modificare leagă o pagină sau un bloc care nu poate fi legat aici.",
+    "chooseAnotherPageOrRefresh": "Alege altă pagină sau reîncarcă pagina și încearcă din nou.",
+    "sameLinkIsRefusedAgain": "Legarea din nou a aceluiași element este respinsă din nou.",
+    "retrySameDomainVerificationAfterDns": "Reîncearcă aceeași verificare a domeniului după ce serviciul de verificare DNS se restabilește.",
+    "retrySameFileOperationAfterOther": "Reîncearcă aceeași operațiune de fișier după ce se încheie cealaltă operațiune pe server.",
+    "retrySameFileOperationAfterServer": "Reîncearcă aceeași operațiune de fișier după ce stocarea serverului se restabilește.",
+    "retrySameFormOperationAfterOther": "Reîncearcă aceeași operațiune de formular după ce se încheie cealaltă operațiune pe server.",
+    "retrySameFormOperationAfterServer": "Reîncearcă aceeași operațiune de formular după ce stocarea serverului se restabilește.",
+    "retrySameOperationAfterOtherServer": "Reîncearcă aceeași operațiune după ce se încheie cealaltă operațiune pe server.",
+    "retrySameOperationAfterServerStorage": "Reîncearcă aceeași operațiune după ce stocarea serverului se restabilește.",
+    "returnSignInWithExistingAccount": "Revino la conectare cu contul existent.",
+    "reviewAndCorrectEnteredServerSettings": "Verificați și corectați setările de server introduse.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Verificați valorile introduse și corectați informațiile evidențiate.",
+    "safeRetryAfterEmailDeliveryRestored": "Puteți reîncerca în siguranță după ce livrarea e-mailurilor este restabilită.",
+    "safeRetryAfterServerResourceChecks": "Puteți reîncerca în siguranță după ce verificările resurselor serverului se restabilesc.",
+    "safeRetryAfterTemporaryLockClears": "Puteți reîncerca în siguranță după ce blocarea temporară este ridicată.",
+    "safeRetryRead": "Puteți reîncerca în siguranță această citire.",
+    "safeRetrySameAuthenticationOperationAfter": "Puteți reîncerca în siguranță aceeași operațiune de autentificare după ce stocarea se restabilește.",
+    "safeRetrySameContentChangeAfter": "Puteți reîncerca în siguranță aceeași modificare de conținut după ce blocarea temporară este ridicată.",
+    "safeRetrySameContentChangeAfter2": "Puteți reîncerca în siguranță aceeași modificare de conținut după ce stocarea se restabilește.",
+    "safeRetrySameDlpPolicySave": "Puteți reîncerca în siguranță aceeași salvare a politicii DLP după ce stocarea se restabilește.",
+    "safeRetrySameDlpPolicySave2": "Puteți reîncerca în siguranță aceeași salvare a politicii DLP după ce blocarea temporară este ridicată.",
+    "safeRetrySameDomainVerificationAfter": "Puteți reîncerca în siguranță aceeași verificare a domeniului după ce serviciul se restabilește.",
+    "safeRetrySameFileOperationAfter": "Puteți reîncerca în siguranță aceeași operațiune de fișier după ce stocarea devine disponibilă.",
+    "safeRetrySameFileOperationAfter2": "Puteți reîncerca în siguranță aceeași operațiune de fișier după ce stocarea se restabilește.",
+    "safeRetrySameFileOperationAfter3": "Puteți reîncerca în siguranță aceeași operațiune de fișier după ce blocarea temporară este ridicată.",
+    "safeRetrySameFormOperationAfter": "Puteți reîncerca în siguranță aceeași operațiune de formular după ce stocarea se restabilește.",
+    "safeRetrySameFormOperationAfter2": "Puteți reîncerca în siguranță aceeași operațiune de formular după ce blocarea temporară este ridicată.",
+    "safeRetrySameOperationAfterStorage": "Puteți reîncerca în siguranță aceeași operațiune după ce stocarea se restabilește.",
+    "safeRetrySameOperationAfterTemporary": "Puteți reîncerca în siguranță aceeași operațiune după ce blocarea temporară este ridicată.",
+    "safeRetrySameSettingsAfterSecret": "Puteți reîncerca în siguranță aceleași setări după ce stocarea secretelor se restabilește.",
+    "safeRetrySameSettingsSaveAfter": "Puteți reîncerca în siguranță aceeași salvare a setărilor după corectarea valorilor nevalide.",
+    "safeRetryWithSameJobIdentifier": "Puteți reîncerca în siguranță aceeași sarcină.",
+    "safeRetryWithSameJobIdentity": "Puteți reîncerca în siguranță aceeași sarcină.",
+    "safeSignInInsteadCreatingAnother": "Este sigur să te conectezi în loc să creezi un alt cont.",
+    "safeStartNewProviderSignIn": "Este sigur să începi mai târziu o nouă conectare prin furnizor.",
+    "safeTryAgainAfterCorrectingDetails": "Puteți reîncerca în siguranță după corectarea detaliilor.",
+    "safeTryAgainAfterCorrectingInput": "Puteți reîncerca în siguranță după corectarea datelor introduse.",
+    "safeTryAgainAfterWait": "Puteți reîncerca în siguranță după perioada de așteptare.",
+    "serverTakesNoChangesNow": "Acest server nu poate accesa locația de backup, așa că nu acceptă modificări în acest moment.",
+    "serverDataMovedElsewhere": "Datele acestui server au fost mutate pe alt server.",
+    "doItOnNewServer": "Faceți acest lucru pe noul server.",
+    "serverDataMovedNoRetry": "Reîncercarea aici nu va salva datele.",
+    "sameRequestIdentityCanRetriedSafely": "Aceeași cerere poate fi reîncercată în siguranță după o scurtă așteptare.",
+    "saveSameDlpPolicyAgainAfter": "Salvați din nou aceeași politică DLP după ce stocarea serverului devine din nou disponibilă.",
+    "saveSameDlpPolicyAgainAfter2": "Salvați din nou aceeași politică DLP după ce cealaltă operațiune de pe server se încheie.",
+    "serverAccountStorageTemporarilyUnavailable": "Stocarea contului pe server este temporar indisponibilă.",
+    "serverCannotCurrentlyConfirmResourceState": "Serverul nu poate confirma momentan starea resurselor sale.",
+    "serverCouldNotCompleteAdministratorSettings": "Serverul nu a putut finaliza salvarea setărilor administratorului.",
+    "serverCouldNotCompleteAdministratorSetup": "Serverul nu a putut finaliza cererea de configurare a administratorului.",
+    "serverCouldNotCompleteBackupLifecycle": "Serverul nu a putut finaliza copia de rezervă.",
+    "serverCouldNotLoadBackupState": "Serverul nu a putut încărca starea acelei copii de rezervă.",
+    "serverCouldNotProtectAdministratorSecret": "Serverul nu a putut proteja valorile secrete ale administratorului.",
+    "serverCouldNotReadAdministratorState": "Serverul nu a putut citi starea administratorului.",
+    "serverCouldNotReadOneExact": "Serverul nu a putut citi un instantaneu coerent al raportului.",
+    "serverDetectedAndIsolatedIncompleteContent": "Serverul a găsit o înregistrare de conținut incompletă și a izolat-o.",
+    "serverFileStorageTemporarilyUnavailable": "Stocarea fișierelor pe server este temporar indisponibilă.",
+    "serverFormStorageTemporarilyUnavailable": "Stocarea formularelor pe server este temporar indisponibilă.",
+    "serverPageContentStorageTemporarilyUnavailable": "Stocarea conținutului paginilor pe server este temporar indisponibilă.",
+    "serverSettingsChangedAfterScreenLoaded": "Setările serverului s-au modificat după încărcarea acestui ecran.",
+    "serverStorageTemporarilyUnavailable": "Stocarea serverului este temporar indisponibilă.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Stocarea serverului a fost temporar indisponibilă, așa că arhiva nu a putut fi creată.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Stocarea serverului este temporar indisponibilă, așa că politica DLP nu a putut fi salvată.",
+    "signInAttemptIdentifierAlreadyBelongs": "Această încercare de conectare a fost deja folosită cu alte date.",
+    "signInOrAccountActionLink": "Linkul de conectare sau de acțiune asupra contului nu mai este valabil.",
+    "signInWithAuthorizedAccountOr": "Conectează-te cu un cont autorizat sau solicită acces unui administrator.",
+    "signInWithExistingAdministratorAccount": "Conectează-te cu contul de administrator existent.",
+    "signInWithServerAdministratorAccount": "Conectează-te cu un cont de administrator de server sau solicită acces unui alt administrator.",
+    "startAccountActionAgainGetNew": "Începeți din nou acțiunea asupra contului pentru a obține un link nou.",
+    "startReplacementExportFromLatestWorkspace": "Începeți un export de înlocuire din cel mai recent spațiu de lucru.",
+    "storedBackupDidNotMatchVerified": "Copia de rezervă stocată nu corespundea fișierului verificat.",
+    "submittedInformationDidNotMeetOperation": "Informațiile trimise nu au îndeplinit cerințele operațiunii.",
+    "tooManyRequestsLimited": "S-au făcut prea multe cereri, așa că această operațiune este limitată.",
+    "tooManyRequestsMadeSoOperation": "S-au făcut prea multe solicitări, așa că această operațiune este limitată temporar.",
+    "tryAgainAfterServerStorageRecovers": "Încearcă din nou după ce stocarea serverului se restabilește.",
+    "tryAgainInHours_one": "Încearcă din nou peste aproximativ o oră.",
+    "tryAgainInHours_few": "Încearcă din nou peste aproximativ {{count}} ore.",
+    "tryAgainInHours_other": "Încearcă din nou peste aproximativ {{count}} de ore.",
+    "tryAgainInMinutes_one": "Încearcă din nou peste aproximativ un minut.",
+    "tryAgainInMinutes_few": "Încearcă din nou peste aproximativ {{count}} minute.",
+    "tryAgainInMinutes_other": "Încearcă din nou peste aproximativ {{count}} de minute.",
+    "tryAgainInSeconds_one": "Încearcă din nou peste aproximativ {{count}} secundă.",
+    "tryAgainInSeconds_few": "Încearcă din nou peste aproximativ {{count}} secunde.",
+    "tryAgainInSeconds_other": "Încearcă din nou peste aproximativ {{count}} de secunde.",
+    "useAnotherSignInMethodOr": "Folosește o altă metodă de conectare sau încearcă acest furnizor mai târziu.",
+    "useResumableArchiveUploadSoProgress": "Folosește încărcarea reluabilă a arhivei, astfel încât progresul să poată continua din starea salvată.",
+    "useResumableUploadSoProgressCan": "Folosește încărcarea reluabilă, astfel încât progresul să poată continua din starea salvată.",
+    "waitForCompletionThenRetryDownload": "Așteaptă să se finalizeze, apoi încearcă din nou descărcarea.",
+    "waitForOtherServerOperationFinish": "Așteaptă să se încheie cealaltă operațiune de pe server, apoi încearcă din nou.",
+    "waitForStorageReconciliationAdvanceThen": "Așteaptă puțin ca stocarea să se sincronizeze, apoi încearcă din nou aceeași operațiune.",
+    "waitMomentBeforeTryingAgain": "Așteaptă puțin înainte de a încerca din nou.",
+    "workspaceChangedWhileExportRunning": "Spațiul de lucru s-a modificat în timpul exportului.",
+    "youNotSignedInAndNo": "Nu ai fost conectat, iar datele contului nu au fost modificate.",
+    "pageIsLocked": "Pagina este blocată, așa că nu se pot face modificări.",
+    "unlockPageThenTryAgain": "Deblochează pagina pentru tine sau pentru toți din meniul paginii, apoi încearcă din nou.",
+    "safeToRetryAfterUnlocking": "Poți încerca din nou în siguranță după ce deblochezi pagina.",
+    "databaseIsLocked": "Baza de date este blocată, așa că proprietățile și vizualizările sale nu pot fi modificate.",
+    "unlockDatabaseThenTryAgain": "Deblochează baza de date pentru tine sau pentru toți din butonul „Blocat”, apoi încearcă din nou.",
+    "databaseEditorsCanUnlock": "Doar cineva care poate edita baza de date o poate debloca.",
+    "safeToRetryAfterDatabaseUnlocked": "Poți încerca din nou în siguranță după ce baza de date este deblocată.",
+    "rowMoveNeedsFullAccess": "Mutarea ei pe altă pagină necesită acces complet la ea și acces de editare la destinație.",
+    "askFullAccessHolderToMoveIt": "Roagă pe cineva cu acces complet să o mute sau alege un loc pe care îl poți edita.",
+    "rowMoveRefusedUntilAccess": "Mutarea ei va fi refuzată din nou până când ai acel acces.",
+    "otherWorkspaceCantMoveOrLink": "Elementele nu pot fi mutate sau conectate între spații de lucru.",
+    "makeItAnewInThatWorkspace": "Creează-l în acel spațiu de lucru și copiază-i conținutul. O pagină întreagă se mută sau se copiază acolo din opțiunea Mută în, alegând spațiul de lucru.",
+    "otherWorkspaceRefusedAgain": "O nouă încercare este refuzată din același motiv.",
+    "signInEndedForThisBrowser": "Sesiunea de conectare a acestui browser a expirat sau a fost încheiată.",
+    "signInEndedForThisApp": "Sesiunea de conectare a acestei aplicații a expirat sau a fost încheiată.",
+    "signInAgainToContinue": "Conectează-te din nou pentru a continua.",
+    "retryAfterSigningInAgain": "Încearcă din nou după reconectare.",
+    "serverRestoredSinceDeviceCopies": "Datele acestui server s-au schimbat, iar copiile de pe acest dispozitiv sunt dinaintea modificării.",
+    "changeKeptOnThisDeviceOnly": "Modificarea nu a fost salvată pe server; există doar pe acest dispozitiv.",
+    "takeServerContentAnew": "Alege „Reîncarcă de pe server” pentru a obține conținutul actual al serverului.",
+    "retryAfterTakingContentAnew": "Încearcă din nou după ce reîncarci de pe server.",
+    "propertyUsedByViewOrDependency": "Această proprietate nu poate fi modificată acum: este titlul sau se află în Proprietăți șterse.",
+    "changeWhatUsesPropertyFirst": "Reîncarcă pagina pentru a vedea proprietatea așa cum este acum.",
+    "retryAfterChangingWhatUsesProperty": "Restaurează mai întâi o proprietate ștearsă pentru a o modifica.",
+    "workspaceAlreadyHasContentForArchive": "Acest spațiu de lucru are deja conținut, așa că o arhivă Leafen nu poate fi importată în el.",
+    "makeNewWorkspaceToImportArchive": "Creează un spațiu de lucru nou și importă această arhivă acolo.",
+    "retryInNewWorkspace": "O poți importa din nou într-un spațiu de lucru nou.",
+    "importFileDoesNotFitFormat": "Fișierul nu corespunde formatului pe care îl citește Leafen, așa că nu a fost importat nimic.",
+    "exportFileAgainToImport": "Exportă din nou fișierul din locul în care a fost creat, apoi importă acel fișier.",
+    "sameFileRefusedAgain": "Importarea din nou a aceluiași fișier nu va funcționa.",
+    "pageBusyWithAnotherChange": "Această pagină este ocupată cu o altă modificare, așa că nu poate fi editată pentru moment.",
+    "tryAgainOnceThatChangeIsDone": "Încearcă din nou după ce acea modificare este finalizată.",
+    "importPageInTrash": "Pagina în care se importă este în Coșul de gunoi, așa că nu s-a importat nimic.",
+    "restorePageThenImportAgain": "Restaurează pagina din Coșul de gunoi, apoi importă din nou.",
+    "importPageDeletedForGood": "Pagina în care se importă a fost ștearsă definitiv, așa că nu s-a importat nimic.",
+    "ownerBringsDeletedPageBack": "În termen de 30 de zile, proprietarul spațiului de lucru o poate restaura din Securitate → Retenția datelor; apoi restaurează-o din Coșul de gunoi și importă din nou.",
+    "importAgainOnceRestored": "Dacă încerci din nou, nu se va importa până când pagina este restaurată.",
+    "pageInTrashCantChange": "O pagină din Coșul de gunoi nu poate fi modificată până când nu este restaurată.",
+    "restorePageThenTryAgain": "Restaurează pagina din Coșul de gunoi, apoi încearcă din nou.",
+    "tryAgainOnceRestored": "Dacă încerci din nou, nu va funcționa până când pagina este restaurată.",
+    "optionNameHasComma": "Numele unei opțiuni nu poate conține virgulă (,).",
+    "takeCommaOutOrSplitOption": "Elimină virgula sau împarte opțiunea în două.",
+    "optionRefusedUntilRenamed": "Încearcă din nou după ce numele este schimbat.",
+    "optionNameTaken": "Această proprietate are deja o opțiune cu acest nume.",
+    "useAnotherOptionName": "Folosește un alt nume sau alege opțiunea care există deja.",
+    "optionsInUseLeftOut": "Această modificare omite opțiuni folosite de pagini.",
+    "keepOptionsOrDeleteOneByOne": "Păstrează acele opțiuni sau șterge-le pe rând din meniul fiecărei opțiuni.",
+    "optionsRefusedUntilKeptOrDeleted": "O nouă încercare fără modificări este refuzată din același motiv."
+  }
+}

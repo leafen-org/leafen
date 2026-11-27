@@ -1,0 +1,95 @@
+/* A window on a phone as Notion's sheet (phoneWindowSheet.ts): laid on the
+   page from its foot to 16px under the screen's top (10px on an iPhone), full
+   width, its top corners 12px round, keeping the window's own surface, line
+   and shade. Its top 17px is a band holding the grip, 44px wide (38px on an
+   iPhone) and 5px high 6px down in the line colour, as PhoneSheet's grip;
+   the window's own content starts under it. Each window's own placement is
+   set aside, hence the !important; a drag moves it by --phone-window-drag. */
+[data-phone-window="sheet"] {
+  --phone-window-grip: 44px;
+  position: absolute !important;
+  inset: auto 0 0 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: calc(var(--app-height, 100dvh) - 16px) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  border-top: 17px solid transparent !important;
+  border-bottom: 0 !important;
+  border-radius: 12px 12px 0 0 !important;
+  transform: none !important;
+  scale: none !important;
+  translate: 0 var(--phone-window-drag, 0px);
+  background-image:
+    radial-gradient(circle, var(--border-default) 2.5px, transparent 2.6px),
+    radial-gradient(circle, var(--border-default) 2.5px, transparent 2.6px),
+    linear-gradient(var(--border-default), var(--border-default)) !important;
+  background-repeat: no-repeat !important;
+  background-origin: border-box !important;
+  background-clip: border-box !important;
+  background-size: 5px 5px, 5px 5px, calc(var(--phone-window-grip) - 5px) 5px !important;
+  background-position:
+    calc(50% - var(--phone-window-grip) / 2 + 2.5px) 6px,
+    calc(50% + var(--phone-window-grip) / 2 - 2.5px) 6px,
+    50% 6px !important;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: phone-window-rise 180ms ease-out !important;
+}
+
+[data-phone-window="sheet"][data-apple="true"] {
+  --phone-window-grip: 38px;
+  height: calc(var(--app-height, 100dvh) - 10px) !important;
+}
+
+/* A window Notion's phone draws over the whole screen (phoneWindowSheet.ts),
+   as its page export (seen 2026-11-17: 0,0 411 × 781 on the Galaxy A90,
+   402 × 714 on an iPhone, square): laid on the page as a sheet is, the
+   screen's height, on the phone screens' soft ground (dark rgb(32,32,32)),
+   with no grip; what is in it is the window's own phone screen. */
+[data-phone-window="screen"] {
+  position: absolute !important;
+  inset: auto 0 0 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: var(--app-height, 100dvh) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+  scale: none !important;
+  background: var(--bg-soft) !important;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: phone-window-rise 180ms ease-out !important;
+}
+
+@keyframes phone-window-rise {
+  from { translate: 0 24px; opacity: 0.6; }
+  to { translate: 0 0; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-phone-window="sheet"], [data-phone-window="screen"] { animation: none !important; }
+}
+
+/* A choice in a sheet, as Notion's phone's "1년 ⌄" in its new token sheet:
+   36px high, rounded 8px (seen 2026-11-15 at 402pt). Its words keep the
+   window's own type, as a button's do, unless the window is typed
+   throughout (phoneWindowType.ts). */
+[data-phone-window="sheet"] button[data-notion-select-button] {
+  height: 36px !important;
+  border-radius: 8px !important;
+}

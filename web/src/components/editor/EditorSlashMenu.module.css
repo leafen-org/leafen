@@ -1,0 +1,644 @@
+
+/* ── Slash menu ────────────────────────────────────────────── */
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.blockMenuBackdrop {
+  z-index: 1000;
+}
+.slashBackdrop {
+  z-index: 1002;
+}
+/* Floating editor menus sit over dialogs the editor opens in, such as a
+   database template's editor, as the slash menu does. */
+.editorFloatingBackdrop {
+  z-index: 1002;
+}
+.slash {
+  position: absolute;
+  z-index: 1003;
+  top: 28px;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(324px, calc(100vw - 2 * var(--popover-edge)));
+  /* 40% of the window, 448px at most, as Notion's (SlashMenu's placement). */
+  max-height: min(448px, 40vh, calc(100vh - 2 * var(--popover-edge)));
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.slashList {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px;
+}
+/* A menu's groups as Notion's "/", "@" and block menus draw them (seen
+   2026-10-27): rows 1px apart; a group's name 12px/500 in the secondary
+   gray, 6px under what is above it and 8px over its first row; between
+   groups a 1px line 8px in from the rows, 9px under the last row and 12px
+   over the next name. */
+.slashSection,
+.mentionSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--menu-row-space);
+}
+.slashSection + .slashSection,
+.mentionSection + .mentionSection {
+  margin-top: 10px;
+  padding-top: 6px;
+}
+.slashSection + .slashSection::before,
+.mentionSection + .mentionSection::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  height: 1px;
+  background: var(--menu-divider);
+}
+/* A page link's new pages go unnamed: "+"'s first, "[["'s under the pages,
+   9 under the last of them with the line 4 under it, as Notion's (seen
+   2026-11-14 and 2026-11-15 at 1440: "[[섞인", "[[w1315 섞인"); the "@"
+   menu names them "새 페이지". */
+.mentionSection + .mentionSection[data-unnamed] {
+  margin-top: 5px;
+  padding-top: 4px;
+}
+.slashLabel,
+.mentionSectionLabel {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+/* The "@" menu's first group's name sits 4px lower, as Notion's does (seen
+   2026-10-27: "날짜", or "사람" when a search leaves dates out). */
+.mentionSection:not(.mentionSection + .mentionSection) > .mentionSectionLabel {
+  padding-top: 4px;
+}
+/* A group's name in the block menu and the menus that share it: as the
+   groups above, by the menu tokens. */
+.menuLabel {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+  color: var(--text-secondary);
+}
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.slashEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+/* A row, as Notion's: 32px, a 20px icon 8px in, the name 8px after it. */
+.slashItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  text-align: start;
+}
+.slashItem .slashGlyph {
+  width: 20px;
+  height: 20px;
+  border: 0;
+  background: transparent;
+}
+.slashItem[data-active="true"],
+.slashItem:hover,
+.slashItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The row the arrow keys chose is ringed, as Notion's; the first row as the
+   menu opens or filters, and one the pointer chose, are only gray (seen
+   2026-11-01). */
+.slash[data-moved-by="keys"] .slashItem[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* Filtered, the rows touch (32px apart, 33 in the whole list) and "페이지
+   위치:" is a 28px row, as Notion's (seen 2026-11-01, "/page"). */
+.slash[data-filtered="true"] .slashSection {
+  gap: 0;
+}
+.slash[data-filtered="true"] .slashLabel {
+  margin-bottom: 9px;
+}
+.slashItem[data-page-in="true"] {
+  min-height: 28px;
+}
+/* An empty line's "/" menu draws each block in a tile, a block menu's submenu its icon alone (.blockSubmenu .turnGlyph),
+   the mark in the menu rows' icon color, as Notion's "/" and "전환" (seen 2026-11-20: rgb(230,229,227) in dark). */
+.slashGlyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  font-size: 16px;
+  background: var(--bg-app);
+}
+.slashGlyph svg,
+.turnGlyph svg {
+  flex: 0 0 auto;
+  color: var(--icon-primary);
+}
+.slashText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.slashName {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-default);
+}
+/* A slash row is one line: the name, then its Markdown at the end. */
+.slashItem .slashText {
+  flex: 1 1 auto;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.slashItem .slashName {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 400;
+}
+/* A long name — Korean's page mention item — stays on the row's one line
+   and ends in "…", so every row keeps Notion's 32px. */
+.slashNameText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.slashShortcut {
+  margin-inline-start: auto;
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* An app's item ends with Leafen's "앱" mark and the app's name. */
+.slashAppMark {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+  margin-inline-start: auto;
+  overflow: hidden;
+  padding: 0 5px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The chosen row's description, in a dark tip centred beside it. */
+.slashTip {
+  position: fixed;
+  z-index: 1004;
+  width: 156px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgb(44, 44, 43);
+  box-shadow: var(--shadow-tip);
+  color: rgb(240, 239, 237);
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+/* Notion's pictured tip adds 4px above and below its inner content. */
+.slashTip:has(> [data-slash-tip-preview]) {
+  padding-block: 9px;
+}
+/* "메뉴 닫기 esc" under a line at the menu's foot, a row of its own, as
+   Notion's (seen 2026-11-12): a 2px band with its 1px line in the middle, the
+   32px row 4px in under it, all 42px on the menu's own background. */
+.slashFooter {
+  position: relative;
+  flex: 0 0 auto;
+  display: block;
+  width: 100%;
+  padding: 6px 4px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.slashFooter::before {
+  content: "";
+  position: absolute;
+  top: 0.5px;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--border-subtle);
+}
+.slashFooterRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+.slashFooter:hover .slashFooterRow {
+  background: var(--bg-hover);
+}
+.slashFooter kbd {
+  color: var(--text-tertiary);
+  font-family: inherit;
+  font-size: 12px;
+}
+.slashGroupSuffix {
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+/* Notion's blue "New" after a name (seen 2026-10-27), 12px after it. */
+.slashNew {
+  flex: none;
+  margin-inline-start: 7px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(0, 124, 215, 0.094);
+  color: var(--accent-blue);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+}
+:global([data-theme="dark"]) .slashNew {
+  background: rgba(67, 155, 255, 0.24);
+}
+/* Notion's grey "베타" after "여기에서 발표" (seen 2026-10-31): 11px on a faint pill. */
+.slashBeta {
+  flex: none;
+  margin-inline-start: 7px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--icon-secondary);
+  font-size: 11px;
+  line-height: 14px;
+}
+:global([data-theme="dark"]) .slashBeta {
+  background: var(--bg-hover);
+}
+.slashDesc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.slash[data-template-slash-menu="true"] .slashItem {
+  min-height: 34px;
+  padding: 3px 6px;
+  gap: 8px;
+}
+.slash[data-template-slash-menu="true"] .slashGlyph {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  background: transparent;
+}
+.slash[data-template-slash-menu="true"] .slashDesc {
+  display: none;
+}
+.databaseSourceMenu {
+  position: absolute;
+  z-index: 1003;
+  top: 28px;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(360px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: min(430px, calc(100vh - 2 * var(--popover-edge)));
+  overflow: hidden;
+  padding: 6px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.databaseSourceLabel {
+  padding: 7px 8px 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+.databaseSourceSearch {
+  flex: 0 0 auto;
+  height: 32px;
+  margin: 0 4px 4px;
+  padding: 1px 10px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+.databaseSourceSearch:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.databaseSourceResults {
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 2px;
+}
+.databaseSourceItem {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 46px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  color: var(--text-default);
+  text-align: start;
+}
+.databaseSourceItem[data-active="true"],
+.databaseSourceItem:hover,
+.databaseSourceItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.databaseSourceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  background: var(--bg-app);
+}
+.databaseSourceText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.databaseSourceTitle,
+.databaseSourcePath {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.databaseSourceTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-default);
+}
+.databaseSourcePath {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.databaseSourceEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+/* 330px wide (MentionMenu), its rows the width inside it, 322px, or 307
+   beside a scroll bar's room while they scroll (Notion's, seen 2026-11-12),
+   and its edge is the shadow's ring alone. It is at most 40% of the window
+   high, as Notion's "@", "[[" and "+" menus (seen 2026-11-12: 40vh, 289.2 in a
+   723 window); a phone's list keeps 310 (MentionMenu's placement), the page's own a panel (MentionPhonePanel.module.css). Its rows
+   scroll in a list inside the box, which fades at the edges it runs on past
+   (useEdgeFade), as Notion's (seen 2026-11-13). */
+.mentionMenu {
+  position: absolute;
+  z-index: 1003;
+  top: 28px;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  width: 330px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  max-height: min(40vh, calc(100vh - 2 * var(--popover-edge)));
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border: 0;
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.mentionMenuList {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* A scroll bar that always shows (a Mac set to show them) takes its room
+     from the rows' own width, which left a sideways bar under them (seen
+     2026-11-06: 328 wide in 315); their long names end in "…" already. */
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+.mentionMenuList > * {
+  max-width: 100%;
+}
+.mentionMenuList[data-scrolls="true"] > * {
+  width: 307px;
+}
+/* On a phone the list under the line is the desktop's 330, 22 before the
+   caret after its "@" (10 before a "[[" or "+"), slid in to keep 12 from the
+   screen's end, with no head, as Notion's (measured 2026-11-13 in iPhone
+   Safari at 402: a line's start "@" at 40 drew it 18–348, one at 133 drew
+   it 60–390); its rows take that width. */
+.mentionMenuPhone {
+  max-height: 30lvh;
+}
+.mentionMenuPhone .mentionMenuList > * {
+  width: auto;
+}
+/* The "@" menu as Notion's (seen 2026-10-17): 315px, its groups named in
+   12px/500 gray, its rows the menu row — a 20px mark, the name at 36px —
+   a page's place on a second 12px line. */
+/* An automation message's "‹ 페이지 실행의 속성": its heading goes back, as Notion's (seen 2026-10-23). */
+.mentionBack {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 8px 4px;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-align: start;
+  cursor: pointer;
+}
+.mentionBack:hover {
+  color: var(--text-primary);
+}
+.mentionOpens {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+}
+.mentionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+/* A row's name keeps to its one line, as Notion's (seen 2026-11-12). */
+.mentionItem .slashName {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 400;
+  white-space: nowrap;
+}
+/* A page's row with its place under its name, as Notion's (seen 2026-11-12):
+   45px high, its name and its place each a 16.8px line, 2px apart, in the
+   row's middle; its icon at the row's top, 6px down. */
+.mentionPlaceItem {
+  min-height: 45px;
+}
+/* The page links' "N개 결과 더 보기": a row with "…" for its icon, both in the
+   secondary gray, as Notion's (seen 2026-11-12). */
+.mentionMore > .mentionGlyph,
+.mentionMore .slashName {
+  color: var(--text-secondary);
+}
+/* A page's words take the row's room, so a searched title's end keeps up to half of it (MiddleTitle). */
+.mentionItem .slashText {
+  flex: 1 1 auto;
+}
+.mentionPlaceItem > .mentionGlyph {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+.mentionPlaceItem .slashText {
+  gap: 2px;
+}
+.mentionPlaceItem .slashName,
+.mentionPlaceItem .slashDesc {
+  line-height: 16.8px;
+}
+.mentionLine {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+/* A person the page doesn't open to: at the row's end a person with a plus
+   while they may be invited, a crossed bell once they won't be told, in the
+   icons' grey (Notion's 17px, seen 2026-11-07). */
+.mentionReach {
+  display: flex;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  color: var(--icon-secondary);
+}
+.mentionLine:has(.mentionReach) {
+  flex: 1 1 auto;
+}
+.mentionHint {
+  overflow: hidden;
+  color: var(--text-disabled);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mentionItem[data-active="true"],
+.mentionItem:hover,
+.mentionItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The row the arrow keys chose is ringed, as the "/" menu's: the first row
+   as the menu opens, and one the pointer chose, are only gray (Notion's "@",
+   "[[" and "+", seen 2026-11-11). */
+.mentionMenu[data-moved-by="keys"] .mentionItem[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.mentionGlyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+  font-size: 11px;
+  font-weight: 500;
+}
+/* A person on a 20px circle, as Notion's pictures and first letters. */
+.mentionGlyph[data-kind="person"] {
+  border-radius: 50%;
+  color: var(--text-secondary);
+}
+/* A date's, a reminder's, an invite's and a new page's icon is in its row's
+   text color, as Notion's (seen 2026-11-12: its icons take the row's color,
+   rgb(240, 239, 237) in dark); a page's own icon and "…" keep the gray. */
+.mentionGlyph:is([data-kind="date"], [data-kind="invite"], [data-kind="sub_page"], [data-kind="add_page"]) {
+  color: inherit;
+}
+/* The words typed in a new page's row, at 500 as Notion's (seen 2026-11-11). */
+.mentionTyped {
+  font-weight: 500;
+}
+/* A page shows its own icon, as in Notion's menu. */
+.mentionGlyph[data-kind="page"] {
+  background: none;
+  font-size: 16px;
+}

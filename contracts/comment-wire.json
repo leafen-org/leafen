@@ -1,0 +1,524 @@
+{
+  "schemaVersion": 1,
+  "name": "comment",
+  "operations": [
+    { "goName": "commentList", "tsName": "listComments", "method": "GET", "path": "/pages/{pageId}/comments" },
+    { "goName": "commentCreate", "tsName": "createComment", "method": "POST", "path": "/pages/{pageId}/comments" },
+    { "goName": "commentUpdate", "tsName": "updateComment", "method": "PATCH", "path": "/pages/{pageId}/comments/{commentId}" },
+    { "goName": "commentDelete", "tsName": "deleteComment", "method": "DELETE", "path": "/pages/{pageId}/comments/{commentId}" },
+    { "goName": "commentReactionSet", "tsName": "setCommentReaction", "method": "PUT", "path": "/pages/{pageId}/comments/{commentId}/reactions" },
+    { "goName": "pageReactionSet", "tsName": "setPageReaction", "method": "PUT", "path": "/pages/{pageId}/reactions" },
+    { "goName": "pageReactionResolve", "tsName": "resolvePageReactions", "method": "POST", "path": "/pages/{pageId}/reactions/resolve" },
+    { "goName": "commentThreadStateSet", "tsName": "setCommentThreadState", "method": "PUT", "path": "/pages/{pageId}/comments/{commentId}/thread-state" },
+    { "goName": "suggestionCreate", "tsName": "createSuggestion", "method": "POST", "path": "/pages/{pageId}/suggestions" },
+    { "goName": "suggestionResolve", "tsName": "resolveSuggestion", "method": "POST", "path": "/pages/{pageId}/suggestions/{commentId}/resolve" },
+    { "goName": "commentDeletionRead", "tsName": "readCommentDeletion", "method": "GET", "path": "/pages/{pageId}/comment-deletions/{jobId}" },
+    { "goName": "commentDeletionContinue", "tsName": "continueCommentDeletion", "method": "POST", "path": "/pages/{pageId}/comment-deletions/{jobId}" },
+    { "goName": "notificationInboxList", "tsName": "listNotificationInbox", "method": "GET", "path": "/workspaces/{workspaceId}/notifications" },
+    { "goName": "notificationActivitySync", "tsName": "syncNotificationActivities", "method": "POST", "path": "/workspaces/{workspaceId}/notifications/sync" },
+    { "goName": "notificationReadMutate", "tsName": "mutateNotificationRead", "method": "POST", "path": "/workspaces/{workspaceId}/notifications/read" },
+    { "goName": "notificationReadGet", "tsName": "getNotificationReadSettlement", "method": "GET", "path": "/workspaces/{workspaceId}/notification-read-settlements/{settlementId}" },
+    { "goName": "notificationReadContinue", "tsName": "continueNotificationReadSettlement", "method": "POST", "path": "/workspaces/{workspaceId}/notification-read-settlements/{settlementId}/continue" },
+    { "goName": "notificationArchiveMutate", "tsName": "archiveNotifications", "method": "POST", "path": "/workspaces/{workspaceId}/notifications/archive" },
+    { "goName": "notificationStateMutate", "tsName": "changeNotificationState", "method": "POST", "path": "/workspaces/{workspaceId}/notifications/state" },
+    { "goName": "databaseRowCommentList", "tsName": "listDatabaseRowComments", "method": "GET", "path": "/database-rows/{rowId}/comments" },
+    { "goName": "databaseRowCommentCreate", "tsName": "createDatabaseRowComment", "method": "POST", "path": "/database-rows/{rowId}/comments" },
+    { "goName": "databaseRowCommentUpdate", "tsName": "updateDatabaseRowComment", "method": "PATCH", "path": "/database-rows/{rowId}/comments/{commentId}" },
+    { "goName": "databaseRowCommentDelete", "tsName": "deleteDatabaseRowComment", "method": "DELETE", "path": "/database-rows/{rowId}/comments/{commentId}" },
+    { "goName": "databaseRowCommentReactionSet", "tsName": "setDatabaseRowCommentReaction", "method": "PUT", "path": "/database-rows/{rowId}/comments/{commentId}/reactions" },
+    { "goName": "databaseRowPageReactionSet", "tsName": "setDatabaseRowPageReaction", "method": "PUT", "path": "/database-rows/{rowId}/reactions" },
+    { "goName": "databaseRowPageReactionResolve", "tsName": "resolveDatabaseRowPageReactions", "method": "POST", "path": "/database-rows/{rowId}/reactions/resolve" },
+    { "goName": "databaseRowCommentThreadStateSet", "tsName": "setDatabaseRowCommentThreadState", "method": "PUT", "path": "/database-rows/{rowId}/comments/{commentId}/thread-state" },
+    { "goName": "databaseRowSuggestionCreate", "tsName": "createDatabaseRowSuggestion", "method": "POST", "path": "/database-rows/{rowId}/suggestions" },
+    { "goName": "databaseRowSuggestionResolve", "tsName": "resolveDatabaseRowSuggestion", "method": "POST", "path": "/database-rows/{rowId}/suggestions/{commentId}/resolve" },
+    { "goName": "propertyDiscussionList", "tsName": "listPropertyDiscussions", "method": "GET", "path": "/pages/{pageId}/property-discussions" },
+    { "goName": "commentLinkRead", "tsName": "readCommentLink", "method": "GET", "path": "/pages/{pageId}/comment-links/{commentId}" }
+  ],
+  "bounds": {
+    "listPage": 32,
+    "deleteTurn": 32,
+    "identifierRunes": 160,
+    "bodyBytes": 2097152,
+    "cursorBytes": 1024,
+    "notificationInboxDefault": 50,
+    "notificationInboxMax": 200,
+    "notificationInboxPageSet": 128,
+    "notificationSyncActivities": 100,
+    "notificationReadSelected": 200,
+    "notificationReadTurn": 64,
+    "notificationArchiveSelected": 200,
+    "reactionEmojiBytes": 64
+  },
+  "errors": {
+    "invalid": "LEAFEN_COMMENT_INVALID",
+    "bodyShape": "LEAFEN_COMMENT_BODY_SHAPE",
+    "parentScope": "LEAFEN_COMMENT_PARENT_SCOPE",
+    "blockScope": "LEAFEN_COMMENT_BLOCK_SCOPE",
+    "notFound": "LEAFEN_COMMENT_NOT_FOUND",
+    "idConflict": "LEAFEN_COMMENT_ID_CONFLICT",
+    "requestConflict": "LEAFEN_COMMENT_REQUEST_CONFLICT",
+    "revisionConflict": "LEAFEN_COMMENT_REVISION_CONFLICT",
+    "suggestionTextChanged": "LEAFEN_COMMENT_SUGGESTION_TEXT_CHANGED",
+    "suggestionSettled": "LEAFEN_COMMENT_SUGGESTION_SETTLED",
+    "snapshotChanged": "LEAFEN_COMMENT_SNAPSHOT_CHANGED",
+    "deleteBusy": "LEAFEN_COMMENT_DELETE_BUSY",
+    "storageUnavailable": "LEAFEN_COMMENT_STORAGE_UNAVAILABLE",
+    "databaseBusy": "LEAFEN_COMMENT_DATABASE_BUSY",
+    "failed": "LEAFEN_COMMENT_FAILED",
+    "notificationInboxInvalid": "LEAFEN_NOTIFICATION_INBOX_INVALID",
+    "notificationInboxStorageUnavailable": "LEAFEN_NOTIFICATION_INBOX_STORAGE_UNAVAILABLE",
+    "notificationInboxDatabaseBusy": "LEAFEN_NOTIFICATION_INBOX_DATABASE_BUSY",
+    "notificationInboxFailed": "LEAFEN_NOTIFICATION_INBOX_FAILED",
+    "notificationSyncInvalid": "LEAFEN_NOTIFICATION_SYNC_INVALID",
+    "notificationSyncTargetChanged": "LEAFEN_NOTIFICATION_SYNC_TARGET_CHANGED",
+    "notificationSyncStorageUnavailable": "LEAFEN_NOTIFICATION_SYNC_STORAGE_UNAVAILABLE",
+    "notificationSyncDatabaseBusy": "LEAFEN_NOTIFICATION_SYNC_DATABASE_BUSY",
+    "notificationSyncFailed": "LEAFEN_NOTIFICATION_SYNC_FAILED",
+    "notificationReadInvalid": "LEAFEN_NOTIFICATION_READ_INVALID",
+    "notificationReadRequestConflict": "LEAFEN_NOTIFICATION_READ_REQUEST_CONFLICT",
+    "notificationReadStateConflict": "LEAFEN_NOTIFICATION_READ_STATE_CONFLICT",
+    "notificationReadNotFound": "LEAFEN_NOTIFICATION_READ_NOT_FOUND",
+    "notificationReadStorageUnavailable": "LEAFEN_NOTIFICATION_READ_STORAGE_UNAVAILABLE",
+    "notificationReadDatabaseBusy": "LEAFEN_NOTIFICATION_READ_DATABASE_BUSY",
+    "notificationReadFailed": "LEAFEN_NOTIFICATION_READ_FAILED",
+    "notificationArchiveInvalid": "LEAFEN_NOTIFICATION_ARCHIVE_INVALID",
+    "notificationArchiveRequestConflict": "LEAFEN_NOTIFICATION_ARCHIVE_REQUEST_CONFLICT",
+    "notificationArchiveStorageUnavailable": "LEAFEN_NOTIFICATION_ARCHIVE_STORAGE_UNAVAILABLE",
+    "notificationArchiveDatabaseBusy": "LEAFEN_NOTIFICATION_ARCHIVE_DATABASE_BUSY",
+    "notificationArchiveFailed": "LEAFEN_NOTIFICATION_ARCHIVE_FAILED",
+    "notificationStateInvalid": "LEAFEN_NOTIFICATION_STATE_INVALID",
+    "notificationStateStorageUnavailable": "LEAFEN_NOTIFICATION_STATE_STORAGE_UNAVAILABLE",
+    "notificationStateDatabaseBusy": "LEAFEN_NOTIFICATION_STATE_DATABASE_BUSY",
+    "notificationStateFailed": "LEAFEN_NOTIFICATION_STATE_FAILED"
+  },
+  "records": [
+    {
+      "goName": "commentRecord",
+      "tsName": "CommentRecord",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "AuthorID", "jsonName": "authorId", "goType": "string", "tsType": "string" },
+        { "goName": "Body", "jsonName": "body", "goType": "json.RawMessage", "tsType": "unknown" },
+        { "goName": "Resolved", "jsonName": "resolved", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "EditedAt", "jsonName": "editedAt", "goType": "string", "tsType": "string" },
+        { "goName": "Attachments", "jsonName": "attachments", "goType": "[]commentAttachment", "tsType": "CommentAttachment[]", "optional": true },
+        { "goName": "Reactions", "jsonName": "reactions", "goType": "[]commentReaction", "tsType": "CommentReaction[]", "optional": true },
+        { "goName": "RepliesMuted", "jsonName": "repliesMuted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Unread", "jsonName": "unread", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "New", "jsonName": "new", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "OriginalGone", "jsonName": "originalGone", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "commentAttachment",
+      "tsName": "CommentAttachment",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "commentReaction",
+      "tsName": "CommentReaction",
+      "fields": [
+        { "goName": "Emoji", "jsonName": "emoji", "goType": "string", "tsType": "string" },
+        { "goName": "UserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "commentReactionInput",
+      "tsName": "CommentReactionInput",
+      "fields": [
+        { "goName": "Emoji", "jsonName": "emoji", "goType": "string", "tsType": "string" },
+        { "goName": "Reacted", "jsonName": "reacted", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "commentThreadStateInput",
+      "tsName": "CommentThreadStateInput",
+      "fields": [
+        { "goName": "RepliesMuted", "jsonName": "repliesMuted", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Unread", "jsonName": "unread", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "commentCreateInput",
+      "tsName": "CommentCreateInput",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Body", "jsonName": "body", "goType": "json.RawMessage", "tsType": "CommentBody" }
+      ]
+    },
+    {
+      "goName": "commentBodyShape",
+      "tsName": "CommentBody",
+      "fields": [
+        { "goName": "Rich", "jsonName": "rich", "goType": "[]commentSpanShape", "tsType": "CommentSpan[]" },
+        { "goName": "AttachmentIDs", "jsonName": "attachmentIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Quote", "jsonName": "quote", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "QuoteStart", "jsonName": "quoteStart", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true },
+        { "goName": "QuoteEnd", "jsonName": "quoteEnd", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true },
+        { "goName": "QuoteField", "jsonName": "quoteField", "goType": "string", "tsType": "\"caption\" | `cell:${number}`", "optional": true },
+        { "goName": "QuoteBlocks", "jsonName": "quoteBlocks", "goType": "[]commentQuoteBlock", "tsType": "CommentQuoteBlock[]", "optional": true },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PropertyName", "jsonName": "propertyName", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "commentQuoteBlock",
+      "tsName": "CommentQuoteBlock",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "Field", "jsonName": "field", "goType": "string", "tsType": "\"caption\"", "optional": true },
+        { "goName": "Start", "jsonName": "start", "goType": "int", "tsType": "number" },
+        { "goName": "End", "jsonName": "end", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "commentSpanShape",
+      "tsName": "CommentSpan",
+      "fields": [
+        { "goName": "Text", "jsonName": "text", "goType": "string", "tsType": "string" },
+        { "goName": "Bold", "jsonName": "bold", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Italic", "jsonName": "italic", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Code", "jsonName": "code", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Link", "jsonName": "link", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Mention", "jsonName": "mention", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "commentUpdateInput",
+      "tsName": "CommentUpdateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Body", "jsonName": "body", "goType": "json.RawMessage", "tsType": "CommentBody", "optional": true },
+        { "goName": "Resolved", "jsonName": "resolved", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "suggestionCreateInput",
+      "tsName": "SuggestionCreateInput",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"insert\" | \"delete\" | \"replace\" | \"format\" | \"block\" | \"split\" | \"turn\" | \"remove\"" },
+        { "goName": "Offset", "jsonName": "offset", "goType": "int", "tsType": "number" },
+        { "goName": "Length", "jsonName": "length", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Text", "jsonName": "text", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Marks", "jsonName": "marks", "goType": "map[string]any", "tsType": "Record<string, boolean | string>", "optional": true },
+        { "goName": "NewBlockID", "jsonName": "newBlockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "BlockType", "jsonName": "blockType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FirstChild", "jsonName": "firstChild", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Picked", "jsonName": "picked", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Stay", "jsonName": "stay", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "BlockIDs", "jsonName": "blockIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "ExpectedText", "jsonName": "expectedText", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "suggestionResolveInput",
+      "tsName": "SuggestionResolveInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Decision", "jsonName": "decision", "goType": "string", "tsType": "\"accept\" | \"reject\"" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "commentDeleteInput",
+      "tsName": "CommentDeleteInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageReactionResponse",
+      "tsName": "PageReactionResponse",
+      "fields": [
+        { "goName": "Reactions", "jsonName": "reactions", "goType": "[]commentReaction", "tsType": "CommentReaction[]" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "commentMutationResponse",
+      "tsName": "CommentMutationResponse",
+      "fields": [
+        { "goName": "Comment", "jsonName": "comment", "goType": "commentRecord", "tsType": "CommentRecord" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "commentActorProfile",
+      "tsName": "CommentActorProfile",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "App", "jsonName": "app", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "propertyDiscussionMark",
+      "tsName": "PropertyDiscussionMark",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" },
+        { "goName": "CommentID", "jsonName": "commentId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "rowDiscussionCount",
+      "tsName": "RowDiscussionCount",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "propertyDiscussionListResponse",
+      "tsName": "PropertyDiscussionListResponse",
+      "fields": [
+        { "goName": "Marks", "jsonName": "marks", "goType": "[]propertyDiscussionMark", "tsType": "PropertyDiscussionMark[]" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "[]rowDiscussionCount", "tsType": "RowDiscussionCount[]" },
+        { "goName": "Threads", "jsonName": "threads", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "commentListResponse",
+      "tsName": "CommentListResponse",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]commentRecord", "tsType": "CommentRecord[]" },
+        { "goName": "ActorProfiles", "jsonName": "actorProfiles", "goType": "[]commentActorProfile", "tsType": "CommentActorProfile[]" },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PageReactions", "jsonName": "pageReactions", "goType": "[]commentReaction", "tsType": "CommentReaction[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationInboxRecord",
+      "tsName": "NotificationInboxRecord",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ActivityKey", "jsonName": "activityKey", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"mention\" | \"comment\" | \"link\" | \"page_edit\" | \"system\" | \"reminder\" | \"invite\" | \"access_request\"" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "CommentID", "jsonName": "commentId", "goType": "string", "tsType": "string" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Preview", "jsonName": "preview", "goType": "string", "tsType": "string" },
+        { "goName": "PreviewSpans", "jsonName": "previewSpans", "goType": "json.RawMessage", "tsType": "unknown", "optional": true },
+        { "goName": "Target", "jsonName": "target", "goType": "string", "tsType": "string" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" },
+        { "goName": "ReadAt", "jsonName": "readAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Personal", "jsonName": "personal", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Resolved", "jsonName": "resolved", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "ItemID", "jsonName": "itemId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "GroupIDs", "jsonName": "groupIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Discussions", "jsonName": "discussions", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ActorConnection", "jsonName": "actorConnection", "goType": "*notificationActorConnection", "tsType": "NotificationActorConnection", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationActorConnection",
+      "tsName": "NotificationActorConnection",
+      "fields": [
+        { "goName": "DisplayNameType", "jsonName": "displayNameType", "goType": "string", "tsType": "\"integration\" | \"custom\"" },
+        { "goName": "ResolvedName", "jsonName": "resolvedName", "goType": "string", "tsType": "string" },
+        { "goName": "ConnectionName", "jsonName": "connectionName", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationInboxBoundary",
+      "tsName": "NotificationInboxBoundary",
+      "fields": [
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notificationInboxResponse",
+      "tsName": "NotificationInboxResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]notificationInboxRecord", "tsType": "NotificationInboxRecord[]" },
+        { "goName": "ActorProfiles", "jsonName": "actorProfiles", "goType": "[]commentActorProfile", "tsType": "CommentActorProfile[]" },
+        { "goName": "Complete", "jsonName": "complete", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UnreadCount", "jsonName": "unreadCount", "goType": "int", "tsType": "number" },
+        { "goName": "Total", "jsonName": "total", "goType": "int", "tsType": "number" },
+        { "goName": "Through", "jsonName": "through", "goType": "*notificationInboxBoundary", "tsType": "NotificationInboxBoundary", "optional": true },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationActivityInput",
+      "tsName": "NotificationActivityInput",
+      "fields": [
+        { "goName": "ActivityKey", "jsonName": "activityKey", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"mention\" | \"link\" | \"page_edit\"" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetPageID", "jsonName": "targetPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Preview", "jsonName": "preview", "goType": "string", "tsType": "string" },
+        { "goName": "Target", "jsonName": "target", "goType": "string", "tsType": "string" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notificationActivitySyncInput",
+      "tsName": "NotificationActivitySyncInput",
+      "fields": [
+        { "goName": "Activities", "jsonName": "activities", "goType": "[]notificationActivityInput", "tsType": "NotificationActivityInput[]" }
+      ]
+    },
+    {
+      "goName": "notificationActivitySyncResponse",
+      "tsName": "NotificationActivitySyncResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]notificationInboxRecord", "tsType": "NotificationInboxRecord[]" },
+        { "goName": "AcceptedCount", "jsonName": "acceptedCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notificationReadInput",
+      "tsName": "NotificationReadInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "\"selected\" | \"all\"" },
+        { "goName": "NotificationIDs", "jsonName": "notificationIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Through", "jsonName": "through", "goType": "*notificationInboxBoundary", "tsType": "NotificationInboxBoundary", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationReadSettlement",
+      "tsName": "NotificationReadSettlement",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "\"selected\" | \"all\"" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"complete\"" },
+        { "goName": "ReadAt", "jsonName": "readAt", "goType": "string", "tsType": "string" },
+        { "goName": "ReadCount", "jsonName": "readCount", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Through", "jsonName": "through", "goType": "*notificationInboxBoundary", "tsType": "NotificationInboxBoundary", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UnreadLeft", "jsonName": "unreadLeft", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "NewestUnread", "jsonName": "newestUnread", "goType": "*notificationInboxBoundary", "tsType": "NotificationInboxBoundary", "optional": true }
+      ]
+    },
+    {
+      "goName": "notificationReadResponse",
+      "tsName": "NotificationReadResponse",
+      "fields": [
+        { "goName": "Settlement", "jsonName": "settlement", "goType": "notificationReadSettlement", "tsType": "NotificationReadSettlement" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notificationArchiveInput",
+      "tsName": "NotificationArchiveInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "NotificationIDs", "jsonName": "notificationIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "notificationArchiveReceipt",
+      "tsName": "NotificationArchiveReceipt",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"complete\"" },
+        { "goName": "ArchivedAt", "jsonName": "archivedAt", "goType": "string", "tsType": "string" },
+        { "goName": "ArchivedCount", "jsonName": "archivedCount", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notificationArchiveResponse",
+      "tsName": "NotificationArchiveResponse",
+      "fields": [
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "notificationArchiveReceipt", "tsType": "NotificationArchiveReceipt" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notificationStateInput",
+      "tsName": "NotificationStateInput",
+      "fields": [
+        { "goName": "NotificationIDs", "jsonName": "notificationIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Change", "jsonName": "change", "goType": "string", "tsType": "\"unread\" | \"unarchive\"" }
+      ]
+    },
+    {
+      "goName": "notificationStateResponse",
+      "tsName": "NotificationStateResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Change", "jsonName": "change", "goType": "string", "tsType": "\"unread\" | \"unarchive\"" },
+        { "goName": "ChangedCount", "jsonName": "changedCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "commentDeletionRecord",
+      "tsName": "CommentDeletionRecord",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RootCommentID", "jsonName": "rootCommentId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"complete\"" },
+        { "goName": "DeletedCount", "jsonName": "deletedCount", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "commentDeletionResponse",
+      "tsName": "CommentDeletionResponse",
+      "fields": [
+        { "goName": "Deletion", "jsonName": "deletion", "goType": "commentDeletionRecord", "tsType": "CommentDeletionRecord" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "commentLinkResponse",
+      "tsName": "CommentLinkResponse",
+      "fields": [
+        { "goName": "CommentID", "jsonName": "commentId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ]
+}

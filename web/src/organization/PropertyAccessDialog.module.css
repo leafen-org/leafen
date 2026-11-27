@@ -1,0 +1,412 @@
+/* Notion's "속성 사용 권한" window (seen 2026-10-12; its size and head read
+   2026-11-18 in Chrome at 1440 and 900): 600 wide and 520 tall, 20 round, 16
+   from the window's edges at most; 900 wide with the 300px preview beside it. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 600px;
+  height: 520px;
+  max-height: calc(100vh - 32px);
+  border-radius: 20px;
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+  overflow: hidden;
+}
+
+.dialog[data-preview="true"] { max-width: 900px; }
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 28px;
+}
+
+/* The head: the title 17px on 22 at 600, then "미리보기" (28px, 8 in, its eye 6 before the words at 500), a 16px line
+   6 either side and the 22px round ✕, 2 apart. */
+.head { display: flex; align-items: center; gap: 2px; }
+
+.title { flex: 1; margin: 0; font-size: 17px; font-weight: 600; line-height: 22px; }
+
+.previewButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.previewButton:hover, .iconButton:hover, .propertyButton:hover, .exceptionLevel:hover, .addException:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.headRule { width: 1px; height: 16px; margin: 0 6px; background: var(--border-secondary); }
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+/* Under the head, 2px down, the rule's property: 28px, 4 in, its 16px mark, its name 14px on 20 at 500 and a 14px
+   ⌄, 4 apart, all in the second grey; then the line 24 under it and what scrolls 24 under the line — the two
+   sections 32 apart, each its title 14px on 20 at 500, 2 over its words 13px on 18 in grey, 16 over its card;
+   24px of room beside them for the cards' shadow and 20 under the last, as Notion's desktop window (read
+   2026-11-18 in Chrome at 1440, dpr 1; a phone's sizes in PropertyAccessPhone.module.css). */
+.propertyButton {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-top: 2px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* English's "For" before the property, in its grey 14px on 20 at 500, 4 before its chip; Korean's word is
+   empty and the chip starts the line, as Notion's (read 2026-11-19 in Chrome at 1440, dpr 2, in both). */
+.propertyLine {
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.propertyLine > .propertyButton { margin-top: 0; }
+
+.rule { flex: none; height: 1px; margin-top: 24px; background: var(--border-secondary); }
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 32px;
+  min-height: 0;
+  margin: 24px -24px 0;
+  overflow-y: auto;
+  padding: 0 24px 20px;
+}
+
+.section { display: flex; flex-direction: column; }
+
+.sectionTitle { font-size: 14px; font-weight: 500; line-height: 20px; }
+
+.sectionDescription { margin: 2px 0 16px; color: var(--text-secondary); font-size: 13px; line-height: 18px; }
+
+/* The default level and the exceptions each in a white card, as Notion's (read 2026-11-18 in Chrome at 1440, its
+   code's outline): 16 round under a faint ring and a soft shadow. The level's card holds one 44px row 8px in —
+   its 17×14 mark in a 20px box 16 from the card's edge, 8 before its name 14px on 20, ⌄ 16 from the end — lit
+   6 round where a pointer is (a phone's: PropertyAccessPhone.module.css). */
+.levelBox,
+.exceptions {
+  border: 0;
+  border-radius: 16px;
+  background: var(--modal-bg);
+  box-shadow: 0 0 0 1px var(--border-subtle), 0 12px 32px rgba(15, 15, 15, 0.02);
+}
+
+.levelBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 60px;
+  padding: 0 16px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+
+.levelBox::before {
+  position: absolute;
+  inset: 8px;
+  border-radius: 6px;
+  content: "";
+  pointer-events: none;
+}
+
+.levelBox:hover:not(:disabled)::before { background: var(--bg-hover); }
+
+.levelBox > svg { color: var(--icon-secondary); }
+
+.levelBoxLabel { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The exceptions' card, 12px over and under, 8 in: a row 4px over and under its 28px end, its 20px mark 8 before
+   the name, the level at its end in a 28px button 8 in; "모두 허용" fixed in the faintest grey. */
+.exceptions { display: flex; flex-direction: column; padding: 12px 8px; }
+
+.exception {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 4px 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.exceptionName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.exceptionFixed,
+.exceptionLevel {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+.exceptionFixed { color: var(--text-disabled); }
+
+/* The fixed first exception's icon and name, as wide as they are: Notion's tip
+   naming who has full access comes only while the pointer is on them, the
+   level kept at the row's end (read 2026-11-19, a 216.5px box at 1440). */
+.fullAccessWho {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-inline-end: auto;
+}
+
+.fullAccessWho > .exceptionName { flex: 0 1 auto; }
+
+.exceptionLevel {
+  gap: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+}
+
+/* "+ 사용자, 그룹 또는 사용자 속성 추가": 28px, its 20px "+" in a 26px box, the grey words 2px on. */
+.addException {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+
+.addException > span {
+  display: inline-flex;
+  flex: none;
+  box-sizing: border-box;
+  width: 26px;
+  height: 28px;
+  align-items: center;
+  padding-inline-end: 6px;
+  color: var(--icon-secondary);
+}
+
+/* A fixed row's or a group's mark: 12px in its 20px round. */
+.exception > .principalGlyph > svg,
+.fullAccessWho > .principalGlyph > svg { width: 12px; height: 12px; }
+
+.principalGlyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+.error { margin-top: 10px; color: var(--danger); font-size: 13px; }
+
+/* "초기화" and "저장" 12px under what scrolls, 8 apart, Notion's large buttons (read 2026-11-18 in Chrome at 1440):
+   32px, 12 in, 6 round, 14px words at 500 — "초기화" the quiet one in the second grey, shaded under the pointer, at
+   rest once there is nothing to clear; "저장" blue, faded while nothing has changed. */
+.foot { display: flex; flex: none; justify-content: flex-end; gap: 8px; padding-top: 12px; }
+
+.resetButton, .saveButton {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.resetButton { background: none; color: var(--text-secondary); }
+
+.resetButton:hover:not(:disabled) { background: var(--bg-hover); }
+
+.resetButton:disabled { cursor: default; }
+
+.saveButton { background: var(--accent-blue); color: var(--accent-blue-text); }
+
+.saveButton:hover:not(:disabled) { background: var(--accent-blue-hover); }
+
+.saveButton:disabled { opacity: 0.4; }
+
+/* The preview, 300 wide behind a line: "»" and ✕ (22px) 16 from its top corners over what scrolls, 48 down and 18
+   in from its line, 24 from the end — its label 14px on 20 at 500, the person 6 under it, what they get 20 under that. */
+.preview {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  width: 300px;
+  overflow-y: auto;
+  padding-block: 48px 40px;
+  padding-inline: 18px 24px;
+  border-inline-start: 1px solid var(--border-secondary);
+}
+
+.previewHead { position: absolute; top: 16px; inset-inline: 16px; display: flex; justify-content: space-between; }
+
+.collapseButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--icon-secondary);
+}
+
+.collapseButton:hover { background: var(--bg-hover); }
+
+.previewLabel { font-size: 14px; font-weight: 500; line-height: 20px; }
+
+/* What the person gets: the level's 37×25 picture 2px down, 10 before its name, the note under the name. */
+.previewResult { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; font-size: 14px; }
+
+.previewResult > svg { margin-top: 2px; }
+
+.popover {
+  position: fixed;
+  z-index: 2500;
+  box-sizing: border-box;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* Holding the database's property picker, which keeps its own room, with 6px
+   under its rows (ConditionalColorCard.module.css .picker). */
+.popover.flushPopover { padding: 0 0 6px; }
+
+.menu { display: flex; flex-direction: column; }
+
+.levelOption, .pickerOption, .removeOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.levelOption:hover, .pickerOption:hover, .removeOption:hover { background: var(--bg-hover); }
+
+/* The level menu (LevelMenu): 8px around its rows, 2 apart; a row 10px over and under its 37×25 picture. */
+.levelPopover { padding: 8px; }
+
+.levelPopover .menu { gap: 2px; }
+
+.levelOption { padding: 10px 8px; }
+
+.levelText { display: flex; flex: 1; flex-direction: column; min-width: 0; line-height: 20px; }
+
+.levelDescription { color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+
+/* A group named in the preview's reason, in semibold as Notion's. */
+.groupName { font-weight: 600; }
+
+/* A person property's condition under the result, 12 apart as Notion's, and the note under
+   two or more, under the words. */
+.previewCondition { display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; font-size: 14px; }
+
+.previewCondition > svg { margin-top: 2px; }
+
+.previewNote { margin: 12px 0 0; margin-inline-start: 47px; color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+
+/* A level's 17×14 mark in its 20px box (LevelPicture's mini). */
+.levelGlyph { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; }
+
+.menuDivider { height: 1px; margin: 4px 0; background: var(--border-default); }
+
+.removeOption { color: var(--menu-danger); }
+
+.pickerSearch {
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  margin-bottom: 6px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.pickerList { display: flex; flex-direction: column; }
+
+.pickerSection { padding: 8px 8px 4px; color: var(--text-secondary); font-size: 12px; }

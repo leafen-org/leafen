@@ -1,0 +1,94 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  /* Notion's modal shade over the page (seen 2026-11-01). */
+  background: var(--modal-shade);
+}
+
+/* A button's confirmation, as Notion's (seen 2026-11-01): a 320px card,
+   24px in and round 12px, the words centered 16px/500 10px under its top
+   and 20px over two 32px buttons 10px apart — the blue answer over "취소"
+   in gray words. */
+.dialog {
+  width: min(320px, calc(100vw - 32px));
+  max-height: min(620px, calc(100vh - 32px));
+  overflow: auto;
+  padding: 24px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.content {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 20px;
+}
+
+.confirmation {
+  display: grid;
+  gap: 8px;
+}
+
+.confirmation h2,
+.confirmation h3,
+.confirmation p {
+  margin: 0;
+}
+
+.confirmation h2,
+.confirmation h3 {
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Its mentions show as in the page's text. */
+.confirmation p {
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 24px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.actions button {
+  min-height: 32px;
+  padding: 5px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.actions .primary {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-weight: 500;
+}
+
+.actions button:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}

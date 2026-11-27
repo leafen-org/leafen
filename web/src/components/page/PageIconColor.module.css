@@ -1,0 +1,181 @@
+/* The Icons tab's color controls, as Notion's: the color button and its menu
+   of colors with "choose every time", and the row of an icon in every color
+   that the switch opens under an icon picked. */
+
+.iconColorControl {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* A color's dot (IconColorDot): Notion's circle glyph, its box the icon size. */
+.iconColorDot {
+  display: block;
+  flex-shrink: 0;
+}
+
+/* The color menu, as Notion's (seen 2026-11-17 at 1440, two tabs): 10px
+   round, as wide as its widest row, 4px over and under its rows; the colors
+   five to a row in the middle, 22px rounded squares 4 apart and 4 in, a row
+   30px high; "choose every time" past a line 4 under them, which turns the
+   colors off while it is on. */
+.iconColorMenu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.iconColorSwatches {
+  display: grid;
+  grid-template-columns: repeat(5, 22px);
+  gap: 8px 4px;
+  justify-content: center;
+  padding: 4px;
+}
+
+.iconColorSwatches > button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* "Choose every time": a 28px row 4 in past the line, its words 14px 12 in,
+   its 30×18 switch 4 from its end. */
+.eachTimeRow {
+  margin-top: 4px;
+  padding: 4px 4px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.iconColorEachTime {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.eachTimeName {
+  flex: 1 1 auto;
+  margin-inline-start: 6px;
+}
+
+.eachTimeTrack {
+  margin-inline-end: 4px;
+}
+
+.iconColorEachTime[data-focus-visible] .eachTimeTrack {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* "Choose every time": the icon picked in every color, under it. */
+.iconColorRow {
+  position: fixed;
+
+  padding: 4px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.iconColors {
+  display: grid;
+  grid-template-columns: repeat(5, 28px);
+  gap: 2px;
+}
+
+.iconColors > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+}
+
+.iconColors > button:hover,
+.iconColors > button:focus-visible,
+.iconColors > button[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.iconColorSwatches > button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  outline: none;
+}
+
+/* A swatch's ring (PageIconColorPalette SwatchFace): a circle of its color
+   over the cell, whole on the chosen color and half on the one under the
+   pointer or the keys, no wash behind it; the keys' one ringed in blue as
+   well (Notion's, seen 2026-11-17). */
+.swatchRing {
+  position: absolute;
+  inset: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.iconColorSwatches > button:not([aria-disabled="true"]):hover .swatchRing,
+.iconColorSwatches > button[data-active="true"] .swatchRing {
+  opacity: 0.5;
+}
+
+.iconColorSwatches > button[aria-selected="true"] .swatchRing {
+  opacity: 1;
+}
+
+.iconColorSwatches > button:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* On a phone, as Notion's iPhone (seen 2026-11-17 at 402): 44px cells, their
+   dots 28px and the ring 30 across, 1.5px; "choose every time" 45px high, its
+   words 16px between 10px of room, its 51×31 switch 4 from its end. */
+[data-phone="true"] .iconColorSwatches {
+  grid-template-columns: repeat(5, 44px);
+}
+
+[data-phone="true"] .iconColorSwatches > button {
+  width: 44px;
+  height: 44px;
+}
+
+[data-phone="true"] .iconColorSwatches .iconColorDot {
+  width: 28px;
+  height: 28px;
+}
+
+[data-phone="true"] .swatchRing {
+  inset: 7px;
+  border-width: 1.5px;
+}
+
+[data-phone="true"] .iconColorEachTime {
+  gap: 0;
+  height: 45px;
+  margin-block: 1px -1px;
+  font-size: 16px;
+  line-height: 19.2px;
+}
+
+[data-phone="true"] .eachTimeName {
+  margin-inline: 10px;
+}

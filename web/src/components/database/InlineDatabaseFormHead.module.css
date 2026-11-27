@@ -1,0 +1,14 @@
+/* A form's title has its row to itself, its toolbar under it, so a long one
+   runs on to 4px short of its block, as Notion's (seen 2026-11-14 and
+   2026-11-15 at 1440: the title on 495.5..1203.5 in a block on 487.5..1207.5;
+   at 768 and 900: 104..653 in 96..657, 104..785 in 96..789). Its row is the
+   text column's width: 8px past the database's own end in a full 708px column
+   (the 6px it keeps and 2px more, EditorDatabaseBlocks .inlineDatabase), 4px
+   short of it in a narrower one, which the database runs 12px past. A column
+   between 696 and 708px wide, whose database is 700 either way, takes the
+   wide one's. The other views' titles end before their toolbar, beside
+   them; a database's own page names it by the page's title; a phone keeps
+   its own edges. */
+.formHead:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) {
+  max-width: calc(100% + 8px - clamp(0px, (700px - 100%) * 1000, 12px));
+}

@@ -1,0 +1,42 @@
+/* A panel docked beside the page (--page-side-panel-width) — all its
+   discussions, its updates, an app — lays its words and controls out across
+   that whole width after its 1px start line, so it ends this far past the
+   window's end, as Notion's (its inner box 385 wide at right -1px, seen
+   2026-11-25 at 1440, dpr 2, two tabs, in "모든 토론" and "업데이트와
+   애널리틱스": a thread's buttons end 30px from the window's end, the head's
+   bell 15). */
+:root {
+  --page-side-panel-past-end: 1px;
+}
+
+/* Its frame, the docked panels' one (data-page-side-panel="docked"), as
+   Notion's aside (seen 2026-11-25 at 1440×723, dpr 2, in "모든 토론" and
+   "업데이트와 애널리틱스", two tabs): its contents start under the page's bar,
+   with no line over them and no shade; its start line, Notion's faint
+   divider, runs the window's whole height — on up through the bar's row,
+   past the "»", as the aside stands from the window's top over the bar
+   (its own contents from 44, the discussions' head from 48). */
+:root [data-page-side-panel="docked"] {
+  position: fixed;
+  z-index: var(--layer-docked-panel);
+  top: var(--page-panel-top, var(--topbar-height));
+  bottom: 0;
+  inset-inline-end: calc(0px - var(--page-side-panel-past-end));
+  width: calc(min(var(--page-side-panel-width), 100vw) + var(--page-side-panel-past-end));
+  border-top: 0;
+  border-inline-start: 1px solid var(--border-subtle);
+  box-shadow: none;
+  animation: none;
+}
+/* The line's piece in the bar's row, over the bar, laid by the window so the
+   panel's own clipping leaves it. */
+:root [data-page-side-panel="docked"]::before {
+  position: fixed;
+  top: calc(var(--page-panel-top, var(--topbar-height)) - var(--topbar-height));
+  inset-inline-end: calc(min(var(--page-side-panel-width), 100vw) - 1px);
+  width: 1px;
+  height: var(--topbar-height);
+  background: var(--border-subtle);
+  content: "";
+  pointer-events: none;
+}

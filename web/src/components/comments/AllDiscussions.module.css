@@ -1,0 +1,107 @@
+/* "All discussions" docked beside the page in the docked panels' frame
+   (app/sidePanels.css), its head 4px under the page's bar, as Notion's
+   (48–93 under its 44px bar, seen 2026-11-25 at 1440×723, dpr 2, two tabs). */
+.docked[data-docked="true"] {
+  padding-top: 4px;
+}
+/* Holding the focus after a thread on the page itself was pressed, it draws
+   no ring at the next key, as Notion's (seen 2026-11-25 in two tabs). */
+.docked[data-docked="true"]:focus-visible {
+  outline: none;
+}
+
+/* Its head as Notion's (seen 2026-11-25 at 1440, dpr 2, two tabs): 45px over
+   its 1px line, the faint divider, however long the list under it grows
+   (it doesn't give way to it), "토론" 16px in, in 14px/21px words of weight
+   500, and the filter and bell 24px each, both centred on it, the bell 16px
+   short of the panel's end (--page-side-panel-past-end; 1401–1425, seen
+   2026-11-25 twice). */
+.docked .head {
+  box-sizing: content-box;
+  flex: none;
+  align-items: center;
+  height: 45px;
+  padding-block: 0;
+  padding-inline: 16px;
+  border-bottom-color: var(--border-subtle);
+}
+.docked .head > :first-child {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+.docked .head > :last-child {
+  height: 24px;
+}
+
+/* Its threads as Notion's (seen 2026-11-25 in Chrome at 1440, dpr 2, a page's
+   and a block's discussions, two tabs): drawn as under a page's title — its
+   replies folded behind "(N) 답글 보기", the thread's line down its faces,
+   no line between threads and no tint under the pointer — each thread 8px
+   under the one before (the first 4px under the head), its faces 16px in
+   and its words 48px; each comment 8px under its frame's top and over its
+   foot, its buttons 2px under its face's top, 16px in. The whole thread is
+   pressed and, last pressed or reopened, faintly yellow. A thread on the
+   page's text quotes it by a yellow bar; the page's own quotes nothing. */
+.listedThread {
+  padding: 8px 16px 0;
+  cursor: pointer;
+}
+.listedThread:first-child {
+  padding-top: 4px;
+}
+.listedThread[data-selected="true"] {
+  background: rgba(255, 232, 48, 0.043);
+}
+.listedThread[data-listed] > [data-comment-id],
+.listedThread[data-listed] > [data-thread-step] > [data-comment-id] {
+  --comment-pill-top: 10px;
+  padding-block: 8px;
+}
+.listedThread[data-listed] > [data-comment-id]:not(:last-child)::before {
+  top: 38px;
+  bottom: -2px;
+  border-radius: 2px;
+  background: var(--border-secondary);
+}
+/* Its reply row, opened by "↩" or by pressing a thread on the page's text:
+   the reader's face 6px under the row's top, the box 3.5px above the face,
+   from 4px before the words to 12px short of the panel's end, ringed in blue
+   while it has the caret, and 6px under it to the thread's end. */
+.listedThread [data-thread-reply-row] {
+  padding-bottom: 6px;
+}
+.listedThread [data-thread-reply-row] > [data-comment-reply-box] {
+  margin-inline-end: -4px;
+}
+
+.quote {
+  display: flex;
+  margin: 6px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+.quoteBar {
+  flex: 0 0 auto;
+  width: 2px;
+  margin-block: 0;
+  margin-inline: 1px 8px;
+  border-radius: 4px;
+  background: rgba(255, 203, 0, 0.64);
+}
+.quoteText {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.quoteText[data-quote-lines] {
+  white-space: pre-line;
+}
+.quoteText > :first-child:not(:only-child) {
+  margin-inline-end: 4px;
+  vertical-align: -5px;
+}

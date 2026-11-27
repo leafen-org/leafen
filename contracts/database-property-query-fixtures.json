@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "name": "database-property-query",
+  "properties": [
+    { "id": "title", "type": "title", "name": "Name", "position": "p01", "config": {} },
+    { "id": "amount", "type": "number", "name": "Amount", "position": "p02", "config": {} },
+    { "id": "status", "type": "status", "name": "Status", "position": "p03", "config": { "options": [{ "id": "todo", "name": "Todo", "group": "Backlog" }, { "id": "doing", "name": "Doing", "group": "Active" }, { "id": "done", "name": "Done", "group": "Active" }], "statusGroups": [{ "id": "backlog", "name": "Backlog", "optionIds": ["todo"] }, { "id": "active", "name": "Active", "optionIds": ["doing", "done"] }] } },
+    { "id": "tags", "type": "multi_select", "name": "Tags", "position": "p04", "config": { "options": [{ "id": "tag-a", "name": "A" }, { "id": "tag-b", "name": "B" }] } },
+    { "id": "owner", "type": "person", "name": "Owner", "position": "p05", "config": {} },
+    { "id": "related", "type": "relation", "name": "Related", "position": "p06", "config": { "relationDatabaseId": "$data_source" } },
+    { "id": "done-box", "type": "checkbox", "name": "Done?", "position": "p07", "config": {} },
+    { "id": "due", "type": "date", "name": "Due", "position": "p08", "config": {} },
+    { "id": "note", "type": "rich_text", "name": "Note", "position": "p09", "config": {} }
+  ],
+  "rows": [
+    { "id": "row-1", "position": "r01", "values": { "title": "Alpha start", "amount": -2, "status": "doing", "tags": [], "owner": ["$current_user"], "related": ["row-2"], "done-box": true, "due": { "start": "2026-08-29T01:00:00Z", "end": null }, "note": "Café first" } },
+    { "id": "row-2", "position": "r02", "values": { "title": "alphabet end", "amount": 10, "status": "todo", "tags": ["tag-a"], "owner": ["other-user"], "related": [], "done-box": false, "due": { "start": "2026-08-30", "end": null }, "note": "Second" } },
+    { "id": "row-3", "position": "r03", "values": { "title": "Beta", "amount": 2, "status": "done", "tags": ["tag-b"], "owner": ["$current_user"], "related": ["row-2"], "done-box": true, "note": "Third" } },
+    { "id": "row-4", "position": "r04", "values": { "title": "Gamma", "tags": [], "owner": [], "related": [], "done-box": false, "note": "" } }
+  ],
+  "filters": [
+    { "id": "text-prefix", "propertyId": "title", "operator": "starts_with", "value": "alpha" },
+    { "id": "empty-negative-text", "propertyId": "note", "operator": "does_not_contain", "value": "" },
+    { "id": "number-gte", "propertyId": "amount", "operator": "greater_than_or_equal_to", "value": 2 },
+    { "id": "status-group-name", "propertyId": "status", "operator": "equals", "value": "Active" },
+    { "id": "empty-multiselect-contains", "propertyId": "tags", "operator": "contains", "value": [] },
+    { "id": "empty-multiselect-negative", "propertyId": "tags", "operator": "does_not_contain", "value": [] },
+    { "id": "current-user", "propertyId": "owner", "operator": "equals", "value": { "kind": "leafen.current_user" } },
+    { "id": "checkbox", "propertyId": "done-box", "operator": "equals", "value": true },
+    { "id": "date-on-or-after", "propertyId": "due", "operator": "on_or_after", "value": "2026-08-30" }
+  ],
+  "sorts": [
+    { "id": "number-ascending", "descriptors": [{ "propertyId": "amount", "direction": "ascending" }] },
+    { "id": "number-descending", "descriptors": [{ "propertyId": "amount", "direction": "descending" }] },
+    { "id": "status-option-order", "descriptors": [{ "propertyId": "status", "direction": "ascending" }] },
+    { "id": "date-ascending", "descriptors": [{ "propertyId": "due", "direction": "ascending" }] }
+  ]
+}

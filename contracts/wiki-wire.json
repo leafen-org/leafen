@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "name": "wiki",
+  "operations": [
+    { "goName": "wikiMutationStart", "tsName": "startWikiMutation", "method": "POST", "path": "/pages/{pageId}/wiki-mutations" },
+    { "goName": "wikiMutationRead", "tsName": "readWikiMutation", "method": "GET", "path": "/wiki-mutations/{jobId}" },
+    { "goName": "pageVerificationRead", "tsName": "readPageVerification", "method": "GET", "path": "/pages/{pageId}/verification" },
+    { "goName": "pageVerificationWrite", "tsName": "writePageVerification", "method": "PUT", "path": "/pages/{pageId}/verification" },
+    { "goName": "databaseVerificationRead", "tsName": "readDatabaseVerification", "method": "GET", "path": "/pages/{pageId}/databases/{blockId}/verification" },
+    { "goName": "databaseVerificationWrite", "tsName": "writeDatabaseVerification", "method": "PUT", "path": "/pages/{pageId}/databases/{blockId}/verification" }
+  ],
+  "bounds": [
+    { "goName": "maxWikiMutationRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "maxWikiMutationItemsPerTurn", "tsName": "itemsPerTurn", "value": 32 },
+    { "goName": "maxWikiOwnersPerPage", "tsName": "ownersPerPage", "value": 20 }
+  ],
+  "errorCodes": [
+    { "goName": "errorCodeWikiInvalid", "tsName": "invalid", "value": "LEAFEN_WIKI_INVALID" },
+    { "goName": "errorCodeWikiNotFound", "tsName": "notFound", "value": "LEAFEN_WIKI_NOT_FOUND" },
+    { "goName": "errorCodeWikiRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_WIKI_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeWikiConflict", "tsName": "conflict", "value": "LEAFEN_WIKI_CONFLICT" },
+    { "goName": "errorCodeWikiRevisionChanged", "tsName": "revisionChanged", "value": "LEAFEN_WIKI_REVISION_CHANGED" },
+    { "goName": "errorCodeWikiUnavailable", "tsName": "unavailable", "value": "LEAFEN_WIKI_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "PageVerificationOperation",
+      "tsValuesName": "pageVerificationOperations",
+      "values": [
+        { "goName": "pageVerificationVerify", "tsName": "verify", "value": "verify" },
+        { "goName": "pageVerificationUnverify", "tsName": "unverify", "value": "unverify" },
+        { "goName": "pageVerificationSetOwners", "tsName": "setOwners", "value": "setOwners" }
+      ]
+    },
+    {
+      "tsName": "WikiMutationOperation",
+      "tsValuesName": "wikiMutationOperations",
+      "values": [
+        { "goName": "wikiOperationConvert", "tsName": "convert", "value": "convert" },
+        { "goName": "wikiOperationUndo", "tsName": "undo", "value": "undo" }
+      ]
+    },
+    {
+      "tsName": "WikiMutationStatus",
+      "tsValuesName": "wikiMutationStatuses",
+      "values": [
+        { "goName": "wikiMutationStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "wikiMutationStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "wikiMutationStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "WikiMutationPhase",
+      "tsValuesName": "wikiMutationPhases",
+      "values": [
+        { "goName": "wikiMutationPhaseDiscovering", "tsName": "discovering", "value": "discovering" },
+        { "goName": "wikiMutationPhaseApplying", "tsName": "applying", "value": "applying" },
+        { "goName": "wikiMutationPhasePublishing", "tsName": "publishing", "value": "publishing" },
+        { "goName": "wikiMutationPhaseCleaning", "tsName": "cleaning", "value": "cleaning" },
+        { "goName": "wikiMutationPhaseCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "wikiMutationPhaseFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "pageVerificationInput",
+      "tsName": "PageVerificationInput",
+      "fields": [
+        { "goName": "Operation", "jsonName": "operation", "goType": "string", "tsType": "PageVerificationOperation" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Owners", "jsonName": "owners", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageVerificationOwner",
+      "tsName": "PageVerificationOwner",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageVerificationWire",
+      "tsName": "PageVerification",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Wiki", "jsonName": "wiki", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ByProperty", "jsonName": "byProperty", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "VerifiedAt", "jsonName": "verifiedAt", "goType": "string", "tsType": "string" },
+        { "goName": "VerifiedBy", "jsonName": "verifiedBy", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationExpiresAt", "jsonName": "verificationExpiresAt", "goType": "string", "tsType": "string" },
+        { "goName": "Owners", "jsonName": "owners", "goType": "[]pageVerificationOwner", "tsType": "PageVerificationOwner[]" }
+      ]
+    },
+    {
+      "goName": "wikiDatabaseNames",
+      "tsName": "WikiDatabaseNames",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "string", "tsType": "string" },
+        { "goName": "Owner", "jsonName": "owner", "goType": "string", "tsType": "string" },
+        { "goName": "Tags", "jsonName": "tags", "goType": "string", "tsType": "string" },
+        { "goName": "Verification", "jsonName": "verification", "goType": "string", "tsType": "string" },
+        { "goName": "LastEditedTime", "jsonName": "lastEditedTime", "goType": "string", "tsType": "string" },
+        { "goName": "AllPages", "jsonName": "allPages", "goType": "string", "tsType": "string" },
+        { "goName": "PagesIOwn", "jsonName": "pagesIOwn", "goType": "string", "tsType": "string" },
+        { "goName": "ParentItem", "jsonName": "parentItem", "goType": "string", "tsType": "string" },
+        { "goName": "SubItems", "jsonName": "subItems", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "wikiMutationInput",
+      "tsName": "WikiMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Operation", "jsonName": "operation", "goType": "string", "tsType": "WikiMutationOperation" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Names", "jsonName": "names", "goType": "*wikiDatabaseNames", "tsType": "WikiDatabaseNames", "optional": true }
+      ]
+    },
+    {
+      "goName": "wikiMutationProgress",
+      "tsName": "WikiMutationProgress",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Processed", "jsonName": "processed", "goType": "int", "tsType": "number" },
+        { "goName": "Total", "jsonName": "total", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "wikiMutationResult",
+      "tsName": "WikiMutationResult",
+      "fields": [
+        { "goName": "SchemaVersion", "jsonName": "schemaVersion", "goType": "int", "tsType": "number" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "WikiRootID", "jsonName": "wikiRootId", "goType": "string", "tsType": "string" },
+        { "goName": "IsWiki", "jsonName": "isWiki", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "OwnerIDs", "jsonName": "ownerIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "VerifiedAt", "jsonName": "verifiedAt", "goType": "string", "tsType": "string" },
+        { "goName": "VerifiedBy", "jsonName": "verifiedBy", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationExpiresAt", "jsonName": "verificationExpiresAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "wikiMutationResponse",
+      "tsName": "WikiMutationResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "RootPageID", "jsonName": "rootPageId", "goType": "string", "tsType": "string" },
+        { "goName": "Operation", "jsonName": "operation", "goType": "string", "tsType": "WikiMutationOperation" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "WikiMutationStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "WikiMutationPhase" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "wikiMutationProgress", "tsType": "WikiMutationProgress" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Result", "jsonName": "result", "goType": "*wikiMutationResult", "tsType": "WikiMutationResult", "optional": true }
+      ]
+    },
+    {
+      "goName": "wikiPageSummary",
+      "tsName": "WikiPageSummary",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "WikiRevision", "jsonName": "wikiRevision", "goType": "int", "tsType": "number" },
+        { "goName": "VerifiedAt", "jsonName": "verifiedAt", "goType": "string", "tsType": "string" },
+        { "goName": "VerifiedBy", "jsonName": "verifiedBy", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationExpiresAt", "jsonName": "verificationExpiresAt", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

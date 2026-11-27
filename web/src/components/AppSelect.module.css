@@ -1,0 +1,70 @@
+/* A choice that reads as its value and a chevron, as Notion's dialog rows
+   do: as wide as the value, with no field around it. */
+.value,
+.setting {
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+}
+.value > span,
+.setting > span {
+  display: inline-block;
+  width: auto;
+  max-width: 100%;
+}
+button.valueButton,
+button.settingButton {
+  display: inline-grid;
+  grid-template-columns: minmax(0, auto) 12px;
+  width: auto;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 14px;
+}
+button.valueButton:hover,
+button.valueButton:focus-visible,
+button.valueButton[aria-expanded="true"],
+button.settingButton:hover,
+button.settingButton:focus-visible,
+button.settingButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+/* A settings row's, as Notion's (seen 2026-10-10): a thin border rounded 6px
+   and 14px medium text, its thin chevron as wide as it is drawn (seen
+   2026-11-14: 8.64 of a 14px mark, 6px after the words). */
+button.settingButton {
+  grid-template-columns: minmax(0, auto) auto;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  font-weight: 500;
+}
+button.settingButton:hover,
+button.settingButton:focus-visible,
+button.settingButton[aria-expanded="true"] {
+  border-color: var(--button-outline);
+}
+/* A settings row's choice on a phone, as Notion's there (seen 2026-11-16 on
+   the A90's Chrome at 411: "테마" and "시작 페이지" 36 high, 12px in, 8px
+   from the words to the ⌄, rounded 8 — its buttons, as "쿠키 설정", keep the
+   28 above, as every choice does on a computer). */
+.setting[data-phone-choice] button.settingButton {
+  height: 36px;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+/* A choice whose value is gone or wrong reads red, as Notion's "속성 삭제됨"
+   does (seen 2026-10-15). The button is named by element as well as class, so
+   these win over the select's own button rules whatever their order, and come
+   after this sheet's looks. */
+button.invalidButton,
+button.invalidButton:hover,
+button.invalidButton:focus-visible,
+button.invalidButton[aria-expanded="true"] {
+  border-color: var(--danger);
+  color: var(--danger);
+}

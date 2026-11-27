@@ -1,0 +1,46 @@
+/* A phone's pickers list their emoji and icons alike, as Notion's: the
+   reaction sheet (PhoneEmojiSheet, seen 2026-11-14 at 411px) and a page
+   icon's card on a phone (TouchPickerCard), its emoji and its icons tabs
+   (seen 2026-11-17 in Android Chrome at 411 and iPhone Safari at 402). Each
+   picker's list, groups, names, rows and cells take these classes with their
+   own; only on a phone do they draw anything. How far a name stands under
+   the group before and the lines round a group's cells are each list's own:
+   the emoji's (EmojiCatalogPanel.module.css) and the icons'
+   (PageIconPicker.module.css). */
+
+/* The list fills what its sheet or card leaves (down to the emoji's group
+   bar), its groups flush with it. */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .list {
+  flex: 1 1 auto;
+  height: auto;
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .group {
+  padding: 0;
+}
+
+/* Each group's name 15px/500 16 in, its cells 8 under it. */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .label {
+  margin: 0 0 8px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  padding-bottom: 0;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+/* The cells on the sheet's white, 44px from 10 in, as many as fit a row. */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .band {
+  grid-template-columns: repeat(auto-fill, 44px);
+  margin-top: 0;
+  padding-inline: calc(10px + var(--phone-safe-start, 0px)) calc(2px + var(--phone-safe-end, 0px));
+  background: var(--bg-app);
+}
+
+/* A 44px cell, its emoji, picture or icon 32px. */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .cell {
+  height: 44px;
+  font-size: 32px;
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .cell :is(img, svg) {
+  width: 32px;
+  height: 32px;
+}

@@ -1,0 +1,61 @@
+/* A source row of a desktop list (DataSourceListRow), as Notion's (seen
+   2026-11-19 and 2026-11-20 in Chrome at 1440): 28px for the name alone, its
+   mark 20 and name centred 8px in; 45 with where it sits under the name, the
+   two lines 2px apart centred in it and the mark 1px lower than alone. */
+.row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.row:has(> .text > .place) { min-height: 45px; }
+
+.row:hover:not(:disabled),
+.row[data-active="true"]:not(:disabled),
+.row:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  color: var(--icon-secondary);
+}
+
+.row:has(> .text > .place) > .mark { margin-top: 1px; }
+
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.name,
+.place {
+  overflow: hidden;
+  line-height: 16.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.place {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}

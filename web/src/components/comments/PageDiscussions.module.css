@@ -1,0 +1,339 @@
+/* The top bar's discussions popover, its page notification menu and the
+   all-discussions list's filter and day headings (Notion, seen 2026-09-30). */
+.popover {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: min(456px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: min(480px, calc(100vh - 64px));
+  padding: 4px 0 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* Notion's head (2026-11-06): 48px from the popover's top, "토론" 14/500 in
+   the default color 16px in. */
+.popoverHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding-block: 0;
+  padding-inline: 16px 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* Its rows scroll past 384px, as Notion's list does (its max-height, seen
+   2026-11-25 in Chrome at 1440×723, dpr 2, with six unread and three read). */
+.popoverList {
+  display: flex;
+  flex-direction: column;
+  max-height: 384px;
+  overflow-y: auto;
+  padding: 0 4px;
+}
+/* While its rows scroll (popoverListEdges), "모두 보기" stands 16px under them
+   and the popover ends 12px under it — 492 in all with its 48px head and the
+   384px list — and while rows are still under the fold a faint line runs the
+   popover's width under the list, gone once it is scrolled to its end, as
+   Notion's foot (seen 2026-11-25 in Chrome at 1440×779, dpr 2, two tabs at
+   different times: four unread and five read; its foot 16px in all round, the
+   popover 492 high cutting its last 4px). */
+.popoverList[data-overflowing] + .viewAll {
+  margin-block: 16px 4px;
+}
+.popoverList[data-rows-below] {
+  box-shadow: 0 1px 0 var(--border-subtle);
+}
+.discussionRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.discussionRow:hover,
+.discussionRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.author {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+.line {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* With unread discussions and read ones both open, "신규" heads the unread
+   and "이전" the rest: 12px/500 secondary text 16px in from the popover's
+   edge, 2px over and 4px under it, 8px over "이전"; an unread row ends in an
+   8px blue dot 18px in from the popover's edge (Notion's, seen 2026-11-11).
+   Its head is as high as a menu group's name (--menu-label-line-height),
+   as Notion's: 14.9 on a 2x screen (seen 2026-11-25 in Chrome at 1440, dpr
+   2, two tabs: "신규" 94–108.9, its first row from 112.9). */
+.sectionLabel {
+  margin-block: 2px 4px;
+  padding-inline: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.sectionLabel:not(:first-child) {
+  margin-block-start: 8px;
+}
+.rowUnread {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-inline: auto 4px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+/* Notion's empty popover (2026-11-06, 456×316): a 32px read mark, 6px, two
+   20px lines in the secondary color (the first 500), 10px, then a 32px
+   outlined "모두 보기", the whole in the middle of the body under the head. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  padding: 0 14px 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.empty strong {
+  margin-top: 6px;
+  font-weight: 500;
+}
+/* The line under the heading, told by its place, not `strong + span`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.empty) > span:not(span:first-child) {
+  margin-top: 2px;
+}
+.emptyIcon {
+  color: var(--icon-tertiary);
+}
+.emptyViewAll {
+  height: 32px;
+  margin-top: 10px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.emptyViewAll:hover {
+  background: var(--bg-hover);
+}
+/* Notion's (2026-11-06): 16px in from both sides and 16px over the popover's
+   foot, filled with its translucent gray (the value of its subtle line). */
+.viewAll {
+  height: 32px;
+  margin: 8px 16px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.viewAll:hover {
+  background: var(--bg-active);
+}
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.iconButton:hover,
+.iconButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+.iconButton[data-filtered="true"] {
+  color: var(--accent-blue);
+}
+.menuHost {
+  position: relative;
+}
+.menu {
+  position: absolute;
+  z-index: 70;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  width: 260px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.menuLabel {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--menu-row-radius);
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+.menuItem[data-sub="true"] {
+  padding-inline-start: 20px;
+}
+.menuItem input {
+  margin: 0;
+}
+.menuCheck {
+  margin-inline-start: auto;
+  color: var(--text-default);
+}
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* A phone sheet's filter at the head's left, as Notion's "모든 토론" (seen
+   2026-10-27): a blue 14px three-line mark 16px in. */
+.sheetFilter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-start: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--accent-blue);
+}
+
+.sheetFilter svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* The phone sheet's rows (PageDiscussionsPopover): across the white sheet
+   20px in, 45px over a line, as Notion's "모든 토론" (seen 2026-10-27), each
+   in its 52px slot (PhoneDiscussionsSheet.module.css). */
+.sheetRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-secondary);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 16px;
+  text-align: start;
+}
+
+:global([data-theme="dark"]) .sheetRow {
+  border-bottom-color: var(--border-subtle);
+}
+
+.sheetAvatar {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+
+.sheetText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sheetAuthor {
+  color: var(--text-default);
+  font-weight: 500;
+}
+
+.sheetUnread {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+
+.sheetEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 738px;
+  margin-top: -14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}
+
+.sheetEmpty strong {
+  font-weight: 600;
+}
+

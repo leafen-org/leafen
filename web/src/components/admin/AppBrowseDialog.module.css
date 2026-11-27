@@ -1,0 +1,167 @@
+/* "앱 둘러보기": a wider window with a search, category tabs, filters and a
+   grid of catalog apps. */
+/* The element in the selector outranks AdministratorApps.module.css .dialog on the same element
+   whatever order the stylesheets load in. */
+section.dialogWide {
+  width: min(880px, calc(100vw - 32px));
+  margin-top: 64px;
+  max-height: calc(100vh - 96px);
+}
+
+/* The window scrolls as one; nothing in it is squeezed to fit. */
+.dialogWide > * {
+  flex-shrink: 0;
+}
+
+.browseHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.browseSearch,
+.browseForm input {
+  height: 30px;
+  min-width: 0;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+}
+
+.browseTabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.browseTabs button {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.browseTabs button[aria-selected="true"] {
+  border-bottom-color: var(--text-default);
+  color: var(--text-default);
+}
+
+.browseFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.browseFilters > label {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.browseGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The app's picture, then its words, as the person's /apps card. */
+.browseCard {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+
+.browseCardText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.browseCardText > button {
+  align-self: flex-start;
+  margin-top: 6px;
+}
+
+.browseCardName {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.browseCardSummary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 13px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.browseCardMeta {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.browseKind {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.browseForm {
+  display: grid;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-default);
+}
+
+.browseForm > button {
+  justify-self: start;
+}
+
+/* Under the allowlist policy: whether people may add the app themselves. */
+.browseAllow {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* The buttons that open a form to add a catalog, and a form's own buttons. */
+.catalogAdd,
+.catalogFormActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.catalogFormActions {
+  justify-content: flex-end;
+}

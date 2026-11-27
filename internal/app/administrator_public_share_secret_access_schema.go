@@ -1,0 +1,3 @@
+package app
+
+const administratorPublicShareSecretPresenceIndex = "idx_leafen_public_share_links_secret_cipher_presence"

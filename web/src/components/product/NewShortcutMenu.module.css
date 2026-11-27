@@ -1,0 +1,81 @@
+/* ⌘N's menu (NewShortcutMenu.tsx), as Notion's create menu (its source,
+   read 2026-11-13): a 300px window in the middle of the page, rounded 16,
+   rows of 36 rounded 8 inside 8px, each ending in its "Press N" key, 20 high,
+   rounded 4, in a faint wash with 12px words. */
+.backdrop,
+.backdrop:hover {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.menu {
+  position: fixed;
+  z-index: 100;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  box-sizing: border-box;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+:dir(rtl) .menu {
+  translate: 50% -50%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 36px;
+  padding-inline: 10px 8px;
+  border-radius: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.row svg {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Notion's background.secondaryTranslucent (bacSecTra) behind its caption. */
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20px;
+  padding-inline: 5px;
+  border-radius: 4px;
+  background: var(--card-field-bg);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+}

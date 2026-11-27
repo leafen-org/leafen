@@ -1,0 +1,365 @@
+.shell {
+  display: flex;
+  height: var(--app-height, 100vh);
+  width: 100vw;
+  overflow: hidden;
+}
+/* A phone's frame is the window's width in whole pixels, as Notion's (seen
+   2026-11-17 in Android Chrome on a Galaxy A90, whose window is 411.43
+   across: its frame 411px, the bar's share and "⋯" at 327 and 367), the
+   drawer's 87% of the same (below). */
+@supports (width: round(down, 100vw, 1px)) {
+  .shell[data-phone="true"] {
+    width: var(--phone-window-width, 100vw);
+  }
+}
+/* Out of sight until it takes focus, its shadow with it (2026-10-19: the
+   shadow of the hidden link reached down into every screen's top left). */
+.skipLink {
+  position: fixed;
+  z-index: 10000;
+  top: 8px;
+  inset-inline-start: 8px;
+  transform: translateY(-160%);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  box-shadow: none;
+}
+.skipLink:focus {
+  transform: translateY(0);
+  box-shadow: var(--shadow-menu);
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sidebarSlot {
+  position: relative;
+  z-index: 20;
+  flex: 0 0 var(--sidebar-width);
+  width: var(--sidebar-width);
+  min-width: 0;
+  height: var(--app-height, 100vh);
+  overflow: visible;
+  transition:
+    flex-basis 200ms cubic-bezier(0.2, 0, 0, 1),
+    width 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sidebarSlot[data-collapsed="true"] {
+  flex-basis: 0;
+  width: 0;
+  pointer-events: none;
+}
+.sidebarSlot[data-resizing="true"] {
+  transition: none;
+}
+
+.mobileSidebarSlot {
+  position: relative;
+  z-index: 20;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  height: var(--app-height, 100vh);
+  overflow: visible;
+  pointer-events: none;
+  transition:
+    flex-basis 200ms cubic-bezier(0.2, 0, 0, 1),
+    width 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.mobileSidebarSlot[data-open="true"] {
+  flex-basis: 270px;
+  width: 270px;
+  pointer-events: auto;
+}
+.shell[data-mobile-sidebar-layout="drawer"] .mobileSidebarSlot {
+  flex-basis: 0;
+  width: 0;
+}
+
+/* A touch phone's sidebar is a drawer 87% of the window across, as Notion's
+   (seen 2026-10-07: 326px of 375, 479px of 551; 2026-11-17 in Android
+   Chrome: 357.57 of 411); held on its side, wider than 600px, it is 320px
+   across, as Notion's iPhone at 874 and Android Chrome at 914 (seen
+   2026-11-16, 2026-11-17). On an iPhone it lies under the page: opened, the
+   page slides aside by its width and shows it; closed, the page slides back
+   over it — 200ms, ease, either way — the drawer itself standing still, as
+   Notion's in iPhone Safari (seen 2026-11-16 upright at 402 and on its side
+   at 874: its frame took translateX(349.74px) and 320px with "transition:
+   transform 200ms" and back, the sidebar fixed at the window's edge under
+   it); the page's edge is lined and shadowed as a surface over the drawer
+   (Notion's frame: shaOutLg, our --shadow-menu). On Android the drawer
+   slides in over the page instead and back out, 200ms ease, its own edge so
+   shadowed, the page standing still and dimming (below), as Notion's in
+   Android Chrome (seen twice 2026-11-17 on a Galaxy A90 at 411: the sidebar
+   from off the window's start to translateX(356.57px) and back, its frame
+   translateX(0) under it). The page beside it takes no taps but the one
+   that closes it. Its 87% is of the window's width in whole pixels, as
+   Notion's (seen 2026-11-17 on a Galaxy A90, whose window is 411.43 across:
+   357.57, 411 × 0.87, where 87vw made 357.94), and on Android it lies 1px
+   past the window's start, its edge 1px short of that (356.57, below). */
+:global(body[data-phone="true"]) {
+  --phone-drawer-width: 87vw;
+  /* The screen's sides the camera's cutout and the corners take, held on
+     its side (index.html's viewport-fit; 0 upright): the frame, the page's
+     bar and the drawer run under them to the screen's edges, what is in
+     them keeps out — the bar's buttons (TopBarChrome.module.css), the
+     drawer's rows (below), the page's column (PageView.module.css) — as
+     Notion's bar, page head and drawer rows do (seen 2026-11-16, iPhone 17
+     Safari at 874: its bar padded 62px each side, its title 80px in, the
+     drawer's rows 10px past 62). Notion's page leaves its blocks 24px from
+     the screen's edge, under the cutout; Leafen keeps the whole column out
+     of it, its words never under the camera. A sheet's 640 card keeps its
+     white groups 16 in, while what lies in them — rows, the head's "‹" and
+     "완료", a group's name, a search's words — moves in by these too, as
+     Notion's "작업", "설정" and "속성 표시 여부" do (seen 2026-11-25, iPhone
+     17 Safari at 874, two tabs: a row's icon 91 in, 13 + 62 past its white),
+     "필터" (an icon 92, its words 126) and "공유 설정" (its head, "일반 사용
+     권한" and its row); every phone sheet's rows, heads, searches and notes
+     add them to the padding their content starts at (PhoneSheet.module.css,
+     PhoneSheetRows.module.css and each sheet's own stylesheet), the whites
+     and full-width buttons keeping theirs. Notion leaves two parts where
+     they stand upright — "속성 표시 여부"'s hidden group's name (32 in) and
+     "공유 설정"'s "고급" (56 in); Leafen moves them as the rest. */
+  --phone-safe-start: env(safe-area-inset-left, 0px);
+  --phone-safe-end: env(safe-area-inset-right, 0px);
+}
+:global([dir="rtl"] body[data-phone="true"]) {
+  --phone-safe-start: env(safe-area-inset-right, 0px);
+  --phone-safe-end: env(safe-area-inset-left, 0px);
+}
+/* The window's width in whole pixels, the frame's and the drawer's measure.
+   iPhone Safari takes round(down, 100vw, 1px) a pixel short of a whole
+   window (402 → 401, while round(down, 402px, 1px) is 402: seen 2026-11-18
+   in iPhone 17 Safari, every block and the database tools 1px short of
+   Notion's 384 and 372), so a hundredth of a pixel goes on before rounding
+   down; Android's 411.43 still comes to 411. */
+@supports (width: round(down, 100vw, 1px)) {
+  :global(body[data-phone="true"]) {
+    --phone-window-width: round(down, 100vw + 0.01px, 1px);
+    --phone-drawer-width: calc(var(--phone-window-width) * 0.87);
+  }
+}
+@media (min-width: 600px) {
+  :global(body[data-phone="true"]) {
+    --phone-drawer-width: 320px;
+  }
+}
+/* The frame's page area and band keep every screen in them out of the
+   cutout at once — a page, home, the inbox — their ground running to the
+   screen's edges; inside, nothing keeps it again, and the page's bar runs
+   out to the edges with its buttons where they were (--phone-bleed-*,
+   TopBarChrome.module.css). Layers outside the frame (a row's page opened
+   whole, a public page) keep it by their own margins. */
+.shell[data-phone="true"] :is(.main, .notice) {
+  --phone-bleed-start: var(--phone-safe-start);
+  --phone-bleed-end: var(--phone-safe-end);
+  padding-inline: var(--phone-safe-start) var(--phone-safe-end);
+}
+.shell[data-phone="true"] :is(.main, .notice) > * {
+  --phone-safe-start: 0px;
+  --phone-safe-end: 0px;
+}
+/* Closed, it leaves the screen once the page is back over it; opened, it is
+   there at once, for the page to slide off. */
+.shell[data-phone="true"] [data-app-sidebar] {
+  width: var(--phone-drawer-width, 87vw);
+  min-width: var(--phone-drawer-width, 87vw);
+  flex-basis: var(--phone-drawer-width, 87vw);
+  padding-inline-start: var(--phone-safe-start, 0px);
+  box-shadow: none;
+  transition: transform 0s linear 200ms;
+}
+.shell[data-mobile-sidebar-layout="drawer"] [data-app-sidebar] {
+  transition: none;
+}
+/* On Android it comes and goes over the page, its shadow kept till it is out. */
+.shell[data-phone="true"]:not([data-apple-touch]) [data-app-sidebar] {
+  transition: transform 200ms ease, box-shadow 0s linear 200ms;
+}
+.shell[data-mobile-sidebar-layout="drawer"]:not([data-apple-touch]) [data-app-sidebar] {
+  box-shadow: var(--shadow-menu);
+  transition: transform 200ms ease;
+}
+/* There it lies 1px past the window's start (above), its edge and the
+   scrim's start 1px short of its width. */
+.shell[data-phone="true"]:not([data-apple-touch]) [data-app-sidebar] {
+  margin-inline-start: -1px;
+}
+.shell[data-phone="true"]:not([data-apple-touch]) .drawerScrim {
+  inset-inline-start: calc(var(--phone-drawer-width, 87vw) - 1px);
+}
+/* Its slot lies under the page while the page slides, and over it once the
+   page has slid aside, so that the drawer's menus and the backdrops that
+   close them still lie over the page beside it and over the scrim (below),
+   which lies over a row's page opened whole (19, DatabaseRowPeekBody). */
+.shell[data-phone="true"] .mobileSidebarSlot {
+  z-index: 0;
+  transition: z-index 0s;
+}
+.shell[data-mobile-sidebar-layout="drawer"] .mobileSidebarSlot {
+  z-index: 21;
+  transition: z-index 0s linear 200ms;
+}
+.shell[data-phone="true"]:not([data-apple-touch]) .mobileSidebarSlot {
+  z-index: 21;
+  transition: none;
+}
+/* The band above the page ("앱에서 열기") goes with it. Moved only while the
+   drawer is open or closing: a moved box holds the boxes fixed inside it. */
+.shell[data-phone="true"] :is(.main, .notice) {
+  transition: transform 200ms ease, box-shadow 0s linear 200ms;
+}
+.shell[data-mobile-sidebar-layout="drawer"][data-apple-touch] :is(.main, .notice) {
+  transform: translateX(calc(var(--phone-drawer-width, 87vw) * var(--inline-sign, 1)));
+  transition: transform 200ms ease;
+}
+.shell[data-mobile-sidebar-layout="drawer"][data-apple-touch] .main {
+  box-shadow: var(--shadow-menu);
+}
+/* On Android they stay, dimming as the drawer comes and brightening as it
+   goes in its 200ms (Notion's frame: "transition: filter 200ms"). */
+.shell[data-phone="true"]:not([data-apple-touch]) :is(.main, .notice) {
+  transition: filter 200ms ease;
+}
+/* All that lies beside the drawer dims alike — the page and a band above it
+   ("앱에서 열기"), which takes no taps or keys there either (AppShell) — on
+   Android; an iPhone leaves them as they are. Notion's does the same (seen
+   2026-11-10: brightness 0.7 in Android Chrome, 1 in iPhone Safari). */
+.shell[data-mobile-sidebar-layout="drawer"]:not([data-apple-touch]) :is(.main, .notice) {
+  filter: brightness(0.7);
+}
+/* Over the page beside the drawer, as Notion's (seen 2026-11-16: a clear box
+   from the drawer's edge to the window's). Laid on the shell, which doesn't
+   scroll on a phone, rather than fixed to the screen: Safari takes a box
+   fixed over the screen for its bars (index.html, .bar-ground). */
+.drawerScrim {
+  position: absolute;
+  inset: 0;
+  inset-inline-start: var(--phone-drawer-width, 87vw);
+  z-index: 20;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--app-height, 100vh);
+  background: var(--bg-app);
+  position: relative;
+}
+/* A page fills the window under its top bar and whatever bars stand over it
+   (a published site's, a button template's): its scroll takes what they
+   leave, so the window never scrolls as well and nothing at its right moves
+   (2026-11-06: the published site's bar pushed the page 44px past the
+   window, a second scrollbar took 15px from the top bar's buttons). The
+   scroll tells the page area it is there (pageScrollHost.ts), not a ":has()"
+   on the page area, which Chrome worked out again at each element put in
+   anywhere in the page — each new line (2026-11-14). */
+.main[data-page-scroll-host="true"] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Its children are told apart by themselves, not by a :has() on the page
+   before them: such a rule had every element put anywhere in the page work
+   out the page's every style again, some 110ms for a page holding a 120-row
+   table — a row's peek, a cell's tools, a typed word (seen 2026-11-12). A
+   child that isn't a flex item shrinks no matter. */
+.main > :not([data-page-scroll]) {
+  flex-shrink: 0;
+}
+
+.main > [data-page-scroll] {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+}
+/* The page left for a screen of another kind, till that screen is painted
+   (useLeavingPage.ts): out of the flow where it stood, at the size it had
+   (set on it), its contents skipped with their boxes kept — not laid out
+   with the screen, nor taken down in its frame as display: none took them.
+   Clipped to nothing, it is seen and pressed nowhere; hidden by visibility,
+   which passes down, any read of its layout worked out every style under
+   it again (20,000 elements, 276 ms at CPU ×2, 2026-11-15). */
+.main > [data-page-left] {
+  position: absolute;
+  inset-inline: 0;
+  box-sizing: border-box;
+  content-visibility: hidden;
+  clip-path: inset(50%);
+}
+/* A side peek sits beside the page, not over it: the page keeps the window
+   less the peek, down to nothing, as Notion's (seen 2026-11-03: 640 at
+   1280, 360 at 1000, 60 at 700). A phone's peek is a sheet over it. The
+   peek's own width, once known, is set on the page itself (AppShell). */
+.shell[data-side-row-peek-open="true"]:not([data-phone="true"]) > .main {
+  margin-inline-end: min(564px, 100vw);
+}
+/* The page's bar keeps its path; its share, link, favourite and menu stay
+   under the peek, as Notion's whole-window bar does (seen 2026-11-03) — so
+   they take none of the bar left to the path, which runs to the peek whole
+   (seen 2026-11-07: "한지테스트페이지 / … / import-probe / 새 데이터베이스"). */
+.shell[data-side-row-peek-open="true"]:not([data-phone="true"]) > .main [data-topbar-action-rail] {
+  display: none;
+}
+
+/* A touch screen wider than a phone's keeps the app above the screen's
+   bottom inset, the home bar's room: the page, its scroll and the sidebar end
+   there and the window's ground shows under it, as Notion's iPad frame does
+   (seen 2026-11-15 in iPad Safari, 834×1078 and 1194×702: its frame's box
+   padded at the bottom by the safe area's 20px — the page's scroll 1014 and
+   638 high under its 44px bar). A phone keeps its own bars' rule (its tab
+   bar pads itself), and a screen without such an inset loses nothing. */
+:global(body[data-touch="true"]:not([data-phone="true"])) {
+  --app-foot-inset: env(safe-area-inset-bottom, 0px);
+  --app-height: calc(100vh - var(--developer-bar-height, 0px) - var(--app-foot-inset));
+}
+/* A notice is a band above the page area: the page moves down by it and
+   everything in it reckons with the shorter height. */
+.main[data-app-notice="true"] {
+  --app-height: calc(100vh - var(--developer-bar-height, 0px) - var(--app-notice-height, 40px) - var(--app-foot-inset, 0px));
+  margin-top: var(--app-notice-height, 40px);
+}
+/* Panels beside the page, which may be laid outside it, stand under its bar.
+   The page's root is told of the band by AppShell, not by a ":has()" on the
+   root: Chrome worked the root's style out again at each element put in
+   anywhere in the page — each new line (2026-11-14). */
+:global(:root[data-app-notice="true"]) {
+  --page-panel-top: calc(var(--topbar-height) + var(--app-notice-height, 40px));
+}
+
+/* It starts where the sidebar ends, on the sidebar's side in either
+   direction (2026-11-06: in Arabic the sidebar sat over its words). */
+/* It takes the lines its text needs, as Notion's bands do at any width
+   (2026-11-07: at 800px the proper-address band was cut to "…nip.i…", the
+   rest only on hover); AppShell tells the page how tall that came out. */
+.notice {
+  position: fixed;
+  top: 0;
+  inset-inline-start: var(--sidebar-effective-width, 0px);
+  inset-inline-end: 0;
+  min-height: 40px;
+  z-index: 3;
+}
+/* On a phone it is laid at the top rather than fixed there: Safari would
+   color the status bar from a short fixed box at the screen's top, where
+   Notion's keeps its soft ground (index.html, .bar-ground). The page under
+   it doesn't scroll, so it stands as still. */
+.shell[data-phone="true"] .notice {
+  position: absolute;
+}
+

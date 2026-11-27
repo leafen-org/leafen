@@ -1,0 +1,55 @@
+/* A person property's picker on a touch screen (PropertyPeopleCell), as
+   Notion's phone sheet named for the property (seen 2026-11-15 at 402pt in
+   iOS Safari, dark): the field a 52px group of its own (51 under the group's
+   1px top edge, PhoneSheet), what is typed 17px 16 in with no inset of its
+   own, 14 down, and the
+   chosen people before it, each a 24px face and its 16px name with "×" 6
+   after; then "원하는 만큼 선택" over the people's group, each a 45px row of a
+   28px face 12 in and its 16px name 10 after it, parted by the sheet's line. */
+.field [data-people-field] {
+  gap: 6px;
+  min-height: 51px;
+  margin: 0;
+  padding-block: 13px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  background: transparent;
+  cursor: text;
+}
+.field [data-people-field]::before {
+  display: none;
+}
+.field [data-people-field] input {
+  height: 24px;
+  padding-inline: 0;
+  font-size: 17px;
+}
+.field [data-selected-person] {
+  height: 24px;
+  font-size: 16px;
+}
+.field [data-selected-person] > button {
+  margin-inline: 4px;
+}
+.people [data-people-list] {
+  gap: 0;
+  max-height: none;
+  margin: 0;
+  overflow: visible;
+}
+.people [data-people-list] [role="option"] {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 10px;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-secondary);
+  font-size: 16px;
+  line-height: 21px;
+}
+.people [data-people-list] [role="option"]:last-child {
+  border-bottom: 0;
+}
+.people [data-people-list] [role="option"]:is(:hover, :focus-visible, [data-selected="true"], [data-active="true"]) {
+  background: transparent;
+}

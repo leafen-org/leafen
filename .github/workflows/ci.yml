@@ -1,0 +1,127 @@
+# The public checks: Leafen builds from this repository as it is, its
+# generated and committed files are up to date, and the core path works —
+# a server started on an empty folder, its first run by commands, a page and
+# a database through the API, an agent's MCP connection, a backup restored
+# into a new folder (internal/smoke). The fuller suite that holds Leafen to
+# Notion's behaviour is kept by the maintainers and run before each release
+# (CONTRIBUTING.md).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build, checks and smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: |
+            go.sum
+            desktop/go.sum
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: gofmt
+        run: |
+          unformatted=$(git ls-files -z '*.go' | xargs -0 gofmt -l)
+          if [ -n "$unformatted" ]; then
+            echo "Run gofmt -w on these files:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: Install the web build's packages
+        run: npm --prefix web ci --ignore-scripts
+
+      # The web build runs its checks first — the generated wire contracts,
+      # catalogs and schema files, the screen words, the CSS rules — then the
+      # type check and the bundle the server embeds (web/dist).
+      - name: Web build with its type and generated-file checks
+        run: npm --prefix web run build
+
+      - name: The core keeps out of the organization module
+        run: node scripts/check-organization-boundary.mjs
+
+      - name: The app manifest's schema and types are up to date
+        run: go run ./cmd/leafen-app-schema --check
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: go vet (leafen_noapps)
+        run: go vet -tags leafen_noapps ./...
+
+      - name: go vet (the desktop app, as Windows builds it)
+        run: GOOS=windows CGO_ENABLED=0 go vet ./desktop
+
+      # The phone apps build the same package with their own files, so a
+      # helper only the desktop's files hold, called from a file the phones
+      # build too, stops a phone build. Android is vetted as its Taskfile
+      # builds it, with cgo through the runner's NDK; iOS needs Xcode's SDK,
+      # which this Linux runner doesn't have.
+      - name: go vet (the desktop app, as Android builds it)
+        run: >-
+          GOOS=android GOARCH=arm64 CGO_ENABLED=1
+          CC="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
+          go vet -tags android,leafen_noapps ./desktop
+
+      - name: Build the server
+        run: go build -trimpath -buildvcs=false -ldflags='-s -w' -o dist/leafen ./cmd/leafen
+
+      - name: Build the server without the app platform (leafen_noapps)
+        run: go build -trimpath -buildvcs=false -tags leafen_noapps -ldflags='-s -w' -o dist/leafen-noapps ./cmd/leafen
+
+      # The notices list the Android app's libraries as Gradle resolves
+      # them: the first resolve fills Gradle's cache, which the check then
+      # reads offline. The runner's Android SDK and JDK 21 serve both.
+      - name: Resolve the Android app's libraries
+        working-directory: desktop/build/android
+        run: JAVA_HOME="$JAVA_HOME_21_X64" ./gradlew --no-daemon -q :app:dependencies --configuration releaseRuntimeClasspath > /dev/null
+
+      - name: The third-party notices are up to date
+        run: JAVA_HOME="$JAVA_HOME_21_X64" node scripts/generate-third-party-notices.mjs --check
+
+      - name: Smoke tests of the core path
+        env:
+          LEAFEN_SMOKE_BINARY: dist/leafen
+        run: go test -count=1 -timeout 5m -v ./internal/smoke
+
+  ygo:
+    name: Ygo (Leafen's modified copy) tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # A module of its own, outside the Go workspace (go.work) of Leafen's.
+    env:
+      GOWORK: "off"
+    defaults:
+      run:
+        working-directory: third_party/ygo
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # Leafen's Go release (the root go.mod), which builds this copy too.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: third_party/ygo/go.sum
+      - name: go vet
+        run: go vet ./...
+      - name: go test
+        run: go test -race -timeout 120s ./...

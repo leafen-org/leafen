@@ -1,0 +1,431 @@
+/* Notion's keyboard shortcuts window (measured 2026-11-19 in Chrome at 1440
+   and 800, light and dark): 100px
+   less than the window each way, up to 960×700, centred; a 32/48 title 24px
+   down, a 64px head of tabs and the search, then the sections scrolling. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: grid;
+  place-items: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(960px, calc(100vw - 100px));
+  height: min(700px, calc(100vh - 100px));
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+
+.dialog:focus {
+  outline: none;
+}
+
+/* A phone's window is too narrow for Notion's 100px: the window's edges then. */
+@media (max-width: 599px) {
+  .dialog {
+    width: calc(100vw - 32px);
+    height: calc(100vh - 32px);
+  }
+}
+
+.title {
+  flex: none;
+  margin: 0;
+  padding-block: 24px 0;
+  padding-inline: 32px 0;
+  color: var(--text-default);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 48px;
+  text-align: start;
+}
+
+.head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 64px;
+  padding-inline: 32px;
+}
+
+/* Tabs 32 high and 16 round, 6 apart, 8 down the head; the lit one (the
+   section in view) and a pointed one on the hover ground. Their words are
+   14px medium, secondary but for the lit tab's, and each mark is fitted to
+   its glyph (ShortcutsTabMark), as Notion's (seen 2026-11-21 at 1440). */
+.tabs {
+  /* The keyboard's ring as the row has it, for a first tab focused by the
+     keys that opened the window (KeyboardShortcutsDialog). */
+  --shortcuts-key-ring: var(--keyboard-focus-ring);
+  position: relative;
+  display: flex;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  padding-block: 8px;
+}
+
+.tab {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab[data-active] {
+  color: var(--text-default);
+}
+
+.tab > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The chevron after the lit section's name on "더 보기…" takes the words' colour, as Notion's. */
+.tab > .moreChevron {
+  color: inherit;
+}
+
+.tab:hover,
+.tab[data-active] {
+  background: var(--bg-hover);
+}
+
+.tab:focus-visible,
+.searchButton:focus-visible,
+.moreItem:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.tab[data-key-opened]:focus-visible {
+  box-shadow: var(--shortcuts-key-ring);
+}
+
+.moreHolder {
+  position: relative;
+  flex: none;
+}
+
+/* "더 보기…"'s menu: 180 wide right under it from its start, Notion's menu. */
+.moreMenu {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.moreItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.moreItem:hover {
+  background: var(--bg-hover);
+}
+
+.moreItem > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The search at the head's end: its round button, then a field a fifth of
+   the head wide, on a faint tint in dark (none in light). Open, the button
+   (32) and the field (160) share the column, both shrinking by their widths
+   (the button a sixth of it: 29.87 at 1440, 21.2 at 800, and no less than
+   its 20 magnifier: 20 at 600), as Notion's (seen 2026-11-21 at 1440, 800
+   and 600 in two tabs, dark; its button flex 0 1 auto at 32px, its field's
+   box 160px). Folded it is as wide as what it holds (auto: the button, and a
+   closing field's box with it as it goes), as Notion's. */
+.searchColumn {
+  flex: none;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: auto;
+  padding-block: 4px 6px;
+}
+
+.searchColumn[data-open] {
+  width: 20%;
+}
+
+:global(:root[data-theme="dark"]) .searchColumn {
+  background: var(--bg-block-empty);
+}
+
+/* The round button keeps no ground under the pointer, folded or open, as
+   Notion's (its button's inline background stays transparent in either theme
+   and its classes carry no :hover rule; seen 2026-11-21 at 1440 and 800,
+   dark). Its 20 magnifier stays whole in the middle as the button shrinks. */
+.searchButton {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+
+.searchButton > svg {
+  flex: none;
+}
+
+/* The words start right after the button and run up to the ✕, as Notion's
+   (its input flex 1 1 0% meets the ✕ with no gap). The box grows in from
+   nothing and fades in, and back out as it closes (KeyboardShortcutsDialog). */
+.searchField {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  width: 160px;
+  min-width: 0;
+  height: 24px;
+  opacity: 1;
+  transition: width 200ms ease, opacity 200ms ease;
+}
+
+@starting-style {
+  .searchField {
+    width: 0;
+    opacity: 0;
+  }
+}
+
+.searchField[data-closing] {
+  width: 0;
+  opacity: 0;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 21px;
+  outline: none;
+}
+
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+  appearance: none;
+}
+
+/* The ✕ is Notion's round 24 button ('입력 값 지우기'): radius 20, 4 past the
+   field's end (margin-inline-end −4), its filled 20 circle in the tertiary
+   text color; under the pointer or the keyboard's focus it takes the hover
+   wash (Notion's bacIntTra) fading in over 0.1s, and held down that wash at
+   twice its alpha, as Notion's own rgb(from … / calc(alpha * 2)) — the same
+   in either theme's values (seen 2026-11-21 at 1440 in two tabs, dark, and
+   its button's style rules for both themes). */
+.clearSearch {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: -4px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: background 100ms ease-in-out;
+}
+
+.clearSearch:hover,
+.clearSearch:focus-visible {
+  background: var(--bg-hover);
+}
+
+.clearSearch:active {
+  background: rgb(from var(--bg-hover) r g b / calc(alpha * 2));
+}
+
+/* The sections, 32 in from either side — 16 from the end while a scroll bar
+   that takes room stands there (data-scroll-bar, KeyboardShortcutsDialog) —
+   under a 16px shade that keeps to the top as they scroll. The shade takes
+   its room in the list, as Notion's: the window opens with the list 16 down
+   (KeyboardShortcutsDialog), and found rows that fit leave the first head 16
+   under the list's top (seen 2026-11-21 at 1440, "bold" and "@"). */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-block: 0 24px;
+  padding-inline: 32px;
+}
+
+.body[data-scroll-bar] {
+  padding-inline-end: 16px;
+}
+
+.shade {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  height: 16px;
+  background: linear-gradient(var(--modal-bg), transparent);
+  pointer-events: none;
+}
+
+:global(:root[data-theme="dark"]) .shade {
+  background: linear-gradient(var(--bg-block-empty), transparent);
+}
+
+/* 48 after each section, the last too, as Notion's: the list ends 48 + 24
+   under its last row. */
+.section {
+  margin-block-end: 48px;
+}
+
+.sectionTitle {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+}
+
+.groupTitle {
+  margin: 18.72px 0 8px;
+  color: var(--text-default);
+  font-size: 18.72px;
+  font-weight: 600;
+  line-height: 28.08px;
+}
+
+/* A row 44 high over a hairline: its words, 16 apart from its keys at the end. */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  margin-inline-end: 16px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.keys {
+  display: flex;
+  gap: 4px;
+}
+
+/* A key cap: a word in 13px monospace on a 20px, 6-round tint, 8 in. */
+.key {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--shortcut-key-bg);
+  color: var(--text-secondary);
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 19.5px;
+  white-space: nowrap;
+}
+
+/* The search's words where they show in a name or a cap: Notion's find-match
+   yellow (findHighlightMatch.selectedBackground, #ffcd38e6 in light and in
+   dark alike — its dark theme sets no other; read 2026-11-21) under the main
+   text colour, 2 in and 2 round. */
+.found {
+  padding: 0 2px;
+  border-radius: 2px;
+  background: rgba(255, 205, 56, 0.9);
+  color: var(--text-default);
+}
+
+/* No row found: a light 18px line and its hint in the middle of a 300 box
+   under the shade, as Notion's (its heading 131.5 under the list's top). */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 14.94px 0 8px;
+  color: var(--text-default);
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 27px;
+}
+
+.empty p {
+  max-width: 400px;
+  margin: 14px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}

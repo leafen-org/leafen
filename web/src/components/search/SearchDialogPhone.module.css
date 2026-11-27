@@ -1,0 +1,106 @@
+/* A phone's search, as Notion's in iPhone Safari (seen 2026-11-14, 402pt,
+   light): a sheet over what was there — opened from the drawer, the drawer
+   stays behind it under the sheets' shade — its top 10px under the screen's
+   top, the whole width, 12px round at the top on the sheets' soft ground
+   with the menus' shadow. Its first line is the field, 17px down: a 26px
+   magnifier 16px in, the words 12px after it to 12px before "취소하기" at
+   its end (14px in the second grey, 8px inside its 28px box, 10px from the
+   edge); the list under it. It opens with the field focused and the
+   keyboard down (overlayLayer's typesOnPhone); the field pressed brings the
+   keyboard up over the sheet's foot, the sheet keeping its height. The
+   shade and "취소하기" close it. On Android it stands 16px down without the
+   shadow, over the darker shade, as Notion's other sheets there
+   (PhoneSheet.module.css). These classes sit beside
+   SearchDialog.module.css's and leave the desktop's window as it is. */
+.close {
+  display: none;
+}
+.field {
+  display: contents;
+}
+
+:global([data-phone="true"]) .shade {
+  background: rgba(0, 0, 0, 0.2);
+}
+:global([data-theme="dark"]) :global([data-phone="true"]) .shade {
+  background: rgba(0, 0, 0, 0.8);
+}
+:global([data-phone="true"][data-apple-touch]) .shade {
+  background: rgba(0, 0, 0, 0.12);
+}
+:global([data-theme="dark"]) :global([data-phone="true"][data-apple-touch]) .shade {
+  background: rgba(0, 0, 0, 0.29);
+}
+:global([data-phone="true"]) .dialog {
+  --sheet-top: 16px;
+  position: fixed;
+  inset: calc(env(safe-area-inset-top) + var(--sheet-top)) 0 auto 0;
+  width: 100vw;
+  height: calc(var(--app-height, 100dvh) - env(safe-area-inset-top) - var(--sheet-top));
+  max-height: none;
+  margin: 0;
+  padding-top: 17px;
+  /* Its words past the camera's cutout on a phone's side (AppShell.module.css). */
+  padding-inline: var(--phone-safe-start, 0px) var(--phone-safe-end, 0px);
+  border-radius: 12px 12px 0 0;
+  background: var(--bg-soft);
+  box-shadow: none;
+  animation: phoneSearchRise 180ms ease-out;
+}
+:global([data-phone="true"][data-apple-touch]) .dialog {
+  --sheet-top: 10px;
+  box-shadow: var(--shadow-menu);
+}
+:global([data-phone="true"]) .dialog > :global([data-search-footer]) {
+  display: none;
+}
+:global([data-phone="true"]) .row {
+  height: 50px;
+  gap: 0;
+  padding: 0;
+  border-bottom: 0;
+}
+:global([data-phone="true"]) .field {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  height: 100%;
+  padding-inline-start: 16px;
+}
+:global([data-phone="true"]) .field > svg:first-child {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-inline-end: 0;
+  color: var(--icon-secondary);
+}
+:global([data-phone="true"]) .close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 28px;
+  margin-inline: 12px 10px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+:global([data-phone="true"]) .close:active {
+  background: var(--bg-hover);
+}
+
+@keyframes phoneSearchRise {
+  from { transform: translateY(24px); opacity: 0.6; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :global([data-phone="true"]) .dialog { animation: none; }
+}

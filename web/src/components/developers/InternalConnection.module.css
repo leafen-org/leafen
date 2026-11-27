@@ -1,0 +1,247 @@
+/* An internal connection's page, as Notion's (seen 2026-10-30): the token's
+   workspace as a chip in a grey field, the capabilities as checkboxes and
+   radios in groups with a grey line under each name, and the content access card's
+   search, its grey "공유된 페이지 (N개 페이지)" row and the pages under it. */
+/* The workspace field is a shown value's 32px box (DeveloperTools .secretRow),
+   5 in, its chip 24 tall on the faint wash, 6 in, without a ring (2026-11-13). */
+.chipField {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 4px 5px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--button-outline);
+  background: var(--card-field-bg);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  gap: 6px;
+}
+.token {
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tokenActions {
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+.note {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* The 기능 card's groups, as Notion's (seen 2026-11-11 at 1975, 1300 and
+   1000 wide): two even columns 24 apart from a 1025px window, one column
+   below it, groups 24 apart either way; the user group's grid 20 under a
+   faint line 20 under the first. A group is its 12/500 grey name 12 above
+   its rows, rows 12 apart. */
+.capabilityGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+@media (min-width: 1025px) {
+  .capabilityGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+.capabilityGrid + .capabilityGrid {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+.group,
+.capabilities {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.groupName {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+/* A row: its 16px box 2px down, 8px before its name (14/500 on 20) and the
+   grey line 2px under it (12/400 on 16). The pointer gives it no ground, as
+   Notion's. Notion marks a row the keyboard reached with nothing; here the
+   keyboard's ring (styles.css) rounds its box, as a checkbox's, rather than
+   the whole row, so one can see where Tab went. */
+.capability {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  color: var(--text-default);
+  text-align: start;
+}
+.capabilities .capability[role]:is(:focus, :focus-visible) {
+  box-shadow: none;
+}
+.capability:focus-visible .box {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.box {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border: 1.5px solid var(--border-default);
+  border-radius: 3px;
+  background: var(--bg-default);
+}
+.capability[role="radio"] .box {
+  border-radius: 50%;
+}
+.capability[aria-checked="true"] .box {
+  border-color: var(--accent-blue);
+}
+.capability[role="checkbox"][aria-checked="true"] .box {
+  background: var(--accent-blue);
+  color: #f0efed;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+.capabilityText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.capabilityText strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.capabilityText small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+p.description {
+  margin: 0;
+}
+.help {
+  display: inline-flex;
+  margin-inline-start: 6px;
+  color: var(--icon-secondary);
+  vertical-align: middle;
+}
+.link {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+}
+.link:hover {
+  background: var(--bg-hover);
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  margin-top: 24px;
+  padding: 0 10px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.groupRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 32px;
+  margin-top: 24px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.pages {
+  padding: 4px 8px;
+}
+.subgroup {
+  margin: 8px 0 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.pageRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.pickList {
+  max-height: min(360px, 50dvh);
+  overflow-y: auto;
+}
+.ownerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border-secondary);
+}
+.ownerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ownerRow strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.ownerRow small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}

@@ -1,0 +1,101 @@
+/* An open thread's reply box, as Notion's (seen 2026-09-30; its face measured
+   2026-10-28): one line under the thread that grows as it is typed in, no
+   frame until focused — then a 1px blue ring, none in a window under a block
+   or a value (seen 2026-11-12) — its words in line with the thread's, with
+   mention and send at its end (CommentTools). */
+.box {
+  margin-inline-start: -4px;
+  border-radius: 6px;
+}
+
+.box:not([data-window="true"]):focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 3.5px 4px 3px;
+}
+
+.fieldBox {
+  flex: 1;
+}
+
+/* With files, the tools sit at the right under them. */
+.foot {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 4px 3px;
+}
+
+.box [data-comment-pending-attachments] {
+  padding: 2px 4px 0;
+}
+
+.attach {
+  display: inline-flex;
+}
+
+/* Its words stop 5px inside their box, 11px short of the 📎, as a new
+   comment's (CommentsPanel .commentField; Notion's, seen 2026-11-12). */
+.field {
+  min-height: 24px;
+  padding: 2px 0;
+  padding-inline-end: 5px;
+  font-size: 14px;
+  line-height: 20px;
+}
+:global([data-phone="true"]) .field {
+  padding-inline-end: 0;
+}
+
+/* Its buttons show while it has focus or words, or its thread is the one
+   chosen, as Notion's (seen 2026-10-28, 2026-11-12). The box takes the state
+   its buttons read: a focus state over ":not(:first-child)" restyled the
+   whole page at each focus move (2026-11-12: about 60 ms a move). */
+.box[data-empty="true"]:not([data-tools-shown="true"]):not(:focus-within) {
+  --reply-tools: hidden;
+}
+.row > :not(:first-child) {
+  visibility: var(--reply-tools, inherit);
+}
+
+/* A thread's own box under a page's title takes no ring, as the field under
+   the threads; on a phone its tools go on a line under the field once it is
+   pressed or written in — 📎 and a 26px send 16px apart at its end, no "@",
+   1.5px under the field and 3px over the box's foot — as that field's
+   (Notion's, seen 2026-11-25 on a Galaxy A90's Chrome at 411). */
+.box[data-under-title="true"]:focus-within {
+  box-shadow: none;
+}
+:global([data-phone="true"]) .box[data-under-title="true"] .row {
+  flex-wrap: wrap;
+  gap: 0 16px;
+}
+:global([data-phone="true"]) .box[data-under-title="true"] .fieldBox {
+  flex-basis: 100%;
+}
+/* The 📎 level with the send's middle, the first tool pushing them to the end. */
+:global([data-phone="true"]) .box[data-under-title="true"] .row > :nth-child(2) {
+  margin-block-end: 2px;
+  margin-inline-start: auto;
+}
+/* Empty and left, the box carries the tools' line away (a value its tools take). */
+:global([data-phone="true"]) .box[data-under-title="true"][data-empty="true"]:not(:focus-within) {
+  --reply-tools-line: none;
+}
+:global([data-phone="true"]) .box[data-under-title="true"] .row > :not(:first-child) {
+  display: var(--reply-tools-line, inline-flex);
+}
+:global([data-phone="true"]) .box[data-under-title="true"] .row > [data-reply-mention] {
+  display: none;
+}
+:global([data-phone="true"]) .box[data-under-title="true"] [data-reply-send] {
+  width: 26px;
+  height: 26px;
+  margin: 2.5px 1px 1px;
+}

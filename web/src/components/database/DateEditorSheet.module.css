@@ -1,0 +1,173 @@
+/* A date property's editor on a touch screen (DateEditorFrame), as Notion's
+   phone sheet "날짜" (seen 2026-11-15 at 402pt in iOS Safari, dark): four
+   groups 16 apart — the date field (16 round it, a 28px field of 16px words
+   8 in on a faint ground inside its faint line, as the window's), the
+   calendar (a week's seven 44px squares centred under a 32px head 16 down:
+   its month 16px/500 4 down in a 28px box, its words 2 in from the box's
+   edge and then 4% of the squares' width further, Notion's phone rule
+   `padding-inline-start: 4%` on its caption read at 411 on the A90; "‹ ›"
+   two 24px buttons side by side 4 before the squares' end, at the top of a
+   27px line centred in the head; 14px weekdays in a 44px row in the other
+   months' days' grey, 36px days of 16px numbers each in its square, 16
+   under the last week; the same at 411 on the A90), the settings (45px
+   rows of 17px words 16 in, a value 16px grey) and "삭제". */
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sheet > * {
+  margin: 0;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+}
+.sheet > [data-date-inputs] {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 16px;
+}
+/* Its fields are the phone's own date and time fields (DateDraftInput), as
+   Notion's: a 28px box 8px in with its faint line drawn round it, each field
+   bare inside it, so the system's "⌄" stands at the field's end, 8 before the
+   box's (seen 2026-11-15 on the A90 at 411: box 32..379.4, field 40..371.4;
+   with a time, two 156.2px fields and the split between them). */
+.sheet > [data-date-inputs] > * {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  box-sizing: border-box;
+  height: 28px;
+  padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+}
+.sheet > [data-date-inputs] > :is([data-active="true"], :has(> [data-active="true"])) {
+  box-shadow: 0 0 0 1px var(--accent-blue), inset 0 0 0 1px var(--accent-blue);
+}
+.sheet > [data-date-inputs] input {
+  flex: 1 1 0;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+}
+/* The day reads from the field's start on an iPhone too, where Safari
+   centres it (Notion's, seen 2026-11-15 in iOS Safari at 402: the day at 41,
+   its time where Safari puts it, as here). */
+.sheet > [data-date-inputs] input[type="date"],
+.sheet > [data-date-inputs] input[type="date"]::-webkit-date-and-time-value {
+  text-align: start;
+}
+.sheet > :not([data-date-inputs], [data-date-options], [role="group"]) {
+  padding: 16px 0;
+}
+.sheet > :not([data-date-inputs], [data-date-options], [role="group"]) > :first-child {
+  box-sizing: border-box;
+  align-items: flex-start;
+  gap: 0;
+  width: calc(7 * 44px);
+  height: 32px;
+  margin-inline: auto;
+  padding-block: 0;
+  padding-inline: 0 4px;
+}
+.sheet > :not([data-date-inputs], [data-date-options], [role="group"]) > :first-child > span {
+  margin-top: 4px;
+  padding-block: 2px;
+  padding-inline-start: calc(2px + 0.04 * 7 * 44px);
+  font-size: 16px;
+  line-height: 24px;
+}
+.sheet > :not([data-date-inputs], [data-date-options], [role="group"]) > :first-child > button {
+  width: 24px;
+  margin-top: 2.5px;
+  padding: 0;
+}
+.sheet [data-date-now] {
+  display: none;
+}
+.sheet [role="grid"] [role="row"],
+.sheet [role="grid"] [role="rowgroup"] {
+  grid-template-columns: repeat(7, 36px);
+  column-gap: 8px;
+  row-gap: 8px;
+}
+.sheet [role="grid"] [role="row"] span {
+  height: 44px;
+  color: var(--date-outside-text);
+  font-size: 14px;
+}
+.sheet [role="grid"] [role="rowgroup"] {
+  padding-block: 4px;
+}
+.sheet [role="grid"] [role="rowgroup"] button {
+  width: 36px;
+  height: 36px;
+  margin: 0;
+  font-size: 16px;
+}
+.sheet > [data-date-options] {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+.sheet > [data-date-options]::before,
+.sheet > [data-date-options] > ::before {
+  display: none;
+}
+.sheet > [data-date-options] > * {
+  min-height: 45px;
+  margin: 0;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  background: var(--bg-elevated);
+  box-shadow: inset 0 -1px 0 var(--border-secondary);
+  font-size: 17px;
+}
+.sheet > [data-date-options] > :first-child {
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+}
+/* "삭제" and what follows it each a group of their own, 16 under the
+   settings; with no settings (a form's answer), 16 under the calendar. */
+.sheet > [data-date-options] > [data-date-clear] {
+  margin-block: 16px;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.sheet > [data-date-options] > [data-date-clear]:first-child {
+  margin-block-start: 0;
+}
+.sheet > [data-date-options] > :has(+ [data-date-clear]) {
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+  box-shadow: none;
+}
+.sheet > [data-date-options] > [data-date-clear] ~ * {
+  padding: 0;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.sheet > [data-date-options] [class*="choiceValue"] {
+  font-size: 16px;
+}
+/* A setting's value stands 16 before its 18px "›", 16 in from the row's end,
+   as Notion's sheet rows (seen 2026-11-16 on the A90 at 411: "전체 날짜" and
+   "알림 없음" to 345.4, the value's margin-inline-end 16, "›" 361.4–379.4
+   and its own margin 16 to the row's end at 395.4). */
+.sheet > [data-date-options] [class*="choiceChevron"] {
+  margin-inline-start: 8px;
+}
+.sheet > [data-date-options] > :is(:hover, :focus-visible, :focus-within) {
+  background: var(--bg-elevated);
+}

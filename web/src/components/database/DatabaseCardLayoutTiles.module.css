@@ -1,0 +1,150 @@
+/* Notion's "카드 레이아웃" (seen 2026-10-11): a 10px box shaded 3%, 12px in,
+   its name 12px/500 in the secondary text color centered, then 102×76 tiles
+   (seen again 2026-11-06, on the layout screen as in a new view's) 
+   12px apart, each with a 26px band, a 15px dot 11px in and 19px down and
+   6px lines from 41px down, ringed 1px in the border color or, chosen, 2px
+   blue with its band, dot and lines tinted blue; their names 14px under them. */
+/* 12px under the row above and 4px in from the rows' sides (Notion's layout
+   screen, seen 2026-11-06: 891–1157, 35px under "카드 크기"). */
+.section {
+  margin: 12px 4px 4px;
+  padding: 12px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--text-default) 3%, transparent);
+}
+
+.title {
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+}
+
+.tiles {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 102px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  cursor: pointer;
+}
+
+.choice[data-disabled] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.tile {
+  position: relative;
+  display: block;
+  width: 102px;
+  height: 76px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  /* Its ring inside its edge, as Notion's (seen 2026-11-06: offset -1, chosen 2px at -2). */
+  outline: 1px solid var(--border-default);
+  outline-offset: -1px;
+  --tile-ink: var(--border-subtle);
+  --tile-band: color-mix(in srgb, var(--text-default) 3%, transparent);
+  --tile-dot: color-mix(in srgb, var(--text-default) 11%, transparent);
+}
+
+.choice[data-active="true"] {
+  color: var(--text-default);
+}
+
+.choice[data-active="true"] .tile {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+  --tile-ink: color-mix(in srgb, var(--accent-blue) 9.4%, transparent);
+  --tile-band: color-mix(in srgb, var(--accent-blue) 9.4%, transparent);
+  --tile-dot: color-mix(in srgb, var(--accent-blue) 20.4%, transparent);
+}
+
+.choice[data-focus-visible] .tile {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.band {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 26px;
+  background: var(--tile-band);
+}
+
+.dot {
+  position: absolute;
+  top: 19px;
+  inset-inline-start: 11px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--tile-dot);
+}
+
+.compact,
+.list {
+  position: absolute;
+  top: 41px;
+  inset-inline-start: 11px;
+  display: flex;
+  flex-direction: column;
+}
+
+.compact {
+  gap: 7px;
+}
+
+.compact > span {
+  display: flex;
+  gap: 5px;
+}
+
+.list {
+  gap: 6px;
+}
+
+.compact i,
+.list i {
+  display: block;
+  height: 6px;
+  border-radius: 90px;
+  background: var(--tile-ink);
+}
+
+.compact > span:first-child i {
+  width: 24px;
+}
+
+.compact > span:last-child i {
+  width: 30px;
+}
+
+.list i:nth-child(1) {
+  width: 60px;
+}
+
+.list i:nth-child(2) {
+  width: 27px;
+}
+
+.list i:nth-child(3) {
+  width: 44px;
+}
+
+.name {
+  text-align: center;
+}

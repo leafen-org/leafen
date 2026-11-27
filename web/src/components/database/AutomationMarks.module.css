@@ -1,0 +1,115 @@
+/* An automation list card's marks, as Notion's (seen 2026-10-24 on a phone,
+   2026-10-25 at 1280px): 28px squares 6px apart, rounded 6, their 16px
+   marks tinted, a grey 16px "→" between. */
+.marks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Each tone is Notion's own pair (its token sheet, read 2026-11-18): the
+   ground its colour's see-through option wash (caXxxBacTerTra, the option
+   pill's — optionColors.css), the mark its colour's second icon ink
+   (cXxxIcoSec), which dark lightens but for grey and purple. Grey is the
+   rest, a default option's too. */
+.mark {
+  --mark-ink: rgb(125, 122, 117);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--c-chip-bg-gray);
+  color: var(--mark-ink);
+}
+
+.mark[data-tone="brown"] { --mark-ink: rgb(159, 118, 90); background: var(--c-chip-bg-brown); }
+.mark[data-tone="orange"] { --mark-ink: rgb(210, 123, 45); background: var(--c-chip-bg-orange); }
+.mark[data-tone="yellow"] { --mark-ink: rgb(203, 148, 52); background: var(--c-chip-bg-yellow); }
+.mark[data-tone="green"] { --mark-ink: rgb(80, 148, 110); background: var(--c-chip-bg-green); }
+.mark[data-tone="blue"] { --mark-ink: rgb(56, 125, 201); background: var(--c-chip-bg-blue); }
+.mark[data-tone="purple"] { --mark-ink: rgb(154, 107, 180); background: var(--c-chip-bg-purple); }
+.mark[data-tone="pink"] { --mark-ink: rgb(193, 76, 138); background: var(--c-chip-bg-pink); }
+.mark[data-tone="red"] { --mark-ink: rgb(207, 81, 72); background: var(--c-chip-bg-red); }
+
+:global([data-theme="dark"]) .mark[data-tone="brown"] { --mark-ink: rgb(188, 162, 144); }
+:global([data-theme="dark"]) .mark[data-tone="orange"] { --mark-ink: rgb(203, 162, 125); }
+:global([data-theme="dark"]) .mark[data-tone="yellow"] { --mark-ink: rgb(216, 194, 131); }
+:global([data-theme="dark"]) .mark[data-tone="green"] { --mark-ink: rgb(139, 183, 157); }
+:global([data-theme="dark"]) .mark[data-tone="blue"] { --mark-ink: rgb(131, 171, 225); }
+:global([data-theme="dark"]) .mark[data-tone="pink"] { --mark-ink: rgb(200, 151, 173); }
+:global([data-theme="dark"]) .mark[data-tone="red"] { --mark-ink: rgb(208, 152, 141); }
+
+.mark svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* An action's own icon keeps the mark's colour, not its own square. */
+.mark > span {
+  display: contents;
+  color: inherit;
+}
+
+/* One person's condition: their 26 round face, ringed, in the mark's 28
+   (Notion's, seen 2026-11-18 at 1440). */
+.face {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.markArrow {
+  width: 16px;
+  height: 16px;
+  color: var(--icon-secondary);
+}
+
+/* Slack's and the mail's mark: their own 16 in a 1px bordered box rounded
+   6, 6 in, with no ground (Notion's app mark, its list card read
+   2026-11-18). Leafen's marks are one colour, so they take the
+   secondary icon ink. */
+.app {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.app svg {
+  width: 16px;
+  height: 16px;
+}
+
+.app > span {
+  display: contents;
+  color: inherit;
+}
+
+/* The marks a side holds past its slots: "+n" 12/500 in the secondary
+   text on the grey mark's ground, 28 square rounded 6 (Notion's, seen
+   2026-11-18 in Chrome at 1440 dpr 1: "+2" 15.14 wide, centred). */
+.more {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 3px;
+  border-radius: 6px;
+  background: var(--c-chip-bg-gray);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 0;
+  box-sizing: border-box;
+}

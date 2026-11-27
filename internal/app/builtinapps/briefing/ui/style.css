@@ -1,0 +1,43 @@
+/* Daily Briefing, in Leafen's light and dark look: a page, a side panel and a block. */
+:root {
+  color-scheme: light dark;
+  --text: #37352f; --muted: rgba(55, 53, 47, 0.65); --line: rgba(55, 53, 47, 0.12); --hover: rgba(55, 53, 47, 0.06);
+  --bg: #ffffff; --accent: #d9730d; --red: #d44c47; --box-edge: #d4d3cf; --box-on: rgb(39, 131, 222);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+:root[data-theme="dark"] {
+  --text: rgba(255, 255, 255, 0.86); --muted: rgba(255, 255, 255, 0.55); --line: rgba(255, 255, 255, 0.12); --hover: rgba(255, 255, 255, 0.06);
+  --bg: #191919; --accent: #ec8a2a; --red: #e57c75; --box-edge: #5f5e59;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+main { max-width: 760px; margin: 0 auto; padding: 28px 24px 48px; }
+body[data-place="panel"] main { padding: 12px 14px 24px; }
+body[data-place="block"] main { max-width: none; padding: 10px 14px; }
+h1 { margin: 0 0 4px; font-size: 26px; font-weight: 700; }
+.lead { margin: 0 0 18px; color: var(--muted); }
+section { margin: 0 0 18px; }
+h2 { display: flex; align-items: baseline; gap: 6px; margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--muted); }
+h2 b { color: var(--text); }
+h2[data-kind="overdue"] b { color: var(--red); }
+ul { margin: 0; padding: 0; list-style: none; }
+li a { display: flex; align-items: baseline; gap: 8px; min-width: 0; padding: 5px 6px; border-radius: 6px; color: var(--text); text-decoration: none; }
+li a:hover, li a:focus-visible { background: var(--hover); outline: none; }
+.title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { flex: none; color: var(--muted); font-size: 12px; }
+.empty { color: var(--muted); }
+.settings { display: grid; gap: 10px; max-width: 420px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; }
+.settings label { display: flex; align-items: center; gap: 8px; }
+/* A checkbox is Leafen's 16px box (its styles.css): a faint edge off, blue
+   with a white tick on; the browser's own box never shows in this frame. */
+input[type="checkbox"] { appearance: none; -webkit-appearance: none; flex: none; width: 16px; height: 16px; margin: 0; padding: 0;
+  border: 1px solid var(--box-edge); border-radius: 3px; background: transparent no-repeat border-box; background-size: 100% 100%; }
+input[type="checkbox"]:checked { border-color: var(--box-on); background-color: var(--box-on);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.9 8.1 6.6 10.8 12.1 5.3' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E"); }
+input[type="checkbox"]:focus-visible { outline: 2px solid var(--box-on); outline-offset: 1px; }
+select { padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+button.primary { justify-self: start; height: 32px; padding: 0 12px; border: 0; border-radius: 6px; background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+.status { color: var(--muted); font-size: 13px; }
+.counts { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
+.counts b { color: var(--text); }
+@media (max-width: 599px) { main { padding: 20px 16px 40px; } h1 { font-size: 22px; } }

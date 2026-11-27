@@ -1,0 +1,70 @@
+/* A choice as Notion's link field lists it (seen 2026-11-15, 1280 and 1440,
+   dark): a page with a place under its title, a found page or the typed
+   address on two lines, 45px high, 4px in, its icon at the top 1px down; a
+   page at the top on one line, 28px, its icon in the middle; 1px between. */
+.tbLinkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  text-align: start;
+  cursor: pointer;
+}
+.tbLinkRow + .tbLinkRow {
+  margin-top: 1px;
+}
+.tbLinkRowPlaced {
+  min-height: 45px;
+  padding-block: 4px;
+}
+.tbLinkRowPlaced .tbLinkIcon {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+.tbLinkRow:hover,
+.tbLinkRow[data-active="true"] {
+  background: var(--bg-hover);
+}
+/* The page the arrows moved to is ringed as well, the pointer grounding the
+   one under it apart, as Notion's link field (seen 2026-11-14). */
+[data-keyed="true"] .tbLinkRow[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.tbLinkIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+}
+.tbLinkText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.tbLinkTitle {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* An archived page's title, greyed with no mark, as Notion's link field (seen 2026-11-19). */
+.tbLinkTitle[data-archived] {
+  color: var(--text-tertiary);
+}
+.tbLinkPlace {
+  overflow: hidden;
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

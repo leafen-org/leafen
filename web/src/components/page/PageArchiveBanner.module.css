@@ -1,0 +1,169 @@
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 16px;
+  background: var(--c-bg-yellow);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.4;
+  flex-wrap: wrap;
+}
+.message {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.action {
+  flex: none;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--c-yellow);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.action:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+.action:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* A page in the trash, as Notion's (seen 2026-09-30; 2026-11-24 its older
+   red in both themes): white on red, with light outlined buttons that carry
+   their icons. */
+.trash {
+  background: var(--older-red);
+  color: #fff;
+}
+/* One row in the middle as Notion's (measured 2026-11-07, 530 wide): 8
+   down and 16 in, the words wrapping from their start on 16.8px lines in
+   what the buttons leave, 12 before the buttons and between them, each 8
+   in with its icon 6 before its name. */
+.trash {
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 8px 16px;
+  line-height: 16.8px;
+}
+.trash .message {
+  text-align: start;
+}
+/* Its two buttons are one group, a box of its own only where it wraps. */
+.actions {
+  display: contents;
+}
+/* A touch screen's band stays under the top bar while the page scrolls
+   under it, as Notion's phone and iPad (Notion's iPad band stands outside
+   its scroller). Its buttons' icons are 16 there, 14 on a desktop. */
+:global([data-touch="true"]) .banner.trash {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+:global([data-touch="true"]) .trash .action svg {
+  width: 16px;
+  height: 16px;
+}
+/* A wider touch screen's, as Notion's iPad (measured 2026-11-16 in iPad
+   Safari at 834 and 1210 wide): its words 16px on 19.2px lines, 8 down and
+   18 in, and its buttons one group 12 after them, 12 apart, at 14px — in
+   the middle of the band, the group on a line of its own under the words
+   when the line has no room for both (63.2 high for one line of words). */
+:global([data-touch="true"]:not([data-phone="true"])) .banner.trash {
+  flex-wrap: wrap;
+  gap: 0;
+  padding: 8px 18px;
+  font-size: 16px;
+  line-height: 19.2px;
+}
+:global([data-touch="true"]:not([data-phone="true"])) .trash .actions {
+  display: flex;
+  gap: 12px;
+  padding-inline-start: 12px;
+  font-size: 14px;
+  line-height: 16.8px;
+}
+/* A phone's band is its two buttons alone, as Notion's phone (measured
+   2026-11-10, 402 wide): 44 high under the top bar, the pair in the middle
+   of what is left past the 12 its words take on a wider screen (18 in, 30
+   on the words' side). */
+:global([data-phone="true"]) .banner.trash {
+  padding-inline: 30px 18px;
+}
+:global([data-phone="true"]) .trash .message {
+  display: none;
+}
+.trash .action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-color: currentcolor;
+  color: rgb(240, 239, 237);
+  font-weight: 400;
+}
+.trash .action:hover:not(:disabled, [aria-disabled="true"]) {
+  background: rgba(255, 255, 255, 0.16);
+}
+/* Deleting forever, dim to all but the workspace's owners, as Notion's
+   to a reader who may not (0.4, seen 2026-11-13 as an edit guest). */
+.trash .action[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* A page in an archived teamspace, as Notion's (measured 2026-11-13, 1440
+   wide): above the page as it scrolls, 8 down and 12 in, an archive box
+   8 before "이 페이지는 보관된 팀스페이스", the teamspace's name in 500 on a
+   line of its own and "에 있으므로 보관됩니다." on 20px lines from their
+   start, and 24 after them its outlined "팀스페이스 복원", 28 high and 8 in,
+   its clock 6 before its name; dim to all but the teamspace's owners. */
+.teamspace {
+  flex-wrap: nowrap;
+  gap: 24px;
+  padding: 8px 12px;
+  background: var(--c-notice-yellow-bg);
+  color: var(--c-notice-yellow-text);
+  line-height: 20px;
+}
+.teamspaceMessage {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+}
+.teamspaceMessage > svg {
+  flex: none;
+  margin-inline-end: 8px;
+  color: var(--c-notice-yellow-icon);
+}
+.teamspace .message {
+  text-align: start;
+}
+.teamspaceName {
+  display: block;
+  font-weight: 500;
+}
+.teamspace .action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  border-color: var(--c-notice-yellow-border);
+  line-height: 20px;
+}
+.teamspace .action[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+.teamspace .action[aria-disabled="true"]:hover {
+  background: transparent;
+}

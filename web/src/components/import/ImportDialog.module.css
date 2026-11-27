@@ -1,0 +1,533 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+/* The window stands --import-window-edge below the screen's top and, at its
+   tallest, as far above the screen's foot (2026-11-13: a long plan's window
+   kept 12 below to 36 above). */
+.dialog {
+  --import-window-edge: 36px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, calc(100vw - 32px));
+  height: min(820px, calc(100vh - 2 * var(--import-window-edge)));
+  height: min(820px, calc(100dvh - 2 * var(--import-window-edge)));
+  margin: var(--import-window-edge) auto 0;
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius);
+  color: var(--icon-secondary);
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.navItem:hover,
+.navItem:focus-visible,
+.navItem[data-active="true"] {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+/* The settings' "둘러보기" lays its own sections out, flush with the window. */
+.panel[data-import-file-panel="browse"] {
+  overflow: visible;
+  padding: 0;
+}
+
+:where(.panel p) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.wizardSteps {
+  display: flex;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.wizardStep {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wizardStepLabel {
+  min-width: 0;
+}
+
+.wizardStep:hover:not(:disabled),
+.wizardStep:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.wizardStep[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.wizardStep[data-done="true"] {
+  color: var(--text-secondary);
+}
+
+.wizardStep:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.wizardStepBadge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.wizardStep[data-active="true"] .wizardStepBadge {
+  background: var(--accent-blue);
+  color: #fff;
+}
+
+.wizardFooter {
+  position: sticky;
+  z-index: 1;
+  bottom: -18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: auto -18px -18px;
+  padding: 10px 18px 14px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-app);
+}
+
+.wizardFooter > button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.wizardHint {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.notionForm {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+}
+
+/* The token step's head: what to do, and "Notion 토큰 만들기" at its right,
+   as the guide's first scene shows it. */
+.tokenIntro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 12px;
+}
+
+.tokenPageLink {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tokenPageLink:hover,
+.tokenPageLink:focus-visible {
+  background: var(--bg-hover);
+}
+
+.field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.field > span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.field input {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 1px 10px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+}
+
+.field input:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.maskedTokenInput {
+  -webkit-text-security: disc;
+}
+
+.primary {
+  composes: line from "../ButtonLine.module.css";
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  background: var(--text-default);
+  color: var(--bg-app);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.primary:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.secondary {
+  composes: line from "../ButtonLine.module.css";
+  height: 32px;
+  padding: 0 10px;
+  color: var(--text-secondary);
+  background: transparent;
+}
+
+/* Opens the plan under it; its arrow says which way it stands. */
+.planToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 4px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 2px 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.planToggle:hover,
+.planToggle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.planToggle[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.serverStatus {
+  padding: 10px 12px;
+  border: 1px solid rgba(35, 131, 226, 0.22);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  background: rgba(35, 131, 226, 0.08);
+  font-size: 12.5px;
+}
+
+.scopeList {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.scopeList legend {
+  margin-bottom: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* "페이지와 데이터베이스 검색" over the roots, as Notion's name field. */
+.scopeSearch {
+  width: 100%;
+  height: var(--name-field-height);
+  margin-bottom: 4px;
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.scopeSearch:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.scopeOption {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 9px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: var(--text-default);
+}
+
+.scopeOption:hover,
+.scopeOption:focus-within {
+  background: var(--bg-hover);
+}
+
+/* Its name and kind. How much of the row they keep beside a moved root's
+   button is the import rows' rule (ImportHistory.module.css). */
+.scopeOption > span:first-of-type {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.scopeOption strong,
+.scopeOption small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scopeOption strong {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.scopeOption small {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.jobPanel {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.jobPanel > strong,
+.omissionNotice > strong {
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.progressTrack {
+  position: relative;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--bg-hover);
+}
+
+.progressTrack > span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  border-radius: inherit;
+  background: var(--accent-blue);
+}
+
+.omissionNotice {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-default);
+}
+
+.omissionNotice > p,
+.omissionNotice > ul {
+  margin: 0;
+}
+
+/* Where the list is, in the job panel's words wherever it stands: the
+   finished window, and the completed row, which gave it its own 16px
+   (2026-11-07). */
+.omissionHint {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.omissionNotice > ul {
+  display: grid;
+  gap: 3px;
+  padding-inline-start: 18px;
+  color: var(--text-default);
+}
+
+.omissionNotice > button {
+  justify-self: start;
+}
+
+@media (max-width: 700px) {
+  .dialog {
+    --import-window-edge: 12px;
+  }
+
+  .navItem {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .wizardStep {
+    min-height: 44px;
+    height: auto;
+    padding: 4px;
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: normal;
+  }
+
+  .wizardStepLabel {
+    overflow-wrap: anywhere;
+  }
+
+  .wizardFooter {
+    bottom: -14px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin: auto -14px -14px;
+    padding: 9px 14px 12px;
+  }
+
+  .wizardHint {
+    flex: 1 0 100%;
+  }
+}
+
+.batchList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  font-size: 12px;
+}
+
+.batchList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.batchList li span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.batchList li[data-batch-status="failed"] span:last-child {
+  color: var(--danger);
+}

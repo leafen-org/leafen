@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "id": "app.leafen.webdav",
+  "slug": "webdav",
+  "version": "1.1.24",
+  "name": { "en": "Drive", "ko": "드라이브" },
+  "description": {
+    "en": "Opens Leafen's pages and files as folders in Finder, Windows Explorer and Office over WebDAV, with a place for your own and shared files.",
+    "ko": "Finder·Windows 탐색기·Office에서 리펜의 페이지와 파일을 WebDAV 폴더로 엽니다. 내 파일과 공유 파일 자리도 있습니다."
+  },
+  "developer": { "name": "Leafen" },
+  "icon": "ui/icon.svg",
+  "category": "work",
+  "tags": ["webdav", "files", "drive"],
+  "surfaces": {
+    "fullPage": { "entry": "ui/index.html" },
+    "importSources": [
+      {
+        "key": "obsidian",
+        "name": { "en": "Obsidian", "ko": "Obsidian" },
+        "description": { "en": "A vault synced to the drive, or a vault's ZIP", "ko": "드라이브에 동기화한 보관함이나 보관함 ZIP 옮기기" },
+        "entry": "ui/obsidian.html"
+      }
+    ]
+  },
+  "personAccess": "content",
+  "device": ["clipboard-write"],
+  "data": [
+    { "key": "mine", "file": "data/mine.json", "perPerson": true },
+    { "key": "shared", "file": "data/shared.json" }
+  ],
+  "network": {},
+  "kv": { "maxBytes": 1048576, "maxTtlSeconds": 3600 },
+  "workers": [
+    { "name": "dav", "module": "workers/main.wasm", "functions": ["dav", "vaults", "notes", "note"], "resident": true, "memoryMb": 128, "timeoutSeconds": 60 }
+  ],
+  "endpoints": [
+    {
+      "key": "dav", "name": { "en": "WebDAV drive", "ko": "WebDAV 드라이브" }, "worker": "dav", "function": "dav",
+      "methods": ["OPTIONS", "PROPFIND", "PROPPATCH", "GET", "HEAD", "PUT", "DELETE", "MKCOL", "COPY", "MOVE", "LOCK", "UNLOCK"],
+      "fileBodies": ["PUT"]
+    }
+  ],
+  "actions": [
+    {
+      "key": "vaults",
+      "name": { "en": "Obsidian vaults", "ko": "옵시디언 보관함" },
+      "description": { "en": "The person's Obsidian vaults synced into the drive's folders.", "ko": "드라이브 폴더에 동기화된 내 옵시디언 보관함." },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "person", "worker": "dav", "function": "vaults", "risk": "low", "tool": true
+    },
+    {
+      "key": "notes",
+      "name": { "en": "Find notes", "ko": "노트 찾기" },
+      "description": { "en": "Notes in a vault by words in their names, or in their text.", "ko": "보관함의 노트를 이름이나 본문의 낱말로 찾습니다." },
+      "inputLabels": { "vault": { "en": "Vault", "ko": "보관함" }, "query": { "en": "Words in the name", "ko": "이름의 낱말" }, "text": { "en": "Words in the text", "ko": "본문의 낱말" }, "limit": { "en": "How many", "ko": "개수" } },
+      "input": {
+        "type": "object",
+        "properties": {
+          "vault": { "type": "string", "maxLength": 200 }, "query": { "type": "string", "maxLength": 200 },
+          "text": { "type": "string", "maxLength": 200 }, "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+        },
+        "additionalProperties": false
+      },
+      "runAs": "person", "worker": "dav", "function": "notes", "risk": "low", "tool": true
+    },
+    {
+      "key": "note",
+      "name": { "en": "Read a note", "ko": "노트 읽기" },
+      "description": { "en": "A note as written, with its front matter, links and tags.", "ko": "노트를 쓴 그대로, 머리말·링크·태그와 함께." },
+      "inputLabels": { "path": { "en": "Path", "ko": "경로" } },
+      "input": {
+        "type": "object",
+        "properties": { "path": { "type": "string", "minLength": 3, "maxLength": 2000 } },
+        "required": ["path"], "additionalProperties": false
+      },
+      "runAs": "person", "worker": "dav", "function": "note", "risk": "low", "tool": true
+    }
+  ],
+  "agent": {
+    "summary": { "en": "The person's files and Obsidian vaults in Leafen's drive.", "ko": "리펜 드라이브의 내 파일과 옵시디언 보관함." },
+    "instructions": {
+      "en": "Use vaults to list the person's Obsidian vaults, notes to find notes (by name, or text for words inside), and note to read one by the path notes gave. Notes are files synced from Obsidian; change them in Obsidian.",
+      "ko": "vaults로 옵시디언 보관함을, notes로 노트를(이름, 본문 낱말은 text), note로 notes가 준 경로의 노트를 읽습니다. 노트는 옵시디언에서 동기화된 파일이니 편집은 옵시디언에서 합니다."
+    }
+  }
+}

@@ -1,0 +1,596 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.dialog {
+  position: absolute;
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  flex-direction: column;
+  /* 740px, 12px in from the window's edges, as Notion's (seen 2026-11-02). */
+  width: min(740px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: hidden;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  transform: translateX(-50%);
+}
+
+.dialog[data-anchored="true"] {
+  transform: none;
+}
+
+/* Its head is a 28px line 12px in, the formula 12px under it (Notion's, seen
+   2026-11-08, where its AI field comes between them). */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 52px;
+  padding-block: 12px;
+  padding-inline: 18px 12px;
+}
+
+/* "수식 편집" 16px/600 on a 24px line, in a property's editor and an automation's (Notion's, seen 2026-11-10). */
+.header h2 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.headerSpacer {
+  flex: 1;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* Notion's round 20px close (seen 2026-11-02). */
+.closeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+.closeButton:hover,
+.closeButton:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+
+.iconButton:hover,
+.iconButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* "모든 변경 사항 취소" in default words at 14/400, 28px, 6px before what
+   follows it (Notion's, seen 2026-11-10, a database's and an automation's);
+   an automation's blue "저장" or "완료" at 14/500, 12px in from the end. */
+.discardButton,
+.keepButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.discardButton {
+  padding: 0 8px;
+  background: transparent;
+  color: var(--text-default);
+  font-weight: 400;
+}
+
+.discardButton:hover,
+.discardButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.keepButton {
+  padding: 0 12px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-weight: 500;
+}
+
+.keepButton:hover {
+  background: var(--accent-blue-hover);
+}
+
+.iconButton[aria-pressed="true"] {
+  color: var(--text-secondary);
+}
+
+/* The preview's two 24px lines 16px in, under a line (Notion's, seen 2026-11-08). */
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-top: 1px solid var(--border-default);
+}
+
+.previewRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* "미리보기:" 12px/500 on a 16px line (Notion's, seen 2026-11-14). */
+.previewLabel {
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* A long page name ends in "…" on its one line, as Notion's. */
+.pickerWrap {
+  position: relative;
+  min-width: 0;
+  /* 2 after "미리보기:", as Notion's (seen 2026-11-11). */
+  margin-inline-start: -4px;
+}
+
+/* The page to preview on, as Notion's (seen 2026-11-11): 24 high, its icon
+   in a 16 box 4 in, its name 4 after it and the ⌄ 2 after the name. */
+.picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  height: 24px;
+  padding: 4px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.picker > span:not(.pickerIcon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pickerChevron {
+  flex: none;
+  margin-inline-start: -2px;
+}
+
+.pickerIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.picker:hover,
+.picker:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Its menu, as Notion's (seen 2026-11-11): 260 wide under the button, a
+   244×28 search 8 in, then its pages' lines 14 below it, 252×28 and 1 apart,
+   4 in from the menu's sides and foot. */
+.pickerMenu {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  max-height: 240px;
+  padding: 0 4px 4px;
+  overflow-y: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.pickerSearch {
+  flex: none;
+  height: 28px;
+  margin: 8px 4px 14px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.pickerSearch:focus {
+  box-shadow: var(--menu-search-focus-ring);
+}
+
+.pickerList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* A page's line: its icon in a 16 box 8 in, its name 4 after it in the
+   secondary color, and the ✓ of the page shown 8 from its end; the line the
+   pointer or the arrow keys are on is shaded. */
+.pickerItem {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: start;
+}
+
+.pickerItem:hover,
+.pickerItem:focus-visible,
+.pickerItem[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.pickerName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickerCheck {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-default);
+}
+
+/* The result's row, and in debug mode a warning's lines under it 4px apart,
+   as Notion's (seen 2026-11-12). */
+.previewResults {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-height: 24px;
+}
+
+.previewResult {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* A call given a value that may be empty, its words in amber at 14px on a
+   24px line — the room of Notion's 24px "?" after them — and its place in
+   the palette's yellow (seen 2026-11-12, dark rgb(216, 163, 47) and
+   rgb(203, 148, 52)). */
+.emptyCall {
+  color: #cb912f;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+:global([data-theme="dark"]) .emptyCall {
+  color: rgb(216, 163, 47);
+}
+
+.emptyCall > span {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.emptyCall > .emptyCallPlace {
+  color: var(--c-yellow);
+}
+
+/* The preview's result reads in the secondary colour, as Notion's (seen
+   2026-11-11, debug mode's values too); its row is the default. */
+.resultValue {
+  min-width: 0;
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* A result shown as it reads is one line, a long one ending in "…" (Notion's,
+   seen 2026-11-08); debug mode's values keep their lines. */
+.resultValue[data-one-line] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Debug mode's values sit on their 18px lines, its row 20px with the type's
+   badge, as Notion's (seen 2026-11-12). */
+.resultValue[data-debug] {
+  line-height: 18px;
+}
+
+.typeBadge {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: var(--radius);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* An automation's formula that reads says so in green, as Notion's "유효" (seen 2026-10-23). */
+.valid {
+  color: var(--c-green);
+}
+
+/* Notion writes a formula's problem in its redTexAccPri, #e56458 in both
+   themes, at 14px (seen 2026-09-30; 2026-11-24 its style read). */
+/* Each problem on its own line, as Notion's (seen 2026-11-14, three
+   problems): a line as high as the editor's 16px text on 24px, the lines
+   4px apart, its words and place 14px on 20px in it. */
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--danger);
+  font-size: 16px;
+  line-height: 24px;
+}
+.error > span > span {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Where it is, after its words, in a deeper red, as Notion's (seen
+   2026-11-14, dark: the words rgb(229, 100, 88), the place rgb(207, 81, 72)). */
+.errorPlace {
+  color: var(--c-red);
+}
+
+/* Debug mode's switch sits at the preview row's end, as Notion's. */
+.debugSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: auto;
+  padding: 2px 4px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.debugSwitch:hover,
+.debugSwitch:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.muted {
+  color: var(--text-tertiary);
+}
+
+/* The suggestions in a 228px list with a line at its end, the chosen one's
+   help beside it, as Notion's (seen 2026-11-14, 1440 dark, a property's
+   editor and an automation's alike). */
+.helper {
+  display: grid;
+  grid-template-columns: 229px minmax(0, 1fr);
+  min-height: 0;
+  height: 240px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* Its lines 1px apart, 6px from its top and 4px from its sides. */
+.helperList,
+.helperList > [role="group"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.helperList {
+  padding: 6px 4px 2px;
+  overflow-y: auto;
+  border-inline-end: 1px solid var(--border-default);
+}
+
+/* A group's name 12px/500 in the secondary grey, 6px over it and 8px under. */
+.helperGroup {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Each 28px high in 14px words, its mark in a 20px box 8px before them. */
+.helperItem {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: start;
+}
+
+.helperItem[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.helperIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+.helperLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The line Enter picks ends in a 14px ↵ in the secondary grey, as Notion's. */
+.helperEnter {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The help 12px 14px in: its title 14px/600, what it does, then its
+   examples, 8px apart. */
+.helperDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.detailTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.detailText {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* The examples 4px apart, each in a box reaching 4px past the help's
+   sides: 6px in, its 11px code on 16.5px lines 6px from its top and foot
+   (a result's line in the same colour), its 22px copy button at its end. */
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.example {
+  display: flex;
+  align-items: center;
+  margin: 0 -4px;
+  padding: 0 6px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 5px;
+}
+
+.example code {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 0;
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16.5px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* A property's mark in an example is as high as its words, half that before its name. */
+.example code svg {
+  width: 1em;
+  height: 1em;
+  margin-inline-end: 0.5em;
+}
+
+.exampleCopy {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.exampleCopy:hover,
+.exampleCopy:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* A phone stacks the suggestions over the chosen one's help, each scrolling
+   in its own share of the height; a desktop window as narrow keeps them side
+   by side with the list 228px, as Notion's (seen 2026-11-14 at 606: the
+   window 582, the help 353). */
+:global(body[data-phone="true"]) .helper {
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(0, 150px) minmax(0, 150px);
+  height: auto;
+}
+
+:global(body[data-phone="true"]) .helperList {
+  border-inline-end: 0;
+  border-block-end: 1px solid var(--border-default);
+}

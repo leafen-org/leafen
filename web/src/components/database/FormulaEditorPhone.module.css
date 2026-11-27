@@ -1,0 +1,186 @@
+/* The formula editor on a phone, as Notion's (seen 2026-11-14, iPhone 17
+   Safari 402pt): a sheet the whole screen high (PhoneSheet), its head, the
+   formula and its preview on white, then the suggestions alone across the
+   sheet's grey, each with a "?" at its end that opens its help as a sheet of
+   its own (FormulaEditorHelper `phone`). The sheet scrolls as one. */
+:global([data-phone-sheet][data-formula-sheet]) > :last-child {
+  flex: 1 1 auto;
+  gap: 0;
+  padding: 0;
+}
+
+/* Of its own it is round at its top as any sheet. */
+:global([data-phone-sheet="screen"][data-formula-sheet="flat"][role="dialog"]) {
+  border-radius: 12px 12px 0 0;
+}
+
+.contain {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.editor {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  background: var(--bg-elevated);
+}
+
+/* Its head 12px in all round: "수식 편집" 18px/600 on a 28px line 6px further
+   in, its "?" after it and a round 24px ✕ at its end. */
+.editor > header {
+  min-height: 52px;
+  padding-block: 12px; padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+}
+
+.editor > header h2 {
+  padding-inline-start: 6px;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.editor > header [data-formula-close] {
+  width: 24px;
+  height: 24px;
+}
+
+/* The formula 12px in under the head, 132px high and 10px round, its code
+   12px in. */
+.editor > div:first-of-type,
+.editor [data-formula-input] {
+  border-radius: 10px;
+}
+
+.editor [data-formula-input] {
+  min-height: 132px;
+  padding-block: 12px; padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+}
+
+/* The preview's first line as high as its 31px switch, as Notion's. */
+.editor button[data-formula-debug] {
+  padding-block: 0;
+}
+
+.list {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  padding-bottom: 24px;
+  border-top: 1px solid var(--border-default);
+  background: var(--bg-soft);
+}
+
+/* Each group of suggestions under its name, 15px/500 in the second grey on a
+   17.8px line, 16px in and 8px over its rows: 28px under what is above where
+   the rows lie flat on the grey, 16px where they are in a white group 16px
+   in. */
+.section {
+  padding-top: 28px;
+}
+
+.list[data-formula-phone-list="grouped"] .section {
+  padding: 16px 16px 0;
+}
+
+.groupLabel {
+  margin-bottom: 8px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 17.8px;
+}
+
+.list[data-formula-phone-list="grouped"] .group {
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-elevated);
+}
+
+/* A 45px row parted by the sheets' line: the type's 16px mark 20px in (16px
+   in a group), the name 16px 14px after it, and the "?" in a 32px box 16px
+   from the end; the row Enter would pick is shaded, the "?" too. */
+.row {
+  position: relative;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.list[data-formula-phone-list="grouped"] .row:last-child {
+  border-bottom: 0;
+}
+
+.rowPick {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(48px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 19.2px;
+  text-align: start;
+}
+
+.list[data-formula-phone-list="grouped"] .rowPick {
+  padding-inline-start: calc(16px + var(--phone-safe-start, 0px));
+}
+
+.rowPick[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.rowIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  margin-inline-end: 4px;
+  color: var(--icon-secondary);
+}
+
+.rowLabel {
+  flex: 1;
+  min-width: 0;
+  margin-inline: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowHelp {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-block-start: -16px;
+  border-radius: 6px;
+  color: var(--icon-tertiary);
+}
+
+.rowHelp svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* "정의": the chosen suggestion's help in a white group, 20px in. */
+.definition {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-block: 20px; padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px));
+}
+
+/* Its words and its examples' code on 20.4px lines, as Notion's. */
+.definition > p,
+.definition div code {
+  line-height: 20.4px;
+}

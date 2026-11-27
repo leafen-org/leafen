@@ -1,0 +1,36 @@
+/* A bar's days marked on the dates over the bars (TimelineRangePill): under
+   the dates, level with today's 22px circle, 3px down their 32px line; its
+   dates in words over the dates they hide (Notion's, seen 2026-11-15: 16 gone
+   under "11월 17일"). */
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.layer[data-on-tick="true"] {
+  z-index: 1;
+}
+.pill,
+.words {
+  position: absolute;
+  top: 3px;
+  box-sizing: border-box;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--bg-table-header);
+}
+/* Under quarter, year and five years its dates in words, 12px in the text colour, 6px in. */
+.words {
+  background: linear-gradient(var(--bg-table-header), var(--bg-table-header)), var(--bg-app);
+  display: flex;
+  align-items: center;
+  padding-inline: 6px;
+  color: var(--text-default);
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* Its first and last dates in the text colour, as against the others' grey. */
+:global([data-timeline-day-label][data-range-edge="true"]) {
+  color: var(--text-default);
+}

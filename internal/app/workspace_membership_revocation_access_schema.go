@@ -1,0 +1,3 @@
+package app
+
+const workspaceMembershipRevocationWindowIndex = "idx_leafen_jobs_membership_revocation_window"

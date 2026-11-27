@@ -1,0 +1,279 @@
+/* A phone's "멤버 추가", as Notion's phone (seen 2026-11-15 at 402, dark,
+   iPhone Safari): a whole screen on the sheet ground under a 44px head —
+   blue "취소" at its start, the title (16/600) in the middle, blue "초대" at
+   its end, a line under it — then the search across, its words 17px on the
+   raised ground 10px down and 9px in, a line under it; 28px on, "사용 권한
+   수준" (15/500 grey, 16px in, 8px over) over a 45px raised row of the role,
+   16px words 16px in, lines over and under it. Leafen's own "이름으로 초대"
+   stands 28px under that as a row of its own. */
+.screen[data-phone-add-members] {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+  background: var(--bg-soft);
+}
+
+.head {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  height: 44px;
+  box-shadow: 0 1px 0 var(--border-subtle);
+}
+
+.headButton {
+  justify-self: start;
+  height: 44px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.headButton:disabled {
+  opacity: 0.4;
+}
+
+.headEnd {
+  justify-self: end;
+}
+
+/* The title keeps to the head's top line, as Notion's phone and iPad sheets
+   (seen 2026-11-16: its 24px line from the head's top, "취소" and "초대" in
+   the head's middle; PhoneSheet's). */
+.title {
+  align-self: start;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search {
+  position: relative;
+  flex: none;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding-block: 10px 4px; padding-inline: calc(9px + var(--phone-safe-start, 0px)) calc(9px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.search [data-add-members-field] {
+  min-height: 24px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.search [data-add-members-field] input {
+  height: 24px;
+  font-size: 17px;
+  line-height: 20px;
+}
+
+.part {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  padding-top: 28px;
+}
+
+.label {
+  margin-bottom: 8px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 17.8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  box-shadow: 0 -1px 0 var(--border-subtle);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  text-align: start;
+}
+
+.row > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The refusal 16 in from the screen's sides, over the dialog's own margin
+   at one class (WorkspaceAddMembersDialog.module.css .error) by naming its
+   element. */
+p.error {
+  margin: 12px 16px 0;
+}
+
+/* What the search found, under "사용자 선택" in the screen's rows, as Notion's
+   phone (seen 2026-11-16 at 402, "a@b.co" typed): a 45 row, the face 28 at 20
+   in and the words 14 after it; an address typed has a thin ring with its
+   first letter, capital, in the secondary grey. */
+.person {
+  gap: 14px;
+  justify-content: flex-start;
+  padding-inline-start: calc(20px + var(--phone-safe-start, 0px));
+}
+
+.letter {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.personName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A row not picked (someone here already, words that are no address) is not
+   faded as the app's disabled options are: Notion's phone draws them in the
+   text's colour (seen 2026-11-16). */
+.row.person[aria-disabled="true"] {
+  opacity: 1;
+}
+
+/* What was typed after an envelope, 22 across in the text's colour, its
+   words 14 after it (Notion's: the envelope at 20, the words at 56). */
+.person > svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--text-default);
+}
+
+/* Someone here already: Notion's grey "초대됨" tag at the row's end, 16 in
+   (seen 2026-11-16 at 402, dark: 11/500 rgb(142,139,134) on
+   rgba(255,255,235,0.1), 2 by 4 round 4; the light not seen), the row not
+   picked, its name in the text's colour. */
+.personHere {
+  flex: none;
+  margin-inline-start: auto;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(84, 72, 49, 0.08);
+  color: var(--c-accent-gray);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+}
+
+:global([data-theme="dark"]) .personHere {
+  background: rgba(255, 255, 235, 0.1);
+}
+
+
+/* A screen's "‹" back at the head's start, dark (PhoneSheet's). */
+.headBack {
+  display: inline-flex;
+  align-items: center;
+  color: var(--icon-primary);
+}
+
+.headBack svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* On a touch screen wider than a phone, as Notion's iPad (seen 2026-11-16 in
+   iPad Safari at 834, light, over the settings): the same screen in the
+   window in the screen's middle (PhoneSheetWindow: 414 wide, at most 692
+   high, from 183), its head and search on the raised ground and the rest on
+   the soft one; under the search the desktop's list as the window's rows
+   (PhoneSheetWindow.module.css .rows): each part 4 in, its heading 12/500
+   grey 10 under the part's top and 8 into it, 9 over its 28px rows of 14px
+   words 8 in, a face or mark 20 across 8 before them; a line 12 in from
+   either side between the parts. */
+.window {
+  composes: window from "../shell/PhoneSheetWindow.module.css";
+  background: var(--bg-soft);
+}
+
+.window[data-touch-window] {
+  overflow-y: auto !important;
+}
+
+.window .head {
+  background: var(--bg-elevated);
+}
+
+.window .part {
+  padding: 4px;
+}
+
+.window .part + .part::before {
+  display: block;
+  height: 1px;
+  margin: -4px 8px 0;
+  background: var(--border-subtle);
+  content: "";
+}
+
+.window .label {
+  margin: 6px 0 9px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 14.4px;
+}
+
+.window .row {
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.window .person > svg,
+.window .letter {
+  width: 20px;
+  height: 20px;
+}
+
+.window .letter {
+  font-size: 10px;
+}
+
+.window .error {
+  margin-inline: 12px;
+}

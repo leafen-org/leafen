@@ -1,0 +1,899 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "加载帐号电子邮件地址",
+        "deniedEffect": "未能加载电子邮件地址；已保存的地址未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的电子邮件地址。",
+        "stateCheckAction": "请先重新连接并刷新电子邮件列表，然后再进行更改。"
+      },
+      "update": {
+        "operation": "管理帐号电子邮件地址",
+        "deniedEffect": "电子邮件请求未被接受；已保存的地址未更改。",
+        "uncertainEffect": "Leafen 无法确认电子邮件请求是否已完成。",
+        "stateCheckAction": "请刷新电子邮件列表并查看验证邮件，然后再试一次。"
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "加载通知设置",
+        "deniedEffect": "无法加载你的通知设置，已保存的设置未更改。",
+        "uncertainEffect": "Leafen 无法确认你会收到哪些通知。",
+        "stateCheckAction": "请关闭并重新打开设置，以加载你的通知设置，然后再进行更改。"
+      },
+      "update": {
+        "operation": "更改通知设置",
+        "deniedEffect": "你的通知设置未更改，之前的设置将保留。",
+        "uncertainEffect": "Leafen 无法确认你的通知设置是否已更改。",
+        "stateCheckAction": "请关闭并重新打开设置，以检查你的通知设置，然后再进行更改。"
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "加载帐号档案",
+        "deniedEffect": "无法加载你的姓名和照片，已保存的档案未更改。",
+        "uncertainEffect": "Leafen 无法确认你当前的姓名和照片。",
+        "stateCheckAction": "请关闭并重新打开设置以加载你的档案，然后再进行更改。"
+      },
+      "update": {
+        "operation": "保存帐号档案",
+        "deniedEffect": "你的档案未更改。",
+        "uncertainEffect": "Leafen 无法确认帐号档案是否已保存。",
+        "stateCheckAction": "请在重试之前重新加载帐号档案和审计历史记录。"
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "更改两步验证",
+        "deniedEffect": "请求的两步验证更改未被接受，之前的设置仍然有效。",
+        "uncertainEffect": "Leafen 无法确认当前的两步验证状态。",
+        "stateCheckAction": "请先重新加载帐号安全，然后再尝试其他两步验证更改。"
+      },
+      "password": {
+        "operation": "更改帐号密码",
+        "deniedEffect": "密码未更改，当前会话仍然有效。",
+        "uncertainEffect": "Leafen 无法确认密码是否已更改以及其他会话是否已结束。",
+        "stateCheckAction": "重新加载帐号安全；如果当前会话不再有效，请重新登录。"
+      },
+      "read": {
+        "operation": "加载帐号安全",
+        "deniedEffect": "安全设置和会话未能加载，已保存的帐号状态未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的两步验证和会话状态。",
+        "stateCheckAction": "请在更改前重新加载帐号安全。"
+      },
+      "recovery": {
+        "operation": "替换恢复代码",
+        "deniedEffect": "替换的恢复代码未被接受，之前未使用的代码仍然有效。",
+        "uncertainEffect": "Leafen 无法确认哪些恢复代码仍然有效。",
+        "stateCheckAction": "请在决定是否再次替换代码之前，重新加载帐号安全。"
+      },
+      "sessionRevoke": {
+        "operation": "撤销帐号会话",
+        "deniedEffect": "未能确认所选会话已撤销，其他会话未更改。",
+        "uncertainEffect": "Leafen 无法确认所选会话是否已撤销。",
+        "stateCheckAction": "请在决定是否重试之前重新加载会话列表。"
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "取消服务器备份",
+        "deniedEffect": "未能确认备份已取消。",
+        "uncertainEffect": "Leafen 无法确认备份是否已取消。",
+        "stateCheckAction": "请在再次取消备份前检查当前的备份状态。"
+      },
+      "create": {
+        "operation": "创建服务器备份",
+        "deniedEffect": "未能确认新备份。",
+        "uncertainEffect": "Leafen 无法确认备份请求是否已被接受。",
+        "stateCheckAction": "请在提交其他请求前检查当前的备份。"
+      },
+      "download": {
+        "operation": "下载服务器备份",
+        "deniedEffect": "未下载任何已验证的备份文件。",
+        "uncertainEffect": "Leafen 无法验证或传输备份文件。",
+        "stateCheckAction": "请在再次下载前检查已完成备份的状态。"
+      },
+      "retry": {
+        "operation": "重试服务器备份",
+        "deniedEffect": "未能重新启动失败的备份。",
+        "uncertainEffect": "Leafen 无法确认备份是否已重新启动。",
+        "stateCheckAction": "请在重试前检查当前的备份状态。"
+      },
+      "status": {
+        "operation": "加载服务器备份状态",
+        "deniedEffect": "未能加载备份状态；未更改任何备份状态。",
+        "uncertainEffect": "Leafen 无法确认当前的备份状态。",
+        "stateCheckAction": "请在采取其他操作前重新加载备份状态。"
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "加载服务器报告",
+        "deniedEffect": "未能加载报告；未更改任何报告状态。",
+        "uncertainEffect": "Leafen 无法确认当前的报告快照。",
+        "stateCheckAction": "请在刷新当前报告前重新加载。"
+      },
+      "refresh": {
+        "operation": "刷新服务器报告",
+        "deniedEffect": "未能确认新的报告快照。",
+        "uncertainEffect": "Leafen 无法确认报告快照是否已更改。",
+        "stateCheckAction": "请在再次刷新前加载当前报告。"
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "加载备份计划",
+        "deniedEffect": "未能加载备份计划；未更改任何设置。",
+        "uncertainEffect": "Leafen 无法确认当前的备份计划。",
+        "stateCheckAction": "请在更改备份计划前重新加载。"
+      },
+      "restore": {
+        "operation": "从备份恢复服务器",
+        "deniedEffect": "服务器数据未更改。",
+        "uncertainEffect": "Leafen 无法确认恢复是否已设置。",
+        "stateCheckAction": "重新加载备份设置，确认是否有待处理的恢复，然后再试一次。"
+      },
+      "save": {
+        "operation": "保存备份计划",
+        "deniedEffect": "备份计划未更改。",
+        "uncertainEffect": "Leafen 无法确认备份计划是否已保存。",
+        "stateCheckAction": "重新加载备份计划，查看当前生效的设置，然后再保存。"
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "加载请求日志设置",
+        "deniedEffect": "请求日志设置未能加载；未更改任何设置。",
+        "uncertainEffect": "Leafen 无法确认当前的请求日志设置。",
+        "stateCheckAction": "请先重新加载请求日志设置，再进行更改。"
+      },
+      "save": {
+        "operation": "保存请求日志设置",
+        "deniedEffect": "请求日志设置未更改。",
+        "uncertainEffect": "Leafen 无法确认请求日志设置是否已保存。",
+        "stateCheckAction": "重新加载请求日志设置，查看当前生效的设置，然后再保存。"
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "加载网络代理",
+        "deniedEffect": "网络代理未能加载；未更改任何设置。",
+        "uncertainEffect": "Leafen 无法确认当前的网络代理。",
+        "stateCheckAction": "请先重新加载网络代理，再进行更改。"
+      },
+      "save": {
+        "operation": "保存网络代理",
+        "deniedEffect": "网络代理未更改。",
+        "uncertainEffect": "Leafen 无法确认网络代理是否已保存。",
+        "stateCheckAction": "重新加载网络代理，查看当前生效的代理，然后再保存。"
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "加载服务器设置",
+        "deniedEffect": "设置未能加载，已保存的设置未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的服务器设置。",
+        "stateCheckAction": "请先重新加载设置，再进行更改。"
+      },
+      "save": {
+        "operation": "保存服务器设置",
+        "deniedEffect": "新设置未被接受；之前保存的设置仍然生效。",
+        "uncertainEffect": "Leafen 无法确认新设置是否已保存。",
+        "stateCheckAction": "重新加载设置并对比当前值，然后再试一次。"
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "检查登录状态",
+        "deniedEffect": "未建立登录会话，帐号数据也未更改。",
+        "uncertainEffect": "Leafen 无法确认当前登录状态。",
+        "stateCheckAction": "重新加载页面，然后重新登录。"
+      },
+      "deviceCode": {
+        "operation": "登录此设备",
+        "deniedEffect": "你未登录，帐号数据也未更改。",
+        "uncertainEffect": "Leafen 无法确认此设备是否已登录。",
+        "stateCheckAction": "使用新代码重新登录。"
+      },
+      "emailVerification": {
+        "operation": "验证电子邮件地址",
+        "deniedEffect": "电子邮件地址未验证，帐号也未登录。",
+        "uncertainEffect": "Leafen 无法确认电子邮件验证是否已完成。",
+        "stateCheckAction": "请尝试登录；如果不行，请重新打开电子邮件中的链接。"
+      },
+      "mfa": {
+        "operation": "完成两步验证",
+        "deniedEffect": "你未登录，MFA 验证仍未完成。",
+        "uncertainEffect": "Leafen 无法确认两步验证是否已完成。",
+        "stateCheckAction": "重新开始登录。"
+      },
+      "passwordResetConfirm": {
+        "operation": "更改密码",
+        "deniedEffect": "密码未更改。",
+        "uncertainEffect": "Leafen 无法确认密码是否已更改。",
+        "stateCheckAction": "请尝试使用新密码登录；如果不行，请获取新的重置链接。"
+      },
+      "passwordResetRequest": {
+        "operation": "请求重置密码",
+        "deniedEffect": "未接受任何密码重置邮件的发送请求。",
+        "uncertainEffect": "Leafen 无法确认重置请求是否已被接受。",
+        "stateCheckAction": "等待邮件送达后再发起另一次请求。"
+      },
+      "providerExchange": {
+        "operation": "使用外部帐号登录",
+        "deniedEffect": "你未登录，帐号数据也未更改。",
+        "uncertainEffect": "Leafen 无法确认外部登录的结果。",
+        "stateCheckAction": "以相同方式重新登录。"
+      },
+      "serverSetup": {
+        "operation": "设置 Leafen 服务器",
+        "deniedEffect": "管理员帐号未创建。",
+        "uncertainEffect": "Leafen 无法确认服务器设置是否已完成。",
+        "stateCheckAction": "重新加载页面并检查设置状态，然后再试一次。"
+      },
+      "signIn": {
+        "operation": "登录",
+        "deniedEffect": "你未登录，帐号数据也未更改。",
+        "uncertainEffect": "Leafen 无法确认登录是否完成。",
+        "stateCheckAction": "请刷新页面并重新登录。"
+      },
+      "signUp": {
+        "operation": "创建帐号",
+        "deniedEffect": "未创建新帐号。",
+        "uncertainEffect": "Leafen 无法确认帐号是否已创建。",
+        "stateCheckAction": "请尝试登录；如果无法登录，请重新注册。"
+      },
+      "passkey": {
+        "operation": "使用密钥登录",
+        "deniedEffect": "登录未被接受。",
+        "uncertainEffect": "Leafen 无法确认登录是否已完成。",
+        "stateCheckAction": "请使用密钥重新登录。"
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "加载页面内容",
+        "deniedEffect": "页面内容未加载，已保存的内容未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前页面内容。",
+        "stateCheckAction": "请在编辑前重新加载此页面。"
+      },
+      "update": {
+        "operation": "保存页面内容",
+        "deniedEffect": "更改未被接受；服务器上的最新内容仍然有效。",
+        "uncertainEffect": "Leafen 无法确认内容是否已保存。",
+        "stateCheckAction": "重新加载最新内容，对比后再试一次。"
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "保存数据库自动化",
+        "deniedEffect": "自动化未发生更改。",
+        "uncertainEffect": "Leafen 无法确认数据库自动化的更改是否已保存。",
+        "stateCheckAction": "请先重新加载自动化，然后再试一次。"
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "保存 DLP 策略",
+        "deniedEffect": "新 DLP 策略未保存；之前的策略仍然有效。",
+        "uncertainEffect": "Leafen 无法确认 DLP 策略是否已保存。",
+        "stateCheckAction": "请先重新加载 DLP 策略和组织审计历史记录，然后再试一次。"
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "验证 SAML 域名",
+        "deniedEffect": "该域名仍处于待验证状态；SAML 配置、审计历史和登录会话均未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的 SAML 域名验证状态。",
+        "stateCheckAction": "请重新加载 SAML 域名状态，然后再试一次。"
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "删除文件",
+        "deniedEffect": "文件未被删除，也未发生更改。",
+        "uncertainEffect": "Leafen 无法确认文件是否已被删除。",
+        "stateCheckAction": "请重新加载文件及其引用，然后再决定是否重试。"
+      },
+      "upload": {
+        "operation": "上传文件",
+        "deniedEffect": "新文件未保存；现有文件未更改。",
+        "uncertainEffect": "Leafen 无法确认文件是否已保存。",
+        "stateCheckAction": "请重新加载文件列表，然后再决定是否重试。"
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "应用人员映射",
+        "deniedEffect": "新映射未被接受。",
+        "uncertainEffect": "Leafen 无法确认已应用哪些映射。",
+        "stateCheckAction": "请重新加载映射结果，然后再重新应用。"
+      },
+      "refresh": {
+        "operation": "刷新人员映射",
+        "deniedEffect": "未能加载最新映射；已保存的映射未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的映射状态。",
+        "stateCheckAction": "请重新加载映射面板，然后再继续。"
+      },
+      "scan": {
+        "operation": "扫描已导入人员",
+        "deniedEffect": "未能列出已导入人员，现有映射未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的已导入人员列表。",
+        "stateCheckAction": "请重新加载映射面板，然后再进行更改。"
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "执行按钮自动化",
+        "deniedEffect": "按钮的操作未执行，页面内容未更改。",
+        "uncertainEffect": "Leafen 无法确认按钮自动化是否已执行。",
+        "stateCheckAction": "请重新加载受影响的内容和执行状态，然后再试一次。"
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "拷贝组织 API 令牌",
+        "deniedEffect": "未能确认剪贴板中的令牌；令牌本身未更改。",
+        "uncertainEffect": "Leafen 无法确认是否已完成剪贴板写入。",
+        "stateCheckAction": "请先检查剪贴板，然后再重新拷贝令牌。"
+      },
+      "create": {
+        "operation": "创建组织 API 令牌",
+        "deniedEffect": "新令牌创建未确认。",
+        "uncertainEffect": "Leafen 无法确认令牌是否已创建。",
+        "stateCheckAction": "在创建另一个令牌之前，请重新加载令牌列表。"
+      },
+      "list": {
+        "operation": "加载组织 API 令牌",
+        "deniedEffect": "令牌未加载，现有令牌未更改。",
+        "uncertainEffect": "Leafen 无法确认当前令牌列表。",
+        "stateCheckAction": "在进行更改之前，请重新加载令牌列表。"
+      },
+      "revoke": {
+        "operation": "撤销组织 API 令牌",
+        "deniedEffect": "令牌撤销未确认。",
+        "uncertainEffect": "Leafen 无法确认令牌是否已撤销。",
+        "stateCheckAction": "在尝试再次撤销之前，请重新加载令牌列表。"
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "加载工作空间页面",
+        "deniedEffect": "页面未加载，已保存的工作空间数据未更改。",
+        "uncertainEffect": "Leafen 无法确认当前工作空间页面。",
+        "stateCheckAction": "在编辑之前，请重新加载工作空间。"
+      },
+      "create": {
+        "operation": "创建页面",
+        "deniedEffect": "新页面未创建，现有页面未更改。",
+        "uncertainEffect": "Leafen 无法确认页面是否已创建。",
+        "stateCheckAction": "请重新加载页面列表，确认是否有新页面，然后再试一次。"
+      },
+      "title": {
+        "update": {
+          "operation": "保存页面标题",
+          "deniedEffect": "标题更改未被接受，已保存的标题仍然有效。",
+          "uncertainEffect": "Leafen 无法确认更改是否已保存。",
+          "stateCheckAction": "重新加载页面并检查当前标题。"
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "加载页面分析",
+        "deniedEffect": "分析数据未加载，页面数据未更改。",
+        "uncertainEffect": "Leafen 无法确认当前分析数据。",
+        "stateCheckAction": "在得出结论之前，请重新加载分析数据。"
+      },
+      "policyUpdate": {
+        "operation": "保存分析策略",
+        "deniedEffect": "新的分析策略未被接受。",
+        "uncertainEffect": "Leafen 无法确认分析策略是否已保存。",
+        "stateCheckAction": "请重新加载策略，比较后再试一次。"
+      },
+      "preferencesRead": {
+        "operation": "加载分析偏好",
+        "deniedEffect": "分析偏好未能加载，已保存的设置未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的分析偏好。",
+        "stateCheckAction": "在编辑偏好之前，请重新加载。"
+      },
+      "preferencesUpdate": {
+        "operation": "保存分析偏好",
+        "deniedEffect": "新的偏好未被接受。",
+        "uncertainEffect": "Leafen 无法确认偏好是否已保存。",
+        "stateCheckAction": "重新加载偏好并比较后再试一次。"
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "安全保存离线更改",
+        "deniedEffect": "更改未保存在此设备上。",
+        "uncertainEffect": "Leafen 无法确认更改是保存在此设备上还是服务器上。",
+        "stateCheckAction": "拷贝编辑过的内容，然后重新加载并比较已保存的状态。"
+      },
+      "legacy": {
+        "operation": "迁移离线更改",
+        "deniedEffect": "较早的离线更改仍保留在原存储位置，未发送。",
+        "uncertainEffect": "Leafen 无法确认哪些较早的离线更改已迁移。",
+        "stateCheckAction": "请保持此选项卡打开，并在再次编辑前重新加载。"
+      },
+      "refresh": {
+        "operation": "重新加载已恢复的更改",
+        "deniedEffect": "已恢复的更改未显示，已保存的数据未被替换。",
+        "uncertainEffect": "Leafen 无法确认恢复后的当前页面。",
+        "stateCheckAction": "请在再次编辑前重新加载此页面。"
+      },
+      "replay": {
+        "operation": "发送离线更改",
+        "deniedEffect": "已排队的更改仍处于待处理状态，尚未获得服务器确认。",
+        "uncertainEffect": "Leafen 无法确认哪些已排队的更改已到达服务器。",
+        "stateCheckAction": "请保持此选项卡打开，重新连接并重新加载后再编辑。"
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "搜索公开网站",
+        "deniedEffect": "搜索结果未加载，已发布的内容未更改。",
+        "uncertainEffect": "Leafen 无法确认当前的搜索结果。",
+        "stateCheckAction": "再次搜索前请检查网站状态。"
+      },
+      "sharedPage": {
+        "operation": "加载分享的页面",
+        "deniedEffect": "分享的页面未能加载，已发布的内容未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前分享的页面。",
+        "stateCheckAction": "请先检查分享链接，然后再试一次。"
+      },
+      "site": {
+        "operation": "加载公开网站",
+        "deniedEffect": "公开网站未能加载，已发布的内容未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前公开网站。",
+        "stateCheckAction": "请检查网站地址，然后再试一次。"
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "恢复表单登录",
+        "deniedEffect": "成员表单未能打开，未提交任何回复。",
+        "uncertainEffect": "Leafen 无法确认此表单当前的登录状态。",
+        "stateCheckAction": "请重新加载表单并重新登录。"
+      },
+      "configurationWrite": {
+        "operation": "保存表单设置",
+        "deniedEffect": "未能确认表单设置已保存。",
+        "uncertainEffect": "Leafen 无法确认当前表单配置。",
+        "stateCheckAction": "重新加载表单设置后再保存。"
+      },
+      "definitionRead": {
+        "operation": "加载表单",
+        "deniedEffect": "表单未能加载，未提交任何回复。",
+        "uncertainEffect": "Leafen 无法确认当前表单定义。",
+        "stateCheckAction": "请重新加载表单，然后再输入回复。"
+      },
+      "optionsRead": {
+        "operation": "加载表单选项",
+        "deniedEffect": "所请求的选项未能加载，回复草稿未提交。",
+        "uncertainEffect": "Leafen 无法确认当前选项。",
+        "stateCheckAction": "重新加载选项后再提交表单。"
+      },
+      "responseSubmit": {
+        "operation": "提交表单回复",
+        "deniedEffect": "回复未被接受。",
+        "uncertainEffect": "Leafen 无法确认回复是否已被接受。",
+        "stateCheckAction": "再次提交回复前，请先检查表单结果。"
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "加载运行时配置",
+        "deniedEffect": "运行时配置未能加载，已保存的服务器设置未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前运行时配置，因此已启用安全回退值。",
+        "stateCheckAction": "重新加载页面以读取当前服务器配置。"
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "同步待处理的更改",
+        "deniedEffect": "待处理的更改仍留在队列中，服务器未予确认。",
+        "uncertainEffect": "Leafen 无法确认哪些待处理的更改已到达服务器。",
+        "stateCheckAction": "请保持此选项卡打开，重新连接，并在重试前检查已保存的状态。"
+      },
+      "pendingRead": {
+        "operation": "检查待处理的更改",
+        "deniedEffect": "未能加载待处理更改的数量；队列中的更改未被丢弃。",
+        "uncertainEffect": "Leafen 无法确认还有多少更改处于待处理状态。",
+        "stateCheckAction": "请保持此选项卡打开，并再次检查同步状态。"
+      },
+      "retry": {
+        "operation": "重试同步",
+        "deniedEffect": "同步未获确认；待处理的更改仍留在队列中。",
+        "uncertainEffect": "Leafen 无法确认最新的同步结果。",
+        "stateCheckAction": "请在再次重试前检查已保存的状态和连接。"
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "创建工作空间",
+        "deniedEffect": "未创建新的工作空间，现有数据也未更改。",
+        "uncertainEffect": "Leafen 无法确认工作空间是否已创建。",
+        "stateCheckAction": "请重新加载工作空间列表，确认是否有新的工作空间，然后再试一次。"
+      },
+      "delete": {
+        "operation": "永久删除工作空间",
+        "deniedEffect": "删除操作未被接受；工作空间和现有数据均未更改。",
+        "uncertainEffect": "Leafen 无法确认工作空间是否已删除。",
+        "stateCheckAction": "请先重新加载工作空间列表，然后再试一次。"
+      },
+      "member": {
+        "add": {
+          "operation": "添加工作空间成员",
+          "deniedEffect": "未添加该成员，也未进行任何更改。",
+          "uncertainEffect": "Leafen 无法确认工作空间成员是否已添加。",
+          "stateCheckAction": "请先重新加载成员、活动和审计历史记录，然后再试一次。"
+        },
+        "revoke": {
+          "operation": "移除工作空间成员",
+          "deniedEffect": "未移除该成员，也未进行任何更改。",
+          "uncertainEffect": "Leafen 无法确认工作空间成员是否已移除。",
+          "stateCheckAction": "请先重新加载成员、活动和审计历史记录，然后再试一次。"
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "保存工作空间设置",
+          "deniedEffect": "设置更改未保存；仍沿用之前的设置。",
+          "uncertainEffect": "Leafen 无法确认工作空间设置是否已保存。",
+          "stateCheckAction": "请先重新加载工作空间设置、活动和审计历史记录，然后再试一次。"
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "取消工作空间导出",
+        "deniedEffect": "导出未被取消，可能仍在运行。",
+        "uncertainEffect": "Leafen 无法确认导出是否已取消。",
+        "stateCheckAction": "请刷新导出状态，然后再尝试取消。"
+      },
+      "download": {
+        "operation": "下载工作空间导出",
+        "deniedEffect": "归档文件未下载；服务器上的导出未发生更改。",
+        "uncertainEffect": "Leafen 无法确认归档文件是否已下载完成。",
+        "stateCheckAction": "请先检查下载列表，然后再重新下载。"
+      },
+      "job": {
+        "operation": "导出工作空间",
+        "deniedEffect": "归档文件未创建；源工作空间未发生更改。",
+        "uncertainEffect": "Leafen 无法确认此作业是否有可用的归档文件。",
+        "stateCheckAction": "请从当前工作空间启动一次替代导出。"
+      },
+      "poll": {
+        "operation": "等待工作空间导出",
+        "deniedEffect": "未能加载最新导出状态；导出作业未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前导出状态。",
+        "stateCheckAction": "在执行其他操作之前，请先刷新导出状态。"
+      },
+      "retry": {
+        "operation": "重试工作空间导出",
+        "deniedEffect": "重试请求未被接受；现有导出作业未发生更改。",
+        "uncertainEffect": "Leafen 无法确认重试请求是否已被接受。",
+        "stateCheckAction": "请刷新导出状态，然后再重试。"
+      },
+      "start": {
+        "operation": "开始工作空间导出",
+        "deniedEffect": "新的导出作业未被接受；工作空间未发生更改。",
+        "uncertainEffect": "Leafen 无法确认导出作业是否已被接受。",
+        "stateCheckAction": "请先刷新最新导出状态，然后再启动其他作业。"
+      },
+      "status": {
+        "operation": "加载工作空间导出状态",
+        "deniedEffect": "未能加载最新导出状态；导出作业未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前导出状态。",
+        "stateCheckAction": "在执行其他操作之前，请重新加载导出对话框。"
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "取消导入",
+        "deniedEffect": "导入未被取消，可能仍在运行。",
+        "uncertainEffect": "Leafen 无法确认导入是否已取消。",
+        "stateCheckAction": "再次取消前，请刷新导入状态。"
+      },
+      "job": {
+        "operation": "导入文件",
+        "deniedEffect": "未创建页面；部分导入的内容已被移除。",
+        "uncertainEffect": "Leafen 无法确认此次导入是否有可用页面。",
+        "stateCheckAction": "请保留诊断参考信息，并从源文件开始新的导入。"
+      },
+      "start": {
+        "operation": "开始导入",
+        "deniedEffect": "新的导入未被接受，页面也未创建。",
+        "uncertainEffect": "Leafen 无法确认导入是否已被接受。",
+        "stateCheckAction": "请勿更改文件，直接重试该文件，以便 Leafen 重新连接到同一请求。"
+      },
+      "status": {
+        "operation": "加载导入状态",
+        "deniedEffect": "未能加载最新导入状态；导入任务未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前的导入状态。",
+        "stateCheckAction": "请重新打开导入对话框，以重新连接到已保存的任务，然后再执行其他操作。"
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "加载帐号密钥",
+        "deniedEffect": "未能加载密钥列表；已保存的密钥未发生更改。",
+        "uncertainEffect": "Leafen 无法确认当前的密钥列表。",
+        "stateCheckAction": "请重新连接并刷新密钥列表，然后再进行更改。"
+      },
+      "update": {
+        "operation": "管理帐号密钥",
+        "deniedEffect": "服务器未更改已保存的密钥。",
+        "uncertainEffect": "Leafen 无法确认密钥更改是否已完成。",
+        "stateCheckAction": "请先刷新密钥列表，然后再试一次。如果已创建新密钥但未保存在此处，请检查设备的密钥管理器。"
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "当前密码错误。",
+    "currentPasswordNext": "如果忘记了密码，请登出，然后在登录页面重置密码。",
+    "code": "验证码错误或已被使用。",
+    "codeNext": "请输入身份验证器应用当前显示的验证码。",
+    "recoveryCode": "恢复代码错误或已被使用。",
+    "recoveryCodeNext": "请输入尚未使用的恢复代码。",
+    "accountDeactivated": "此帐号已被服务器管理员禁用。",
+    "accountDeactivatedNext": "请联系管理员重新启用此帐号。",
+    "organizationSSO": "此组织仅允许通过单点登录（SSO）登录。",
+    "organizationSSONext": "请改用公司帐号登录。",
+    "organizationPasswordTwoStep": "你的组织要求使用密码和两步验证登录，而不是设备代码。",
+    "organizationPasswordTwoStepNext": "请使用电子邮件和密码登录；如果没有密码，请向管理员索取一次性密码。",
+    "deviceCode": "代码有误、已被使用、已过期，或者显示代码的窗口已关闭。",
+    "deviceCodeNext": "获取新的登录码并重新输入。",
+    "setupCode": "设置代码不正确。",
+    "setupCodeNext": "重新打开服务器输出的设置链接，或输入服务器启动时使用的代码。",
+    "setupCodeMissing": "请输入设置代码。",
+    "setupCodeMissingNext": "打开服务器打印出的设置链接即可填入；使用服务器启动时所用的代码也可以。",
+    "sessionCapacity": "此帐号已达到设备数量上限。",
+    "sessionCapacityNext": "请在设置 → 帐号 → 设备中登出不再使用的设备，然后再试一次。",
+    "signInEnded": "此登录请求已结束：已超时，或验证码输错次数过多。",
+    "signInEndedNext": "请使用电子邮件和密码重新登录。",
+    "emailNotVerified": "此帐号的电子邮件尚未确认。",
+    "emailNotVerifiedNext": "请打开注册时收到的邮件中的链接，然后登录。",
+    "registrationFailed": "无法创建帐号。",
+    "registrationFailedNext": "请稍后再试一次。如果仍然失败，请告知此服务器的管理员。"
+  },
+  "labels": {
+    "reference": "参考来源"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "此组织不会在公司登录时创建新帐号。",
+    "samlAccountCreationOffNext": "请让组织管理员邀请你。",
+    "samlRetryAfterInvite": "收到邀请后请重新登录。",
+    "samlIdentityDenied": "此电子邮件地址无法使用此组织的公司登录。",
+    "samlIdentityDeniedNext": "请让组织管理员检查电子邮件域名和你的成员资格。",
+    "samlRetryAfterAdministrator": "管理员检查后请重新登录。",
+    "samlResponseInvalid": "无法验证公司登录响应。",
+    "samlResponseInvalidNext": "请重新开始登录。如果问题仍然存在，请让组织管理员检查 SAML 设置。",
+    "accountAlreadyExistsForEmailAddress": "此电子邮件地址的帐号已存在。",
+    "accountEmailCouldNotAdmittedFor": "无法发送帐号电子邮件。",
+    "administratorSettingsDoNotMeetServer": "管理员设置不符合服务器要求。",
+    "administratorSettingsNotAvailableCurrentAccount": "当前帐号无法使用管理员设置。",
+    "anotherAdministratorAlreadyCompletedServerSetup": "其他管理员已完成服务器设置。",
+    "anotherServerOperationTemporarilyLockedAccount": "另一项服务器操作暂时锁定了帐号存储空间。",
+    "anotherServerOperationTemporarilyLockedDatabase": "另一项服务器操作暂时锁定了数据库，因此无法继续导出。",
+    "anotherServerOperationTemporarilyLockedDlp": "另一个服务器操作暂时锁定了 DLP 策略存储空间。",
+    "anotherServerOperationTemporarilyLockedFile": "另一个服务器操作暂时锁定了文件存储空间。",
+    "anotherServerOperationTemporarilyLockedPage": "另一个服务器操作暂时锁定了页面内容存储空间。",
+    "anotherServerOperationTemporarilyLockedProduct": "另一个服务器操作暂时锁定了产品存储空间。",
+    "askOrganizationAdministratorToAllow": "请联系组织管理员或团队协作区所有者，请其允许此操作。",
+    "askServerAdministratorCheckEmailDelivery": "请让服务器管理员检查电子邮件投递情况，然后再试一次。",
+    "backupArtifactNotCompleteYet": "备份文件尚未完成。",
+    "backupStateNoLongerPermitsControl": "备份的当前状态已不允许执行该操作。",
+    "causeCouldNotDetermined": "无法确定原因。",
+    "changeSaveReceiptAndSynchronizationState": "更改未保存，页面内容保持不变。",
+    "checkCurrentBackupBeforeRetrying": "重试前请检查当前备份。",
+    "checkCurrentJobStateBeforeDeciding": "在决定是否重试前，请检查当前作业状态。",
+    "checkCurrentListBeforeTryingDifferent": "请检查当前列表，然后再尝试其他项目。",
+    "checkCurrentServerSettingsBeforeTrying": "再次尝试前，请检查当前服务器设置。",
+    "checkCurrentServerSetupStateBefore": "再次尝试前，请检查当前服务器设置状态。",
+    "checkCurrentStateAndUseNew": "请检查当前状态，仅在需要时创建新备份。",
+    "checkEmailAndPassword": "请检查电子邮件和密码。",
+    "checkServerSecretStorageThenSave": "请检查服务器密钥存储空间，然后再次保存相同的设置。",
+    "checkServerStateThenLoadSettings": "请检查服务器状态，然后重新加载设置。",
+    "createNewBackupAndInspectServer": "创建新备份；如果错误重复出现，请检查服务器存储空间。",
+    "currentAccountNotAuthorizedForOperation": "当前帐号无权执行此操作。",
+    "currentStateMustCheckedBeforeRetry": "在确认重试安全之前，必须先检查当前状态。",
+    "currentStateMustCheckedBeforeRetrying": "重试前必须先检查当前状态。",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS 验证服务暂时不可用。",
+    "doNotAssumeUnchangedRetrySafe": "在服务器存储空间修复之前，不要假定重试是安全的。",
+    "doNotKeepRetryingIdentifierNew": "请勿继续重试此请求；先重新加载，之后再进行新的尝试才是安全的。",
+    "doNotResumeFailedJobStart": "请勿恢复失败的作业，而应开始新的导出。",
+    "doNotRetryBeforeLoadingLatest": "在加载最新服务器设置之前，请勿重试。",
+    "doNotRetryDirectRequestUnchanged": "请勿按原样重试此上传；请改用断点续传上传。",
+    "doNotRetryDirectRequestUnchanged2": "请勿按原样重试此上传；请改用存档断点续传上传。",
+    "doNotRetrySetupRequestSign": "请勿重试此设置请求；请使用现有管理员帐号登录。",
+    "doNotReuseInvalidArtifactCreate": "请勿重复使用无效的备份文件；请创建新的备份。",
+    "doNotReuseLinkNewAction": "请勿重复使用此链接；执行新操作是安全的。",
+    "emailOrPasswordDidNotMatch": "电子邮件或密码不匹配。",
+    "externalSignInProviderCouldNot": "外部登录服务商无法完成请求。",
+    "fileLargerThanOneDirectUpload": "此文件过大，无法通过单次直接上传完成。",
+    "formStorageTemporarilyLockedByAnother": "另一项服务器操作暂时锁定了表单存储空间。",
+    "leafenArchiveLargerThanOneDirect": "此 Leafen 归档过大，无法通过单次直接导入完成。",
+    "leafenDidNotReceiveServerResponse": "Leafen 未收到服务器响应。",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen 正在重建组织的存储空间使用状态。",
+    "leafenServiceCouldNotCompleteOperation": "Leafen 服务无法完成此操作。",
+    "isolatedRecordNotAppliedYourRequested": "不完整的记录已被搁置，你的更改未保存，页面内容保持不变。",
+    "jobCannotRetriedStartReplacementExport": "此作业无法重试；请启动替代导出。",
+    "jobSArchiveNotPublishedAnd": "未创建此作业的归档，源工作空间未更改。",
+    "keepDiagnosticReferenceAndAskServer": "请保留诊断参考编号，并请服务器管理员修复服务器存储空间。",
+    "lastConfirmedSavedStateRestoredSo": "最后确认的已保存状态已恢复，因此可以安全地重试同一更改。",
+    "loadCurrentReportAndUseNew": "加载当前报告，然后再次刷新。",
+    "loadCurrentReportBeforeRefreshingAgain": "再次刷新前，请先加载当前报告。",
+    "loadCurrentReportBeforeTryingAgain": "再次尝试前，请先加载当前报告。",
+    "newerOrIncompatibleStatePreventedOperation": "较新或不兼容的状态阻止了此操作。",
+    "noNewArchivePublishedAndSource": "未创建新归档，源工作空间和较早的归档均未更改。",
+    "noNewSignInSessionCreated": "未创建新的登录会话，现有会话也未更改。",
+    "notKnownWhetherRetryingSafeUntil": "在检查当前状态之前，无法确定重试是否安全。",
+    "organizationStorageAuthorityInconsistent": "组织的存储空间使用记录不一致。",
+    "organizationDlpBlocksOperation": "你所在组织的数据丢失防护策略阻止了此操作。",
+    "takeOutTermOrAskAboutDlp": "请移除任何敏感词后重试；如果不确定，请咨询组织管理员。",
+    "organizationSettingsDoNotAllowOperation": "你的组织或团队协作区的设置不允许此操作。",
+    "organizationStorageLimitWouldExceeded": "将超出组织存储空间上限。",
+    "serverDiskAlmostFull": "服务器磁盘几乎已满。",
+    "askServerAdministratorToFreeSpace": "请联系服务器管理员释放空间；腾出空间后即可恢复使用。",
+    "safeRetryOnceServerHasRoom": "服务器腾出空间后，可以放心地再次尝试同一操作。",
+    "readDoesNotChangeSavedData": "此读取操作不会更改已保存的数据，因此可以安全地重试。",
+    "reloadCurrentBackupBeforeChoosingAnother": "选择其他操作前，请先重新加载当前备份。",
+    "reloadCurrentBackupStateBeforeContinuing": "在继续之前，请重新加载当前备份状态。",
+    "reloadCurrentStateBeforeDecidingWhether": "请重新加载当前状态，然后再决定是否重试。",
+    "reloadSignInPageAndStart": "请刷新登录页面并重新登录。",
+    "removeUnneededFilesOrAskOrganization": "请删除不需要的文件，或联系组织账单管理员提高限额。",
+    "reportChangedAfterScreenLoaded": "此屏幕加载后，报告已发生变化。",
+    "requestIdentifierBelongsDifferentOperation": "此请求已用于其他操作。",
+    "requestIdentifierBelongsDifferentReportRefresh": "此请求已用于其他报告刷新。",
+    "requestedItemNoLongerExistsOr": "所请求的项目已不存在，或对此帐号不可见。",
+    "retryExportAfterOtherServerOperation": "请在其他服务器操作完成后重试此导出。",
+    "retryExportJobAfterServerStorage": "请在服务器存储空间恢复后重试此导出作业。",
+    "retryOnlyAfterAccountOrPermission": "仅在帐号或权限更改后再重试。",
+    "retryOnlyAfterOrganizationSettingChanges": "仅在该设置更改后再重试。",
+    "retrySameContentChangeAfterOther": "请在其他服务器操作完成后重试相同的内容更改。",
+    "retrySameContentChangeAfterServer": "请在服务器存储空间恢复后重试相同的内容更改。",
+    "retrySameContentChangeNow": "请立即重试相同的内容更改。",
+    "changeTooLargeForOneChange": "此内容过大，无法一次更改。单次更改最多可包含 64 MB（含文本）。",
+    "pageKeepsWhatItHadBefore": "页面保持更改前的状态。",
+    "makeTheChangeInParts": "请分部分进行：对于大型折叠列表或分节，请先分部分删除其中的区块，长文本也请分部分粘贴。",
+    "sameSizeIsRefusedAgain": "相同大小会再次被拒绝；拆分后即可安全重试。",
+    "linkCannotBeKeptHere": "此更改链接了无法在此处链接的页面或区块。",
+    "chooseAnotherPageOrRefresh": "请选择其他页面，或刷新页面后再试一次。",
+    "sameLinkIsRefusedAgain": "再次链接相同项目仍会被拒绝。",
+    "retrySameDomainVerificationAfterDns": "请在 DNS 验证服务恢复后重试相同的域名验证。",
+    "retrySameFileOperationAfterOther": "请在其他服务器操作完成后重试相同的文件操作。",
+    "retrySameFileOperationAfterServer": "请在服务器存储空间恢复后重试相同的文件操作。",
+    "retrySameFormOperationAfterOther": "请在其他服务器操作完成后重试相同的表单操作。",
+    "retrySameFormOperationAfterServer": "请在服务器存储空间恢复后重试相同的表单操作。",
+    "retrySameOperationAfterOtherServer": "请在其他服务器操作完成后重试相同的操作。",
+    "retrySameOperationAfterServerStorage": "请在服务器存储空间恢复后重试相同的操作。",
+    "returnSignInWithExistingAccount": "请返回并使用现有帐号登录。",
+    "reviewAndCorrectEnteredServerSettings": "检查并修正已输入的服务器设置。",
+    "reviewEnteredValuesAndCorrectHighlighted": "检查已输入的值，并修正高亮显示的信息。",
+    "safeRetryAfterEmailDeliveryRestored": "电子邮件发送恢复后，可安全地重试。",
+    "safeRetryAfterServerResourceChecks": "服务器资源检查恢复后，可安全地重试。",
+    "safeRetryAfterTemporaryLockClears": "临时锁定解除后，可安全地重试。",
+    "safeRetryRead": "可安全地重试此读取操作。",
+    "safeRetrySameAuthenticationOperationAfter": "存储空间恢复后，可安全地重试同一身份验证操作。",
+    "safeRetrySameContentChangeAfter": "临时锁定解除后，可安全地重试同一内容更改。",
+    "safeRetrySameContentChangeAfter2": "存储空间恢复后，可安全地重试同一内容更改。",
+    "safeRetrySameDlpPolicySave": "存储空间恢复后，可安全地重试同一 DLP 策略的保存。",
+    "safeRetrySameDlpPolicySave2": "临时锁定解除后，可安全地重试同一 DLP 策略的保存。",
+    "safeRetrySameDomainVerificationAfter": "服务恢复后，可安全地重试同一域名验证。",
+    "safeRetrySameFileOperationAfter": "存储空间可用后，可安全地重试同一文件操作。",
+    "safeRetrySameFileOperationAfter2": "存储空间恢复后，可安全地重试同一文件操作。",
+    "safeRetrySameFileOperationAfter3": "临时锁定解除后，可安全地重试同一文件操作。",
+    "safeRetrySameFormOperationAfter": "存储空间恢复后，可安全地重试同一表单操作。",
+    "safeRetrySameFormOperationAfter2": "临时锁定解除后，可安全地重试同一表单操作。",
+    "safeRetrySameOperationAfterStorage": "存储空间恢复后，可安全地重试同一操作。",
+    "safeRetrySameOperationAfterTemporary": "临时锁定解除后，可安全地重试同一操作。",
+    "safeRetrySameSettingsAfterSecret": "密钥存储恢复后，可安全地重试同一设置。",
+    "safeRetrySameSettingsSaveAfter": "修正无效的值后，可安全地重试同一设置的保存。",
+    "safeRetryWithSameJobIdentifier": "可安全地重试同一作业。",
+    "safeRetryWithSameJobIdentity": "可安全地重试同一作业。",
+    "safeSignInInsteadCreatingAnother": "可以安全地登录，无需再创建其他帐号。",
+    "safeStartNewProviderSignIn": "可以稍后再重新发起身份验证服务商登录。",
+    "safeTryAgainAfterCorrectingDetails": "更正详细信息后，可安全地重试。",
+    "safeTryAgainAfterCorrectingInput": "更正输入内容后，可安全地重试。",
+    "safeTryAgainAfterWait": "等待结束后，可安全地重试。",
+    "serverTakesNoChangesNow": "此服务器无法连接到其备份位置，因此目前不接收更改。",
+    "serverDataMovedElsewhere": "此服务器的数据已移至另一台服务器。",
+    "doItOnNewServer": "请在新服务器上执行此操作。",
+    "serverDataMovedNoRetry": "在此处重试无法保存。",
+    "sameRequestIdentityCanRetriedSafely": "稍等片刻后，即可安全地重试同一请求。",
+    "saveSameDlpPolicyAgainAfter": "服务器存储空间恢复后，请再次保存同一 DLP 策略。",
+    "saveSameDlpPolicyAgainAfter2": "其他服务器操作完成后，请再次保存同一 DLP 策略。",
+    "serverAccountStorageTemporarilyUnavailable": "服务器帐号存储空间暂时不可用。",
+    "serverCannotCurrentlyConfirmResourceState": "服务器目前无法确认其资源状态。",
+    "serverCouldNotCompleteAdministratorSettings": "服务器无法完成管理员设置的保存。",
+    "serverCouldNotCompleteAdministratorSetup": "服务器无法完成管理员设置请求。",
+    "serverCouldNotCompleteBackupLifecycle": "服务器无法完成备份。",
+    "serverCouldNotLoadBackupState": "服务器无法加载该备份状态。",
+    "serverCouldNotProtectAdministratorSecret": "服务器无法保护管理员密钥值。",
+    "serverCouldNotReadAdministratorState": "服务器无法读取管理员状态。",
+    "serverCouldNotReadOneExact": "服务器无法读取一致的报告快照。",
+    "serverDetectedAndIsolatedIncompleteContent": "服务器发现了一条不完整的内容记录，并已将其隔离。",
+    "serverFileStorageTemporarilyUnavailable": "服务器文件存储空间暂时不可用。",
+    "serverFormStorageTemporarilyUnavailable": "服务器表单存储空间暂时不可用。",
+    "serverPageContentStorageTemporarilyUnavailable": "服务器页面内容存储空间暂时不可用。",
+    "serverSettingsChangedAfterScreenLoaded": "加载此屏幕后，服务器设置发生了更改。",
+    "serverStorageTemporarilyUnavailable": "服务器存储空间暂时不可用。",
+    "serverStorageTemporarilyUnavailableSoArchive": "服务器存储空间暂时不可用，因此无法创建存档。",
+    "serverStorageTemporarilyUnavailableSoDlp": "服务器存储空间暂时不可用，因此无法保存 DLP 策略。",
+    "signInAttemptIdentifierAlreadyBelongs": "此登录尝试已用于其他登录详情。",
+    "signInOrAccountActionLink": "登录或帐号操作链接已失效。",
+    "signInWithAuthorizedAccountOr": "请使用已获授权的帐号登录，或向管理员请求访问权限。",
+    "signInWithExistingAdministratorAccount": "请使用现有的管理员帐号登录。",
+    "signInWithServerAdministratorAccount": "请使用服务器管理员帐号登录，或向其他管理员请求访问权限。",
+    "startAccountActionAgainGetNew": "请重新开始帐号操作，以获取新链接。",
+    "startReplacementExportFromLatestWorkspace": "请从最新的工作空间开始替代导出。",
+    "storedBackupDidNotMatchVerified": "存储的备份与已验证的文件不匹配。",
+    "submittedInformationDidNotMeetOperation": "提交的信息不符合操作要求。",
+    "tooManyRequestsLimited": "请求过多，因此此操作受到限制。",
+    "tooManyRequestsMadeSoOperation": "请求过多，此操作暂时受到限制。",
+    "tryAgainAfterServerStorageRecovers": "请在服务器存储空间恢复后再试一次。",
+    "tryAgainInHours_other": "请在约 {{count}} 小时后再试。",
+    "tryAgainInMinutes_other": "请在约 {{count}} 分钟后再试。",
+    "tryAgainInSeconds_other": "请在约 {{count}} 秒后再试。",
+    "useAnotherSignInMethodOr": "请使用其他登录方式，或稍后再试此服务商。",
+    "useResumableArchiveUploadSoProgress": "请使用断点续传方式上传归档，以便从已保存的状态继续进度。",
+    "useResumableUploadSoProgressCan": "请使用断点续传，以便从已保存的状态继续进度。",
+    "waitForCompletionThenRetryDownload": "请等待完成，然后重试下载。",
+    "waitForOtherServerOperationFinish": "请等待其他服务器操作完成，然后再试一次。",
+    "waitForStorageReconciliationAdvanceThen": "请稍等片刻，待存储空间同步后再重试同一操作。",
+    "waitMomentBeforeTryingAgain": "请稍等片刻后再试一次。",
+    "workspaceChangedWhileExportRunning": "导出运行期间工作空间发生了更改。",
+    "youNotSignedInAndNo": "你尚未登录，帐号数据未做任何更改。",
+    "pageIsLocked": "页面已锁定，无法进行更改。",
+    "unlockPageThenTryAgain": "请在页面菜单中为自己或所有人解锁页面，然后再试一次。",
+    "safeToRetryAfterUnlocking": "解锁页面后，可以放心地再试一次。",
+    "databaseIsLocked": "数据库已锁定，因此无法更改其属性和视图。",
+    "unlockDatabaseThenTryAgain": "使用数据库的“锁定”按钮为自己或所有人解锁，然后重试。",
+    "databaseEditorsCanUnlock": "只有有权编辑该数据库的人才能解锁。",
+    "safeToRetryAfterDatabaseUnlocked": "数据库解锁后，可以安全地重试。",
+    "rowMoveNeedsFullAccess": "将其移动到其他页面需要拥有对它的完整访问权限，以及对目标位置的编辑权限。",
+    "askFullAccessHolderToMoveIt": "请让拥有完整访问权限的人来移动它，或选择你可以编辑的位置。",
+    "rowMoveRefusedUntilAccess": "在你获得该权限之前，再次移动仍会被拒绝。",
+    "otherWorkspaceCantMoveOrLink": "无法在工作空间之间移动或关联内容。",
+    "makeItAnewInThatWorkspace": "在该工作空间中新建，并将内容拷贝过去。整个页面可在“移动到”中选择该工作空间，从而移动或拷贝到那里。",
+    "otherWorkspaceRefusedAgain": "再次尝试会因同样的原因被拒绝。",
+    "signInEndedForThisBrowser": "此浏览器的登录已过期或已结束。",
+    "signInEndedForThisApp": "此应用的登录已过期或已结束。",
+    "signInAgainToContinue": "请重新登录以继续。",
+    "retryAfterSigningInAgain": "重新登录后再试一次。",
+    "serverRestoredSinceDeviceCopies": "此服务器的数据已更改，此设备上的副本是更改前的。",
+    "changeKeptOnThisDeviceOnly": "更改未保存到服务器，仅保存在此设备上。",
+    "takeServerContentAnew": "选择“从服务器重新加载”以获取服务器的当前内容。",
+    "retryAfterTakingContentAnew": "从服务器重新加载后再试一次。",
+    "propertyUsedByViewOrDependency": "此属性目前无法更改：它是标题属性，或位于“已删除属性”中。",
+    "changeWhatUsesPropertyFirst": "重新加载页面以查看该属性的当前状态。",
+    "retryAfterChangingWhatUsesProperty": "请先恢复已删除的属性，然后再更改。",
+    "workspaceAlreadyHasContentForArchive": "此工作空间已有内容，因此无法将 Leafen 归档放入其中。",
+    "makeNewWorkspaceToImportArchive": "新建工作空间，并在其中导入此归档。",
+    "retryInNewWorkspace": "你可以在新工作空间中再次导入。",
+    "importFileDoesNotFitFormat": "该文件不符合 Leafen 可读取的格式，因此未导入任何内容。",
+    "exportFileAgainToImport": "请从文件的创建位置重新导出该文件，然后再导入。",
+    "sameFileRefusedAgain": "再次导入同一文件不会成功。",
+    "pageBusyWithAnotherChange": "此页面正在处理另一项更改，因此暂时无法编辑。",
+    "tryAgainOnceThatChangeIsDone": "请在该更改完成后再试一次。",
+    "importPageInTrash": "导入目标页面位于垃圾箱中，因此未导入任何内容。",
+    "restorePageThenImportAgain": "从垃圾箱中恢复页面，然后重新导入。",
+    "importPageDeletedForGood": "导入目标页面已被永久删除，因此未导入任何内容。",
+    "ownerBringsDeletedPageBack": "工作空间所有者可在 30 天内在安全 → 数据保留中恢复该页面；然后从垃圾箱中恢复它，再重新导入。",
+    "importAgainOnceRestored": "页面恢复之前，再次尝试也无法导入。",
+    "pageInTrashCantChange": "垃圾箱中的页面在恢复之前无法更改。",
+    "restorePageThenTryAgain": "从垃圾箱中恢复页面，然后重试。",
+    "tryAgainOnceRestored": "页面恢复之前，再次尝试也不会成功。",
+    "optionNameHasComma": "选项名称不能包含逗号（,）。",
+    "takeCommaOutOrSplitOption": "请去掉逗号，或将其拆分为两个选项。",
+    "optionRefusedUntilRenamed": "更改名称后再试一次。",
+    "optionNameTaken": "此属性中已有同名选项。",
+    "useAnotherOptionName": "请使用其他名称，或选择已有的选项。",
+    "optionsInUseLeftOut": "此更改会遗漏页面正在使用的选项。",
+    "keepOptionsOrDeleteOneByOne": "请保留这些选项，或从各选项的菜单中逐一删除。",
+    "optionsRefusedUntilKeptOrDeleted": "按原样重试会因同样的原因被拒绝。"
+  }
+}

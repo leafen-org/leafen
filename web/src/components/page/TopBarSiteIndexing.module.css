@@ -1,0 +1,193 @@
+/* "검색 엔진 인덱싱 ›": the site as a search engine lists it, over the
+   fields it is drawn from (Notion's, measured 2026-11-12 on a 456px panel):
+   each label 12/500 6px over its box, 16px between them; the preview a
+   card with 12px room, its icon 16 and host on a 20px line, the link title
+   16/500 blue, the description one line (the head's while the site keeps
+   none, as Notion's); faint (0.3) while the site isn't
+   searchable; "변경 사항 저장" 16px under the last field.
+   The labels keep their own 15px line, as Notion's field labels (block,
+   line-height 15px, 15 tall; measured 2026-11-18 at 1x): they are not a
+   menu's group-name head, so they don't take --menu-label-line-height. */
+.seo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+/* The card's 1px line is Notion's borPri (read 2026-11-24: dark
+   rgb(56,56,54), light rgb(230,229,227)), rounded 8. */
+.preview {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.preview[data-off="true"] > * {
+  opacity: 0.3;
+}
+
+.site {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 20px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.favicon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.favicon img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.host {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.more {
+  flex: 0 0 auto;
+  rotate: 90deg;
+}
+
+.title {
+  overflow: hidden;
+  color: #1d13a3;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The link title in a search engine's link colours, as Notion's (2026-11-12:
+   #1d13a3 light, #9ebdf4 dark). */
+:global([data-theme="dark"]) .title {
+  color: #9ebdf4;
+}
+
+.description {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+}
+
+/* "링크 제목" and "설명" are Notion's ringed fields (read 2026-11-24 in both
+   themes): no border, 1px of borPriTra outside the box (dark
+   rgba(255,255,235,.1), light rgba(28,19,1,.11)), rounded 6, on bacSec
+   (dark #202020, light #f9f8f7), 424 wide as the preview card. Typed in,
+   the ring turns the input ring every ringed field takes. Their words keep
+   the place they had inside the old 1px border (the inline place unread). */
+.field input,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-soft);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+}
+
+.field input {
+  height: 34px;
+  padding: 0 9px;
+}
+
+/* Three lines in a 68px box, its first one 7px down (Notion's, 2026-11-12). */
+.field textarea {
+  height: 68px;
+  padding: 7px 9px;
+  line-height: 18px;
+  resize: none;
+}
+
+.field input:disabled,
+.field textarea:disabled {
+  color: var(--text-tertiary);
+}
+
+.field input:focus,
+.field textarea:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* A link title or description the site can't have is ringed in the
+   failures' red (rgb(229,100,88) in dark), typed in too. */
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.field input[aria-invalid="true"]:focus,
+.field textarea[aria-invalid="true"]:focus {
+  box-shadow: inset 0 0 0 1px var(--danger), 0 0 0 1px var(--danger);
+}
+
+/* Why, under the field (ShareErrorLine): 6px under it rather than the
+   16px between fields. */
+.invalid {
+  margin-top: -10px;
+}
+
+/* Notion's filled button (measured 2026-11-18 at 1x): 32 tall, 8 in either
+   side of its 14/500 words on a 1.2 line, rounded 6, the accent's text tint. */
+.save {
+  height: 32px;
+  margin-inline-start: auto;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.save:hover:not(:disabled) { opacity: 0.9; }
+.save:disabled { opacity: 0.4; }

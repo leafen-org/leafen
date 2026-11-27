@@ -1,0 +1,184 @@
+/* "사용자 지정 이모지 추가", as Notion's (measured 2026-11-01): 280 wide,
+   rounded 10, 12px over its title and under its buttons, 16 at the sides;
+   hung from what opened it. Never cut to the room left under its opener:
+   grown by a picked picture (267 → 341) it turns over its opener as Notion's
+   does, where a capped height would have kept it below with a scrollbar. */
+.dialog {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  max-height: none !important;
+}
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+.hint {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+/* "이미지 업로드" on Notion's faint plate: a 20px picture and gray words. */
+/* 20px under the dialog's line; the upload tab has none over it. */
+.hint + .drop,
+.hint + .preview {
+  margin-top: 20px;
+}
+.drop {
+  border-radius: 4px;
+  background: var(--bg-block-empty);
+}
+.upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.upload svg {
+  color: var(--icon-secondary);
+}
+.upload:hover,
+.upload:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The picture on white and on black, rounded 8 in a hairline, under
+   "미리 보기": 48px with "바꾸기" in the dialog, 8 in, and 80px in the
+   upload tab, 6 in and filling it (Notion's, measured 2026-11-02). */
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 0 4px;
+  border-radius: 4px;
+  background: var(--bg-block-empty);
+}
+.preview[data-large="true"] {
+  padding: 16px;
+}
+.previewLabel {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.previewPair {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.previewPair img {
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 8px;
+  background: #fff;
+  object-fit: contain;
+}
+:where(.previewPair) img:not(img:first-of-type) {
+  background: #000;
+}
+/* The screen's own ground first: black then white in dark, as Notion's
+   (seen 2026-11-07; white then black in light, seen 2026-11-02). */
+:global([data-theme="dark"]) .previewPair img {
+  background: #000;
+}
+:global([data-theme="dark"]) :where(.previewPair) img:not(img:first-of-type) {
+  background: #fff;
+}
+.preview[data-large="true"] .previewPair img {
+  width: 80px;
+  height: 80px;
+  padding: 6px;
+  object-fit: cover;
+}
+.replace {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-top: 4px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.replace:hover,
+.replace:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.nameLabel {
+  margin-top: 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.field {
+  height: 28px;
+  margin-top: 6px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-block-empty);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+.field:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.error {
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 12px;
+}
+/* "취소" (or "뒤로") at the left in gray, the blue "저장" at the right. */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.cancel,
+.save {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.cancel {
+  color: var(--text-secondary);
+}
+.cancel:hover,
+.cancel:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.save {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-weight: 500;
+}
+.save:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

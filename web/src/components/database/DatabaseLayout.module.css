@@ -1,0 +1,478 @@
+.layoutRow {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-height: 34px;
+  padding: 3px 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.layoutGroupLabel {
+  padding: 3px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* The layout screen as a group of controls, off together while the database
+   is locked (Notion's, seen 2026-10-01). */
+.layoutFieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.layoutFieldset:disabled {
+  opacity: 0.4;
+}
+.layoutTypeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+/* A new view's layouts run between the edges of its name row, 16px over its
+   settings (Notion's, seen 2026-11-05: 891–1142 under a name row 891–1142). */
+.layoutTypeGridNew {
+  margin: 0 4px 10px;
+  padding-bottom: 6px;
+}
+/* With no settings under them, as a chart's, a line follows the cards 7px
+   under them (Notion's, seen 2026-11-06: its database 12px higher). */
+.layoutTypeGridNew:has(+ .layoutSettings:empty) {
+  margin-bottom: 0;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--menu-divider);
+}
+.layoutTypeButton {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 82px;
+  padding: 10px 8px;
+  border: 1px solid var(--choice-tile-edge);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: center;
+}
+.layoutTypeButton:hover,
+.layoutTypeButton[data-focus-visible],
+.layoutTypeButton[aria-selected="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.layoutTypeButton[data-focus-visible] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.layoutTypeButton[aria-selected="true"] {
+  border-color: var(--choice-tile-chosen-edge);
+  box-shadow: inset 0 0 0 1px var(--choice-tile-chosen-edge);
+}
+.layoutTypeButton span:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.layoutTypeButton .check {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 6px;
+}
+:global([data-phone="true"]) .layoutTypeGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+:global([data-phone="true"]) .layoutRow {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+/* In the view settings panel, as Notion's: three small layout cards to a
+   row, and a setting's control under its name. A card (seen 2026-10-25 at
+   1280px) is 56.5px tall (2026-11-05: 6px in, the mark at 10px, its 16.5px
+   name 4px under it and 6px over the edge, a row every 64.5px), its 20px mark
+   10px down and its name 11px in gray 4px under it; the chosen one is blue,
+   ringed 2px, its name in 500 (bluTexAccPri, seen 2026-11-24), neither faded
+   nor ticked. */
+@container (max-width: 320px) {
+  .layoutTypeGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .layoutTypeButton {
+    justify-content: flex-start;
+    min-height: 56.5px;
+    /* 10px from the card's edge, inside its 1px border. */
+    padding: 9px 4px 0;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-size: 11px;
+  }
+  .layoutTypeButton[aria-selected="true"] {
+    background: none;
+    color: var(--accent-blue);
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--accent-blue);
+  }
+  .layoutTypeButton[aria-selected="true"][aria-disabled="true"] { opacity: 1; }
+  .layoutTypeButton .check {
+    display: none;
+  }
+  .layoutRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    align-items: stretch;
+  }
+}
+/* The settings under the layout cards, as Notion's (seen 2026-09-30): 28px
+   rows a pixel apart, the name at the left in 14px and a 30x18 switch or the
+   grey chosen value and a chevron at the right. */
+.layoutSettings { display: flex; flex-direction: column; gap: 1px; }
+/* Its words on a 1.2 line, 16.8px, as Notion's rows (seen 2026-11-18, dpr 1: "세로선 표시" 4.59 under its row's top). */
+.layoutRow.layoutSwitchRow,
+.layoutRow.layoutChoiceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.layoutRow.layoutSwitchRow:hover, /* and a choice row while its choices are open, wherever the pointer is (Notion's, seen 2026-11-17) */
+.layoutRow.layoutChoiceRow:hover, .layoutRow.layoutChoiceRow:has(.layoutChoiceButton[aria-expanded="true"]) {
+  background: var(--bg-hover);
+}
+/* A switch's name keeps one line and ends in "…" (Notion's, seen once 2026-11-24: "데이터 소스 제목 표시" given the
+   Russian words, 220 wide). A choice row's name and value follow DatabaseSettingValueRow. */
+.layoutSwitchRow > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Two classes, to win over the select's own look whatever the order the
+   sheets load in. */
+.layoutChoiceRow .layoutChoice { width: auto; }
+/* The chosen value 6px before its 16px chevron (Notion's, seen 2026-11-06). */
+.layoutChoice .layoutChoiceButton {
+  grid-template-columns: minmax(0, 1fr) 16px;
+  gap: 6px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.layoutChoice .layoutChoiceButton svg {
+  width: 16px;
+  height: 16px;
+  transform: rotate(calc(-90deg * var(--inline-sign, 1)));
+}
+/* A row's name after its 16px icon, as the property settings' "유형". */
+.layoutRowLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.layoutRowLabel > svg {
+  flex: none;
+  color: var(--text-secondary);
+}
+/* A choice row that opens its own screen, as grouping's "그룹화 기준 >": its
+   value 6px before a 16px chevron (Notion's, seen 2026-11-06). */
+.layoutChoiceValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+.layoutChoiceValue > svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+/* A grey action under the settings, as "그룹화 제거". */
+.layoutAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  margin-top: 6px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+.layoutSettings > .layoutAction {
+  margin-top: 0;
+}
+.layoutAction:hover,
+.layoutAction:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.layoutActionIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* The line between a board's or gallery's layout rows and its card rows
+   (seen 2026-10-05), 8px in from the rows' ends, a menu's faint line, about
+   8px from the rows over and under it (Notion's, seen 2026-11-06: 895–1138
+   under rows 887–1146). */
+.layoutDivider {
+  flex: none;
+  height: 1px;
+  margin: 7px 8px;
+  background: var(--menu-divider);
+}
+/* In a phone's settings sheet, as Notion's (seen 2026-10-21 at 375px; at
+   402pt on 2026-11-11 the tiles 110×56.5): the layouts as three tiles to a
+   row in a group of the page's own ground — white, in dark rgb(25,25,25)
+   under the sheet's raised groups' rgb(37,37,37) (seen 2026-11-18 at 402pt,
+   twice) — the settings as 45px rows in another 16px under it, with iOS
+   switches and grey values. */
+:global([data-phone-settings]) .layoutFieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+:global([data-phone-settings]) .layoutTypeGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--bg-page);
+}
+:global([data-phone-settings]) .layoutTypeButton {
+  justify-content: flex-start;
+  gap: 4px;
+  min-height: 56.5px;
+  padding: 10px 4px 6px;
+  border: 0;
+  box-shadow: inset 0 0 0 1px var(--choice-tile-edge);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 16.5px;
+  opacity: 1;
+}
+:global([data-phone-settings]) .layoutTypeButton:hover,
+:global([data-phone-settings]) .layoutTypeButton[aria-selected="true"] {
+  background: transparent;
+}
+:global([data-phone-settings]) .layoutTypeButton[aria-selected="true"] {
+  box-shadow: inset 0 0 0 2px var(--choice-tile-chosen-edge);
+  color: var(--accent-blue);
+  font-weight: 500;
+}
+:global([data-phone-settings]) .layoutTypeButton > svg:first-child {
+  width: 20px;
+  height: 20px;
+}
+:global([data-phone-settings]) .layoutTypeButton .check {
+  display: none;
+}
+/* Its white starts 1px under its place and its last row is 44px, as the
+   sheet's other groups (PhoneSheet.module.css .group). */
+:global([data-phone-settings]) .layoutSettings {
+  gap: 0;
+  overflow: hidden;
+  border-top: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+}
+:global([data-phone-settings]) .layoutRow.layoutSwitchRow,
+:global([data-phone-settings]) .layoutRow.layoutChoiceRow {
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  font-size: 17px;
+  line-height: inherit;
+}
+:global([data-phone-settings]) .layoutSettings > :last-child,
+:global([data-phone-settings]) .layoutRow:last-child {
+  border-bottom: 0;
+}
+:global([data-phone-settings]) .layoutRow.layoutSwitchRow:hover,
+:global([data-phone-settings]) .layoutRow.layoutChoiceRow:hover {
+  background: transparent;
+}
+:global([data-phone-settings]) .layoutChoice .layoutChoiceButton {
+  height: 44px;
+  font-size: 17px;
+}
+:global([data-phone-settings]) .layoutChoice .layoutChoiceButton svg {
+  width: 18px;
+  height: 18px;
+}
+/* A phone's empty conditional colors, as Notion's (seen 2026-10-21 at
+   375px): a preview, its words in 15px grey 24px under it, and a 48px blue
+   button. The preview shows nowhere else. */
+.conditionalColorPreview {
+  display: none;
+}
+/* 24px apart, with the screen's 6px gap; 4px higher than a group, as Notion's. */
+:global([data-phone-settings]) .conditionalColorPreview {
+  display: block;
+  width: 100%;
+  height: 128px;
+  margin: -4px 0 18px;
+}
+:global([data-phone-settings]) [data-conditional-color-empty] {
+  margin: 0 0 18px;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 20px;
+}
+:global([data-phone-settings]) [data-conditional-color-add][data-first="true"] {
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 17px;
+  font-weight: 500;
+}
+:global([data-phone-settings]) [data-conditional-color-add][data-first="true"] > svg {
+  display: none;
+}
+/* An action such as "그룹화 제거" stands in a white group of its own, 16px
+   under what is above it, in gray, its 22px icon 13px in (Notion's, seen
+   2026-10-23), its white 1px under its place as a group's. */
+:global([data-phone-settings]) .layoutAction {
+  gap: 11px;
+  height: 45px;
+  margin-top: 16px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-top: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+  font-size: 17px;
+}
+:global([data-phone-settings]) .layoutAction:hover,
+:global([data-phone-settings]) .layoutAction:focus-visible {
+  background: var(--bg-app);
+}
+:global([data-phone-settings]) .layoutActionIcon,
+:global([data-phone-settings]) .layoutActionIcon svg {
+  width: 22px;
+  height: 22px;
+}
+/* Any row of a group is a 45px one; one with an icon starts it 13px in,
+   22px, the name 11px on; an action in a group is one of its rows, in the
+   text's color (Notion's "속성 편집", seen 2026-10-23). */
+:global([data-phone-settings]) .layoutSettings > .layoutRow {
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-default);
+  font-size: 17px;
+}
+:global([data-phone-settings]) .layoutSettings > .layoutRow:has(> .layoutRowLabel > svg) {
+  padding-inline-start: calc(13px + var(--phone-safe-start, 0px));
+}
+:global([data-phone-settings]) .layoutRowLabel {
+  gap: 11px;
+}
+:global([data-phone-settings]) .layoutRowLabel > svg {
+  width: 22px;
+  height: 22px;
+  color: var(--icon-primary);
+}
+:global([data-phone-settings]) .layoutSettings > .layoutAction {
+  margin: 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  color: var(--text-default);
+}
+:global([data-phone-settings]) .layoutSettings > .layoutAction:last-child {
+  height: 44px;
+  border-bottom: 0;
+}
+/* A group's last row is 44px without its line, its group 1px down
+   (.layoutSettings). */
+:global([data-phone-settings]) .layoutSettings .layoutRow:last-child {
+  min-height: 44px;
+  border-bottom: 0;
+}
+
+/* "컴팩트 카드 설정 ›", the last line of the card layout box when "작게" is
+   chosen (Notion's, seen 2026-11-03): its 14px name, a chevron at its end. */
+.compactCardsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 28px;
+  margin-top: 10px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.compactCardsRow svg {
+  color: var(--icon-tertiary);
+}
+.compactCardsRow:hover,
+.compactCardsRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The settings' "레이아웃" screen, as Notion's (seen 2026-11-05): its cards 12px in and 39.5px under the heading's words, its settings 12px under them (2026-11-15: a table's and a board's);
+   with none, as a dashboard's, the panel's edge 3px under the cards, 5px of its 8px padding taken back (seen 2026-11-15: cards to 562, panel to 565). */
+.layoutTypeGrid.layoutTypeGridScreen { margin: 12px 4px 12px; } .layoutTypeGrid.layoutTypeGridScreen:has(+ .layoutSettings:empty) { margin-bottom: -5px; }
+/* A phone's settings sheet keeps its own places, as Notion's phone (seen
+   2026-11-11 at 402pt: the cards' white group 16 in and 16 under the head,
+   the settings 16 under it): the desktop screen's margin isn't its. The
+   sheet is drawn outside the page, so it goes by its own mark. */
+:global([data-phone-settings]) .layoutTypeGrid.layoutTypeGridScreen { margin: 0; }
+/* The grouping screen's choices and switches run 4px wider each side than
+   the layout screen's, 4px under its head (Notion's, seen 2026-11-06). */
+.layoutSettings[data-group-settings] {
+  margin: 0 -4px;
+  padding-top: 4px;
+}
+/* A phone's is as wide as the sheet's other groups, its first row 45px as
+   the rest, as Notion's phone (seen 2026-11-11 at 402pt). */
+:global([data-phone-settings]) .layoutSettings[data-group-settings] {
+  margin: 0;
+  padding-top: 0;
+}
+/* Its chevron turns down while its choices are open, a property's staying
+   right (Notion's, seen 2026-11-06). */
+.layoutChoice .layoutChoiceButton[aria-expanded="true"]:not([data-property-choice]) svg {
+  transform: none;
+}

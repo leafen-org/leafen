@@ -1,0 +1,42 @@
+/* A bottom list's row leads with its mark 20px in and its words 14px after the mark's box, the box as wide as the
+   mark the list draws (PhoneSheetMenu's marks), as Notion's (measured 2026-11-16 on an A90 at 411, Chrome, light):
+   a menu's tools 22px, words at 56 (a filter's "⋯", "+ 새 조건"'s events); a list of what to add keeps each mark's
+   own size, an action's 20 (words at 54, "+ 새 작업"), a property's 16 (words at 50, "+ 새 조건"); a list of data
+   sources a page's or database's 24px mark, words at 58 ("데이터 소스 선택"); a list of a database's properties a
+   26px box, its 22px type mark at the end, words at 60 ("정렬 추가", a new page's "속성 편집 ⌄"). A row with
+   no mark keeps a tool's 22. */
+:global([data-phone-sheet-menu]) span.mark {
+  width: auto;
+  height: auto;
+  min-width: 0;
+}
+
+:global([data-phone-sheet-menu]) span.mark:empty {
+  width: 22px;
+}
+
+/* Its 22px mark at the box's end, as Notion's: the 18px mark 6px into its 26px box drawn a fifth larger, its ink
+   centred 35px in (2026-11-16, A90). */
+:global([data-phone-sheet-menu][data-marks="properties"]) span.mark {
+  width: 26px;
+  justify-content: flex-end;
+}
+
+/* Its marks are its words' colour, as Notion's (seen 2026-11-11: a filter's "⋯" rows rgb(44,44,43) on light,
+   where a sheet's rows keep the icon colour rgb(56,56,54); PhoneSheet.module.css); a grey or red row keeps its
+   own; a list of properties draws them in the icons' colour, rgb(56,56,54) (Notion's "정렬 추가" and "속성 편집 ⌄",
+   2026-11-16), and a list of data sources a database's mark in the icons' grey, rgb(142,139,134), a page's own
+   icon in its own colours. */
+:global([data-phone-sheet-menu][data-marks="properties"]) span.mark {
+  color: var(--icon-primary);
+}
+
+:global([data-phone-sheet-menu][data-marks="pages"]) span.mark {
+  color: var(--icon-secondary);
+}
+
+/* A data source with its place under its name: the 24px mark 1px under the name's letters, as Notion's (the mark
+   13px under the row's top, the name 12). */
+:global([data-phone-sheet-menu][data-marks="pages"]) [data-described="true"] > span.mark {
+  margin-top: 12px;
+}

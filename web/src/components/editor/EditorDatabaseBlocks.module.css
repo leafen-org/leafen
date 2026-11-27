@@ -1,0 +1,313 @@
+
+/* Inline database */
+.inlineDatabase {
+  position: relative;
+  width: 100%;
+  /* Its block's own 5px (EditorBlocks .blockGroup) and its neighbours' keep
+     the room it had above and below. */
+  margin: 0 0 6px;
+  padding: 2px 0 0;
+  border-radius: 8px;
+}
+/* Its title, tabs and first column start where a paragraph's text does, 2px
+   into the block, as Notion's (measured 2026-10-24). */
+.inlineDatabase[data-contained="true"] {
+  overflow: visible;
+  /* Its 40px title row at the block's top and its view right under it, with
+     no 5px of the block's own; what follows its view is the view's own. */
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 2px 0;
+  border: 0;
+  background: transparent;
+}
+.inlineDatabase[data-contained="true"] [data-placement="inline"] {
+  padding: 0;
+}
+/* In a page's text each view keeps Notion's room under it and the block ends
+   there, the next line (or a press for a new one under a page's last block)
+   right under it (seen 2026-11-08 at 768 and 1303px): a table 27px and a
+   board 31px over their sideways bar, inside their scroll, the block ending
+   under the bar; a list and a feed 15px under their last line; a gallery 4px
+   under its cards, a calendar 15px under its last week, a timeline 4px over
+   its bar, a form 96px under its "+", a dashboard 30px under its frame, a
+   chart or a map nothing under its picture (each view's own CSS). */
+.inlineDatabase[data-contained="true"]:not(:global([data-database-page="true"]) *) > section > :global([data-view-type="table"]) :global([data-table-scroll]) {
+  padding-bottom: 27px;
+}
+.inlineDatabase[data-contained="true"]:not(:global([data-database-page="true"]) *) > section > :global([data-view-type="board"]) :global([data-board-scroll]) {
+  padding-bottom: 31px;
+}
+.inlineDatabase[data-contained="true"]:not(:global([data-database-page="true"]) *):has(> section > :global(:is([data-view-type="list"], [data-view-type="feed"]))) {
+  padding-bottom: 15px;
+}
+/* Of those, 15px is the sideways bar's room, which a touch screen's bar,
+   drawn over the view, doesn't take: there a table ends 12px under its last
+   line and a board 16px under its columns (Notion's, seen 2026-11-16 in
+   Safari on a 402pt iPhone and an 834pt iPad — the rows' and the columns'
+   own 12 and 16, none under them as at 1440). */
+:global([data-touch="true"]) .inlineDatabase[data-contained="true"]:not(:global([data-database-page="true"]) *) > section > :global([data-view-type="table"]) :global([data-table-scroll]) {
+  padding-bottom: 12px;
+}
+:global([data-touch="true"]) .inlineDatabase[data-contained="true"]:not(:global([data-database-page="true"]) *) > section > :global([data-view-type="board"]) :global([data-board-scroll]) {
+  padding-bottom: 16px;
+}
+/* Its table's or gallery's empty view 72px tall, not the 144 of a database's own page or a page's
+   tab (Notion's, seen 2026-11-12 at 1440; a gallery's to a guest who may only read 2026-11-18 at 1440 and 768). */
+.inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) > section > :global(:is([data-view-type="table"], [data-view-type="gallery"])) :global([data-view-no-results]) {
+  height: 72px;
+}
+/* On its own page the page ends with its view's room (PageView), as Notion's
+   (seen 2026-11-08 at 1303×873): a table 196.5px from its "+ 새 페이지" to its
+   sideways bar — the 4.5px left of that line, the 12px a table keeps under
+   its last line and the 180px room, read again 2026-11-17 at 1440×723 (its
+   page ending at 609.4 under a line ending at 417.4; 12px under a grouped
+   table's last group and 8px more, TableGroupAddRow) — and a board 196px
+   under its columns, inside their scroll, the
+   scroll reaching the window's foot while it is short (useOwnPageViewFill);
+   180px under a list's, a feed's, a gallery's and a calendar's own foot; a
+   timeline 108px under its "+ 새로 만들기"; a map 8px under its picture; a
+   chart, a form and a dashboard what they keep in a page's text. A phone's view
+   keeps half that room, 90 for 180 (seen 2026-11-15 at 402pt), its board's columns 16px
+   over that too (read on a Galaxy A90 at 411: each group 8px in and 16px out at its foot). */
+:global([data-database-page="true"]) .inlineDatabase[data-contained="true"] { --own-view-foot: 180px; --own-board-foot: 16px; }
+:global([data-phone="true"]) :global([data-database-page="true"]) .inlineDatabase[data-contained="true"] { --own-view-foot: 90px; }
+:global([data-database-page="true"]) .inlineDatabase[data-contained="true"] > section > :global([data-view-type="table"]) :global([data-table-scroll]) {
+  padding-bottom: calc(var(--own-view-foot) + 12px);
+}
+:global([data-database-page="true"]) .inlineDatabase[data-contained="true"] > section > :global([data-view-type="board"]) :global([data-board-scroll]) {
+  padding-bottom: calc(var(--own-view-foot) + var(--own-board-foot));
+}
+:global([data-database-page="true"]) .inlineDatabase[data-contained="true"]:has(> section > :global(:is([data-view-type="list"], [data-view-type="feed"], [data-view-type="gallery"], [data-view-type="calendar"]))) {
+  padding-bottom: var(--own-view-foot);
+}
+/* In a page's text its views end 6px short of the text's right edge and its
+   toolbar 8px further in, as Notion's (seen 2026-11-02 at 1280px: a table at
+   423–1123 and a toolbar ending at 1115 in a 421–1129 column). A database's
+   own page keeps its own edges (PageView); a phone keeps its own. */
+.inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) {
+  padding-inline-end: 6px;
+}
+/* A column narrower than 708px holds Notion's database out to the text
+   column's own edge, past the block's 6px either side (seen 2026-11-03 at
+   768 and 1000px: rows on 366–657 and 366–889 like the paragraphs' boxes,
+   the last tool 8 in) — up to 12px further than the block. */
+.inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"], [data-row-page="true"])) *) {
+  width: calc(100% + clamp(0px, 708px - 100%, 12px));
+}
+/* Its toolbar and its views end 8px short of its frame, where a table's rows
+   go on to (--database-view-end, which the views' body keeps at its end), as
+   Notion's in a page's text: a feed's posts and "+ 새 페이지", a list's rows,
+   a gallery's cards, a calendar's days, a form's column and every chart
+   692 wide beside a toolbar ending 692 in from the text and a 700px table
+   (seen 2026-11-08 at 1440px; a gallery's at 1000, 1280 and 1440px,
+   2026-11-04: cards on 415.5–1107.5 in a 413.5–1121.5 column, on 374–881 in
+   a narrow one). */
+.inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) {
+  --database-view-end: 8px;
+}
+.inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) :global([data-database-toolbar]) {
+  margin-inline-end: var(--database-view-end);
+}
+/* Under another block its head (title or tabs, and toolbar) ends 36px short
+   of where its view does, as Notion's (seen 2026-11-11 at 1440px, one and two
+   blocks in: a table on 517.5–1201.5 and 547.5–1195.5 under a head ending at
+   1165.5 and 1159.5, its toolbar 8px further in, its title cut that much
+   sooner); a column's keeps its own. */
+.blockGroup[data-block-type="inline_database"]:not([data-depth="0"], .column *) > .blockRow .inlineDatabase[data-contained="true"]:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) :global([data-database-chrome]) {
+  margin-inline-end: 36px;
+}
+.inlineDatabaseHeader {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  padding-inline: 12px;
+}
+.inlineDatabase[data-contained="true"] .inlineDatabaseHeader {
+  padding-inline: 0;
+}
+/* On its own page a source's title — one of several sources', or "↗" and the
+   name of a source another database owns — sits 12px under the page's and its
+   tabs 45.6px under its name, as Notion's (seen 2026-11-12: its name's top
+   130.4 under a title ending at 118.4, on a database's page and an inline
+   database opened alone alike). */
+:global([data-database-page="true"]) .inlineDatabaseHeader {
+  margin-block: 2px 4px;
+}
+/* Under a view block's head showing no name — a dashboard's, or a linked
+   database's before it has a name of its own — its title's words stand
+   where its tabs would, 48px under the top bar or 12px under its icon, its
+   tabs 45.2px under them, on its page and in a side peek (Notion's
+   dashboard and unnamed linked database, seen 2026-11-09). */
+:global([data-inline-database-page-title][data-nameless="true"]) ~ * .inlineDatabaseHeader {
+  margin-top: 2px;
+}
+:global([data-inline-database-peek-title][data-nameless="true"]) ~ * .inlineDatabaseHeader {
+  margin-top: 6px;
+}
+:global([data-inline-database-peek-title][data-nameless="true"]) ~ * .inlineDatabase > .inlineDatabaseHeader + section {
+  margin-top: 4px;
+}
+/* The icon picker its block menu's "아이콘 편집" opens, below its title. */
+.inlineDatabaseIconPicker {
+  position: absolute;
+  z-index: 61;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+}
+
+@media (min-width: 900px) {
+  .inlineDatabase[data-contained="true"] {
+    width: min(calc(100% + 240px), calc(100vw - 56px));
+    margin-inline-start: -48px;
+  }
+  /* A full-width page's text holds its database out 12px further, as a
+     narrow column's does (Notion's, seen 2026-11-04: a gallery's cards and
+     its toolbar ending 8px short of a 366–1169 text block); a table wider
+     than that goes across the page (usePageWideTable). */
+  :global([data-full-width="true"]) .inlineDatabase[data-contained="true"] {
+    width: calc(100% + 12px);
+    margin-inline-start: 0;
+  }
+  /* A database block's own, found up from it: a ":has()" on the page for a
+     database block ran through the whole page again at each row a database
+     put in or took out (2026-11-13, 12 ms a row in a table of 30 rows by 40
+     properties). */
+  :global([data-page-search-root][data-full-width="false"]) :global([data-block-type="inline_database"])
+    .inlineDatabase[data-contained="true"] {
+    /* The text column's own edge once it is under 708px (above). */
+    width: calc(100% + clamp(0px, 708px - 100%, 12px));
+    margin-inline-start: 0;
+  }
+  .column .inlineDatabase[data-contained="true"] {
+    width: 100%;
+    margin-inline-start: 0;
+  }
+  /* A database's own page holds its block to the page's own room however
+     narrow (PageView), not out by a text column's 12, its toolbar ending 104
+     from the page's right as Notion's: at 1024 beside the sidebar a table's
+     and a gallery's toolbar end at 905 in a 270–1009 page, at 768 at 649 in
+     0–753 (seen 2026-11-17), as at 1280. */
+  :global([data-page-search-root][data-database-page="true"]) :global([data-block-type="inline_database"])
+    .inlineDatabase[data-contained="true"] {
+    width: 100%;
+    margin-inline-start: 0;
+  }
+  /* Opened alone in a side peek it stands in the peek's column under its
+     head, its tabs under its icon, as on its own page (Notion's, seen
+     2026-11-09: icon and tabs at one edge, the name 8px after the icon); a
+     full-page database's peek holds it so under its title (seen 2026-11-14:
+     title, tabs and table from 804 at 1440). */
+  :global(:is([data-inline-database-peek], [data-database-peek])) .inlineDatabase[data-contained="true"] {
+    width: calc(100% + clamp(0px, 708px - 100%, 12px));
+    margin-inline-start: 0;
+  }
+}
+/* The title's words as Notion's at every width (seen 2026-11-03 at 1313 and
+   375px): 24px/600 on a 31.2px line, its row 39 with the 2 and 6 around. */
+.inlineDatabaseTitle {
+  display: inline-block;
+  flex: 0 1 max-content;
+  width: max-content;
+  max-width: min(56ch, calc(100vw - 168px));
+  min-width: 0;
+  min-height: 34px;
+  padding: 2px 0 6px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 31.2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* In a page its field is the 39 above too: a field's line is the font's, not
+   31.2 (seen 2026-11-06: 43 put the table 4px under Notion's, whose title row
+   is 40 from the block's top); a database's own page keeps its own spacing. */
+.inlineDatabase:not(:global([data-database-page="true"]) *) .inlineDatabaseTitle[data-rich-cell-editor] {
+  box-sizing: border-box;
+  height: 39.2px;
+}
+/* There its words stand 4px into that row, and with its views' tabs under
+   it their 40px row starts 6px below, as Notion's (measured 2026-11-08 at
+   1280px, dark: title text box 4, tabs' row 45.2 and tab 49.2 under the
+   block's top, the table's head at 85.2); a phone's too, as Notion's in
+   Android Chrome (seen 2026-11-17 on a Galaxy A90 at 411: padded 4 and 4). */
+.inlineDatabase:not(:global([data-database-page="true"]) *) .inlineDatabaseTitle[data-rich-cell-editor] {
+  padding-block: 4px;
+}
+.inlineDatabase:not(:global(:is([data-database-page="true"], [data-phone="true"])) *) > .inlineDatabaseHeader + section {
+  margin-top: 6px;
+}
+/* The field, rich text as Notion's name (seen 2026-11-07), is as wide as its
+   words, so the title row's "+ ⋯" come 4px after them, as Notion's (seen
+   2026-10-10); a long name scrolls in it on one line. */
+.inlineDatabaseTitle[data-rich-cell-editor] {
+  display: block;
+  flex: 0 1 auto;
+  width: max-content;
+  min-width: 1ch;
+  max-width: min(56ch, calc(100vw - 168px));
+  text-overflow: clip;
+}
+/* Its one line, over the editor surface's wrapping; not being written in, a
+   name its row cuts short ends with "…", as Notion's (seen 2026-11-11:
+   "W324 inline..." beside a side peek). */
+.inlineDatabaseHeader > .inlineDatabaseTitle[data-rich-cell-editor] {
+  white-space: pre;
+}
+.inlineDatabaseTitle[data-rich-cell-editor]:not(:focus, [data-caret-kept="true"]) { --database-title-cut: hidden; --database-title-cut-end: ellipsis; }
+.inlineDatabaseTitle[data-rich-cell-editor] > * { overflow: var(--database-title-cut, visible); text-overflow: var(--database-title-cut-end, clip); }
+/* An unnamed database's "새 데이터베이스", faint as Notion's title placeholder
+   (dark rgb(55,55,55) where it was the tertiary text's rgb(125,122,117); seen
+   2026-11-08), on the caret's line as every rich field's: an unseen float
+   with no height gives the field the words' width, and the words are drawn
+   over the field's width, ending in "…" where its row cuts the field short,
+   as Notion's (seen 2026-11-16 on a 402pt phone: "새 데이터베…", its ⌄ after
+   the field). */
+.inlineDatabaseTitle[data-rich-cell-editor][data-empty="true"] {
+  position: relative;
+}
+.inlineDatabaseTitle[data-rich-cell-editor][data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.inlineDatabaseTitle[data-rich-cell-editor][data-empty="true"]::after {
+  content: attr(data-placeholder);
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  padding-block-start: inherit;
+  overflow: hidden;
+  color: var(--text-title-placeholder);
+  text-overflow: ellipsis;
+  white-space: pre;
+  pointer-events: none;
+}
+/* While the caret is in it the words are cut at the field's end with no "…",
+   as a name being written is, and as Notion's (seen 2026-11-16 on a 402pt
+   phone, a tap on each of two fields: "새 데이터베이스" cut short, "…" back
+   once the caret leaves) — a phone's keyboard put away leaving it there too
+   (richCellCaretKept). */
+.inlineDatabaseTitle[data-rich-cell-editor][data-empty="true"]:is(:focus, [data-caret-kept="true"])::after {
+  text-overflow: clip;
+}
+.inlineDatabaseTitle[data-inline-database-placeholder="true"] {
+  color: var(--text-title-placeholder);
+  font-weight: 600;
+}
+.inlineDatabaseTitle[data-inline-database-clickable="true"] {
+  cursor: pointer;
+}
+.inlineDatabaseTitle[data-inline-database-editable-title="true"] {
+  cursor: text;
+}

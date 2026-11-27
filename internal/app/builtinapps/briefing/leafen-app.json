@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "id": "app.leafen.briefing",
+  "slug": "briefing",
+  "version": "1.0.15",
+  "name": { "en": "Daily Briefing", "ko": "하루 브리핑" },
+  "description": {
+    "en": "Your open tasks overdue, due today and this week, and unread mentions — with a morning notice at the hour you choose.",
+    "ko": "기한 지난 일·오늘 할 일·이번 주 할 일과 읽지 않은 멘션을 모아 보고, 선택한 시각에 아침 알림을 받습니다."
+  },
+  "developer": { "name": "Leafen" },
+  "icon": "ui/icon.svg",
+  "category": "personal",
+  "tags": ["tasks", "briefing", "notices"],
+  "surfaces": {
+    "fullPage": { "entry": "ui/index.html" },
+    "blocks": [ { "key": "today", "name": { "en": "Today's tasks", "ko": "오늘 할 일" }, "entry": "ui/block.html", "defaultHeight": 220 } ],
+    "sidePanel": { "entry": "ui/panel.html" }
+  },
+  "personAccess": "read",
+  "network": {},
+  "workers": [ { "name": "brief", "module": "workers/main.wasm", "functions": ["today", "morning"] } ],
+  "schedules": [ { "key": "hourly", "name": { "en": "Daily briefing at your chosen hour", "ko": "정한 시각의 하루 브리핑" }, "cron": "0 * * * *", "worker": "brief", "function": "morning", "perPerson": true } ],
+  "actions": [
+    {
+      "key": "today",
+      "name": { "en": "Today's briefing", "ko": "오늘 브리핑" },
+      "description": { "en": "The person's open tasks by due date and their unread mentions.", "ko": "기한별로 나눈 내 할 일과 읽지 않은 멘션입니다." },
+      "input": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": -840,
+            "maximum": 840,
+            "description": "The person's offset from UTC in minutes, for what day it is where they are. Left out, the one their screen last kept."
+          }
+        },
+        "additionalProperties": false
+      },
+      "runAs": "person", "worker": "brief", "function": "today", "risk": "low", "tool": true
+    }
+  ],
+  "notifications": true,
+  "agent": {
+    "summary": { "en": "The person's tasks and mentions for today.", "ko": "오늘의 내 할 일과 멘션." },
+    "resources": [ { "key": "today", "name": "오늘 할 일", "action": "today" } ],
+    "prompts": [
+      { "key": "plan", "name": "오늘 할 일 정리", "template": "하루 브리핑 앱의 today로 내 할 일과 멘션을 읽고, 기한 지난 일부터 오늘 끝낼 순서를 정해 세 줄 요약과 함께 정리해 주세요. 바꾸거나 보내는 일은 하지 마세요." }
+    ]
+  },
+  "pwa": { "shortName": "브리핑", "themeColor": "#d9730d" }
+}

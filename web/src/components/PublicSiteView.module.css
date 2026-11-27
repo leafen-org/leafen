@@ -1,0 +1,383 @@
+.site {
+  --site-bg: var(--bg-app);
+  --site-text: var(--text-default);
+  --site-muted: var(--text-secondary);
+  --site-border: var(--border-subtle);
+  --site-surface: var(--bg-elevated);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  width: 100%;
+  /* The site is the window: its bar stays and the page scrolls under it, one
+     scroll, as Notion's published site (2026-10-16: the site grew with the
+     page past the window, a second scroll took the bar up out of view). */
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  background: var(--site-bg);
+  color: var(--site-text);
+}
+
+.site[data-site-theme="light"] {
+  color-scheme: light;
+  --site-bg: #fff;
+  --site-text: #252525;
+  --site-muted: #717171;
+  --site-border: rgba(15, 15, 15, 0.1);
+  --site-surface: #fff;
+}
+
+.site[data-site-theme="dark"] {
+  color-scheme: dark;
+  --site-bg: #191919;
+  --site-text: #f1f1ef;
+  --site-muted: #a5a5a3;
+  --site-border: rgba(255, 255, 255, 0.12);
+  --site-surface: #252525;
+}
+
+/* Notion's site header (seen 2026-11-05 at 1280 and 1600px, signed out):
+   one 44px row with no line under it — the page's title, or its path on a
+   page under the site's first, in 14px on the left; the page shortcuts as
+   plain links right before the icons. */
+.header {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  background: var(--site-bg);
+  color: var(--site-text);
+}
+
+.identity,
+.crumbs button {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.identity > span,
+.crumbs span,
+.crumbs button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  color: var(--site-text);
+  font-size: 14px;
+}
+
+.crumbs > span[aria-hidden="true"] {
+  color: var(--site-muted);
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.navigation button {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 160px;
+  padding: 4px 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  color: var(--site-text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.identity:hover,
+.identity:focus-visible,
+.crumbs button:hover,
+.crumbs button:focus-visible,
+.navigation button:hover,
+.navigation button:focus-visible,
+.navigation button[data-active="true"] {
+  background: color-mix(in srgb, var(--site-text) 7%, transparent);
+  color: var(--site-text);
+  outline: none;
+}
+
+/* The search, then the site's share and "⋯" buttons, at the bar's right. */
+.tools {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 220px;
+  width: 220px;
+  min-width: 0;
+  height: 34px;
+  gap: 7px;
+  padding: 0 9px;
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  color: var(--site-muted);
+}
+
+.searchToggle {
+  display: none;
+}
+
+.searchField {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  gap: 7px;
+}
+
+.search input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--site-text);
+  outline: 0;
+  font-size: 13px;
+}
+
+.searchResults {
+  position: absolute;
+  top: calc(100% + 7px);
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  max-height: 280px;
+  padding: 6px;
+  overflow: auto;
+  border: 1px solid var(--site-border);
+  border-radius: 9px;
+  background: var(--site-bg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
+.searchResults > button,
+.searchResults > span {
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--site-text);
+  text-align: start;
+}
+
+.searchResults button:hover,
+.searchResults button:focus-visible {
+  background: color-mix(in srgb, var(--site-text) 7%, transparent);
+  outline: none;
+}
+
+/* The page's scroll area takes the app's height less its bar; here it is
+   this row, under the site's own bar and path. */
+.content {
+  --app-height: 100%;
+  --topbar-height: 0px;
+  min-height: 0;
+  color: var(--site-text);
+}
+
+.branding {
+  padding: 16px 24px;
+  border-top: 1px solid var(--site-border);
+  color: var(--site-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.error {
+  display: grid;
+  min-height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 32px;
+  color: var(--text-default);
+  text-align: center;
+}
+
+.error p {
+  max-width: 440px;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.error button,
+.error a {
+  padding: 8px 12px;
+  border-radius: 7px;
+  background: var(--bg-hover);
+  color: inherit;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.errorActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* A narrow window's bar, as Notion's site at 768px (seen 2026-10-19): the
+   links follow the site's name, search and "복제" are icons, and search opens
+   over the bar. */
+@media (min-width: 761px) {
+
+  .search {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+  }
+
+  .searchToggle {
+    display: inline-grid;
+    width: 38px;
+    height: 28px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--site-muted);
+  }
+
+  .searchToggle:hover,
+  .searchToggle:focus-visible {
+    background: color-mix(in srgb, var(--site-text) 7%, transparent);
+    color: var(--site-text);
+    outline: none;
+  }
+
+  .search:not([data-expanded="true"]) .searchField {
+    display: none;
+  }
+
+  .search[data-expanded="true"] {
+    position: absolute;
+    z-index: 1;
+    inset: 9px 12px auto;
+    width: auto;
+    height: 44px;
+    padding: 0 9px;
+    border: 1px solid var(--site-border);
+    background: var(--site-bg);
+  }
+
+  .search[data-expanded="true"] .searchToggle {
+    display: none;
+  }
+}
+
+/* A phone's bar: the site's name, then share and ☰ — the page links, search
+   and "복제" go into ☰'s sheet, as Notion's site (seen 2026-10-19 at 390 and
+   640px; at 768px they sit in the bar). Search opens over the bar. */
+@media (max-width: 760px) {
+  .header {
+    gap: 4px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+  }
+
+  .header:has([data-site-sheet]) {
+    z-index: 20;
+  }
+
+  .identity {
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .navigation {
+    display: none;
+  }
+
+  .tools {
+    gap: 0;
+  }
+
+  .search:not([data-expanded="true"]) {
+    display: none;
+  }
+
+  /* Over the bar's buttons, which come after it. */
+  .search[data-expanded="true"] {
+    position: absolute;
+    z-index: 1;
+    inset: 0 8px auto;
+    width: auto;
+    height: 44px;
+    padding: 0 9px;
+    border: 1px solid var(--site-border);
+    background: var(--site-bg);
+  }
+
+}
+
+/* "이 페이지 임베드" without its title: the page's heading goes. */
+.site[data-site-embed="plain"] [data-page-header-root] h1 {
+  display: none;
+}
+
+/* In the site editor's frame, the header is a part to pick, as Notion's
+   (seen 2026-11-06): a box 12px in from the frame's sides right under its
+   address bar, its title 16px in, outlined in a quiet blue, a full blue
+   under the pointer and while its settings are open. */
+.header[data-site-preview] {
+  margin: 0 12px;
+  min-height: 53px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 50%, transparent);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.header[data-site-preview]:hover,
+.header[data-site-preview][data-picked] {
+  border-color: var(--accent-blue);
+}
+
+/* Under it the page stands lower than on the site itself, as Notion's
+   preview (seen 2026-11-16 in Chrome at 1440, 1024 and 768: the title's top
+   134px under the header's button at every width, 37px further than the
+   site's own page, its text column where the site's has it). A page with a
+   cover was not compared. */
+.header[data-site-preview] ~ .content :global([data-page-search-root]) {
+  margin-block-start: 37px;
+}
+
+/* Picked, Notion's outline is 2px, a pixel more outward (seen 2026-11-06). */
+.header[data-site-preview][data-picked] {
+  box-shadow: 0 0 0 1px var(--accent-blue);
+}

@@ -1,0 +1,77 @@
+/* The Mac and Windows apps' tab menus drawn in the shown page
+   (DesktopTabOverlays, DesktopTextMenu) and the strip's group icon picker
+   (DesktopStripMenus), as Notion's app's (measured 2026-11-10 and
+   2026-11-24). Each
+   menu's own widths name its element, over the row menu's at one class
+   (RowMenu.module.css .menu), whichever sheet loads last. */
+
+div.historyMenu {
+  min-width: 230px;
+  max-height: 70vh;
+}
+
+.historyIcon {
+  display: flex;
+  font-style: normal;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+/* A menu row's mark and name from its start, as Notion's; the mark is an
+   <i>, which keeps its size where the row menu's spans share the room. */
+.menuRow {
+  justify-content: flex-start;
+  text-align: start;
+}
+
+.label {
+  flex: 1 1 auto;
+  text-align: start;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* What takes the page's presses while a strip menu stands over it (DesktopStripMenus). */
+/* Its stacking is the page's layers' (DesktopStripMenus). */
+.stripCover {
+  position: fixed;
+  inset: 0;
+}
+
+/* The strip's menus' shadow the page casts under them on Windows
+   (DesktopStripMenus): over the page, under the icon picker. The boxes are
+   at the strip's places, from the window's left whichever way the page reads. */
+.stripShadows {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  direction: ltr;
+}
+
+.stripShadow {
+  position: absolute;
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The icon picker of a group's menu in the strip (DesktopStripMenus), under
+   the menu's icon over the menu, no taller than the window has room for. */
+.pickerHost {
+  position: fixed;
+}
+.pickerHost > div[data-placement="anchored"] {
+  max-height: min(var(--picker-room), calc(100dvh - 2 * var(--popover-edge)));
+}
+
+/* The page's right-press menu (DesktopTextMenu): one line lit at a time,
+   by the pointer or ↑ ↓, as its lines take no focus. */
+.textMenu [role="menuitem"]:hover {
+  background: transparent;
+}
+.textMenu [role="menuitem"][data-lit="true"] {
+  background: var(--bg-hover);
+}

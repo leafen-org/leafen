@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "id": "com.example.hello",
+  "slug": "hello",
+  "version": "0.1.0",
+  "name": { "en": "Hello", "ko": "안녕" },
+  "description": { "en": "Greets you, counts greetings and shows what Leafen tells an app.", "ko": "인사하고 인사 수를 세며 리펜이 앱에 알려 주는 것을 보입니다." },
+  "developer": { "name": "Example" },
+  "category": "developer",
+  "surfaces": { "fullPage": { "entry": "ui/index.html" } },
+  "personAccess": "read",
+  "kv": { "maxBytes": 65536, "maxTtlSeconds": 86400 },
+  "workers": [{ "name": "hello", "module": "workers/hello.wasm", "functions": ["greet"] }],
+  "actions": [{
+    "key": "greet",
+    "name": { "en": "Greet", "ko": "인사" },
+    "input": { "type": "object", "properties": { "name": { "type": "string", "maxLength": 60 } } },
+    "runAs": "app",
+    "worker": "hello",
+    "function": "greet",
+    "risk": "low"
+  }]
+}

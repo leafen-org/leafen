@@ -1,0 +1,169 @@
+/* Tabs: as Notion's (seen 2026-10-06), a rounded box with round tabs in a
+   row, the open one shaded, the others grey; 2px in from its column at the
+   text's first letter and 8px over and under it in its block (seen
+   2026-10-31: 704×112 in 128). The tab's blocks start 14px under the tabs,
+   its first line's text 24.5px under them (seen 2026-11-14: one line
+   704×120, three 704×200). */
+.tabBox {
+  margin: 3px 2px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+}
+.tabBlock {
+  width: 100%;
+}
+.tabBox .tabBlock {
+  margin-bottom: 14px;
+}
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  margin: -4px;
+  padding: 4px;
+}
+.tabButtonWrap {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  min-width: 0;
+}
+.tabButtonWrap[data-tab-drop="before"]::before,
+.tabButtonWrap[data-tab-drop="after"]::after {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  z-index: 2;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent-blue);
+  content: "";
+  pointer-events: none;
+}
+.tabButtonWrap[data-tab-drop="before"]::before {
+  inset-inline-start: -2px;
+}
+.tabButtonWrap[data-tab-drop="after"]::after {
+  inset-inline-end: -2px;
+}
+.tabButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 220px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+}
+.tabButton:hover,
+.tabButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.tabButton:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.tabButton[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+.tabButton > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A tab's name being typed is the tab's own pill, as wide as its name, as
+   Notion's (seen 2026-11-01: "탭 4" 40.9×32, 8px in, the faint field tint, no ring). */
+.tabLabelInput {
+  field-sizing: content;
+  min-width: 2em;
+  max-width: 220px;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--bg-block-empty);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+}
+/* "+" shows while the pointer is over the tabs' row, 4px around the tabs,
+   or a key's focus is in it, as Notion's (seen 2026-11-14: hidden over the
+   tab's content, outside the box and after a tab is clicked, 8px after the
+   last tab, its plus 20px), and takes no press while hidden; Tab reaches it
+   from the tabs. While the tabs block is chosen itself it shows wherever the
+   pointer is, as Notion's (seen 2026-11-18 at 1440 in Chrome, dpr 1: chosen
+   by "/탭" Enter, the pointer away, 28px round at 8px after "탭 3", its plus
+   20px; Escape letting it go hid it, as did the caret in a tab's content with
+   the pointer away; a press made "탭 4", open, its name chosen to type over). */
+.tabAddButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-inline-start: 4px;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--text-secondary);
+  opacity: 0;
+  pointer-events: none;
+}
+.tabList:hover .tabAddButton,
+.tabList[data-keys-within] .tabAddButton,
+.blockGroup[data-block-type="tab"][data-selected="true"] > .blockRow > .blockBody > .tabBox > * > .tabBlock > .tabList > .tabAddButton {
+  opacity: 1;
+  pointer-events: auto;
+}
+.tabAddButton:hover,
+.tabAddButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.tabIcon {
+  flex: 0 0 auto;
+  font-size: 15px;
+}
+/* An empty tab says so, in the page's text size, as Notion's: 19px under
+   the tabs and 3px over the frame's padding (seen 2026-11-01 and
+   2026-11-14); its top margin meets the tabs' 14px, the larger standing. */
+.tabEmptyHint {
+  display: block;
+  width: 100%;
+  min-height: 24px;
+  margin: 19px 0 3px;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  line-height: 24px;
+  text-align: start;
+  cursor: text;
+}
+.tabEmptyHint:disabled {
+  cursor: default;
+}
+.tabEmptyHint:focus-visible {
+  border-radius: 4px;
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+.tabPanel {
+  padding: 8px 0 2px;
+}

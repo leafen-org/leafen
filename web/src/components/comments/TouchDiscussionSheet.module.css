@@ -1,0 +1,26 @@
+/* A block's discussion in a touch screen's sheet (TouchDiscussionSheet), as
+   Notion's iPad (seen 2026-11-12 in iPad Safari 834, dark): the threads
+   straight under the head on the sheet's own ground, each face 21pt in from
+   the sheet's left and 15pt under the head, the words to 20pt from its
+   right, every comment's buttons 20pt in from the right. The card it is
+   drawn as otherwise (BlockDiscussionCard.module.css) keeps its layout. */
+:global([data-touch-discussion-sheet]) > :last-child {
+  padding: 0 0 24px;
+}
+
+.threads > [data-comments-panel][data-comments-mode] {
+  position: static;
+  width: auto;
+  overflow: visible;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.threads.threads [data-comments-mode] > [role="list"] > article {
+  padding-inline: calc(21px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px));
+}
+
+.threads.threads [data-comments-mode] > [role="list"] > article > [data-comment-hover-actions] {
+  --comment-pill-right: 20px;
+}

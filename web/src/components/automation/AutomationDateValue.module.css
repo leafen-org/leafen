@@ -1,0 +1,124 @@
+/* A date's values under its head (AutomationDateValue.tsx), as Notion's list
+   (seen 2026-11-10): 28px rows 1px apart of 14px words, a 14px calendar
+   before each, "날짜 선택"'s grey, the chosen one's check at the end; lines
+   4px from the rows, under the head and between the run's values, the day
+   and formula, and "지우기". */
+.list {
+  display: grid;
+  gap: 1px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.row:hover,
+.row:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.row > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row[data-automation-date-pick] > svg:first-child,
+.row > svg:last-child:not(:first-child) {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.row[role="menuitemradio"] > svg:last-child:not(:first-child) {
+  color: var(--icon-primary, currentColor);
+}
+
+.rule {
+  display: block;
+  margin: 0 6px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* "날짜 선택"'s days: the date editor's, in its 8px from the window's edges. */
+.picker {
+  padding: 2px 8px 0;
+}
+
+/* In a desktop value window (AutomationEditProperty.module.css .editor),
+   Notion's menu (seen 2026-11-10): the lines 12px in, each list 4px from
+   them, its rows 4px in with a 20px box for the calendar 12px in and the
+   words 40px in; the days 8px under the head and 12px in. */
+[data-automation-value-window] .list {
+  padding: 4px 0;
+}
+
+[data-automation-value-window] .list:last-child {
+  padding-bottom: 0;
+}
+
+[data-automation-value-window] .rule {
+  flex: none;
+  margin: 0 8px;
+}
+
+[data-automation-value-window] .row {
+  border-radius: 6px;
+  padding: 0 8px;
+}
+
+[data-automation-value-window] .row > svg:first-child {
+  margin-inline: 3px;
+}
+
+[data-automation-value-window] .picker {
+  padding: 8px 8px 0;
+}
+
+/* Where a line holds a date: its value in a field as wide as its column, "⌄" at its end. */
+.field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 28px;
+  box-sizing: border-box;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  padding: 1px 9px;
+  background: var(--bg-sidebar);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.field > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.field > span[data-empty] {
+  color: var(--text-tertiary);
+}
+
+.field > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}

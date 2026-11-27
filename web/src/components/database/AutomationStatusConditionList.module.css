@@ -1,0 +1,126 @@
+/* A status trigger's ticks (AutomationStatusConditionList.tsx), as Notion's
+   (seen 2026-11-11, 1975px dark): sections 4px in, rows 28 high 1px apart,
+   round 6, their 20px box cell 8px in (16 for an option under its group),
+   the box 14px round 3, blue with a white ✓ or − once ticked; a line 12px in
+   between "모든 옵션" and the groups. */
+.list {
+  outline: none;
+}
+
+.section {
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+}
+
+.rule {
+  height: 1px;
+  margin-inline: 12px;
+  background: var(--menu-divider);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 28px;
+  box-sizing: border-box;
+  padding-inline: 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+  cursor: pointer;
+}
+
+.row[data-nested] {
+  padding-inline-start: 16px;
+}
+
+.row[data-lit] {
+  background: var(--bg-hover);
+}
+
+.boxCell {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.box {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  box-shadow: var(--filter-check-ring);
+  color: #fff;
+}
+
+.box[data-tick="on"],
+.box[data-tick="mixed"] {
+  background: var(--accent-blue);
+  box-shadow: none;
+}
+.box[data-tick="on"] {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+}
+
+/* "−", Notion's 7.5 of 16 by 1.5 drawn in 12px. */
+.dash {
+  width: 5.625px;
+  height: 1.125px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.words {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A group's mark 3px further in than words, its name 4px after it. */
+.group {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  margin-inline-start: 3px;
+}
+
+.group svg {
+  margin-inline-end: 4px;
+}
+
+/* An option's pill: 20 high, round 10, its 8px dot 7px in and its name 5px after it. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 100%;
+  height: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pill::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+}

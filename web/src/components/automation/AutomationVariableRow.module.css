@@ -1,0 +1,204 @@
+/* A "변수 정의" card's variables and each one's menu (AutomationVariablesFields).
+   A variable: its 28px line — kind's mark, name, "⌄" — 7px over its 28px
+   value, the variables 14px apart and "다른 변수 정의..." 16px under the
+   last, so a "변수 정의" card with one is 175 high (Notion's, seen 2026-11-18
+   in Chrome at 1440 in two tabs and on a Galaxy A90 at 411). */
+.variable {
+  display: grid;
+  gap: 7px;
+}
+
+.variableHeadWrap {
+  display: flex;
+  justify-self: start;
+}
+
+.variableHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  line-height: 17px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.variable + .variable {
+  margin-top: 14px;
+}
+
+.variableHead:hover {
+  background: var(--bg-hover);
+}
+
+.variableHead > svg:last-child {
+  color: var(--icon-secondary);
+}
+
+/* The mark stands 4px from the name, the name 2px from "⌄" (Notion's, seen
+   2026-11-21 in Chrome at 1440). While its formula has a problem the mark is
+   the filled warning at 20 and the name red at 500; "⌄" stays grey. */
+.variableHead > svg:first-child {
+  margin-inline-end: 2px;
+}
+
+.variableHead[data-warn],
+.variableHead[data-warn] > svg:first-child {
+  color: var(--danger);
+}
+
+.variableHead[data-warn] > span {
+  font-weight: 500;
+}
+
+
+/* A variable's menu, 265px, as Notion's: its name field, the choices, the
+   row clearing or deleting it, its kind — each part 4px in from a 1px line
+   12px in from either side, so it is 223.8 high (seen 2026-11-21 in Chrome at
+   1440 in two tabs: lines 56, 151 and 188 down, the kind's words 199). It
+   floats over the page, placed under or over its line (DesktopVariableMenu). */
+.menu {
+  position: fixed;
+  width: 265px;
+  padding: 4px 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A question its row asked leaves the focus on the menu itself, unringed, as Notion's leaves it on the row. */
+.menu:focus {
+  outline: none;
+}
+
+.menuNameRow {
+  padding: 10px 12px 8px;
+}
+
+.menuName {
+  width: 100%;
+  height: var(--name-field-height);
+  min-height: 0;
+  box-sizing: border-box;
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.menuName:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.menuList {
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+}
+
+.menuList > .menuRule {
+  margin: 3px 8px;
+}
+
+.menuNameRow + .menuRule {
+  margin: 6px 12px 0;
+}
+
+.menuList + .menuRule {
+  margin: 0 12px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem[data-focused="true"],
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+
+.menuRule {
+  margin: 4px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+/* Its kind, "유형: 숫자", 12px grey 10px under the line and 8px in (Notion's,
+   seen 2026-11-21 in two tabs); a phone's sheet keeps its own lines. */
+.menuFoot {
+  margin: 0;
+  padding: 6px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.menuList + .menuRule + .menuFoot {
+  padding-top: 10px;
+}
+
+.phoneMenuName {
+  padding: 8px 16px;
+}
+
+/* A faulty variable's foot: a 32px row 4px under the line — the warning at
+   20, 12px in, and its kind in red 8px after it — then what is wrong in grey
+   (Notion's, seen 2026-11-21 in two tabs). */
+.menuFootWarn {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 0 4px;
+}
+
+.menuList + .menuRule + .menuFootWarn {
+  padding-top: 4px;
+}
+
+.menuFootKind {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  box-sizing: border-box;
+  padding: 4px;
+  color: var(--c-accent-red);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.menuFootKind > svg {
+  flex: none;
+  margin-block-start: 4px;
+  margin-inline-start: 12px;
+}
+
+.menuFootKind > span {
+  margin-block-start: 2px;
+}
+
+.menuFootProblem {
+  margin: 0 0 6px;
+  padding: 2px 4px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}

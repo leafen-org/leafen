@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "name": "event-webhook",
+  "operations": [
+    { "goName": "eventWebhookList", "tsName": "list", "method": "GET", "path": "/workspaces/{workspaceId}/webhooks" },
+    { "goName": "eventWebhookCreate", "tsName": "create", "method": "POST", "path": "/workspaces/{workspaceId}/webhooks" },
+    { "goName": "eventWebhookUpdate", "tsName": "update", "method": "PATCH", "path": "/workspaces/{workspaceId}/webhooks/{webhookId}" },
+    { "goName": "eventWebhookDelete", "tsName": "remove", "method": "DELETE", "path": "/workspaces/{workspaceId}/webhooks/{webhookId}" },
+    { "goName": "eventWebhookDeliveries", "tsName": "deliveries", "method": "GET", "path": "/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries" },
+    { "goName": "eventWebhookTest", "tsName": "test", "method": "POST", "path": "/workspaces/{workspaceId}/webhooks/{webhookId}/test" },
+    { "goName": "eventWebhookRetry", "tsName": "retry", "method": "POST", "path": "/workspaces/{workspaceId}/webhooks/{webhookId}/deliveries/{deliveryId}/retry" }
+  ],
+  "bounds": [
+    { "goName": "eventWebhookMaxPerWorkspace", "tsName": "maxPerWorkspace", "value": 20 },
+    { "goName": "eventWebhookMaxAttempts", "tsName": "maxAttempts", "value": 8 },
+    { "goName": "eventWebhookDeliveryPageSize", "tsName": "deliveryPageSize", "value": 50 },
+    { "goName": "eventWebhookMaxBodyBytes", "tsName": "maxBodyBytes", "value": 65536 },
+    { "goName": "eventWebhookAggregateMillis", "tsName": "aggregateMillis", "value": 5000 },
+    { "goName": "eventWebhookMaxURLRunes", "tsName": "maxUrlRunes", "value": 2048 },
+    { "goName": "eventWebhookMaxDescriptionRunes", "tsName": "maxDescriptionRunes", "value": 200 }
+  ],
+  "constants": [
+    { "goName": "eventWebhookAPIVersion", "tsName": "apiVersion", "value": "2026-10-05" },
+    { "goName": "eventWebhookSignatureHeader", "tsName": "signatureHeader", "value": "Leafen-Signature" },
+    { "goName": "eventWebhookIDHeader", "tsName": "idHeader", "value": "Leafen-Webhook-Id" }
+  ],
+  "errors": [
+    { "goName": "errorCodeEventWebhookInvalid", "tsName": "invalid", "value": "LEAFEN_EVENT_WEBHOOK_INVALID" },
+    { "goName": "errorCodeEventWebhookAddressInvalid", "tsName": "addressInvalid", "value": "LEAFEN_EVENT_WEBHOOK_ADDRESS_INVALID" },
+    { "goName": "errorCodeEventWebhookAddressNotPublic", "tsName": "addressNotPublic", "value": "LEAFEN_EVENT_WEBHOOK_ADDRESS_NOT_PUBLIC" },
+    { "goName": "errorCodeEventWebhookNotFound", "tsName": "notFound", "value": "LEAFEN_EVENT_WEBHOOK_NOT_FOUND" },
+    { "goName": "errorCodeEventWebhookLimit", "tsName": "limit", "value": "LEAFEN_EVENT_WEBHOOK_LIMIT" },
+    { "goName": "errorCodeEventWebhookFailed", "tsName": "failed", "value": "LEAFEN_EVENT_WEBHOOK_FAILED" }
+  ],
+  "eventTypes": [
+    "page.created", "page.content_updated", "page.properties_updated", "page.moved", "page.deleted", "page.undeleted",
+    "page.locked", "page.unlocked",
+    "comment.created", "comment.updated", "comment.deleted", "data_source.schema_updated"
+  ],
+  "records": [
+    {
+      "goName": "eventWebhookLastDelivery",
+      "tsName": "EventWebhookLastDelivery",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "EventWebhookDeliveryState" },
+        { "goName": "StatusCode", "jsonName": "statusCode", "goType": "int", "tsType": "number" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "eventWebhookWire",
+      "tsName": "EventWebhook",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "EventTypes", "jsonName": "eventTypes", "goType": "[]string", "tsType": "EventWebhookType[]" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "APIVersion", "jsonName": "apiVersion", "goType": "string", "tsType": "string" },
+        { "goName": "Active", "jsonName": "active", "goType": "bool", "tsType": "boolean" },
+        { "goName": "OwnerID", "jsonName": "ownerId", "goType": "string", "tsType": "string" },
+        { "goName": "ConnectionName", "jsonName": "connectionName", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "LastDelivery", "jsonName": "lastDelivery", "goType": "*eventWebhookLastDelivery", "tsType": "EventWebhookLastDelivery | null" }
+      ]
+    },
+    {
+      "goName": "eventWebhookListResponse",
+      "tsName": "EventWebhookListResponse",
+      "fields": [
+        { "goName": "Webhooks", "jsonName": "webhooks", "goType": "[]eventWebhookWire", "tsType": "EventWebhook[]" }
+      ]
+    },
+    {
+      "goName": "eventWebhookCreateRequest",
+      "tsName": "EventWebhookCreateRequest",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "EventTypes", "jsonName": "eventTypes", "goType": "[]string", "tsType": "EventWebhookType[]" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "eventWebhookCreateResponse",
+      "tsName": "EventWebhookCreateResponse",
+      "fields": [
+        { "goName": "Webhook", "jsonName": "webhook", "goType": "eventWebhookWire", "tsType": "EventWebhook" },
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "eventWebhookUpdateRequest",
+      "tsName": "EventWebhookUpdateRequest",
+      "fields": [
+        { "goName": "URL", "jsonName": "url", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "EventTypes", "jsonName": "eventTypes", "goType": "[]string", "tsType": "EventWebhookType[]", "optional": true },
+        { "goName": "Description", "jsonName": "description", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Active", "jsonName": "active", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "eventWebhookDeliveryWire",
+      "tsName": "EventWebhookDelivery",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "EventID", "jsonName": "eventId", "goType": "string", "tsType": "string" },
+        { "goName": "EventType", "jsonName": "eventType", "goType": "string", "tsType": "string" },
+        { "goName": "EntityID", "jsonName": "entityId", "goType": "string", "tsType": "string" },
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "EventWebhookDeliveryState" },
+        { "goName": "Attempts", "jsonName": "attempts", "goType": "int", "tsType": "number" },
+        { "goName": "StatusCode", "jsonName": "statusCode", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "NextAttemptAt", "jsonName": "nextAttemptAt", "goType": "int64", "tsType": "number" },
+        { "goName": "SettledAt", "jsonName": "settledAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "eventWebhookDeliveryListResponse",
+      "tsName": "EventWebhookDeliveryListResponse",
+      "fields": [
+        { "goName": "Deliveries", "jsonName": "deliveries", "goType": "[]eventWebhookDeliveryWire", "tsType": "EventWebhookDelivery[]" }
+      ]
+    },
+    {
+      "goName": "eventWebhookAuthor",
+      "tsName": "EventWebhookAuthor",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"person\"" },
+        { "goName": "Connection", "jsonName": "connection", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "eventWebhookEntity",
+      "tsName": "EventWebhookEntity",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"page\" | \"comment\" | \"data_source\" | \"webhook\"" }
+      ]
+    },
+    {
+      "goName": "eventWebhookPayload",
+      "tsName": "EventWebhookPayload",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Timestamp", "jsonName": "timestamp", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspace_id", "goType": "string", "tsType": "string" },
+        { "goName": "SubscriptionID", "jsonName": "subscription_id", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "EventWebhookType | \"webhook.test\"" },
+        { "goName": "Authors", "jsonName": "authors", "goType": "[]eventWebhookAuthor", "tsType": "EventWebhookAuthor[]" },
+        { "goName": "Entity", "jsonName": "entity", "goType": "eventWebhookEntity", "tsType": "EventWebhookEntity" },
+        { "goName": "Data", "jsonName": "data", "goType": "map[string]any", "tsType": "Record<string, unknown>" },
+        { "goName": "AttemptNumber", "jsonName": "attempt_number", "goType": "int", "tsType": "number" },
+        { "goName": "APIVersion", "jsonName": "api_version", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+/* The site editor's settings screen's own controls (SiteStyleEditor): the
+   share preview card, the theme tiles, the rows and the favicon's choices,
+   the help, the places of its failure lines (ShareErrorLine), and the fields
+   with the site's address. The screens' rules say which screen they stand
+   on by the panel's data-site-editor-screen. */
+
+/* The share preview as a link shows it: a white card, a grey band, the
+   site's title and its mark; an image of its own fills it. */
+.card {
+  position: relative;
+  flex: 0 0 auto;
+  aspect-ratio: 256 / 136;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.cardOpen {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  text-align: start;
+}
+
+.cardTop {
+  display: block;
+  flex: 0 0 38%;
+  background: #f7f7f5;
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 20px 0;
+  color: #191919;
+}
+
+.cardText strong {
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardText small {
+  color: #9b9b9b;
+  font-size: 8px;
+  line-height: 10px;
+}
+
+.cardImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardTools {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 6px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.card:hover .cardTools,
+.card:focus-within .cardTools {
+  opacity: 1;
+}
+
+.cardTool,
+.upload {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.cardTool {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: rgba(25, 25, 25, 0.92);
+  color: #fff;
+  font-size: 12px;
+}
+
+.cardTool input,
+.upload input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.cardTool:focus-within,
+.upload:focus-within {
+  box-shadow: var(--focus-ring);
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.tileBox {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 50px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.tile:hover .tileBox {
+  background: var(--bg-hover);
+}
+
+.tile[aria-checked="true"] {
+  color: var(--text-default);
+  font-weight: 600;
+}
+
+.tile[aria-checked="true"] .tileBox {
+  border-color: var(--accent-blue);
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.tileLabel {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favicon {
+  position: relative;
+  margin-top: 21px;
+}
+
+.row,
+.switchRow {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 2px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.row:hover,
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+
+.value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.faviconImage {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  object-fit: cover;
+}
+
+/* The favicon's choices (seen 2026-11-06): the mark in use with a check, an
+   outlined "이미지 업로드" across, and the size it is best at under it. */
+.menu {
+  position: absolute;
+  top: 36px;
+  inset-inline-end: -8px;
+  inset-inline-start: -8px;
+  z-index: 2;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuItem[data-chosen]:hover {
+  background: none;
+}
+
+.upload {
+  width: calc(100% - 20px);
+  height: 30px;
+  margin: 6px 10px 0;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.upload:hover {
+  background: var(--bg-hover);
+}
+
+.menuHint {
+  margin: 6px 10px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.help {
+  margin: 4px 0 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Why a field's words can't be the site's (ShareErrorLine, which gives the
+   look): 6px up into the room under the field, 12px over what follows. */
+.invalid {
+  margin: -6px 0 12px;
+}
+
+/* Why the share preview image or the favicon can't be the site's
+   (ShareErrorLine), 6px under the card or the row and over the next row. */
+.imageInvalid {
+  margin: 6px 0;
+}
+
+/* Why the editor's last change didn't take, or that it waits on the server,
+   at the end of the panel (ShareErrorLine). */
+.failure {
+  margin: 12px 0 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Notion's fields here (seen 2026-11-06): a shade lighter, a faint edge. */
+.field input,
+.field textarea,
+.slug {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-element);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.field input {
+  height: 28px;
+  padding: 0 8px;
+}
+
+.field textarea {
+  height: 56px;
+  padding: 4px 8px;
+  line-height: 20px;
+  resize: none;
+}
+
+.field input:focus,
+.field textarea:focus,
+.slug:focus-within {
+  border-color: var(--focus);
+  box-shadow: var(--name-field-ring-focus-out);
+}
+
+/* A field whose words can't be the site's is edged in the failures' red,
+   the line's under it (rgb(229,100,88) in dark). */
+.field input[aria-invalid="true"],
+.slug[data-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.slug {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-inline-start: 8px;
+  color: var(--text-tertiary);
+}
+
+.slug input,
+.slug input:focus {
+  flex: 1 1 auto;
+  height: 26px;
+  padding-block: 0;
+  padding-inline: 0 8px;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+/* Google Analytics' screen: its explanation stands apart from the field. */
+[data-site-editor-screen="analytics"] .help {
+  margin: 14px 0 24px;
+}
+
+/* The "제목" screen's switches start 12px under the title with their icons
+   8px in, and its help's lines are 18px (SiteStylePanelScreens.module.css). */
+[data-site-editor-screen="header"] .switchRow {
+  padding-block: 0;
+  padding-inline: 8px 0;
+}
+
+[data-site-editor-screen="header"] [data-site-editor-title] + .switchRow {
+  margin-top: 12px;
+}
+
+[data-site-editor-screen="header"] .help {
+  margin: 0;
+  line-height: 18px;
+}

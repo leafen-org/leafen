@@ -1,0 +1,98 @@
+/* Notion's link picker (seen 2026-10-08): 330px, a field over "최근 페이지"
+   or what the field finds — icon, title, and where it sits in gray. Laid out
+   as Notion's ⌘K window (measured 2026-11-14 and 2026-11-15 in Chrome at
+   1440, dark): its field 306×28 at 12px in and 14px down — the field's row
+   4px into a 4px-padded head, 6px under its top — and the words in it 6px
+   in; the list 4px into a section from 50px down, its heading 6px under that
+   and 8px over the rows, with the list's 1px between, and 4px under them. */
+.tbLinkMenu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: min(330px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: min(420px, calc(100vh - 64px));
+  padding: 4px 0;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.tbLinkMenu .tbLinkInput {
+  flex: none;
+  min-width: 0;
+  height: 28px;
+  margin: 10px 12px 0;
+  padding: 1px 6px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+.tbLinkMenu .tbLinkInput:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.tbLinkList {
+  min-height: 0;
+  margin-top: 6px;
+  padding: 0 4px;
+  overflow-y: auto;
+}
+.tbLinkMenu .tbLinkList {
+  margin-top: 8px;
+  padding-top: 4px;
+}
+/* Notion's texSec, light #7d7a75 and dark #ada9a3 (read 2026-11-15). */
+.tbLinkHeading {
+  padding: 6px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.tbLinkMenu .tbLinkHeading {
+  margin: 6px 0 9px;
+  padding: 0 8px;
+  line-height: 14.4px;
+}
+.tbLinkActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 8px 0;
+}
+.tbLinkActions button {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 13px;
+}
+.tbLinkActions button:hover,
+.tbLinkActions button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.tbLinkMenu .tbLinkIconButton {
+  width: 30px;
+  padding: 0;
+}
+.tbLinkMenu .tbLinkIconButton svg {
+  display: block;
+  margin: auto;
+}
+.tbLinkMenu .tbLinkIconButton:disabled {
+  color: var(--icon-secondary);
+  cursor: default;
+  opacity: 0.55;
+}
+.tbLinkMenu .tbLinkIconButton:disabled:hover {
+  background: transparent;
+}
+.tbLinkMenu .tbLinkRemove {
+  color: var(--icon-secondary);
+}
+.tbLinkMenu .tbLinkRemove:hover,
+.tbLinkMenu .tbLinkRemove:focus-visible {
+  color: var(--menu-danger);
+}

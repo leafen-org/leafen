@@ -1,0 +1,29 @@
+/* A control whose change waits for the server says so under it after ten
+   seconds, moving nothing (lib/pendingChoice.ts, lib/switchTurns.ts). */
+[data-waiting-note] {
+  position: relative;
+}
+
+[data-waiting-note]::after {
+  content: attr(data-waiting-note);
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: var(--text-secondary);
+  text-align: end;
+  pointer-events: none;
+}
+
+/* A change whose outcome isn't known is no failure: its words are the
+   secondary colour, without a failure's red (lib/settingsErrors.ts). */
+[data-write-uncertain][data-write-uncertain] {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  padding-inline-start: 0;
+  padding-inline-end: 0;
+}

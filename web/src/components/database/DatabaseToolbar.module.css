@@ -1,0 +1,478 @@
+
+/* ── View toolbar ──────────────────────────────────────────── */
+.dbToolbar {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding: 4px 0 0;
+  scrollbar-width: none;
+}
+.dbToolbar::-webkit-scrollbar {
+  display: none;
+}
+.dbToolbarGroup {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+.dbToolbarSpacer {
+  flex: 1 1 auto;
+  min-width: 12px;
+}
+.toolbarPopoverWrap {
+  position: relative;
+}
+/* 6px round, as Notion's toolbar buttons at every width (seen 2026-10-27). */
+.toolbarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.toolbarBtn svg {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+.toolbarBtn > span {
+  min-width: 0;
+}
+.toolbarLabel {
+  min-width: 0;
+}
+/* Notion's toolbar icons are its gray icon color (icoSec, seen 2026-10-11). */
+.iconToolbarBtn {
+  position: relative;
+  color: var(--icon-secondary);
+}
+/* "»" and "«" show while its database's tools are pointed at (Notion's, 2026-11-16: a views' row's tools' share, DatabaseHeadToolsZone.module.css, not its tabs, a folded "«" too), a stop of Tab only then (2026-11-15). */
+.toolbarMinimize {
+  opacity: 0; visibility: hidden;
+}
+/* "»" shows while the tools' pointer zone is pointed at; where that zone
+   reaches is decided in DatabaseHeadToolsZone.module.css. */
+[data-database-chrome] > .dbToolbar:hover .toolbarMinimize,
+.toolbarMinimize:focus-visible {
+  opacity: 1; visibility: visible;
+}
+/* "»" takes its room only while shown (not on a dashboard's views' row), as
+   Notion's draws it only then; a title row's name runs on into it (seen 2026-11-07: Notion's
+   tools start right after "+ ⋯", where a hidden "»" kept 28px; with the
+   title row's own room taken back, DatabaseViewTabs.module.css, the first
+   tool stands right after "+ ⋯", seen 2026-11-13). A keyboard still reaches it. */
+[data-database-chrome]:is([data-title-row="true"], :not([data-active-view="dashboard"])) > :where(.dbToolbar):not(.dbToolbar:hover) .toolbarMinimize:not(:focus-visible) {
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.toolbarBtn:hover,
+.toolbarBtn:focus-visible,
+.toolbarBtn[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.toolbarBtn[data-active="true"] {
+  color: var(--text-default);
+}
+/* A phone's "필터 및 정렬" while filters or sorts apply: blue, and while they
+   are the viewer's own a 9px orange dot ringed white 21px in and 3px down
+   (Notion's, seen 2026-10-24 at 375px). */
+.toolbarBtn[data-applied="true"] {
+  color: var(--c-accent-blue);
+}
+/* A database with automations, on or off: "⚡" in Notion's button blue
+   (seen 2026-11-08: rgb(39, 131, 222) in the dark theme too). */
+.toolbarBtn[data-database-toolbar-menu="automations"][data-applied="true"] {
+  color: var(--accent-blue);
+}
+.toolbarUnsaved {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 21px;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--bg-default);
+  border-radius: 50%;
+  background: var(--unsaved-dot);
+}
+/* On a computer, its 9px dot over the 28px "필터" or "정렬" (Notion's, seen 2026-11-05: 17px in, 3px down). */
+.toolbarUnsaved:not([data-phone="true"] *) {
+  top: 3px;
+  inset-inline-start: 17px;
+}
+/* Notion's blue "새로 만들기" and its "⌄" (seen 2026-10-27, light and dark):
+   6px round, their words and icons #f3f9fd (`--accent-blue-text`). */
+.newTemplateButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  min-width: 62px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.newTemplateSplit {
+  display: inline-flex;
+  align-items: center;
+}
+.newTemplateSplit .newTemplateButton {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.newTemplateArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  /* Its line drawn inside in the divider's colour, not as a border, so the "⌄" stands in the middle of the whole
+     box, as Notion's (seen 2026-11-18: inset 1px shadow rgba(28,19,1,.11) light, rgba(255,255,235,.1) dark,
+     the mark 4 in of 24 at 1440, 5 in of 28 in iPhone Safari at 402). */
+  box-shadow: inset calc(1px * var(--inline-sign, 1)) 0 0 0 var(--block-divider);
+  border-start-start-radius: 0;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+  border-end-start-radius: 0;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+.newTemplateButton:hover,
+.newTemplateButton:focus-visible,
+.newTemplateArrow:hover,
+.newTemplateArrow:focus-visible,
+.newTemplateArrow[aria-expanded="true"] {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+/* The magnifier and its box side by side, the box bare: a 150px field of
+   14px words, 4px kept at its end, where the shared "입력 값 지우기" sits
+   flush (Notion's, seen 2026-11-02 and 2026-11-17: the words 126 wide).
+   The box is only as tall as what it holds — the 17px words, 24 once the
+   clear button shows — with 1px kept under it, and sits in the middle of
+   the magnifier's 28: the words start 5px below the magnifier's top either
+   way (Notion's, seen 2026-11-17 at 1440 in an inline and a full-page
+   database, two tabs, at 768 and in Android Chrome at 411 under its 32px
+   magnifier: box 17 then 24, margin 0 0 1px). */
+.dbSearch {
+  display: inline-flex;
+  align-items: center;
+}
+.dbSearchBox {
+  display: inline-flex;
+  align-items: center;
+  width: 150px;
+  margin-block-end: 1px;
+  padding-inline-end: 4px;
+}
+.dbSearchBox input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 17px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 17px;
+}
+.db[data-placement="inline"] .dbToolbar {
+  min-height: 24px;
+  padding-top: 1px;
+}
+.db[data-placement="inline"] .dbToolbarGroup {
+  gap: 1px;
+}
+.db[data-placement="inline"] .viewTabs,
+.db[data-placement="inline"] .dbToolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+.db[data-placement="inline"] .toolbarBtn {
+  height: 24px;
+  padding-inline: 6px;
+}
+.db[data-placement="inline"] .iconToolbarBtn {
+  width: 26px;
+  justify-content: center;
+  padding: 0;
+}
+.db[data-placement="inline"] .iconToolbarBtn .toolbarLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.db[data-placement="inline"] .newTemplateButton {
+  width: 28px;
+  min-width: 28px;
+  padding: 0;
+  gap: 0;
+  font-size: 0;
+}
+.db[data-placement="inline"] .newTemplateArrow {
+  width: 26px;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome {
+  display: block;
+  min-height: 0;
+  overflow: visible;
+  border-bottom: 0;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .viewTabs {
+  flex: 0 0 auto;
+  min-width: 116px;
+  max-width: 100%;
+  min-height: 32px;
+  max-height: 34px;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-default);
+  opacity: 1;
+  pointer-events: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+/* A touch screen's row of views is 40 high (DatabaseViewTabs.module.css). */
+:global([data-touch="true"]) .db[data-placement="inline"] .viewTabs {
+  max-height: 40px;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbToolbar {
+  position: static;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: 28px;
+  max-height: none;
+  padding: 4px 0 2px;
+  opacity: 1;
+  pointer-events: auto;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .viewTabs + .dbToolbar {
+  margin-top: 0;
+}
+
+/* The views' row 40px, a view's pill 4px down, the view's body right under
+   it and no line between them, in every layout and in or out of a page, as
+   Notion's (seen 2026-11-05 at 1440px: pill 130.4–162.4, the table's head and
+   a gallery's grid at 166.4; the only line is under the table's head). */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border-bottom: 0;
+}
+/* The views' tabs run up to the toolbar, as Notion's (seen 2026-11-03 at
+   1280px: tabs' box 415.5–650.7, the tools' from 650.7); a one-view title
+   row keeps its own 4px (DatabaseViewTabs) — not left to the modules' order. */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:not([data-title-row="true"]) {
+  gap: 0;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .viewTabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-inline-end: 2px;
+  border-bottom: 0;
+}
+
+/* Its end stays 9px inside the page's pane when the database runs on past
+   it, under a side peek, as Notion's (seen 2026-11-11 at 1054 to 1700). */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbToolbar {
+  position: sticky;
+  inset-inline-end: 9px;
+  z-index: 5;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: max-content;
+  min-height: 32px;
+  padding: 0;
+  margin-inline-start: auto;
+  background: var(--table-surface, var(--bg-app));
+  overflow: visible;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbToolbar:has(.toolbarMenu) {
+  z-index: 1002;
+}
+
+/* Notion's tools are 28px and edge to edge, its search right after the
+   others (seen 2026-10-27 at 813px, inline and full page). */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbToolbarGroup {
+  gap: 0;
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbToolbarSpacer {
+  min-width: 0;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .toolbarBtn {
+  height: 28px;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .iconToolbarBtn {
+  width: 28px;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .newTemplateSplit {
+  margin-inline-start: 6px;
+}
+
+/* Its "새로 만들기" is words alone, 14px/500 8px in (80px), its "⌄" 24px. */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .newTemplateButton {
+  width: auto;
+  min-width: 0;
+  padding: 0 8px;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .newTemplateButton > svg {
+  display: none;
+}
+
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .newTemplateArrow {
+  width: 24px;
+}
+:global([data-touch="true"]) .db[data-placement="inline"] .dbToolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen's tools are 32px buttons, their icons 20px, as Notion's
+   phone's (below) and its iPad's (seen 2026-11-14 at 834 and 1194: filter
+   to settings 32px apart, "새로 만들기" the desktop's). */
+:global([data-touch="true"]) .db .dbChrome .toolbarBtn.iconToolbarBtn {
+  width: 32px;
+  height: 32px;
+}
+:global([data-phone="true"]) .dbToolbar {
+  overflow-x: visible;
+}
+
+:global([data-phone="true"]) .dbToolbarGroup {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+:global([data-phone="true"]) .dbToolbarSpacer {
+  min-width: 4px;
+}
+
+:global([data-phone="true"]) .iconToolbarBtn {
+  width: 28px;
+  justify-content: center;
+  padding: 0;
+}
+
+:global([data-phone="true"]) .iconToolbarBtn .toolbarLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:global([data-phone="true"]) .newTemplateButton {
+  min-width: 56px;
+  padding: 0 8px;
+}
+
+:global([data-phone="true"]) .newTemplateArrow {
+  width: 26px;
+}
+/* On a phone the view's pill and its tools share one row, the tools at its
+   end: search, "필터 및 정렬" and settings at 32px, then New (Notion's, seen
+   2026-10-17 and 2026-10-20 at 390px). The row parts them by a 10px gap and
+   nothing more, so a long name's pill ends 10px before the search, as
+   Notion's (seen 2026-11-17 in Android Chrome on a Galaxy A90 at 411: the
+   head row's gap 10, a table's long name ending at 213 before the search at
+   223, a dashboard's 10 before its tools). */
+:global([data-phone="true"]) .dbChrome:not([data-title-row="true"]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+:global([data-phone="true"]) .dbChrome:not([data-title-row="true"]) > .dbToolbar > .dbToolbarSpacer {
+  min-width: 0;
+}
+
+:global([data-phone="true"]) .dbChrome:not([data-title-row="true"]) > .viewTabs {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+
+:global([data-phone="true"]) .dbChrome:not([data-title-row="true"]) > .dbToolbar {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding: 0;
+}
+
+:global([data-phone="true"]) .db .dbChrome .iconToolbarBtn {
+  width: 32px;
+  height: 32px;
+}
+
+/* The three sit edge to edge, 32px apart, as Notion's (seen 2026-10-24 at 375px). */
+:global([data-phone="true"]) .db .dbChrome .dbToolbarGroup {
+  gap: 0;
+}
+
+:global([data-phone="true"]) .db .dbChrome .newTemplateSplit {
+  margin-inline-start: 8px;
+}
+
+:global([data-phone="true"]) .db .dbChrome .newTemplateButton {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+  gap: 0;
+  font-size: 0;
+}
+
+:global([data-phone="true"]) .db .dbChrome .newTemplateArrow {
+  width: 28px;
+  height: 32px;
+}
+
+/* "+" 17px and "⌄" 18px (Notion's, seen 2026-10-27 at 375px). */
+:global([data-phone="true"]) .db .dbChrome .newTemplateButton > svg {
+  width: 17px;
+  height: 17px;
+}
+
+:global([data-phone="true"]) .db .dbChrome .newTemplateArrow > svg {
+  width: 18px;
+  height: 18px;
+}
+/* A form's builder has no line under its tabs, as Notion's (seen 2026-11-05). */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has([data-form-bar]) { box-shadow: none; }

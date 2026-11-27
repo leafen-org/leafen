@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Läs in kontots e-postadresser",
+        "deniedEffect": "E-postadresserna lästes inte in; sparade adresser ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella e-postadresserna.",
+        "stateCheckAction": "Återanslut och uppdatera e-postlistan innan du gör en ändring."
+      },
+      "update": {
+        "operation": "Hantera kontots e-postadresser",
+        "deniedEffect": "E-postbegäran godkändes inte; sparade adresser ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om e-postbegäran slutfördes.",
+        "stateCheckAction": "Uppdatera e-postlistan och kontrollera verifieringsmeddelandet innan du försöker igen."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Läs in aviseringsinställningar",
+        "deniedEffect": "Det gick inte att läsa in dina aviseringsinställningar, och dina sparade inställningar ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka aviseringar du får.",
+        "stateCheckAction": "Stäng och öppna inställningarna igen för att läsa in dina aviseringsinställningar innan du ändrar dem."
+      },
+      "update": {
+        "operation": "Ändra aviseringsinställningar",
+        "deniedEffect": "Dina aviseringsinställningar ändrades inte, och dina tidigare inställningar behålls.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om dina aviseringsinställningar ändrades.",
+        "stateCheckAction": "Stäng och öppna inställningarna igen för att kontrollera dina aviseringsinställningar innan du ändrar dem igen."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Läs in kontoprofil",
+        "deniedEffect": "Det gick inte att läsa in ditt namn och foto, och din sparade profil ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta ditt nuvarande namn och foto.",
+        "stateCheckAction": "Stäng och öppna inställningarna igen för att läsa in din profil innan du ändrar den."
+      },
+      "update": {
+        "operation": "Spara kontoprofil",
+        "deniedEffect": "Din profil ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om kontoprofilen sparades.",
+        "stateCheckAction": "Läs in kontoprofilen och granskningshistoriken igen innan du försöker igen."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Ändra tvåstegsverifiering",
+        "deniedEffect": "Den begärda ändringen av tvåstegsverifieringen godtogs inte; den tidigare inställningen gäller fortfarande.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den nuvarande statusen för tvåstegsverifieringen.",
+        "stateCheckAction": "Läs in kontosäkerheten igen innan du försöker med en annan ändring av tvåstegsverifieringen."
+      },
+      "password": {
+        "operation": "Ändra kontolösenord",
+        "deniedEffect": "Lösenordet ändrades inte, och aktuella sessioner förblir giltiga.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om lösenordet ändrades och andra sessioner avslutades.",
+        "stateCheckAction": "Läs in kontosäkerhet igen och logga in på nytt om den aktuella sessionen inte längre fungerar."
+      },
+      "read": {
+        "operation": "Läs in kontosäkerhet",
+        "deniedEffect": "Säkerhetsinställningar och sessioner lästes inte in; det sparade kontotillståndet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den nuvarande statusen för tvåstegsverifieringen och sessionerna.",
+        "stateCheckAction": "Läs in kontosäkerheten igen innan du gör en ändring."
+      },
+      "recovery": {
+        "operation": "Ersätt reservkoder",
+        "deniedEffect": "De nya reservkoderna godkändes inte; tidigare oanvända koder fungerar fortfarande.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka reservkoder som är aktiva.",
+        "stateCheckAction": "Läs in kontosäkerheten igen innan du bestämmer om koderna ska ersättas på nytt."
+      },
+      "sessionRevoke": {
+        "operation": "Återkalla kontosession",
+        "deniedEffect": "Den valda sessionen bekräftades inte som återkallad; andra sessioner ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om den valda sessionen återkallades.",
+        "stateCheckAction": "Läs in sessionslistan igen innan du bestämmer om du ska försöka igen."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Avbryt säkerhetskopiering av servern",
+        "deniedEffect": "Det bekräftades inte att säkerhetskopieringen avbröts.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om säkerhetskopieringen avbröts.",
+        "stateCheckAction": "Kontrollera säkerhetskopians aktuella status innan du avbryter igen."
+      },
+      "create": {
+        "operation": "Skapa säkerhetskopia av servern",
+        "deniedEffect": "En ny säkerhetskopia bekräftades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om begäran om säkerhetskopia godkändes.",
+        "stateCheckAction": "Kontrollera den aktuella säkerhetskopian innan du skickar en ny begäran."
+      },
+      "download": {
+        "operation": "Ladda ner säkerhetskopia av servern",
+        "deniedEffect": "Ingen verifierad säkerhetskopia laddades ner.",
+        "uncertainEffect": "Leafen kunde inte verifiera eller strömma säkerhetskopian.",
+        "stateCheckAction": "Kontrollera statusen för den slutförda säkerhetskopian innan du laddar ner igen."
+      },
+      "retry": {
+        "operation": "Försök igen med serverbackup",
+        "deniedEffect": "Den misslyckade säkerhetskopieringen startades inte om.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om säkerhetskopieringen startades om.",
+        "stateCheckAction": "Kontrollera säkerhetskopians aktuella status innan du försöker igen."
+      },
+      "status": {
+        "operation": "Läs in status för säkerhetskopia av servern",
+        "deniedEffect": "Statusen för säkerhetskopian lästes inte in; ingen status för säkerhetskopian ändrades.",
+        "uncertainEffect": "Leafen kunde inte bekräfta säkerhetskopians aktuella status.",
+        "stateCheckAction": "Läs in säkerhetskopians status igen innan du vidtar en annan åtgärd."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Läs in serverrapport",
+        "deniedEffect": "Rapporten lästes inte in; ingen rapportstatus ändrades.",
+        "uncertainEffect": "Det gick inte att bekräfta den aktuella ögonblicksbilden av rapporten.",
+        "stateCheckAction": "Läs in den aktuella rapporten igen innan du uppdaterar den."
+      },
+      "refresh": {
+        "operation": "Uppdatera serverrapporten",
+        "deniedEffect": "En ny ögonblicksbild av rapporten bekräftades inte.",
+        "uncertainEffect": "Det gick inte att bekräfta om ögonblicksbilden av rapporten ändrades.",
+        "stateCheckAction": "Läs in den aktuella rapporten innan du uppdaterar igen."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Läs in schemat för säkerhetskopior",
+        "deniedEffect": "Schemat för säkerhetskopior lästes inte in; inga inställningar ändrades.",
+        "uncertainEffect": "Det gick inte att bekräfta det aktuella schemat för säkerhetskopior.",
+        "stateCheckAction": "Läs in schemat för säkerhetskopior igen innan du ändrar det."
+      },
+      "restore": {
+        "operation": "Återställ servern från en säkerhetskopia",
+        "deniedEffect": "Serverns data ändrades inte.",
+        "uncertainEffect": "Det gick inte att bekräfta om återställningen konfigurerades.",
+        "stateCheckAction": "Läs in inställningarna för säkerhetskopiering igen för att se om en återställning väntar innan du försöker igen."
+      },
+      "save": {
+        "operation": "Spara schemat för säkerhetskopior",
+        "deniedEffect": "Schemat för säkerhetskopior ändrades inte.",
+        "uncertainEffect": "Det gick inte att bekräfta om schemat för säkerhetskopior sparades.",
+        "stateCheckAction": "Läs in schemat för säkerhetskopior igen för att se vilka inställningar som gäller innan du sparar igen."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Läs in inställningarna för förfrågningsloggen",
+        "deniedEffect": "Inställningarna för förfrågningsloggen lästes inte in; inga inställningar ändrades.",
+        "uncertainEffect": "Det gick inte att bekräfta de aktuella inställningarna för förfrågningsloggen.",
+        "stateCheckAction": "Läs in inställningarna för förfrågningsloggen igen innan du ändrar dem."
+      },
+      "save": {
+        "operation": "Spara inställningarna för förfrågningsloggen",
+        "deniedEffect": "Inställningarna för förfrågningsloggen ändrades inte.",
+        "uncertainEffect": "Det gick inte att bekräfta om inställningarna för förfrågningsloggen sparades.",
+        "stateCheckAction": "Läs in inställningarna för förfrågningsloggen igen för att se vilka som gäller innan du sparar igen."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Läs in nätverksproxyn",
+        "deniedEffect": "Nätverksproxyn lästes inte in; inga inställningar ändrades.",
+        "uncertainEffect": "Det gick inte att bekräfta den aktuella nätverksproxyn.",
+        "stateCheckAction": "Läs in nätverksproxyn igen innan du ändrar den."
+      },
+      "save": {
+        "operation": "Spara nätverksproxyn",
+        "deniedEffect": "Nätverksproxyn ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om nätverksproxyn sparades.",
+        "stateCheckAction": "Läs in nätverksproxyn på nytt för att se den som gäller innan du sparar igen."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Läs in serverinställningar",
+        "deniedEffect": "Inställningarna lästes inte in och de sparade inställningarna ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka serverinställningar som gäller just nu.",
+        "stateCheckAction": "Läs in inställningarna på nytt innan du gör ändringar."
+      },
+      "save": {
+        "operation": "Spara serverinställningar",
+        "deniedEffect": "De nya inställningarna accepterades inte; de tidigare sparade inställningarna gäller fortfarande.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om de nya inställningarna sparades.",
+        "stateCheckAction": "Läs in inställningarna på nytt och jämför de aktuella värdena innan du försöker igen."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Kontrollera inloggningsstatus",
+        "deniedEffect": "Ingen inloggningssession skapades och kontodata ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta det aktuella inloggningsläget.",
+        "stateCheckAction": "Läs in sidan igen och logga sedan in på nytt."
+      },
+      "deviceCode": {
+        "operation": "Logga in den här enheten",
+        "deniedEffect": "Du loggades inte in och ingen kontodata ändrades.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om den här enheten loggades in.",
+        "stateCheckAction": "Logga in igen med en ny kod."
+      },
+      "emailVerification": {
+        "operation": "Verifiera e-postadress",
+        "deniedEffect": "E-postadressen verifierades inte och kontot loggades inte in.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om e-postverifieringen slutfördes.",
+        "stateCheckAction": "Prova att logga in. Om det inte fungerar öppnar du länken i e-postmeddelandet igen."
+      },
+      "mfa": {
+        "operation": "Slutför tvåstegsverifieringen",
+        "deniedEffect": "Du loggades inte in och MFA-utmaningen är fortfarande inte slutförd.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om tvåstegsverifieringen slutfördes.",
+        "stateCheckAction": "Börja om inloggningen."
+      },
+      "passwordResetConfirm": {
+        "operation": "Ändra lösenord",
+        "deniedEffect": "Lösenordet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om lösenordet ändrades.",
+        "stateCheckAction": "Prova att logga in med det nya lösenordet. Om det inte fungerar hämtar du en ny återställningslänk."
+      },
+      "passwordResetRequest": {
+        "operation": "Begär återställning av lösenord",
+        "deniedEffect": "Inget meddelande om lösenordsåterställning accepterades för leverans.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om återställningsbegäran godkändes.",
+        "stateCheckAction": "Vänta på e-postmeddelandet innan du skickar en ny begäran."
+      },
+      "providerExchange": {
+        "operation": "Logga in med ett externt konto",
+        "deniedEffect": "Du loggades inte in och ingen kontodata ändrades.",
+        "uncertainEffect": "Leafen kunde inte bekräfta resultatet av den externa inloggningen.",
+        "stateCheckAction": "Logga in igen på samma sätt."
+      },
+      "serverSetup": {
+        "operation": "Konfigurera Leafen-servern",
+        "deniedEffect": "Administratörskontot skapades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om serverkonfigurationen slutfördes.",
+        "stateCheckAction": "Läs in sidan igen och kontrollera konfigurationsstatusen innan du försöker igen."
+      },
+      "signIn": {
+        "operation": "Logga in",
+        "deniedEffect": "Du loggades inte in och ingen kontodata ändrades.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om inloggningen slutfördes.",
+        "stateCheckAction": "Uppdatera sidan och logga in igen."
+      },
+      "signUp": {
+        "operation": "Skapa konto",
+        "deniedEffect": "Ett nytt konto skapades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om kontot skapades.",
+        "stateCheckAction": "Prova att logga in; om det inte fungerar kan du registrera dig igen."
+      },
+      "passkey": {
+        "operation": "Logga in med en inloggningsnyckel",
+        "deniedEffect": "Inloggningen accepterades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om inloggningen slutfördes.",
+        "stateCheckAction": "Logga in med din inloggningsnyckel igen."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Läs in sidinnehåll",
+        "deniedEffect": "Sidinnehållet lästes inte in och sparat innehåll ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta det aktuella sidinnehållet.",
+        "stateCheckAction": "Läs in sidan igen innan du redigerar."
+      },
+      "update": {
+        "operation": "Spara sidinnehåll",
+        "deniedEffect": "Ändringen godkändes inte. Det senaste innehållet på servern gäller fortfarande.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om innehållet sparades.",
+        "stateCheckAction": "Läs in det senaste innehållet på nytt och jämför det innan du försöker igen."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Spara databasautomatisering",
+        "deniedEffect": "Automatiseringen ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om ändringen av databasautomatiseringen sparades.",
+        "stateCheckAction": "Läs in automatiseringen på nytt innan du försöker igen."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Spara DLP-policy",
+        "deniedEffect": "Den nya DLP-policyn sparades inte; den tidigare policyn gäller fortfarande.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om DLP-policyn sparades.",
+        "stateCheckAction": "Läs in DLP-policyn och organisationens granskningshistorik på nytt innan du försöker igen."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Verifiera SAML-domän",
+        "deniedEffect": "Domänen väntar fortfarande på verifiering; SAML-konfigurationen, granskningshistoriken och inloggningssessionerna ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta det aktuella tillståndet för SAML-domänverifieringen.",
+        "stateCheckAction": "Läs in SAML-domänens tillstånd på nytt innan du försöker igen."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Radera fil",
+        "deniedEffect": "Filen raderades inte och ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om filen raderades.",
+        "stateCheckAction": "Läs in filen och dess referenser på nytt innan du bestämmer om du ska försöka igen."
+      },
+      "upload": {
+        "operation": "Ladda upp fil",
+        "deniedEffect": "Den nya filen sparades inte; befintliga filer ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om filen sparades.",
+        "stateCheckAction": "Läs in fillistan på nytt innan du bestämmer om du ska försöka igen."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Tillämpa personmappningar",
+        "deniedEffect": "De nya mappningarna accepterades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka mappningar som tillämpades.",
+        "stateCheckAction": "Läs in mappningsresultaten på nytt innan du tillämpar dem igen."
+      },
+      "refresh": {
+        "operation": "Uppdatera personmappningar",
+        "deniedEffect": "De senaste mappningarna lästes inte in; sparade mappningar ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta mappningarnas aktuella status.",
+        "stateCheckAction": "Läs in mappningspanelen på nytt innan du fortsätter."
+      },
+      "scan": {
+        "operation": "Skanna importerade personer",
+        "deniedEffect": "Importerade personer listades inte och befintliga mappningar ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella listan med importerade personer.",
+        "stateCheckAction": "Läs in mappningspanelen igen innan du gör ändringar."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Kör knappautomatisering",
+        "deniedEffect": "Knappens åtgärder kördes inte och sidans innehåll ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om knappautomatiseringen kördes.",
+        "stateCheckAction": "Läs in det berörda innehållet och körningstillståndet igen innan du försöker igen."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopiera organisationens API-token",
+        "deniedEffect": "Token bekräftades inte i urklipp; själva token ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om skrivningen till urklipp slutfördes.",
+        "stateCheckAction": "Kontrollera urklipp innan du kopierar token igen."
+      },
+      "create": {
+        "operation": "Skapa organisationens API-token",
+        "deniedEffect": "En ny token bekräftades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om token skapades.",
+        "stateCheckAction": "Läs in tokenlistan igen innan du skapar en ny token."
+      },
+      "list": {
+        "operation": "Läs in organisationens API-token",
+        "deniedEffect": "Token lästes inte in och befintliga token ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella tokenlistan.",
+        "stateCheckAction": "Läs in tokenlistan igen innan du gör ändringar."
+      },
+      "revoke": {
+        "operation": "Återkalla organisationens API-token",
+        "deniedEffect": "Återkallandet av token bekräftades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om token återkallades.",
+        "stateCheckAction": "Läs in tokenlistan igen innan du försöker återkalla igen."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Läs in arbetsytesidor",
+        "deniedEffect": "Sidorna lästes inte in och sparade arbetsytedata ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella arbetsytesidorna.",
+        "stateCheckAction": "Läs in arbetsytan igen innan du redigerar."
+      },
+      "create": {
+        "operation": "Skapa sida",
+        "deniedEffect": "En ny sida skapades inte och befintliga sidor ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om sidan skapades.",
+        "stateCheckAction": "Läs in sidlistan igen och kontrollera om den nya sidan finns innan du försöker igen."
+      },
+      "title": {
+        "update": {
+          "operation": "Spara sidtitel",
+          "deniedEffect": "Titeländringen godtogs inte; den sparade titeln gäller fortfarande.",
+          "uncertainEffect": "Leafen kunde inte bekräfta om ändringen sparades.",
+          "stateCheckAction": "Läs in sidan igen och kontrollera den aktuella titeln."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Läs in sidanalys",
+        "deniedEffect": "Analyserna lästes inte in och sidans data ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella analyserna.",
+        "stateCheckAction": "Läs in analyserna igen innan du drar slutsatser."
+      },
+      "policyUpdate": {
+        "operation": "Spara analyspolicy",
+        "deniedEffect": "Den nya analyspolicyn godtogs inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om policyn sparades.",
+        "stateCheckAction": "Läs in policyn igen och jämför den innan du försöker igen."
+      },
+      "preferencesRead": {
+        "operation": "Läs in analysinställningar",
+        "deniedEffect": "Analysinställningarna lästes inte in och de sparade inställningarna ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella analysinställningarna.",
+        "stateCheckAction": "Läs in inställningarna igen innan du redigerar dem."
+      },
+      "preferencesUpdate": {
+        "operation": "Spara analysinställningar",
+        "deniedEffect": "De nya inställningarna godtogs inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om inställningarna sparades.",
+        "stateCheckAction": "Läs in inställningarna igen och jämför dem innan du försöker igen."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Spara en offlineändring på ett säkert sätt",
+        "deniedEffect": "Ändringen sparades inte på den här enheten.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om ändringen sparades på den här enheten eller på servern.",
+        "stateCheckAction": "Kopiera det redigerade innehållet, läs sedan in sidan igen och jämför det sparade tillståndet."
+      },
+      "legacy": {
+        "operation": "Migrera offlineändringar",
+        "deniedEffect": "De äldre offlineändringarna finns kvar där de lagrades och skickades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka äldre offlineändringar som migrerades.",
+        "stateCheckAction": "Behåll den här fliken öppen och läs in igen innan du redigerar på nytt."
+      },
+      "refresh": {
+        "operation": "Läs in återställda ändringar igen",
+        "deniedEffect": "Återställda ändringar visades inte och sparade data ersattes inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella sidan efter återställningen.",
+        "stateCheckAction": "Läs in sidan igen innan du gör en ny ändring."
+      },
+      "replay": {
+        "operation": "Skicka offlineändringar",
+        "deniedEffect": "Den köade ändringen väntar fortfarande och bekräftades inte av servern.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka köade ändringar som nådde servern.",
+        "stateCheckAction": "Håll den här fliken öppen, återanslut och läs in igen innan du redigerar igen."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Sök offentlig webbplats",
+        "deniedEffect": "Sökresultaten lästes inte in och det publicerade innehållet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella sökresultaten.",
+        "stateCheckAction": "Kontrollera webbplatsens status innan du söker igen."
+      },
+      "sharedPage": {
+        "operation": "Läs in delad sida",
+        "deniedEffect": "Den delade sidan lästes inte in och det publicerade innehållet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella delade sidan.",
+        "stateCheckAction": "Kontrollera delningslänken innan du försöker igen."
+      },
+      "site": {
+        "operation": "Läs in offentlig webbplats",
+        "deniedEffect": "Den offentliga webbplatsen lästes inte in och det publicerade innehållet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella offentliga webbplatsen.",
+        "stateCheckAction": "Kontrollera webbplatsadressen innan du försöker igen."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Återställ formulärinloggning",
+        "deniedEffect": "Medlemsformuläret öppnades inte och inget svar skickades in.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella inloggningsstatusen för det här formuläret.",
+        "stateCheckAction": "Läs in formuläret på nytt och logga in igen."
+      },
+      "configurationWrite": {
+        "operation": "Spara formulärinställningar",
+        "deniedEffect": "Formulärinställningarna bekräftades inte som sparade.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella formulärkonfigurationen.",
+        "stateCheckAction": "Läs in formulärinställningarna igen innan du sparar igen."
+      },
+      "definitionRead": {
+        "operation": "Läs in formulär",
+        "deniedEffect": "Formuläret lästes inte in och inget svar skickades in.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella formulärdefinitionen.",
+        "stateCheckAction": "Läs in formuläret igen innan du anger ett svar."
+      },
+      "optionsRead": {
+        "operation": "Läs in formulärval",
+        "deniedEffect": "De begärda alternativen lästes inte in och utkastet till svar skickades inte in.",
+        "uncertainEffect": "Leafen kunde inte bekräfta de aktuella alternativen.",
+        "stateCheckAction": "Läs in alternativen igen innan du skickar formuläret."
+      },
+      "responseSubmit": {
+        "operation": "Skicka formulärsvar",
+        "deniedEffect": "Svaret accepterades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om svaret accepterades.",
+        "stateCheckAction": "Kontrollera formulärets resultat innan du skickar svaret igen."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Läs in körtidskonfiguration",
+        "deniedEffect": "Körtidskonfigurationen lästes inte in; de sparade serverinställningarna ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella körtidskonfigurationen, så säkra reservvärden är aktiva.",
+        "stateCheckAction": "Läs in sidan igen för att läsa den aktuella serverkonfigurationen."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Synkronisera pågående ändringar",
+        "deniedEffect": "Pågående ändringar ligger kvar i kön och bekräftades inte av servern.",
+        "uncertainEffect": "Leafen kunde inte bekräfta vilka pågående ändringar som nådde servern.",
+        "stateCheckAction": "Håll den här fliken öppen, anslut igen och kontrollera det sparade läget innan du försöker igen."
+      },
+      "pendingRead": {
+        "operation": "Kontrollera pågående ändringar",
+        "deniedEffect": "Antalet pågående ändringar lästes inte in; köade ändringar slängdes inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta hur många ändringar som fortfarande väntar.",
+        "stateCheckAction": "Håll den här fliken öppen och kontrollera synkroniseringsstatusen igen."
+      },
+      "retry": {
+        "operation": "Synkronisera igen",
+        "deniedEffect": "Synkroniseringen bekräftades inte; pågående ändringar ligger kvar i kön.",
+        "uncertainEffect": "Leafen kunde inte bekräfta det senaste synkroniseringsresultatet.",
+        "stateCheckAction": "Kontrollera det sparade läget och anslutningen innan du försöker igen."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Skapa arbetsyta",
+        "deniedEffect": "En ny arbetsyta skapades inte och befintliga data ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om arbetsytan skapades.",
+        "stateCheckAction": "Läs in listan över arbetsytor igen och kontrollera om den nya arbetsytan finns innan du försöker igen."
+      },
+      "delete": {
+        "operation": "Ta bort arbetsyta permanent",
+        "deniedEffect": "Raderingen accepterades inte; arbetsytan och befintliga data ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om arbetsytan raderades.",
+        "stateCheckAction": "Läs in listan över arbetsytor igen innan du försöker igen."
+      },
+      "member": {
+        "add": {
+          "operation": "Lägg till arbetsytemedlem",
+          "deniedEffect": "Medlemmen lades inte till och ingenting har ändrats.",
+          "uncertainEffect": "Leafen kunde inte bekräfta om medlemmen lades till i arbetsytan.",
+          "stateCheckAction": "Läs in medlemmar, aktivitet och granskningshistorik på nytt innan du försöker igen."
+        },
+        "revoke": {
+          "operation": "Ta bort medlem från arbetsytan",
+          "deniedEffect": "Medlemmen togs inte bort och inget ändrades.",
+          "uncertainEffect": "Leafen kunde inte bekräfta om medlemmen togs bort från arbetsytan.",
+          "stateCheckAction": "Läs in medlemmar, aktivitet och granskningshistorik på nytt innan du försöker igen."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Spara inställningar för arbetsyta",
+          "deniedEffect": "Inställningsändringen sparades inte; de tidigare inställningarna gäller fortfarande.",
+          "uncertainEffect": "Leafen kunde inte bekräfta om inställningarna för arbetsytan sparades.",
+          "stateCheckAction": "Läs in arbetsytans inställningar, aktivitet och granskningshistorik på nytt innan du försöker igen."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Avbryt export av arbetsyta",
+        "deniedEffect": "Exporten avbröts inte och kan fortfarande pågå.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om exporten avbröts.",
+        "stateCheckAction": "Uppdatera exportstatusen innan du avbryter igen."
+      },
+      "download": {
+        "operation": "Ladda ner export av arbetsyta",
+        "deniedEffect": "Arkivet laddades inte ner; exporten på servern ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om nedladdningen av arkivet slutfördes.",
+        "stateCheckAction": "Kontrollera listan över nedladdningar innan du laddar ner igen."
+      },
+      "job": {
+        "operation": "Exportera arbetsyta",
+        "deniedEffect": "Arkivet skapades inte; källarbetsytan ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta att det finns ett användbart arkiv för det här jobbet.",
+        "stateCheckAction": "Starta en ersättningsexport från den aktuella arbetsytan."
+      },
+      "poll": {
+        "operation": "Vänta på export av arbetsyta",
+        "deniedEffect": "Den senaste exportstatusen lästes inte in och exportjobbet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella exportstatusen.",
+        "stateCheckAction": "Uppdatera exportstatusen innan du vidtar en annan åtgärd."
+      },
+      "retry": {
+        "operation": "Försök exportera arbetsytan på nytt",
+        "deniedEffect": "Ett nytt försök accepterades inte; det befintliga exportjobbet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om ett nytt försök accepterades.",
+        "stateCheckAction": "Uppdatera exportstatusen innan du försöker igen."
+      },
+      "start": {
+        "operation": "Starta export av arbetsyta",
+        "deniedEffect": "Ett nytt exportjobb togs inte emot och arbetsytan ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om ett exportjobb togs emot.",
+        "stateCheckAction": "Uppdatera den senaste exportstatusen innan du startar ett nytt jobb."
+      },
+      "status": {
+        "operation": "Läs in exportstatus för arbetsyta",
+        "deniedEffect": "Den senaste exportstatusen lästes inte in och exportjobbet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella exportstatusen.",
+        "stateCheckAction": "Läs in exportdialogen igen innan du vidtar en annan åtgärd."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Avbryt import",
+        "deniedEffect": "Importen avbröts inte och kan fortfarande köras.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om importen avbröts.",
+        "stateCheckAction": "Uppdatera importstatusen innan du avbryter igen."
+      },
+      "job": {
+        "operation": "Importera en fil",
+        "deniedEffect": "Ingen sida skapades och delvis importerat innehåll togs bort.",
+        "uncertainEffect": "Leafen kunde inte bekräfta att det finns en användbar sida för den här importen.",
+        "stateCheckAction": "Spara diagnostikreferensen och starta en ny import från källfilen."
+      },
+      "start": {
+        "operation": "Börja importera",
+        "deniedEffect": "En ny import togs inte emot och ingen sida skapades.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om importen togs emot.",
+        "stateCheckAction": "Försök igen med samma fil utan att ändra den så att Leafen kan återansluta till samma begäran."
+      },
+      "status": {
+        "operation": "Läs in importstatus",
+        "deniedEffect": "Den senaste importstatusen lästes inte in och importjobbet ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella importstatusen.",
+        "stateCheckAction": "Öppna importdialogen igen för att återansluta till det sparade jobbet innan du vidtar en annan åtgärd."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Läs in kontots inloggningsnycklar",
+        "deniedEffect": "Listan med inloggningsnycklar lästes inte in och sparade nycklar ändrades inte.",
+        "uncertainEffect": "Leafen kunde inte bekräfta den aktuella listan med inloggningsnycklar.",
+        "stateCheckAction": "Anslut igen och uppdatera listan med inloggningsnycklar innan du gör en ändring."
+      },
+      "update": {
+        "operation": "Hantera kontots inloggningsnycklar",
+        "deniedEffect": "Servern ändrade inte de sparade inloggningsnycklarna.",
+        "uncertainEffect": "Leafen kunde inte bekräfta om ändringen av inloggningsnyckeln slutfördes.",
+        "stateCheckAction": "Uppdatera listan med inloggningsnycklar innan du försöker igen. Kontrollera enhetens nyckelhanterare om en ny nyckel skapades men inte sparades här."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Nuvarande lösenord är fel.",
+    "currentPasswordNext": "Om du har glömt det kan du logga ut och återställa det från inloggningssidan.",
+    "code": "Koden är fel eller har redan använts.",
+    "codeNext": "Ange koden som autentiseringsappen visar nu.",
+    "recoveryCode": "Återställningskoden är fel eller har redan använts.",
+    "recoveryCodeNext": "Ange en återställningskod som du inte har använt.",
+    "accountDeactivated": "Det här kontot har inaktiverats av serverns administratör.",
+    "accountDeactivatedNext": "Be administratören att aktivera det igen.",
+    "organizationSSO": "Den här organisationen tillåter endast inloggning via single sign-on (SSO).",
+    "organizationSSONext": "Logga in med ditt företagskonto i stället.",
+    "organizationPasswordTwoStep": "Din organisation kräver att du loggar in med lösenord och tvåstegsverifiering, inte med en enhetskod.",
+    "organizationPasswordTwoStepNext": "Logga in med din e-postadress och ditt lösenord; om du inte har något lösenord kan du be en administratör om ett engångslösenord.",
+    "deviceCode": "Koden är fel, har redan använts, har gått ut eller så stängdes fönstret som visade den.",
+    "deviceCodeNext": "Hämta en ny kod och ange den igen.",
+    "setupCode": "Konfigurationskoden är fel.",
+    "setupCodeNext": "Öppna konfigurationslänken som servern skrev ut igen, eller ange koden som servern startades med.",
+    "setupCodeMissing": "Ange konfigurationskoden.",
+    "setupCodeMissingNext": "Öppnar du konfigurationslänken som servern skrev ut fylls den i; koden som servern startades med fungerar också.",
+    "sessionCapacity": "Det här kontot har nått sin enhetsgräns.",
+    "sessionCapacityNext": "Logga ut en enhet du inte längre använder i Inställningar → Konto → Enheter och försök sedan igen.",
+    "signInEnded": "Den här inloggningsbegäran har avslutats: antingen har tidsgränsen överskridits eller så angavs fel kod för många gånger.",
+    "signInEndedNext": "Logga in igen med din e-postadress och ditt lösenord.",
+    "emailNotVerified": "E-postadressen för det här kontot är inte bekräftad ännu.",
+    "emailNotVerifiedNext": "Öppna länken i e-postmeddelandet du fick när du registrerade dig och logga sedan in.",
+    "registrationFailed": "Det gick inte att skapa kontot.",
+    "registrationFailedNext": "Försök igen om en stund. Om det fortsätter att misslyckas meddelar du serverns administratör."
+  },
+  "labels": {
+    "reference": "Referens"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Den här organisationen skapar inte nya konton vid inloggning med företagskonto.",
+    "samlAccountCreationOffNext": "Be din organisations administratör att bjuda in dig.",
+    "samlRetryAfterInvite": "Logga in igen när du har blivit inbjuden.",
+    "samlIdentityDenied": "Den här e-postadressen kan inte använda organisationens inloggning med företagskonto.",
+    "samlIdentityDeniedNext": "Be din organisations administratör att kontrollera e-postdomänen och ditt medlemskap.",
+    "samlRetryAfterAdministrator": "Logga in igen när administratören har kontrollerat.",
+    "samlResponseInvalid": "Det gick inte att verifiera svaret från inloggningen med företagskonto.",
+    "samlResponseInvalidNext": "Börja logga in igen. Om det fortsätter att hända kan du be organisationens administratör att kontrollera SAML-inställningarna.",
+    "accountAlreadyExistsForEmailAddress": "Det finns redan ett konto för den här e-postadressen.",
+    "accountEmailCouldNotAdmittedFor": "Det gick inte att skicka kontots e-postmeddelande.",
+    "administratorSettingsDoNotMeetServer": "Administratörsinställningarna uppfyller inte serverns krav.",
+    "administratorSettingsNotAvailableCurrentAccount": "Administratörsinställningarna är inte tillgängliga för det aktuella kontot.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "En annan administratör har redan slutfört serverkonfigurationen.",
+    "anotherServerOperationTemporarilyLockedAccount": "En annan serveråtgärd låste tillfälligt kontolagringen.",
+    "anotherServerOperationTemporarilyLockedDatabase": "En annan serveråtgärd låste tillfälligt databasen, så exporten kunde inte fortsätta.",
+    "anotherServerOperationTemporarilyLockedDlp": "En annan serveråtgärd låste tillfälligt lagringen för DLP-principer.",
+    "anotherServerOperationTemporarilyLockedFile": "En annan serveråtgärd låste tillfälligt fillagringen.",
+    "anotherServerOperationTemporarilyLockedPage": "En annan serveråtgärd låste tillfälligt lagringen av sidinnehåll.",
+    "anotherServerOperationTemporarilyLockedProduct": "En annan serveråtgärd låste tillfälligt produktlagringen.",
+    "askOrganizationAdministratorToAllow": "Be en organisationsadministratör eller teamutrymmets ägare att tillåta det.",
+    "askServerAdministratorCheckEmailDelivery": "Be serveradministratören att kontrollera e-postleveransen och försök sedan igen.",
+    "backupArtifactNotCompleteYet": "Säkerhetskopiefilen är inte klar ännu.",
+    "backupStateNoLongerPermitsControl": "Säkerhetskopians aktuella status tillåter inte längre den åtgärden.",
+    "causeCouldNotDetermined": "Det gick inte att fastställa orsaken.",
+    "changeSaveReceiptAndSynchronizationState": "Ändringen sparades inte och sidinnehållet är oförändrat.",
+    "checkCurrentBackupBeforeRetrying": "Kontrollera den aktuella säkerhetskopian innan du försöker igen.",
+    "checkCurrentJobStateBeforeDeciding": "Kontrollera det aktuella jobbets status innan du bestämmer om du ska försöka igen.",
+    "checkCurrentListBeforeTryingDifferent": "Kontrollera den aktuella listan innan du provar ett annat objekt.",
+    "checkCurrentServerSettingsBeforeTrying": "Kontrollera de aktuella serverinställningarna innan du försöker igen.",
+    "checkCurrentServerSetupStateBefore": "Kontrollera serverkonfigurationens aktuella status innan du försöker igen.",
+    "checkCurrentStateAndUseNew": "Kontrollera aktuell status och starta en ny säkerhetskopia endast om du behöver en.",
+    "checkEmailAndPassword": "Kontrollera e-post och lösenord.",
+    "checkServerSecretStorageThenSave": "Kontrollera serverns lagring av hemligheter och spara sedan samma inställningar igen.",
+    "checkServerStateThenLoadSettings": "Kontrollera serverns status och läs sedan in inställningarna igen.",
+    "createNewBackupAndInspectServer": "Skapa en ny säkerhetskopia och granska serverns lagring om felet upprepas.",
+    "currentAccountNotAuthorizedForOperation": "Det aktuella kontot har inte behörighet för den här åtgärden.",
+    "currentStateMustCheckedBeforeRetry": "Det aktuella tillståndet måste kontrolleras innan ett nytt försök kan anses säkert.",
+    "currentStateMustCheckedBeforeRetrying": "Det aktuella tillståndet måste kontrolleras innan du försöker igen.",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS-verifieringstjänsten är tillfälligt otillgänglig.",
+    "doNotAssumeUnchangedRetrySafe": "Utgå inte från att det är säkert att försöka igen förrän serverns lagring har reparerats.",
+    "doNotKeepRetryingIdentifierNew": "Fortsätt inte att försöka igen med den här begäran; läs in igen först, sedan är ett nytt försök säkert.",
+    "doNotResumeFailedJobStart": "Återuppta inte det misslyckade jobbet; starta en ny export i stället.",
+    "doNotRetryBeforeLoadingLatest": "Försök inte igen innan de senaste serverinställningarna har lästs in.",
+    "doNotRetryDirectRequestUnchanged": "Försök inte igen med den här uppladdningen som den är; använd återupptagbar uppladdning.",
+    "doNotRetryDirectRequestUnchanged2": "Försök inte igen med den här uppladdningen som den är; använd återupptagbar arkivuppladdning.",
+    "doNotRetrySetupRequestSign": "Försök inte igen med den här konfigurationsbegäran; logga in med det befintliga administratörskontot.",
+    "doNotReuseInvalidArtifactCreate": "Återanvänd inte den ogiltiga säkerhetskopieringsfilen; skapa en ny säkerhetskopia.",
+    "doNotReuseLinkNewAction": "Återanvänd inte den här länken; en ny åtgärd är säker.",
+    "emailOrPasswordDidNotMatch": "E-postadressen eller lösenordet matchade inte.",
+    "externalSignInProviderCouldNot": "Den externa inloggningsleverantören kunde inte slutföra begäran.",
+    "fileLargerThanOneDirectUpload": "Filen är för stor för en enda direktuppladdning.",
+    "formStorageTemporarilyLockedByAnother": "Formulärlagringen låstes tillfälligt av en annan serveråtgärd.",
+    "leafenArchiveLargerThanOneDirect": "Det här Leafen-arkivet är för stort för en enda direktimport.",
+    "leafenDidNotReceiveServerResponse": "Leafen fick inget svar från servern.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen bygger om statusen för organisationens lagringsanvändning.",
+    "leafenServiceCouldNotCompleteOperation": "Leafen-tjänsten kunde inte slutföra åtgärden.",
+    "isolatedRecordNotAppliedYourRequested": "Den ofullständiga posten lades åt sidan, din ändring sparades inte och sidinnehållet är oförändrat.",
+    "jobCannotRetriedStartReplacementExport": "Det här jobbet kan inte köras igen; starta en ersättningsexport.",
+    "jobSArchiveNotPublishedAnd": "Det här jobbets arkiv skapades inte och källarbetsytan ändrades inte.",
+    "keepDiagnosticReferenceAndAskServer": "Behåll den diagnostiska referensen och be serveradministratören att reparera serverlagringen.",
+    "lastConfirmedSavedStateRestoredSo": "Det senast bekräftade sparade tillståndet har återställts, så det är säkert att försöka igen med samma ändring.",
+    "loadCurrentReportAndUseNew": "Läs in den aktuella rapporten och uppdatera sedan igen.",
+    "loadCurrentReportBeforeRefreshingAgain": "Läs in den aktuella rapporten innan du uppdaterar igen.",
+    "loadCurrentReportBeforeTryingAgain": "Läs in den aktuella rapporten innan du försöker igen.",
+    "newerOrIncompatibleStatePreventedOperation": "Ett nyare eller inkompatibelt tillstånd hindrade den här åtgärden.",
+    "noNewArchivePublishedAndSource": "Inget nytt arkiv skapades, och källarbetsytan och tidigare arkiv är oförändrade.",
+    "noNewSignInSessionCreated": "Ingen ny inloggningssession skapades och befintliga sessioner ändrades inte.",
+    "notKnownWhetherRetryingSafeUntil": "Det går inte att veta om det är säkert att försöka igen förrän den nuvarande statusen har kontrollerats.",
+    "organizationStorageAuthorityInconsistent": "Uppgifterna om organisationens lagringsanvändning stämmer inte överens.",
+    "organizationDlpBlocksOperation": "Din organisations policy för dataförlustskydd blockerar detta.",
+    "takeOutTermOrAskAboutDlp": "Ta bort känsliga termer och försök igen, eller fråga en organisationsadministratör om du är osäker.",
+    "organizationSettingsDoNotAllowOperation": "Inställningarna för din organisation eller ditt teamutrymme tillåter inte detta.",
+    "organizationStorageLimitWouldExceeded": "Organisationens lagringsgräns skulle överskridas.",
+    "serverDiskAlmostFull": "Serverns disk är nästan full.",
+    "askServerAdministratorToFreeSpace": "Be serverns administratör att frigöra utrymme; det fungerar igen när det finns plats.",
+    "safeRetryOnceServerHasRoom": "Det är säkert att försöka med samma sak igen när servern har utrymme.",
+    "readDoesNotChangeSavedData": "Den här läsningen ändrar inte sparade data, så det är säkert att försöka igen.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Läs in den aktuella säkerhetskopian igen innan du väljer en annan åtgärd.",
+    "reloadCurrentBackupStateBeforeContinuing": "Läs in säkerhetskopians aktuella status igen innan du fortsätter.",
+    "reloadCurrentStateBeforeDecidingWhether": "Läs in det aktuella tillståndet igen innan du bestämmer om du ska försöka igen.",
+    "reloadSignInPageAndStart": "Uppdatera inloggningssidan och logga in igen.",
+    "removeUnneededFilesOrAskOrganization": "Ta bort filer du inte behöver eller be en faktureringsadministratör i organisationen att höja gränsen.",
+    "reportChangedAfterScreenLoaded": "Rapporten ändrades efter att den här skärmen lästes in.",
+    "requestIdentifierBelongsDifferentOperation": "Den här förfrågan har redan använts för en annan åtgärd.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Den här förfrågan har redan använts för en annan rapportuppdatering.",
+    "requestedItemNoLongerExistsOr": "Det begärda objektet finns inte längre eller är inte synligt för det här kontot.",
+    "retryExportAfterOtherServerOperation": "Försök exportera igen efter att den andra serveråtgärden har slutförts.",
+    "retryExportJobAfterServerStorage": "Försök igen med det här exportjobbet när serverlagringen har återställts.",
+    "retryOnlyAfterAccountOrPermission": "Försök igen först efter att kontot eller behörigheten har ändrats.",
+    "retryOnlyAfterOrganizationSettingChanges": "Försök igen först efter att den inställningen har ändrats.",
+    "retrySameContentChangeAfterOther": "Försök igen med samma innehållsändring efter att den andra serveråtgärden har slutförts.",
+    "retrySameContentChangeAfterServer": "Försök igen med samma innehållsändring när serverlagringen har återställts.",
+    "retrySameContentChangeNow": "Försök igen med samma innehållsändring nu.",
+    "changeTooLargeForOneChange": "Det här är för stort för att ändra på en gång. En ändring rymmer upp till 64 MB, text inräknad.",
+    "pageKeepsWhatItHadBefore": "Sidan är som den var innan.",
+    "makeTheChangeInParts": "Dela upp ändringen: radera blocken inuti en stor växling eller sektion i delar först och klistra in lång text i delar.",
+    "sameSizeIsRefusedAgain": "Samma storlek avvisas igen. När den har delats är det säkert att försöka igen.",
+    "linkCannotBeKeptHere": "Den här ändringen länkar en sida eller ett block som inte kan länkas här.",
+    "chooseAnotherPageOrRefresh": "Välj en annan sida eller uppdatera sidan och försök igen.",
+    "sameLinkIsRefusedAgain": "Om du länkar samma objekt igen avvisas det igen.",
+    "retrySameDomainVerificationAfterDns": "Försök igen med samma domänverifiering när DNS-verifieringstjänsten har återställts.",
+    "retrySameFileOperationAfterOther": "Försök igen med samma filåtgärd när den andra serveråtgärden har slutförts.",
+    "retrySameFileOperationAfterServer": "Försök igen med samma filåtgärd när serverlagringen har återställts.",
+    "retrySameFormOperationAfterOther": "Försök igen med samma formuläråtgärd när den andra serveråtgärden har slutförts.",
+    "retrySameFormOperationAfterServer": "Försök igen med samma formuläråtgärd när serverlagringen har återställts.",
+    "retrySameOperationAfterOtherServer": "Försök igen med samma åtgärd när den andra serveråtgärden har slutförts.",
+    "retrySameOperationAfterServerStorage": "Försök igen med samma åtgärd när serverlagringen har återställts.",
+    "returnSignInWithExistingAccount": "Gå tillbaka och logga in med det befintliga kontot.",
+    "reviewAndCorrectEnteredServerSettings": "Granska och rätta de angivna serverinställningarna.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Granska de angivna värdena och rätta den markerade informationen.",
+    "safeRetryAfterEmailDeliveryRestored": "Det är säkert att försöka igen när e-postleveransen har återställts.",
+    "safeRetryAfterServerResourceChecks": "Det är säkert att försöka igen när serverns resurskontroller har återställts.",
+    "safeRetryAfterTemporaryLockClears": "Det är säkert att försöka igen när den tillfälliga låsningen har hävts.",
+    "safeRetryRead": "Det är säkert att försöka igen med den här läsningen.",
+    "safeRetrySameAuthenticationOperationAfter": "Det är säkert att försöka igen med samma autentiseringsåtgärd när lagringen har återställts.",
+    "safeRetrySameContentChangeAfter": "Det är säkert att försöka igen med samma innehållsändring när den tillfälliga låsningen har hävts.",
+    "safeRetrySameContentChangeAfter2": "Det är säkert att försöka igen med samma innehållsändring när lagringen har återställts.",
+    "safeRetrySameDlpPolicySave": "Det är säkert att spara samma DLP-princip igen när lagringen har återställts.",
+    "safeRetrySameDlpPolicySave2": "Det är säkert att spara samma DLP-princip igen när den tillfälliga låsningen har hävts.",
+    "safeRetrySameDomainVerificationAfter": "Det är säkert att försöka igen med samma domänverifiering när tjänsten har återställts.",
+    "safeRetrySameFileOperationAfter": "Det är säkert att försöka igen med samma filåtgärd när lagringen är tillgänglig igen.",
+    "safeRetrySameFileOperationAfter2": "Det är säkert att försöka igen med samma filåtgärd när lagringen har återställts.",
+    "safeRetrySameFileOperationAfter3": "Det är säkert att försöka igen med samma filåtgärd när den tillfälliga låsningen har hävts.",
+    "safeRetrySameFormOperationAfter": "Det är säkert att försöka igen med samma formuläråtgärd när lagringen har återställts.",
+    "safeRetrySameFormOperationAfter2": "Det är säkert att försöka igen med samma formuläråtgärd när den tillfälliga låsningen har hävts.",
+    "safeRetrySameOperationAfterStorage": "Det är säkert att försöka igen med samma åtgärd när lagringen har återställts.",
+    "safeRetrySameOperationAfterTemporary": "Det är säkert att försöka igen med samma åtgärd när den tillfälliga låsningen har hävts.",
+    "safeRetrySameSettingsAfterSecret": "Det är säkert att försöka igen med samma inställningar när lagringen av hemligheter har återställts.",
+    "safeRetrySameSettingsSaveAfter": "Det är säkert att spara samma inställningar igen när de ogiltiga värdena har korrigerats.",
+    "safeRetryWithSameJobIdentifier": "Det är säkert att försöka igen med samma jobb.",
+    "safeRetryWithSameJobIdentity": "Det är säkert att försöka igen med samma jobb.",
+    "safeSignInInsteadCreatingAnother": "Det är säkert att logga in i stället för att skapa ett nytt konto.",
+    "safeStartNewProviderSignIn": "Det är säkert att starta en ny inloggning via leverantören senare.",
+    "safeTryAgainAfterCorrectingDetails": "Det är säkert att försöka igen när uppgifterna har korrigerats.",
+    "safeTryAgainAfterCorrectingInput": "Det är säkert att försöka igen när indata har korrigerats.",
+    "safeTryAgainAfterWait": "Det är säkert att försöka igen efter väntetiden.",
+    "serverTakesNoChangesNow": "Den här servern kan inte nå sin säkerhetskopieringsplats och tar därför inte emot några ändringar just nu.",
+    "serverDataMovedElsewhere": "Den här serverns data har flyttats till en annan server.",
+    "doItOnNewServer": "Gör det på den nya servern.",
+    "serverDataMovedNoRetry": "Det sparas inte om du försöker igen här.",
+    "sameRequestIdentityCanRetriedSafely": "Samma begäran kan göras igen på ett säkert sätt efter en kort stund.",
+    "saveSameDlpPolicyAgainAfter": "Spara samma DLP-princip igen när serverlagringen har återställts.",
+    "saveSameDlpPolicyAgainAfter2": "Spara samma DLP-princip igen när den andra serveråtgärden har slutförts.",
+    "serverAccountStorageTemporarilyUnavailable": "Serverns kontolagring är tillfälligt otillgänglig.",
+    "serverCannotCurrentlyConfirmResourceState": "Servern kan för närvarande inte bekräfta sin resursstatus.",
+    "serverCouldNotCompleteAdministratorSettings": "Servern kunde inte slutföra sparandet av administratörsinställningarna.",
+    "serverCouldNotCompleteAdministratorSetup": "Servern kunde inte slutföra begäran om administratörskonfiguration.",
+    "serverCouldNotCompleteBackupLifecycle": "Servern kunde inte slutföra säkerhetskopieringen.",
+    "serverCouldNotLoadBackupState": "Servern kunde inte läsa in säkerhetskopieringens status.",
+    "serverCouldNotProtectAdministratorSecret": "Servern kunde inte skydda administratörens hemliga värden.",
+    "serverCouldNotReadAdministratorState": "Servern kunde inte läsa administratörens status.",
+    "serverCouldNotReadOneExact": "Servern kunde inte läsa en konsekvent rapportögonblicksbild.",
+    "serverDetectedAndIsolatedIncompleteContent": "Servern hittade en ofullständig innehållspost och lade den åt sidan.",
+    "serverFileStorageTemporarilyUnavailable": "Serverns fillagring är tillfälligt otillgänglig.",
+    "serverFormStorageTemporarilyUnavailable": "Serverns formulärlagring är tillfälligt otillgänglig.",
+    "serverPageContentStorageTemporarilyUnavailable": "Serverns lagring av sidinnehåll är tillfälligt otillgänglig.",
+    "serverSettingsChangedAfterScreenLoaded": "Serverinställningarna ändrades efter att den här skärmen lästes in.",
+    "serverStorageTemporarilyUnavailable": "Serverlagringen är tillfälligt otillgänglig.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Serverlagringen var tillfälligt otillgänglig, så arkivet kunde inte skapas.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Serverlagringen är tillfälligt otillgänglig, så DLP-policyn kunde inte sparas.",
+    "signInAttemptIdentifierAlreadyBelongs": "Det här inloggningsförsöket har redan använts med andra uppgifter.",
+    "signInOrAccountActionLink": "Länken för inloggning eller kontoåtgärd är inte längre giltig.",
+    "signInWithAuthorizedAccountOr": "Logga in med ett behörigt konto eller be en administratör om åtkomst.",
+    "signInWithExistingAdministratorAccount": "Logga in med det befintliga administratörskontot.",
+    "signInWithServerAdministratorAccount": "Logga in med ett serveradministratörskonto eller be en annan administratör om åtkomst.",
+    "startAccountActionAgainGetNew": "Starta kontoåtgärden igen för att få en ny länk.",
+    "startReplacementExportFromLatestWorkspace": "Starta en ersättningsexport från den senaste arbetsytan.",
+    "storedBackupDidNotMatchVerified": "Den sparade säkerhetskopian matchade inte den verifierade filen.",
+    "submittedInformationDidNotMeetOperation": "Den angivna informationen uppfyllde inte kraven för åtgärden.",
+    "tooManyRequestsLimited": "För många förfrågningar har gjorts, så den här åtgärden är begränsad.",
+    "tooManyRequestsMadeSoOperation": "För många förfrågningar gjordes, så den här åtgärden är tillfälligt begränsad.",
+    "tryAgainAfterServerStorageRecovers": "Försök igen när serverlagringen har återhämtat sig.",
+    "tryAgainInHours_one": "Försök igen om ungefär en timme.",
+    "tryAgainInHours_other": "Försök igen om ungefär {{count}} timmar.",
+    "tryAgainInMinutes_one": "Försök igen om ungefär en minut.",
+    "tryAgainInMinutes_other": "Försök igen om ungefär {{count}} minuter.",
+    "tryAgainInSeconds_one": "Försök igen om ungefär {{count}} sekund.",
+    "tryAgainInSeconds_other": "Försök igen om ungefär {{count}} sekunder.",
+    "useAnotherSignInMethodOr": "Använd en annan inloggningsmetod eller prova den här leverantören senare.",
+    "useResumableArchiveUploadSoProgress": "Använd återupptagningsbar arkivuppladdning så att förloppet kan fortsätta från det sparade läget.",
+    "useResumableUploadSoProgressCan": "Använd återupptagningsbar uppladdning så att förloppet kan fortsätta från det sparade läget.",
+    "waitForCompletionThenRetryDownload": "Vänta tills det är klart och försök sedan ladda ner igen.",
+    "waitForOtherServerOperationFinish": "Vänta tills den andra serveråtgärden är klar och försök sedan igen.",
+    "waitForStorageReconciliationAdvanceThen": "Vänta en stund tills lagringen har kommit ikapp och försök sedan igen med samma åtgärd.",
+    "waitMomentBeforeTryingAgain": "Vänta en stund innan du försöker igen.",
+    "workspaceChangedWhileExportRunning": "Arbetsytan ändrades medan exporten kördes.",
+    "youNotSignedInAndNo": "Du var inte inloggad och inga kontouppgifter ändrades.",
+    "pageIsLocked": "Sidan är låst, så inga ändringar kan göras.",
+    "unlockPageThenTryAgain": "Lås upp sidan för dig själv eller för alla i sidmenyn och försök sedan igen.",
+    "safeToRetryAfterUnlocking": "Det är säkert att försöka igen när sidan har låsts upp.",
+    "databaseIsLocked": "Databasen är låst, så dess egenskaper och vyer kan inte ändras.",
+    "unlockDatabaseThenTryAgain": "Lås upp databasen för dig själv eller för alla via knappen Låst och försök igen.",
+    "databaseEditorsCanUnlock": "Endast någon som kan redigera databasen kan låsa upp den.",
+    "safeToRetryAfterDatabaseUnlocked": "Det är säkert att försöka igen när databasen har låsts upp.",
+    "rowMoveNeedsFullAccess": "För att flytta det till en annan sida behöver du full åtkomst till det och redigeringsåtkomst dit det ska flyttas.",
+    "askFullAccessHolderToMoveIt": "Be någon med full åtkomst att flytta det, eller välj en plats du kan redigera.",
+    "rowMoveRefusedUntilAccess": "Det går inte att flytta det igen förrän du har den åtkomsten.",
+    "otherWorkspaceCantMoveOrLink": "Innehåll kan inte flyttas eller länkas mellan arbetsytor.",
+    "makeItAnewInThatWorkspace": "Skapa det i den arbetsytan och kopiera över innehållet. En hel sida flyttas eller kopieras dit från Flytta till genom att välja arbetsytan.",
+    "otherWorkspaceRefusedAgain": "Ett nytt försök nekas av samma orsak.",
+    "signInEndedForThisBrowser": "Inloggningen i den här webbläsaren har gått ut eller avslutats.",
+    "signInEndedForThisApp": "Inloggningen i den här appen har gått ut eller avslutats.",
+    "signInAgainToContinue": "Logga in igen för att fortsätta.",
+    "retryAfterSigningInAgain": "Försök igen efter att du har loggat in igen.",
+    "serverRestoredSinceDeviceCopies": "Serverns data har ändrats och den här enhetens kopior är från före ändringen.",
+    "changeKeptOnThisDeviceOnly": "Ändringen sparades inte på servern; den finns bara på den här enheten.",
+    "takeServerContentAnew": "Välj ”Läs in igen från servern” för att hämta serverns aktuella innehåll.",
+    "retryAfterTakingContentAnew": "Försök igen när du har läst in på nytt från servern.",
+    "propertyUsedByViewOrDependency": "Den här egenskapen kan inte ändras nu: den är titeln eller finns bland raderade egenskaper.",
+    "changeWhatUsesPropertyFirst": "Läs in sidan igen för att se egenskapen som den är nu.",
+    "retryAfterChangingWhatUsesProperty": "Återställ en raderad egenskap först för att kunna ändra den.",
+    "workspaceAlreadyHasContentForArchive": "Den här arbetsytan har redan innehåll, så ett Leafen-arkiv kan inte läggas till i den.",
+    "makeNewWorkspaceToImportArchive": "Skapa en ny arbetsyta och importera det här arkivet där.",
+    "retryInNewWorkspace": "Du kan importera det igen i en ny arbetsyta.",
+    "importFileDoesNotFitFormat": "Filen matchar inte formatet som Leafen läser, så ingenting importerades.",
+    "exportFileAgainToImport": "Exportera filen igen från platsen där den skapades och importera sedan den filen.",
+    "sameFileRefusedAgain": "Det går inte att importera samma fil igen.",
+    "pageBusyWithAnotherChange": "Den här sidan är upptagen med en annan ändring och kan därför inte redigeras just nu.",
+    "tryAgainOnceThatChangeIsDone": "Försök igen när ändringen är klar.",
+    "importPageInTrash": "Sidan som detta ska in i ligger i papperskorgen, så ingenting importerades.",
+    "restorePageThenImportAgain": "Återställ sidan från papperskorgen och importera igen.",
+    "importPageDeletedForGood": "Sidan som detta ska in i har raderats permanent, så ingenting importerades.",
+    "ownerBringsDeletedPageBack": "Inom 30 dagar kan arbetsytans ägare återställa den under Säkerhet → Datalagring; återställ den sedan från papperskorgen och importera igen.",
+    "importAgainOnceRestored": "Att försöka igen importerar ingenting förrän sidan har återställts.",
+    "pageInTrashCantChange": "En sida i papperskorgen kan inte ändras förrän den har återställts.",
+    "restorePageThenTryAgain": "Återställ sidan från papperskorgen och försök igen.",
+    "tryAgainOnceRestored": "Det går inte att försöka igen förrän sidan har återställts.",
+    "optionNameHasComma": "Namnet på ett alternativ kan inte innehålla kommatecken (,).",
+    "takeCommaOutOrSplitOption": "Ta bort kommatecknet eller gör det till två alternativ.",
+    "optionRefusedUntilRenamed": "Försök igen när namnet har ändrats.",
+    "optionNameTaken": "Den här egenskapen har redan ett alternativ med det namnet.",
+    "useAnotherOptionName": "Använd ett annat namn eller välj alternativet som redan finns.",
+    "optionsInUseLeftOut": "Den här ändringen utelämnar alternativ som sidor använder.",
+    "keepOptionsOrDeleteOneByOne": "Behåll alternativen eller radera dem ett i taget från varje alternativs meny.",
+    "optionsRefusedUntilKeptOrDeleted": "Ett nytt försök utan ändringar nekas av samma orsak."
+  }
+}

@@ -1,0 +1,138 @@
+/* A thread's replies under a page's title, as Notion's (seen 2026-11-25 in
+   Chrome at 1440, dpr 2, a page's discussion, two tabs): each piece under
+   the thread's first comment — the "답글 보기" row, each reply, the reply
+   row — is a step 32px in from the faces' column, so the replies' faces
+   stand at the first comment's words. The thread's 1px line runs down the
+   faces' column, 11.5px in, through every step but the last, which it
+   reaches by a curve of 12px ending 12.5px across at that step's face or
+   circle. */
+.step {
+  position: relative;
+  padding-inline-start: 32px;
+  --step-curve: 20px;
+}
+
+.step::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 11.5px;
+  width: 1px;
+  background: var(--border-secondary);
+  content: "";
+}
+
+.step:last-child::before {
+  bottom: auto;
+  box-sizing: border-box;
+  width: 12.5px;
+  height: var(--step-curve);
+  border-inline-start: 1px solid var(--border-secondary);
+  border-block-end: 1px solid var(--border-secondary);
+  border-end-start-radius: 12px;
+  background: none;
+}
+
+/* A reply, in the step's column: its words and buttons to the thread's end. */
+.step > [data-comment-id] {
+  --comment-pill-right: 7px;
+  margin: 0 -7px;
+}
+
+/* The "New" line before a new reply (CommentNewLine "reply"): its middle 7px
+   over the reply's face, from 1px past its words' start — 65px into the step
+   — to the column's end, as Notion's (seen 2026-11-25 at 1440, two tabs:
+   the face 8px under the step's top, the line 326.5–327.5 over a face at 334
+   and 425.5 for words at 424.5). */
+.step > [data-comment-new-line] {
+  --new-line-top: 1px;
+  --new-line-start: 65px;
+}
+
+/* The row's circle is 4px under its top, the reply row's face 6px. */
+.step[data-thread-step="toggle"] {
+  --step-curve: 16px;
+}
+
+.step[data-thread-step="row"] {
+  --step-curve: 18px;
+}
+
+/* "(N) 답글 보기" folded, "⌄ 답글 숨기기" open: a 24px row 4px under the step
+   above and 6px over the next, the whole width pressable without a ground;
+   a 24px circle in the sidebar's ground holding the count — 10px/13px, the
+   third text colour — and, in its place under the pointer or open, a 12px
+   chevron; 8px after it 14px words in the second text colour, the first
+   under the pointer, where the circle takes the hover ground. */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 24px;
+  margin-block: 4px 6px;
+  padding: 0;
+  padding-inline-end: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-tertiary);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--focus-ring, rgba(35, 131, 226, 0.57));
+}
+
+.badge {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--toggle-badge, var(--bg-soft));
+  transition: background 100ms ease-in-out;
+}
+
+.count {
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 13px;
+  opacity: var(--toggle-count, 1);
+  transition: opacity 100ms ease-in-out;
+}
+
+.chevron {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  opacity: var(--toggle-chevron, 0);
+  transition: opacity 100ms ease-in-out;
+}
+
+.label {
+  color: var(--toggle-label, var(--text-secondary));
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.toggle[aria-expanded="true"] {
+  --toggle-count: 0;
+  --toggle-chevron: 1;
+}
+
+.toggle:hover {
+  --toggle-badge: var(--bg-hover);
+  --toggle-count: 0;
+  --toggle-chevron: 1;
+  --toggle-label: var(--text-primary);
+}

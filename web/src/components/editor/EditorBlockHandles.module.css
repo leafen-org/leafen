@@ -1,0 +1,371 @@
+/* ── Block handles ───────────────────────────────────────── */
+/* Where a block's "+ ⋮⋮" stand beside it, by its type, and when they show. */
+/* "+" 24px and ⋮⋮ 18px wide, side by side from 60px left of the block's
+   words to 18px left of them, their 20px marks centered (⋮⋮'s 1px past its
+   box each side), as Notion's (seen 2026-11-01). A page that can't be edited
+   leaves the "+" spot empty and keeps ⋮⋮ where it is; while suggesting, a
+   text block's "+" stands there (ReadOnlyBlockHandle). Their 24px stand
+   centered on the block's first line: --handle-line-top is where that line
+   starts in the block's row and --handle-line its height, a text's 3px and
+   its page line unless its type says otherwise below (Notion's, seen
+   2026-11-09 at 1460px for every block type). */
+.gutter {
+  position: absolute;
+  inset-inline-start: -58px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  min-height: 28px;
+  padding-top: calc(var(--handle-line-top, 3px) + (var(--handle-line, calc(var(--page-line-height, 1.5) * 1em)) - 24px) / 2);
+  box-sizing: border-box;
+  opacity: 0;
+  /* The invisible hit target follows the entire row height. This lets a
+     pointer enter the left gutter below the top-aligned buttons on tall text,
+     media, and other blocks without losing the block actions. */
+  pointer-events: auto;
+  transition: opacity 0.1s;
+}
+.gutter::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 100%;
+  width: 24px;
+}
+/* A row draws its handles and "💬+" as the pointer comes to its height
+   (drawnHandles.ts): drawn already pointed, they fade in from nothing as
+   those drawn before the pointer came do. A handle woken under the pointer
+   (ActiveBlockHandle) takes the shown one's place as it is. */
+@starting-style {
+  .gutter[data-resting],
+  .blockCommentAdd {
+    opacity: 0;
+  }
+}
+/* Each type's first line, as Notion's (seen 2026-11-09 at 1460px), where its
+   "💬+" stands too (seen 2026-11-12: at its handles' height for every type): a
+   heading's own size on 1.3 lines below its padding; a callout's, code
+   block's or picture's handle on its frame's top; a simple table's beside
+   its first row's first line (its 11px over the table, a 1px rule, 7px into
+   the cell, 20px lines) and 36px before the table, wherever the table stands
+   in its block; an inline database's on its 40px title row and 6px further
+   out than a line's; a synced block's 4px further out. */
+.blockRow:is([data-type="heading_1"], [data-type="toggle_heading_1"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line-top: 5px;
+  --handle-line: calc(1.875em * 1.3);
+}
+.blockRow:is([data-type="heading_2"], [data-type="toggle_heading_2"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line-top: 5px;
+  --handle-line: calc(1.5em * 1.3);
+}
+.blockRow:is([data-type="heading_3"], [data-type="toggle_heading_3"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line: calc(1.25em * 1.3);
+}
+.blockRow:is([data-type="heading_4"], [data-type="toggle_heading_4"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line-top: 7px;
+  --handle-line: calc(1.125em * 1.3);
+}
+:global([data-phone="true"]) .blockRow:is([data-type="heading_1"], [data-type="toggle_heading_1"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line: calc(1.5em * 1.3);
+}
+:global([data-phone="true"]) .blockRow:is([data-type="heading_2"], [data-type="toggle_heading_2"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line: calc(1.25em * 1.3);
+}
+:global([data-phone="true"]) .blockRow:is([data-type="heading_3"], [data-type="toggle_heading_3"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line: calc(1.17em * 1.3);
+}
+.blockRow[data-type="callout"] > :is(.gutter, .blockCommentAdd) {
+  --handle-line-top: 0px;
+  --handle-line: 24px;
+}
+.blockRow:is([data-type="code"], [data-type="image"]) > :is(.gutter, .blockCommentAdd) {
+  --handle-line: 24px;
+}
+.blockRow[data-type="table"] > .gutter {
+  inset-inline-start: calc(var(--simple-table-inset, 2px) - 60px);
+  --handle-line-top: 19px;
+  --handle-line: 20px;
+}
+.blockRow[data-type="inline_database"] > .gutter {
+  inset-inline-start: -64px;
+  --handle-line-top: 0px;
+  --handle-line: 40px;
+}
+/* With no title row (a dashboard, another view block, or its source's title
+   hidden) its first row is the views' 40px tab row at the block's top, so
+   the handle stands at that row's middle by the rule above, the tab pill's
+   (Notion's, seen 2026-11-15 at 1440: a dashboard's pill 544–576 and a
+   title-hidden table's 280.5–312.5, each handle centred on it); so does a
+   view waiting for its source (a new "데이터 소스 보기 연결", or a link
+   whose source is gone for good), its tab's (seen 2026-11-14).
+   What a block's handle shows by is read from the handle itself (.gutter,
+   the row's first box): ":has()" on a row holding a database is checked
+   again, with all its database under it, at each row the database puts in
+   or takes out (2026-11-13: 12-16 ms a row in a table of 30 rows by 40
+   properties). From the handle it looks on to its database's head by the
+   node view's boxes (BlockFrame, NativeTiptapWidgetView, InlineDatabase),
+   and into the rest only while the pointer or focus is in it. */
+/* A database the page can't show is its one line, "데이터베이스를 사용할 수
+   없습니다" (InlineDatabaseBlock): the handle stands at that line's middle,
+   as a line of text's does. */
+.blockRow[data-type="inline_database"] > .gutter:has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > [data-inline-database-missing]) {
+  --handle-line-top: 0px;
+  --handle-line: 24px;
+}
+.blockRow[data-type="synced_block"] > .gutter {
+  inset-inline-start: -62px;
+  --handle-line-top: 7px;
+}
+.blockRow:is([data-type="image"], [data-type="video"], [data-type="pdf"], [data-type="embed"]) > .gutter {
+  translate: var(--picture-left, 0);
+}
+/* An inline database's table reaches into the page's margin, under the
+   handle column; there the handle keeps to the database's title row and
+   leaves the table's own buttons (load more, row actions) to the pointer. */
+.blockRow[data-type="inline_database"] > .gutter {
+  bottom: auto;
+}
+.blockRow[data-type="inline_database"] > .gutter::after {
+  bottom: auto;
+  height: 30px;
+}
+/* With its menu open from the handle; one ⌘/ or a right click opened
+   ("command") shows no handle but under the pointer, as Notion's (seen
+   2026-11-11: none beside the block while ⌘/'s menu is open). */
+.gutter[data-menu-open="true"] {
+  z-index: 60;
+  opacity: 1;
+  pointer-events: auto;
+}
+.blockRow:hover > .gutter,
+/* So does the pointer beside the block in the page's room (useBlockHoverReach). */
+.blockRow[data-pointer-near="true"] > .gutter,
+/* A block's own control the keyboard reached shows its handles; one focus came
+   back to after a mouse closed a window over it (a file's app) does not, as
+   Notion's row shows none then (seen 2026-11-05). Its handles say the keys'
+   focus is in the row (data-keys-within, lib/lastPress.ts keysFocusHolder),
+   not every row asked at each change on the page. A
+   database's row shows them for its tool buttons and tabs alone (below),
+   never by its cells: looked for there, the browser went through its whole
+   table at each change in it (2026-11-15). So does a row a database stands
+   in (a toggle's, a column group's, a callout's: data-holds-database),
+   which shows them by the keys only on its handle itself. */
+.blockRow > .gutter[data-keys-within]:not(:is([data-type="inline_database"], [data-holds-database]) > *),
+.gutter:hover,
+.gutter:focus-within,
+.gutter[data-pointer-arrived="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A line's "💬+" (BlockCommentAdd), as Notion's (seen 2026-11-12 at 1440 and
+   1024): 24px, rounded 6px, a 16px bubble with a plus in the secondary icon
+   color and the hover ground under the pointer, 4px past the end of the
+   page's column of blocks (--block-comment-add-gap from the line's end) and
+   level with the block's handles. The pointer at the end of a block (the
+   last 30% of it, data-pointer-end) brings it and puts the handles away;
+   a block with a discussion there brings neither. Its strip from the line's
+   end keeps the line under the pointer on its way there. */
+.blockCommentAdd {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding-top: calc(var(--handle-line-top, 3px) + (var(--handle-line, calc(var(--page-line-height, 1.5) * 1em)) - 24px) / 2);
+  padding-inline-start: var(--block-comment-add-gap, 10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+.blockCommentAddButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+.blockCommentAddButton:hover,
+.blockCommentAddButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.blockCommentAdd:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+.gutter[data-read-only-handle]:not([data-adds]):not(:global([data-phone="true"]) *) {
+  padding-inline-start: 24px;
+}
+
+/* Over the database's chrome (z-index 6), or the handle's presses went to
+   its title row. */
+.blockGroup[data-block-type="inline_database"] > .blockRow > .gutter {
+  z-index: 7;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* A block held inside another shows only its own handle when it is the
+     one under the pointer, as Notion's (seen 2026-11-05: a callout's second
+     line). The callout beside whose icon its first line stands shows its own
+     instead (EditorRichBlocks). A synced block's lines show its handle
+     instead of theirs while it isn't being edited (EditorFileBlocks), so the
+     pointer anywhere on them shows it, as Notion's (seen 2026-11-13: on its
+     text or past it, under the page, in a toggle and in a column). The
+     handle asks it of the block rows right under its own (a column group's:
+     of its columns' first rows): a hovered row anywhere deeper hovers those
+     too. Asked on the row instead (":has()" before "> .gutter"), each row
+     put in a database under the block had the browser go through all the
+     block holds again (2026-11-15: 0.55 ms a row put in a table inside a
+     toggle). */
+  .blockRow:where(:not([data-type="inline_database"], [data-type="synced_block"]):hover) > .gutter:not(:hover, :focus-within, [data-menu-open="true"], [data-pointer-arrived="true"]):has(
+    ~ .blockBody > * > * > :global(.node-nativeChildren) > * > * > * > :global(.node-nativeBlock) > * > .blockGroup > .blockRow:hover,
+    ~ .blockBody > * > * > :global(.node-nativeChildren) > * > * > * > :global(.node-nativeBlock) > * > .column > * > * > :global(.node-nativeChildren) > * > * > * > :global(.node-nativeBlock) > * > .blockGroup > .blockRow:hover),
+  /* Its comment and reaction marks past the text bring no handles either,
+     its window open or not, as Notion's "💬 1" (seen 2026-11-12 at 1024). */
+  .blockRow > .gutter:not(:hover, :focus-within, [data-menu-open="true"], [data-pointer-arrived="true"]):has(~ .blockMarks:hover),
+  /* The pointer at its end puts them away too, for its "💬+" (BlockCommentAdd). */
+  .blockRow[data-pointer-end="true"]:is(:hover, [data-pointer-near="true"]) > .gutter:not(:hover, :focus-within, [data-menu-open="true"], [data-pointer-arrived="true"]) {
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* A database's row, and one a database stands in, aren't looked into:
+     the mark is only ever on the row the pointer is on (trackBlockEnd). */
+  .blockRow[data-pointer-end="true"]:where(:not([data-type="inline_database"], [data-holds-database])):hover:not(:has(.blockRow:hover)) > .blockCommentAdd,
+  .blockRow[data-pointer-end="true"]:where([data-type="inline_database"], [data-holds-database]):hover > .blockCommentAdd,
+  .blockRow[data-pointer-end="true"][data-pointer-near="true"] > .blockCommentAdd {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* An inline database is one tall editor block, so the generic block-row
+     :hover state also covers its table rows. Keep the outer block controls
+     scoped to the database title row; table-row hover owns its own gutter.
+     Put away, its "+ ⋮⋮" stay where the pointer finds them, as every
+     block's (.gutter): reaching them from the table shows them, and a press
+     there is theirs, never the title row's beside them (2026-11-11). */
+  .blockGroup[data-block-type="inline_database"] > .blockRow:hover > .gutter {
+    opacity: 0;
+  }
+  /* Its handles answer the whole header line but its tool buttons, and an
+     empty table's first line, as Notion's (seen 2026-11-02); focus left in
+     it by the mouse doesn't keep them, and its title being written puts them
+     away (Notion's do at the press) till the pointer comes to them. A view
+     waiting for its source, which has no header, answers the pointer
+     anywhere on it, its tabs and its "데이터 소스 연결" alike (Notion's,
+     seen 2026-11-14), and one the page can't show anywhere on its line.
+     Its head and lines are looked on to by the node view's boxes; what lies
+     deeper (an empty table's first line, a tool button under the pointer)
+     the database tells its row
+     (databaseBlockRowMarks): looked for with ":has()", the browser went
+     through its whole table at every change in it (2026-11-15). */
+  .blockGroup[data-block-type="inline_database"] > .blockRow:focus-within > .gutter {
+    opacity: 0;
+  }
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > :where(.inlineDatabase) > .inlineDatabaseHeader:hover),
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > [data-database-link-pending]:hover),
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > [data-inline-database-missing]:hover),
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > :where(.inlineDatabase) > :where([data-database-view]) > [data-database-chrome]:hover),
+  .blockGroup[data-block-type="inline_database"] > .blockRow[data-database-pointed="empty-row"] > .gutter,
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:hover,
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:focus-within,
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter[data-menu-open="true"],
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter[data-pointer-arrived="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .blockGroup[data-block-type="inline_database"] > .blockRow > .gutter:not(:hover, :focus-within, [data-menu-open="true"], [data-pointer-arrived="true"]):has(~ :where(.blockBody) > :where([data-node-view-content]) > :where([data-node-view-content-react]) > :where(:global(.react-renderer)) > :where([data-native-widget]) > :where(.inlineDatabase) > :where(.inlineDatabaseHeader) > .inlineDatabaseTitle:focus),
+  .blockGroup[data-block-type="inline_database"] > .blockRow[data-database-pointed="tool"] > .gutter:not(:hover, :focus-within, [data-menu-open="true"], [data-pointer-arrived="true"]) {
+    opacity: 0;
+  }
+}
+.blockGroup[data-block-type="embed"]:hover > .blockRow > .gutter {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* The one list of what a key pressed in the page's text puts away until the
+   mouse moves (typingFade.ts), as Notion's (seen 2026-10-31, 2026-11-01 and
+   2026-11-08, Esc and arrows counted): the block handles; a simple table's
+   row and column grips, its cell's or range's grip and its "+" bars; and a
+   synced block's bar over it, though that bar shows for the caret inside.
+   What marks a choice stays: a row chosen by Esc or the arrows keeps its blue
+   grip. So do a code or Mermaid block's bar and side grips, a picture's or a
+   PDF's tools and grips, and a file's or bookmark's hover ground, the block
+   chosen or not. A table's grip or "+" bar under the pointer, focused or with
+   its menu open stays; a block's "+ ⋮⋮" goes even under the pointer, and
+   with the menu ⌘/ opened, as Notion's (seen 2026-11-11: typed with the
+   pointer resting on the "+", its tip went too, IconTipButton). A block's
+   are only ever shown for the row the pointer is on or beside, which alone
+   the key marks (typingFade.ts). */
+.blockGroup .blockRow[data-type][data-typing-pointed] > .gutter:not(:focus-visible, :focus-within),
+.blockGroup .blockRow[data-type][data-typing-pointed] > .blockCommentAdd:not(:focus-within),
+:global(:root[data-typing="true"]) :is(.simpleTableHandle, .simpleTableAdd, .simpleTableRangeGrip, .syncedToolbar):not(:hover, :focus-visible, :focus-within, [aria-expanded="true"], [data-chosen="true"], [data-menu-open="true"], [data-pointer-arrived="true"], :has([aria-expanded="true"])) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Its handle 5px over its 13px row, centered a half pixel under its line, as
+   Notion's (seen 2026-11-09). */
+.blockGroup[data-block-type="divider"] > .blockRow > .gutter {
+  top: -8px;
+  --handle-line: 24px;
+}
+
+.blockGroup[data-block-type="column_list"] > .blockRow > .gutter {
+  inset-inline-start: -96px;
+  z-index: 2;
+  align-items: flex-end;
+  padding-top: 0;
+  padding-bottom: 2px;
+}
+
+.blockGroup[data-block-type="column_list"] > .blockRow:hover > .gutter,
+.blockGroup[data-block-type="column_list"] > .blockRow:focus-within > .gutter,
+.blockGroup[data-block-type="column_list"] > .blockRow > .gutter:focus-within,
+.blockGroup[data-block-type="column_list"] > .blockRow > .gutter[data-menu-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A touch screen shows a line's "+ ⋮⋮" only by the line pressed (its
+   caret's) and while its menu is open, not on every line, as Notion's iPad
+   (baseline 넓은 터치, seen 2026-11-12/13); a hidden one takes no tap. A
+   phone draws its own (EditorColumns.module.css). These rules alone decide
+   it there: they name the block's row in its group, so no rule for the
+   pointer or the keys above outweighs them — an embed's hover, which a
+   finger's tap can leave behind, or a control the keys reached, as a
+   window closed by Escape gives its opener the focus back. */
+:global([data-touch="true"]) .gutter:not([data-menu-open="true"]),
+:global([data-touch="true"]) .blockGroup > .blockRow[data-type] > .gutter:not([data-menu-open="true"]) {
+  opacity: 0;
+  pointer-events: none;
+}
+/* The caret's line asked by the handle, not by the row (above). A field of
+   the block's own — a database's name — keeps its caret with the keyboard
+   put away (richCellCaretKept), and the block its "+ ⋮⋮", as Notion's iPad.
+   A focus in the row shows them only as a person put it there — a field's
+   caret, or the control a press focused — not as a window, a preview or the
+   block's menu gives it back on closing, as Notion's iPad shows none then
+   (data-person-focus, drawnHandles.ts). A press on a toggle's arrow leaves
+   them where they were, the arrow focused (data-handle-held). */
+:global([data-touch="true"]) .blockGroup > .blockRow[data-type][data-person-focus]:focus-within > .gutter,
+:global([data-touch="true"]) .blockGroup > .blockRow[data-type][data-handle-held] > .gutter,
+:global([data-touch="true"]) .blockGroup > .blockRow[data-type][data-caret-kept-in="true"] > .gutter,
+:global([data-touch="true"]) .blockGroup > .blockRow[data-type] > .gutter:has(~ .blockBody > * > * > [data-caret-block="true"]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen has no "💬+" at a line's end, as Notion's phone and iPad
+   have none (seen 2026-11-12/13): no pointer brings it, and standing past
+   the page's column it widened a phone's page by its 34px (2026-11-12: a
+   row's page scrolled 10px sideways at 411). A comment starts from the
+   block's menu there. */
+:global([data-touch="true"]) .blockCommentAdd {
+  display: none;
+}

@@ -1,0 +1,571 @@
+/* The server's apps: rows like the people list's, each with its controls
+   on the right and who may use it beneath; the review window like the
+   developer settings' token window. */
+
+.appRow {
+  display: grid;
+  grid-template-columns: 34px minmax(min(180px, 100%), 1fr) minmax(0, auto);
+  gap: 6px 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.appRow[data-status="stopped"] > :first-child,
+.appRow[data-status="emergency"] > :first-child,
+.appRow[data-status="revoked"] > :first-child {
+  opacity: 0.5;
+}
+
+.appControls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  align-items: center;
+}
+
+/* The row's own buttons keep their width and their words, also on a phone:
+   a row too narrow wraps whole buttons (2026-10-16: "비/밀", "사용/량"). */
+.appControls > button {
+  flex-shrink: 0;
+  width: auto;
+  white-space: nowrap;
+}
+
+.appControls [data-app-select] { --select-height: 28px; }
+
+/* "사용할 수 있는 사람" in its own column and each organization on a row of
+   its own beside it, with the first line of a name that wraps (AppGrantRow),
+   so a second organization lines up under the first. */
+.grants {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  grid-column: 2 / -1;
+  align-items: start;
+  gap: 4px 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.grantsTitle {
+  grid-column: 1;
+  grid-row: 1;
+  color: var(--text-tertiary);
+}
+
+.grants > :not(.grantsTitle) {
+  grid-column: 2;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100vh - 128px);
+  margin: 96px auto 0;
+  padding: 24px;
+  overflow: auto;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.dialogTitle {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.reviewMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.note,
+.nameWarning {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* The one orange note (2026-11-05): a name that looks like Leafen's or a built-in app's. Facts that turn a control off stay grey. */
+.nameWarning { color: var(--c-orange); }
+
+.permissionsTitle {
+  margin-top: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.permissions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.permissions li {
+  position: relative;
+  padding-inline-start: 16px;
+  color: var(--text-default);
+  overflow-wrap: anywhere;
+}
+
+.permissions li::before {
+  position: absolute;
+  top: 7px;
+  inset-inline-start: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  content: "";
+}
+
+.permissionGroup {
+  margin-top: 10px;
+}
+
+.permissionGroupTitle {
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.permissionsMore {
+  margin-block: 2px 0;
+  margin-inline: 16px 0;
+  padding: 0;
+  align-self: flex-start;
+  text-align: start;
+  border: 0;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.permissionsMore:hover {
+  color: var(--text-default);
+}
+
+/* The policies are a settings group: its heading keeps its own room over the
+   first row, 16px (sectionTitle), with no gap added to it (2026-11-20: a
+   16px gap here stood the first row 32px under the heading). */
+.policies {
+  margin-top: 48px;
+}
+
+/* A way in written into a row's line, underlined as 설정's links. */
+.inlineLink {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.inlineLink:hover,
+.inlineLink:focus-visible {
+  color: var(--text-default);
+}
+
+.acknowledge {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-top: 4px;
+  color: var(--text-default);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.acknowledge input {
+  margin-top: 2px;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  white-space: pre-line;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+/* The check the install waits for, on the footer's left beside its buttons. */
+.dialogActions > .acknowledge {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+/* A long review keeps its buttons in sight at the window's foot, over what
+   scrolls under them (2026-11-06: in a 723px window "설치" was below the fold). */
+.dialog > .dialogActions {
+  position: sticky;
+  z-index: 1;
+  bottom: -24px;
+  margin: -6px -24px -24px;
+  padding: 12px 24px 24px;
+  border-radius: 0 0 var(--modal-radius) var(--modal-radius);
+  background: var(--modal-bg);
+}
+
+.primary,
+.secondary {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.primary {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-weight: 600;
+}
+
+.primary:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.secondary {
+  color: var(--text-secondary);
+}
+
+.danger {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  background: var(--danger-fill);
+  color: var(--danger-fill-text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.danger:disabled {
+  opacity: 0.4;
+}
+
+/* A window's foot, as Notion's settings windows (seen 2026-11-08: "사용자
+   지정 MCP 서버"): its buttons 32px at 14/500, "취소" the windows' outlined one. */
+.dialogActions > .primary,
+.dialogActions > .secondary,
+.dialogActions > .danger {
+  height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cancel {
+  composes: cancel from "../DialogButtons.module.css";
+}
+
+.trashNote {
+  color: var(--text-tertiary);
+}
+
+/* A row's note says what to do next: it wraps instead of ending in an ellipsis. */
+.appRow .trashNote {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+/* Its own line under the app, lined up with the name and the people below. */
+.nobodyNote {
+  grid-column: 2 / -1;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+@media (max-width: 599px) {
+  .appRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .appControls,
+  .grants {
+    grid-column: 2;
+  }
+
+  .appControls {
+    justify-content: flex-start;
+  }
+}
+
+.secretRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 180px) auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.secretName {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.secretName > span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.secretRow input {
+  height: 28px;
+  min-width: 0;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+}
+
+@media (max-width: 599px) {
+  .secretRow {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .secretRow .secretName {
+    grid-column: 1 / -1;
+  }
+}
+
+/* In a settings window narrower than a row needs, as on a phone, the
+   controls go under the app's name. */
+@container settings (max-width: 600px) {
+  .appRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .appControls,
+  .grants {
+    grid-column: 2;
+  }
+
+  /* Under "사용할 수 있는 사람", as other name and value rows (2026-11-15: two letters a line at 600). */
+  .grants {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .appControls {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+.callback {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.hookRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.hookOnce {
+  display: flex;
+  flex-direction: column;
+  grid-column: 1 / -1;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.hookOnce label {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.hookOnce input {
+  height: 28px;
+  min-width: 0;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.jobRow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.jobRow > input {
+  margin-top: 3px;
+}
+
+.guestLink {
+  align-items: center;
+}
+
+.guestLink > :first-child {
+  flex: 1 1 auto;
+}
+
+.runList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* "더 보기" under a list that goes on, as Notion's lists. */
+.listMore {
+  align-self: flex-start;
+}
+
+.runList li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-wrap: anywhere;
+}
+
+.runError {
+  color: var(--danger);
+}
+
+/* The section's two header buttons keep their labels on one line. */
+.headerButton {
+  white-space: nowrap;
+}
+
+/* A saved value this server can't open. */
+.unreadable {
+  color: var(--danger);
+}
+
+/* People's requests for apps, above the installed apps. */
+.requests {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+
+.requestRow > .secretName {
+  flex: 1 1 auto;
+}
+
+.requestRow > button {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* On a phone the request's words take the row; its buttons go beneath. */
+@media (max-width: 599px) {
+  .requestRow {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .requestRow > .secretName {
+    flex-basis: 100%;
+  }
+}
+
+.requestReason {
+  color: var(--text-secondary);
+  overflow-wrap: anywhere;
+}
+
+/* After the server's address changed: an outside sign-in's provider still
+   has the earlier return address, and the administrator's answer. */
+.returnMoved {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.returnMoved p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

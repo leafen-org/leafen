@@ -1,0 +1,214 @@
+.page {
+  --form-page-inline: 22px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding: 54px var(--form-page-inline) 88px;
+  background: color-mix(in srgb, var(--bg-app) 94%, var(--text-default) 6%);
+}
+
+.form,
+.state,
+.confirmation {
+  width: min(100%, 680px);
+  margin: 0 auto;
+}
+
+/* A form with a cover starts with it at the page's very top (FormSurface.module.css .cover). */
+.page:has(> [data-form-cover]),
+.page[data-place="app"]:has(> [data-form-cover]) {
+  padding-top: 0;
+}
+
+.state,
+.confirmation {
+  box-sizing: border-box;
+  padding: 44px 36px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  text-align: center;
+}
+
+.state > h1,
+.confirmation > h1 {
+  margin: 0 0 12px;
+  font-size: 26px;
+}
+
+.state > p,
+.confirmation > p {
+  margin: 0 auto 22px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.state > button,
+.confirmation > button,
+.confirmationAction {
+  display: inline-block;
+  text-decoration: none;
+  min-height: 38px;
+  padding: 7px 14px;
+  border: 1px solid var(--button-outline);
+  border-radius: 7px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font: inherit;
+  cursor: pointer;
+}
+
+.confirmationMark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, #448361 16%, var(--bg-app));
+  color: #448361;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.confirmationActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* A member's form in the app, as Notion's (seen 2026-11-03 at 1280): the
+   page's own white, a 600 column whose first line is 84 under the bar. */
+.page[data-place="app"] {
+  min-height: 0;
+  padding: 84px var(--form-page-inline) 120px;
+  background: none;
+}
+
+.page[data-place="app"] .form {
+  width: min(100%, 600px);
+}
+
+/* Its end and its absence in the middle of the page under the bar: a grey
+   56 picture, 20 above a 24/700 heading, 8 above 16px words, 48 above the
+   buttons — "내 응답 보기" dark, "이메일로 사본 받기" plain, 12 apart. */
+.page[data-place="app"][data-centered] {
+  display: flex;
+  min-height: calc(100vh - 44px);
+  align-items: center;
+  justify-content: center;
+  padding: 0 22px;
+}
+
+/* In the builder's preview window it is in the middle of that window, as
+   Notion's (seen 2026-11-08), not of the screen. */
+[data-form-preview-dialog] .page[data-place="app"][data-centered] {
+  min-height: 100%;
+}
+
+/* Its words don't take a selection, as Notion's: a second press of "제출"
+   landing on it painted the whole screen blue (2026-11-08). */
+.confirmation {
+  user-select: none;
+}
+
+.page[data-place="app"] .state,
+.page[data-place="app"] .confirmation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 600px);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.stateMark {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 20px;
+  color: var(--icon-secondary);
+}
+
+.page[data-place="app"] .state > h1,
+.page[data-place="app"] .confirmation > h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 36px;
+}
+
+.page[data-place="app"] .state > p,
+.page[data-place="app"] .confirmation > p {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.page[data-place="app"] .confirmationActions {
+  gap: 12px;
+  margin-top: 48px;
+}
+
+/* "내 응답 보기" is the same dark button in both themes, white words on
+   rgb(44, 44, 43) (Notion's, seen 2026-11-08 in dark); the others are plain
+   with a line around them. */
+.page[data-place="app"] .confirmationAction {
+  display: inline-flex;
+  align-items: center;
+  min-height: 0;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #2c2c2b;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.page[data-place="app"] .confirmationAction:is([data-form-response-copy], [data-form-submit-another]) {
+  padding: 4px 12px;
+  background: none;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.page[data-place="app"] .confirmationAction:is([data-form-response-copy], [data-form-submit-another]):hover {
+  background: var(--bg-hover);
+}
+
+/* A phone's form, as Notion's (seen 2026-11-08 at 375 and 2026-11-15 at 411
+   on a phone): 40 in from either side at any phone width, its head 76 under
+   the bar (28 of its head's own room and 48), and its end at the top — the
+   picture 24 under the bar, the rest spaced as on a computer. A desktop
+   window as narrow keeps the computer's. */
+:global([data-phone="true"]) .page {
+  --form-page-inline: 40px;
+  padding-inline: var(--form-page-inline);
+}
+
+:global([data-phone="true"]) .page[data-place="app"] {
+  padding-top: 76px;
+}
+
+:global([data-phone="true"]) .page[data-place="app"][data-centered]:has(> [data-form-confirmation]) {
+  align-items: flex-start;
+  padding-top: 24px;
+}
+
+.error {
+  margin: 16px 0 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .page { --form-page-inline: 12px; padding: 20px 12px 56px; }
+  .state,
+  .confirmation { padding: 36px 22px; }
+}

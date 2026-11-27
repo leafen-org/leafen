@@ -1,0 +1,68 @@
+/* The sign-in screen's language at its foot (SignInLanguage.tsx), as Notion's
+   signed-out login page (seen 2026-11-19, dpr 1): a band 16px above and below
+   the control, centred, at the window's foot when the steps leave room and
+   right after them otherwise (1024 high: the control 16px from the foot; 900
+   and 600 high: after the steps). The sign-in screen (AuthGate.module.css
+   .screen) keeps a row for it under the panel that fills the rest. */
+main:has(> .foot) {
+  grid-template-rows: max-content 1fr;
+  padding-block-end: 0;
+}
+
+.foot {
+  align-self: end;
+  display: flex;
+  justify-content: center;
+  padding-block: 16px;
+}
+
+/* At a page's address, under the card: its row 44px from what stands over
+   it and from the page's foot (Notion's wall, seen 2026-11-19 at 1440 and
+   390; the screen's own 24px under it make the 44). */
+.wallFoot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-block: 44px 20px;
+}
+
+span.select {
+  display: flex;
+  width: auto;
+}
+
+/* Notion's: 28px high, 8px in, the globe, the words and the ⌄ 6px apart,
+   14px gray words on 1.2 lines, rounded 6, the hover's ground on it. */
+button.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+button.control:hover,
+button.control:focus-visible,
+button.control[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+/* Notion's globe: a 15.3px mark from the control's edge to the words' gap.
+   Phosphor draws its globe 208 of its 256 box, so the box is that much
+   larger and its margins are drawn in. */
+.globe {
+  flex: none;
+  width: calc(15.3px * 256 / 208);
+  height: calc(15.3px * 256 / 208);
+  margin-inline: calc(15.3px * -24 / 208);
+}

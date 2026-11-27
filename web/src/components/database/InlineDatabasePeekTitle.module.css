@@ -1,0 +1,64 @@
+/* An inline database's name over it in a side peek, as on its own page
+   (Notion's, seen 2026-11-09 at 1054px, dark): 36px under the peek's bar,
+   its icon in a 36px box standing over its views' tabs, centred on the
+   name's 38.4px line, and the 32px name's words 8px after it; its tabs 12px
+   under the name or, for a view block, 48px under the bar or 12px under its
+   icon. */
+/* Its name's words stand where its views' tabs and first column do, 2px
+   inside its box as a block's words are, as on its own page
+   (InlineDatabasePageTitle .name): a page's --page-title-inset where a page
+   holds it (a database page's database opened alone), else a peek's 2px,
+   whose blocks stand 2px out (DatabaseRowPeekBody .rowPeekEditor); its icon
+   2px in, the words 8px after it. With no inset its words stood 2px short of
+   its tabs (2026-11-18 at 1440: 802 against 804 in a side peek). */
+.header {
+  --peek-title-inset: var(--page-title-inset, 2px);
+  display: flex;
+  align-items: center;
+  gap: calc(8px - var(--peek-title-inset));
+  padding-top: 36px;
+  margin-bottom: 5px;
+}
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-inline-start: 2px;
+  font-size: 36px;
+  line-height: 1;
+}
+.heading {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font: inherit;
+}
+
+.title {
+  display: block;
+  width: 100%;
+  padding: 0;
+  padding-inline: var(--peek-title-inset) 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  outline: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* "새 데이터베이스" on the caret's line, as every rich field's placeholder. */
+.title[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-title-placeholder);
+  pointer-events: none;
+}

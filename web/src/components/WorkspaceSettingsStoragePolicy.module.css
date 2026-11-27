@@ -1,0 +1,118 @@
+
+.iconPickerWrap {
+  position: relative;
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+}
+
+/* A limit reached or nearly reached, in words beside the tiles. */
+.storageLimitState {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.storageLimitState[data-storage-limit-state="reached"] {
+  color: var(--danger);
+}
+
+.scopeList {
+  display: grid;
+  gap: 1px;
+  margin-top: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.emptyState {
+  min-height: 40px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* A note under a row stands 12px under it, as Notion's settings item holds
+   its parts 12px apart (seen 2026-11-20: 페이지 조회's row 12 over 자세히
+   알아보기); in a list spaced by a gap (--row-list-gap) the gap counts in
+   (2026-11-20: 계정's passkey note stood 14 under its row). */
+.securityRow + .organizationMeta {
+  --row-list-gap: inherit;
+  margin-top: max(0px, var(--settings-item-gap) - var(--row-list-gap));
+}
+
+.organizationPolicyBlock {
+  --row-list-gap: 8px;
+  display: grid;
+  gap: var(--row-list-gap);
+  min-width: 0;
+  margin-bottom: 16px;
+}
+
+.emailProviderBlock {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.emailProviderMeta {
+  margin: -6px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.sharingPolicyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.sharingPolicyToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  min-height: 32px;
+  padding-block: 6px;
+  padding-inline: 10px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: start;
+}
+
+.sharingPolicyToggle:hover,
+.sharingPolicyToggle:focus-visible {
+  color: var(--text-default);
+  background: var(--bg-hover);
+}
+
+.sharingPolicyToggle:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.sharingPolicyToggle:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* A longer policy name wraps rather than hiding its end. */
+.sharingPolicyToggle span:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+

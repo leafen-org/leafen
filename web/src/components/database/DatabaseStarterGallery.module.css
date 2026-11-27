@@ -1,0 +1,101 @@
+.gallery { width: min(576px, calc(100% - 48px)); margin: 32px auto 0; color: var(--text-default); }
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.gallery) section:not(section:first-of-type) { margin-top: 28px; }
+.gallery h2 { margin: 0 0 18px; color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.card { --starter-tint: var(--bg-soft); display: flex; flex-direction: column; min-width: 0; height: 190px; overflow: hidden; border-radius: 12px; text-align: start; background: var(--starter-tint); box-shadow: inset 0 0 0 1px var(--border-default); }
+.card[data-tone="green"] { --starter-tint: color-mix(in srgb, var(--c-accent-green) 9%, var(--add-ground)); }
+.card[data-tone="blue"] { --starter-tint: color-mix(in srgb, var(--c-accent-blue) 9%, var(--add-ground)); }
+.card[data-tone="red"] { --starter-tint: color-mix(in srgb, var(--c-accent-red) 9%, var(--add-ground)); }
+.card[data-tone="orange"] { --starter-tint: color-mix(in srgb, var(--c-accent-orange) 9%, var(--add-ground)); }
+.card[data-tone="yellow"] { --starter-tint: color-mix(in srgb, var(--c-accent-yellow) 9%, var(--add-ground)); }
+.card[data-starter-source] { height: 174px; }
+.card:hover { box-shadow: inset 0 0 0 1px var(--text-tertiary); }
+.card:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+.card:disabled { opacity: .6; }
+.cardText { display: flex; flex-direction: column; flex-shrink: 0; gap: 6px; padding: 21px 20px 14px; }
+.cardText > strong { font-size: 14px; font-weight: 600; }
+.cardText > small { color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+.card .preview { width: 320px; margin-inline-start: 20px; padding: 12px 10px; background: color-mix(in srgb, var(--starter-tint) 88%, var(--text-default) 4%); border-start-start-radius: 8px; border-start-end-radius: 0; border-end-end-radius: 0; border-end-start-radius: 0; box-shadow: inset 0 0 0 1px var(--border-default); }
+.preview { color: var(--text-default); padding: 24px; min-width: 0; }
+.preview > strong { display: block; font-size: 24px; font-weight: 600; margin-bottom: 18px; }
+.previewScroll { overflow-x: auto; }
+.preview table { border-collapse: collapse; font-size: 13px; min-width: 100%; }
+.preview th { font-weight: 400; color: var(--text-secondary); text-align: start; white-space: nowrap; }
+.preview th, .preview td { min-width: 112px; max-width: 240px; padding: 8px; border: 1px solid var(--border-default); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview th:first-child, .preview td:first-child { min-width: 190px; }
+.preview[data-thumbnail] > strong { font-size: 11px; margin-bottom: 6px; }
+.preview[data-thumbnail] table { font-size: 9px; }
+.preview[data-thumbnail] th, .preview[data-thumbnail] td { min-width: 82px; max-width: 82px; padding: 3px; border: 0; }
+.preview[data-thumbnail] th:first-child, .preview[data-thumbnail] td:first-child { min-width: 94px; }
+.skeleton { display: inline-block; width: 44px; height: 4px; border-radius: 2px; background: var(--text-tertiary); opacity: .25; }
+.avatar { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--text-tertiary); opacity: .6; }
+.tag { display: inline-block; padding: 1px 4px; border-radius: 3px; background: var(--bg-hover); font-size: inherit; }
+.tag[data-color="blue"] { background: color-mix(in srgb, var(--c-accent-blue) 24%, transparent); }
+.tag[data-color="green"] { background: color-mix(in srgb, var(--c-accent-green) 24%, transparent); }
+.tag[data-color="red"] { background: color-mix(in srgb, var(--c-accent-red) 24%, transparent); }
+.tag[data-color="yellow"] { background: color-mix(in srgb, var(--c-accent-yellow) 24%, transparent); }
+.tag[data-color="purple"] { background: color-mix(in srgb, var(--c-accent-purple) 24%, transparent); }
+/* A status pill: rounded, a dot of its color before its name (Notion's board heads, seen 2026-11-11). */
+.tag[data-status] { display: inline-flex; align-items: center; gap: 5px; padding-block: 1px; padding-inline: 6px 8px; border-radius: 999px; }
+.statusDot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: var(--text-tertiary); }
+.tag[data-color="blue"] .statusDot { background: var(--c-accent-blue); }
+.tag[data-color="green"] .statusDot { background: var(--c-accent-green); }
+.tag[data-color="red"] .statusDot { background: var(--c-accent-red); }
+.tag[data-color="yellow"] .statusDot { background: var(--c-accent-yellow); }
+.tag[data-color="purple"] .statusDot { background: var(--c-accent-purple); }
+.cardIcon { display: inline-flex; vertical-align: -2px; margin-inline-end: 6px; }
+.more { margin-top: 18px; padding: 4px 8px; color: var(--text-secondary); font-size: 14px; }
+.customizer { display: flex; height: 100%; min-height: 0; }
+.customizerLeft { flex: 0 0 368px; display: flex; flex-direction: column; padding: 24px; min-height: 0; overflow-y: auto; }
+/* The customizer's left column, as Notion's (seen 2026-11-24 at 1685, two tabs): its 26px back 4px up and out of the column's corner,
+   the 22/26 title 64px down, the 14/20 line 4 under it, the chips' scroll 10 under that, 5px over and 2px beside the chips so their rings
+   show, all 2px inside the column (a view list 2px more); "계속" 32 tall and 8 round at its foot. */
+.back { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; margin-block: -4px 42px; margin-inline: -4px 0; color: var(--text-secondary); border-radius: 6px; }
+.back:hover { background: var(--add-hover); }
+.customizer h2 { font-size: 22px; font-weight: 600; line-height: 26px; margin: 2px 2px 4px; }
+.customizerLeft > p { font-size: 14px; color: var(--text-secondary); margin: 0 2px 10px; line-height: 20px; }
+.chips { display: flex; flex-wrap: wrap; gap: 12px; padding: 5px 4px; }
+/* A feature or view chip is a choice tile, as Notion's (seen 2026-11-24 in Chrome at 1685, dark, two tabs): 1px of borPri outside at rest;
+   chosen, 1.5px of bluBorAccPri outside on bacEle, its words in the page's own colour and its mark blue. A feature chip is a 28px pill
+   12px in, 14px words after a 16px mark 6px before them, the mark drawn 1.2 times over (19.2) in icoSec; the chips 12px apart both ways. */
+.chips button { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 24px; font-size: 14px; line-height: 1.2; white-space: nowrap; box-shadow: 0 0 0 1px var(--choice-tile-edge); }
+.chips button > :first-child { flex: none; transform: scale(1.2); }
+.chips:not([data-view-choices]) button:not([aria-pressed="true"]) > svg { color: var(--icon-secondary); }
+.chips button[aria-pressed="true"] { background: var(--bg-element); box-shadow: 0 0 0 1.5px var(--choice-tile-chosen-edge); }
+/* A view chip is a 52px row 14 round, 16px in, its 20px mark (drawn 24) 8px before its 14px words in 500 on a 20px line. */
+.chips[data-view-choices] { flex-direction: column; padding: 7px 6px; }
+.chips[data-view-choices] button { height: 52px; padding: 0 16px; gap: 8px; border-radius: 14px; font-weight: 500; line-height: 20px; text-align: start; }
+.chips button[aria-pressed="true"] svg { color: var(--accent-blue); }
+.customizerFooter { margin-top: auto; padding-top: 28px; }
+.customizerFooter p { font-size: 13px; color: var(--danger); }
+.continue { width: 100%; height: 32px; padding: 0 14px; border-radius: 8px; background: var(--accent-blue); color: var(--accent-blue-text); font-size: 14px; font-weight: 500; }
+.continue:disabled { opacity: .5; }
+.customizerRight { flex: 1; min-width: 0; position: relative; margin-block: 24px; margin-inline: 0 24px; overflow: auto; border: 1px solid var(--border-default); border-radius: 12px; background: var(--bg-app); }
+.previewTabs { display: flex; gap: 12px; overflow-x: auto; padding: 16px 24px 0; }
+.previewTabs > button { flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; color: var(--text-secondary); font-size: 13px; border-radius: 999px; }
+.previewTabs > button[aria-selected="true"] { color: var(--text-default); background: var(--bg-hover); }
+.board { display: flex; gap: 16px; overflow-x: auto; }
+.board > div { min-width: 260px; padding: 10px; border-radius: 8px; background: var(--bg-soft); }
+.board > div[data-color="blue"] { background: color-mix(in srgb, var(--c-accent-blue) 8%, var(--bg-app)); }
+.board > div[data-color="green"] { background: color-mix(in srgb, var(--c-accent-green) 8%, var(--bg-app)); }
+.boardCard { display: flex; flex-direction: column; gap: 10px; padding: 12px; margin-top: 12px; box-shadow: 0 1px 4px var(--border-default); border-radius: 8px; font-size: 13px; }
+@media (max-width: 760px) { .customizerLeft { flex-basis: 280px; padding: 20px 24px; } .customizer h2 { font-size: 21px; } }
+@media (max-width: 580px) { .grid { grid-template-columns: 1fr; } .customizer { flex-direction: column; overflow-y: auto; } .customizerLeft { flex: 0 0 auto; } .back { margin-bottom: 20px; } .customizerRight { flex: 0 0 260px; margin: 0 20px; border-radius: 8px; } }
+
+/* The template's picture before its name on one line, as Notion's (seen
+   2026-11-07: a 28px picture, the name 12px after it in 24px bold). */
+.previewHeading { display: flex; align-items: center; gap: 12px; padding: 40px 40px 0; font-size: 24px; font-weight: 700; line-height: 26px; }
+.customizerRight .previewTabs { padding: 16px 40px 0; }
+.customizerRight .preview { padding: 16px 40px 40px; }
+.hiddenProperties { position: absolute; bottom: 16px; inset-inline-end: 16px; font-size: 12px; color: var(--text-secondary); }
+.listRow { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border-default); font-size: 14px; }
+.completion { display: inline-flex; justify-content: center; align-items: center; width: 16px; height: 16px; border: 1px solid var(--text-tertiary); border-radius: 3px; }
+.timelineHeader { display: flex; justify-content: space-between; padding-inline-start: 160px; color: var(--text-secondary); font-size: 12px; }
+.timelineRow { display: flex; align-items: center; height: 40px; border-bottom: 1px solid var(--border-default); font-size: 12px; }
+.timelineRow > span { width: 160px; flex-shrink: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-inline-end: 12px; }
+.timelineRow > div { position: relative; height: 100%; min-width: 180px; flex: 1; background: repeating-linear-gradient(90deg, transparent 0 39px, var(--border-default) 39px 40px); }
+.timelineRow i { position: absolute; top: 10px; height: 20px; border-radius: 4px; background: var(--accent-blue); }
+.preview[data-thumbnail] .board { gap: 6px; }
+.preview[data-thumbnail] .board > div { min-width: 80px; padding: 4px; border-radius: 4px; font-size: 9px; }
+.preview[data-thumbnail] .boardCard { padding: 5px; margin-top: 5px; font-size: 9px; gap: 4px; }

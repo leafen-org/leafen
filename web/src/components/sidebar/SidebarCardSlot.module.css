@@ -1,0 +1,97 @@
+/* The sidebar's card place (sidebarCards.ts), each card drawn as Notion's
+   "멤버 초대" card over the sidebar's foot (seen 2026-11-22 in Chrome at 1440,
+   dark, dpr 2): 8px under the list, 16px in from the sidebar's sides and over
+   the foot's line; the card 8px in and round 8, the sidebar's ground with
+   Notion's small outline shadow (shaOutSm), its ground 2.5 lighter in
+   lightness under the pointer in the dark theme and as much darker in the
+   light one (hsl(from bacSec h s calc(l ± 2.5)) — the light value worked out
+   from Notion's rule, not seen); a 24px place for its 20px icon, then the
+   name 12px/600 and the line under it 12px secondary, 16px high and 4 apart,
+   4px under the card's top and over its end, 8px after the icon's place;
+   × a 20px round-4 button 9px down and 8px in from the end, its 14px mark
+   in the secondary icon color. */
+.area {
+  flex: none;
+  padding-block: 8px 16px;
+  padding-inline: 16px;
+}
+
+.card {
+  position: relative;
+}
+
+.open {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--bg-sidebar);
+  box-shadow: var(--shadow-outline-small);
+  color: var(--text-primary);
+  text-align: start;
+}
+
+.card:hover .open {
+  background: rgb(244, 242, 240);
+}
+
+:global([data-theme="dark"]) .card:hover .open {
+  background: rgb(38, 38, 38);
+}
+
+.icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--icon-primary);
+}
+
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding-block: 4px;
+  padding-inline: 8px;
+}
+
+.title,
+.body {
+  font-size: 12px;
+  line-height: 16px;
+  text-wrap: pretty;
+}
+
+.title {
+  padding-inline-end: 24px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.body {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.dismiss {
+  position: absolute;
+  top: 9px;
+  inset-inline-end: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.dismiss:hover,
+.dismiss:focus-visible {
+  background: var(--bg-hover);
+}

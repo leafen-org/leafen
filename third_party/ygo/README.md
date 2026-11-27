@@ -1,0 +1,791 @@
+<p align="center">
+  <img src=".github/assets/ygo-product-card.png" alt="ygo — a pure-Go CRDT library" width="100%">
+</p>
+
+# ygo
+
+[![CI](https://github.com/reearth/ygo/actions/workflows/ci.yml/badge.svg)](https://github.com/reearth/ygo/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/reearth/ygo.svg)](https://pkg.go.dev/github.com/reearth/ygo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/reearth/ygo)](https://goreportcard.com/report/github.com/reearth/ygo)
+[![codecov](https://codecov.io/gh/reearth/ygo/branch/main/graph/badge.svg)](https://codecov.io/gh/reearth/ygo)
+[![Go version](https://img.shields.io/github/go-mod/go-version/reearth/ygo)](go.mod)
+[![Yjs wire format](https://img.shields.io/badge/yjs%20wire-V1%20%2B%20V2-blue)](#compatibility)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**ygo** is a pure-Go implementation of [Yjs](https://github.com/yjs/yjs), the CRDT (Conflict-free Replicated Data Type) framework for real-time collaborative editing. Use it to build collaborative applications in Go — shared text, rich text, maps, arrays, and XML trees that merge concurrent edits without conflicts, without a central authority, and without operational transformation.
+
+ygo is **binary-compatible** with the JavaScript Yjs reference implementation: it speaks both the V1 and V2 update wire formats byte-for-byte, along with the [y-protocols](https://github.com/yjs/y-protocols) sync handshake and awareness layer. Updates produced by ygo apply cleanly in Yjs (JavaScript) and yrs (Rust), and vice versa. That claim is enforced, not asserted — a byte-level cross-language conformance suite generated from `yjs@13.6.30` and a differential convergence fuzzer both run in CI.
+
+Where ygo goes further than a port is on the server. It ships a [Hocuspocus](https://tiptap.dev/docs/hocuspocus)-compatible WebSocket server that scales horizontally across instances through a Redis-backed cluster relay, with versioned persistence (including a CGo-free SQLite store), snapshots, and a turnkey `ygo-server` binary. The same library also embeds natively on iOS and Android through `gomobile` — no JavaScript runtime, no CGO, anywhere.
+
+**[Quick start](#quick-start) · [How ygo compares](#how-ygo-compares) · [WebSocket server](#websocket-server) · [Benchmarks](#performance) · [Documentation](#documentation)**
+
+## Installation
+
+Requires Go 1.23 or later.
+
+```bash
+go get github.com/reearth/ygo
+```
+
+## Quick Start
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/reearth/ygo/crdt"
+)
+
+func main() {
+    // Create two peers
+    alice := crdt.New()
+    bob := crdt.New()
+
+    // Obtain the shared type before entering a transaction —
+    // GetText and Transact both acquire the document mutex.
+    text := alice.GetText("content")
+
+    // Alice makes edits
+    alice.Transact(func(txn *crdt.Transaction) {
+        text.Insert(txn, 0, "Hello, world!", nil)
+    })
+
+    // Encode Alice's state and send to Bob
+    update := alice.EncodeStateAsUpdate()
+
+    // Bob applies the update — both docs now converge
+    if err := crdt.ApplyUpdateV1(bob, update, nil); err != nil {
+        panic(err)
+    }
+
+    fmt.Println(bob.GetText("content").ToString()) // "Hello, world!"
+}
+```
+
+## Highlights
+
+- **Pure Go** — no CGO, no V8, no embedded JavaScript engine, on every target including iOS and Android.
+- **Binary-compatible with Yjs and yrs** — both update wire formats (V1 and V2, with V1↔V2 conversion). Verified byte-for-byte in CI against fixtures generated from `yjs@13.6.30`, plus a differential convergence fuzzer.
+- **Every Y-type** — `YText`, `YArray`, `YMap`, `YXmlFragment`, `YXmlElement`, `YXmlText`, with snapshots, garbage collection, and an undo manager.
+- **The y-protocols layer** — the `SyncStep1`/`SyncStep2`/incremental-update handshake, and awareness for presence and cursors.
+- **Transport-agnostic core** — the CRDT has no transport dependency; the WebSocket and HTTP bindings are addons.
+- **A production WebSocket server** — [Hocuspocus](https://tiptap.dev/docs/hocuspocus)-compatible, scaling horizontally across instances through a Redis-backed [cluster relay](docs/CLUSTERING.md), with versioned [persistence](docs/PERSISTENCE.md) (including a CGo-free SQLite store), snapshots, and a turnkey [`ygo-server`](cmd/ygo-server/) binary.
+- **Two cluster delivery tiers** — the Redis [cluster relay](docs/CLUSTERING.md) runs on pub/sub (the default, at-most-once, free to publish) or on Redis Streams, which is at-least-once within `min(StreamRetention, StreamMaxLen/rate)` and makes anything trimmed past that window a visible, counted `Gaps` rather than silent divergence. `Both` mode migrates a live cluster between them without deduplication.
+- **An embeddable offline-first client** — [`provider/client`](docs/CLIENT.md) is a `*crdt.Doc` that is readable and editable whether or not it has ever connected, hydrated from a local store before any dial. There is no separate offline-op queue: the sync handshake itself carries edits made while disconnected.
+- **Native mobile bindings** — [`mobile/`](mobile/) embeds in iOS and Android apps via `gomobile bind`, with on-device editing, sync, presence, change observers, and a self-syncing `mobile.SyncClient`.
+
+See [the latest release](https://github.com/reearth/ygo/releases/latest) for the current version, [CHANGELOG.md](CHANGELOG.md) for per-release detail, and [docs/HISTORY.md](docs/HISTORY.md) for the longer arc.
+
+## Examples
+
+The [`examples/`](examples/) directory contains five runnable programs with detailed inline comments:
+
+| Example | What it shows |
+|---------|---------------|
+| [`examples/peer-sync`](examples/peer-sync/) | In-process two-peer sync via the y-protocols handshake — no network needed |
+| [`examples/http-sync`](examples/http-sync/) | Pull/push sync over HTTP with incremental state-vector diffs |
+| [`examples/collab-editor`](examples/collab-editor/) | Real-time multi-tab collaborative editor with a browser client |
+| [`examples/snapshot-history`](examples/snapshot-history/) | Document versioning — capture, store, and restore past states |
+| [`examples/offline-client`](examples/offline-client/) | `provider/client` against a running server — local durability, reconnect, offline edits carried by the next handshake |
+
+Run any example from the repository root:
+
+```bash
+go run ./examples/peer-sync
+go run ./examples/http-sync
+go run ./examples/snapshot-history
+go run ./examples/collab-editor/server   # then open http://localhost:8080
+
+# offline-client needs a running server; start one, then point the client at it:
+go run github.com/reearth/ygo/cmd/ygo-server -addr :1234
+go run ./examples/offline-client -url ws://localhost:1234/yjs/offline-demo -db /tmp/offline-demo.db
+```
+
+**New users**: start with `peer-sync` for the smallest end-to-end demonstration of two docs converging in-process. Jump to `collab-editor` when you want to wire the WebSocket server to a real browser client, or to `offline-client` when you want a Go process (or, via `mobile.SyncClient`, a native app) that edits and reconnects on its own.
+
+
+## How ygo compares
+
+The Yjs ecosystem is mostly JavaScript, with a Rust core. If you are searching for a Go equivalent of one of these, here is where ygo sits:
+
+| Project | Runtime | What it provides | Relationship to ygo |
+|---|---|---|---|
+| [Yjs](https://github.com/yjs/yjs) | JavaScript | The reference CRDT implementation and wire format | ygo is a pure-Go implementation of it, byte-compatible on the wire in both directions |
+| [y-websocket](https://github.com/yjs/y-websocket) | Node.js | Minimal WebSocket sync server for Yjs clients | ygo's [WebSocket server](#websocket-server) is the Go-native equivalent, plus auth hooks, rate limiting, resource caps, and persistence |
+| [Hocuspocus](https://tiptap.dev/docs/hocuspocus) | Node.js | Production Yjs backend — hooks, webhooks, persistence, read-only peers | ygo speaks the Hocuspocus message types and mirrors its hook and webhook model, so a Go backend can replace it without touching the client |
+| [yrs](https://github.com/y-crdt/y-crdt) | Rust (+ FFI) | The Rust CRDT core used for non-JS bindings | The alternative when your host language is Go: no CGO, no FFI boundary, no cross-language build. See [docs/comparison/ygo-vs-yrs.md](docs/comparison/ygo-vs-yrs.md) |
+| [y-leveldb](https://github.com/yjs/y-leveldb) / [y-redis](https://github.com/yjs/y-redis) | Node.js | Document persistence and multi-node fan-out for Yjs servers | ygo's [persistence adapters](#persistence) and [cluster relay](cluster/) cover the same ground in-process, including a CGo-free SQLite store |
+
+Choose ygo when the collaborative backend is Go and you would rather not run a Node.js sidecar, an FFI boundary, or an embedded JavaScript runtime to get there. Choose Yjs or Hocuspocus directly when your backend is already Node.js — ygo interoperates with both, so the choice is per-service rather than all-or-nothing.
+
+
+## Goals and non-goals
+
+**Goals**
+
+- **Wire compatibility with Yjs**, verified byte-for-byte against fixtures generated from the JavaScript reference implementation, in both directions and for both V1 and V2.
+- **Convergence correctness**, verified by a differential fuzzer that compares ygo's merge results against Yjs across randomized concurrent-edit histories.
+- **An idiomatic Go API** — explicit transactions, `error` returns, `context` support, `*slog.Logger`, no reflection-driven magic.
+- **Production-ready server operation** — horizontal scale, versioned persistence, bounded resources, structured logs, graceful shutdown.
+- **Pure Go**, no CGO, on every supported target including iOS and Android.
+
+**Non-goals**
+
+- **Being a browser client.** ygo runs in Go processes and on mobile. Browser clients stay on Yjs itself, which ygo syncs with.
+- **A new or "improved" wire format.** Compatibility with Yjs is the point; divergence would defeat it.
+- **Authentication and authorization.** ygo provides the hooks (`Authorize`, `AuthFunc`, `OnInject`) and expects your application to own the policy. See [Security](#security).
+
+
+## WebSocket Server
+
+```go
+package main
+
+import (
+    "net/http"
+    "github.com/reearth/ygo/provider/websocket"
+)
+
+func main() {
+    server := websocket.NewServer()
+    http.Handle("/yjs/{room}", server)
+    http.ListenAndServe(":8080", nil)
+}
+```
+
+### Run a server
+
+For a ready-to-run binary — with flags for origins, connection/room limits, an optional Redis cluster relay (`-redis`), SQLite persistence (`-store`), and periodic version capture (`-version-interval`, `-keep-snapshots`) — use [`cmd/ygo-server`](cmd/ygo-server/):
+
+```bash
+# Binds 127.0.0.1:1234 by default (loopback only). The server has no built-in
+# auth, so it logs a loud warning if you bind a public address (e.g. -addr :1234)
+# — put an authenticating reverse proxy in front in that case.
+go run github.com/reearth/ygo/cmd/ygo-server -store data.db
+```
+
+## Server-side document injection
+
+Backend services — AI agents, HTTP handlers, content pipelines — can push
+changes into a live room without simulating a WebSocket peer. Three APIs
+are available on `*websocket.Server`.
+
+### `BroadcastUpdate(ctx, room, update)`
+
+Fans a pre-encoded V1 update out to all peers currently connected to a
+room. Does **not** apply the update to the server's doc — callers who
+want the server's state to reflect the broadcast must call
+`crdt.ApplyUpdateV1` first (or use `Apply` below).
+
+```go
+doc := server.GetDoc("my-room")
+if err := crdt.ApplyUpdateV1(doc, update, nil); err != nil {
+    return err
+}
+if err := server.BroadcastUpdate(ctx, "my-room", update); err != nil {
+    return err
+}
+```
+
+**Skipping `ApplyUpdateV1` creates divergence.** Live peers see the
+update, but peers joining afterwards receive the server's stale state
+via sync step 2.
+
+### `Apply(ctx, room, fn)`
+
+Applies a callback to the doc and broadcasts the resulting delta atomically.
+Auto-creates the room if needed. Persistence runs via the existing
+`OnUpdate` hook — callers do not need to persist separately.
+
+```go
+err := server.Apply(ctx, "my-room",
+    func(doc *crdt.Doc, transact func(func(*crdt.Transaction))) {
+        frag := doc.GetXmlFragment("content") // OUTSIDE transact — see note
+        transact(func(txn *crdt.Transaction) {
+            elem := crdt.NewYXmlElement("p")
+            frag.InsertElement(txn, 0, elem)
+        })
+    },
+)
+```
+
+**Important:** calls to `doc.GetXmlFragment`, `doc.GetText`, `doc.GetMap`,
+and the other root-type accessors must happen **outside** the `transact`
+callback. These methods acquire the doc's write lock, which `transact`
+already holds — calling them inside deadlocks.
+
+`fn` should be fast. It runs inside the doc's write lock and blocks all
+peer reads and writes to the room for the duration.
+
+**On `ErrUpdateTooLarge`, the mutation sticks.** The size check runs
+after `fn`'s transaction commits and after persistence has enqueued the
+update, so the server's doc reflects `fn`'s changes and the update IS
+persisted — but peers do NOT see it. Size-bound `fn`'s effects
+explicitly or reconcile peers via a sync step 1/2 exchange.
+
+### `CloseRoom(name, force)`
+
+Explicit teardown for rooms created by `Apply` that never accumulated
+peer connections. With `RoomIdleTimeout` at zero (the default), such rooms
+linger until process exit without `CloseRoom`; with `RoomIdleTimeout > 0`
+the idle sweeper reclaims them once they have been idle that long.
+
+```go
+if err := server.CloseRoom("my-room", false); err != nil { /* ... */ }
+// force=true closes connected peers first.
+```
+
+### Access control: `Server.OnInject`
+
+An optional hook gates all server-side writes:
+
+```go
+server.OnInject = func(ctx context.Context, info websocket.InjectInfo) error {
+    tenant, _ := ctx.Value(tenantKey{}).(string)
+    if !allowed(tenant, info.Room) {
+        return fmt.Errorf("tenant %q may not write to %q", tenant, info.Room)
+    }
+    if info.Op == websocket.OpBroadcastUpdate && info.UpdateSize > 1<<20 {
+        return errors.New("update too large for this tenant")
+    }
+    return nil
+}
+```
+
+`info.Op` is `OpBroadcastUpdate` or `OpApply`. `info.UpdateSize` is the
+length of the update bytes for `BroadcastUpdate`; zero for `Apply` (the
+delta has not yet been produced — size capping for `Apply` is handled
+by `MaxUpdateBytes`, post-hoc).
+
+Refusals are returned wrapped with `ErrInjectRefused`, so callers can
+match either the sentinel or the hook's own error via `errors.Is`.
+
+### Resource caps
+
+- `Server.MaxUpdateBytes` — per-update size cap, default 64 MiB (matches
+  the peer frame limit).
+- `Server.MaxRooms` — total-room cap applied uniformly to peer upgrades
+  (HTTP 503) and `Apply` (`ErrTooManyRooms`). Default unlimited.
+
+### Trust model
+
+`Server.Apply` and `Server.BroadcastUpdate` grant total write authority
+on the document. Treat the `*Server` handle with the same care as a
+database connection — do not expose it directly to untrusted code.
+`OnInject` is defense-in-depth, not a substitute for caller-side
+authorization. A caller who can reach either API can craft updates that
+spoof any client ID, which is equivalent to the authority already
+granted by `GetDoc` + `ApplyUpdateV1`.
+
+## Attribution
+
+The `crdt` package exposes yjs-v14's attribution primitives for stamping CRDT
+content with per-item authorship metadata — who inserted or deleted which
+item, and any other attribute you want to attach (`userid`, `ts`, a request
+ID, …) — without integrating the update into a doc. This is the pattern
+[y-redis](https://github.com/yjs/y-redis) (also known as y/hub, the Yjs
+cluster backend) uses to store per-character authorship in Postgres.
+
+- **`IDSet`** — the set of item IDs touched by an update or a doc (yjs-v14
+  `IdSet`): per-client sorted, merged `(clock, len)` runs.
+- **`IDMap`** — `IDSet` plus attribution data per range (yjs-v14 `IdMap`):
+  overlapping ranges are split and their attributes joined on read.
+- **`ContentAttribute`** — one `{Name, Value}` fact, built via
+  `NewContentAttribute`/`MustContentAttribute`, which validate `Value` against
+  the lib0 `any` domain so a bad value fails at the call site instead of
+  panicking deep inside the encoder.
+- **`ContentIDs`** / **`ContentMap`** — the insert/delete pair of `IDSet`s or
+  `IDMap`s for one update or doc (yjs-v14 `ContentIds` / `ContentMap`).
+- Builders: `ContentIDsFromUpdateV1`/`V2` (extract touched IDs from an update
+  without applying it), `InsertSetFromDoc`/`DeleteSetFromDoc` (extract from a
+  live doc's store), `CreateContentMapFromContentIDs` (stamp IDs with
+  attributes).
+- Set algebra mirroring yjs-v14: `MergeIDSets`/`MergeIDMaps`,
+  `ExcludeIDSet`/`ExcludeIDMap`, `IntersectIDSets`/`IntersectIDMaps`,
+  `FilterIDMap`, plus the `ContentMap`-level wrappers
+  `MergeContentMaps`/`ExcludeContentMap`/`IntersectContentMaps`/`FilterContentMap`.
+
+Typical server-side flow: a collaborator's update arrives, the server stamps
+it with attribution and stores both side by side, without ever integrating
+the update into a live doc.
+
+```go
+// A collaborator produced an update…
+src := crdt.New(crdt.WithClientID(7))
+txt := src.GetText("t") // resolve OUTSIDE Transact
+src.Transact(func(txn *crdt.Transaction) { txt.Insert(txn, 0, "hi", nil) })
+update := crdt.EncodeStateAsUpdateV1(src, nil)
+
+// …the server stamps it without integrating it.
+ids, _ := crdt.ContentIDsFromUpdateV1(update)
+userid := crdt.MustContentAttribute("userid", "alice")
+cm := crdt.CreateContentMapFromContentIDs(ids, []*crdt.ContentAttribute{userid}, nil)
+
+// Store EncodeContentMap(cm) next to the update; later, read it back.
+decoded, _ := crdt.DecodeContentMap(crdt.EncodeContentMap(cm))
+for _, r := range decoded.Inserts.Slice(7, 0, 2) {
+    fmt.Printf("clocks [%d,%d): %s=%v\n", r.Clock, r.Clock+r.Len, r.Attrs[0].Name, r.Attrs[0].Value)
+}
+// clocks [0,2): userid=alice
+```
+
+See `Example_attribution` in [`crdt/example_attribution_test.go`](crdt/example_attribution_test.go)
+for the runnable version (`go test ./crdt/ -run Example_attribution`).
+
+### Interop scope — read this before treating attribution as wire-stable with a specific yjs release
+
+- **`IDSet`/`IDMap` are byte-compatible with published yjs v14.** Verified
+  byte-for-byte against a pinned yjs14 build (`npm:yjs@14.0.0-16`) — see
+  `crdt/attribution_js_compat_test.go` and `testutil/gen_fixtures_attribution.js`.
+- **`ContentMap`/`ContentIDs` follow yjs-main's `writeContentMap`/`writeContentIds`
+  composition** (two `IdMap`s / `IdSet`s, inserts then deletes) — each half is
+  byte-verified as above, but **no published yjs v14 rc exposes a top-level
+  `ContentMap`/`encodeContentMap` function to pin the wrapper against**; that
+  API exists only on yjs's unreleased `main` branch as of this writing. Treat
+  `ContentMap`'s wire format as "matches yjs-main's composition of
+  byte-verified parts," not "byte-compatible with a shipped `yjs.encodeContentMap`."
+  Tracked as a follow-up to re-verify once yjs v14.0.0 final publishes that API.
+- **`diffDocsToDelta`** (yjs-main's Prosemirror-style delta-with-attribution
+  renderer) is **not implemented**. It depends on yjs v14's delta/renderer
+  subsystem, which is still changing on `main`; porting it is a tracked
+  follow-up once that subsystem stabilizes in a published release.
+- **No storage integration.** ygo does not persist `ContentMap`s for you —
+  callers store `EncodeContentMap(cm)` next to the update in their own
+  database, exactly as shown above.
+- **Garbage collection erases attributed history.** `IDSet`/`IDMap` reference
+  item IDs by `(client, clock)`; once GC (the default) frees deleted items'
+  content, ranges that pointed at deleted content no longer correspond to
+  retrievable data. To render attributed history later (e.g. "who wrote this
+  paragraph, including deleted-and-restored text"), either retain the raw
+  updates you stamped (so `ContentIDsFromUpdateV1` can re-derive IDs from the
+  update itself) or create the doc with `crdt.WithGC(false)` — see
+  `CreateDocFromSnapshot` and the snapshot-history pattern above.
+
+## Persistence
+
+The WebSocket server takes an optional `PersistenceAdapter` so room state survives restarts:
+
+```go
+type PersistenceAdapter interface {
+    LoadDoc(room string) ([]byte, error)
+    StoreUpdate(room string, update []byte) error
+}
+```
+
+`LoadDoc` is called once when the first peer connects to a room; the result seeds the in-memory doc. `StoreUpdate` is called on every committed transaction that changes the doc. Writes run on a per-room worker goroutine — slow storage doesn't block peers. Wire an adapter in via `NewServerWithPersistence(adapter)`.
+
+By default (v1.36.0) these writes are coalesced: the worker debounces bursts of updates into a single merged `StoreUpdate` call using a 2s window (reset on each new update) capped by a 10s max wait, matching Hocuspocus's default debounce behaviour. Tune it via `Server.PersistCoalesceWindow` / `Server.PersistCoalesceMaxWait`, or set `PersistCoalesceWindow` to a negative value (e.g. `-1`) to disable coalescing and restore strict one-write-per-update persistence.
+
+A room's pending coalesced batch is flushed durably before the room unloads (v1.37.0), so a peer that reconnects during a quick refresh reuses the live document instead of racing a stale reload from the backing store. Adapters that also want to bound stored-version growth can implement `CompactableAdapter` (`Compact(ctx, room) error`); the server invokes it on room unload and, when `Server.CompactEvery > 0`, after every N persistence flushes. `persistence.LegacyAdapter` implements this via its `KeepVersions` field.
+
+`Server.RoomIdleTimeout` (v1.39.0) goes a step further: instead of unloading a room the instant its last peer disconnects, it keeps the room resident — the durable flush above still runs immediately, but the worker and in-memory doc stay warm — so a peer that reconnects within the timeout reuses the live doc with no `LoadDoc` at all. `Server.MaxResidentRooms` puts an LRU bound on how many idle rooms stay warm at once. Both default to zero, which is the original eager-evict-on-last-peer behaviour; see [Resource limits](#resource-limits) below for the field details.
+
+For a ready-made durable backend, [`persistence/sqlite`](persistence/sqlite/) provides a pure-Go (CGO-free, `modernc.org/sqlite`) `VersionedPersistence` store with WAL mode, full versioned history, and a crash-safe two-phase prune. Open it with `sqlite.Open("data.db")`.
+
+For backend examples (Postgres, Redis, file-system) and the v1.7.0 context-aware extension that lets adapters abort in-flight writes during `Server.Shutdown`, see [docs/PERSISTENCE.md](docs/PERSISTENCE.md).
+
+## Subdocuments
+
+A `Doc` can embed another `Doc` as a **subdocument** — a separate CRDT
+document (its own clock space, its own GUID) nested inside a parent doc's
+`YMap`. This is the same pattern Yjs uses to split a large workspace into
+independently-loadable documents (e.g. one subdoc per page in a multi-page
+app) while still tracking them from a single root doc.
+
+Embed one by setting a `*crdt.Doc` as a `YMap` value — there is no separate
+"embed" method, it's just `Set`:
+
+```go
+parent := crdt.New()
+child := crdt.New(crdt.WithGUID("page-1"), crdt.WithAutoLoad(true))
+
+root := parent.GetMap("pages") // resolve OUTSIDE Transact
+parent.Transact(func(txn *crdt.Transaction) {
+    root.Set(txn, "page-1", child)
+})
+```
+
+`YMap.Get` returns the embedded `*crdt.Doc` back out (type-assert on read,
+same as any other `any`-typed map value). A `Doc` can only be embedded once;
+embedding the same `*Doc` a second time panics with `ErrSubdocAlreadyIntegrated`
+— create a second `Doc` with the same GUID instead.
+
+- **`Doc.GetSubdocs()` / `Doc.GetSubdocGUIDs()`** — the subdocuments currently
+  resident on this doc (sorted by GUID). Reflects adds/removes even if nothing
+  is observing via `OnSubdocs`.
+- **`Doc.OnSubdocs(func(crdt.SubdocsEvent))`** — fires once per transaction
+  that changes subdocument state. `SubdocsEvent{Added, Removed, Loaded []*Doc}`
+  reports docs newly embedded, docs detached (their `YMap` entry deleted), and
+  docs that should now be synced (see `Load` below). Embedding and then
+  deleting the same doc within one transaction cancels out — no event fires.
+- **`Doc.Load()`** — signals that a subdocument's data should be synced now.
+  A locally-created, locally-embedded subdoc loads immediately on integrate
+  (`ShouldLoad()` defaults to `true`); a subdoc decoded off the wire starts
+  with `ShouldLoad() == false` until the receiving application decides to
+  page it in and calls `Load()`, which flips `ShouldLoad()` to `true` and
+  emits a `Loaded` event on the **parent**. `Load` opens a transaction on the
+  parent, so — like `GetText` — it must not be called from inside a `Transact`
+  closure.
+- **`crdt.WithAutoLoad(bool)`** — marks a subdocument so remote peers/providers
+  auto-load it instead of waiting for an explicit `Load()` call. Default `false`.
+- **`crdt.WithShouldLoad(bool)`** — sets the initial `ShouldLoad()` value.
+  Default `true` for a doc you create yourself; a doc materialized from a
+  decoded update starts `false` (derived from `autoLoad`) until `Load()`.
+- **`crdt.WithCollectionID(string)`** — an optional grouping label
+  (`Doc.CollectionID()`), e.g. to batch-load every subdoc in a collection.
+
+```go
+child := crdt.New(
+    crdt.WithGUID("page-1"),
+    crdt.WithAutoLoad(true),
+    crdt.WithCollectionID("workspace-42"),
+)
+```
+
+See `Example_subdocs` in
+[`crdt/example_subdocs_test.go`](crdt/example_subdocs_test.go) for the
+runnable version (`go test ./crdt/ -run Example_subdocs`).
+
+**Scope**: this is the local lifecycle surface — creating, embedding,
+enumerating, and observing subdocuments on a single doc, matching Yjs's
+`Y.Doc` subdocs API. Actually syncing a subdocument's *contents* across peers
+(a provider recognizing `Added`/`Loaded` events and opening a connection per
+subdocument) is a separate, not-yet-implemented layer, tracked in
+[#142](https://github.com/reearth/ygo/issues/142).
+
+## Offline-First Client
+
+[`provider/client`](docs/CLIENT.md) is an embeddable sync client for a
+single `*crdt.Doc`: hydrate it from a local store, read and edit it at any
+time — connected, disconnected, or never-yet-connected — and let a
+background dial loop reconcile it with a `provider/websocket`-compatible
+server whenever one is reachable. It speaks the same wire protocol the
+server does, so it dials `ygo-server` or any y-websocket-compatible backend
+without modification.
+
+```go
+doc := crdt.New()
+c, err := client.New(client.Options{
+    URL:       "wss://example.com/yjs/my-room",
+    Doc:       doc,
+    StorePath: "my-room.db", // SQLite-backed local durability; "" = memory-only
+})
+if err != nil { /* ... */ }
+
+go c.Connect(context.Background()) // hydrates, then dials/handshakes/reconnects forever
+
+// doc is usable immediately — before, during, and regardless of Connect.
+```
+
+There is deliberately **no separate offline-op queue**: the y-protocol sync
+handshake itself carries edits made while disconnected, on the next
+successful reconnect. The local store exists only for the gap the handshake
+cannot cover — the process itself going away while still offline — and
+reconnect uses jittered exponential backoff (reset only on a completed
+handshake, not merely a dial) plus WebSocket keepalive so a half-open
+connection converts to a retry instead of hanging forever.
+
+See [`docs/CLIENT.md`](docs/CLIENT.md) for the full design (including the
+exact `Stats().Dropped` accounting and the auth-token caveat) and
+[`examples/offline-client`](examples/offline-client) for a runnable,
+flag-driven demo. `mobile.SyncClient` is the `gomobile` binding — see
+[Mobile (iOS / Android)](#mobile-ios--android) below.
+
+## Mobile (iOS / Android)
+
+The [`mobile/`](mobile/) subpackage is a [`gomobile bind`](https://pkg.go.dev/golang.org/x/mobile/cmd/gomobile)-able façade over `crdt` and `awareness`, so you can embed ygo natively in iOS and Android apps — **no JavaScript runtime and no CGO**. It is a **full on-device editor**: a Swift/Kotlin app can edit locally, sync, render, exchange presence, and subscribe to push change-notifications — not just receive and display.
+
+```sh
+cd mobile
+go install tool                              # pinned gomobile + gobind
+gomobile bind -target=ios .                  # → Mobile.xcframework
+gomobile bind -target=android -androidapi 21 .  # → mobile.aar
+```
+
+`Doc` exposes sync (`ApplyUpdate`, `EncodeStateAsUpdate`, `EncodeStateVector`, `EncodeDiff`), read accessors (`GetText`, `GetTextJSON`, `GetMapJSON`, `GetArrayJSON`), on-device mutators (`InsertText`, `FormatText`, `DeleteText`, `InsertArray`, `DeleteArray`, `SetMap`, `DeleteMapKey`, …), and change observers (`Observe`); `Awareness` exposes presence (`SetLocalState`, `StatesJSON`, `EncodeAll`, `ApplyUpdate`) plus its own `Observe`. Every exported signature uses only gomobile-safe types (`string` / `int64` / `bool` / `[]byte` / `error`, plus the bound `*Doc` / `*Awareness` / `*Subscription` and observer interfaces), and `Close()` releases the native state. `mobile/` is its own Go module (Go 1.26+, which `golang.org/x/mobile` requires), so the root module's Go 1.23 floor and dependencies are unaffected; import it with `go get github.com/reearth/ygo/mobile`. See [`mobile/README.md`](mobile/README.md) for the build matrix, threading and lifecycle guidance, binary size / ABI notes, and Kotlin / Swift snippets.
+
+`SyncClient` (v1.48.0, #165) makes that on-device `Doc` **self-syncing**: `NewSyncClient(url, dbPath, token)` returns one wired to a `provider/websocket`-compatible server, persisting locally and reconnecting on its own with no platform-side reconnect logic to write. See [Offline-First Client](#offline-first-client) above and [`mobile/README.md`](mobile/README.md#self-syncing-syncclient) for Kotlin/Swift call shapes.
+
+## Running in production
+
+The library ships several operational hooks. See package godoc for the full reference; here's the short version of what to wire up.
+
+### Logging
+
+`Server.Logger *slog.Logger` defaults to `slog.Default()`. Surfaces slow-peer write failures, sync-dispatch errors, and awareness apply errors at `Warn` level with `room` and `peer` context.
+
+```go
+server := websocket.NewServer()
+server.Logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
+```
+
+### Observability
+
+`Doc.PendingStats()` returns a snapshot of the per-doc pending queue: how many items are parked, how many delete-set ranges are queued, which clients we're blocked on. Cheap (one read-lock). Useful when monitoring out-of-order delivery in production.
+
+```go
+stats := doc.PendingStats()
+metrics.PendingItems.Set(float64(stats.Items))
+metrics.PendingDeleteRanges.Set(float64(stats.DeleteRanges))
+```
+
+### Resource limits
+
+All hard-capped (semaphore-backed for connection counts):
+
+- `Server.MaxConnections` — server-wide cap on simultaneous WebSocket peers.
+- `Server.MaxPeersPerRoom` — per-room cap.
+- `Server.MaxRooms` — total-room cap (applies to peer upgrades and `Server.Apply`).
+- `Server.MaxUpdateBytes` — per-update size cap (default 64 MiB).
+- `Server.MaxMessageBytes` — per-message size on the WebSocket read path (default 64 MiB).
+- `Server.PeerWriteQueueSize` — per-peer broadcast queue depth (default 256). When the queue fills, the peer is disconnected.
+- `Server.MaxPendingItems` — per-document cap on items parked in the out-of-order pending queue (default 100,000). When the cap is reached, updates that would park additional items return `ErrInvalidUpdate`. Defends against a crafted update full of far-future-clock items that would otherwise grow the queue unboundedly. Same cap is available at the doc level via `crdt.WithMaxPendingItems(n)`.
+- `Server.HandshakeTimeout` — first-read deadline applied after WebSocket upgrade (default 30s). Closes connections that complete the handshake but never send a message (slow-loris defense). Cleared after the first successful read.
+- `Server.MaxAwarenessBytesPerRoom` — cap on the cumulative byte size of awareness state held in one room across all remote clients (default unlimited; suggested production value: 100 MiB). Without this cap, a single peer can claim up to 10,000 clientIDs each holding the 1 MiB per-state maximum. Forwarded to each room's `Awareness` via `awareness.Awareness.SetMaxBytes`.
+- `Server.RoomIdleTimeout` (v1.39.0) — keeps a room resident and warm (durably flushed, in-memory doc intact) for this long after its last peer disconnects, so a quick reconnect skips a full `LoadDoc` reload. Default 0: evict immediately, matching prior releases.
+- `Server.MaxResidentRooms` (v1.39.0) — LRU bound on how many idle-resident rooms stay warm at once when `RoomIdleTimeout > 0`; a background sweeper evicts the least-recently-idle room first once the count is exceeded. Default 0: unbounded.
+
+Each defaults to a sensible value or unlimited where noted.
+
+### Auth
+
+`Server.AuthFunc func(*http.Request) bool` runs before the WebSocket upgrade. Return false to reject:
+
+```go
+server.AuthFunc = func(r *http.Request) bool {
+    return validateBearer(r.Header.Get("Authorization"))
+}
+```
+
+For **read-only connections** (v1.30.0, #59), use `Server.Authorize` instead — it both accepts/rejects and reports per-connection config. A read-only peer receives document and awareness broadcasts but its inbound writes (sync step-2/update and awareness) are dropped server-side; it can still request state (SyncStep1) and query awareness. When set, `Authorize` takes precedence over `AuthFunc`:
+
+```go
+server.Authorize = func(r *http.Request) (ygws.ConnectionConfig, bool) {
+    if !validateBearer(r.Header.Get("Authorization")) {
+        return ygws.ConnectionConfig{}, false // reject → 401
+    }
+    return ygws.ConnectionConfig{ReadOnly: !isEditor(r)}, true
+}
+```
+
+`ConnectionConfig.Identity` (v1.56.0) attaches whatever names the connection's user, a user ID or a session. ygo never reads it; `Server.OnPeerUpdate` receives it as `PeerUpdateInfo.Identity` with each update that connection sends, so the hook can tell which authenticated connection a frame arrived on:
+
+```go
+server.Authorize = func(r *http.Request) (ygws.ConnectionConfig, bool) {
+    user, ok := authenticate(r)
+    if !ok {
+        return ygws.ConnectionConfig{}, false
+    }
+    return ygws.ConnectionConfig{ReadOnly: !user.CanEdit, Identity: user.ID}, true
+}
+server.OnPeerUpdate = func(info ygws.PeerUpdateInfo, apply func() error) error {
+    if err := apply(); err != nil {
+        return err
+    }
+    userID, _ := info.Identity.(string)
+    rateLimitWrites(userID)
+    return nil
+}
+```
+
+**`Identity` names the connection that transmitted the update, not the author of the items inside it.** A reconnecting client answers sync step-1 with a step-2 carrying everything it holds, including items other users authored, and that frame reaches the hook under the reconnecting connection's identity. Treat it as "this connection sent these bytes" — for per-item authorship, read the client IDs in `info.Update`, which are the CRDT's own and are not an authenticated identity either.
+
+Two more limits worth knowing. `OnPeerUpdate` fires only for peers connected to this node: updates relayed in from other cluster nodes, and `Server.Apply`, bypass the hook and carry no identity, so what a single node records is not the whole document's history. And an in-band token accepted by `Server.OnTokenAuth` replaces the connection's `ConnectionConfig` whole — its `Identity`, and also its `ReadOnly`, which reverts to false unless the hook sets it.
+
+### Graceful shutdown
+
+`Server.Shutdown(ctx)` drains pending writes and closes peers. Adapters that implement `PersistenceAdapterContext` (v1.7.0) receive a context derived from the shutdown signal so they can abort in-flight DB calls instead of waiting for the driver's timeout.
+
+## Performance
+
+### Running the benchmarks
+
+```bash
+# Run all benchmarks with memory allocation stats
+go test ./... -run='^$' -bench='^Benchmark' -benchmem
+
+# Run a specific package only
+go test ./crdt/ -run='^$' -bench='^Benchmark' -benchmem
+
+# Run with more iterations for tighter confidence intervals
+go test ./... -run='^$' -bench='^Benchmark' -benchmem -benchtime=5s -count=3
+```
+
+To compare two branches (e.g. before and after an optimization), install [`benchstat`](https://pkg.go.dev/golang.org/x/perf/cmd/benchstat):
+
+```bash
+go install golang.org/x/perf/cmd/benchstat@latest
+
+# Capture baseline
+git checkout main
+go test ./... -run='^$' -bench='^Benchmark' -benchmem -count=5 | tee old.txt
+
+# Capture candidate
+git checkout my-branch
+go test ./... -run='^$' -bench='^Benchmark' -benchmem -count=5 | tee new.txt
+
+# Compare
+benchstat old.txt new.txt
+```
+
+The CI benchmark workflow (`.github/workflows/benchmark.yml`) runs this comparison automatically on every pull request.
+
+### Reference numbers
+
+Measured on Apple M4 Max (arm64, Go 1.23). Your numbers will vary by hardware.
+
+**Encoding (`encoding/`)** — the codec runs on every item; these are sub-10 ns, zero-alloc:
+
+| Benchmark | ns/op | Allocs |
+|-----------|-------|--------|
+| ReadVarUint (1 byte) | 1.0 | 0 |
+| WriteVarUint (1 byte) | 1.7 | 0 |
+| WriteVarString (1000 chars) | 15 | 0 |
+| ReadVarString (1000 chars) | 89 | 1 (string copy) |
+| Encoder reuse (`Reset`) vs new | 7.7 vs 12.4 | 0 vs 1 |
+
+**CRDT core (`crdt/`)** — realistic document operations:
+
+| Benchmark | ns/op | Notes |
+|-----------|-------|-------|
+| `YText_InsertBulk` (1000 chars) | 2 006 | Single transaction — fast path |
+| `YText_Insert` (1000 × 1 char) | 344 048 | ~344 ns per keystroke |
+| `YText_Delete` (1000 × 1 char) | 891 456 | ~891 ns per delete |
+| `EncodeStateAsUpdateV1` (1000 items) | 21 360 | ~21 µs to serialise a document |
+| `ApplyUpdateV1` (1000 items) | 109 806 | ~110 µs to integrate a full state |
+| `EncodeStateAsUpdateV2` | 33 029 | V2 is ~1.5× larger to encode… |
+| `ApplyUpdateV2` | 679 207 | …and ~6× slower to decode |
+| `TwoPeerConvergence` | 16 284 | Encode + apply incremental sync |
+| `YMap_Set` (100 keys) | 19 557 | |
+| `YArray_Push` (100 elements) | 59 209 | |
+
+**Sync protocol (`sync/`)** — message framing overhead is negligible:
+
+| Benchmark | ns/op |
+|-----------|-------|
+| `EncodeSyncStep1` | 179 |
+| `ApplySyncMessage_Step1` | 631 |
+| `ApplySyncMessage_Update` (1000-item doc) | 1 404 |
+| `FullHandshake` | 1 303 |
+
+**Awareness (`awareness/`)** — per-peer ephemeral state:
+
+| Benchmark | ns/op |
+|-----------|-------|
+| `SetLocalState` | 65 |
+| `EncodeUpdate` (1 client) | 226 |
+| `EncodeUpdate` (50 clients) | 12 901 |
+| `ApplyUpdate` (50 clients) | 19 801 |
+
+## Architecture
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for a detailed explanation of the CRDT algorithm, data model, and package design.
+
+## Compatibility
+
+ygo targets compatibility with:
+
+- [Yjs](https://github.com/yjs/yjs) v13.x (JavaScript reference implementation)
+- [y-protocols](https://github.com/yjs/y-protocols) sync and awareness protocol
+- [lib0](https://github.com/dmonad/lib0) binary encoding format
+
+Compatibility is verified by golden-file tests that compare binary output byte-for-byte with Yjs-generated fixtures, in both directions, plus a differential convergence fuzzer that checks ygo's merge results against Yjs over randomized concurrent-edit histories. Both run in CI.
+
+For a Go-vs-Rust port comparison, see [docs/comparison/ygo-vs-yrs.md](docs/comparison/ygo-vs-yrs.md).
+
+## Versioning and API stability
+
+ygo follows [semantic versioning](https://semver.org/). The v1.x public API is stable: new functionality lands as minor releases; bug fixes as patch releases; breaking changes are deferred to v2.
+
+Note that the bump size follows the change's **API surface**, not its intent — a bug-fix release that adds a new exported symbol is still a minor.
+
+## Gotchas
+
+### No read methods or observer registration inside `Transact`
+
+`Transact` acquires the document **write lock** for the duration of its callback.
+Calling any of the read methods (`Get`, `ToSlice`, `Keys`, `Entries`, `ToString`,
+`ToDelta`) or registering/unregistering observers (`Observe`, `ObserveDeep`) from
+**inside** a `Transact` callback will **deadlock** because those operations try to
+acquire the same lock.
+
+```go
+// ✗ WRONG — deadlocks
+doc.Transact(func(txn *crdt.Transaction) {
+    arr.Get(0)         // tries to RLock — deadlock
+    arr.Observe(fn)    // tries to Lock  — deadlock
+})
+
+// ✓ CORRECT — acquire references and register observers before Transact
+arr.Observe(func(e crdt.YArrayEvent) { /* ... */ })
+doc.Transact(func(txn *crdt.Transaction) {
+    arr.Push(txn, []any{"value"})
+})
+fmt.Println(arr.ToSlice()) // read after Transact returns
+```
+
+This constraint applies to `YArray`, `YText`, `YMap`, `YXmlFragment`, and
+`YXmlElement`. UndoManager callbacks (`OnStackItemAdded`) also run outside
+the lock and are safe to use normally.
+
+### `Transact` does not roll back on panic
+
+If the callback panics, the document lock is still released and the original
+panic propagates to the caller — but the mutations it completed before panicking
+stay **committed**, and observers fire with that partial state. This matches Yjs
+JS and yrs, neither of which has transactional rollback. Callers who need
+atomicity must implement it above `Transact` and reconcile via sync;
+`UndoManager` is the supported route for undoing already-committed work.
+
+### `Doc.ClientID` is read-only after creation
+
+Use `crdt.WithClientID(id)` at construction time. Changing the ID after the
+document has started accepting operations will corrupt the item store.
+
+## What's changed since v1.0
+
+Forty-plus minor and patch releases. Broadly: the early arc (v1.1.x–v1.7.x) focused on production hardening — panic safety, out-of-order convergence, WebSocket hooks, observability, error-returning variants, context-aware persistence. The middle arc (v1.8.x–v1.14.x) delivered a systematic cross-reference audit against Yjs JS and yrs, closing correctness gaps in YATA boundary handling, the awareness protocol, delete-path cascade, lib0 wire-format parity, YText format markers, and JSON serialisation of nested shared types — tracked under the [`gaps` label](https://github.com/reearth/ygo/issues?label=gaps). Since then the work has been mostly server-side: Hocuspocus compatibility, horizontal scale, versioned and coalesced persistence, mobile bindings, and positional-access performance.
+
+See [CHANGELOG.md](CHANGELOG.md) for per-release detail and [docs/HISTORY.md](docs/HISTORY.md) for the design narrative.
+
+## Documentation
+
+| Document | What it covers |
+|---|---|
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | The CRDT algorithm (YATA), data model, and package layout |
+| [docs/INTERNALS.md](docs/INTERNALS.md) | Implementation detail below the public API — item store, integration, encoding |
+| [docs/CLUSTERING.md](docs/CLUSTERING.md) | Running multiple server instances behind a load balancer via the cluster relay |
+| [docs/PERSISTENCE.md](docs/PERSISTENCE.md) | Persistence adapters, versioning, compaction, and durability guarantees |
+| [docs/CLIENT.md](docs/CLIENT.md) | The embeddable offline-first sync client — offline model, reconnect/backoff, `Stats`, auth caveat, mobile bindings |
+| [docs/comparison/ygo-vs-yrs.md](docs/comparison/ygo-vs-yrs.md) | Go-vs-Rust port comparison against yrs |
+| [docs/HISTORY.md](docs/HISTORY.md) | The design narrative across releases |
+| [CHANGELOG.md](CHANGELOG.md) | Per-release changes |
+| [SECURITY.md](SECURITY.md) | Threat model and vulnerability reporting |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Development workflow, benchmarking discipline, PR checklist |
+
+API reference: [pkg.go.dev/github.com/reearth/ygo](https://pkg.go.dev/github.com/reearth/ygo).
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+
+For significant changes, open an issue first to discuss what you'd like to change.
+
+## Security
+
+ygo's security model is **defense-in-depth**, not authentication:
+
+- **`ClientID` is collision-avoidance, not authentication.** The protocol does not validate that incoming updates match a peer's declared `ClientID`. Use `Server.AuthFunc` and/or transport-level auth.
+- **Transport security is the embedder's responsibility.** ygo does not enforce TLS, signed updates, or peer authentication. Wrap the WebSocket server behind your usual reverse proxy.
+- **`Server.Apply` and `Server.BroadcastUpdate` grant total write authority.** Treat the `*Server` handle like a database connection. `OnInject` is defense-in-depth, not a substitute for caller-side authorization.
+- **`ClientID` generation uses `crypto/rand`** (v1.5.0). 32-bit space matches Yjs JS for wire compatibility; collision probability at multi-tenant scale is documented in [SECURITY.md](SECURITY.md).
+
+Please report vulnerabilities by following the process in [SECURITY.md](SECURITY.md). Do not open public issues for security problems.
+
+## License
+
+MIT License — see [LICENSE](LICENSE).
+
+This project is not affiliated with the Yjs authors. Yjs is developed by [Kevin Jahns](https://github.com/dmonad) and contributors.

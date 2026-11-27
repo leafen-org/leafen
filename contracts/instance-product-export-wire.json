@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "name": "instance-product-export",
+  "format": "leafen.instance-product-export",
+  "bounds": [
+    { "goName": "maxInstanceProductExportRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "instanceProductExportItemsPerTurn", "tsName": "itemsPerTurn", "value": 32 },
+    { "goName": "instanceProductExportFragmentTargetBytes", "tsName": "fragmentTargetBytes", "value": 1000000 },
+    { "goName": "instanceProductExportArtifactChunkWindow", "tsName": "artifactChunkWindow", "value": 16 },
+    { "goName": "instanceProductExportCleanupRows", "tsName": "cleanupRows", "value": 16 },
+    { "goName": "defaultInstanceProductExportMaxAttempts", "tsName": "maxAttempts", "value": 3 }
+  ],
+  "constants": [
+    { "goName": "instanceProductExportFormat", "tsName": "format", "value": "leafen.instance-product-export" },
+    { "goName": "instanceProductExportFormatVersion", "tsName": "formatVersion", "value": 1 },
+    { "goName": "instanceProductExportInputFormat", "tsName": "inputFormat", "value": "json" },
+    { "goName": "instanceProductExportContentType", "tsName": "contentType", "value": "application/json" }
+  ],
+  "errors": [
+    { "goName": "errorCodeInstanceProductExportCreateFailed", "tsName": "createFailed", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_CREATE_FAILED" },
+    { "goName": "errorCodeInstanceProductExportNotFound", "tsName": "notFound", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_NOT_FOUND" },
+    { "goName": "errorCodeInstanceProductExportReadFailed", "tsName": "readFailed", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_READ_FAILED" },
+    { "goName": "errorCodeInstanceProductExportIdentityReused", "tsName": "identityReused", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_IDENTITY_REUSED" },
+    { "goName": "errorCodeInstanceProductExportPolicyIncomplete", "tsName": "policyIncomplete", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_POLICY_INCOMPLETE" },
+    { "goName": "errorCodeInstanceProductExportNotReady", "tsName": "notReady", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_NOT_READY" },
+    { "goName": "errorCodeInstanceProductExportArtifactInvalid", "tsName": "artifactInvalid", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_ARTIFACT_INVALID" },
+    { "goName": "errorCodeInstanceProductExportStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeInstanceProductExportDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_DATABASE_BUSY" },
+    { "goName": "errorCodeInstanceProductExportSourceChanged", "tsName": "sourceChanged", "value": "LEAFEN_INSTANCE_PRODUCT_EXPORT_SOURCE_CHANGED" }
+  ],
+  "enums": [
+    {
+      "tsName": "InstanceProductExportStatus",
+      "tsValuesName": "instanceProductExportStatuses",
+      "values": [
+        { "goName": "instanceProductExportStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "instanceProductExportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "instanceProductExportStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "instanceProductExportStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "InstanceProductExportPhase",
+      "tsValuesName": "instanceProductExportPhases",
+      "values": [
+        { "goName": "instanceProductExportPhaseCapture", "tsName": "capture", "value": "capture" },
+        { "goName": "instanceProductExportPhasePublish", "tsName": "publish", "value": "publish" },
+        { "goName": "instanceProductExportPhaseCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "instanceProductExportInput",
+      "tsName": "InstanceProductExportInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "instanceProductExportJob",
+      "tsName": "InstanceProductExportJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "InstanceProductExportStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "InstanceProductExportPhase" },
+        { "goName": "ProcessedItems", "jsonName": "processedItems", "goType": "int", "tsType": "number" },
+        { "goName": "TotalItems", "jsonName": "totalItems", "goType": "int", "tsType": "number" },
+        { "goName": "ChunkCount", "jsonName": "chunkCount", "goType": "int", "tsType": "number" },
+        { "goName": "ArtifactBytes", "jsonName": "artifactBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ArtifactSHA256", "jsonName": "artifactSha256", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string" },
+        { "goName": "CanRetry", "jsonName": "canRetry", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanCancel", "jsonName": "canCancel", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "instanceProductExportJobResult",
+      "tsName": "InstanceProductExportJobResult",
+      "fields": [
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Job", "jsonName": "job", "goType": "instanceProductExportJob", "tsType": "InstanceProductExportJob" }
+      ]
+    },
+    {
+      "goName": "instanceProductExportCurrentResult",
+      "tsName": "InstanceProductExportCurrentResult",
+      "fields": [
+        { "goName": "Job", "jsonName": "job", "goType": "*instanceProductExportJob", "tsType": "InstanceProductExportJob | null" }
+      ]
+    }
+  ]
+}

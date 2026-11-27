@@ -1,0 +1,678 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: var(--topbar-height);
+  /* Notion's bar (seen 2026-10-29, 768 and 1280): 12px in on the left, 10px on the right;
+     44px with no line under it, the page scrolled or not (seen 2026-10-31, 800 and 1280). */
+  padding-block: 0;
+  padding-inline: 12px 10px;
+  background: var(--bg-app);
+  font-size: 14px;
+  /* It takes no caret: a press on it leaves the caret where it was, as
+     Notion's bar (seen 2026-11-12; a side peek goes by it, rowOpenPress.ts). */
+  -webkit-user-select: none;
+  user-select: none;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    opacity 0.7s ease;
+}
+/* A key pressed in the page's text fades the bar out, and the mouse moving
+   fades it back, 0.7s each way as Notion's (seen 2026-10-31; typingFade.ts). */
+:global(:root[data-typing="true"]) .topbar { opacity: 0; }
+/* On a phone it stands over the page's own scroller rather than sticking:
+   Safari would color the status bar from a short sticky box at the screen's
+   top, where Notion's bar, laid the same way, keeps its soft ground
+   (index.html, .bar-ground). */
+.topbar[data-phone="true"] { position: relative; height: 44px; padding-block: 0; padding-inline: calc(4px + var(--phone-safe-start, 0px) + var(--phone-bleed-start, 0px)) calc(18px + var(--phone-safe-end, 0px) + var(--phone-bleed-end, 0px)); margin-inline: calc(-1 * var(--phone-bleed-start, 0px)) calc(-1 * var(--phone-bleed-end, 0px)); }
+/* Notion's phone bar (seen 2026-10-27): a 36×44 ☰ in the text color, its
+   22px icon 7px in, the unread count over its lines: a gray pill 16px high,
+   3px past the lines' start and 9px down, gray 10px words (seen 2026-11-13;
+   light 2026-11-12) — not the desktop's red one. */
+.topbar[data-phone="true"] .hamburger { display: flex; width: 36px; height: 44px; margin-inline-end: 4px; color: var(--text-default); }
+.topbar[data-phone="true"] .hamburger svg { width: 22px; height: 22px; }
+.topbar[data-phone="true"] .hamburgerBadge { top: 9px; inset-inline-start: 13px; min-width: 16px; height: 16px; border-radius: 4px;
+  background: var(--phone-menu-badge-bg); color: var(--phone-menu-badge-fg); font-size: 10px; font-weight: 500; line-height: 16px; }
+.topbar[data-phone="true"] .right { gap: 14px; }
+/* The page's name 16px, its piece 8px after the ☰ and the name or its icon
+   6px into it; an icon 24px, 5px to the name, as Notion's phone bar (seen
+   2026-11-13 in iPhone Safari 402: the piece at 48, the name at 54, or the
+   icon at 54 and the name at 83). */
+.topbar[data-phone="true"] .crumb { max-width: none; padding-inline-start: 6px; font-size: 16px; line-height: 1.2; }
+.topbar[data-phone="true"] .crumb:has(> [data-topbar-crumb-icon]:first-child) { padding-inline: 6px 5px; }
+.topbar[data-phone="true"] .crumbIcon[data-topbar-crumb-icon] { width: 24px; height: 24px; flex-basis: 24px; font-size: 16.8px; }
+/* Share, on a page with comments the comments, and "⋯": 26px icons in the dark icon color (icoPri), 40px
+   apart, the last ending 18px from the edge (Notion's, seen 2026-10-27), each its 26px box 14 from the next,
+   44 high and the comments' 26, the grey cell a tap leaves (touchHoverCells.css; 2026-11-17, iPhone 402). */
+.topbar[data-phone="true"] :is(.shareAction, .commentAction, [data-page-menu-trigger]) { width: 26px; height: 44px; padding: 0; border: 0; color: var(--icon-primary); }
+.topbar[data-phone="true"] .commentAction { height: 26px; }
+.topbar[data-phone="true"] .shareAction svg,
+.topbar[data-phone="true"] .commentAction svg,
+.topbar[data-phone="true"] [data-page-menu-trigger] svg { width: 26px; height: 26px; margin: 0; color: var(--icon-primary); }
+.topbar[data-phone="true"] .shareAction span,
+.topbar[data-phone="true"] .linkAction,
+.topbar[data-phone="true"] [data-topbar-favorite-action],
+.topbar[data-phone="true"] [data-page-presence],
+.topbar[data-phone="true"] .editedTime { display: none; }
+.phoneRequestItem { display: flex; align-items: center; width: 100%; min-height: 28px; padding: 0 8px;
+  color: var(--text-default); font-size: 14px; border-radius: 4px; }
+.phoneRequestItem:hover, .phoneRequestItem[data-focused] { background: var(--bg-hover); }
+/* Under it a hairline, one screen pixel of the faint border color over the
+   page's top, the page scrolled or not (Notion's phone bar, seen 2026-11-12
+   at 402pt: a 1/3pt line of #f0efed, #2c2c2b in dark, right under its 44pt,
+   on a page and a database alike, nothing under it moved). */
+.topbar[data-phone="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  border-top: 0.5px solid var(--border-secondary);
+  pointer-events: none;
+}
+/* A folded sidebar's ☰, as Notion's (seen 2026-10-29): 24px, its 20px icon
+   in the dark icon color — the same in a page's bar and a row page's. */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  margin-inline-end: 6px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  color: var(--icon-primary);
+}
+/* The inbox's unread count over the ☰'s top right: Notion's 12px red pill on
+   a desktop, its 16px badge on a phone (above). */
+.hamburger { position: relative; }
+.hamburgerBadge {
+  position: absolute;
+  top: -2px;
+  inset-inline-start: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 12px;
+  height: 12px;
+  padding: 0 3px;
+  border-radius: 9999px;
+  background: var(--unread-mark);
+  color: var(--unread-mark-text);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 12px;
+  text-align: center;
+}
+.hamburger:hover,
+.hamburger:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.hamburger[data-desktop-visible="true"] {
+  display: flex;
+}
+/* A row page's bar sets its pieces 2px apart; its ☰ keeps the same 6px to
+   the path as a page's (Notion's row page, seen 2026-11-14: 12 and 42). */
+[data-row-peek-chrome-side] > .hamburger { margin-inline-end: 4px; }
+@media (max-width: 599px) {
+  .hamburger {
+    display: flex;
+  }
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+/* Short of room, every piece gives way at the same rate, the page's own
+   too, each ending in an ellipsis, as Notion's (seen 2026-11-08: its pieces
+   all flex-shrink 1 from their own width). */
+.crumbWrap {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex-shrink: 1;
+}
+/* The "…" that stands for the hidden pieces keeps its width, as Notion's (24px). */
+.crumbWrap[data-hidden-crumbs] {
+  flex-shrink: 0;
+}
+/* A path piece, as Notion's (seen 2026-10-28): 14px/400 in the text color,
+   rounder; the pieces above the page keep 160px of their names, the page
+   240px of its own. */
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 24px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crumb svg {
+  flex: 0 0 auto;
+}
+.crumbIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  overflow: hidden;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  line-height: 1;
+}
+/* A piece led by its page's icon, as Notion's (seen 2026-11-08): 3px in
+   before the 18px icon, 5px to the name and 5px after it. */
+.crumb:has(> [data-topbar-crumb-icon]:first-child) {
+  gap: 5px;
+  padding-block: 0;
+  padding-inline: 3px 5px;
+}
+.crumbIcon[data-topbar-crumb-icon] {
+  width: 18px;
+  height: 18px;
+  flex-basis: 18px;
+}
+.crumbLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.crumbWrap .crumb:hover,
+.crumbWrap .crumb:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.crumbWrap:not(:last-child) .crumbLabel {
+  max-width: 160px;
+}
+/* The page's own name keeps 240px, its piece's padding and icon besides
+   (Notion's 252px piece, seen 2026-11-09; its phone bar's too, 2026-11-16). */
+.crumbWrap:last-child .crumbLabel {
+  max-width: 240px;
+}
+/* A piece the "…" spread out, as Notion's (seen 2026-11-08): it keeps its
+   width, 200px at most, while the others give way, and grows in from
+   nothing over 0.2s. */
+.crumbWrap[data-revealed="true"] {
+  flex-shrink: 0;
+  max-width: 200px;
+  overflow: hidden;
+  animation: crumbRevealed 200ms ease-out;
+}
+@keyframes crumbRevealed {
+  from { max-width: 0; opacity: 0; }
+  to { max-width: 200px; opacity: 1; }
+}
+/* Pieces are joined by a pale "/", as Notion's. */
+.sep {
+  display: inline-flex;
+  flex: 0 0 6px;
+  justify-content: center;
+  width: 6px;
+  color: var(--border-default);
+  font-size: 13px;
+  line-height: 15.6px;
+}
+/* "🔒 개인 페이지 ⌄" after a private page's path, as Notion's (seen 2026-10-28). */
+.privatePlace {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--icon-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.privatePlace span {
+  margin-block: 0;
+  margin-inline: 4px 5px;
+  color: var(--text-tertiary);
+}
+.privatePlace svg:last-child {
+  width: 11px;
+  height: 11px;
+}
+.privatePlace:hover,
+.privatePlace:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  gap: 2px;
+}
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.action svg {
+  flex: 0 0 auto;
+}
+.action span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.commentAction {
+  position: relative;
+  width: 28px;
+  gap: 0;
+  padding: 0;
+}
+/* An unread discussion on the page: a red dot at the icon's top right, ringed
+   in the page's color, as Notion's (seen 2026-11-07). */
+.commentUnread {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-app);
+  border-radius: 50%;
+  background: var(--unread-mark);
+}
+/* Notion's "공유" (seen 2026-10-28): no frame, 400, its icon in a 17px place
+   (a lock's 12px) 6px before the word. */
+.shareAction {
+  height: 28px;
+  gap: 6px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-weight: 400;
+}
+.shareAction svg {
+  flex: 0 0 auto;
+  margin: 0 -1.5px;
+  color: var(--icon-primary);
+}
+.shareAction[data-private="true"] svg {
+  margin: 0 -4px;
+}
+.shareAction span {
+  min-width: 0;
+  line-height: 18px;
+}
+.iconAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  /* Notion's top bar icons are its dark icon color (icoPri, seen 2026-10-11). */
+  color: var(--icon-primary);
+}
+.action:hover,
+.action:focus-visible,
+.iconAction:hover,
+.iconAction:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.iconAction svg {
+  color: currentColor;
+}
+.iconAction[data-favorite="true"] {
+  color: var(--c-yellow);
+}
+.iconAction:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+.linkAction {
+  color: var(--icon-primary);
+}
+/* The time the page was last edited, which a narrow bar leaves out (TopBar), as Notion's does. */
+/* "오프라인" while the connection is lost, as Notion's (seen 2026-11-14, 1440
+   dark): 14/21 words in the secondary color, a 24px box with the faint 1px
+   line of an outlined button, round 4, 6px in; the bar's next box 28px after
+   it (26 here, the rail keeping 2 between its boxes). */
+.offlinePill {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  box-sizing: border-box;
+  height: 24px;
+  padding: 0 6px;
+  margin-inline-end: 26px;
+  border: 1px solid var(--button-outline);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  white-space: nowrap;
+  cursor: default;
+}
+.offlinePill:disabled {
+  color: var(--text-secondary);
+}
+
+.editedTime {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.editedTime:hover,
+.editedTime:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.linkAction[data-copy-state="copied"] {
+  color: var(--c-green);
+}
+.linkAction[data-copy-state="failed"] {
+  color: var(--danger);
+}
+@media (max-width: 480px) {
+  .right [data-topbar-presence="true"] {
+    display: none;
+  }
+}
+/* "잠금" as Notion's (seen 2026-10-31): 24px, 6px in, rounded 4, 14px in the light grey with a
+   filled lock 4px before its word (+26 from its edge, 2026-11-16); under the pointer only its ground
+   tints. After a path it stands 3px past the path's last piece and 2px before what follows (Notion's
+   path keeps 8px after it, the lock takes 5 back). Unlocked for the reader, "다시 잠금" is blue on a blue line. */
+.lockPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.left > .lockPill:not(:first-child) { margin-inline: 3px 2px; }
+.lockPill svg { color: var(--icon-tertiary); }
+.lockPill:hover, .lockPill:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.lockPill[data-page-lock-again] {
+  border: 1px solid var(--accent-blue);
+  background: rgba(0, 128, 213, 0.047);
+  color: var(--accent-blue);
+}
+.lockPill[data-page-lock-again] svg {
+  color: var(--accent-blue);
+}
+
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.moreMenu,
+.shareMenu,
+.crumbMenu {
+  position: absolute;
+  top: 34px;
+  inset-inline-end: 0;
+  z-index: 31;
+  width: 280px;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+  overscroll-behavior: contain;
+}
+
+.moreMenu {
+  width: min(376px, calc(100vw - 20px));
+}
+
+.crumbMenu {
+  inset-inline-end: auto;
+  inset-inline-start: 12px;
+  width: 260px;
+}
+
+/* The share window is rounder than a menu, 12px, as Notion's (seen 2026-10-11).
+   Its rows are 8px in from its sides, as Notion's lists are (a person's row
+   440px of 456 with 8px around its face, seen 2026-11-14): what runs to its
+   edge (the tabs, a step's head, the foot) reaches out over that. */
+.shareMenu {
+  width: min(456px, calc(100vw - 20px));
+  padding: 6px 8px;
+  border-radius: 12px;
+}
+
+/* The bar's small menus (hidden path pieces, lock, verification) use the
+   shared menu row, Notion's 28px (2026-10-27). */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.menuItem + .menuItem {
+  margin-top: var(--menu-row-space);
+}
+
+.menuItem:hover,
+.menuItem:focus,
+.menuItem:focus-visible {
+  background: var(--bg-hover);
+}
+
+.menuItem:focus {
+  outline: none;
+}
+
+.menuItem svg {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+/* The row's words take the room; an icon's box (hidden from readers) keeps its
+   own size, as the hidden path pieces' page icons (16px, 2026-11-05: they had
+   grown to half the row and pushed the titles right). */
+.menuItem > span:not(.itemHint):not(.menuSwitch):not([aria-hidden="true"]) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.itemHint {
+  flex: 0 0 auto;
+  margin-inline-start: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+.menuDisclosure {
+  flex: 0 0 auto;
+  color: var(--icon-secondary) !important;
+  transition: transform 120ms ease;
+}
+.menuDisclosure[data-open="true"] {
+  transform: rotate(90deg);
+}
+.menuItem:disabled,
+.fontOption:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.55;
+}
+.menuItem:disabled:hover,
+.menuItem:disabled:focus,
+.menuItem:disabled:focus-visible,
+.fontOption:disabled:hover,
+.fontOption:disabled:focus,
+.fontOption:disabled:focus-visible {
+  background: transparent;
+  border-color: var(--border-default);
+}
+
+.fontPicker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 2px 4px 6px;
+}
+
+.fontOption {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 58px;
+  gap: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.fontOption:hover,
+.fontOption:focus,
+.fontOption:focus-visible,
+.fontOption[data-active="true"] {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text-default);
+  outline: none;
+}
+
+.fontSample {
+  color: var(--text-default);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.fontOption[data-font="serif"] .fontSample {
+  font-family: var(--font-serif);
+}
+
+.fontOption[data-font="mono"] .fontSample {
+  font-family: var(--font-mono);
+}
+
+.customizeRow {
+  display: grid;
+  gap: 6px;
+  padding: 6px 4px;
+}
+
+.customizeRow > span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* A page of an app's own workspace that people may only view. */
+.appManaged {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* On a phone, "Open app" alone says whose workspace it is. */
+@media (max-width: 480px) {
+  .appManaged[data-app-openable="true"] {
+    display: none;
+  }
+}
+
+/* Back to the app whose workspace this is. */
+.appOpen {
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.appOpen:hover,
+.appOpen:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+/* A locked page's or database's "잠금" menu, as Notion's (seen 2026-10-01): the shared
+   menu row, its 20px marks 8px in and the names at 36 (seen again 2026-11-01). */
+/* 212px as Notion's (seen 2026-10-31), wider where the page's font needs it
+   so "모든 사용자에 대해 잠금 해제" stands whole on one line. */
+.lockMenu.lockMenu {
+  width: max-content;
+  min-width: 212px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+}
+
+.lockMenu svg {
+  flex: none;
+  color: var(--icon-secondary);
+}

@@ -1,0 +1,192 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+/* Notion's export window (seen 2026-10-08, the same for a page, a database and
+   a workspace 2026-11-04): a 320px card, rounded 12px, 24px inside, with no
+   heading or close button — its rows, 16px, then Cancel and Export. */
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(320px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: 0;
+  overflow: auto;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+/* Notion's export while it runs (seen 2026-11-07): the window becomes a
+   180x60 card with "내보내기 진행 중" and a spinner after it, then closes. */
+.dialogBusy {
+  width: 180px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 100%;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.spinner {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: exportSpin 0.9s linear infinite;
+}
+
+@keyframes exportSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
+
+.title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 24px 24px 0;
+  border: 0;
+}
+
+/* A row's name reads a step fainter than its value, in the third text colour,
+ * as Notion's export window's (seen 2026-11-16: color var(--c-texTer), light
+ * #a19e99 and dark #7d7a75, the page's, a database's and the workspace's). */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 28px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* A switch's row stands 32px against a choice's 28px, with no gap between. */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* A choice reads as its value and a chevron, as Notion's (AppSelect "value"). */
+.row [data-app-select] {
+  max-width: 60%;
+}
+
+.scale {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-default);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: end;
+}
+
+.scale {
+  width: 52px;
+}
+
+.note {
+  margin: 4px 0 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.error {
+  margin: 4px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px 24px;
+}
+
+.secondary,
+.primary {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* "취소" in small grey words, not the windows' outlined one, as Notion's
+   export window (seen 2026-11-08: 28px, 0 8px, 14/400, its gray accent
+   rgb(142,139,134) in both themes, not the secondary text). */
+.secondary {
+  color: var(--text-gray-accent);
+  font-weight: 400;
+}
+
+.primary {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  background: var(--bg-hover);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  filter: brightness(0.95);
+}
+
+.primary:disabled,
+.secondary:disabled {
+  opacity: 0.6;
+}

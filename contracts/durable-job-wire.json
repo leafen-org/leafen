@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "name": "durable-job",
+  "bounds": [
+    { "goName": "maxDurableJobRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "durableJobBatchSize", "tsName": "readyJobs", "value": 32 },
+    { "goName": "pageCheckpointJobChunkSize", "tsName": "chunkItems", "value": 32 },
+    { "goName": "defaultDurableJobMaxAttempts", "tsName": "maxAttempts", "value": 3 }
+  ],
+  "errors": [
+    { "goName": "errorCodeJobCreateFailed", "tsName": "createFailed", "value": "LEAFEN_JOB_CREATE_FAILED" },
+    { "goName": "errorCodeJobNotFound", "tsName": "notFound", "value": "LEAFEN_JOB_NOT_FOUND" },
+    { "goName": "errorCodeJobReadFailed", "tsName": "readFailed", "value": "LEAFEN_JOB_READ_FAILED" },
+    { "goName": "errorCodeJobIdentityReused", "tsName": "identityReused", "value": "LEAFEN_JOB_IDENTITY_REUSED" },
+    { "goName": "errorCodeJobRunnerFailed", "tsName": "runnerFailed", "value": "LEAFEN_JOB_RUNNER_FAILED" },
+    { "goName": "errorCodeJobShutdown", "tsName": "shutdown", "value": "LEAFEN_JOB_SHUTDOWN_FAILED" },
+    { "goName": "errorCodeJobRetryUnavailable", "tsName": "retryUnavailable", "value": "LEAFEN_JOB_RETRY_UNAVAILABLE" },
+    { "goName": "errorCodeJobCancelUnavailable", "tsName": "cancelUnavailable", "value": "LEAFEN_JOB_CANCEL_UNAVAILABLE" },
+    { "goName": "errorCodeJobControlFailed", "tsName": "controlFailed", "value": "LEAFEN_JOB_CONTROL_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "DurableJobKind",
+      "tsValuesName": "durableJobKinds",
+      "values": [
+        { "goName": "pageCheckpointJobKind", "tsName": "pageCheckpoint", "value": "page-checkpoint" }
+      ]
+    },
+    {
+      "tsName": "DurableJobStatus",
+      "tsValuesName": "durableJobStatuses",
+      "values": [
+        { "goName": "durableJobStatusQueued", "tsName": "queued", "value": "queued" },
+        { "goName": "durableJobStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "durableJobStatusFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "durableJobStatusCanceled", "tsName": "canceled", "value": "canceled" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "jobInput",
+      "tsName": "DurableJobInput",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "DurableJobKind" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "jobProgress",
+      "tsName": "DurableJobProgress",
+      "fields": [
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string" },
+        { "goName": "ProcessedItems", "jsonName": "processedItems", "goType": "int", "tsType": "number" },
+        { "goName": "TotalItems", "jsonName": "totalItems", "goType": "int", "tsType": "number" },
+        { "goName": "Attempt", "jsonName": "attempt", "goType": "int", "tsType": "number" },
+        { "goName": "MaxAttempts", "jsonName": "maxAttempts", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "jobResult",
+      "tsName": "DurableJobResult",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "SHA256", "jsonName": "sha256", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "jobResponse",
+      "tsName": "DurableJobResponse",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "DurableJobKind" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "DurableJobStatus" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EffectCount", "jsonName": "effectCount", "goType": "int", "tsType": "number" },
+        { "goName": "ChunkCount", "jsonName": "chunkCount", "goType": "int", "tsType": "number" },
+        { "goName": "CanRetry", "jsonName": "canRetry", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanCancel", "jsonName": "canCancel", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "jobProgress", "tsType": "DurableJobProgress" },
+        { "goName": "Result", "jsonName": "result", "goType": "*jobResult", "tsType": "DurableJobResult | null" }
+      ]
+    }
+  ]
+}

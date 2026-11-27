@@ -1,0 +1,158 @@
+/* An action's words, written out or one formula, with "@" and Σ under them at the box's end
+   (AutomationMessageField.tsx), as Notion's message box (seen 2026-11-21 twice): the box 2px in, the words over its
+   whole width 2px 4px in on 20px lines, in a part 4.5em high that scrolls past that, the buttons' row under it. */
+.message {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  padding: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-app);
+  font-size: 14px;
+  cursor: text;
+}
+
+.message:focus-within {
+  border-color: var(--focus); box-shadow: var(--name-field-ring-focus-out);
+}
+
+/* The words' part: 4.5em (63px) high whatever they hold, scrolling once they pass it (Notion's, 6em at most). */
+.messageArea {
+  flex-grow: 1;
+  width: 100%;
+  height: 4.5em;
+  max-height: 6em;
+  overflow-y: auto;
+}
+
+/* Over the whole part, so a press under its last line puts the caret in it. */
+.messageText {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  color: inherit;
+  font: inherit;
+  line-height: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  outline: none;
+  cursor: text;
+}
+
+/* On the caret's line, as every rich field's placeholder (floated, no height). */
+.messageText[data-empty="true"]::before {
+  float: inline-start;
+  height: 0;
+  color: var(--text-tertiary);
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+/* "@" and Σ on their row under the words, 4px in from the box's end and bottom, 2px apart, as Notion's (seen 2026-11-21). */
+.messageButtons {
+  display: flex;
+  align-self: flex-end;
+  gap: 2px;
+  padding-block: 2px;
+  padding-inline: 0 2px;
+}
+
+/* A formula from the part's first line, 2px 4px in as the words (Notion's, seen 2026-11-21). */
+.messageFormula {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  line-height: 20px;
+  text-align: start;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.messageFormula code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* Each a 20px button round 6 (the "@" 4) with its 16px mark in icoSec, blue while the words are a
+   formula; pointed at, the hover ground with the mark as it was (Notion's, seen 2026-11-21). */
+.messageSigma,
+.messageMention {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+
+.messageMention {
+  border-radius: 4px;
+}
+
+.messageSigma:hover,
+.messageMention:hover {
+  background: var(--bg-hover);
+}
+
+.messageSigma[data-formula] {
+  color: var(--accent-blue);
+}
+
+/* A confirmation's message box, beside its own label. */
+.confirmationMessage {
+  min-width: 0;
+}
+
+/* A button's message box, as Notion's (seen 2026-11-01, 2026-11-21): grey and ringed, 91px high, a
+   confirmation's words 6em high and its box 112px. */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .message {
+  border: 0;
+  background: var(--automation-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+}
+.confirmationMessage .messageArea {
+  height: 6em;
+}
+/* While anything in it holds the focus — its words, its formula, "@" or Σ — the box rings blue 1px in and 1px out, as
+   Notion's (seen 2026-11-21 in a database's automation and a page button's confirmation, the ring kept on Σ after the
+   formula editor's 완료); a formula with a problem stays ringed red (below). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .message:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* A formula its editor names a problem in: ringed red, the problem under it in 12px red (Notion's, seen 2026-11-21). */
+.message[data-invalid],
+:global(:is([data-automation-dialog], [data-page-button-setup])) .message[data-invalid] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px var(--danger);
+}
+/* 7px under the box, as the card's fields stand apart. */
+.messageProblem {
+  display: block;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+/* Its name beside a warning, 4px apart. */
+.faultName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

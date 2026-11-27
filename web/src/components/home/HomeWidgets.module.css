@@ -1,0 +1,336 @@
+/* Home's widgets before they hold anything — "내 작업" with no task and the
+   database view with none pinned — as Notion's (seen 2026-11-11, 1440 dark):
+   a card in two halves 1px apart, its fill faint, rounded 12px; each half in
+   the middle of the card's height. On the left what it is for, as Notion's
+   (seen 2026-11-16, 1440 dark): the half 36px in from top and bottom, 24px
+   from the sides, its column 8px more at the foot; a 48px mark 8px in, its
+   words 10px under that at 14/20 in the tertiary grey, 8px in, and the way to
+   start 16px under them, a 28px blue button, its words 8px in, tinted under
+   the pointer. So the mark, the words and the button's words share one line
+   8px in, and the card of "내 작업" is 238px tall (Notion 238). On the right
+   a sample, 24px in. */
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  border-radius: 12px;
+  background: var(--bg-block-empty);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding: 36px 24px 44px;
+  border-inline-end: 1px solid var(--block-divider);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.text > p {
+  margin: 10px 0 16px;
+  padding-inline: 8px;
+}
+
+/* Its 48px picture in the faintest icon grey (Notion's 95,94,89 dark, seen
+   2026-11-16). */
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 48px;
+  height: 48px;
+  margin: 8px;
+  color: var(--text-disabled);
+}
+
+.start {
+  padding: 0;
+  color: var(--accent-blue);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.text .start {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  transition: background 0.1s ease-in-out;
+}
+
+.text .start:hover {
+  background: var(--accent-blue-tint);
+}
+
+.startWrap {
+  position: relative;
+}
+
+/* A sample stands from the top of its half, 32px in, the half at least
+   236px tall, as Notion's (seen 2026-11-16, 1440 dark: both samples' first
+   line 32px under the card's top, the half 236 tall). */
+.databaseSample,
+.taskSample {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-width: 0;
+  min-height: 236px;
+  padding: 32px 24px 0;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The database view's sample: its head row 26px with names at 12px, then
+   five rows of 30px under a line each, a small mark before each name. */
+.databaseSampleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 30px;
+  border-top: 1px solid var(--block-divider);
+}
+
+.databaseSampleRow[data-head] {
+  height: 26px;
+  border-top: 0;
+  font-size: 12px;
+}
+
+.databaseSampleRow > :last-child {
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+/* A sample's marks in the faintest icon grey, as Notion's (95,94,89 dark,
+   seen 2026-11-16). */
+.sampleIcon {
+  display: flex;
+  flex: none;
+  color: var(--text-disabled);
+}
+
+/* A sample's names are medium, as Notion's (seen 2026-11-16: 500 in both). */
+.sampleName {
+  min-width: 0;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "내 작업"'s sample: five tasks 31px apart, each a 21px line 10px over the
+   next — a 20px box, the name 12px after it, its date and its kind 12px
+   after the date at the end — and "+ 새 작업" under them, a 20px plus with
+   its words 14px after it (Notion's, seen 2026-11-16 at 1440 dark: boxes at
+   872, names at 904, kinds 12 after the dates, "새 작업" at 906). */
+.taskSampleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 31px;
+  padding-bottom: 10px;
+}
+
+.taskSampleRow[data-new] {
+  gap: 14px;
+  height: 21px;
+  padding-bottom: 0;
+}
+
+/* A 20px place holding a 14px square, as the box Notion draws there. */
+.taskBox {
+  flex: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  margin: 3px;
+  border: 1.25px solid var(--text-disabled);
+  border-radius: 3px;
+}
+
+.taskWhen {
+  margin-inline-start: auto;
+  white-space: nowrap;
+}
+
+.taskKind {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* The database list "데이터베이스 선택" opens, as Notion's (seen 2026-11-14 at
+   1440, dark): 290 wide, its start at the end of the button's 8px-padded
+   box, its middle on the button's, growing both ways; 6px over the search
+   and 4px round the rest. The search 266x28 12px in, words 6px in; then the
+   databases 4px in, a pixel apart — 28px, or 45px with where it sits under
+   the name (14px, then 12px in the third grey, each line 16.8 and 2 apart),
+   a 20px mark 8px in and the words 8px past it. */
+.databasePicker {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 100%;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  padding: 6px 0 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  transform: translateY(-50%);
+}
+.databasePickerSearch {
+  display: flex;
+  margin: 4px;
+  padding: 4px 8px;
+}
+.databasePickerSearch input {
+  width: 100%;
+  height: 28px;
+  padding: 3px 6px;
+  border: none;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.databasePickerSearch input:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.databasePickerList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 4px 0;
+}
+.databasePickerRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.databasePickerRow:hover,
+.databasePickerRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.databasePickerRow[data-more] { color: var(--text-secondary); }
+.databasePickerIcon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+.databasePickerText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 16.8px;
+}
+/* Named with where it sits, the row is 45px, its words in the middle and its mark 5px down. */
+.databasePickerRow:has(small) { min-height: 45px; }
+.databasePickerIcon:has(+ .databasePickerText > small) { align-self: flex-start; margin-top: 5px; }
+.databasePickerText > span,
+.databasePickerText > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.databasePickerText > small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+.databasePickerList p { margin: 4px 8px; color: var(--text-secondary); font-size: 14px; }
+
+/* A dark theme's card is fainter than a light one's, as Notion's. */
+:global([data-theme="dark"]) .card {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* "내 작업" with sources: the page's first view in a card at most 222px
+   tall that scrolls (Notion's, seen 2026-11-24 at 1299 dpr 1: 822 wide, max
+   222), its tools at the end of its head, 24px each side by side and the
+   blue "새 작업" 28px tall 6px after them, centred on the head's line and
+   shown while the pointer is on the widget, a tool has the focus or its menu
+   is open. */
+.taskHead {
+  position: relative;
+}
+.taskTools {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0;
+  display: flex;
+  align-items: center;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+:global(section):hover > .taskHead > .taskTools,
+.taskTools:focus-within,
+.taskTools:has([aria-expanded="true"]) {
+  opacity: 1;
+}
+.taskTools.taskTools.taskTools [role="toolbar"] {
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.taskTools.taskTools.taskTools [role="toolbar"] div {
+  gap: 0;
+}
+.taskTools.taskTools.taskTools [role="toolbar"] > :empty {
+  display: none;
+}
+/* Its tools' names are for screen readers only, as an inline database's. */
+.taskTools.taskTools.taskTools [role="toolbar"] button:not([data-my-tasks-new]) > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.taskTools.taskTools.taskTools [role="toolbar"] button:not([data-my-tasks-new]),
+.taskTools.taskTools.taskTools [role="toolbar"] a {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  justify-content: center;
+}
+.taskView {
+  max-height: 222px;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: var(--bg-block-empty);
+}
+/* None to show: the view's own "일치하는 작업이 없습니다." in the card,
+   36px under its top (Notion's, seen 2026-11-24). */
+.taskView [data-my-tasks-empty="matches"] {
+  padding: 36px 16px 30px;
+}

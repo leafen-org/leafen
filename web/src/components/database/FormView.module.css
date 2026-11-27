@@ -1,0 +1,544 @@
+/* The form builder, as Notion's (seen 2026-10-04, 2026-10-06, 2026-10-08):
+   "미리보기" and a blue "양식 공유" in the view's row, then one centred column — the form's
+   title and description, who may answer with "변경", a card per question
+   ("응답자의 답변" under it, "…" when pointed at) and "+". */
+.root {
+  min-height: 640px;
+}
+
+.desktopBuilder {
+  position: relative;
+  padding: 28px 0 80px;
+}
+/* A database block's own form ends 96px under its "+", in a page's text and
+   on its own page alike, as Notion's (seen 2026-11-08 at 1303×873). */
+:global([data-inline-database-wrapper] > section > [data-view-type="form"]) .root {
+  min-height: 0;
+}
+:global([data-inline-database-wrapper] > section > [data-view-type="form"]) .desktopBuilder {
+  padding-bottom: 96px;
+}
+
+.builderBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 0 12px;
+}
+
+.rowBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rowBar .saveState { margin-inline-end: 4px; }
+
+.saveState {
+  margin-inline-end: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* Notion's "미리보기" and "양식 공유" (seen 2026-11-15 at 1440 and in Android Chrome at 411): 14px 500, 8 in, the first outlined only, 6 after the tools, its eye 6 before its words. */
+.barButton,
+.primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.barButton { margin-inline-start: 6px; }
+.barButton[aria-expanded="true"] { background: var(--bg-hover); }
+
+.primary {
+  border: 0;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.barButton:disabled,
+.primary:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+/* As Notion's (seen 2026-10-10 at 1280px: 600px cards, centered), at least 40 in from each side of a narrower
+   room (seen 2026-11-06: 413 of an inline form's 493, grid "40px [content] 40px"): its database's box, or on
+   its own page the page 96 in from each edge (--form-page-start, --form-page-width: FormBuilderColumn). */
+.builderColumn {
+  --form-room: var(--form-page-width, 100%);
+  display: flex; flex-direction: column; gap: 24px;
+  width: min(calc(var(--form-room) - 80px), 600px);
+  margin-inline: calc(var(--form-page-start, 0px) + (var(--form-room) - min(calc(var(--form-room) - 80px), 600px)) / 2) 0;
+}
+
+/* The new form's question card shows a table, an arrow and a form, as Notion's. */
+/* A table's mark, an arrow and a form's, 36·24·36 and 12px apart, as Notion's (seen 2026-11-02). */
+.startMarks { display: inline-flex; align-items: center; gap: 12px; }
+.startMarks > svg { width: 36px; height: 36px; }
+.startMarks > svg:nth-child(2) { width: 24px; height: 24px; }
+
+/* "양식 아이콘" and "양식 커버" show while the title's line or they
+   themselves are pointed at — not the description, the notice or a question
+   below — as Notion's (seen 2026-11-08). They are a page head's buttons
+   (PageHeader.module.css .ctrlBtn), 4 over the title (32 under the builder's
+   top), 40 under a cover, 8 under an icon, keeping their room while hidden. */
+.formDecor {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: -20px;
+  padding-inline-start: 18px;
+  opacity: 0;
+}
+
+.formDecor:hover,
+.formDecor:has(~ .formTitle:hover),
+.formDecor:focus-within { opacity: 1; }
+
+.builderColumn[data-has-cover] > .formDecor:first-child { margin-top: 40px; }
+.formIcon + .formDecor { margin-top: -18px; }
+
+/* The icon 78 square over the title, 8 in from its words, 48 under the
+   builder's top or 18 up into a cover, 12 over the title when no buttons
+   come between (Notion's, seen 2026-11-08); its box is 80 with the page
+   icon's 2 under it. */
+.formIcon {
+  position: relative;
+  margin-top: 48px;
+  margin-inline-start: 27px;
+}
+
+.builderColumn[data-has-cover] > .formIcon:first-child { margin-top: -18px; }
+.formIcon + .formTitle { margin-top: -14px; }
+
+/* A cover 160 high across the builder, 8 past its row on either side and 12
+   under it (Notion's, seen 2026-11-08). */
+.formCover {
+  margin: -16px -8px 0;
+}
+
+.formCover > :global([data-native-page-cover]) {
+  height: 160px;
+  min-height: 0;
+}
+
+.formTitle,
+.formDescription {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  outline: none;
+  resize: none;
+}
+
+/* The form's title and description as Notion's (seen 2026-11-03): 40px/700
+   on a 48px line with the page title's faint hint, then 16px on 24px with
+   the disabled text's hint. */
+.formTitle {
+  display: block;
+  min-height: 48px;
+  padding-inline-start: 21px;
+  field-sizing: content;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 48px;
+}
+
+.formTitle::placeholder { color: var(--text-title-placeholder); opacity: 1; }
+
+.formDescription {
+  margin-top: -8px;
+  padding-inline-start: 23px;
+  min-height: 24px;
+  field-sizing: content;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.formDescription::placeholder { color: var(--text-disabled); opacity: 1; }
+
+/* 48 high, its lock and words 22 in at 14px, as Notion's (seen 2026-11-05). */
+.audienceNotice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--text-default) 3%, transparent);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.audienceNotice > svg { flex: none; width: 14px; height: 14px; }
+
+/* A closed form says so in red, without the lock, its "변경" red too (Notion's, seen 2026-11-05). */
+.audienceNotice[data-form-audience-notice="none"] { background: var(--form-closed-bg); color: var(--form-closed-text); }
+.audienceNotice[data-form-audience-notice="none"] > svg { display: none; }
+.audienceNotice[data-form-audience-notice="none"] button { color: var(--form-closed-text); }
+
+.audienceNotice span { flex: 1; }
+
+.audienceNotice button {
+  flex: none;
+  height: 28px;
+  margin-inline-end: 6px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.audienceNotice button:hover { background: var(--bg-active, var(--bg-hover)); }
+
+/* The builder's menus, as a question's (FormQuestionCard.module.css
+   .questionMenu); their divider is a question's menu's and a condition's. */
+.shareMenu,
+.addMenu {
+  position: fixed;
+  /* Over a peek (51) and the sidebar's own layers, as the database menus. */
+  z-index: 53;
+  display: flex;
+  flex-direction: column;
+  min-width: 290px;
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.questionMenuDivider {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+
+/* "유형 선택", as Notion's (seen 2026-11-12): 290 wide, at most 80% of the
+   window tall (FormAddQuestionMenu); a 42 tall head (14 over its title, 16
+   in) that stays while the rows under it scroll, 12 in, 1 apart and keeping
+   their height. */
+.addMenu { width: 290px; max-height: 80vh; padding: 0; overflow: hidden; }
+.addMenu > .addMenuHeader { flex: none; min-height: 42px; padding-block: 14px 6px; padding-inline: 16px; }
+.addMenuList { display: flex; flex: 1 1 auto; flex-direction: column; gap: 1px; min-height: 0; padding: 0 12px 8px; overflow-y: auto; }
+.addMenuList > * { flex: none; }
+
+.addMenuHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+  padding-block: 0 4px;
+  padding-inline: 8px 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addMenuHeader button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+/* A group's name: 12 medium, 8 in, 52 from the menu's top under its head. */
+.addMenuSection {
+  padding: 9px 8px 8.5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+/* A group after another stands 14 under its last row. */
+.addMenuItem + .addMenuSection,
+.addMenuMore + .addMenuSection { padding-block-start: 13px; }
+
+/* A row: 6 round a 32 square mark, its name 8 after it, the kind under the
+   name of a property already there (Notion's, seen 2026-11-12). */
+.addMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+  text-align: start;
+}
+
+.addMenuItem:hover, .addMenuItem[data-active],
+.addMenuItem:focus-visible { background: var(--bg-hover); outline: none; }
+
+/* "··· N개 더 보기" after the first five existing properties, 42 tall. */
+.addMenuMore {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+.addMenuMore > svg { flex: none; width: 32px; height: 20px; }
+.addMenuMore:hover,
+.addMenuMore:focus-visible { background: var(--bg-hover); outline: none; }
+
+.addMenuIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--title-discussion-divider);
+  border-radius: 4px;
+  background: var(--menu-field-bg);
+  color: var(--text-default);
+}
+.addMenuIcon svg { width: 20px; height: 20px; }
+
+.addMenuText { display: grid; min-width: 0; }
+.addMenuText small { color: var(--text-tertiary); font-size: 12px; line-height: 16.8px; }
+
+.addQuestionButton {
+  display: inline-flex;
+  align-self: center; margin-top: -12px; /* 12 under the last card, 32 round with a 20 "+", as Notion's (seen 2026-11-06) */
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  color: var(--accent-blue);
+}
+
+.addQuestionButton:hover:not(:disabled) { background: var(--bg-hover); }
+.addQuestionButton:disabled { color: var(--text-tertiary); cursor: default; }
+
+/* "양식 공유", as Notion's (seen 2026-11-03): 480 wide, rows 32 tall (2 0
+   out, 0 8 in) of a 20 icon, the name and the choice in grey with › (16,
+   pale); the link a 30 tall box beside "폼 링크 복사하기", 8 in all round. */
+.shareMenu { gap: 0; width: 480px; padding: 4px; border-radius: 10px; }
+
+.shareRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  margin: 2px 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.shareRow:hover:not(:disabled, [aria-disabled="true"]),
+.shareRow[aria-expanded="true"] { background: var(--bg-hover); }
+.shareRow:disabled { opacity: .5; cursor: default; }
+.shareRow[aria-disabled="true"] { cursor: default; }
+.shareRow > svg:first-child { flex: none; }
+.shareRow > span:nth-of-type(1) { flex: 1 0 auto; }
+
+.shareRowValue {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shareRow > svg:last-child { flex: none; margin-inline-start: -4px; color: var(--icon-tertiary); }
+
+.shareLink {
+  display: flex;
+  height: 30px;
+  margin: 8px;
+}
+
+.shareLink > input {
+  min-width: 0;
+  flex: 1;
+  padding-block: 7px;
+  padding-inline: 7px 1px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-inline-end: 0;
+  border-start-start-radius: 6px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.shareLink > button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-start-start-radius: 0;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+  border-end-start-radius: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.shareLink > button > svg { color: var(--icon-secondary); }
+.shareLink > button:hover:not(:disabled) { background: var(--bg-hover); }
+.shareLink > button:disabled { color: var(--text-tertiary); cursor: default; }
+
+/* A row's list: 300 wide, 28 tall choices, a tag after the name ("공개"
+   yellow, "비공개" grey), the current one checked at the end. */
+.shareChoices {
+  position: fixed;
+  z-index: 4;
+  display: flex;
+  width: 300px;
+  flex-direction: column;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.shareChoices > button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.shareChoices > button > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shareChoices > button > span:not(:first-child) { flex: none; }
+.shareChoices > button[data-focused="true"] { background: var(--bg-hover); }
+.shareChoices > button[aria-disabled="true"] { color: var(--text-tertiary); cursor: default; }
+
+.shareTag {
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.shareTag[data-tone="public"] { background: rgb(251 243 219); color: rgb(203 145 47); }
+.shareTag[data-tone="private"] { background: var(--border-subtle); color: var(--icon-secondary); }
+.shareCheck { margin-inline-start: auto; }
+
+.success,
+.error {
+  margin: 0;
+  font-size: 12px;
+}
+
+.success { color: #448361; }
+.error { color: var(--danger); overflow-wrap: anywhere; }
+
+
+.previewCard { width: min(100%, 650px); margin: 0 auto; }
+
+.empty {
+  padding: 24px;
+  border: 1px dashed var(--border-default);
+  border-radius: 9px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.readOnly { box-sizing: border-box; padding: 28px; }
+/* A touch screen's form view, as Notion's iPad and iPhone (seen 2026-11-13):
+   no builder, a 72 screen in the tertiary grey 104 under the tabs, its words
+   14 grey on a 24 line 4 under it, 102 over the view's end. */
+.desktopOnly { display: none; }
+
+:global([data-touch="true"]) .root { min-height: 0; }
+:global([data-touch="true"]) .desktopBuilder,
+:global([data-touch="true"] [data-inline-database-wrapper] > section > [data-view-type="form"]) .desktopBuilder { padding: 0; }
+:global([data-touch="true"]) .desktopBuilder > :not(.builderBar) { display: none; }
+:global([data-touch="true"]) .desktopOnly {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 104px 16px 102px;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+:global([data-touch="true"]) .desktopOnly svg { width: 72px; height: 72px; color: var(--icon-tertiary); }
+:global([data-touch="true"]) .desktopOnly span { font-size: 14px; line-height: 24px; }
+/* Its "양식 공유" is "공유" there (Notion's iPad and iPhone, seen 2026-11-13). */
+.shareShort { display: none; }
+:global([data-touch="true"]) .shareLong { display: none; }
+:global([data-touch="true"]) .shareShort { display: inline; }
+:global([data-phone="true"]) .readOnly { padding: 16px 10px 42px; }
+
+/* A question's condition group, as Notion's (seen 2026-11-05). */
+.conditionGroup { position: relative; display: flex; flex-direction: column; gap: 12px; margin-top: 8px; padding-inline-start: 54px; }
+.conditionGroup:not([data-folded])::before {
+  content: ""; position: absolute; top: 28px; bottom: 0; inset-inline-start: 31px; width: 2px;
+  background: color-mix(in srgb, var(--accent-blue) 30%, transparent);
+}
+.conditionHead { position: relative; display: flex; align-items: center; gap: 4px; min-height: 21px; color: color-mix(in srgb, var(--accent-blue) 55%, var(--bg-app)); font-size: 14px; line-height: 21px; }
+.conditionFold { position: absolute; top: 0; inset-inline-start: -32px; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 21px; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; }
+.conditionGroup:not([data-folded]) .conditionFold svg { transform: rotate(90deg); }
+.conditionChip { display: inline-flex; align-items: center; gap: 2px; min-width: 0; max-width: 320px; height: 21px; padding: 0 3px; border: 0; border-radius: 4px; background: transparent; color: var(--accent-blue); font: inherit; cursor: pointer; }
+.conditionChip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conditionChip:hover, .conditionChip[aria-expanded="true"] { background: color-mix(in srgb, var(--accent-blue) 12%, transparent); }
+.conditionWords { flex: none; }
+.conditionCount { display: inline-flex; align-items: center; gap: 4px; margin-inline-start: 8px; }
+.conditionRemove { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-inline-start: auto; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--accent-blue); opacity: 0; cursor: pointer; }
+.conditionGroup:hover > .conditionHead .conditionRemove, .conditionRemove:focus-visible { opacity: 1; }
+.conditionRemove:hover { background: color-mix(in srgb, var(--accent-blue) 12%, transparent); }
+.conditionBody { display: flex; flex-direction: column; gap: 24px; }
+.conditionAddMark { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--accent-blue) 20%, transparent); }
+.conditionAdd, .conditionSlot { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; background: transparent; color: var(--accent-blue); font: inherit; font-size: 14px; cursor: pointer; }
+.conditionAdd { align-self: center; margin-top: -11px; margin-bottom: 15px; color: color-mix(in srgb, var(--accent-blue) 55%, var(--bg-app)); }
+.conditionAdd:hover { color: var(--accent-blue); }
+.conditionSlot { min-height: 72px; border: 1px solid color-mix(in srgb, var(--accent-blue) 30%, transparent); border-radius: 12px; background: color-mix(in srgb, var(--accent-blue) 6%, transparent); font-size: 16px; font-weight: 500; }
+.conditionMenu { position: fixed; z-index: 3; display: flex; flex-direction: column; width: 260px; max-height: min(420px, calc(100vh - 32px)); overflow-y: auto; padding: 6px; border-radius: var(--radius-menu); background: var(--bg-elevated, var(--bg-app)); box-shadow: var(--shadow-menu); }
+.conditionSearch { margin: 4px 4px 8px; padding: 5px 9px; height: 32px; border: 0; box-shadow: var(--name-field-ring); border-radius: 6px; background: var(--name-field-bg); color: var(--text-default); font: inherit; font-size: 14px; outline: none; }
+.conditionSearch:focus { box-shadow: var(--name-field-ring-focus); }
+.conditionItem { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-default); font: inherit; font-size: 14px; text-align: start; cursor: pointer; }
+.conditionItem:hover { background: var(--bg-hover); }
+.conditionItemName { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.conditionCheck { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border: 1px solid var(--border-strong); border-radius: 3px; color: #fff; }
+.conditionCheck[data-on] { border-color: var(--accent-blue); background: var(--accent-blue); }
+.addMenuHeaderTitle { flex: 1; min-width: 0; margin-inline-start: 4px; }

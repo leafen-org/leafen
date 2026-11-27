@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "id": "app.leafen.importtoolbox",
+  "slug": "import-toolbox",
+  "version": "1.5.13",
+  "name": { "en": "Import Toolbox", "ko": "가져오기 도구함" },
+  "description": {
+    "en": "Moves spaces and notes from other tools into Leafen through the migration's plan and report: Confluence, Evernote, Logseq, SiYuan and Markdown exports.",
+    "ko": "다른 도구의 공간과 노트를 이사 계획·보고서와 함께 리펜으로 옮깁니다. Confluence·Evernote·Logseq·SiYuan·Markdown 내보내기."
+  },
+  "developer": { "name": "Leafen" },
+  "icon": "ui/icon.svg",
+  "category": "work",
+  "tags": ["import", "migration", "confluence", "evernote", "logseq", "siyuan", "markdown"],
+  "license": "AGPL-3.0-only",
+  "surfaces": {
+    "fullPage": { "entry": "ui/index.html" },
+    "importSources": [
+      {
+        "key": "confluence",
+        "name": { "en": "Confluence", "ko": "Confluence" },
+        "description": { "en": "A space from your account or its HTML export", "ko": "계정이나 HTML 내보내기에서 공간 옮기기" },
+        "entry": "ui/confluence.html"
+      },
+      {
+        "key": "evernote",
+        "name": { "en": "Evernote", "ko": "Evernote" },
+        "description": { "en": "Notebooks from their ENEX export", "ko": "노트북의 ENEX 내보내기 옮기기" },
+        "entry": "ui/evernote.html"
+      },
+      {
+        "key": "logseq",
+        "name": { "en": "Logseq", "ko": "Logseq" },
+        "description": { "en": "A graph folder, as a ZIP", "ko": "그래프 폴더(ZIP) 옮기기" },
+        "entry": "ui/logseq.html"
+      },
+      {
+        "key": "siyuan",
+        "name": { "en": "SiYuan", "ko": "SiYuan" },
+        "description": { "en": "The data folder or a notebook's .sy.zip export", "ko": "data 폴더나 노트북의 .sy.zip 내보내기 옮기기" },
+        "entry": "ui/siyuan.html"
+      },
+      {
+        "key": "markdown",
+        "name": { "en": "Markdown tools", "ko": "Markdown 도구" },
+        "description": { "en": "Bear, Joplin, Craft or Roam's Markdown export", "ko": "Bear·Joplin·Craft·Roam의 Markdown 내보내기 옮기기" },
+        "entry": "ui/markdown.html"
+      }
+    ]
+  },
+  "personAccess": "",
+  "credentials": [
+    {
+      "key": "confluence",
+      "name": { "en": "Confluence account", "ko": "Confluence 계정" },
+      "help": {
+        "en": "Your Atlassian account's email and an API token you make at id.atlassian.com › Security › API tokens (a scoped token that can read Confluence works too) — not your password.",
+        "ko": "Atlassian 계정의 메일 주소와 id.atlassian.com › 보안 › API 토큰에서 만든 API 토큰입니다(Confluence를 읽을 수 있는 범위 토큰도 됩니다). 비밀번호가 아닙니다."
+      },
+      "fields": [
+        { "key": "email", "name": { "en": "Email", "ko": "메일 주소" } },
+        { "key": "token", "name": { "en": "API token", "ko": "API 토큰" }, "secret": true }
+      ]
+    }
+  ],
+  "network": {
+    "relay": [
+      { "url": "https://*.atlassian.net/", "credentials": ["confluence"] },
+      { "url": "https://api.atlassian.com/ex/confluence/", "credentials": ["confluence"] },
+      { "url": "https://api.media.atlassian.com/file/" }
+    ]
+  }
+}

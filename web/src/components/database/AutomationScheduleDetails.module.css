@@ -1,0 +1,195 @@
+/* A recurring trigger's details on a desktop, as Notion's (seen 2026-10-25
+   at 1280px): a 260px window 4px in; "매" 8px over its 28px controls — a
+   34×28 number on a faint tint, then a 1px-ringed chip 14/500 — the week's
+   28px circles spread across 236px, 28px rows, a line 3px each side, and
+   "다음 주기:" in 12px grey on two lines. */
+.details {
+  display: grid;
+  gap: 1px;
+  font-size: 14px;
+}
+
+.every,
+.on {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 2px;
+  color: var(--text-default);
+}
+
+.on {
+  padding: 4px 8px;
+}
+
+.controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.interval {
+  width: 34px;
+  height: 28px;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(66, 35, 3, 0.03);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: center;
+  outline: none;
+}
+
+.interval:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 4px 8px;
+  /* Ringed in either theme, as Notion's "주 ⌄" (seen 2026-11-08 in the dark one). */
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Its "⌄" takes 9px across, as Notion's (seen 2026-11-02: 9×14). */
+.chip > svg {
+  margin-inline: -2.5px;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.chip svg {
+  color: var(--icon-secondary);
+}
+
+.days {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 8px 6px;
+}
+
+/* A week's day: blue with white when chosen, else a faint tint (rgba(84,72,49,.08)), as Notion's. */
+.circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 100px;
+  background: rgba(84, 72, 49, 0.08);
+  color: rgb(95, 94, 89);
+  font-size: 12px;
+}
+
+.circle[data-selected] {
+  background: rgb(39, 131, 222);
+  color: #fff;
+}
+
+:global([data-theme="dark"]) .circle:not([data-selected]) {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+:global([data-theme="dark"]) .interval {
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.rule {
+  height: 1px;
+  margin: 3px 8px;
+  background: var(--border-default);
+}
+
+.next {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 2px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+/* A long list cut at 250px, as Notion's times: the list scrolls, not the window placed around it. */
+.tall [role="listbox"] {
+  max-height: 242px;
+  overflow-y: auto;
+}
+
+div.calendar {
+  padding: 8px;
+}
+
+.day[data-past="true"] {
+  color: var(--text-tertiary);
+}
+
+.endMenu {
+  display: grid;
+  gap: 1px;
+}
+
+.endRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.endRow:hover,
+.endRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.endLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+/* "실행 횟수 [1]": a 64px box in the row, its number to the left, as Notion's. */
+.endRow .interval {
+  width: 64px;
+  height: 22px;
+  padding: 2px 6px;
+  text-align: start;
+}
+
+/* No run left: the note that the automation will never run, in red where "다음 주기" goes, as Notion's (seen 2026-10-30). */
+.never {
+  margin: 0;
+  padding: 2px 8px;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+/* "특정 날짜 다음주 금 ⌄": the chosen day in gray before its month opens under it. */
+.endValue {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}

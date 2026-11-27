@@ -1,0 +1,368 @@
+/* A chart's settings in its view's panel, as Notion's (read 2026-11-18 in
+   Chrome at 1440 from the panel's own boxes, bars, a donut and a number):
+   a group's name is a menu's label — 12px medium in the secondary text's
+   color and a 15px line, 6 over it and 8 under, its words 8 in; a row is 28 high, its 20px mark 8 in and its
+   name 8 past the mark, what is set in 14px gray giving way to the name, a
+   16px › 6 past it at the row's end; menus right under their row. */
+.section {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.row:hover:not(:disabled):not([data-disabled="true"]),
+.row:focus-visible,
+.row[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A row that can't be opened is Notion's disabled menu row: the whole row at
+   40%, its words and mark in their own colours (seen 2026-11-18, a count's
+   "계산"), as the view settings' rows are. */
+.row:disabled,
+.row[data-disabled="true"] {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* A row's › is icoTer and its mark icoPri, as the view settings' rows'. */
+.row > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: var(--text-secondary);
+}
+
+.row > .icon {
+  color: var(--icon-primary);
+}
+
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row > .label {
+  flex: 1 0 auto;
+}
+
+.meta {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta + svg {
+  margin-inline-start: -2px;
+}
+
+.row[data-closed="true"] > .meta {
+  color: inherit;
+}
+
+/* A number's "색상" (Notion's, read 2026-11-18 in Chrome at 1440, dpr 1):
+   the chosen color's 16px swatch, 4 round, 8 before its name, and the
+   sidebar's chevron 4 past the name, turning a quarter to ⌄ in 0.2s while
+   its colors are open (swatch 1217.66–1233.66, name 1241.66–1278, chevron
+   1282–1298, row end 1306). */
+.swatch {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.meta + .turn {
+  margin-inline-start: -4px;
+}
+
+.turn {
+  transition: transform 0.2s ease-in-out;
+}
+
+.row[aria-expanded="true"] > .turn {
+  transform: rotate(90deg);
+}
+
+/* A typed text under its switch: 28 high in a single line, 8 in from the
+   rows' sides and 4 from the rows over and under it, its words 6 in
+   (Notion's number chart title, read 2026-11-18). */
+.field {
+  width: calc(100% - 16px);
+  min-height: 28px;
+  margin: 4px 8px;
+  padding: 4px 6px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.field:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* A menu is never under 180 wide (Notion's, read 2026-11-18 from each
+   menu's own style); how wide and how high at most is its own (ChartPopover). */
+.popover {
+  position: fixed;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 180px;
+  max-height: min(520px, calc(100vh - 24px));
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The line over a group's name, in the panel and in a menu (Notion's, read
+   2026-11-18 from the panel's type group and the sort menu's groups): 9
+   under the row over it and 8 in from the rows' sides, the name 12 under it. */
+.sectionLine {
+  flex: none;
+  height: 1px;
+  margin: 8px 8px 5px;
+  background: var(--menu-divider);
+}
+
+/* The search field 12 inside the menu's top and sides, the first choice 12
+   under it (Notion's, read 2026-11-18: a 250 by 287 menu of eight). */
+.search {
+  flex: none;
+  padding: 8px 8px 11px;
+}
+
+/* "속성 검색": 28 high, 6 in, 14px, the menu's search ring when typing (Notion's, seen 2026-11-12). */
+.search > input {
+  width: 100%;
+  height: 28px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--layout-search-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.search > input:focus {
+  outline: none;
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  outline: none;
+}
+
+/* Under a search or filter field the list rolls on its own, the field
+   staying over it (Notion's number formats, seen 2026-11-18: a 250 by 400
+   menu, its field fixed, the rows 227 wide beside the list's bar). */
+.search + .list {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.choice[data-focused="true"],
+.choice:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+/* A select of its own (ChartChoiceList's `select`, a number rule's signs):
+   its rows touch and the chosen one keeps the hover's ground (Notion's,
+   read 2026-11-18 in Chrome at 1440 dpr 1: six 28 rows in a 180 by 176
+   box). */
+.list[data-select="true"] {
+  gap: 0;
+}
+
+.choice[data-chosen="true"] {
+  background: var(--bg-hover);
+}
+
+/* A sign before a choice's name, as wide as itself (a rule's ">"). */
+.sign {
+  flex: none;
+}
+
+.choice:disabled {
+  color: var(--text-tertiary);
+}
+
+.choice > svg {
+  flex: none;
+  color: currentColor;
+}
+
+/* A choice's mark is a 20 place, a property's drawn 19.2 in the primary
+   icon color and a count's "123" in the words' (Notion's chart menus, read
+   2026-11-18 at 1440 in two tabs: X, Y, "그룹화" and a date's units). */
+.choice > .icon {
+  color: var(--icon-primary);
+}
+
+.choice[data-chart-choice="count"] > .icon {
+  color: inherit;
+}
+
+/* A line between a menu's kinds of choices, 4 from the rows over and under
+   it — they stand 1 apart themselves (Notion's, read 2026-11-18: the Y
+   axis's 250 by 197 menu of six, a choice 9 under the one over a line). */
+.divider {
+  flex: none;
+  height: 1px;
+  margin: 3px 8px;
+  background: var(--menu-divider);
+}
+
+/* In a phone's settings sheet the chart's groups are the sheet's own, as
+   Notion's (seen 2026-11-18 on the A90 at 411 wide, light, a bar chart's
+   and a number's): a group's name 15px/500 in the secondary text's color,
+   a 16.5 line 16.83 under the group above and 8.83 over its own; the group
+   white and 12 round, its first row 1 down from its top and its last 44
+   high, its line cut; a row 45 high, parted by the sheet's 1px line, its
+   22px mark 13 in, its 17px name 11 on, what is set in 17px gray and an
+   18px › 6 past it, 16 from the end — the sheet's own rows' measures
+   (DatabaseViewSettingsPanel.module.css .phoneList .item). A number's title
+   is 16px, 8 in, in a row of its own under its switch. The line over the
+   type's group is the panel's alone. Its menus are drawn on the page's
+   body, outside the sheet, and keep their own rows. */
+:global([data-phone-settings]) .section {
+  margin: 0;
+  padding-block: 16.83px 8.83px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 15px;
+  line-height: 16.5px;
+}
+
+:global([data-phone-settings]) .sectionLine {
+  display: none;
+}
+
+:global([data-phone-settings]) .row {
+  gap: 11px;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .row:hover:not(:disabled):not([data-disabled="true"]),
+:global([data-phone-settings]) .row[aria-expanded="true"] {
+  background: var(--bg-app);
+}
+
+:global([data-phone-settings]) .row:active:not(:disabled):not([data-disabled="true"]) {
+  background: var(--bg-hover);
+}
+
+:global([data-phone-settings]) .section + .row {
+  margin-top: 1px;
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+}
+
+:global([data-phone-settings]) .row:last-child {
+  min-height: 44px;
+  border-bottom: 0;
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+}
+
+:global([data-phone-settings]) .row > .icon {
+  width: 22px;
+}
+
+/* But for the "색상" of a chart with axes or a donut, whose palette Notion
+   keeps 20 in the middle of the 22 place; a number's, which drops its
+   colors down, is 22 (seen 2026-11-18 on the A90, twice each). */
+:global([data-phone-settings]) .row[data-chart-setting="color"]:not([data-drop]) > .icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+:global([data-phone-settings]) .meta {
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .meta + svg {
+  margin-inline-start: -5px;
+}
+
+:global([data-phone-settings]) .field {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+  background: var(--bg-app);
+  font-size: 16px;
+  line-height: 20.4px;
+}

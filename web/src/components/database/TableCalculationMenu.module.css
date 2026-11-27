@@ -1,0 +1,97 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 180px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.item:hover,
+.item:focus-visible,
+.item[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.item svg {
+  flex: none;
+  color: currentColor;
+}
+
+/* A group's calculations open beside the menu, over what is around it, their
+   rows 4px in from its edges as Notion's (seen 2026-11-16 at 1440: "수 ›" and
+   "비율(%) ›" 250 wide, rows 242 from 4 in, "비율(%)" 65 high for two rows). */
+.group {
+  position: fixed;
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* "큰 수를 99+로 표시" heads the counts as its own section, as Notion's (seen
+   2026-11-16 at 1440, two tabs): 8px in, the switch by the name's top, the
+   note 6px under the name, then a line 12px in from the menu's edges 4px
+   under it and the counts 4px under the line — 233.4 high in all. */
+.switchRow {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.switchRow::after {
+  content: "";
+  position: absolute;
+  inset-inline: 8px;
+  bottom: -5px;
+  height: 1px;
+  background: var(--menu-divider);
+}
+
+.switchRow > span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.switchRow small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* A rollup's calculate menu opens below its "계산" row. */
+.popover {
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}

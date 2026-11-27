@@ -1,0 +1,251 @@
+/* The map starts where the view does, 8 under its tabs' row, and ends 8px
+   short of it, as Notion's (seen 2026-11-08 at 1440px: 684 wide under a
+   toolbar ending 692 in from the text, 954 under one ending at 1336 on a
+   database's page). */
+.mapView {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-block: 8px 28px;
+  padding-inline: 0 8px;
+}
+/* A database block's own map ends with its picture in a page's text and 8px
+   under it on its own page, as Notion's (seen 2026-11-08 at 1303×873). */
+:global([data-inline-database-wrapper] > section > [data-view-type="map"]) .mapView {
+  padding-bottom: 0;
+}
+:global([data-database-page="true"] [data-inline-database-wrapper] > section > [data-view-type="map"]) .mapView {
+  padding-bottom: 8px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.empty {
+  padding: 32px 12px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* As wide as the view leaves it, 400px, 6px round with no line, as Notion's map
+   (seen 2026-11-02 at 1280×900); it zooms with the wheel, a double click
+   and the keys, with no buttons of its own. */
+.canvas {
+  position: relative;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-blue) 7%, var(--bg-app));
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+/* On its database's own page the default map stands 600 high, as Notion's
+   (seen 2026-11-08 at 1303×873: 600 there, 400 in a page's text). */
+:global([data-database-page="true"] [data-inline-database-wrapper] > section > [data-view-type="map"]) .canvas[data-height="medium"] {
+  height: 600px;
+}
+
+.canvas[data-height="small"] {
+  height: min(40vh, 300px);
+  min-height: 240px;
+}
+.canvas[data-height="large"] {
+  height: min(78vh, 680px);
+}
+.canvas[data-height="extra_large"] {
+  height: min(90vh, 860px);
+}
+.canvas:active {
+  cursor: grabbing;
+}
+
+.canvas:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent-blue) 56%, transparent);
+  outline-offset: 2px;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.grid line {
+  stroke: color-mix(in srgb, var(--text-tertiary) 28%, transparent);
+  stroke-width: 1;
+}
+
+.grid line[data-meridian] {
+  stroke: color-mix(in srgb, var(--text-tertiary) 55%, transparent);
+}
+
+.grid text {
+  fill: var(--text-tertiary);
+  font-size: 10px;
+}
+
+.outline {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.land {
+  fill: color-mix(in srgb, var(--text-tertiary) 14%, var(--bg-app));
+  stroke: none;
+}
+
+.border {
+  fill: none;
+  stroke: color-mix(in srgb, var(--text-tertiary) 45%, transparent);
+  stroke-width: 0.8;
+  stroke-dasharray: 3 2;
+}
+
+.place circle {
+  fill: var(--text-secondary);
+}
+
+.place text {
+  fill: var(--text-secondary);
+  font-size: 11px;
+  paint-order: stroke;
+  stroke: var(--bg-app);
+  stroke-width: 3px;
+}
+
+.tiles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tiles img {
+  position: absolute;
+  max-width: none;
+  user-select: none;
+}
+
+/* OpenStreetMap's tiles are drawn light; in the dark theme they turn dark,
+   as Notion's map is there (seen 2026-11-06). Another tile server the
+   administrator sets keeps its own colors. */
+:global(html[data-theme="dark"]) .tiles[data-osm-tiles="true"] img {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.85);
+}
+
+.attribution {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  z-index: 3;
+  margin: 0;
+  padding: 2px 6px;
+  border-start-start-radius: 6px;
+  background: color-mix(in srgb, var(--bg-app) 82%, transparent);
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.attribution a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.pin {
+  position: absolute;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid var(--bg-app);
+  border-start-start-radius: 50%;
+  border-start-end-radius: 50%;
+  border-end-end-radius: 50%;
+  border-end-start-radius: 0;
+  background: var(--pin-color, var(--accent-blue));
+  box-shadow: 0 2px 8px rgba(15, 15, 15, 0.22);
+  cursor: pointer;
+  transform: translate(-50%, -100%) rotate(-45deg);
+}
+
+.pin span {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.pin:hover,
+.pin:focus-visible {
+  z-index: 2;
+  transform: translate(-50%, -100%) rotate(-45deg) scale(1.12);
+  outline: 3px solid color-mix(in srgb, var(--pin-color, var(--accent-blue)) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.notice {
+  position: absolute;
+  left: 50%; /* physical: centred on its own box in either direction */
+  bottom: 10px;
+  z-index: 3;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: 0 1px 4px rgba(15, 15, 15, 0.16);
+  color: var(--text-secondary);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 720px) {
+  .canvas {
+    min-height: 300px;
+  }
+}
+
+.quietStatus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* "핀 추가 모드 활성화" in a 28px white box 8px in from the map's top right,
+   rounded 6 with the menus' shadow, its 24px button holding the pin; on,
+   the map's pointer is a crosshair (Notion's, seen 2026-11-02). */
+.addPin {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  z-index: 2;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.addPin > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+.addPin > button:hover,
+.addPin > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.canvas[data-adding-pin="true"] {
+  cursor: crosshair;
+}

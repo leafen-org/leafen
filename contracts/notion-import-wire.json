@@ -1,0 +1,958 @@
+{
+  "schemaVersion": 1,
+  "name": "native-notion-import",
+  "bounds": [
+    { "goName": "notionImportProviderPageItems", "tsName": "providerPageItems", "value": 32 },
+    { "goName": "notionImportConnectionPageItems", "tsName": "connectionPageItems", "value": 32 },
+    { "goName": "notionMigrationRequestsPerStep", "tsName": "migrationRequestsPerStep", "value": 25 },
+    { "goName": "notionMigrationScanWindow", "tsName": "migrationScanWindow", "value": 200 },
+    { "goName": "notionMigrationScanDatabaseWindow", "tsName": "migrationScanDatabaseWindow", "value": 50 },
+    { "goName": "notionMigrationRowCountCap", "tsName": "migrationRowCountCap", "value": 2000 },
+    { "goName": "notionMigrationSampleRows", "tsName": "migrationSampleRows", "value": 3 },
+    { "goName": "notionMigrationValueRunes", "tsName": "migrationValueRunes", "value": 200 },
+    { "goName": "notionMigrationPlanFormat", "tsName": "migrationPlanFormat", "value": 1 },
+    { "goName": "notionMigrationPlanMaxBytes", "tsName": "migrationPlanMaxBytes", "value": 4194304 },
+    { "goName": "notionMigrationPlanNameRunes", "tsName": "migrationPlanNameRunes", "value": 200 },
+    { "goName": "notionMigrationReportedValues", "tsName": "migrationReportedValues", "value": 2000 },
+    { "goName": "notionImportApplyItems", "tsName": "applyItems", "value": 32 },
+    { "goName": "notionImportFileOutcomeItems", "tsName": "fileOutcomeItems", "value": 100 },
+    { "goName": "notionImportBlockIssueItems", "tsName": "blockIssueItems", "value": 100 },
+    { "goName": "notionImportedPeopleItems", "tsName": "personMappingItems", "value": 32 },
+    { "goName": "notionImportedPeopleMembers", "tsName": "personMappingMembers", "value": 32 }
+  ],
+  "errors": [
+    { "goName": "errorCodeNotionImportConnectionFailed", "tsName": "connectionFailed", "value": "LEAFEN_NOTION_IMPORT_CONNECTION_FAILED" },
+    { "goName": "errorCodeNotionImportConnectionNotFound", "tsName": "connectionNotFound", "value": "LEAFEN_NOTION_IMPORT_CONNECTION_NOT_FOUND" },
+    { "goName": "errorCodeNotionImportScopeFailed", "tsName": "scopeFailed", "value": "LEAFEN_NOTION_IMPORT_SCOPE_FAILED" },
+    { "goName": "errorCodeNotionMigrationInvalid", "tsName": "migrationInvalid", "value": "LEAFEN_NOTION_MIGRATION_INVALID" },
+    { "goName": "errorCodeNotionMigrationNotFound", "tsName": "migrationNotFound", "value": "LEAFEN_NOTION_MIGRATION_NOT_FOUND" },
+    { "goName": "errorCodeNotionMigrationFailed", "tsName": "migrationFailed", "value": "LEAFEN_NOTION_MIGRATION_FAILED" },
+    { "goName": "errorCodeNotionMigrationNotScanned", "tsName": "migrationNotScanned", "value": "LEAFEN_NOTION_MIGRATION_NOT_SCANNED" },
+    { "goName": "errorCodeNotionMigrationPlanConflict", "tsName": "migrationPlanConflict", "value": "LEAFEN_NOTION_MIGRATION_PLAN_CONFLICT" },
+    { "goName": "errorCodeNotionMigrationPlanBlocked", "tsName": "migrationPlanBlocked", "value": "LEAFEN_NOTION_MIGRATION_PLAN_BLOCKED" },
+    { "goName": "errorCodeNotionMigrationRunning", "tsName": "migrationRunning", "value": "LEAFEN_NOTION_MIGRATION_RUNNING" },
+    { "goName": "errorCodeNotionMigrationMovedBefore", "tsName": "migrationMovedBefore", "value": "LEAFEN_NOTION_MIGRATION_MOVED_BEFORE" },
+    { "goName": "errorCodeNotionMigrationFileSkipped", "tsName": "migrationFileSkipped", "value": "LEAFEN_NOTION_MIGRATION_FILE_SKIPPED" },
+    { "goName": "errorCodeNotionImportCreateFailed", "tsName": "createFailed", "value": "LEAFEN_NOTION_IMPORT_CREATE_FAILED" },
+    { "goName": "errorCodeNotionImportNotFound", "tsName": "notFound", "value": "LEAFEN_NOTION_IMPORT_NOT_FOUND" },
+    { "goName": "errorCodeNotionImportProviderFailed", "tsName": "providerFailed", "value": "LEAFEN_NOTION_IMPORT_PROVIDER_FAILED" },
+    { "goName": "errorCodeNotionImportProviderLimited", "tsName": "providerLimited", "value": "LEAFEN_NOTION_IMPORT_PROVIDER_LIMITED" },
+    { "goName": "errorCodeNotionImportProviderUnreachable", "tsName": "providerUnreachable", "value": "LEAFEN_NOTION_IMPORT_PROVIDER_UNREACHABLE" },
+    { "goName": "errorCodeNotionImportTokenRejected", "tsName": "tokenRejected", "value": "LEAFEN_NOTION_IMPORT_TOKEN_REJECTED" },
+    { "goName": "errorCodeNotionImportFileTransient", "tsName": "fileTransient", "value": "LEAFEN_NOTION_IMPORT_FILE_TRANSIENT" },
+    { "goName": "errorCodeNotionImportFilePermanent", "tsName": "filePermanent", "value": "LEAFEN_NOTION_IMPORT_FILE_PERMANENT" },
+    { "goName": "errorCodeNotionImportFileRefreshFailed", "tsName": "fileRefreshFailed", "value": "LEAFEN_NOTION_IMPORT_FILE_REFRESH_FAILED" },
+    { "goName": "errorCodeNotionImportFileCopyRequired", "tsName": "fileCopyRequired", "value": "LEAFEN_NOTION_IMPORT_FILE_COPY_REQUIRED" },
+    { "goName": "errorCodeImportedPeopleCursorInvalid", "tsName": "personMappingCursorInvalid", "value": "LEAFEN_IMPORTED_PEOPLE_CURSOR_INVALID" },
+    { "goName": "errorCodeImportedPeopleMappingFailed", "tsName": "personMappingFailed", "value": "LEAFEN_IMPORTED_PEOPLE_MAPPING_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "NativeNotionMigrationPlanProblem",
+      "tsValuesName": "nativeNotionMigrationPlanProblems",
+      "values": [
+        { "goName": "notionMigrationProblemFormat", "tsName": "format", "value": "plan_format_unsupported" },
+        { "goName": "notionMigrationProblemValueInvalid", "tsName": "valueInvalid", "value": "plan_value_invalid" },
+        { "goName": "notionMigrationProblemSourceUnknown", "tsName": "sourceUnknown", "value": "plan_source_unknown" },
+        { "goName": "notionMigrationProblemSourceDuplicate", "tsName": "sourceDuplicate", "value": "plan_source_duplicate" },
+        { "goName": "notionMigrationProblemDestinationInvalid", "tsName": "destinationInvalid", "value": "plan_destination_invalid" },
+        { "goName": "notionMigrationProblemDestinationInTrash", "tsName": "destinationInTrash", "value": "plan_destination_in_trash" },
+        { "goName": "notionMigrationProblemDatabaseUnplanned", "tsName": "databaseUnplanned", "value": "plan_database_unplanned" },
+        { "goName": "notionMigrationProblemPropertyUnplanned", "tsName": "propertyUnplanned", "value": "plan_property_unplanned" },
+        { "goName": "notionMigrationProblemTypeIncompatible", "tsName": "typeIncompatible", "value": "plan_property_type_incompatible" },
+        { "goName": "notionMigrationProblemOptionUnknown", "tsName": "optionUnknown", "value": "plan_option_unknown" },
+        { "goName": "notionMigrationProblemTitle", "tsName": "title", "value": "plan_title_invalid" },
+        { "goName": "notionMigrationProblemNameConflict", "tsName": "nameConflict", "value": "plan_name_conflict" },
+        { "goName": "notionMigrationProblemMergeInvalid", "tsName": "mergeInvalid", "value": "plan_merge_invalid" },
+        { "goName": "notionMigrationProblemMergeTypeConflict", "tsName": "mergeTypeConflict", "value": "plan_merge_type_conflict" },
+        { "goName": "notionMigrationProblemSplitInvalid", "tsName": "splitInvalid", "value": "plan_split_invalid" },
+        { "goName": "notionMigrationProblemObjectInvalid", "tsName": "objectInvalid", "value": "plan_object_invalid" },
+        { "goName": "notionMigrationProblemRoleInvalid", "tsName": "roleInvalid", "value": "plan_role_invalid" },
+        { "goName": "notionMigrationProblemParentInvalid", "tsName": "parentInvalid", "value": "plan_parent_invalid" },
+        { "goName": "notionMigrationProblemParentSkipped", "tsName": "parentSkipped", "value": "plan_parent_skipped" },
+        { "goName": "notionMigrationProblemPersonInvalid", "tsName": "personInvalid", "value": "plan_person_invalid" },
+        { "goName": "notionMigrationProblemCountMismatch", "tsName": "countMismatch", "value": "plan_count_mismatch" }
+      ]
+    },
+    {
+      "tsName": "NativeNotionImportPhase",
+      "tsValuesName": "nativeNotionImportPhases",
+      "values": [
+        { "goName": "notionImportPhaseConnect", "tsName": "connect", "value": "connect" },
+        { "goName": "notionImportPhaseScope", "tsName": "scope", "value": "scope" },
+        { "goName": "notionImportPhaseApply", "tsName": "apply", "value": "apply" }
+      ]
+    },
+    {
+      "tsName": "NativeNotionImportStatus",
+      "tsValuesName": "nativeNotionImportStatuses",
+      "values": [
+        { "goName": "notionImportStatusQueued", "tsName": "queued", "value": "queued" },
+        { "goName": "notionImportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "notionImportStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "notionImportStatusFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "notionImportStatusCanceled", "tsName": "canceled", "value": "canceled" }
+      ]
+    },
+    {
+      "tsName": "NativeNotionImportBlockIssueReason",
+      "tsValuesName": "nativeNotionImportBlockIssueReasons",
+      "values": [
+        { "goName": "notionImportIssueUnsupportedBlock", "tsName": "unsupportedBlock", "value": "unsupported_block_type" },
+        { "goName": "notionImportIssueInvalidBlock", "tsName": "invalidBlock", "value": "block_content_invalid" },
+        { "goName": "notionImportIssueSettingOmitted", "tsName": "settingOmitted", "value": "block_setting_omitted" },
+        { "goName": "notionImportIssueTextLinkOmitted", "tsName": "textLinkOmitted", "value": "text_link_omitted" },
+        { "goName": "notionImportIssueTitleShortened", "tsName": "titleShortened", "value": "title_shortened" },
+        { "goName": "notionImportIssueTextReferenceUnresolved", "tsName": "textReferenceUnresolved", "value": "text_reference_unresolved" },
+        { "goName": "notionImportIssueLinkUnresolved", "tsName": "linkUnresolved", "value": "link_target_unresolved" },
+        { "goName": "notionImportIssueLinkOutside", "tsName": "linkOutside", "value": "link_target_outside" },
+        { "goName": "notionImportIssueTextReferenceOutside", "tsName": "textReferenceOutside", "value": "text_reference_outside" },
+        { "goName": "notionImportIssueSyncedUnresolved", "tsName": "syncedUnresolved", "value": "synced_block_source_unresolved" },
+        { "goName": "notionImportIssueNestedPageMoved", "tsName": "nestedPageMoved", "value": "nested_page_moved" },
+        { "goName": "notionImportIssuePropertyUnsupported", "tsName": "propertyUnsupported", "value": "property_type_unsupported" },
+        { "goName": "notionImportIssuePropertySettingOmitted", "tsName": "propertySettingOmitted", "value": "property_setting_omitted" },
+        { "goName": "notionImportIssuePropertyFormattingOmitted", "tsName": "propertyFormattingOmitted", "value": "property_value_formatting_omitted" },
+        { "goName": "notionImportIssuePropertyTitleShortened", "tsName": "propertyTitleShortened", "value": "property_title_shortened" },
+        { "goName": "notionImportIssuePropertyTargetUnresolved", "tsName": "propertyTargetUnresolved", "value": "property_target_unresolved" },
+        { "goName": "notionImportIssueRelationValueUnresolved", "tsName": "relationValueUnresolved", "value": "relation_value_unresolved" },
+        { "goName": "notionImportIssuePropertyValueTruncated", "tsName": "propertyValueTruncated", "value": "property_value_truncated" },
+        { "goName": "notionImportIssueFormulaReferenceUnresolved", "tsName": "formulaReferenceUnresolved", "value": "formula_reference_unresolved" },
+        { "goName": "notionImportIssueFormulaFunctionUnsupported", "tsName": "formulaFunctionUnsupported", "value": "formula_function_unsupported" },
+        { "goName": "notionImportIssuePropertyValueRecomputed", "tsName": "propertyValueRecomputed", "value": "property_value_recomputed" },
+        { "goName": "notionImportIssuePropertyValueOmitted", "tsName": "propertyValueOmitted", "value": "property_value_omitted" },
+        { "goName": "notionImportIssueViewsUnavailable", "tsName": "viewsUnavailable", "value": "database_views_unavailable" },
+        { "goName": "notionImportIssueDataSourceUnavailable", "tsName": "dataSourceUnavailable", "value": "database_source_unavailable" },
+        { "goName": "notionImportIssueDatabaseUnavailable", "tsName": "databaseUnavailable", "value": "database_unavailable" },
+        { "goName": "notionImportIssueLinkedSourceOutside", "tsName": "linkedSourceOutside", "value": "linked_source_outside" },
+        { "goName": "notionImportIssueLinkedSourceUnavailable", "tsName": "linkedSourceUnavailable", "value": "linked_source_unavailable" },
+        { "goName": "notionImportIssueViewTypeUnsupported", "tsName": "viewTypeUnsupported", "value": "view_type_unsupported" },
+        { "goName": "notionImportIssueObjectAmbiguous", "tsName": "objectAmbiguous", "value": "object_name_ambiguous" },
+        { "goName": "notionImportIssueViewSettingOmitted", "tsName": "viewSettingOmitted", "value": "view_setting_omitted" },
+        { "goName": "notionImportIssueViewPropertyUnresolved", "tsName": "viewPropertyUnresolved", "value": "view_property_unresolved" },
+        { "goName": "notionImportIssueViewStaleHiddenProperty", "tsName": "viewStaleHiddenProperty", "value": "stale_hidden_view_property_setting_ignored" },
+        { "goName": "notionImportIssueViewRowOrderUnavailable", "tsName": "viewRowOrderUnavailable", "value": "view_row_order_unavailable" },
+        { "goName": "notionImportIssueSVGCleaned", "tsName": "svgCleaned", "value": "svg_file_cleaned" },
+        { "goName": "notionImportIssueTableRowBlocksOmitted", "tsName": "tableRowBlocksOmitted", "value": "table_row_blocks_omitted" }
+      ]
+    },
+    {
+      "tsName": "NativeNotionMigrationVerifyKind",
+      "tsValuesName": "nativeNotionMigrationVerifyKinds",
+      "values": [
+        { "goName": "notionMigrationVerifyKindRows", "tsName": "rows", "value": "rows" },
+        { "goName": "notionMigrationVerifyKindTemplates", "tsName": "templates", "value": "templates" },
+        { "goName": "notionMigrationVerifyKindView", "tsName": "view", "value": "view" },
+        { "goName": "notionMigrationVerifyKindLinkedView", "tsName": "linkedView", "value": "linked_view" },
+        { "goName": "notionMigrationVerifyKindRelation", "tsName": "relation", "value": "relation" },
+        { "goName": "notionMigrationVerifyKindCell", "tsName": "cell", "value": "cell" },
+        { "goName": "notionMigrationVerifyKindColumn", "tsName": "column", "value": "column" }
+      ]
+    },
+    {
+      "tsName": "NativeNotionMigrationVerifySetting",
+      "tsValuesName": "nativeNotionMigrationVerifySettings",
+      "values": [
+        { "goName": "notionMigrationVerifySettingCount", "tsName": "count", "value": "count" },
+        { "goName": "notionMigrationVerifySettingMissing", "tsName": "missing", "value": "missing" },
+        { "goName": "notionMigrationVerifySettingColumns", "tsName": "columns", "value": "columns" },
+        { "goName": "notionMigrationVerifySettingWidths", "tsName": "widths", "value": "widths" },
+        { "goName": "notionMigrationVerifySettingSorts", "tsName": "sorts", "value": "sorts" },
+        { "goName": "notionMigrationVerifySettingFilter", "tsName": "filter", "value": "filter" },
+        { "goName": "notionMigrationVerifySettingGroup", "tsName": "group", "value": "group" },
+        { "goName": "notionMigrationVerifyEmptyInNotion", "tsName": "emptyInNotion", "value": "empty_in_notion" },
+        { "goName": "notionMigrationVerifyOneWay", "tsName": "oneWay", "value": "one_way" },
+        { "goName": "notionMigrationVerifyComputed", "tsName": "computed", "value": "computed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "notionImportConnectionInput",
+      "tsName": "NativeNotionImportConnectionInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionImportJobInput",
+      "tsName": "NativeNotionImportJobInput",
+      "fields": [
+        { "goName": "ConnectionID", "jsonName": "connectionId", "goType": "string", "tsType": "string" },
+        { "goName": "RootIDs", "jsonName": "rootIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "RootKinds", "jsonName": "rootKinds", "goType": "[]string", "tsType": "(\"page\" | \"database\")[]" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "CopyFiles", "jsonName": "copyFiles", "goType": "bool", "tsType": "true" }
+      ]
+    },
+    {
+      "goName": "notionImportCapabilities",
+      "tsName": "NativeNotionImportCapabilities",
+      "fields": [
+        { "goName": "ExecutionOwner", "jsonName": "executionOwner", "goType": "string", "tsType": "\"server\"" },
+        { "goName": "Steps", "jsonName": "steps", "goType": "[]string", "tsType": "NativeNotionImportPhase[]" },
+        { "goName": "CopyFiles", "jsonName": "copyFiles", "goType": "bool", "tsType": "true" }
+      ]
+    },
+    {
+      "goName": "notionImportConnection",
+      "tsName": "NativeNotionImportConnection",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Active", "jsonName": "active", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportConnectionPage",
+      "tsName": "NativeNotionImportConnectionPage",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionImportConnection", "tsType": "NativeNotionImportConnection[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportRoot",
+      "tsName": "NativeNotionImportRoot",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"page\" | \"database\"" }
+      ]
+    },
+    {
+      "goName": "notionImportScope",
+      "tsName": "NativeNotionImportScope",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionImportRoot", "tsType": "NativeNotionImportRoot[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportReport",
+      "tsName": "NativeNotionImportReport",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "int", "tsType": "number" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "int", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "FilesCopied", "jsonName": "filesCopied", "goType": "int", "tsType": "number" },
+        { "goName": "FilesOmitted", "jsonName": "filesOmitted", "goType": "int", "tsType": "number" },
+        { "goName": "BlockIssues", "jsonName": "blockIssues", "goType": "int", "tsType": "number" },
+        { "goName": "PropertyIssues", "jsonName": "propertyIssues", "goType": "int", "tsType": "number" },
+        { "goName": "ViewIssues", "jsonName": "viewIssues", "goType": "int", "tsType": "number" },
+        { "goName": "NotWhole", "jsonName": "notWhole", "goType": "[]notionImportNotWhole", "tsType": "NativeNotionImportNotWhole[]" }
+      ]
+    },
+    {
+      "goName": "notionImportNotWhole",
+      "tsName": "NativeNotionImportNotWhole",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"block\" | \"property\" | \"view\"" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]notionImportNotWholePage", "tsType": "NativeNotionImportNotWholePage[]", "optional": true, "omitWhenZero": true },
+        { "goName": "PagesTotal", "jsonName": "pagesTotal", "goType": "int", "tsType": "number", "optional": true, "omitWhenZero": true }
+      ]
+    },
+    {
+      "goName": "notionImportNotWholePage",
+      "tsName": "NativeNotionImportNotWholePage",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true, "omitWhenZero": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true, "omitWhenZero": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true, "omitWhenZero": true },
+        { "goName": "Template", "jsonName": "template", "goType": "bool", "tsType": "boolean", "optional": true, "omitWhenZero": true },
+        { "goName": "Subject", "jsonName": "subject", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionImportJob",
+      "tsName": "NativeNotionImportJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "NativeNotionImportStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "NativeNotionImportPhase" },
+        { "goName": "ProcessedItems", "jsonName": "processedItems", "goType": "int", "tsType": "number" },
+        { "goName": "TotalItems", "jsonName": "totalItems", "goType": "int", "tsType": "number" },
+        { "goName": "FilesPending", "jsonName": "filesPending", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CanCancel", "jsonName": "canCancel", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CommentBlocksDone", "jsonName": "commentBlocksDone", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CommentBlocksTotal", "jsonName": "commentBlocksTotal", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CommentPagesDone", "jsonName": "commentPagesDone", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CommentPagesTotal", "jsonName": "commentPagesTotal", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Stage", "jsonName": "stage", "goType": "string", "tsType": "\"reading\" | \"creating\" | \"comments\" | \"verifying\" | \"done\" | \"stopped\"", "optional": true },
+        { "goName": "Step", "jsonName": "step", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Report", "jsonName": "report", "goType": "notionImportReport", "tsType": "NativeNotionImportReport" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "*notionImportProgress", "tsType": "NativeNotionImportProgress | null" }
+      ]
+    },
+    {
+      "goName": "notionImportProgress",
+      "tsName": "NativeNotionImportProgress",
+      "fields": [
+        { "goName": "ReadPages", "jsonName": "readPages", "goType": "int", "tsType": "number" },
+        { "goName": "ReadDatabases", "jsonName": "readDatabases", "goType": "int", "tsType": "number" },
+        { "goName": "ReadRows", "jsonName": "readRows", "goType": "int", "tsType": "number" },
+        { "goName": "ReadBlocks", "jsonName": "readBlocks", "goType": "int", "tsType": "number" },
+        { "goName": "WaitingBodies", "jsonName": "waitingBodies", "goType": "int", "tsType": "number" },
+        { "goName": "WaitingDatabases", "jsonName": "waitingDatabases", "goType": "int", "tsType": "number" },
+        { "goName": "ExpectedPages", "jsonName": "expectedPages", "goType": "int", "tsType": "number" },
+        { "goName": "ExpectedRows", "jsonName": "expectedRows", "goType": "int", "tsType": "number" },
+        { "goName": "ChangedAt", "jsonName": "changedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "MinutesLeft", "jsonName": "minutesLeft", "goType": "int", "tsType": "number" },
+        { "goName": "TimeShare", "jsonName": "timeShare", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "BodiesRead", "jsonName": "bodiesRead", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "BodiesTotal", "jsonName": "bodiesTotal", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "InnerRead", "jsonName": "innerRead", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "InnerTotal", "jsonName": "innerTotal", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ReadTrashedRows", "jsonName": "readTrashedRows", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ReadTemplates", "jsonName": "readTemplates", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Tally", "jsonName": "tally", "goType": "*notionMigrationRunTally", "tsType": "NativeNotionMigrationRunTally | null", "optional": true },
+        { "goName": "MovedAsOf", "jsonName": "movedAsOf", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "LeftSay", "jsonName": "leftSay", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PercentDone", "jsonName": "percentDone", "goType": "int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionImportFileOutcome",
+      "tsName": "NativeNotionImportFileOutcome",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"copied\" | \"omitted\" | \"retryable\"" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "FileID", "jsonName": "fileId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionImportFileOutcomePage",
+      "tsName": "NativeNotionImportFileOutcomePage",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionImportFileOutcome", "tsType": "NativeNotionImportFileOutcome[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportBlockIssue",
+      "tsName": "NativeNotionImportBlockIssue",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "BlockType", "jsonName": "blockType", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "NativeNotionImportBlockIssueReason" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionImportBlockIssuePage",
+      "tsName": "NativeNotionImportBlockIssuePage",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionImportBlockIssue", "tsType": "NativeNotionImportBlockIssue[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportedPerson",
+      "tsName": "NativeImportedPerson",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Email", "jsonName": "email", "goType": "*string", "tsType": "string | null" },
+        { "goName": "PropertyValueCount", "jsonName": "propertyValueCount", "goType": "int", "tsType": "number" },
+        { "goName": "MentionCount", "jsonName": "mentionCount", "goType": "int", "tsType": "number" },
+        { "goName": "SuggestedUserID", "jsonName": "suggestedUserId", "goType": "*string", "tsType": "string | null" },
+        { "goName": "SuggestedDisplayName", "jsonName": "suggestedDisplayName", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "notionImportedPeopleMember",
+      "tsName": "NativeImportedPeopleMember",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Email", "jsonName": "email", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionImportedPeopleScanInput",
+      "tsName": "NativeImportedPeopleScanInput",
+      "fields": [
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string" },
+        { "goName": "PeopleOnly", "jsonName": "peopleOnly", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportedPeopleScanResult",
+      "tsName": "NativeImportedPeopleScanResult",
+      "fields": [
+        { "goName": "People", "jsonName": "people", "goType": "[]notionImportedPerson", "tsType": "NativeImportedPerson[]" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]notionImportedPeopleMember", "tsType": "NativeImportedPeopleMember[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionImportedPeopleApplyInput",
+      "tsName": "NativeImportedPeopleApplyInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Mappings", "jsonName": "mappings", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Continuation", "jsonName": "continuation", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionImportedPeopleApplyResult",
+      "tsName": "NativeImportedPeopleApplyResult",
+      "fields": [
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"completed\"" },
+        { "goName": "Continuation", "jsonName": "continuation", "goType": "string", "tsType": "string" },
+        { "goName": "Generation", "jsonName": "generation", "goType": "int", "tsType": "number" },
+        { "goName": "MappedPeople", "jsonName": "mappedPeople", "goType": "int", "tsType": "number" },
+        { "goName": "ChangedPages", "jsonName": "changedPages", "goType": "int", "tsType": "number" },
+        { "goName": "ChangedBlocks", "jsonName": "changedBlocks", "goType": "int", "tsType": "number" },
+        { "goName": "SkippedPages", "jsonName": "skippedPages", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationInput",
+      "tsName": "NativeNotionMigrationInput",
+      "fields": [
+        { "goName": "ConnectionID", "jsonName": "connectionId", "goType": "string", "tsType": "string" },
+        { "goName": "Roots", "jsonName": "roots", "goType": "[]notionImportRoot", "tsType": "NativeNotionImportRoot[]" },
+        { "goName": "SecondCopy", "jsonName": "secondCopy", "goType": "bool", "tsType": "boolean", "optional": true, "omitWhenZero": true, "tsOptional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationCounts",
+      "tsName": "NativeNotionMigrationCounts",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "int", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "int", "tsType": "number" },
+        { "goName": "Requests", "jsonName": "requests", "goType": "int", "tsType": "number" },
+        { "goName": "SampledRows", "jsonName": "sampledRows", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledRowBlocks", "jsonName": "sampledRowBlocks", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledRowNested", "jsonName": "sampledRowNested", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledInnerLists", "jsonName": "sampledInnerLists", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledInnerBlocks", "jsonName": "sampledInnerBlocks", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledInnerNested", "jsonName": "sampledInnerNested", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledRowMarkdown", "jsonName": "sampledRowMarkdown", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ScanMs", "jsonName": "scanMs", "goType": "int64", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationEstimate",
+      "tsName": "NativeNotionMigrationEstimate",
+      "fields": [
+        { "goName": "MinMinutes", "jsonName": "minMinutes", "goType": "int", "tsType": "number" },
+        { "goName": "MaxMinutes", "jsonName": "maxMinutes", "goType": "int", "tsType": "number" },
+        { "goName": "ReadMinutes", "jsonName": "readMinutes", "goType": "int", "tsType": "number" },
+        { "goName": "MakeMinutes", "jsonName": "makeMinutes", "goType": "int", "tsType": "number" },
+        { "goName": "CommentMinutes", "jsonName": "commentMinutes", "goType": "int", "tsType": "number" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "int", "tsType": "number" },
+        { "goName": "CommentBlocks", "jsonName": "commentBlocks", "goType": "int", "tsType": "number" },
+        { "goName": "Say", "jsonName": "say", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "\"\" | \"more_found\" | \"slower_reading\" | \"slower_making\" | \"slower_comments\"", "optional": true },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "EndsAt", "jsonName": "endsAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "ChangedAt", "jsonName": "changedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Stage", "jsonName": "stage", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "StageAt", "jsonName": "stageAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "FollowedAt", "jsonName": "followedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "OffMs", "jsonName": "offMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "PaceEndsAt", "jsonName": "paceEndsAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "ReadCheckedAt", "jsonName": "readCheckedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "ReadMs", "jsonName": "readMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "MakeMs", "jsonName": "makeMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "CommentsMs", "jsonName": "commentsMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "SampledRows", "jsonName": "sampledRows", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SampledRowNested", "jsonName": "sampledRowNested", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ReadsSeen", "jsonName": "readsSeen", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "ReadAsideMs", "jsonName": "readAsideMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "PagesSeen", "jsonName": "pagesSeen", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "PlainMs", "jsonName": "plainMs", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "PlainTimed", "jsonName": "plainTimed", "goType": "int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPage",
+      "tsName": "NativeNotionMigrationPage",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationProperty",
+      "tsName": "NativeNotionMigrationProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "LeafenType", "jsonName": "leafenType", "goType": "string", "tsType": "string" },
+        { "goName": "RelationDatabaseID", "jsonName": "relationDatabaseId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Options", "jsonName": "options", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "OptionRows", "jsonName": "optionRows", "goType": "[]int", "tsType": "number[]", "optional": true },
+        { "goName": "Expression", "jsonName": "expression", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Rollup", "jsonName": "rollup", "goType": "*notionMigrationRollup", "tsType": "NativeNotionMigrationRollup | null", "optional": true, "omitWhenZero": true },
+        { "goName": "Actions", "jsonName": "actions", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Types", "jsonName": "types", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationRollup",
+      "tsName": "NativeNotionMigrationRollup",
+      "fields": [
+        { "goName": "RelationID", "jsonName": "relationId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Function", "jsonName": "function", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionMigrationSampleRow",
+      "tsName": "NativeNotionMigrationSampleRow",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Values", "jsonName": "values", "goType": "map[string]string", "tsType": "Record<string, string>" }
+      ]
+    },
+    {
+      "goName": "notionMigrationDataSource",
+      "tsName": "NativeNotionMigrationDataSource",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]notionMigrationProperty", "tsType": "NativeNotionMigrationProperty[]" }
+      ]
+    },
+    {
+      "goName": "notionMigrationTemplate",
+      "tsName": "NativeNotionMigrationTemplate",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "IsDefault", "jsonName": "isDefault", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "notionMigrationRelationOverlap",
+      "tsName": "NativeNotionMigrationRelationOverlap",
+      "fields": [
+        { "goName": "Property", "jsonName": "property", "goType": "string", "tsType": "string" },
+        { "goName": "Other", "jsonName": "other", "goType": "string", "tsType": "string" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "Differ", "jsonName": "differ", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationDatabase",
+      "tsName": "NativeNotionMigrationDatabase",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Inline", "jsonName": "inline", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "RowsCapped", "jsonName": "rowsCapped", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Views", "jsonName": "views", "goType": "int", "tsType": "number" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]notionMigrationProperty", "tsType": "NativeNotionMigrationProperty[]" },
+        { "goName": "SampleRows", "jsonName": "sampleRows", "goType": "[]notionMigrationSampleRow", "tsType": "NativeNotionMigrationSampleRow[]" },
+        { "goName": "SourceName", "jsonName": "sourceName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSources", "jsonName": "dataSources", "goType": "[]notionMigrationDataSource", "tsType": "NativeNotionMigrationDataSource[]", "optional": true },
+        { "goName": "Templates", "jsonName": "templates", "goType": "[]notionMigrationTemplate", "tsType": "NativeNotionMigrationTemplate[]", "optional": true },
+        { "goName": "RelationOverlaps", "jsonName": "relationOverlaps", "goType": "[]notionMigrationRelationOverlap", "tsType": "NativeNotionMigrationRelationOverlap[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationIssue",
+      "tsName": "NativeNotionMigrationIssue",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Detail", "jsonName": "detail", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceTitle", "jsonName": "sourceTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationScanItems",
+      "tsName": "NativeNotionMigrationScanItems",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]notionMigrationPage", "tsType": "NativeNotionMigrationPage[]", "optional": true },
+        { "goName": "Databases", "jsonName": "databases", "goType": "[]notionMigrationDatabase", "tsType": "NativeNotionMigrationDatabase[]", "optional": true },
+        { "goName": "Issues", "jsonName": "issues", "goType": "[]notionMigrationIssue", "tsType": "NativeNotionMigrationIssue[]", "optional": true },
+        { "goName": "People", "jsonName": "people", "goType": "[]notionMigrationPerson", "tsType": "NativeNotionMigrationPerson[]", "optional": true },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationSummary",
+      "tsName": "NativeNotionMigrationSummary",
+      "fields": [
+        { "goName": "Counts", "jsonName": "counts", "goType": "notionMigrationCounts", "tsType": "NativeNotionMigrationCounts" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]notionMigrationPage", "tsType": "NativeNotionMigrationPage[]" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "[]notionMigrationDatabase", "tsType": "NativeNotionMigrationDatabase[]" },
+        { "goName": "Issues", "jsonName": "issues", "goType": "[]notionMigrationIssue", "tsType": "NativeNotionMigrationIssue[]" },
+        { "goName": "People", "jsonName": "people", "goType": "[]notionMigrationPerson", "tsType": "NativeNotionMigrationPerson[]" }
+      ]
+    },
+    {
+      "goName": "notionMigration",
+      "tsName": "NativeNotionMigration",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "ConnectionID", "jsonName": "connectionId", "goType": "string", "tsType": "string" },
+        { "goName": "Roots", "jsonName": "roots", "goType": "[]notionImportRoot", "tsType": "NativeNotionImportRoot[]" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"scanning\" | \"scanned\" | \"failed\"" },
+        { "goName": "Counts", "jsonName": "counts", "goType": "notionMigrationCounts", "tsType": "NativeNotionMigrationCounts" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RunState", "jsonName": "runState", "goType": "string", "tsType": "\"\" | \"running\" | \"done\" | \"failed\"" },
+        { "goName": "RunPlanRevision", "jsonName": "runPlanRevision", "goType": "int", "tsType": "number" },
+        { "goName": "ImportJobID", "jsonName": "importJobId", "goType": "string", "tsType": "string" },
+        { "goName": "ImportTopPageID", "jsonName": "importTopPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RunReport", "jsonName": "runReport", "goType": "notionMigrationRunReport", "tsType": "NativeNotionMigrationRunReport" },
+        { "goName": "AgentHandoff", "jsonName": "agentHandoff", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EverDone", "jsonName": "everDone", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FormatsLeft", "jsonName": "formatsLeft", "goType": "[]notionMigrationFormatsLeftKind", "tsType": "NativeNotionMigrationFormatsLeftKind[]" },
+        { "goName": "FilesNotCopied", "jsonName": "filesNotCopied", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "FilesNotCopiedEarlier", "jsonName": "filesNotCopiedEarlier", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "RunEndedAt", "jsonName": "runEndedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Live", "jsonName": "live", "goType": "*notionMigrationLive", "tsType": "NativeNotionMigrationLive | null", "optional": true, "omitWhenZero": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationLive",
+      "tsName": "NativeNotionMigrationLive",
+      "fields": [
+        { "goName": "Stage", "jsonName": "stage", "goType": "string", "tsType": "\"scanning\" | \"formats\" | \"reading\" | \"creating\" | \"comments\" | \"verifying\"" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionMigrationLiveItem", "tsType": "NativeNotionMigrationLiveItem[]" },
+        { "goName": "Done", "jsonName": "done", "goType": "int", "tsType": "number" },
+        { "goName": "Left", "jsonName": "left", "goType": "int", "tsType": "number" },
+        { "goName": "WaitSeconds", "jsonName": "waitSeconds", "goType": "int", "tsType": "number" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationLiveItem",
+      "tsName": "NativeNotionMigrationLiveItem",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"page\" | \"database\" | \"row\"" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationFormatsLeftKind",
+      "tsName": "NativeNotionMigrationFormatsLeftKind",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"page\" | \"rows\" | \"template\" | \"database\" | \"board\" | \"groups\" | \"wrap\" | \"form\" | \"view_template\" | \"row_order\"" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationReportedValue",
+      "tsName": "NativeNotionMigrationReportedValue",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "RowTitle", "jsonName": "rowTitle", "goType": "string", "tsType": "string" },
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionMigrationReportedProperty",
+      "tsName": "NativeNotionMigrationReportedProperty",
+      "fields": [
+        { "goName": "DatabaseID", "jsonName": "databaseId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Values", "jsonName": "values", "goType": "[]notionMigrationReportedValue", "tsType": "NativeNotionMigrationReportedValue[]" },
+        { "goName": "Truncated", "jsonName": "truncated", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Total", "jsonName": "total", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Kept", "jsonName": "kept", "goType": "string", "tsType": "\"deleted_property\" | \"property\" | \"formula\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationRunReport",
+      "tsName": "NativeNotionMigrationRunReport",
+      "fields": [
+        { "goName": "CommentsImported", "jsonName": "commentsImported", "goType": "int", "tsType": "number" },
+        { "goName": "CommentsUnavailable", "jsonName": "commentsUnavailable", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CommentsUnreadable", "jsonName": "commentsUnreadable", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CommentsStopped", "jsonName": "commentsStopped", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "FilesSkipped", "jsonName": "filesSkipped", "goType": "int", "tsType": "number" },
+        { "goName": "PeopleMapped", "jsonName": "peopleMapped", "goType": "int", "tsType": "number" },
+        { "goName": "PeopleSkippedPages", "jsonName": "peopleSkippedPages", "goType": "int", "tsType": "number" },
+        { "goName": "PeopleKept", "jsonName": "peopleKept", "goType": "int", "tsType": "number" },
+        { "goName": "BlocksRemoved", "jsonName": "blocksRemoved", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "BlocksKept", "jsonName": "blocksKept", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "BlocksMoved", "jsonName": "blocksMoved", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "BlocksMoveKept", "jsonName": "blocksMoveKept", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "PeopleError", "jsonName": "peopleError", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ReportPageID", "jsonName": "reportPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Reported", "jsonName": "reported", "goType": "[]notionMigrationReportedProperty", "tsType": "NativeNotionMigrationReportedProperty[]" },
+        { "goName": "EndedAt", "jsonName": "endedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "ChangedMeanwhile", "jsonName": "changedMeanwhile", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Failure", "jsonName": "failure", "goType": "*notionMigrationRunFailure", "tsType": "NativeNotionMigrationRunFailure | null", "optional": true },
+        { "goName": "Verify", "jsonName": "verify", "goType": "*notionMigrationVerify", "tsType": "NativeNotionMigrationVerify | null", "optional": true },
+        { "goName": "Estimate", "jsonName": "estimate", "goType": "*notionMigrationEstimate", "tsType": "NativeNotionMigrationEstimate | null", "optional": true },
+        { "goName": "Tally", "jsonName": "tally", "goType": "*notionMigrationRunTally", "tsType": "NativeNotionMigrationRunTally | null", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationRunTally",
+      "tsName": "NativeNotionMigrationRunTally",
+      "fields": [
+        { "goName": "Made", "jsonName": "made", "goType": "notionMigrationTallyCounts", "tsType": "NativeNotionMigrationTallyCounts" },
+        { "goName": "Changed", "jsonName": "changed", "goType": "notionMigrationTallyCounts", "tsType": "NativeNotionMigrationTallyCounts" },
+        { "goName": "Kept", "jsonName": "kept", "goType": "notionMigrationTallyCounts", "tsType": "NativeNotionMigrationTallyCounts" }
+      ]
+    },
+    {
+      "goName": "notionMigrationTallyCounts",
+      "tsName": "NativeNotionMigrationTallyCounts",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "int", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationVerify",
+      "tsName": "NativeNotionMigrationVerify",
+      "fields": [
+        { "goName": "CheckedAt", "jsonName": "checkedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" },
+        { "goName": "Templates", "jsonName": "templates", "goType": "int", "tsType": "number" },
+        { "goName": "Views", "jsonName": "views", "goType": "int", "tsType": "number" },
+        { "goName": "LinkedViews", "jsonName": "linkedViews", "goType": "int", "tsType": "number" },
+        { "goName": "Remaining", "jsonName": "remaining", "goType": "[]notionMigrationVerifyDifference", "tsType": "NativeNotionMigrationVerifyDifference[]" },
+        { "goName": "RemainingTotal", "jsonName": "remainingTotal", "goType": "int", "tsType": "number" },
+        { "goName": "RemainingGroups", "jsonName": "remainingGroups", "goType": "[]notionMigrationVerifyGroupCount", "tsType": "NativeNotionMigrationVerifyGroupCount[]", "optional": true },
+        { "goName": "Unchecked", "jsonName": "unchecked", "goType": "[]notionMigrationFormatsLeftKind", "tsType": "NativeNotionMigrationFormatsLeftKind[]" }
+      ]
+    },
+    {
+      "goName": "notionMigrationVerifyGroupCount",
+      "tsName": "NativeNotionMigrationVerifyGroupCount",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "NativeNotionMigrationVerifyKind" },
+        { "goName": "Setting", "jsonName": "setting", "goType": "string", "tsType": "NativeNotionMigrationVerifySetting" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationVerifyDifference",
+      "tsName": "NativeNotionMigrationVerifyDifference",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "NativeNotionMigrationVerifyKind" },
+        { "goName": "Setting", "jsonName": "setting", "goType": "string", "tsType": "NativeNotionMigrationVerifySetting" },
+        { "goName": "NotionID", "jsonName": "notionId", "goType": "string", "tsType": "string" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Notion", "jsonName": "notion", "goType": "string", "tsType": "string" },
+        { "goName": "Leafen", "jsonName": "leafen", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Fix", "jsonName": "fix", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationRunFailure",
+      "tsName": "NativeNotionMigrationRunFailure",
+      "fields": [
+        { "goName": "Stage", "jsonName": "stage", "goType": "string", "tsType": "\"read\" | \"make\" | \"link\" | \"publish\" | \"plan\" | \"comments\" | \"moves\" | \"people\" | \"rerun\" | \"formats\" | \"ledger\" | \"verify\" | \"report\" | \"finish\"" },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "\"\" | \"page\" | \"row\" | \"block\"", "optional": true },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "CauseCode", "jsonName": "causeCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "RetrySafe", "jsonName": "retrySafe", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Retry", "jsonName": "retry", "goType": "string", "tsType": "string" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationList",
+      "tsName": "NativeNotionMigrationList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]notionMigration", "tsType": "NativeNotionMigration[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationRunInput",
+      "tsName": "NativeNotionMigrationRunInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "PlanRevision", "jsonName": "planRevision", "goType": "int", "tsType": "number" },
+        { "goName": "SecondCopy", "jsonName": "secondCopy", "goType": "bool", "tsType": "boolean", "optional": true, "omitWhenZero": true, "tsOptional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPerson",
+      "tsName": "NativeNotionMigrationPerson",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"person\" | \"integration\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanValue",
+      "tsName": "NativeNotionMigrationPlanValue",
+      "fields": [
+        { "goName": "From", "jsonName": "from", "goType": "string", "tsType": "string" },
+        { "goName": "To", "jsonName": "to", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanProperty",
+      "tsName": "NativeNotionMigrationPlanProperty",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"map\" | \"preserve\" | \"report\" | \"object\"" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Values", "jsonName": "values", "goType": "[]notionMigrationPlanValue", "tsType": "NativeNotionMigrationPlanValue[]", "optional": true },
+        { "goName": "Database", "jsonName": "database", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Into", "jsonName": "into", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanSplit",
+      "tsName": "NativeNotionMigrationPlanSplit",
+      "fields": [
+        { "goName": "Property", "jsonName": "property", "goType": "string", "tsType": "string" },
+        { "goName": "Values", "jsonName": "values", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Into", "jsonName": "into", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanDataSource",
+      "tsName": "NativeNotionMigrationPlanDataSource",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]notionMigrationPlanProperty", "tsType": "NativeNotionMigrationPlanProperty[]" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanDatabase",
+      "tsName": "NativeNotionMigrationPlanDatabase",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"import\" | \"skip\" | \"merge\"" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Into", "jsonName": "into", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Split", "jsonName": "split", "goType": "[]notionMigrationPlanSplit", "tsType": "NativeNotionMigrationPlanSplit[]", "optional": true },
+        { "goName": "ParentSourceID", "jsonName": "parentSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]notionMigrationPlanProperty", "tsType": "NativeNotionMigrationPlanProperty[]" },
+        { "goName": "DataSources", "jsonName": "dataSources", "goType": "[]notionMigrationPlanDataSource", "tsType": "NativeNotionMigrationPlanDataSource[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanPage",
+      "tsName": "NativeNotionMigrationPlanPage",
+      "fields": [
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"import\" | \"skip\"" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ParentSourceID", "jsonName": "parentSourceId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanPerson",
+      "tsName": "NativeNotionMigrationPlanPerson",
+      "fields": [
+        { "goName": "NotionUserID", "jsonName": "notionUserId", "goType": "string", "tsType": "string" },
+        { "goName": "MemberID", "jsonName": "memberId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"member\" | \"keep\" | \"invite\" | \"clear\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanCounts",
+      "tsName": "NativeNotionMigrationPlanCounts",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "int", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlan",
+      "tsName": "NativeNotionMigrationPlan",
+      "fields": [
+        { "goName": "Format", "jsonName": "format", "goType": "int", "tsType": "number" },
+        { "goName": "DestinationPageID", "jsonName": "destinationPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]notionMigrationPlanPage", "tsType": "NativeNotionMigrationPlanPage[]", "optional": true },
+        { "goName": "Databases", "jsonName": "databases", "goType": "[]notionMigrationPlanDatabase", "tsType": "NativeNotionMigrationPlanDatabase[]" },
+        { "goName": "People", "jsonName": "people", "goType": "[]notionMigrationPlanPerson", "tsType": "NativeNotionMigrationPlanPerson[]", "optional": true },
+        { "goName": "Comments", "jsonName": "comments", "goType": "string", "tsType": "\"import\" | \"skip\"" },
+        { "goName": "Files", "jsonName": "files", "goType": "string", "tsType": "\"copy\" | \"skip\"" },
+        { "goName": "Expect", "jsonName": "expect", "goType": "*notionMigrationPlanCounts", "tsType": "NativeNotionMigrationPlanCounts | null", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanCheck",
+      "tsName": "NativeNotionMigrationPlanCheck",
+      "fields": [
+        { "goName": "OK", "jsonName": "ok", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Problems", "jsonName": "problems", "goType": "[]notionMigrationIssue", "tsType": "NativeNotionMigrationIssue[]" },
+        { "goName": "Expected", "jsonName": "expected", "goType": "notionMigrationPlanCounts", "tsType": "NativeNotionMigrationPlanCounts" },
+        { "goName": "Agenda", "jsonName": "agenda", "goType": "[]notionMigrationIssue", "tsType": "NativeNotionMigrationIssue[]" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanInput",
+      "tsName": "NativeNotionMigrationPlanInput",
+      "fields": [
+        { "goName": "BaseRevision", "jsonName": "baseRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Plan", "jsonName": "plan", "goType": "notionMigrationPlan", "tsType": "NativeNotionMigrationPlan" }
+      ]
+    },
+    {
+      "goName": "notionMigrationPlanState",
+      "tsName": "NativeNotionMigrationPlanState",
+      "fields": [
+        { "goName": "MigrationID", "jsonName": "migrationId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Plan", "jsonName": "plan", "goType": "*notionMigrationPlan", "tsType": "NativeNotionMigrationPlan | null" },
+        { "goName": "Check", "jsonName": "check", "goType": "*notionMigrationPlanCheck", "tsType": "NativeNotionMigrationPlanCheck | null" },
+        { "goName": "Draft", "jsonName": "draft", "goType": "*notionMigrationPlan", "tsType": "NativeNotionMigrationPlan | null", "optional": true },
+        { "goName": "Estimate", "jsonName": "estimate", "goType": "*notionMigrationEstimate", "tsType": "NativeNotionMigrationEstimate | null", "optional": true }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,195 @@
+/* A touch screen wider than a phone's draws its sidebar as Notion's iPad
+   (measured 2026-11-17 in iPad Safari at 834 and 1210, the same at both):
+   page rows 40.5px and a 1px foot, 1px apart, their contents 5px from the
+   top and 8px in
+   — a 24px fold, the page's mark at 1.2 times the desktop's in a 24px
+   place 34px in, the name in 16px from 68px — and "+" and "⋯" in 32px
+   boxes 2px apart with 22px marks in the faint icon colour, ending 10px in;
+   each level 22px further in, a teamspace's pages 20px in on rows as wide
+   as the others. Section names read 15px; a teamspace's head stands 48px
+   with its fold, its mark and its "+" alone; the "+" rows hold an 18px plus
+   13px in and the words 42px in. A phone keeps its own drawer
+   (SidebarPhone.module.css). */
+/* The top row's close and inbox marks read 22px in their 28px boxes, "새로"
+   keeps its 20px, as Notion's iPad (seen 2026-11-17 at 834 and 1210; its
+   desktop draws all three 20px). Under them the search field and the home
+   row are the desktop's: Notion's field also asks its AI and its 홈 · 채팅 ·
+   회의 are tabs (Leafen searches, and its home row opens the home
+   page where Notion's tab row is). */
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) :is(.headerIcon[data-sidebar-collapse-action], .headerIcon[data-sidebar-icon-action]) svg {
+  width: 22px;
+  height: 22px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .scroll {
+  --tree-level-indent: 22px;
+  --tree-leading-extra: -2px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeRow {
+  height: 40.5px;
+  margin-block-end: 1px;
+  padding-block: 5px 3.5px;
+  font-size: 16px;
+}
+/* The open page's ground is square, its foot a 1px line under it. */
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) :is(.treeRowActive, .treeRow[data-opening]) {
+  border-radius: 0;
+  box-shadow: 0 1px 0 var(--border-subtle);
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeLeading {
+  width: 50px;
+  height: 24px;
+  flex-basis: 50px;
+  margin-inline: 0 10px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .disclosure {
+  width: 24px;
+  height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .disclosure svg {
+  width: 12.8px;
+  height: 12.8px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeRow .treeLeading .treeIcon {
+  zoom: 1.2;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeTitle {
+  padding-inline-end: 70px;
+  font-size: 16px;
+  line-height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeActions {
+  top: 5px;
+  inset-inline-end: 10px;
+  transform: none;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeActions .iconBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--icon-tertiary);
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeActions .iconBtn svg {
+  width: 22px;
+  height: 22px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .treeEmptyChildren {
+  height: 32.5px;
+  font-size: 16px;
+  line-height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .sectionLabel {
+  font-size: 15px;
+  font-weight: 400;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .emptyTreeAction {
+  height: 33px;
+  padding-inline-start: 13px;
+  font-size: 16px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .emptyTreeAction svg {
+  width: 18px;
+  height: 18px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry > .sectionLabel {
+  height: 48px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceToggle {
+  gap: 9px;
+  max-width: calc(100% - 40px);
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceLeading {
+  gap: 0;
+  width: auto;
+  height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .sectionLabel .teamspaceDisclosure {
+  position: static;
+  order: -1;
+  width: 24px;
+  height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .sectionLabel .teamspaceChevron {
+  position: static;
+  display: block;
+  order: -1;
+  width: 24px;
+  height: 24px;
+  padding: 5.6px;
+  opacity: 1;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .sectionLabel .teamspaceIcon {
+  opacity: 1;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceName {
+  font-size: 16px;
+  font-weight: 500;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) [data-sidebar-teamspace-actions] .sectionAction:not(.sectionAdd) {
+  display: none;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) [data-sidebar-teamspace-actions] .sectionAdd {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--icon-tertiary);
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) [data-sidebar-teamspace-actions] .sectionAdd svg {
+  width: 22px;
+  height: 22px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry > [role="tree"] {
+  --tree-base-indent: 20px;
+  padding-inline-start: 0;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry > .teamspaceAddRow {
+  height: 32px;
+  padding-inline-start: 35px;
+  font-size: 16px;
+}
+/* Under a teamspace's head Notion's iPad keeps 1px more than its desktop
+   (measured 2026-11-17 at 834 and 1210, two tabs: the head's 1px foot), so
+   its first page stands 2px under the head; an empty teamspace the reader
+   may not add to says "하위 페이지 없음" 4px under it (past an empty 1px
+   tree) on a 40px row 1px over the block's margin, its 16px words on a 24px
+   line 39px in (a touch row's 10px and 29 more). */
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry > [role="tree"]:not(:empty) {
+  margin-block-start: 2px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEmpty {
+  height: 40px;
+  margin-block: 4px 1px;
+  padding-inline-start: 39px;
+  font-size: 16px;
+  line-height: 24px;
+}
+/* Sections stand 18px under the block before them, as Notion's iPad (seen
+   2026-11-17 at 834 in two workspaces: 14px under a section's block and 4
+   more; the desktop's 12 and 4 are .section's 16; the same at 1210). Every
+   open teamspace keeps 12px under its block, the last too (the desktop's
+   14, and 1 under the last), and its "+ 새로 추가" lays a 32px ground over
+   a 30px place, hanging 2px under it, as Notion's iPad row does. */
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .section:not(:first-child) {
+  margin-top: 18px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry:has(> [role="tree"]) {
+  margin-bottom: 12px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .teamspaceEntry > .teamspaceAddRow {
+  margin-block-end: -2px;
+}
+/* "··· 모두 보기" in every section, as Notion's iPad (seen 2026-11-17 at 834:
+   the recent, private and teamspaces' rows alike): a 32px ground over a 30px
+   place, hanging 2px under it, the 22px ⋯ 11px in and the words 16px on a
+   24px line 9px after it. */
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .showAll {
+  height: 32px;
+  margin-block-end: -2px;
+  padding-inline-start: 11px;
+  font-size: 16px;
+  line-height: 24px;
+}
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .showAll svg {
+  width: 22px;
+  height: 22px;
+}

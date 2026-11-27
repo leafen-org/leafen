@@ -1,0 +1,76 @@
+// The Obsidian migration screen's words, in the person's language.
+
+const TEXT = {
+  en: {
+    pick: "Choose a vault",
+    synced: "{name} — synced to the drive",
+    upload: "A vault folder as a ZIP",
+    choose: "Choose file",
+    none: "No vault is synced to the drive yet. Sync one with Remotely Save, or choose a ZIP of the vault folder.",
+    lead: "Notes and folders become pages under the vault's page, and [[links]] become page mentions. Moving the same vault again later brings only what changed in Obsidian since.",
+    reading: "Reading the vault… {done} of {total} notes",
+    listing: "Looking through the vault… {count} files",
+    go: "Import",
+    handing: "Handing it to Leafen…",
+    taken: "Leafen has it.",
+    counts: "{pages} pages · {files} files",
+    failed: "Couldn't read the vault: {reason}",
+    notZip: "This is not a ZIP file.",
+    noNotes: "There are no notes in it.",
+    again: "Moved here before: only what changed since comes in.",
+    lossSameName: "Notes with the same name", lossSameNameWhy: "A [[link]] goes to the nearest one",
+    lossFrontMatter: "Front matter", lossFrontMatterWhy: "Kept as a table at the top of the page, not as properties",
+    lossComment: "%% comments %%", lossCommentWhy: "Not moved",
+    lossQuery: "Dataview and Tasks queries", lossQueryWhy: "Kept as code blocks; Leafen doesn't run them",
+    lossFold: "Folding callouts", lossFoldWhy: "Callouts come open",
+    lossAnchor: "Links to a heading or block", lossAnchorWhy: "Go to the note",
+    lossBrokenLink: "Links to notes or files not in the vault", lossBrokenLinkWhy: "Kept as text",
+    lossNoteEmbed: "Embedded notes", lossNoteEmbedWhy: "Kept as a mention of the note",
+    lossFootnote: "Footnotes", lossFootnoteWhy: "Kept as text",
+    lossBlockId: "Block ids (^id)", lossBlockIdWhy: "Left out",
+    lossTags: "Notes with #tags", lossTagsWhy: "Kept as text, not as a multi-select",
+    lossCanvas: "Canvas files", lossCanvasWhy: "Kept as files",
+    lossExcalidraw: "Excalidraw drawings", lossExcalidrawWhy: "Kept as files",
+    lossKept: "Files Leafen doesn't keep (SVG, HTML, empty files)", lossKeptWhy: "Not moved",
+  },
+  ko: {
+    pick: "보관함 선택",
+    synced: "{name} — 드라이브에 동기화됨",
+    upload: "보관함 폴더 ZIP",
+    choose: "파일 선택하기",
+    none: "드라이브에 동기화된 보관함이 아직 없습니다. Remotely Save로 동기화하거나 보관함 폴더의 ZIP을 선택하세요.",
+    lead: "노트와 폴더는 보관함 페이지 아래 페이지로, [[링크]]는 페이지 멘션으로 옮깁니다. 나중에 같은 보관함을 다시 옮기면 그사이 Obsidian에서 바뀐 것만 이어서 가져옵니다.",
+    reading: "보관함을 읽는 중… 노트 {total}개 중 {done}개",
+    listing: "보관함을 스캔하는 중… 파일 {count}개",
+    go: "옮기기",
+    handing: "리펜에 넘기는 중…",
+    taken: "리펜이 받았습니다.",
+    counts: "페이지 {pages}개 · 파일 {files}개",
+    failed: "보관함을 읽지 못했습니다: {reason}",
+    notZip: "ZIP 파일이 아닙니다.",
+    noNotes: "노트가 없습니다.",
+    again: "전에 옮긴 보관함입니다. 그사이 바뀐 것만 이어 옮깁니다.",
+    lossSameName: "이름이 같은 노트", lossSameNameWhy: "[[링크]]는 가장 가까운 노트로",
+    lossFrontMatter: "머리말", lossFrontMatterWhy: "속성 대신 페이지 맨 위 표로 남김",
+    lossComment: "%% 주석 %%", lossCommentWhy: "옮기지 않음",
+    lossQuery: "Dataview·Tasks 질의", lossQueryWhy: "코드 블록으로 남김, 리펜은 실행하지 않음",
+    lossFold: "접히는 콜아웃", lossFoldWhy: "펼친 채로",
+    lossAnchor: "제목·블록으로 가는 링크", lossAnchorWhy: "노트로 감",
+    lossBrokenLink: "보관함에 없는 노트·파일로 가는 링크", lossBrokenLinkWhy: "글로 남김",
+    lossNoteEmbed: "노트 임베드", lossNoteEmbedWhy: "노트 멘션으로 남김",
+    lossFootnote: "각주", lossFootnoteWhy: "글로 남김",
+    lossBlockId: "블록 ID(^id)", lossBlockIdWhy: "뺌",
+    lossTags: "#태그가 있는 노트", lossTagsWhy: "다중 선택 대신 글로 남김",
+    lossCanvas: "Canvas 파일", lossCanvasWhy: "파일로 남김",
+    lossExcalidraw: "Excalidraw 그림", lossExcalidrawWhy: "파일로 남김",
+    lossKept: "리펜이 보관하지 않는 파일(SVG·HTML·빈 파일)", lossKeptWhy: "옮기지 않음",
+  },
+};
+
+export function strings(locale) {
+  return TEXT[(locale ?? "").toLowerCase().startsWith("ko") ? "ko" : "en"];
+}
+
+export function fill(template, values) {
+  return template.replace(/\{(\w+)\}/gu, (_, key) => String(values[key] ?? ""));
+}

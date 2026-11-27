@@ -1,0 +1,227 @@
+/* A table column's menu and its side menus, as Notion's (seen 2026-09-30;
+   2026-11-02: 220px, as wide as its longest line where that is wider — the
+   title's 241): a menu opened under the column's header with the property's type
+   icon and name field on top; "edit property", "change type", "sort" and
+   "calculate" open beside it, level with their item. */
+.menu {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 220px;
+  max-width: min(286px, calc(100vw - 24px));
+  overflow-y: auto;
+  /* Its own width is its rows', so a scroll bar that takes room (a Mac set to
+     show them) must not push a row out sideways into a second, level bar — as
+     the @ menu (EditorSlashMenu .mentionMenu). */
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The column's own menu is as wide as its longest line up to the window
+   less 24, each line whole, as Notion's (read 2026-11-18 from its own rule,
+   a least width of 220 and a most of 100vw - 24, and seen on its French
+   screen at 1440: 258 with "Afficher l’icône de la page", 324 with
+   "Désactiver le retour à la ligne automatique"). */
+.menu[data-table-property-menu] {
+  max-width: calc(100vw - 24px);
+}
+
+/* An empty cell's rollup form takes its own width and insets. */
+/* The title column's menu, a menu given back its row and a side the pointer
+   opened hold the focus themselves, with no ring of their own. */
+.menu:focus-visible,
+.submenu:focus {
+  outline: none;
+}
+.menu:has([data-rollup-form]) {
+  min-width: 0;
+  padding: 0;
+}
+
+/* The icon and name 8px in, as before; the rows under them at Notion's 4px
+   (seen 2026-10-27: the first row 44px under the menu's top, rows 1px
+   apart, side menus alike). */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 8px;
+}
+
+.headIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: none;
+  /* The property's mark is drawn as a built-in icon in its gray, as Notion's
+     (seen 2026-11-17 at 1440 in two tabs, light and dark: the type's mark
+     "…_gray.svg" and an icon picked for it alike, rgb(85, 83, 78) light and
+     rgb(211, 211, 211) dark, in the column menu, the row page's "이름
+     바꾸기" and the view settings' "새 속성") — not the table head's icoSec.
+     A gray icon picked for the property follows it (PropertyIcon). */
+  color: var(--icon-c-gray);
+}
+
+.headIcon:not(:disabled):hover,
+.headIcon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.name {
+  flex: 1 1 auto;
+  /* Its field fills the head without widening the menu, which its lines size. */
+  width: 0;
+  min-width: 0;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.name:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+
+/* The name's box ends in the "i" that opens the description's line. */
+.nameBox {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Its words end 4 before the ⓘ's 19.26 box, 6 in: 29.26, as Notion's (2026-11-18). */
+.nameBox .name {
+  padding-inline-end: 29.26px;
+}
+
+/* The name column's menu is at least as wide as its head with the name at a
+   text field's own width (the browser's twenty characters of the menu's
+   type), as Notion's, whose name column menu its head sizes so: 8 + the
+   type's 28 + 8 + the name's 6, its 156 in Notion's type, 29.26 + 8 = 243.26
+   (read 2026-11-18 at 1440, ko, twice; without the field it fell to its
+   rows' 194.46). The other columns' heads give way to their rows (220). In
+   Leafen's Inter the field is 159, so 246.26 (the type decision B). */
+.menu[data-title-column] .name {
+  width: auto;
+}
+
+/* The ⓘ (DescribeButton) at the name field's end, 6 in, as Notion's (2026-11-18). */
+.describe {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 6px;
+  transform: translateY(-50%);
+}
+
+.description {
+  display: block;
+  width: calc(100% - 4px);
+  min-height: 28px;
+  margin: 0 2px 6px;
+  padding: 4px 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+  line-height: 18px;
+  resize: none;
+  field-sizing: content;
+}
+
+.description:focus {
+  border-color: var(--focus); box-shadow: var(--name-field-ring-focus-out);
+  outline: none;
+}
+
+/* A phone sheet's name row, as Notion's "속성 편집" (seen 2026-11-11 at
+   402pt): 44px in a white group, the icon in a 29px box 8px in, the name
+   17px 7px after it, unboxed, and the grey "i" 16px from the group's end.
+   Its fields are 16px or more, so Safari doesn't zoom as they take focus. */
+.head[data-phone] {
+  gap: 7px;
+  min-height: 44px;
+  padding-block: 7px;
+  padding-inline: 8px 16px;
+}
+
+/* Its icon is drawn 16.8px on a phone too, by the one rule for a name
+   field's button (propertyNameButtonClass). */
+.head[data-phone] .headIcon {
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+}
+
+.head[data-phone] .name {
+  height: 30px;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.head[data-phone] .nameBox .name {
+  padding-inline-end: 28px;
+}
+
+.head[data-phone] .describe {
+  inset-inline-end: -2px;
+  width: 24px;
+  height: 24px;
+}
+
+.description[data-phone] {
+  width: calc(100% - 24px);
+  margin: 0 12px 10px;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.submenu {
+  position: fixed;
+  z-index: 91;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A property's settings beside the menu, as Notion's (seen 2026-11-02):
+   28px lines 1px apart from 4px in, their marks 12px in. */
+.submenu[data-submenu="edit"] {
+  gap: 0;
+}
+
+/* Measured for its place at the height it will have (TYPE_MENU_MAX_HEIGHT). */
+.submenu[data-submenu="type"] {
+  max-height: 470px;
+}
+

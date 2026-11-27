@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Hesabın e-poçt ünvanlarını yükləmə",
+        "deniedEffect": "E-poçt ünvanları yüklənmədi; yadda saxlanmış ünvanlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari e-poçt ünvanlarını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl yenidən qoşulun və e-poçt siyahısını yeniləyin."
+      },
+      "update": {
+        "operation": "Hesabın e-poçt ünvanlarını idarə etmə",
+        "deniedEffect": "E-poçt sorğusu qəbul edilmədi; yadda saxlanmış ünvanlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen e-poçt sorğusunun tamamlandığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl e-poçt siyahısını yeniləyin və təsdiqləmə mesajını yoxlayın."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Bildiriş ayarlarını yüklə",
+        "deniedEffect": "Bildiriş ayarlarınız yüklənə bilmədi və saxlanılmış ayarlarınız dəyişdirilmədi.",
+        "uncertainEffect": "Leafen hansı bildirişləri aldığınızı təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişməzdən əvvəl bildiriş ayarlarınızı yükləmək üçün parametrləri bağlayıb yenidən açın."
+      },
+      "update": {
+        "operation": "Bildiriş ayarlarını dəyiş",
+        "deniedEffect": "Bildiriş ayarlarınız dəyişdirilmədi və əvvəlki ayarlarınız saxlanılır.",
+        "uncertainEffect": "Leafen bildiriş ayarlarınızın dəyişdiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən dəyişiklik etməzdən əvvəl bildiriş ayarlarınızı yoxlamaq üçün parametrləri bağlayıb yenidən açın."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Hesab profilini yüklə",
+        "deniedEffect": "Adınız və fotoşəkiliniz yüklənə bilmədi və saxlanılmış profiliniz dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari adınızı və fotoşəkilinizi təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişməzdən əvvəl profilinizi yükləmək üçün parametrləri bağlayıb yenidən açın."
+      },
+      "update": {
+        "operation": "Hesab profilini saxla",
+        "deniedEffect": "Profiliniz dəyişdirilmədi.",
+        "uncertainEffect": "Leafen hesab profilinin saxlanıldığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl hesab profilini və audit tarixçəsini yenidən yükləyin."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "2 addımlı doğrulamanı dəyiş",
+        "deniedEffect": "Tələb olunan 2 addımlı doğrulama dəyişikliyi qəbul edilmədi; əvvəlki ayar qüvvədə qalır.",
+        "uncertainEffect": "Leafen cari 2 addımlı doğrulama vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa bir 2 addımlı doğrulama dəyişikliyi etməzdən əvvəl hesab təhlükəsizliyini yenidən yükləyin."
+      },
+      "password": {
+        "operation": "Hesab parolunu dəyiş",
+        "deniedEffect": "Parol dəyişdirilmədi və cari sessiyalar hələ də etibarlıdır.",
+        "uncertainEffect": "Leafen parolun dəyişdirildiyini və digər sessiyaların sonlandırıldığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Əgər cari sessiya artıq işləmirsə, hesab təhlükəsizliyini yenidən yükləyin və yenidən daxil olun."
+      },
+      "read": {
+        "operation": "Hesab təhlükəsizliyini yüklə",
+        "deniedEffect": "Təhlükəsizlik ayarları və sessiyalar yüklənmədi; saxlanılmış hesab vəziyyəti dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari 2 addımlı doğrulama və sessiya vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl hesab təhlükəsizliyini yenidən yükləyin."
+      },
+      "recovery": {
+        "operation": "Bərpa kodlarını dəyişdir",
+        "deniedEffect": "Yeni bərpa kodları qəbul edilmədi; əvvəllər istifadə olunmamış kodlar hələ də işləyir.",
+        "uncertainEffect": "Leafen hansı bərpa kodlarının aktiv olduğunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Kodları yenidən dəyişdirməyə qərar verməzdən əvvəl hesab təhlükəsizliyini yenidən yükləyin."
+      },
+      "sessionRevoke": {
+        "operation": "Hesab sessiyasını ləğv et",
+        "deniedEffect": "Seçilmiş sessiyanın ləğv edildiyi təsdiqlənmədi; digər sessiyalar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen seçilmiş sessiyanın ləğv edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməyə qərar verməzdən əvvəl sessiya siyahısını yenidən yükləyin."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Server ehtiyat nüsxəsini ləğv et",
+        "deniedEffect": "Ehtiyat nüsxəsinin ləğv edildiyi təsdiqlənmədi.",
+        "uncertainEffect": "Leafen ehtiyat nüsxəsinin ləğv edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən ləğv etməzdən əvvəl ehtiyat nüsxəsinin cari vəziyyətini yoxlayın."
+      },
+      "create": {
+        "operation": "Server ehtiyat nüsxəsini yarat",
+        "deniedEffect": "Yeni ehtiyat nüsxəsi təsdiqlənmədi.",
+        "uncertainEffect": "Leafen ehtiyat nüsxəsi sorğusunun qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa bir sorğu göndərməzdən əvvəl cari ehtiyat nüsxəsini yoxlayın."
+      },
+      "download": {
+        "operation": "Server ehtiyat nüsxəsini yüklə",
+        "deniedEffect": "Təsdiqlənmiş ehtiyat nüsxəsi faylı yüklənmədi.",
+        "uncertainEffect": "Leafen ehtiyat nüsxəsi faylını təsdiqləyə və ya ötürə bilmədi.",
+        "stateCheckAction": "Yenidən yükləməzdən əvvəl tamamlanmış ehtiyat nüsxəsinin vəziyyətini yoxlayın."
+      },
+      "retry": {
+        "operation": "Server ehtiyat nüsxəsinə yenidən cəhd et",
+        "deniedEffect": "Uğursuz ehtiyat nüsxəsi yenidən başladılmadı.",
+        "uncertainEffect": "Leafen ehtiyat nüsxəsinin yenidən başladılıb-başladılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl ehtiyat nüsxəsinin cari vəziyyətini yoxlayın."
+      },
+      "status": {
+        "operation": "Server ehtiyat nüsxəsinin statusunu yüklə",
+        "deniedEffect": "Ehtiyat nüsxəsinin statusu yüklənmədi; ehtiyat nüsxəsinin vəziyyəti dəyişdirilmədi.",
+        "uncertainEffect": "Leafen ehtiyat nüsxəsinin cari vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa bir əməliyyat etməzdən əvvəl ehtiyat nüsxəsinin statusunu yenidən yükləyin."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Server hesabatını yüklə",
+        "deniedEffect": "Hesabat yüklənmədi; hesabatın vəziyyəti dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari hesabatın anlıq görüntüsünü təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yeniləməzdən əvvəl cari hesabatı yenidən yükləyin."
+      },
+      "refresh": {
+        "operation": "Server hesabatını yeniləmə",
+        "deniedEffect": "Yeni hesabatın anlıq görüntüsü təsdiqlənmədi.",
+        "uncertainEffect": "Leafen hesabatın anlıq görüntüsünün dəyişib-dəyişmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən yeniləməzdən əvvəl cari hesabatı yükləyin."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Ehtiyat nüsxə cədvəlini yükləmə",
+        "deniedEffect": "Ehtiyat nüsxə cədvəli yüklənmədi; heç bir ayar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari ehtiyat nüsxə cədvəlini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişməzdən əvvəl ehtiyat nüsxə cədvəlini yenidən yükləyin."
+      },
+      "restore": {
+        "operation": "Serveri ehtiyat nüsxədən bərpa etmə",
+        "deniedEffect": "Serverin məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen bərpanın qurulub-qurulmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl gözləyən bərpanın olub-olmadığını görmək üçün ehtiyat nüsxə ayarlarını yenidən yükləyin."
+      },
+      "save": {
+        "operation": "Ehtiyat nüsxə cədvəlini saxlama",
+        "deniedEffect": "Ehtiyat nüsxə cədvəli dəyişdirilmədi.",
+        "uncertainEffect": "Leafen ehtiyat nüsxə cədvəlinin saxlanıb-saxlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən saxlamazdan əvvəl qüvvədə olan ayarları görmək üçün ehtiyat nüsxə cədvəlini yenidən yükləyin."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Sorğu jurnalı parametrlərini yükləmə",
+        "deniedEffect": "Sorğu jurnalı parametrləri yüklənmədi; heç bir parametr dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari sorğu jurnalı ayarlarını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişməzdən əvvəl sorğu jurnalı ayarlarını yenidən yükləyin."
+      },
+      "save": {
+        "operation": "Sorğu jurnalı ayarlarını yadda saxla",
+        "deniedEffect": "Sorğu jurnalı ayarları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen sorğu jurnalı ayarlarının saxlanıb-saxlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən saxlamazdan əvvəl qüvvədə olan ayarları görmək üçün sorğu jurnalı ayarlarını yenidən yükləyin."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Şəbəkə proksisini yükləmə",
+        "deniedEffect": "Şəbəkə proksisi yüklənmədi; heç bir parametr dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari şəbəkə proksisini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişməzdən əvvəl şəbəkə proksisini yenidən yükləyin."
+      },
+      "save": {
+        "operation": "Şəbəkə proksisini yadda saxla",
+        "deniedEffect": "Şəbəkə proksisi dəyişdirilmədi.",
+        "uncertainEffect": "Leafen şəbəkə proksisinin yadda saxlanılıb-saxlanılmadığını müəyyən edə bilmədi.",
+        "stateCheckAction": "Yenidən yadda saxlamazdan əvvəl qüvvədə olanı görmək üçün şəbəkə proksisini yenidən yükləyin."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Server ayarlarını yüklə",
+        "deniedEffect": "Ayarlar yüklənmədi və yadda saxlanılan ayarlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari server ayarlarını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl ayarları yenidən yükləyin."
+      },
+      "save": {
+        "operation": "Server parametrlərini yadda saxla",
+        "deniedEffect": "Yeni ayarlar qəbul edilmədi; əvvəl yadda saxlanılan ayarlar qüvvədə qalır.",
+        "uncertainEffect": "Leafen yeni ayarların yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl ayarları yenidən yükləyin və cari dəyərləri müqayisə edin."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Giriş statusunu yoxlayın",
+        "deniedEffect": "Giriş sessiyası yaradılmadı və hesab məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari giriş vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Səhifəni yenidən yükləyin, sonra yenidən daxil olun."
+      },
+      "deviceCode": {
+        "operation": "Bu cihazda daxil olun",
+        "deniedEffect": "Daxil olmadınız və hesab məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen bu cihazda giriş edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yeni kodla yenidən daxil olun."
+      },
+      "emailVerification": {
+        "operation": "E-poçt ünvanını təsdiqlə",
+        "deniedEffect": "E-poçt ünvanı təsdiqlənmədi və hesaba daxil olunmadı.",
+        "uncertainEffect": "Leafen e-poçt təsdiqinin tamamlanıb-tamamlanmadığını müəyyən edə bilmədi.",
+        "stateCheckAction": "Daxil olmağa cəhd edin; alınmasa, e-poçtdakı linki yenidən açın."
+      },
+      "mfa": {
+        "operation": "İkiaddımlı doğrulamanı tamamla",
+        "deniedEffect": "Daxil olmadınız və MFA təsdiqi hələ də tamamlanmayıb.",
+        "uncertainEffect": "Leafen ikiaddımlı doğrulamanın tamamlanıb-tamamlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən daxil olmağa başlayın."
+      },
+      "passwordResetConfirm": {
+        "operation": "Parolu dəyiş",
+        "deniedEffect": "Parol dəyişdirilmədi.",
+        "uncertainEffect": "Leafen parolun dəyişdirilib-dəyişdirilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yeni parolla daxil olmağa cəhd edin; alınmasa, yeni sıfırlama linki alın."
+      },
+      "passwordResetRequest": {
+        "operation": "Parolun sıfırlanması tələbi",
+        "deniedEffect": "Heç bir parol sıfırlama mesajı çatdırılmaq üçün qəbul edilmədi.",
+        "uncertainEffect": "Leafen sıfırlama sorğusunun qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa sorğu göndərməzdən əvvəl e-poçtu gözləyin."
+      },
+      "providerExchange": {
+        "operation": "Xarici hesabla daxil olun",
+        "deniedEffect": "Daxil olmadınız və hesab məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen xarici giriş nəticəsini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Eyni üsulla yenidən daxil olun."
+      },
+      "serverSetup": {
+        "operation": "Leafen serverinin quraşdırılması",
+        "deniedEffect": "İnzibatçı hesabı yaradılmadı.",
+        "uncertainEffect": "Leafen server quraşdırmasının tamamlanıb-tamamlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl səhifəni yeniləyin və quraşdırma vəziyyətini yoxlayın."
+      },
+      "signIn": {
+        "operation": "Daxil olun",
+        "deniedEffect": "Daxil olmadınız və hesab məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen girişin tamamlandığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Səhifəni yeniləyin və yenidən daxil olun."
+      },
+      "signUp": {
+        "operation": "Hesab yaratma",
+        "deniedEffect": "Yeni hesab yaradılmadı.",
+        "uncertainEffect": "Leafen hesabın yaradılıb-yaradılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Daxil olmağa çalışın; alınmasa, yenidən qeydiyyatdan keçin."
+      },
+      "passkey": {
+        "operation": "Keçid açarı ilə daxil olun",
+        "deniedEffect": "Giriş qəbul edilmədi.",
+        "uncertainEffect": "Leafen girişin tamamlandığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Keçid açarınızla yenidən daxil olun."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Səhifə məzmununun yüklənməsi",
+        "deniedEffect": "Səhifə məzmunu yüklənmədi və saxlanmış məzmun dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari səhifə məzmununu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Redaktə etməzdən əvvəl səhifəni yeniləyin."
+      },
+      "update": {
+        "operation": "Səhifə məzmununu yadda saxlama",
+        "deniedEffect": "Dəyişiklik qəbul edilmədi; serverdəki ən son məzmun qüvvədə qalır.",
+        "uncertainEffect": "Leafen məzmunun yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl ən son məzmunu yeniləyin və müqayisə edin."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Verilənlər bazası avtomatlaşdırmasını yadda saxlama",
+        "deniedEffect": "Avtomatlaşdırma dəyişdirilmədi.",
+        "uncertainEffect": "Leafen verilənlər bazası avtomatlaşdırmasındakı dəyişikliyin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl avtomatlaşdırmanı yeniləyin."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "DLP siyasətini yadda saxlama",
+        "deniedEffect": "Yeni DLP siyasəti yadda saxlanılmadı; əvvəlki siyasət qüvvədə qalır.",
+        "uncertainEffect": "Leafen DLP siyasətinin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl DLP siyasətini və təşkilatın audit tarixçəsini yeniləyin."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "SAML domenini təsdiqləmə",
+        "deniedEffect": "Domen gözləmə vəziyyətində qalır; SAML konfiqurasiyası, audit tarixçəsi və giriş sessiyaları dəyişdirilməyib.",
+        "uncertainEffect": "Leafen cari SAML domen təsdiqləmə vəziyyətini müəyyən edə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl SAML domeninin vəziyyətini yeniləyin."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Fayl silmə",
+        "deniedEffect": "Fayl silinmədi və dəyişdirilmədi.",
+        "uncertainEffect": "Leafen faylın silinib-silinmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd edib-etməməyə qərar verməzdən əvvəl faylı və onun istinadlarını yeniləyin."
+      },
+      "upload": {
+        "operation": "Fayl yükləmə",
+        "deniedEffect": "Yeni fayl yadda saxlanılmadı; mövcud fayllar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen faylın yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd edib-etməməyə qərar verməzdən əvvəl fayl siyahısını yeniləyin."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Şəxs uyğunlaşdırmalarını tətbiq etmə",
+        "deniedEffect": "Yeni uyğunlaşdırmalar qəbul edilmədi.",
+        "uncertainEffect": "Leafen hansı uyğunlaşdırmaların tətbiq edildiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən tətbiq etməzdən əvvəl uyğunlaşdırma nəticələrini yeniləyin."
+      },
+      "refresh": {
+        "operation": "Şəxs uyğunlaşdırmalarını yenilə",
+        "deniedEffect": "Ən son uyğunlaşdırmalar yüklənmədi; yadda saxlanılmış uyğunlaşdırmalar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari uyğunlaşdırma vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Davam etməzdən əvvəl uyğunlaşdırma panelini yeniləyin."
+      },
+      "scan": {
+        "operation": "İdxal edilmiş şəxsləri skan et",
+        "deniedEffect": "İdxal edilmiş şəxslər siyahıya alınmadı və mövcud uyğunlaşdırmalar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari idxal edilmiş şəxslər siyahısını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl uyğunlaşdırma panelini yeniləyin."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Düymə avtomatlaşdırmasını icra et",
+        "deniedEffect": "Düymənin əməliyyatları icra olunmadı və səhifə məzmunu dəyişdirilmədi.",
+        "uncertainEffect": "Leafen düymə avtomatlaşdırmasının icra edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl təsirlənən məzmunu və icra vəziyyətini yeniləyin."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Təşkilat API tokenini kopyala",
+        "deniedEffect": "Tokenin buferdə olduğu təsdiqlənmədi; tokenin özü dəyişdirilmədi.",
+        "uncertainEffect": "Leafen buferə yazmanın tamamlanıb-tamamlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Tokeni yenidən kopyalamazdan əvvəl buferi yoxlayın."
+      },
+      "create": {
+        "operation": "Təşkilat API tokeni yarat",
+        "deniedEffect": "Yeni tokenin yaradılması təsdiqlənmədi.",
+        "uncertainEffect": "Leafen tokenin yaradılıb-yaradılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa token yaratmazdan əvvəl token siyahısını yeniləyin."
+      },
+      "list": {
+        "operation": "Təşkilat API tokenlərini yüklə",
+        "deniedEffect": "Tokenlər yüklənmədi və mövcud tokenlər dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari token siyahısını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl token siyahısını yeniləyin."
+      },
+      "revoke": {
+        "operation": "Təşkilat API tokenini ləğv et",
+        "deniedEffect": "Tokenin ləğv edilməsi təsdiqlənmədi.",
+        "uncertainEffect": "Leafen tokenin ləğv edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa ləğvetməyə cəhd etməzdən əvvəl token siyahısını yeniləyin."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "İş sahəsi səhifələrini yüklə",
+        "deniedEffect": "Səhifələr yüklənmədi və yadda saxlanmış iş sahəsi məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari iş sahəsi səhifələrini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Redaktə etməzdən əvvəl iş sahəsini yeniləyin."
+      },
+      "create": {
+        "operation": "Səhifə yarat",
+        "deniedEffect": "Yeni səhifə yaradılmadı və mövcud səhifələr dəyişdirilmədi.",
+        "uncertainEffect": "Leafen səhifənin yaradılıb-yaradılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl səhifə siyahısını yeniləyin və yeni səhifənin olub-olmadığını yoxlayın."
+      },
+      "title": {
+        "update": {
+          "operation": "Səhifə başlığını yadda saxla",
+          "deniedEffect": "Başlıq dəyişikliyi qəbul edilmədi; yadda saxlanmış başlıq qüvvədə qalır.",
+          "uncertainEffect": "Leafen dəyişikliyin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+          "stateCheckAction": "Səhifəni yeniləyin və cari başlığı yoxlayın."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Səhifə analitikasını yüklə",
+        "deniedEffect": "Analitika yüklənmədi və səhifə məlumatları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari analitikanı təsdiqləyə bilmədi.",
+        "stateCheckAction": "Nəticə çıxarmazdan əvvəl analitikanı yenidən yükləyin."
+      },
+      "policyUpdate": {
+        "operation": "Analitika siyasətini yadda saxla",
+        "deniedEffect": "Yeni analitika siyasəti qəbul edilmədi.",
+        "uncertainEffect": "Leafen siyasətin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl siyasəti yenidən yükləyin və müqayisə edin."
+      },
+      "preferencesRead": {
+        "operation": "Analitika üstünlüklərini yüklə",
+        "deniedEffect": "Analitika üstünlükləri yüklənmədi və yadda saxlanmış ayarlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari analitika üstünlüklərini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Üstünlükləri redaktə etməzdən əvvəl yenidən yükləyin."
+      },
+      "preferencesUpdate": {
+        "operation": "Analitika üstünlüklərini yadda saxla",
+        "deniedEffect": "Yeni üstünlüklər qəbul edilmədi.",
+        "uncertainEffect": "Leafen üstünlüklərin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl üstünlükləri yenidən yükləyin və müqayisə edin."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Oflayn dəyişikliyi təhlükəsiz yadda saxla",
+        "deniedEffect": "Dəyişiklik bu cihazda yadda saxlanmadı.",
+        "uncertainEffect": "Leafen dəyişikliyin bu cihazda, yoxsa serverdə yadda saxlanıldığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Redaktə edilmiş məzmunu kopyalayın, sonra yenidən yükləyin və yadda saxlanmış vəziyyəti müqayisə edin."
+      },
+      "legacy": {
+        "operation": "Oflayn dəyişiklikləri köçür",
+        "deniedEffect": "Köhnə oflayn dəyişikliklər saxlandıqları yerdə qalır və göndərilməyib.",
+        "uncertainEffect": "Leafen hansı köhnə oflayn dəyişikliklərin köçürüldüyünü təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən redaktə etməzdən əvvəl bu tabı açıq saxlayın və yeniləyin."
+      },
+      "refresh": {
+        "operation": "Bərpa edilmiş dəyişiklikləri yenilə",
+        "deniedEffect": "Bərpa edilmiş dəyişikliklər göstərilmədi və yadda saxlanmış məlumatlar əvəz olunmadı.",
+        "uncertainEffect": "Leafen bərpadan sonra cari səhifəni təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən redaktə etməzdən əvvəl səhifəni yeniləyin."
+      },
+      "replay": {
+        "operation": "Oflayn dəyişiklikləri göndər",
+        "deniedEffect": "Növbədəki dəyişiklik gözləmə vəziyyətində qalır və server tərəfindən təsdiqlənməyib.",
+        "uncertainEffect": "Leafen növbədəki dəyişikliklərdən hansılarının serverə çatdığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən redaktə etməzdən əvvəl bu tabı açıq saxlayın, yenidən qoşulun və yeniləyin."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "İctimai saytda axtar",
+        "deniedEffect": "Axtarış nəticələri yüklənmədi və dərc edilmiş məzmun dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari axtarış nəticələrini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən axtarış etməzdən əvvəl saytın vəziyyətini yoxlayın."
+      },
+      "sharedPage": {
+        "operation": "Paylaşılan səhifəni yüklə",
+        "deniedEffect": "Paylaşılan səhifə yüklənmədi və dərc edilmiş məzmun dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari paylaşılan səhifəni təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl paylaşım linkini yoxlayın."
+      },
+      "site": {
+        "operation": "İctimai saytı yüklə",
+        "deniedEffect": "İctimai sayt yüklənmədi və dərc edilmiş məzmun dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari ictimai saytı təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl sayt ünvanını yoxlayın."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Form girişini bərpa et",
+        "deniedEffect": "Üzv forması açılmadı və heç bir cavab göndərilmədi.",
+        "uncertainEffect": "Leafen bu formanın cari giriş vəziyyətini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Formanı yenidən yükləyin və yenidən daxil olun."
+      },
+      "configurationWrite": {
+        "operation": "Form ayarlarını saxla",
+        "deniedEffect": "Form ayarlarının yadda saxlanıldığı təsdiqlənmədi.",
+        "uncertainEffect": "Leafen formun cari konfiqurasiyasını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən saxlamaqdan əvvəl form ayarlarını yeniləyin."
+      },
+      "definitionRead": {
+        "operation": "Formanı yükləmə",
+        "deniedEffect": "Forma yüklənmədi və heç bir cavab göndərilmədi.",
+        "uncertainEffect": "Leafen cari forma tərifini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Cavab daxil etməzdən əvvəl formanı yenidən yükləyin."
+      },
+      "optionsRead": {
+        "operation": "Form seçimlərini yüklə",
+        "deniedEffect": "Tələb olunan seçimlər yüklənmədi və cavab qaralaması göndərilmədi.",
+        "uncertainEffect": "Leafen cari seçimləri təsdiqləyə bilmədi.",
+        "stateCheckAction": "Formu göndərməzdən əvvəl seçimləri yenidən yükləyin."
+      },
+      "responseSubmit": {
+        "operation": "Form cavabını göndər",
+        "deniedEffect": "Cavab qəbul edilmədi.",
+        "uncertainEffect": "Leafen cavabın qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Cavabı yenidən göndərməzdən əvvəl forma nəticəsini yoxlayın."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "İş mühiti konfiqurasiyasını yüklə",
+        "deniedEffect": "İş mühiti konfiqurasiyası yüklənmədi; yadda saxlanmış server ayarları dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari iş mühiti konfiqurasiyasını təsdiqləyə bilmədi, buna görə təhlükəsiz ehtiyat dəyərlər aktivdir.",
+        "stateCheckAction": "Cari server konfiqurasiyasını oxumaq üçün səhifəni yenidən yükləyin."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Gözləyən dəyişiklikləri sinxronlaşdırma",
+        "deniedEffect": "Gözləyən dəyişikliklər növbədə qalıb və server tərəfindən təsdiqlənməyib.",
+        "uncertainEffect": "Leafen hansı gözləyən dəyişikliklərin serverə çatdığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Bu tabı açıq saxlayın, yenidən qoşulun və təkrar cəhddən əvvəl yadda saxlanmış vəziyyəti yoxlayın."
+      },
+      "pendingRead": {
+        "operation": "Gözləyən dəyişiklikləri yoxla",
+        "deniedEffect": "Gözləyən dəyişikliklərin sayı yüklənmədi; növbədəki dəyişikliklər atılmadı.",
+        "uncertainEffect": "Leafen hələ neçə dəyişikliyin gözlədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Bu tabı açıq saxlayın və sinxronlaşdırma statusunu yenidən yoxlayın."
+      },
+      "retry": {
+        "operation": "Sinxronlaşdırmaya yenidən cəhd etmə",
+        "deniedEffect": "Sinxronlaşdırma təsdiqlənmədi; gözləyən dəyişikliklər növbədə qalır.",
+        "uncertainEffect": "Leafen ən son sinxronlaşdırma nəticəsini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl yadda saxlanmış vəziyyəti və bağlantını yoxlayın."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "İş sahəsi yarat",
+        "deniedEffect": "Yeni iş sahəsi yaradılmadı və mövcud məlumatlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen iş sahəsinin yaradılıb-yaradılmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl iş sahələrinin siyahısını yeniləyin və yeni iş sahəsinin olub-olmadığını yoxlayın."
+      },
+      "delete": {
+        "operation": "İş sahəsini həmişəlik sil",
+        "deniedEffect": "Silmə əməliyyatı qəbul edilmədi; iş sahəsi və mövcud məlumatlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen iş sahəsinin silinib-silinmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl iş sahələrinin siyahısını yeniləyin."
+      },
+      "member": {
+        "add": {
+          "operation": "İş sahəsi üzvünü əlavə et",
+          "deniedEffect": "Üzv əlavə edilmədi və heç nə dəyişdirilmədi.",
+          "uncertainEffect": "Leafen iş sahəsi üzvünün əlavə edilib-edilmədiyini təsdiqləyə bilmədi.",
+          "stateCheckAction": "Yenidən cəhd etməzdən əvvəl üzvləri, fəaliyyəti və audit tarixçəsini yeniləyin."
+        },
+        "revoke": {
+          "operation": "İş sahəsi üzvünü çıxar",
+          "deniedEffect": "Üzv çıxarılmadı və heç nə dəyişdirilmədi.",
+          "uncertainEffect": "Leafen iş sahəsi üzvünün çıxarılıb-çıxarılmadığını təsdiqləyə bilmədi.",
+          "stateCheckAction": "Yenidən cəhd etməzdən əvvəl üzvləri, fəaliyyəti və audit tarixçəsini yeniləyin."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "İş sahəsi parametrlərini saxla",
+          "deniedEffect": "Parametrlərdə edilən dəyişiklik yadda saxlanmadı; əvvəlki parametrlər qüvvədə qalır.",
+          "uncertainEffect": "Leafen iş sahəsi parametrlərinin yadda saxlanılıb-saxlanılmadığını təsdiqləyə bilmədi.",
+          "stateCheckAction": "Yenidən cəhd etməzdən əvvəl iş sahəsi parametrlərini, fəaliyyəti və audit tarixçəsini yeniləyin."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "İş sahəsi ixracını ləğv et",
+        "deniedEffect": "İxrac ləğv edilmədi və hələ də davam edə bilər.",
+        "uncertainEffect": "Leafen ixracın ləğv edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən ləğv etməzdən əvvəl ixracın statusunu yeniləyin."
+      },
+      "download": {
+        "operation": "İş sahəsi ixracını endir",
+        "deniedEffect": "Arxiv endirilmədi; server ixracı dəyişdirilmədi.",
+        "uncertainEffect": "Leafen arxivin endirilməsinin tamamlanıb-tamamlanmadığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən endirməzdən əvvəl endirmələr siyahısını yoxlayın."
+      },
+      "job": {
+        "operation": "İş sahəsini ixrac et",
+        "deniedEffect": "Arxiv yaradılmadı; mənbə iş sahəsi dəyişdirilmədi.",
+        "uncertainEffect": "Leafen bu tapşırıq üçün istifadə edilə bilən arxivin olduğunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Cari iş sahəsindən əvəzedici ixrac başladın."
+      },
+      "poll": {
+        "operation": "İş sahəsi ixracını gözlə",
+        "deniedEffect": "Son ixrac statusu yüklənmədi; ixrac tapşırığı dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari ixrac statusunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa əməliyyata başlamazdan əvvəl ixrac statusunu yeniləyin."
+      },
+      "retry": {
+        "operation": "İş sahəsi ixracını təkrar et",
+        "deniedEffect": "Yenidən cəhd qəbul edilmədi; mövcud ixrac tapşırığı dəyişdirilmədi.",
+        "uncertainEffect": "Leafen yenidən cəhdin qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl ixrac statusunu yeniləyin."
+      },
+      "start": {
+        "operation": "İş sahəsi ixracını başlat",
+        "deniedEffect": "Yeni ixrac tapşırığı qəbul edilmədi; iş sahəsi dəyişdirilmədi.",
+        "uncertainEffect": "Leafen ixrac tapşırığının qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa tapşırığa başlamazdan əvvəl son ixrac statusunu yeniləyin."
+      },
+      "status": {
+        "operation": "İş sahəsi ixrac statusunu yüklə",
+        "deniedEffect": "Son ixrac statusu yüklənmədi; ixrac tapşırığı dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari ixrac statusunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa əməliyyata başlamazdan əvvəl ixrac pəncərəsini yenidən açın."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "İdxalı ləğv et",
+        "deniedEffect": "İdxal ləğv edilmədi və hələ də davam edə bilər.",
+        "uncertainEffect": "Leafen idxalın ləğv edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən ləğv etməzdən əvvəl idxal statusunu yeniləyin."
+      },
+      "job": {
+        "operation": "Fayl idxal et",
+        "deniedEffect": "Heç bir səhifə yaradılmadı; qismən idxal edilmiş məzmun silindi.",
+        "uncertainEffect": "Leafen bu idxal üçün istifadə edilə bilən səhifənin olduğunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Diaqnostik istinadı saxlayın və mənbə faylından yeni idxal başladın."
+      },
+      "start": {
+        "operation": "İdxalı başlat",
+        "deniedEffect": "Yeni idxal qəbul edilmədi və heç bir səhifə yaradılmadı.",
+        "uncertainEffect": "Leafen idxalın qəbul edilib-edilmədiyini təsdiqləyə bilmədi.",
+        "stateCheckAction": "Leafen eyni sorğuya yenidən qoşula bilsin deyə, faylı dəyişmədən eyni faylla yenidən cəhd edin."
+      },
+      "status": {
+        "operation": "İdxal statusunu yüklə",
+        "deniedEffect": "Son idxal statusu yüklənmədi; idxal tapşırığı dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari idxal statusunu təsdiqləyə bilmədi.",
+        "stateCheckAction": "Başqa əməliyyat etməzdən əvvəl yadda saxlanmış işə yenidən qoşulmaq üçün idxal pəncərəsini yenidən açın."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Hesab giriş açarlarını yüklə",
+        "deniedEffect": "Giriş açarlarının siyahısı yüklənmədi; yadda saxlanmış açarlar dəyişdirilmədi.",
+        "uncertainEffect": "Leafen cari giriş açarları siyahısını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Dəyişiklik etməzdən əvvəl yenidən qoşulun və giriş açarları siyahısını yeniləyin."
+      },
+      "update": {
+        "operation": "Hesab giriş açarlarını idarə et",
+        "deniedEffect": "Server yadda saxlanmış giriş açarlarını dəyişmədi.",
+        "uncertainEffect": "Leafen giriş açarı dəyişikliyinin tamamlandığını təsdiqləyə bilmədi.",
+        "stateCheckAction": "Yenidən cəhd etməzdən əvvəl giriş açarları siyahısını yeniləyin. Yeni açar yaradılıb, amma burada saxlanmayıbsa, cihazınızın açar menecerini yoxlayın."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Cari şifrə yanlışdır.",
+    "currentPasswordNext": "Əgər parolu unutmusunuzsa, hesabdan çıxın və giriş səhifəsindən onu sıfırlayın.",
+    "code": "Kod yanlışdır və ya artıq istifadə olunub.",
+    "codeNext": "Autentifikasiya tətbiqinizin indi göstərdiyi kodu daxil edin.",
+    "recoveryCode": "Bərpa kodu yanlışdır və ya artıq istifadə olunub.",
+    "recoveryCodeNext": "İstifadə etmədiyiniz bərpa kodunu daxil edin.",
+    "accountDeactivated": "Bu hesab server administratoru tərəfindən deaktiv edilib.",
+    "accountDeactivatedNext": "Yenidən aktivləşdirmək üçün administratora müraciət edin.",
+    "organizationSSO": "Bu təşkilat yalnız vahid giriş (SSO) ilə daxil olmağa icazə verir.",
+    "organizationSSONext": "Əvəzində şirkət hesabınızla daxil olun.",
+    "organizationPasswordTwoStep": "Təşkilatınız cihaz kodu ilə deyil, parolla və ikiaddımlı doğrulama ilə daxil olmağı tələb edir.",
+    "organizationPasswordTwoStepNext": "E-poçtunuz və parolunuzla daxil olun; parolunuz yoxdursa, administratordan birdəfəlik parol istəyin.",
+    "deviceCode": "Kod səhvdir, artıq istifadə edilib, vaxtı keçib və ya onu göstərən pəncərə bağlanıb.",
+    "deviceCodeNext": "Yeni kod alın və onu yenidən daxil edin.",
+    "setupCode": "Quraşdırma kodu yanlışdır.",
+    "setupCodeNext": "Serverin çap etdiyi quraşdırma linkini yenidən açın və ya onu işə salarkən verilən kodu yazın.",
+    "setupCodeMissing": "Quraşdırma kodunu daxil edin.",
+    "setupCodeMissingNext": "Serverin çap etdiyi quraşdırma linkini açmaq onu doldurur; server işə salınarkən verilən kod da keçərlidir.",
+    "sessionCapacity": "Bu hesab cihaz limitinə çatıb.",
+    "sessionCapacityNext": "Parametrlər → Hesab → Cihazlar bölməsində artıq istifadə etmədiyiniz cihazdan çıxış edin, sonra yenidən cəhd edin.",
+    "signInEnded": "Bu giriş sorğusu sona çatdı: vaxtı bitdi və ya kod dəfələrlə səhv daxil edildi.",
+    "signInEndedNext": "E-poçtunuz və parolunuzla yenidən daxil olun.",
+    "emailNotVerified": "Bu hesabın e-poçtu hələ təsdiqlənməyib.",
+    "emailNotVerifiedNext": "Qeydiyyatdan keçərkən aldığınız e-poçtdakı linki açın, sonra daxil olun.",
+    "registrationFailed": "Hesab yaradıla bilmədi.",
+    "registrationFailedNext": "Bir azdan yenidən cəhd edin. Problem davam edərsə, bu serverin administratoruna məlumat verin."
+  },
+  "labels": {
+    "reference": "İstinad"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Bu təşkilat şirkət girişində yeni hesablar yaratmır.",
+    "samlAccountCreationOffNext": "Təşkilatınızın administratorundan sizi dəvət etməsini xahiş edin.",
+    "samlRetryAfterInvite": "Dəvət aldıqdan sonra yenidən daxil olun.",
+    "samlIdentityDenied": "Bu e-poçt bu təşkilatın şirkət girişindən istifadə edə bilməz.",
+    "samlIdentityDeniedNext": "Təşkilatınızın administratorundan e-poçt domenini və üzvlüyünüzü yoxlamasını xahiş edin.",
+    "samlRetryAfterAdministrator": "Administrator yoxladıqdan sonra yenidən daxil olun.",
+    "samlResponseInvalid": "Şirkət girişi cavabını təsdiqləmək mümkün olmadı.",
+    "samlResponseInvalidNext": "Yenidən daxil olmağa başlayın. Bu davam edərsə, təşkilatınızın administratorundan SAML parametrlərini yoxlamasını xahiş edin.",
+    "accountAlreadyExistsForEmailAddress": "Bu e-poçt ünvanı üçün artıq hesab mövcuddur.",
+    "accountEmailCouldNotAdmittedFor": "Hesab e-poçtu göndərilə bilmədi.",
+    "administratorSettingsDoNotMeetServer": "Administrator ayarları server tələblərinə cavab vermir.",
+    "administratorSettingsNotAvailableCurrentAccount": "Cari hesab üçün administrator ayarları mövcud deyil.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Başqa bir administrator artıq server quraşdırmasını tamamlayıb.",
+    "anotherServerOperationTemporarilyLockedAccount": "Başqa bir server əməliyyatı hesab yaddaşını müvəqqəti olaraq kilidləyib.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Başqa bir server əməliyyatı verilənlər bazasını müvəqqəti olaraq kilidlədiyi üçün ixrac davam edə bilmədi.",
+    "anotherServerOperationTemporarilyLockedDlp": "Başqa bir server əməliyyatı DLP siyasəti yaddaşını müvəqqəti olaraq kilidləyib.",
+    "anotherServerOperationTemporarilyLockedFile": "Başqa bir server əməliyyatı fayl yaddaşını müvəqqəti olaraq kilidləyib.",
+    "anotherServerOperationTemporarilyLockedPage": "Başqa bir server əməliyyatı səhifə məzmunu yaddaşını müvəqqəti olaraq kilidləyib.",
+    "anotherServerOperationTemporarilyLockedProduct": "Başqa bir server əməliyyatı məhsul yaddaşını müvəqqəti olaraq kilidləyib.",
+    "askOrganizationAdministratorToAllow": "Təşkilat administratorundan və ya komanda sahəsinin sahibindən buna icazə verməsini xahiş edin.",
+    "askServerAdministratorCheckEmailDelivery": "Server administratorundan e-poçt çatdırılmasını yoxlamasını xahiş edin, sonra yenidən cəhd edin.",
+    "backupArtifactNotCompleteYet": "Ehtiyat nüsxə faylı hələ tamamlanmayıb.",
+    "backupStateNoLongerPermitsControl": "Ehtiyat nüsxənin cari vəziyyəti artıq həmin əməliyyata icazə vermir.",
+    "causeCouldNotDetermined": "Səbəb müəyyən edilə bilmədi.",
+    "changeSaveReceiptAndSynchronizationState": "Dəyişiklik yadda saxlanmadı və səhifə məzmunu dəyişməz qaldı.",
+    "checkCurrentBackupBeforeRetrying": "Yenidən cəhd etməzdən əvvəl cari ehtiyat nüsxəsini yoxlayın.",
+    "checkCurrentJobStateBeforeDeciding": "Yenidən cəhd edib-etməməyə qərar verməzdən əvvəl işin cari vəziyyətini yoxlayın.",
+    "checkCurrentListBeforeTryingDifferent": "Başqa bir elementlə cəhd etməzdən əvvəl cari siyahını yoxlayın.",
+    "checkCurrentServerSettingsBeforeTrying": "Yenidən cəhd etməzdən əvvəl cari server ayarlarını yoxlayın.",
+    "checkCurrentServerSetupStateBefore": "Yenidən cəhd etməzdən əvvəl cari server quraşdırma vəziyyətini yoxlayın.",
+    "checkCurrentStateAndUseNew": "Cari vəziyyəti yoxlayın və yalnız ehtiyacınız varsa yeni ehtiyat nüsxəsinə başlayın.",
+    "checkEmailAndPassword": "E-poçtu və şifrəni yoxlayın.",
+    "checkServerSecretStorageThenSave": "Serverdə məxfi məlumatların saxlanmasını yoxlayın, sonra eyni ayarları yenidən yadda saxlayın.",
+    "checkServerStateThenLoadSettings": "Serverin vəziyyətini yoxlayın, sonra ayarları yenidən yükləyin.",
+    "createNewBackupAndInspectServer": "Xəta təkrarlanarsa, yeni ehtiyat nüsxəsi yaradın və server yaddaşını yoxlayın.",
+    "currentAccountNotAuthorizedForOperation": "Cari hesabın bu əməliyyat üçün icazəsi yoxdur.",
+    "currentStateMustCheckedBeforeRetry": "Yenidən cəhdi təhlükəsiz hesab etməzdən əvvəl cari vəziyyət yoxlanılmalıdır.",
+    "currentStateMustCheckedBeforeRetrying": "Yenidən cəhd etməzdən əvvəl cari vəziyyət yoxlanılmalıdır.",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS yoxlama xidməti müvəqqəti olaraq əlçatan deyil.",
+    "doNotAssumeUnchangedRetrySafe": "Server yaddaşı bərpa olunana qədər yenidən cəhdin təhlükəsiz olduğunu güman etməyin.",
+    "doNotKeepRetryingIdentifierNew": "Bu sorğunu təkrar-təkrar cəhd etməyin; əvvəlcə yenidən yükləyin, sonra yeni cəhd təhlükəsizdir.",
+    "doNotResumeFailedJobStart": "Uğursuz işi davam etdirməyin; əvəzinə yeni ixraca başlayın.",
+    "doNotRetryBeforeLoadingLatest": "Ən son server ayarlarını yükləyənə qədər yenidən cəhd etməyin.",
+    "doNotRetryDirectRequestUnchanged": "Bu yükləməni olduğu kimi yenidən cəhd etməyin; davam etdirilə bilən yükləmədən istifadə edin.",
+    "doNotRetryDirectRequestUnchanged2": "Bu yükləməni olduğu kimi yenidən cəhd etməyin; davam etdirilə bilən arxiv yükləməsindən istifadə edin.",
+    "doNotRetrySetupRequestSign": "Bu quraşdırma sorğusunu yenidən cəhd etməyin; mövcud administrator hesabı ilə daxil olun.",
+    "doNotReuseInvalidArtifactCreate": "Etibarsız ehtiyat nüsxə faylını təkrar istifadə etməyin; yeni ehtiyat nüsxəsi yaradın.",
+    "doNotReuseLinkNewAction": "Bu linkdən yenidən istifadə etməyin; yeni əməliyyat təhlükəsizdir.",
+    "emailOrPasswordDidNotMatch": "E-poçt və ya şifrə uyğun gəlmədi.",
+    "externalSignInProviderCouldNot": "Xarici giriş provayderi sorğunu tamamlaya bilmədi.",
+    "fileLargerThanOneDirectUpload": "Bu fayl birbaşa tək yükləmə üçün çox böyükdür.",
+    "formStorageTemporarilyLockedByAnother": "Form yaddaşı başqa server əməliyyatı tərəfindən müvəqqəti olaraq kilidlənib.",
+    "leafenArchiveLargerThanOneDirect": "Bu Leafen arxivi birbaşa tək idxal üçün çox böyükdür.",
+    "leafenDidNotReceiveServerResponse": "Leafen server cavabı almadı.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen təşkilat yaddaşının istifadə vəziyyətini yenidən qurur.",
+    "leafenServiceCouldNotCompleteOperation": "Leafen xidməti əməliyyatı tamamlaya bilmədi.",
+    "isolatedRecordNotAppliedYourRequested": "Yarımçıq qeyd kənara qoyuldu, dəyişikliyiniz yadda saxlanmadı və səhifənin məzmunu dəyişməz qaldı.",
+    "jobCannotRetriedStartReplacementExport": "Bu iş yenidən cəhd edilə bilməz; əvəzedici ixracı başladın.",
+    "jobSArchiveNotPublishedAnd": "Bu işin arxivi yaradılmadı və mənbə iş sahəsi dəyişdirilmədi.",
+    "keepDiagnosticReferenceAndAskServer": "Diaqnostik istinadı saxlayın və server administratorundan server yaddaşını bərpa etməsini xahiş edin.",
+    "lastConfirmedSavedStateRestoredSo": "Son təsdiqlənmiş yadda saxlanılmış vəziyyət bərpa edildi, buna görə də eyni dəyişikliyi yenidən cəhd etmək təhlükəsizdir.",
+    "loadCurrentReportAndUseNew": "Cari hesabatı yükləyin, sonra yenidən yeniləyin.",
+    "loadCurrentReportBeforeRefreshingAgain": "Yenidən yeniləməzdən əvvəl cari hesabatı yükləyin.",
+    "loadCurrentReportBeforeTryingAgain": "Yenidən cəhd etməzdən əvvəl cari hesabatı yükləyin.",
+    "newerOrIncompatibleStatePreventedOperation": "Daha yeni və ya uyğun olmayan vəziyyət bu əməliyyatın yerinə yetirilməsinə mane oldu.",
+    "noNewArchivePublishedAndSource": "Yeni arxiv yaradılmadı və mənbə iş sahəsi ilə əvvəlki arxivlər dəyişməz qaldı.",
+    "noNewSignInSessionCreated": "Yeni giriş sessiyası yaradılmadı və mövcud sessiyalar dəyişdirilmədi.",
+    "notKnownWhetherRetryingSafeUntil": "Cari vəziyyət yoxlanılana qədər yenidən cəhdin təhlükəsiz olub-olmadığı bilinmir.",
+    "organizationStorageAuthorityInconsistent": "Təşkilatın yaddaş istifadəsi qeydi uyğunsuzdur.",
+    "organizationDlpBlocksOperation": "Təşkilatınızın məlumat itkisinin qarşısının alınması siyasəti buna mane olur.",
+    "takeOutTermOrAskAboutDlp": "Hər hansı həssas termini çıxarıb yenidən cəhd edin və ya əmin deyilsinizsə, təşkilat administratorundan soruşun.",
+    "organizationSettingsDoNotAllowOperation": "Təşkilatınızın və ya komanda sahəsinizin parametrləri buna icazə vermir.",
+    "organizationStorageLimitWouldExceeded": "Təşkilatın yaddaş həddi aşılacaq.",
+    "serverDiskAlmostFull": "Serverin diski demək olar ki, dolub.",
+    "askServerAdministratorToFreeSpace": "Serverin administratorundan yer boşaltmağı xahiş edin; yer açılan kimi yenidən işləyəcək.",
+    "safeRetryOnceServerHasRoom": "Serverdə yer açıldıqdan sonra eyni işi yenidən təhlükəsiz şəkildə cəhd edə bilərsiniz.",
+    "readDoesNotChangeSavedData": "Bu oxuma yadda saxlanmış məlumatları dəyişmir, buna görə də yenidən cəhd etmək təhlükəsizdir.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Başqa əməliyyat seçməzdən əvvəl cari ehtiyat nüsxəsini yenidən yükləyin.",
+    "reloadCurrentBackupStateBeforeContinuing": "Davam etməzdən əvvəl cari ehtiyat nüsxəsinin vəziyyətini yenidən yükləyin.",
+    "reloadCurrentStateBeforeDecidingWhether": "Yenidən cəhd edib-etməmək qərarına gəlməzdən əvvəl cari vəziyyəti yenidən yükləyin.",
+    "reloadSignInPageAndStart": "Giriş səhifəsini yeniləyin və yenidən daxil olun.",
+    "removeUnneededFilesOrAskOrganization": "Lazımsız faylları silin və ya təşkilat ödəniş administratorundan limiti artırmasını xahiş edin.",
+    "reportChangedAfterScreenLoaded": "Bu ekran yükləndikdən sonra hesabat dəyişdi.",
+    "requestIdentifierBelongsDifferentOperation": "Bu sorğu artıq fərqli əməliyyat üçün istifadə edilib.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Bu sorğu artıq fərqli hesabat yeniləməsi üçün istifadə edilib.",
+    "requestedItemNoLongerExistsOr": "Sorğuda göstərilən element artıq mövcud deyil və ya bu hesab üçün görünmür.",
+    "retryExportAfterOtherServerOperation": "Digər server əməliyyatı bitdikdən sonra bu ixracı yenidən cəhd edin.",
+    "retryExportJobAfterServerStorage": "Server yaddaşı bərpa olunduqdan sonra bu ixrac işini yenidən cəhd edin.",
+    "retryOnlyAfterAccountOrPermission": "Yalnız hesab və ya icazə dəyişdikdən sonra yenidən cəhd edin.",
+    "retryOnlyAfterOrganizationSettingChanges": "Yalnız həmin ayar dəyişdikdən sonra yenidən cəhd edin.",
+    "retrySameContentChangeAfterOther": "Digər server əməliyyatı bitdikdən sonra eyni məzmun dəyişikliyini yenidən cəhd edin.",
+    "retrySameContentChangeAfterServer": "Server yaddaşı bərpa olunduqdan sonra eyni məzmun dəyişikliyini yenidən cəhd edin.",
+    "retrySameContentChangeNow": "Eyni məzmun dəyişikliyini indi yenidən cəhd edin.",
+    "changeTooLargeForOneChange": "Bu, bir dəfəyə dəyişmək üçün çox böyükdür. Bir dəyişiklik mətn daxil olmaqla 64 MB-a qədərdir.",
+    "pageKeepsWhatItHadBefore": "Səhifə əvvəlki vəziyyətindədir.",
+    "makeTheChangeInParts": "Bunu hissələrlə edin: əvvəlcə böyük açılan-qapanan blokun və ya bölmənin içindəki blokları hissələrlə silin, uzun mətni isə hissələrlə yapışdırın.",
+    "sameSizeIsRefusedAgain": "Eyni ölçü yenidən rədd edilir; bölündükdən sonra yenidən cəhd etmək təhlükəsizdir.",
+    "linkCannotBeKeptHere": "Bu dəyişiklik burada əlaqələndirilə bilməyən səhifə və ya bloku əlaqələndirir.",
+    "chooseAnotherPageOrRefresh": "Başqa səhifə seçin və ya səhifəni yeniləyib yenidən cəhd edin.",
+    "sameLinkIsRefusedAgain": "Eyni elementi yenidən əlaqələndirmək yenidən rədd edilir.",
+    "retrySameDomainVerificationAfterDns": "DNS təsdiqləmə xidməti bərpa olunduqdan sonra eyni domen təsdiqini yenidən cəhd edin.",
+    "retrySameFileOperationAfterOther": "Digər server əməliyyatı bitdikdən sonra eyni fayl əməliyyatını yenidən cəhd edin.",
+    "retrySameFileOperationAfterServer": "Server yaddaşı bərpa olunduqdan sonra eyni fayl əməliyyatını yenidən cəhd edin.",
+    "retrySameFormOperationAfterOther": "Digər server əməliyyatı bitdikdən sonra eyni forma əməliyyatını yenidən cəhd edin.",
+    "retrySameFormOperationAfterServer": "Server yaddaşı bərpa olunduqdan sonra eyni forma əməliyyatını yenidən cəhd edin.",
+    "retrySameOperationAfterOtherServer": "Digər server əməliyyatı bitdikdən sonra eyni əməliyyatı yenidən cəhd edin.",
+    "retrySameOperationAfterServerStorage": "Server yaddaşı bərpa olunduqdan sonra eyni əməliyyatı yenidən cəhd edin.",
+    "returnSignInWithExistingAccount": "Mövcud hesabla daxil olmağa qayıdın.",
+    "reviewAndCorrectEnteredServerSettings": "Daxil edilmiş server ayarlarını nəzərdən keçirin və düzəldin.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Daxil edilmiş dəyərləri nəzərdən keçirin və vurğulanmış məlumatı düzəldin.",
+    "safeRetryAfterEmailDeliveryRestored": "E-poçt çatdırılması bərpa olunduqdan sonra yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetryAfterServerResourceChecks": "Server resurs yoxlamaları bərpa olunduqdan sonra yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetryAfterTemporaryLockClears": "Müvəqqəti kilid aradan qalxdıqdan sonra yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetryRead": "Bu oxuma əməliyyatını yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetrySameAuthenticationOperationAfter": "Yaddaş bərpa olunduqdan sonra eyni autentifikasiya əməliyyatını yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetrySameContentChangeAfter": "Müvəqqəti kilid aradan qalxdıqdan sonra eyni məzmun dəyişikliyini yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetrySameContentChangeAfter2": "Yaddaş bərpa olunduqdan sonra eyni məzmun dəyişikliyini yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetrySameDlpPolicySave": "Yaddaş bərpa olunduqdan sonra eyni DLP siyasətinin yadda saxlanmasını yenidən cəhd etmək təhlükəsizdir.",
+    "safeRetrySameDlpPolicySave2": "Müvəqqəti kilid aradan qalxdıqdan sonra eyni DLP siyasətini yenidən yadda saxlamağa cəhd etmək təhlükəsizdir.",
+    "safeRetrySameDomainVerificationAfter": "Xidmət bərpa olunduqdan sonra eyni domen təsdiqini yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameFileOperationAfter": "Yaddaş əlçatan olduqdan sonra eyni fayl əməliyyatını yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameFileOperationAfter2": "Yaddaş bərpa olunduqdan sonra eyni fayl əməliyyatını yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameFileOperationAfter3": "Müvəqqəti kilid aradan qalxdıqdan sonra eyni fayl əməliyyatını yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameFormOperationAfter": "Yaddaş bərpa olunduqdan sonra eyni forma əməliyyatını yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameFormOperationAfter2": "Müvəqqəti kilid aradan qalxdıqdan sonra eyni forma əməliyyatını yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameOperationAfterStorage": "Yaddaş bərpa olunduqdan sonra eyni əməliyyatı yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameOperationAfterTemporary": "Müvəqqəti kilid aradan qalxdıqdan sonra eyni əməliyyatı yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetrySameSettingsAfterSecret": "Gizli yaddaş bərpa olunduqdan sonra eyni parametrləri yenidən yadda saxlamağa cəhd etmək təhlükəsizdir.",
+    "safeRetrySameSettingsSaveAfter": "Yanlış dəyərləri düzəltdikdən sonra eyni parametrləri yenidən yadda saxlamağa cəhd etmək təhlükəsizdir.",
+    "safeRetryWithSameJobIdentifier": "Eyni işi yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeRetryWithSameJobIdentity": "Eyni işi yenidən yerinə yetirməyə cəhd etmək təhlükəsizdir.",
+    "safeSignInInsteadCreatingAnother": "Başqa hesab yaratmaq əvəzinə daxil olmaq təhlükəsizdir.",
+    "safeStartNewProviderSignIn": "Yeni provayder girişinə daha sonra başlamaq təhlükəsizdir.",
+    "safeTryAgainAfterCorrectingDetails": "Məlumatları düzəltdikdən sonra yenidən cəhd etmək təhlükəsizdir.",
+    "safeTryAgainAfterCorrectingInput": "Daxil edilən məlumatı düzəltdikdən sonra yenidən cəhd etmək təhlükəsizdir.",
+    "safeTryAgainAfterWait": "Gözləmə bitdikdən sonra yenidən cəhd etmək təhlükəsizdir.",
+    "serverTakesNoChangesNow": "Bu server ehtiyat nüsxə saxladığı yerə çata bilmir, ona görə hazırda dəyişiklikləri qəbul etmir.",
+    "serverDataMovedElsewhere": "Bu serverin məlumatları başqa serverə köçürülüb.",
+    "doItOnNewServer": "Bunu yeni serverdə edin.",
+    "serverDataMovedNoRetry": "Burada yenidən cəhd etməklə yadda saxlamaq mümkün olmayacaq.",
+    "sameRequestIdentityCanRetriedSafely": "Qısa gözləmədən sonra eyni sorğuya təhlükəsiz şəkildə yenidən cəhd etmək olar.",
+    "saveSameDlpPolicyAgainAfter": "Server yaddaşı bərpa olunduqdan sonra eyni DLP siyasətini yenidən yadda saxlayın.",
+    "saveSameDlpPolicyAgainAfter2": "Digər server əməliyyatı bitdikdən sonra eyni DLP siyasətini yenidən yadda saxlayın.",
+    "serverAccountStorageTemporarilyUnavailable": "Server hesabının yaddaşı müvəqqəti olaraq əlçatan deyil.",
+    "serverCannotCurrentlyConfirmResourceState": "Server hazırda resurs vəziyyətini təsdiqləyə bilmir.",
+    "serverCouldNotCompleteAdministratorSettings": "Server administrator parametrlərinin yadda saxlanmasını tamamlaya bilmədi.",
+    "serverCouldNotCompleteAdministratorSetup": "Server administrator quraşdırma sorğusunu tamamlaya bilmədi.",
+    "serverCouldNotCompleteBackupLifecycle": "Server ehtiyat nüsxələmə əməliyyatını tamamlaya bilmədi.",
+    "serverCouldNotLoadBackupState": "Server həmin ehtiyat nüsxə vəziyyətini yükləyə bilmədi.",
+    "serverCouldNotProtectAdministratorSecret": "Server administratorun gizli dəyərlərini qoruya bilmədi.",
+    "serverCouldNotReadAdministratorState": "Server administrator vəziyyətini oxuya bilmədi.",
+    "serverCouldNotReadOneExact": "Server ardıcıl hesabat görüntüsünü oxuya bilmədi.",
+    "serverDetectedAndIsolatedIncompleteContent": "Server natamam məzmun qeydini aşkar edib kənara qoydu.",
+    "serverFileStorageTemporarilyUnavailable": "Server fayl yaddaşı müvəqqəti olaraq əlçatan deyil.",
+    "serverFormStorageTemporarilyUnavailable": "Server form yaddaşı müvəqqəti olaraq əlçatan deyil.",
+    "serverPageContentStorageTemporarilyUnavailable": "Server səhifə məzmunu yaddaşı müvəqqəti olaraq əlçatan deyil.",
+    "serverSettingsChangedAfterScreenLoaded": "Bu ekran yükləndikdən sonra server parametrləri dəyişdi.",
+    "serverStorageTemporarilyUnavailable": "Server yaddaşı müvəqqəti olaraq əlçatan deyil.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Server yaddaşı müvəqqəti olaraq əlçatan olmadığı üçün arxiv yaradıla bilmədi.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Server yaddaşı müvəqqəti olaraq əlçatan olmadığı üçün DLP siyasəti yadda saxlanıla bilmədi.",
+    "signInAttemptIdentifierAlreadyBelongs": "Bu giriş cəhdi artıq fərqli məlumatlarla istifadə edilib.",
+    "signInOrAccountActionLink": "Giriş və ya hesab əməliyyatı keçidi artıq etibarlı deyil.",
+    "signInWithAuthorizedAccountOr": "İcazəli hesabla daxil olun və ya administratorə giriş üçün müraciət edin.",
+    "signInWithExistingAdministratorAccount": "Mövcud administrator hesabı ilə daxil olun.",
+    "signInWithServerAdministratorAccount": "Server administratori hesabı ilə daxil olun və ya başqa administratorə giriş üçün müraciət edin.",
+    "startAccountActionAgainGetNew": "Yeni link əldə etmək üçün hesab əməliyyatını yenidən başladın.",
+    "startReplacementExportFromLatestWorkspace": "Ən son iş sahəsindən əvəzedici ixracı başladın.",
+    "storedBackupDidNotMatchVerified": "Saxlanılmış ehtiyat nüsxə yoxlanılmış faylla uyğun gəlmədi.",
+    "submittedInformationDidNotMeetOperation": "Göndərilən məlumat əməliyyat tələblərinə uyğun gəlmədi.",
+    "tooManyRequestsLimited": "Çox sayda sorğu göndərildiyi üçün bu əməliyyat məhdudlaşdırılıb.",
+    "tooManyRequestsMadeSoOperation": "Çox sayda sorğu göndərildiyi üçün bu əməliyyat müvəqqəti məhdudlaşdırılıb.",
+    "tryAgainAfterServerStorageRecovers": "Server anbarı bərpa olunduqdan sonra yenidən cəhd edin.",
+    "tryAgainInHours_one": "Təxminən bir saatdan sonra yenidən cəhd edin.",
+    "tryAgainInHours_other": "Təxminən {{count}} saatdan sonra yenidən cəhd edin.",
+    "tryAgainInMinutes_one": "Təxminən bir dəqiqədən sonra yenidən cəhd edin.",
+    "tryAgainInMinutes_other": "Təxminən {{count}} dəqiqədən sonra yenidən cəhd edin.",
+    "tryAgainInSeconds_one": "Təxminən {{count}} saniyədən sonra yenidən cəhd edin.",
+    "tryAgainInSeconds_other": "Təxminən {{count}} saniyədən sonra yenidən cəhd edin.",
+    "useAnotherSignInMethodOr": "Başqa giriş üsulundan istifadə edin və ya bu provayderlə sonra yenidən cəhd edin.",
+    "useResumableArchiveUploadSoProgress": "Saxlanılmış vəziyyətdən davam etmək üçün davam etdirilə bilən arxiv yükləməsindən istifadə edin.",
+    "useResumableUploadSoProgressCan": "Saxlanılmış vəziyyətdən davam etmək üçün davam etdirilə bilən yükləmədən istifadə edin.",
+    "waitForCompletionThenRetryDownload": "Tamamlanmasını gözləyin, sonra endirməni yenidən cəhd edin.",
+    "waitForOtherServerOperationFinish": "Digər server əməliyyatı bitənədək gözləyin, sonra yenidən cəhd edin.",
+    "waitForStorageReconciliationAdvanceThen": "Anbarın uyğunlaşması üçün bir az gözləyin, sonra eyni əməliyyatı yenidən cəhd edin.",
+    "waitMomentBeforeTryingAgain": "Yenidən cəhd etməzdən əvvəl bir az gözləyin.",
+    "workspaceChangedWhileExportRunning": "İxrac davam edərkən iş sahəsi dəyişdi.",
+    "youNotSignedInAndNo": "Daxil olmamışdınız və hesab məlumatlarında heç bir dəyişiklik edilmədi.",
+    "pageIsLocked": "Səhifə kilidlənib, buna görə dəyişiklik etmək mümkün deyil.",
+    "unlockPageThenTryAgain": "Səhifə menyusundan səhifənin kilidini özünüz üçün və ya hamı üçün açın, sonra yenidən cəhd edin.",
+    "safeToRetryAfterUnlocking": "Səhifənin kilidini açdıqdan sonra yenidən cəhd etmək təhlükəsizdir.",
+    "databaseIsLocked": "Verilənlər bazası kilidlidir, ona görə də onun xüsusiyyətləri və görünüşləri dəyişdirilə bilməz.",
+    "unlockDatabaseThenTryAgain": "Verilənlər bazasının “Kilid” düyməsindən onun kilidini özünüz üçün və ya hamı üçün açın, sonra yenidən cəhd edin.",
+    "databaseEditorsCanUnlock": "Verilənlər bazasını yalnız redaktə edə bilən şəxs kilidini aça bilər.",
+    "safeToRetryAfterDatabaseUnlocked": "Verilənlər bazasının kilidi açıldıqdan sonra yenidən cəhd etmək təhlükəsizdir.",
+    "rowMoveNeedsFullAccess": "Onu başqa səhifəyə köçürmək üçün ona tam giriş icazəsi, köçürüləcəyi yerə isə redaktə icazəsi lazımdır.",
+    "askFullAccessHolderToMoveIt": "Tam giriş icazəsi olan birindən onu köçürməsini xahiş edin və ya redaktə edə bildiyiniz yer seçin.",
+    "rowMoveRefusedUntilAccess": "Həmin icazə sizdə olana qədər onu köçürmək yenidən rədd ediləcək.",
+    "otherWorkspaceCantMoveOrLink": "Elementləri iş sahələri arasında köçürmək və ya bağlamaq mümkün deyil.",
+    "makeItAnewInThatWorkspace": "Onu həmin iş sahəsində yaradın və məzmununu ora köçürün. Bütöv səhifəni Köçür menyusundan iş sahəsini seçərək ora köçürmək və ya kopyalamaq olar.",
+    "otherWorkspaceRefusedAgain": "Yenidən cəhd etmək eyni səbəbdən rədd edilir.",
+    "signInEndedForThisBrowser": "Bu brauzerdəki girişin müddəti bitib və ya sonlandırılıb.",
+    "signInEndedForThisApp": "Bu tətbiqdəki girişin müddəti bitib və ya sonlandırılıb.",
+    "signInAgainToContinue": "Davam etmək üçün yenidən daxil olun.",
+    "retryAfterSigningInAgain": "Yenidən daxil olduqdan sonra təkrar cəhd edin.",
+    "serverRestoredSinceDeviceCopies": "Bu serverin məlumatları dəyişdi və bu cihazdakı kopyalar əvvəlki haldadır.",
+    "changeKeptOnThisDeviceOnly": "Dəyişiklik serverdə yadda saxlanmadı; yalnız bu cihazdadır.",
+    "takeServerContentAnew": "Serverin cari məzmununu almaq üçün “Serverdən yenidən yüklə” seçin.",
+    "retryAfterTakingContentAnew": "Serverdən yenidən yüklədikdən sonra yenidən cəhd edin.",
+    "propertyUsedByViewOrDependency": "Bu xüsusiyyət indi dəyişdirilə bilməz: o, başlıq xüsusiyyətidir və ya Silinmiş xüsusiyyətlər siyahısındadır.",
+    "changeWhatUsesPropertyFirst": "Xüsusiyyətin indiki vəziyyətini görmək üçün səhifəni yenidən yükləyin.",
+    "retryAfterChangingWhatUsesProperty": "Onu dəyişmək üçün əvvəlcə silinmiş xüsusiyyəti bərpa edin.",
+    "workspaceAlreadyHasContentForArchive": "Bu iş sahəsində artıq məzmun var, ona görə Leafen arxivi buraya yerləşdirilə bilməz.",
+    "makeNewWorkspaceToImportArchive": "Yeni iş sahəsi yaradın və bu arxivi ora idxal edin.",
+    "retryInNewWorkspace": "Onu yeni iş sahəsində yenidən idxal edə bilərsiniz.",
+    "importFileDoesNotFitFormat": "Fayl Leafen-in oxuduğu formata uyğun deyil, buna görə heç nə idxal olunmadı.",
+    "exportFileAgainToImport": "Faylı yaradıldığı yerdən yenidən ixrac edin, sonra həmin faylı idxal edin.",
+    "sameFileRefusedAgain": "Eyni faylı yenidən idxal etmək nəticə verməyəcək.",
+    "pageBusyWithAnotherChange": "Bu səhifədə başqa dəyişiklik davam edir, ona görə də bir müddət redaktə edilə bilməz.",
+    "tryAgainOnceThatChangeIsDone": "Həmin dəyişiklik tamamlandıqdan sonra yenidən cəhd edin.",
+    "importPageInTrash": "Bunun yerləşdiriləcəyi səhifə Zibil qutusundadır, ona görə heç nə idxal edilmədi.",
+    "restorePageThenImportAgain": "Səhifəni Zibil qutusundan bərpa edin, sonra yenidən idxal edin.",
+    "importPageDeletedForGood": "Bunun yerləşdiriləcəyi səhifə birdəfəlik silinib, ona görə heç nə idxal edilmədi.",
+    "ownerBringsDeletedPageBack": "30 gün ərzində iş sahəsinin sahibi onu Təhlükəsizlik → Məlumatların saxlanması bölməsindən bərpa edə bilər; sonra onu Zibil qutusundan bərpa edib yenidən idxal edin.",
+    "importAgainOnceRestored": "Səhifə bərpa olunana qədər yenidən cəhd etsəniz də idxal olunmayacaq.",
+    "pageInTrashCantChange": "Zibil qutusundakı səhifə bərpa olunana qədər dəyişdirilə bilməz.",
+    "restorePageThenTryAgain": "Səhifəni Zibil qutusundan bərpa edin, sonra yenidən cəhd edin.",
+    "tryAgainOnceRestored": "Səhifə bərpa olunana qədər yenidən cəhd etsəniz də işləməyəcək.",
+    "optionNameHasComma": "Seçim adında vergül (,) ola bilməz.",
+    "takeCommaOutOrSplitOption": "Vergülü çıxarın və ya onu iki seçimə ayırın.",
+    "optionRefusedUntilRenamed": "Adı dəyişdikdən sonra yenidən cəhd edin.",
+    "optionNameTaken": "Bu xüsusiyyətdə artıq həmin adla seçim var.",
+    "useAnotherOptionName": "Başqa ad istifadə edin və ya artıq mövcud olan seçimi seçin.",
+    "optionsInUseLeftOut": "Bu dəyişiklik səhifələrin istifadə etdiyi seçimləri kənarda qoyur.",
+    "keepOptionsOrDeleteOneByOne": "Həmin seçimləri saxlayın və ya hər seçimin menyusundan onları bir-bir silin.",
+    "optionsRefusedUntilKeptOrDeleted": "Olduğu kimi yenidən cəhd etmək eyni səbəbdən rədd edilir."
+  }
+}

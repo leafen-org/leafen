@@ -1,0 +1,28 @@
+.title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.untitled { color: var(--text-disabled); }
+.input::placeholder { color: var(--text-disabled); opacity: 1; }
+/* A card's or list row's title is typed in place with the caret at its end and no ring (Notion's board and list, seen 2026-11-06). */
+.input { width: 100%; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; outline: none; }
+.cardTools, .inlineTools { display: inline-flex; flex: 0 0 auto; opacity: 0; color: var(--text-secondary); }
+/* A card's tools are Notion's raised tool group (seen 2026-11-24 twice, 1685 dark): whiButBac, shaOutMd, borSecTra between its buttons. */
+.cardTools { position: absolute; top: 8px; inset-inline-end: 8px; z-index: 2; border-radius: 4px; background: var(--white-button-bg); box-shadow: var(--shadow-raised); overflow: hidden; }
+.cardTools button, .inlineTools button { display: flex; align-items: center; justify-content: center; width: 28px; height: 24px; padding: 4px 6px; color: inherit; background: transparent; }
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.cardTools) button:not(button:first-of-type) { border-inline-start: 1px solid var(--tool-group-line); }
+.cardTools button:hover, .inlineTools button:hover { background: var(--bg-hover); }
+.cardTools button:focus-visible, .inlineTools button:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+/* A card being made shows its tools only while pointed at, its name typed or not (Notion's, seen 2026-11-06). */
+[data-row-card]:hover .cardTools, [data-row-card]:focus-within .cardTools, [data-board-draft-card]:hover .cardTools, [data-row-card]:hover .inlineTools, [data-row-card]:focus-within .inlineTools { opacity: 1; }
+/* A touch screen's cards and list rows have no tools, a member's as a visitor's, as Notion's phone board, gallery and list (seen 2026-11-12 in iOS Safari at 402pt, signed in as an editor: each card or row is a link alone, a long press bringing the browser's own link menu) and its iPad's (seen 2026-11-12 in iPad Safari at 834 and 1194: title and properties alone); a row's actions are in its opened page's "⋯". The body's touch mark covers both (screenKind.ts); the phone's mark stays for the phone's own frames. */
+:global(:is([data-touch="true"], [data-phone="true"])) .cardTools, :global(:is([data-touch="true"], [data-phone="true"])) .inlineTools { display: none; }
+/* A list row's side view button while its title is typed: 26×20, always shown, 16 past the text, as Notion's (seen 2026-11-05). */
+.inlineOpen { display: inline-flex; flex: 0 0 auto; margin-inline-start: 16px; }
+.inlineOpen button { display: flex; align-items: center; justify-content: center; width: 26px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: var(--bg-app); color: var(--text-secondary); cursor: pointer; }
+.title[data-inline-editing] .input { width: auto; field-sizing: content; min-width: 1ch; flex: 0 1 auto; outline: none; }
+/* A list row's pencil: 26×20 on the page's own ground, rounded 6px, 17px past its title (Notion's, seen 2026-11-06). */
+.inlineTools { margin-inline-start: 11px; }
+/* Its comment count stands 5px past the title, the pencil 12px past the count (Notion's list, seen 2026-11-06). */
+.after { display: inline-flex; flex: 0 0 auto; margin-inline-start: -1px; }
+.after:empty { display: none; }
+.after + .inlineTools { margin-inline-start: 6px; }
+.inlineTools button { width: 26px; height: 20px; padding: 0; border-radius: 6px; background: var(--bg-app); }

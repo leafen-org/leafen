@@ -1,0 +1,3 @@
+package app
+
+const organizationBillingRelationError = "LEAFEN_ORGANIZATION_BILLING_RELATION_INVALID"

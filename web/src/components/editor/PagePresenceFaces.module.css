@@ -1,0 +1,86 @@
+/* Others' faces beside the page's lines, as Notion's (seen 2026-11-05). */
+.anchor {
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+.place {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  z-index: 1;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Reached only once it stepped aside: before that the pointer belongs to the line's handle. */
+/* A touch screen's face is smaller (PagePresenceFaces.tsx TOUCH_FACE_SIZE). */
+.anchor[data-touch="true"] :is(.place, .face) {
+  width: 16px;
+  height: 16px;
+}
+
+.place[data-moved="true"] {
+  pointer-events: auto;
+}
+
+/* A flex box, so the face fills its ring: as a line, a 16px face sat 5.7px
+   low in the 24px line a touch screen's page gives it, over its ring's lower half. */
+.face {
+  position: relative;
+  display: flex;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--presence-color), 0 2px 4px rgba(15, 15, 15, 0.2);
+  animation: faceIn 170ms ease-out;
+}
+
+.name {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: none;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  transform: translateX(-50%);
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.face:hover .name {
+  display: inline-flex;
+}
+
+.face[data-leaving="true"] {
+  animation: faceOut 180ms ease-in forwards;
+}
+
+@keyframes faceIn {
+  from { transform: scale(0.68); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes faceOut {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(0.68); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .place { transition: none; }
+  .face, .face[data-leaving="true"] { animation: none; }
+}
+
+@media print {
+  .anchor { display: none; }
+}

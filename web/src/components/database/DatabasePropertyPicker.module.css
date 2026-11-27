@@ -1,0 +1,334 @@
+/* Notion's property picker for a filter, sort or grouping (seen 2026-09-30,
+   290px panel): a 28px search with a faint ground and hairline ring, 28px
+   rows a pixel apart with a 20px icon and the name on a 1.2 line (16.8px, as
+   every row of Notion's picker, seen 2026-11-18 at dpr 1), and a grey action
+   row below them under a line. */
+.picker {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 4px 0;
+}
+
+/* Its search and rows stand in it as they are, but in a window that lends it
+   its inside (`data-property-picker-window`: "필터 기준", "정렬 기준", "+ 필터",
+   "정렬 추가"), where they scroll in a box of their own over its footer
+   ("고급 필터 추가"), as Notion's (seen 2026-11-17 at 1440×779 and 1440×723
+   in two tabs): the window a column with no padding of its own, over what its
+   class gives it; the box from the window's top to its foot or the footer,
+   padded by the window's 8px and the picker's 4px, 4px under the last row,
+   fading at an edge it scrolls on past (DatabasePropertyPicker.tsx) — none at
+   the top until scrolled, 8.5px at 5 scrolled, 11.9 at 7, 17 at 10, 34 from
+   20; 20.4 with 12 left, 10.2 with 6, none at the end; the footer 9px under
+   the last row and 4px over the window's foot. */
+.scroll {
+  display: contents;
+}
+
+[data-property-picker-window]:has(> .picker[data-property-picker]) {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+[data-property-picker-window] > .picker {
+  min-height: 0;
+  padding: 0;
+}
+
+[data-property-picker-window] > .picker > .scroll {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 12px 4px;
+}
+
+[data-property-picker-window] > .picker > .scroll > * {
+  flex: none;
+}
+
+[data-property-picker-window] > .picker > .footer {
+  flex: none;
+  margin: 5px 4px 4px;
+  padding-inline: 8px;
+}
+
+/* A view settings screen whose body is the picker ("그룹화 기준", "새 정렬",
+   "필터 추가", "하위 그룹화") lends it the panel's inside as such a window
+   does, under the panel's 42px head: the search 12px in from the panel's sides
+   and 12px under the head, the rows 4px in, 4px under the last row or the
+   footer — Notion's one picker in the panel and the window alike (seen
+   2026-11-18 at 1440, dpr 1, popover: search 12,54 266×28, its words 18,58;
+   "없음" 12,98.59 and the rows 4,94 282 wide; the panel 4px under the last
+   row; "고급 필터 추가" 4,247 under a line at 242). The panel's own 8px in
+   and under, docked or a popover, are taken back. */
+[data-view-settings-screen] > .picker {
+  margin-inline: -8px;
+  padding: 12px 12px 4px;
+}
+
+[data-view-settings-screen] > .picker:last-child {
+  margin-block-end: -8px;
+}
+
+/* There a row stands 4px in from the window's edge, its icon's 24px box in
+   line with the search box, 12px in, the 20px icon at the box's end and the
+   name 44px in; the footer's box 4px in too, its icon 12px in and its words
+   40px in; "결과 없음" where the search box starts — as Notion's "필터 기준",
+   "정렬 기준" and "+ 필터" (seen 2026-11-17 at 1440 in two tabs: the row
+   267 wide in a 290 window, its 16px icon drawn 19.2 from 16.4 to 35.6), and
+   its view settings screens (seen 2026-11-18). */
+[data-property-picker-window] > .picker > .scroll > .list,
+[data-view-settings-screen] > .picker .list {
+  margin-inline: -8px;
+}
+
+[data-property-picker-window] .icon,
+[data-view-settings-screen] > .picker .icon {
+  justify-content: flex-end;
+  width: 24px;
+}
+
+[data-property-picker-window] .empty,
+[data-view-settings-screen] > .picker .empty {
+  padding-inline: 8px;
+}
+
+[data-view-settings-screen] > .picker > .footer {
+  margin-inline: -8px;
+  padding-inline: 8px;
+}
+
+.search {
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+/* Notion's menu search rings blue while typing (seen 2026-10-10). */
+.search:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 12px -4px 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.option:hover,
+.option[data-active="true"] {
+  background: var(--bg-hover);
+}
+/* The property the arrows moved to is ringed as well, the pointer grounding
+   the one under it apart, as Notion's "필터 기준" (seen 2026-11-14). */
+[data-keyed="true"] .option[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 8px;
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chosen row's tick: 16px, dark, at the row's end. */
+.check {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-inline-start: 8px;
+  color: var(--text-default);
+}
+
+/* Nothing found, said as Notion's property picker says it — the one its
+   filter, sort, grouping and property access share (its code, read
+   2026-11-16; seen the same day in the filter, sort and grouping pickers at
+   1440): "결과 없음" as a 12px caption in gray, 2px down in a row of 4px
+   padding with 2px over it and 6px under it, starting where the search box
+   does — 20px under the box. */
+.empty {
+  margin: 2px 0 6px;
+  padding: 6px 4px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* Under a line 4px under the last row, 8px in from the footer's sides,
+   the footer 4px under it (Notion's "고급 필터 추가", seen 2026-11-18 in the
+   view settings and the "필터 기준" window: the line 12–278 at 242, the row
+   from 247). */
+.footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  margin: 9px -4px 0;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: start;
+}
+
+.footer::before {
+  position: absolute;
+  inset-block-start: -5px;
+  inset-inline: 8px;
+  height: 1px;
+  background: var(--menu-divider);
+  content: "";
+  pointer-events: none;
+}
+
+.footer:hover,
+.footer:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.footerHint {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+}
+
+.footerIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* The search row of a phone's sheet (DatabasePropertyPicker `sheet`). */
+.sheetSearch {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* A filter's search keeps its grey, rgb(142,139,134) (Notion's, seen 2026-11-15 on a Galaxy A90 at 411). */
+.sheetSearchIcon {
+  color: var(--icon-secondary);
+}
+
+.sheetSearchBare {
+  padding-inline-start: 8px;
+}
+
+/* Finding none, the search stands alone in its group, its line cut off as a group's last row's
+   (PhoneSheet.module.css), and "결과 없음" under the group in small grey words, 16px in from its edge, 38.4px
+   in all: its words 8px under the group, the next group 16px under them (a filter's search); a dashboard's
+   "속성 필터링", its search standing apart, a group's gap further (24px). Notion's, seen 2026-11-17 in Android
+   Chrome at 411: #7d7a75 14px on a 20.4px line, at 207 under a search ending 200 and over "고급 필터" at
+   254.4; at 162 under a search ending 138. */
+.sheetSearchRow:has(+ :empty:last-child) {
+  min-height: 44px;
+  border-bottom: 0;
+}
+.sheetEmpty {
+  margin-top: -16px;
+  padding: 8px 16px 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20.4px;
+}
+.sheetEmpty[data-apart="true"] {
+  margin-top: 0;
+}
+
+/* The chosen row's check at its end, 18px in the words' colour (Notion's "그룹화 기준", seen 2026-10-23; PhoneSheetRowParts.module.css). */
+.sheetCheck {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+/* A filter the list has, as Notion's (seen 2026-10-24 at 375px): its icon and
+   name blue, its value grey at its end, and while it is the viewer's own an
+   8px orange dot ringed white at its icon's top right. A property's icon is
+   the sheet's icon colour, rgb(56,56,54), as a sort's list draws it, and in a
+   filter's list the gray of the icon library, rgb(85,83,78), the type's icons
+   and given ones alike (Notion's, seen 2026-11-15 on a Galaxy A90 at 411 in
+   two pages; "정렬" and "고급 필터" keep the words' colour). */
+.sheetMarkIcon {
+  position: relative;
+}
+
+.sheetMarkIcon[data-icon-own="gray"] {
+  color: var(--icon-c-gray);
+}
+
+[data-applied="true"] > .sheetMarkIcon,
+[data-applied="true"] > .sheetMarkIcon + * {
+  color: var(--c-accent-blue);
+}
+
+/* The icon stands 2px inside its 26px box (PhoneSheet's propertyRows): the
+   dot sits 4px past the icon's own edge. */
+.sheetUnsaved {
+  position: absolute;
+  top: 1px;
+  inset-inline-end: -2px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-default);
+  border-radius: 50%;
+  background: var(--unsaved-dot);
+}
+
+/* A sort's, a grouping's and a colour rule's list puts the icon at its 26px box's end, the box's start 28px in and
+   the ink centred 43px in, where a filter's list centres it at 41 (Notion's "새 정렬" and "그룹화 기준", seen
+   2026-11-16 on an A90 at 411: the 18px mark 6px into its box drawn a fifth larger, as the bottom lists' properties,
+   PhoneSheetMarks.module.css); the dot keeps 4px past the icon's edge. */
+.sheetMarkIcon[data-icon-own=""] {
+  justify-content: flex-end;
+}
+
+.sheetMarkIcon[data-icon-own=""] > .sheetUnsaved {
+  inset-inline-end: -4px;
+}

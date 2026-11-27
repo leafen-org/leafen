@@ -1,0 +1,165 @@
+
+/* Columns */
+.column {
+  position: relative;
+  min-width: 0;
+  min-height: 34px;
+  border-radius: 4px;
+}
+/* The column takes no focus itself; its controls reached by the keyboard
+   outline it. */
+.column[data-keys-within] {
+  outline: 2px solid rgba(35, 131, 226, 0.28);
+  outline-offset: 4px;
+}
+.column[data-drop="true"] {
+  background: rgba(35, 131, 226, 0.08);
+}
+.columnEmpty {
+  min-height: 34px;
+}
+/* The handle between two columns is the whole 46px gap before a column,
+   the column row's full height with its 12px room above and below (the
+   list's 7px and its block's 5px), as Notion's (seen 2026-11-24, Chrome
+   1685 dark, two and three columns, in two tabs: the gap col-resize
+   wherever no block's handle stands over it, a 4px line in its middle in
+   borPriTra, an outlined button's edge — its sheet's #1c13011c light,
+   #ffffeb1a dark — fading in over 200ms under the pointer and staying,
+   unchanged, while dragged). It stands beside the column,
+   placed by the gap's flex container (NativeTiptap .columns) for its height
+   and by its own place in flow for its side, the column's 6px room and the
+   gap before it. Drawn without a stacking level, the handles of the
+   column's blocks, later in the page, stand over it, as Notion's do. */
+.columnResize {
+  position: absolute;
+  top: -12px;
+  bottom: -12px;
+  box-sizing: border-box;
+  width: 46px;
+  margin-inline-start: -52px;
+  padding: 0;
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+.columnResize::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 21px;
+  width: 4px;
+  background: var(--button-outline);
+}
+.columnResize:hover,
+.columnResize:focus-visible,
+.columnResize[data-resizing="true"] {
+  opacity: 1;
+}
+/* A list widened past the page (columnListWidth) goes past a block's widest
+   too, its box the whole of its wrapper's (EditorBlocks centres a column
+   list kept to that widest). */
+:global([data-native-column-list][data-wide-columns]) > .blockGroup {
+  max-width: none;
+  margin-inline-start: -6px;
+}
+/* A column list's outer edges: the same handle, 46px out from either end of
+   the columns' row, the list's whole height (columnListWidth). */
+.columnResize[data-edge] {
+  margin: 0;
+}
+.columnResize[data-edge="start"] {
+  inset-inline-start: -46px;
+}
+.columnResize[data-edge="end"] {
+  inset-inline-end: -46px;
+}
+/* The handles of a column's own blocks stand over the gap, or the list's
+   edge, before it, and the pointer crossing it keeps them shown
+   (useBlockHoverReach): their 24px
+   bridge to the block (EditorBlockHandles .gutter::after) took the gap's
+   presses between the handles and the words there, where Notion's resizes
+   (seen 2026-11-24: col-resize from the ⋮⋮'s end to the block, 985–990 in a
+   947–993 gap). A block nested in one of them keeps its bridge, in the column. */
+.columnResize + .column .blockRow:not(.column .blockRow .blockRow) > .gutter::after {
+  display: none;
+}
+.columnControls {
+  position: absolute;
+  top: -22px;
+  inset-inline-end: 0;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  padding: 1px;
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  background: var(--surface-default);
+  box-shadow: var(--shadow-popover);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
+}
+.column[data-column-controls-active="true"] .columnControls,
+.columnControls:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+.columnControls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 18px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.columnControls button:hover:not(:disabled),
+.columnControls button:focus-visible {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+.columnControls button:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.45;
+}
+
+/* A phone's page shows no handle, as Notion's phone page; a desktop window
+   as narrow keeps its own (its page keeps its margins, seen 2026-11-01). */
+:global([data-phone="true"]) .gutter {
+  display: none;
+}
+:global([data-phone="true"]) .gutter[data-menu-open] {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+:global([data-phone="true"]) .gutter[data-menu-open] > .gutterBtn {
+  display: none;
+}
+/* A phone stacks the columns; a narrow desktop window keeps them side by
+   side, as Notion's (seen 2026-11-01 at 560px). */
+:global([data-phone="true"]) .column {
+  width: 100%;
+  flex-grow: 0 !important;
+  flex-basis: auto !important;
+}
+/* Resizing is meaningless in the stacked single-column layout, a phone's
+   or a narrow side peek's (NativeTiptap). */
+:global(:is([data-phone="true"], [data-stack-columns="true"])) .columnResize {
+  display: none;
+}
+:global([data-phone="true"]) .columnControls {
+  position: absolute;
+  top: -22px;
+  inset-inline-end: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}

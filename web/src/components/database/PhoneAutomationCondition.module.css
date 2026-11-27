@@ -1,0 +1,279 @@
+/* A property trigger's card words (PhoneAutomationCondition.tsx), the same on
+   a desktop's dialog and a phone's sheet, as Notion's (seen 2026-11-18 in
+   Chrome at 1440 in two tabs and on a Galaxy A90 at 411): 14px in 400, the
+   property's name alone in 500 (cut with "…" where it runs short), options
+   as 20px pills 4px round (a status's 10, dotted), a number's or words'
+   value in a round token (`.valueChip`). Its pieces wrap one by one with nothing between them
+   but the words' own spaces, kept as typed: a wrapped line starts with its
+   piece's space (" 값으로 설정되었습니다.") and the lines touch — 20px lines,
+   22.4px (1.6) while it holds pills, so a two-line card is 68.8px on both. */
+.sentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: start;
+  white-space: pre;
+}
+
+.sentence[data-valued] {
+  line-height: 1.6;
+}
+
+.sentence[data-valued="set"] {
+  align-items: baseline;
+}
+
+.sentence strong {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Two or more people take a line of their own between the line's words,
+   4px apart ("사람 속성에" / the people / " 값 중 하나가 포함됩니다.",
+   Notion's, seen 2026-11-18 in Chrome at 1440 and on a Galaxy A90 at 411:
+   three 20px lines). */
+.sentence[data-people-line] > .values {
+  display: flex;
+  flex: 0 1 100%;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pill,
+.valueChip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 20px;
+  overflow: hidden;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A number's or words' value ("숫자 > [5]", "… 설정됨 [abc]") is Notion's
+   token: rounded 10, 7px in before its words and 9px after them, on the
+   default chip's grey (its bacTerTra), its words the text's colour, a 70%
+   white in dark (seen 2026-11-18 in Chrome at 1440 dark in two tabs and on a
+   Galaxy A90 at 411 light: "5" 24.5 and 23.9 wide). */
+.valueChip {
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+  background: var(--c-chip-bg-default);
+  color: var(--text-default);
+}
+
+:global([data-theme="dark"]) .valueChip { color: rgba(255, 255, 255, 0.7); }
+
+/* A checkbox's state (Done set to a ticked "선택됨") is Notion's pill of
+   its own: 20 high, rounded 12, 8px in on both sides, its 14px box and ✓
+   (CheckboxValueIcon) 4px before its words, on the default chip's grey with
+   the text's colour (seen 2026-11-18 in Chrome at 1440 dark: 70.34 wide for
+   "선택됨", the box at 8 and the words at 26; on a Galaxy A90 at 411 light
+   the box 16). Its sentence is one line that never wraps, 20 high (a card
+   44), running on past its words' room where the card is narrow (Notion's
+   sentence for Done set to the ticked state, 285 wide in its 261 room at
+   411). */
+.checkboxChip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding-inline: 8px;
+  border-radius: 12px;
+  background: var(--c-chip-bg-default);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.sentence[data-checkbox] {
+  flex-wrap: nowrap;
+}
+
+.sentence[data-checkbox] > * {
+  flex: none;
+}
+
+:global([data-phone-automation-condition]) .checkboxChip svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* A status's pill rounded with its 8px dot 7px in, its name 5px after it
+   (Notion's card and condition window, seen 2026-11-11). */
+.pill[data-status-pill] {
+  gap: 5px;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+}
+
+.pill[data-status-pill]::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+}
+
+/* The screen's head: the property's name and, 2px after it, its operator's
+   chip, the name cut with "…" where the head runs short and the chip kept
+   whole — its words 400 in the text's colour, its "⌄" grey 6px after them,
+   the chip 20px high and 2px in at either end (Notion's, seen 2026-11-17 on
+   a Galaxy A90 at 411 twice, a long and a short name, light: "‹", this and
+   "완료" share the head, PhoneSheetHeadFit.module.css). */
+.title {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.operator {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 2px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-weight: 400;
+}
+
+/* The "⌄" takes no more room than it draws (its 16px box's caret is 10 wide). */
+.operator svg {
+  margin-inline: -3px;
+  color: var(--icon-secondary);
+}
+
+/* A ticked row: its 14px box 20px in, then 14px on the option's pill, the
+   box its full blue under "모든 옵션" too (Notion's, seen 2026-11-17 on a
+   Galaxy A90 at 411: box x20, words x48, rgb(39, 131, 222)). People have no
+   box (ConditionPersonRow). */
+.check {
+  cursor: pointer;
+}
+
+.check > input {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+.check .pill {
+  font-size: 16px;
+  height: 24px;
+  line-height: 24px;
+  padding: 0 8px;
+}
+
+/* "←" grey and 22px, as the automation sheet's, in a 28px box 16px in, so
+   its part of the head is 60 wide (Notion's, seen 2026-11-17 on a Galaxy A90
+   at 411 twice). */
+:global([data-phone-trigger-condition]) :global([data-phone-sheet-start]) {
+  color: var(--icon-secondary);
+}
+
+:global([data-phone-trigger-condition]) :global([data-phone-sheet-start]) svg {
+  width: 22px;
+  height: 22px;
+  margin: 3px;
+}
+
+/* A status's option under its group, its box 8px further in. */
+.check[data-nested] > input {
+  margin-inline-start: 8px;
+}
+
+/* The screen's groups 28px apart (the screen's own gap), each lined on top
+   only, the line in that gap; its rows 45px with a line under each, the last
+   one's too; a search 52px high, its words 17px on a 24px line
+   (ConditionPicksField), nothing under it but, over people's "모든 옵션", a
+   pixel of the ground (Notion's,
+   seen 2026-11-17 on a Galaxy A90 at 411 by CDP and in screenshot pixels: a
+   select's, people's and a relation's screens). */
+:global([data-phone-sheet="screen"][data-phone-trigger-condition]) .screen :global([data-phone-sheet-group]) {
+  border-block: 0;
+  box-shadow: 0 -1px 0 var(--border-subtle);
+}
+
+:global([data-phone-sheet="screen"][data-phone-trigger-condition]) .screen :global([data-phone-sheet-group]) .check,
+:global([data-phone-sheet="screen"][data-phone-trigger-condition]) .screen :global([data-phone-sheet-group] [data-phone-trigger-state]),
+:global([data-phone-sheet="screen"][data-phone-trigger-condition]) .screen :global([data-phone-sheet-group] [data-filter-choice]) {
+  min-height: 45px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+/* A checkbox's states have no mark before them, so their words start 16px in, as a sheet's other rows without an icon
+   (PhoneSheet's data-bare) — "체크 표시 해제됨" at 16 (Notion's, seen 2026-11-18 on a Galaxy A90 at 411). */
+:global([data-phone-sheet="screen"][data-phone-trigger-condition]) .screen :global([data-phone-sheet-group] [data-phone-trigger-state]) {
+  padding-inline-start: calc(16px + var(--phone-safe-start, 0px));
+}
+
+.searchGroup > :first-child:not(:last-child) {
+  border-bottom: 1px solid var(--bg-soft);
+}
+
+/* A number's "값 입력": 12px words in its 45px row (Notion's, seen
+   2026-11-17 on a Galaxy A90 at 411 twice). */
+input.value {
+  font-size: 12px;
+}
+
+/* Words' "값 입력": a 28px box 10px in on the faint tint, rounded 6, its
+   14px words 6px in, a level further in than a number's row — the screen's
+   line, 28px, then its group's (Notion's, seen 2026-11-17 on a Galaxy A90 at
+   411: the box 391×28 at 10,110, the lines at 72, 100 and 148). */
+.wordsRow {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.words {
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+:global([data-theme="dark"]) .words {
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: rgba(255, 255, 255, 0.094) 0 0 0 1px;
+}
+
+.words:focus,
+:global([data-theme="dark"]) .words:focus {
+  box-shadow: var(--name-field-ring-focus);
+}

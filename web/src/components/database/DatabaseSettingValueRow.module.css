@@ -1,0 +1,52 @@
+/* A settings row's name and its value, one rule for the view settings' rows (DatabaseViewSettingsItem: itemLabel,
+   itemMeta) and the settings screens' choice rows (DatabaseLayout's layoutChoiceRow: the layout, grouping,
+   sub-grouping and property screens). Both sheets take this module (viewSettingsSheet, databaseSheet), so each class
+   reaches that sheet's elements.
+
+   The name takes the room its value leaves, on as many lines as it needs, the row growing round it; the value's words
+   stay whole up to clamp(100px, 40vw, 150px) and end in "…" past that, its "›" or "⌄" after them (Notion's,
+   2026-11-24 in two tabs: name 1 1 auto, value 0 0 auto — "Sichtbarkeit von Eigenschaften" beside "3", "Открывать
+   страницы в режиме просмотра" beside "사이드 보기" two lines, 33.6; a property's name as value so capped in the view
+   settings' list and the grouping screen). Here the name grows from nothing but never below its longest word, so the
+   value gives way first (approved differences: Notion squeezes the name even where its word then runs over the
+   value, and its layout screen caps no value, so a long property's name in "그룹화 기준" or "카드 미리보기" runs out
+   of the panel while the name stands a letter a line).
+
+   The source, "데이터베이스", and a layout's property choice ("캘린더 표시 기준", "타임라인 표시 기준") keep their
+   name on one line and their value takes the whole rest of the row, ending in "…" (Notion's, seen 2026-11-05,
+   11-15 and 11-24: name 1 0 auto, value 0 1 auto). A phone's values keep their sheet's cap (PhoneSheetRowParts). */
+.itemLabel[data-view-setting-name="beside-value"],
+.layoutChoiceRow > :first-child {
+  flex: 1 1 0%;
+  min-width: min-content;
+  overflow-wrap: break-word;
+  text-align: start;
+}
+.itemLabel[data-view-setting-name="one-line"],
+.layoutChoiceRow > [data-view-setting-name="one-line"] {
+  flex: 1 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemMeta,
+.layoutChoiceRow > .layoutChoice,
+.layoutChoiceValue {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.itemMeta,
+.layoutChoiceButton > span,
+.layoutChoiceValue > [data-sheet-value] {
+  min-width: 0;
+  max-width: clamp(100px, 40vw, 150px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:where(.itemLabel[data-view-setting-name="one-line"]) + .itemMeta,
+.layoutChoiceButton[data-property-choice] > span {
+  max-width: none;
+}

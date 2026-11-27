@@ -1,0 +1,420 @@
+
+/* ── Editable text base ────────────────────────────────────── */
+.editable {
+  position: relative;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 3px 2px;
+  min-height: 1.5em;
+  caret-color: var(--text-default);
+  flex: 1 1 auto;
+}
+.editable:focus-visible {
+  outline: none;
+}
+/* A touch screen's text runs on 22px lines, as Notion's (seen 2026-10-31 at
+   390px; 2026-11-12 on an iPad at 834): a text block 38px, a list item 40, a
+   quote 38, a callout 80. */
+:global(:is([data-phone="true"], [data-touch="true"])) .blockRow[data-type="paragraph"] .editable {
+  padding-block: 3px;
+  line-height: 22px;
+  min-height: 28px;
+}
+/* A list item's text stands at the top of its 30px line, 1px nearer it than
+   a text block's box would put it, its marker's line reaching 2px under a
+   single line, as Notion's (measured 2026-11-17 in iPhone Safari 402, two
+   loads: its text box 2px under its 28px row's top, the row 6px into the
+   block or 1px in a run; text block to first item 38px, item to item 30,
+   item to text block 40, a 7-line to-do 170 to the next text block). */
+:global([data-phone="true"]) .blockRow:is([data-type="bulleted_list_item"], [data-type="numbered_list_item"], [data-type="to_do"], [data-type="toggle"])
+  > .blockBody > * > * > :global(.node-nativeText) .editable {
+  padding-block: 3px;
+  line-height: 22px;
+  min-height: 30px;
+}
+/* Its blocks start 2px nearer its line than the next item would: 28px from
+   line to line, not 30 (Notion at 402px against iOS Safari and Android
+   Chrome, seen 2026-11-01). */
+:global([data-phone="true"]) .blockRow:is([data-type="bulleted_list_item"], [data-type="numbered_list_item"], [data-type="to_do"], [data-type="toggle"])
+  > .blockBody > * > * > :global(.node-nativeChildren) > .children {
+  margin-top: -2px;
+}
+:global([data-phone="true"]) .blockRow:is([data-type="quote"], [data-type="callout"])
+  > .blockBody > * > * > :global(.node-nativeText) .editable {
+  line-height: 22px;
+}
+/* A text line's hint only under the caret, a page's only line too (Notion's, seen 2026-11-15). */
+[data-caret-line="true"] .editable[data-empty="true"]::before,
+.editable[data-empty="true"][data-placeholder-always="true"]::before {
+  content: attr(data-placeholder);
+  /* Notion's editor hints are texDis in both themes: rgba(21,14,0,.286) on
+     white, rgba(255,252,235,.306) on #191919 (measured 2026-11-06). */
+  color: var(--text-disabled);
+  pointer-events: none;
+  /* No left: it starts where the line's own text does, whatever that line's
+     inset (2026-11-05: an empty quote's stood 6px before its text). */
+  position: absolute;
+  top: 3px;
+  max-width: calc(100% - 10px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* On a phone an empty text line under the caret shows no hint: a typed "/"
+   opens nothing there (NativeTiptapMenus), as Notion's phone line shows none
+   (seen 2026-11-13 in iPhone Safari at 402) — a page's only line too, a
+   database page's first line after its empty body's words are tapped
+   included (Notion's, seen 2026-11-25 on a Galaxy A90's Chrome at 411 in
+   four tabs: a row page's and a page's, empty or one empty line). */
+:global([data-phone="true"]) [data-caret-line="true"] .editable[data-slash-hint="true"]::before {
+  content: none;
+}
+/* A "+" line's placeholder sits in the pale chip a typed "/" and its words
+   do (MentionQuery.module.css), as Notion's (seen 2026-11-11): as tall as the
+   font's own line there, under the words where they will be typed (Notion's
+   18px on its system font, 20 on Leafen's). */
+.editor .editable[data-empty="true"][data-slash-filter]::before {
+  content: attr(data-slash-filter);
+  top: 5px;
+  line-height: 20px;
+  border-radius: 0.5px;
+  background: var(--bg-block-empty);
+  outline: 5.5px solid var(--bg-block-empty);
+  color: var(--text-tertiary);
+}
+
+.toggleEmptyChild {
+  display: block;
+  width: 100%;
+  text-align: start;
+  padding: 2px 4px;
+  margin: 1px 0;
+  border: none;
+  background: transparent;
+  color: var(--icon-secondary);
+  font-size: inherit;
+  cursor: text;
+  border-radius: 4px;
+}
+.toggleEmptyChild:hover {
+  background: var(--bg-hover);
+}
+/* An open toggle (or toggle heading) with nothing in it says so under its
+   line, as Notion's (measured 2026-11-01, its place again 2026-11-02): from
+   its words' start (26px in) to the block's end, right under the line, 8px
+   in, 16/24 in the faint text color — a toggle heading's in the tertiary
+   one — the hover gray under the pointer, its block ending 6px under it —
+   2px here over the block's own 5px less the 1px it rises (a run of toggles
+   has none: 6px). */
+.toggleEmptyHint {
+  display: block;
+  box-sizing: border-box;
+  width: calc(100% - 26px);
+  margin-block: -2px 2px;
+  margin-inline: 26px 0;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-disabled);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: start;
+  cursor: pointer;
+}
+.toggleEmptyHint[data-heading="true"] {
+  color: var(--text-tertiary);
+}
+.toggleEmptyHint:hover {
+  background: var(--bg-hover);
+}
+.toggleEmptyHint:disabled {
+  cursor: default;
+}
+.toggleEmptyHint:disabled:hover {
+  background: transparent;
+}
+
+/* Headings. A heading's or toggle heading's own line takes its size; the
+   blocks in it keep theirs (they sit inside its row, under its children).
+   As Notion's (measured 2026-10-31 at 1280px): 30/24/20/18px, all 600 and
+   1.3 tall, in blocks 79, 67.2, 58 and 51.4px tall. */
+.blockRow[data-type="heading_1"] > .blockBody > * > * > :global(.node-nativeText) .editable {
+  font-size: 1.875em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 5px;
+}
+.toggleHeading[data-level="1"] > .editable {
+  font-size: 1.875em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 5px;
+}
+.blockRow[data-type="heading_2"] > .blockBody > * > * > :global(.node-nativeText) .editable {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 5px;
+}
+.toggleHeading[data-level="2"] > .editable {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 5px;
+}
+.blockRow[data-type="heading_3"] > .blockBody > * > * > :global(.node-nativeText) .editable {
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 3px;
+}
+.toggleHeading[data-level="3"] > .editable {
+  font-size: 1.25em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 3px;
+}
+.blockRow[data-type="heading_4"] > .blockBody > * > * > :global(.node-nativeText) .editable {
+  font-size: 1.125em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 7px;
+}
+.toggleHeading[data-level="4"] > .editable {
+  font-size: 1.125em;
+  font-weight: 600;
+  line-height: 1.3;
+  padding-top: 7px;
+}
+/* A phone's headings are smaller, as Notion's (seen 2026-10-31 at 390px,
+   touch): 24, 20 and 18.72px on the same 1.3 lines. */
+:global([data-phone="true"]) .blockRow[data-type="heading_1"] > .blockBody > * > * > :global(.node-nativeText) .editable,
+:global([data-phone="true"]) .toggleHeading[data-level="1"] > .editable {
+  font-size: 1.5em;
+}
+:global([data-phone="true"]) .blockRow[data-type="heading_2"] > .blockBody > * > * > :global(.node-nativeText) .editable,
+:global([data-phone="true"]) .toggleHeading[data-level="2"] > .editable {
+  font-size: 1.25em;
+}
+:global([data-phone="true"]) .blockRow[data-type="heading_3"] > .blockBody > * > * > :global(.node-nativeText) .editable,
+:global([data-phone="true"]) .toggleHeading[data-level="3"] > .editable {
+  font-size: 1.17em;
+}
+.blockRow[data-type="heading_1"] {
+  margin-top: 22px;
+}
+.blockRow[data-type="toggle_heading_1"] {
+  margin-top: 22px;
+}
+.blockRow[data-type="heading_2"] {
+  margin-top: 18px;
+}
+.blockRow[data-type="toggle_heading_2"] {
+  margin-top: 18px;
+}
+.blockRow[data-type="heading_3"] {
+  margin-top: 16px;
+}
+.blockRow[data-type="toggle_heading_3"] {
+  margin-top: 16px;
+}
+.blockRow[data-type="heading_4"] {
+  margin-top: 8px;
+}
+.blockRow[data-type="toggle_heading_4"] {
+  margin-top: 8px;
+}
+/* First in a column, or as a callout's first line, a heading has none of
+   that room over it, as Notion's (seen 2026-11-12): its line 8px under its
+   block's top, a heading 1, 2, 3 and 4 there 55, 47.2, 42 and 39.4px tall
+   (79, 67.2, 58 and 51.4 on the page), a toggle heading as its heading. A
+   heading further down, or first in a toggle or a quote, keeps it. */
+:is(.column > * > * > :global(.node-nativeChildren) > * > * > *, .blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-icon-only="true"]) ~ :global(.node-nativeChildren) > .calloutChildren > * > *) > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_1"], [data-type="toggle_heading_1"], [data-type="heading_2"], [data-type="toggle_heading_2"]) {
+  margin-top: -2px;
+}
+:is(.column > * > * > :global(.node-nativeChildren) > * > * > *, .blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-icon-only="true"]) ~ :global(.node-nativeChildren) > .calloutChildren > * > *) > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_3"], [data-type="toggle_heading_3"]) {
+  margin-top: 0;
+}
+:is(.column > * > * > :global(.node-nativeChildren) > * > * > *, .blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-icon-only="true"]) ~ :global(.node-nativeChildren) > .calloutChildren > * > *) > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_4"], [data-type="toggle_heading_4"]) {
+  margin-top: -4px;
+}
+
+/* Lists, to-dos and toggles take Notion's places (measured 2026-10-24): the
+   marker in a 24px column 2px into the block, where a paragraph's text
+   starts, and the text 6px after it, running to the block's end with none
+   of the 2px a paragraph or a heading keeps there — Notion's list text box
+   is "2px 0 2px 6px" at every width (measured 2026-11-17 at 1440 in Chrome
+   and at 402 in iPhone Safari, its lines ending at the block's edge). */
+.bullet {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-inline-start: 2px;
+}
+/* The marks grow and shrink with the text in a 24px column, as Notion's
+   in small text (seen 2026-10-31): 18px and 15px of a 16px page. */
+/* Notion's dot is one size in every page font and sits at its first line's
+   middle (seen 2026-11-07: serif and mono as the default's). Drawn in the UI
+   font, it keeps the default's dot; its top follows the line's height. */
+.bulletDot {
+  flex: 0 0 auto;
+  width: 24px;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 1.125em;
+  line-height: 1;
+  padding-top: calc((var(--page-font-size, 16px) * var(--page-line-height, 1.5) - 1em) / 2 + 2px);
+  color: var(--block-color, var(--text-default));
+}
+/* A numbered marker is its text's size and font on its text's line height,
+   in the middle of its column, as Notion's (measured 2026-11-11 in the
+   default, serif, mono and small-text pages): its line stands in the middle
+   of the page's marker line (--page-marker-line, PageView) from its text's
+   first line, so it shares the text's baseline where the two lines are one
+   height. The column widens with a long marker, never breaking it, and roman
+   numerals stand at its start (numberedListMarkerColumn). */
+.numDot {
+  flex: 0 0 auto;
+  width: 24px;
+  padding-top: calc(3px + (var(--page-marker-line, 24px) - 1em * var(--page-line-height, 1.5)) / 2);
+  color: var(--block-color, var(--text-default));
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+}
+.numDot[data-roman] {
+  text-align: start;
+}
+.bullet .editable {
+  padding-inline: 6px 0;
+}
+
+/* To-do */
+.todo {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-inline-start: 2px;
+  cursor: text;
+}
+.todo .editable {
+  padding-inline: 6px 0;
+}
+/* A 16px box with a 1px line in the icons' strong grey, rounded 1.5px,
+   tinted under the pointer; done, it is blue with a white check, as
+   Notion's (seen 2026-10-31, light and dark). It stands in the middle of the
+   page's marker line from its text's first line, 4px under its top (2.5px in
+   small text), whatever the page's font, as Notion's (measured 2026-11-11). */
+.todo > input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-block: calc(3px + (var(--page-marker-line, 24px) - 16px) / 2) 0;
+  margin-inline: 4px;
+  border: 1px solid var(--icon-primary);
+  border-radius: 1.5px;
+  flex: 0 0 auto;
+  cursor: pointer;
+  position: relative;
+}
+.todo > input[type="checkbox"]:hover {
+  background: var(--bg-check-hover);
+}
+/* Checked, its box takes Notion's tick, 14 of its 16 (styles.css
+   --checkbox-tick; seen 2026-11-15). */
+.todo > input[type="checkbox"]:checked {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+  border-color: var(--accent-blue);
+}
+.todo > input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* Done, its words keep their color at 0.7 under a half-clear line, as
+   Notion's (seen 2026-10-31, light and dark). */
+.todo[data-checked="true"] .editable {
+  opacity: 0.7;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+}
+
+/* Toggle */
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-inline-start: 2px;
+}
+.toggle > .toggleCaret {
+  margin-inline-end: 0;
+}
+.toggle .editable {
+  padding-inline: 6px 0;
+}
+.toggleHeading {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+.toggleCaret {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  /* Centred on the page's marker line under the block's 3px, as a list's
+     marks: 3px, 1.5px in small text, in every page font, as Notion's
+     (measured 2026-10-31, the fonts 2026-11-11). */
+  margin-block: calc(3px + (var(--page-marker-line, 24px) - 24px) / 2) 0;
+  margin-inline: 0 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--block-color, var(--text-default));
+  line-height: 1;
+  transition: transform 0.12s;
+}
+/* Tinted under the pointer, as Notion's (seen 2026-10-31). */
+.toggleCaret:hover {
+  background: var(--bg-hover);
+}
+/* A filled caret 0.8 of the text in its colour — 12.8px, 11.2px in small
+   text — in a 24px button, as Notion's (measured 2026-10-31). */
+.toggleCaretIcon {
+  display: block;
+  flex: 0 0 auto;
+  width: 0.8em;
+  height: 0.8em;
+}
+/* A heading's caret stands where a toggle's does, its words 2px after it (Notion, 2026-10-31). */
+.toggleHeading .toggleCaret {
+  margin-inline-end: 0;
+  margin-inline-start: 2px;
+}
+.toggleHeading[data-level="1"] .toggleCaret {
+  margin-top: 11px;
+}
+.toggleHeading[data-level="2"] .toggleCaret {
+  margin-top: 8px;
+}
+.toggleHeading[data-level="3"] .toggleCaret {
+  margin-top: 5px;
+}
+.toggleOpen {
+  transform: rotate(calc(90deg * var(--inline-sign, 1)));
+}
+/* A toggle with nothing in it, open or closed, a toggle heading too, draws
+   its caret at half its colour, full while the pointer is over its block or
+   once a block is in it, as Notion's (seen 2026-11-11). */
+.toggleCaret[data-empty="true"] > .toggleCaretIcon {
+  opacity: 0.5;
+}
+.blockRow:hover > .blockBody > * > * > :global(.node-nativeText) .toggleCaret[data-empty="true"] > .toggleCaretIcon {
+  opacity: 1;
+}

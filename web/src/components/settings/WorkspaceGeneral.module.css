@@ -1,0 +1,109 @@
+/* Settings › 일반's rows whose control sits under their words, as Notion's
+   (seen 2026-10-30): the name 14px over its grey words 13px, then a 400px
+   field or the icon's 72px box 12px under them, as Notion's item holds its
+   parts (--settings-item-gap; seen again 2026-11-20). */
+.stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  margin-top: 16px;
+}
+.stacked + .stacked { margin-top: 24px; }
+/* The landing page's row after the icon's box, 24px as Notion's (seen 2026-10-30). */
+.stacked + :global([data-workspace-landing-page]) { margin-top: 24px; }
+.stacked > label,
+.stacked > strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+/* A wider touch screen's names are 15px, as Notion's iPad (measured 2026-11-17, 일반 at 834). */
+:global([data-settings-touch]) .stacked > :is(label, strong) { font-size: 15px; }
+.stacked > p {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+.box {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 400px;
+  max-width: 100%;
+  height: 34px;
+  margin-top: var(--settings-item-gap);
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+}
+.boxSave {
+  flex: none;
+  margin-inline-start: 3px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  cursor: pointer;
+}
+.boxSave:hover { background: var(--bg-hover); }
+.box:focus-within { box-shadow: var(--name-field-ring-focus); }
+.box[data-invalid="true"] { box-shadow: 0 0 0 1px var(--danger); }
+.box input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 15px;
+  outline: none;
+}
+.box > span { flex: 0 0 auto; max-width: 56%; overflow: hidden; color: var(--text-tertiary); font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.iconBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 72px;
+  height: 72px;
+  margin-top: var(--settings-item-gap);
+  padding: 3px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: transparent;
+  /* A letter at Notion's 39px; an image or a built-in icon fills the 64px inside. */
+  font-size: 39px;
+  line-height: 1;
+}
+.iconBox:hover:not(:disabled) { background: var(--bg-hover); }
+/* An emoji fills the 64px inside, as Notion's (seen 2026-11-11). */
+.iconBox[data-workspace-icon="emoji"] { font-size: 64px; }
+/* No icon yet: the name's letter on a tint, as the sidebar shows it (Notion's, seen 2026-11-04). */
+.iconLetter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 57px;
+  height: 57px;
+  border-radius: 4px;
+  background: var(--letter-icon-bg);
+  color: var(--text-secondary);
+}
+.message { margin-top: 6px; color: var(--text-tertiary); font-size: 12.5px; line-height: 1.35; }
+.message[data-tone="error"] { color: var(--danger); }
+/* "워크스페이스 삭제하기" and "다시 시작": a settings row's red button. */
+.danger {
+  composes: softDangerButton from "../WorkspaceSettingsChrome.module.css";
+}
+/* The deletion card's name check, as the account deletion card's. */
+.confirm { display: flex; flex-direction: column; gap: 12px; margin: 25px 2px 0; }
+section .confirm label { display: block; margin: 0; color: var(--text-default); font-size: 14px; line-height: 20px; }

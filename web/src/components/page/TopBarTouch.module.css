@@ -1,0 +1,101 @@
+/* A page's bar on a touch screen wider than a phone's is Notion's iPad's
+   (seen 2026-11-13 in iPad Safari at 834 and 1210, and 2026-11-16 at 834 —
+   the phone's bar with the sidebar's mark and the whole path — on a page, a
+   full-page database and a row's page alike): its 44px bar holds the
+   sidebar's 26px panel mark 17 in (TopBarSidebarToggle), its ← and → once
+   the tab has moved (TopBarHistoryArrows), the path in 16px pieces 2px
+   6px in, then share's mark alone, ☆ and ⋯, each a 26px icon in a 26×44
+   button, 14 apart and the last 8 after ☆, ⋯ ending 14 from the edge — no
+   link to copy nor when it was edited, at any width. A peek's head keeps its
+   own. */
+:global(body[data-touch="true"]) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-copy-link-action], [data-topbar-edited-time], [data-row-peek-copy-link], [data-row-peek-edited-time], [data-topbar-share-action] > span, [data-row-peek-share] > span) {
+  display: none;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) {
+  padding-inline-end: 14px;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-sidebar-toggle][data-panel-mark] {
+  width: 26px;
+  height: 26px;
+  margin-inline: 5px 16px;
+  border-radius: 0;
+  color: var(--icon-primary);
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-sidebar-toggle][data-panel-mark] svg {
+  width: 26px;
+  height: 26px;
+}
+.historyArrows {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 44px;
+  margin-inline: -2px 2px;
+  padding-inline-start: 4px;
+}
+.historyArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 44px;
+  padding: 0;
+  color: var(--icon-primary);
+}
+.historyArrow svg {
+  width: 23px;
+  height: 23px;
+}
+.historyArrow[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-action-rail], [data-row-peek-actions]) {
+  gap: 0;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-share-action], [data-row-peek-share], [data-topbar-comment-action], [data-row-peek-comments], [data-topbar-favorite-action], [data-row-peek-favorite], [data-page-menu-trigger], [data-row-page-actions]) {
+  width: 26px;
+  min-width: 26px;
+  height: 44px;
+  margin-inline-end: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: var(--icon-primary);
+}
+/* The comments' box is 26 square in the bar's middle, the grey cell a tap
+   leaves on it (touchHoverCells.css), as Notion's iPad (measured 2026-11-17
+   in iPad Safari 834: 26×26 at 9 down; share, ☆ and ⋯ 26×44). */
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-comment-action], [data-row-peek-comments]) {
+  height: 26px;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-favorite-action], [data-row-peek-favorite]) {
+  margin-inline-end: 8px;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-page-menu-trigger], [data-row-page-actions]) {
+  margin-inline-end: 0;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-share-action], [data-row-peek-share], [data-topbar-comment-action], [data-row-peek-comments], [data-page-menu-trigger], [data-row-page-actions]) svg {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+}
+/* The marks as Notion's draws them in their 26px boxes (seen 2026-11-16,
+   834 and 1210): share 17 across, ☆ 20, ← and → 17, the panel mark 22 and
+   ⋯ three 3.6px dots 7.8 apart. Leafen's share, star and arrows fill their
+   boxes otherwise, so they are drawn to Notion's marks — share on a phone's
+   bar too (Notion's iPhone 402: the same 17 across, 2026-11-16). */
+:global(body[data-touch="true"]) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-share-action], [data-row-peek-share]) svg {
+  width: 21px;
+  height: 21px;
+}
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) :is([data-topbar-favorite-action], [data-row-peek-favorite]) svg {
+  width: 23px;
+  height: 23px;
+  margin: 0;
+}
+/* The path's pieces read 16px, as a phone's. */
+:global(body[data-touch="true"]:not([data-phone="true"])) [data-topbar-bar]:not([data-row-peek-top]) .crumb {
+  font-size: 16px;
+  line-height: 1.2;
+}

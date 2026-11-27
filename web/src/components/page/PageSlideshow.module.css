@@ -1,0 +1,84 @@
+/* A page presented, as Notion's presentation mode (seen 2026-10-12): the
+   slide over the whole window, laid out 800px wide and scaled to fit, in the
+   middle; under it, the controls that fade while the pointer rests. */
+.presentation {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  background: var(--bg-app);
+  color: var(--text-default);
+  outline: none;
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.slide {
+  flex: none;
+  box-sizing: border-box;
+  width: 800px;
+  padding: 0 60px;
+  transform-origin: center;
+  animation: slideIn 300ms ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide { animation: none; }
+}
+
+/* A slide shows its blocks only: no room below them to add more. */
+.slide :global([data-editor-tail]) {
+  display: none;
+}
+
+.slide :global([data-editor-page]) {
+  padding: 0;
+}
+
+/* A slide leaves the page's comments out, as Notion's presentation (seen
+   2026-11-13): no "💬 1" or "☺ 1" past a block and no yellow on the text a
+   thread was left on (CommentAnchorMarks, drawn for the page under it too);
+   suggested edits keep their marks there, as Notion's. */
+.slide :global([data-block-comment-count]),
+.slide :global([data-block-reaction-thread]) {
+  display: none;
+}
+.presentation .slide :global([data-rt-editable] [data-comment-id]) {
+  padding-bottom: 0;
+  border-bottom: 0;
+  background: none;
+}
+
+.titleSlide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 0;
+  text-align: center;
+}
+
+.titleIcon {
+  display: inline-flex;
+  font-size: 64px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}

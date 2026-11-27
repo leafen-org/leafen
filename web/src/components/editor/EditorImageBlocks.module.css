@@ -1,0 +1,497 @@
+/* Image */
+/* 8px over and under a picture in its block (Notion's: picture + 16), the
+   picture 2px in from the column at most (704 of 708), a full width page's
+   too (seen 2026-11-27: 1217 of its 1233 page, a 1600px picture). */
+.imageBlock {
+  margin: 3px 0;
+  width: 100%;
+}
+.imageBlock[data-align="center"] { margin-inline: auto; }
+.imageBlock[data-align="right"] {
+  margin-inline-start: auto;
+}
+.imageBlock[data-align="center"]:not([data-sized="true"]) .imageFrame { margin-inline: auto; }
+.imageBlock[data-align="right"]:not([data-sized="true"]) .imageFrame {
+  margin-inline-start: auto;
+}
+/* Its tools stand 4px in from its top right and are cut at its sides, as
+   Notion's (seen 2026-11-16: a 120px picture's group cut at its left edge,
+   comment and alignment out of sight), so a narrow picture's tools never
+   cover its block's handle beside it. Cut across alone: the alignment
+   choices hang below a short one. */
+.imageFrame {
+  position: relative;
+  width: fit-content;
+  max-width: calc(100% - 4px);
+  overflow-x: clip;
+}
+.imageBlock[data-align="left"]:not([data-sized="true"]) .imageFrame {
+  margin-inline-start: 2px;
+}
+/* A sized picture fills its block but its 2px each side, so dragging its
+   handle never moves its other edge (seen 2026-11-06: a left one went 416 → 414). */
+.imageBlock[data-sized="true"] .imageFrame {
+  margin-inline-start: 2px;
+}
+/* A sized picture is drawn at its size, past its own width too, as Notion's
+   (seen 2026-11-07: a 300px picture dragged out 80px became 416 wide). */
+.imageBlock[data-sized="true"] .imageFrame:not([data-failed="true"]) {
+  width: calc(100% - 4px);
+}
+.imageBlock[data-sized="true"] .imageFrame img {
+  width: 100%;
+}
+.imageBlock[data-align="right"]:not([data-sized="true"]) .imageFrame {
+  margin-inline-end: 2px;
+}
+/* On a touch screen the finger held on a picture opens its block's menu
+   (useBlockLongPress), not the system's own to save or share it. */
+:global([data-touch="true"]) .imageFrame img {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* A picture that could not come keeps room for what says so. */
+.imageFrame[data-failed="true"] {
+  min-width: 120px;
+  min-height: 44px;
+}
+.imageFrame[data-pending="true"] {
+  width: 100%;
+  min-height: 120px;
+  aspect-ratio: 16 / 9;
+  /* The place a picture on its way keeps reads as one, as the waiting place does. */
+  border-radius: 3px;
+  background: var(--bg-secondary);
+}
+/* A linked picture is its link: no wider than its frame, the pointer a hand over it. */
+.imageFrame > a[data-image-link] {
+  display: block;
+  max-width: 100%;
+}
+/* What a linked picture leads to, with the pointer on it, as Notion's (seen
+   2026-11-12): the picture 30% darker, a shade 88px up from its foot, and 12px
+   in, 8px up, its link in 12px white — a page's 20px icon 8px before its title,
+   or a 16px arrow 4px before a site — then a 24px pencil; all fading in over
+   200ms, whether the block is chosen or not. */
+.imageLinkCover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.imageFrame:hover .imageLinkCover,
+.imageLinkCover:focus-within {
+  opacity: 1;
+}
+.imageLinkShade {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  height: min(88px, 100%);
+  border-end-start-radius: 2px;
+  border-end-end-radius: 2px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.18) 50%, rgba(0, 0, 0, 0.09) 65%,
+    rgba(0, 0, 0, 0.043) 75%, rgba(0, 0, 0, 0.024) 82.85%, rgba(0, 0, 0, 0.01) 88%, rgba(0, 0, 0, 0) 100%);
+}
+.imageLinkLabel {
+  position: absolute;
+  inset-block-end: 8px;
+  inset-inline-start: 12px;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 24px);
+  height: 24px;
+}
+.imageFrame:hover .imageLinkLabel,
+.imageLinkCover:focus-within .imageLinkLabel {
+  pointer-events: auto;
+}
+.imageLinkTarget {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 24px;
+  color: #fff;
+  text-decoration: none;
+}
+.imageLinkPageIcon {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 8px;
+}
+/* A page's icon carries a page link's arrow at its foot's end, as a mention's does. */
+.imageLinkPageIcon::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  width: 14px;
+  height: 14px;
+  background: var(--mention-arrow) center / contain no-repeat;
+  pointer-events: none;
+}
+.imageLinkArrow {
+  flex: none;
+  display: inline-flex;
+  padding-inline-end: 4px;
+}
+.imageLinkText {
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-end: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.imageLinkEdit {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #fff;
+}
+.imageLinkEdit:hover,
+.imageLinkEdit:focus-visible {
+  background: rgba(227, 226, 224, 0.25);
+  outline: none;
+}
+/* Tall as its shape asks, past the window if need be, as Notion's (seen 2026-11-05: 704×1760). */
+.imageFrame img {
+  display: block;
+  max-width: 100%;
+  /* Notion's picture is cut 2px round (measured 2026-11-01). */
+  border-radius: 2px;
+  object-fit: contain;
+}
+.videoFrame:hover .imageActions, .audioFrame:hover .imageActions, .pdfFrame:hover .imageActions,
+.embedFrame:hover .imageActions { opacity: 1; pointer-events: auto; }
+.videoBlock[data-align="center"], .pdfBlock[data-align="center"], .embedBlock[data-align="center"] { margin-inline-start: auto; margin-inline-end: auto; }
+.videoBlock[data-align="right"], .pdfBlock[data-align="right"], .embedBlock[data-align="right"] { margin-inline-start: auto; }
+/* The sides' resize handles, as Notion's (seen 2026-10-07; its resizer's
+   code, read 2026-11-01): 15px strips, on hover fading in over 200ms a dark
+   6 × 48 pill with a white edge, 4.5px inside each side, halfway down. */
+.imageResizeHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 15px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+.imageResizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: min(48px, 50%);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  background: rgba(15, 15, 15, 0.6);
+  transform: translateY(-50%);
+}
+.imageResizeLeft {
+  inset-inline-start: 0;
+}
+.imageResizeLeft::after {
+  inset-inline-start: 4.5px;
+}
+.imageResizeRight {
+  inset-inline-end: 0;
+}
+.imageResizeRight::after {
+  inset-inline-end: 4.5px;
+}
+.imageFrame:hover .imageResizeHandle,
+.imageResizeHandle:focus-visible,
+.imageBlock[data-resizing="true"] .imageResizeHandle {
+  opacity: 1;
+  outline: none;
+}
+/* The image's own tools on hover, as Notion's (seen 2026-10-07): a white
+   group 4px from its top right, 24px buttons, the alignment choices below. */
+.imageActions {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--media-tools-bg);
+  box-shadow: var(--media-tools-shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.imageFrame:hover .imageActions,
+.imageActions:focus-within,
+.imageActions[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen shows a video's, a PDF's and an embed's tools without a
+   pointer, as Notion's iPad (seen 2026-11-13 in iPad Safari 834 wide: a
+   video's comment, original and menu; a PDF's comment, alignment, download
+   and menu; an embed's comment, alignment, original and menu), a picture's
+   staying away as there. Their caption and a PDF's full screen are the
+   block menu's there. */
+:global([data-touch="true"]) .imageActions:is([data-image-tools="video"], [data-image-tools="pdf"], [data-image-tools="embed"], [data-image-tools="web"]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+:global([data-touch="true"]) .imageActions :is([data-image-tool="caption"], [data-image-tool="full-screen"]) {
+  display: none;
+}
+/* A phone's video and embed keep their "⋯" alone, as Notion's iPhone (seen
+   2026-11-13 in Safari 402 wide: 14px in from the block's top right). */
+:global([data-phone="true"]) .imageActions:is([data-image-tools="video"], [data-image-tools="embed"], [data-image-tools="web"]) > :not([data-image-tool="menu"]) {
+  display: none;
+}
+/* A media block picked as a block keeps its tools and resize handles under
+   the pointer, its selection's blue under them, as Notion's (seen
+   2026-11-12: a picture picked by a press beside it or by the arrow keys). */
+.imageActions button,
+.imageAltBadge button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 4px;
+  background: transparent;
+  /* The same in both themes, as Notion's (measured 2026-11-05). */
+  color: rgb(142, 139, 134);
+}
+.imageActions .imageToolComment {
+  width: 28px;
+}
+/* With discussions on the picture the tool shows their count, 12px beside
+   the bubble, and the side mark goes (Notion's, seen 2026-11-09). */
+.imageActions .imageToolComment[data-count] {
+  width: auto;
+  gap: 2px;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.imageActions button:hover,
+.imageActions button:focus-visible,
+.imageAltBadge button:hover,
+.imageAltBadge button:focus-visible,
+.imageActions button[aria-expanded="true"],
+.imageActions button[aria-pressed="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A picture with alt text keeps "ALT" 4px in from its foot's end, drawn as
+   its tools are and there without the pointer on it, as Notion's (seen
+   2026-11-12: a 28px tile at 1064..1092 × 579..607 on a picture ending at
+   1096 × 611). */
+.imageAltBadge {
+  position: absolute;
+  inset-block-end: 4px;
+  inset-inline-end: 4px;
+  z-index: 2;
+  display: flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--media-tools-bg);
+  box-shadow: var(--media-tools-shadow);
+}
+/* Its window, as Notion's (seen 2026-11-12): 310 wide, 12px in, why alt text
+   helps in 14/21 grey round its close button, the field 29 high under it. */
+.imageAltWindow {
+  position: fixed;
+  width: min(310px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 12px;
+  border-radius: 6px 6px var(--radius-menu) var(--radius-menu);
+  background: var(--bg-element);
+  box-shadow: var(--shadow-menu);
+}
+.imageAltHelp {
+  margin: 2px 0 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+.imageAltClose {
+  float: inline-end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  margin-block-start: -2px;
+  margin-inline-start: 6px;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+.imageAltClose:hover {
+  background: var(--bg-hover);
+}
+.imageAltField {
+  display: block;
+  width: 100%;
+  height: 29px;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  outline: none;
+}
+.imageAlignWrap {
+  position: relative;
+  display: inline-flex;
+}
+.imageAlignMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  gap: 1px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-raised);
+  transform: translateX(-50%);
+}
+.imageAlignMenu button {
+  width: 29px;
+}
+/* A picture's or player's caption sits under it at its width
+   (MediaBlockContent gives its place); other blocks' captions run the
+   block's width. */
+.caption {
+  box-sizing: border-box;
+  width: var(--media-caption-width, calc(100% - 4px));
+  max-width: 100%;
+  /* Right under its block, whose 3px margin comes after it instead. */
+  margin-block: -3px 3px;
+  margin-inline: var(--media-caption-left, 2px) 0;
+  outline: none;
+  padding-block: 6px;
+  padding-inline: 2px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* A file's line has no frame: its caption runs from the block's edge right
+   under its 40px line, and ends the block. */
+.blockGroup[data-block-type="file"] .caption {
+  width: calc(100% + 12px);
+  max-width: none;
+  margin: 6px -6px -5px;
+}
+.caption:focus-visible {
+  outline: none;
+}
+/* Its "캡션 작성" while empty and the caret is in it, the caret before it, as
+   Notion's (seen 2026-11-06), whose empty caption is gone once left. The empty
+   mark is on the caption's text, inside the caption. */
+.caption[data-caret="true"] [data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-disabled);
+  pointer-events: none;
+}
+.fileIcon svg,
+.childPageIcon svg,
+.buttonSettings svg {
+  flex: 0 0 auto;
+}
+.imageError {
+  margin-top: 7px;
+  color: var(--danger);
+  font-size: 12px;
+}
+/* "다시 시도" after a refused upload: the same file again, in the line's own words. */
+.imageErrorRetry {
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+.imageErrorRetry:hover {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+/* An image that couldn't be loaded (ImageLoadFailure.tsx), as Notion's: a
+   grey square across the image's width, 8px 16px inside, a 48px picture 14px
+   over a 14px line and its link, and the address 14px under in 12px. */
+.imageFrame[data-failed="true"] {
+  width: 100%;
+}
+.imageFailure {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  overflow: hidden;
+  background: var(--bg-embed-placeholder);
+  color: var(--text-secondary);
+  text-align: center;
+  cursor: default;
+}
+.imageFailure > svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+  color: var(--icon-tertiary);
+}
+.imageFailureText {
+  font-size: 14px;
+  line-height: 20px;
+}
+/* Notion's "자세히 알아보기" to its help is left out, its line kept. */
+.imageFailureLink {
+  height: 20px;
+}
+.imageFailureAddress {
+  margin-top: 14px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}

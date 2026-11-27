@@ -1,0 +1,57 @@
+/* A share of the reader's changed, under its line as Notion's inbox draws it
+   (seen 2026-11-16, dark): the reader's name 12px/18 in the secondary text
+   color over the role 14px/21 in the default one, 4px above and below. A
+   share given them sits on the added band 3px off the lines around it, its
+   role blue; a changed role reads old, an arrow 20 and new, 8px apart; a
+   share taken away strikes both, 6px over what follows. */
+.change {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: 6px;
+}
+
+.change[data-change="added"] {
+  margin-block: 9px 3px;
+  padding-block: 4px;
+  background: var(--bg-block-selected);
+}
+
+/* Several shares changed on one line stand 9px apart, as Notion's page
+   updates draw them (seen 2026-11-17: two added bands, each 3px off a 3px
+   gap of its own). */
+.change + .change,
+.change + .change[data-change="added"] {
+  margin-block-start: 6px;
+}
+
+.person {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.role {
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.change[data-change="added"] .role {
+  color: var(--c-accent-blue);
+}
+
+.change[data-change="removed"] {
+  margin-block-end: 6px;
+}
+
+.change[data-change="removed"] .person,
+.change[data-change="removed"] .role {
+  text-decoration-line: line-through;
+}
+
+.roles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-default);
+}

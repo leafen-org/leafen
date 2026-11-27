@@ -1,0 +1,135 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A row's buttons sit on its name's line, however many lines what it says
+   below takes (2026-11-13: centred on the row, they moved down whenever a
+   run's progress broke onto a second line). */
+.row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  min-height: 48px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* An import row's buttons, the finished list's and the Notion window's
+   roots alike: its name and what it says keep 15rem of the row first, and
+   the buttons sit beside them while the row has room for them too, and
+   otherwise on a line of their own at the row's end, as Notion's settings
+   rows put theirs under them in a narrow window (seen 2026-10-16). A
+   button's words stay on one line (2026-11-08: on a phone three buttons
+   took 60% of the row, the name kept nine letters and "바뀐 것 다시
+   가져오기" broke in two). */
+.named {
+  flex: 1 1 15rem;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  margin-inline-start: auto;
+}
+
+.actions:empty {
+  display: none;
+}
+
+.actions > * {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* What a migration's run is doing, why it stopped and what it left in
+   Notion: under the name and the buttons, across the row, keeping the
+   name's line spacing. */
+.details {
+  display: flex;
+  flex: 0 0 100%;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  margin-block-start: -2px;
+}
+
+.details:empty {
+  display: none;
+}
+
+/* A run again that could not start, under its row. */
+.details .failed {
+  color: var(--danger);
+}
+
+/* What a finished migration left out, under its row. */
+.issues {
+  flex: 0 0 100%;
+  min-width: 0;
+  margin-top: 8px;
+}
+
+.main strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* An import row's button, the finished list's and the Notion window's
+   moved roots alike: blue words, underlined while pointed at or reached by
+   keyboard (2026-11-26: a moved root's "바뀐 것 다시 가져오기" took the
+   window's footer button, grey words with nothing around them, and read as
+   text beside the name). */
+.open {
+  flex: 0 0 auto;
+  padding: 0;
+  color: var(--accent-blue);
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.open:hover,
+.open:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* A row's button that can't be pressed yet — stopping a run while it
+   publishes — keeps its place, greyed. */
+.open:disabled,
+.open:disabled:hover {
+  color: var(--text-disabled);
+  cursor: default;
+  text-decoration: none;
+}
+
+.empty {
+  margin: 12px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}

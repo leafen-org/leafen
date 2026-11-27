@@ -1,0 +1,331 @@
+.notionSelect {
+  position: relative;
+  display: block;
+  min-width: 0;
+  width: 100%;
+}
+/* A choice in a panel or a form, as Notion's (seen 2026-11-22 twice, the sub-items panel's "표시 옵션" and "필터
+   옵션" at 1440 dark, dpr 2): 30px high, rounded 6, 1px of graBorSecTra (--border-subtle) round bacSec
+   (--bg-soft), its 14px words 8px in and a 16px ⌄ in the tertiary icon color 8px from its end. A choice with a look
+   of its own (buttonClassName) keeps its own words' weight and ⌄; a filter rule's are Notion's outlined buttons
+   (DatabaseAdvancedFilterEditor .choice, DateFilterEditor's relative date). So does a place's own rule for its
+   choices' button (an AppSelect given its look by className, as the developer portal's `.select button`): the field
+   look's columns are one class strong, over the button's own above and under any place's rule. */
+.notionSelectButton {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 12px;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  /* A form that sets its fields taller says so with --select-height. */
+  height: var(--select-height, 30px);
+  min-width: 0;
+  padding: 0 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-soft);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.notionSelectButton:has(.notionSelectIcon:not(:empty)) {
+  grid-template-columns: 18px minmax(0, 1fr) 12px;
+}
+.fieldLook { grid-template-columns: minmax(0, 1fr) 16px; gap: 8px; }
+.fieldLook:has(.notionSelectIcon:not(:empty)) { grid-template-columns: 18px minmax(0, 1fr) 16px; }
+.fieldLook > svg { width: 16px; height: 16px; color: var(--icon-tertiary); }
+/* Pointed at or open, its edge stays and its ground takes the hover tint; reached by the keys, it rings 2px clear of
+   itself in the input ring — Notion's filter rule's selects (seen 2026-11-21: borPriTra kept, no button blue). */
+.notionSelectButton:hover,
+.notionSelectButton[aria-expanded="true"] {
+  background-image: linear-gradient(var(--bg-hover), var(--bg-hover));
+  outline: none;
+}
+.notionSelectButton:focus-visible {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus-apart);
+}
+.notionSelectButton:disabled {
+  opacity: 0.46;
+  cursor: default;
+}
+.notionSelectIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+}
+.notionSelectLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.notionSelectLabel[data-placeholder="true"] {
+  color: var(--text-tertiary);
+}
+/* A choice with a line under it, as Notion's page view choices (seen
+   2026-09-30): the name, then a smaller grey sentence that may wrap. */
+.notionSelectLabel[data-described="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+  white-space: normal;
+}
+.notionSelectDescription {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.notionSelectNote {
+  color: var(--accent-blue);
+  font-size: 12px;
+  line-height: 1.35;
+}
+.notionSelectMenu {
+  position: absolute;
+  z-index: 1003;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  width: max(100%, 220px);
+  max-height: 270px;
+  overflow: hidden;
+  /* How far in its choices stand. They scroll from edge to edge of the
+     list, this far in inside what scrolls, so a scrollbar that takes room
+     stands at the list's own end and one drawn over them takes none, as
+     Notion's lists (seen 2026-11-20: a code block's languages, its list
+     240 wide edge to edge, its choices 4px in, 232 wide, 217 beside a 15px
+     bar); a list whose choices stand nearer its edge says so with
+     --select-inset. */
+  --select-inset: 6px;
+  padding: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.notionSelectMenu:focus {
+  outline: none;
+}
+.notionSelectSearch {
+  flex: 0 0 auto;
+  padding: calc(var(--select-inset) + 2px) calc(var(--select-inset) + 2px) 0;
+}
+/* Its words --select-search-words into its box, 9px unless a list says
+   otherwise; its 1px edge is a ring drawn outside the box
+   (--name-field-ring), not a border, so all that room is padding. A list's
+   search says only where its words stand, never its padding, so the edge is
+   counted here once for every list (2026-11-25: two lists kept a border's
+   padding once the edge became a ring, their words a pixel early). */
+.notionSelectSearch > input {
+  width: 100%;
+  height: 30px;
+  padding: 1px var(--select-search-words, 9px);
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 5px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+}
+/* Focused, a 2px blue ring: its blue edge and 1px more outside, as Notion's
+   searches in its lists (seen 2026-11-06, 11-07: rgb(35, 131, 226) 1px
+   inside and 1px outside). */
+.notionSelectSearch > input:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+}
+.notionSelectOptions {
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--select-inset);
+}
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.notionSelectEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+/* Under a kept head (a time zone list), its words 14px further in on a 28px
+   row of 120% lines, as Notion's zone list (seen 2026-11-14, settings and the
+   date window alike: DateZoneChoices .zoneEmpty). */
+.notionSelectEmpty[data-under-head="true"] {
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 22px 8px;
+  line-height: 120%;
+}
+.notionSelectOption {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 16px;
+  gap: 7px;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: start;
+}
+.notionSelectOption:hover,
+.notionSelectOption:focus-visible,
+.notionSelectOption[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* A choice the keyboard moved to is also ringed, as Notion's (seen 2026-11-06). */
+.notionSelectOption[data-active="true"][data-focus-visible="true"] { box-shadow: var(--keyboard-focus-ring); }
+.notionSelectOption:disabled {
+  opacity: 0.42;
+  cursor: default;
+}
+.notionSelectIcon svg,
+.notionSelectOption svg {
+  flex: 0 0 auto;
+}
+.settingMenu .notionSelectOption { min-height: 28px; }
+.settingMenu .notionSelectOption:not(:has(.notionSelectIcon:not(:empty))) { grid-template-columns: minmax(0, 1fr) 16px; }
+.settingMenu .notionSelectIcon:empty { display: none; }
+
+.settingMenu:has(.notionSelectSearch) { max-height: 70vh; }
+
+/* A settings window row's list, as Notion's 기본 설정 (seen 2026-10-30), and a
+   property setting's in its column menu, as a number's format and decimal
+   places with the first lit as it opens (seen 2026-11-06): 4px
+   in, 28px rows a pixel apart rounded 6px, 14px type 8px in and in the
+   text color, the check 16px 8px from the end; a choice that names itself
+   twice (a language) is 45px, its second name 12px in gray under it.
+   The list keeps its width whatever the scrollbar: its choices scroll from
+   edge to edge of it, their 4px in inside what scrolls, so a scrollbar
+   that takes room (a mouse's, always shown, 15px) stands at the list's
+   end and its foot and narrows the choices, and one drawn over them takes
+   none, as Notion's (seen 2026-11-19: the language list 240 wide with
+   either, its choices 217 beside the bar and 232 without; a property's
+   number formats 192, 169 and 184). */
+.settingsRowMenu { padding: 0; }
+/* Notion's time zone list (seen 2026-11-05): its search 28px high, 12px in from
+   the list's edges, then gray headings over the choices. */
+.settingsRowMenu .notionSelectSearch { padding: 13px 12px 2px; }
+/* Its words 6px into its box, the 1px edge a ring outside it, as Notion's
+   number formats' and code languages' searches (seen 2026-11-20: 3px 6px in,
+   the words 18px from the list's edge). */
+.settingsRowMenu .notionSelectSearch > input { --select-search-words: 6px; height: 28px; border-radius: 6px; font-size: 14px; }
+/* A property setting's search, as a number's formats (seen 2026-11-06): its box 12px in from the list's top and edges and from the first choice. */
+.settingMenu.settingsRowMenu .notionSelectSearch { padding: 12px 12px 8px; }
+/* A group's head, as Notion's zone lists' (seen 2026-11-14, the settings
+   list and the date window alike): its 12px/500 name centred in a menu
+   group's head (--menu-label-line-height), as high as the list's 12px
+   status mark beside it on the name's baseline. The date window's zone
+   heads take the same line (PropertyDateEditor.module.css .zoneGroupLabel). */
+.groupHeadLine {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.notionSelectGroup {
+  composes: groupHeadLine;
+  flex-shrink: 0;
+  padding: 14px 8px 8px;
+  color: var(--text-secondary);
+}
+/* The list's first heading; a long list's lines each stand in a box of their own (NotionSelect's usePickerWindow). */
+.notionSelectGroup[data-first="true"] { padding-top: 11px; }
+/* A later head stands 14px under the choice above it, as Notion's zone
+   list (seen 2026-11-14: its group's 4px foot, the next group's 4px top and
+   the head's 6px); a settings list's 1px between lines is part of it. */
+.settingsRowMenu .notionSelectGroup:not([data-first="true"]) { padding-top: 13px; }
+.notionSelectLine { display: flex; flex-direction: column; }
+/* A line between parts of a list with no heading, as Notion's menus (seen 2026-11-06). */
+.notionSelectDivider { flex-shrink: 0; height: 1px; margin: var(--menu-divider-margin); background: var(--menu-divider); }
+.settingsRowMenu .notionSelectOptions { display: flex; flex-direction: column; gap: 1px; padding: 4px; }
+/* A view setting's property list (Notion's 표시 기준, seen 2026-11-06): its
+   search 12px in all round with its words 6px in, the choices 12px under it,
+   each its 20px icon 12px in and its name 8px past it. */
+.propertyChoiceMenu .notionSelectSearch { padding: 12px 12px 8px; }
+.propertyChoiceMenu .notionSelectSearch > input { --select-search-words: 6px; }
+.settingsRowMenu.propertyChoiceMenu .notionSelectOption { grid-template-columns: 20px minmax(0, 1fr) 16px; padding-block: 0; padding-inline: 12px 8px; }
+/* Its 20px slot holds the 19.2 mark 12.4 in, as Notion's (seen 2026-11-22 at 1440 dark, dpr 1, a dependency's
+   date list: the item at 1128.5, its mark at 1140.9, its name at 1168.5); the base 18px slot drew it a pixel early. */
+.settingsRowMenu.propertyChoiceMenu .notionSelectIcon { display: inline-flex; justify-content: center; width: 20px; height: 20px; color: var(--text-default); }
+/* Unticked, a name runs to 8px from the row's end, as a filter rule's property list (Notion's, seen 2026-11-16). */
+.settingsRowMenu.propertyChoiceMenu.unmarkedChoices .notionSelectOption { grid-template-columns: 20px minmax(0, 1fr); }
+.settingsRowMenu .notionSelectOption {
+  flex-shrink: 0;
+  grid-template-columns: minmax(0, 1fr) 16px;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.settingsRowMenu .notionSelectIcon { display: none; }
+/* Choices by their icons (NotionSelect choiceIcons), as Notion's status "다음과 같이 표시" (seen 2026-11-16):
+   the 20px icon 8px in and in the text color, the name 8px past it. */
+.settingsRowMenu.iconChoices .notionSelectOption { grid-template-columns: 20px minmax(0, 1fr) 16px; }
+.settingsRowMenu.iconChoices .notionSelectIcon { display: inline-flex; width: 20px; height: 20px; color: var(--text-default); }
+.settingsRowMenu .notionSelectOption > svg { width: 16px; height: 16px; }
+/* A two-line row's lines start 3px down, one under the other, its check by the first (Notion's date formats). */
+.settingsRowMenu .notionSelectOption[data-described="true"] > svg { align-self: start; margin-top: 7px; }
+.settingsRowMenu .notionSelectLabel[data-described="true"] { min-height: 45px; justify-content: flex-start; gap: 0; padding: 3px 0 0; }
+.settingsRowMenu .notionSelectDescription { color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+/* A described choice by its icon, as Notion's 페이지 보기 선택 (seen 2026-11-06):
+   8px in all round, the 20px icon a pixel down, the name 8px past it, its
+   sentence 4px under in 12px grey, a note 2px under that in 12px blue at
+   500, the check 3px down at the end, lines 1.2 high. */
+.settingsRowMenu .notionSelectOption[data-described="true"]:has(> .notionSelectIcon:not(:empty)) {
+  grid-template-columns: 20px minmax(0, 1fr) 16px;
+  align-items: start;
+  padding: 8px;
+}
+.settingsRowMenu .notionSelectOption[data-described="true"] > .notionSelectIcon:not(:empty) {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--text-default);
+}
+/* Told by the icon beside them, not by a :has() on the option before them
+   (such a rule had every element put in the app work out more of its styles
+   again, AppShell .main). */
+.settingsRowMenu .notionSelectOption[data-described="true"] > svg:has(~ .notionSelectIcon:not(:empty)),
+:where(.settingsRowMenu) .notionSelectOption[data-described="true"] > svg:nth-child(n + 2 of .notionSelectIcon:not(:empty), svg) { margin-top: 3px; }
+.settingsRowMenu .notionSelectOption > .notionSelectLabel[data-described="true"]:has(~ .notionSelectIcon:not(:empty)),
+.settingsRowMenu .notionSelectOption:has(> .notionSelectIcon:not(:empty)) > .notionSelectLabel[data-described="true"] {
+  min-height: 0;
+  gap: 4px;
+  padding: 0;
+  line-height: 16.8px;
+}
+.settingsRowMenu .notionSelectOption:has(> .notionSelectIcon:not(:empty)) .notionSelectDescription { line-height: 16.8px; }
+.settingsRowMenu .notionSelectOption:has(> .notionSelectIcon:not(:empty)) .notionSelectNote { margin-top: -2px; font-weight: 500; line-height: 16.8px; }
+
+/* A plain list (NotionSelect plain), as Notion's filter conditions and sort directions (seen 2026-11-05). */
+.notionSelectMenu.plainMenu { --select-inset: 4px; margin-top: -4px; border-radius: 10px; }
+.notionSelectMenu.plainMenu.plainSpaced { margin-top: 0; }
+.plainMenu .notionSelectOptions { display: flex; flex-direction: column; gap: 1px; }
+.notionSelectOption.plainOption {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  min-height: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.notionSelectOption.plainOption > .notionSelectIcon { display: none; }
+.notionSelectOption.plainOption.plainTicked { grid-template-columns: minmax(0, 1fr) 16px; gap: 8px; }
+.notionSelectOption.plainTicked > svg { width: 16px; height: 16px; }

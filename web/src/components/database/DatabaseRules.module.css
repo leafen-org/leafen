@@ -1,0 +1,236 @@
+.toolbarEmpty {
+  padding: 6px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+.ruleRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(130px, 1fr) minmax(120px, 1fr) 28px;
+  gap: 6px;
+  align-items: center;
+  margin: 0 -3px;
+  padding: 3px;
+  border-radius: 6px;
+}
+.ruleRow:hover,
+.ruleRow:focus-within {
+  background: var(--bg-hover);
+}
+.relativeDateRuleRow {
+  grid-template-columns: minmax(120px, 1fr) minmax(130px, 1fr) 28px;
+  grid-template-areas:
+    "property condition remove"
+    "value value value";
+}
+.relativeDateRuleRow .ruleProperty {
+  grid-area: property;
+}
+.relativeDateRuleRow .ruleCondition {
+  grid-area: condition;
+}
+.relativeDateRuleRow .ruleRemove {
+  grid-area: remove;
+}
+/* A relative date's row wherever it is set, as Notion's quick and advanced
+   filters (seen 2026-11-22 at 1440 dark, dpr 2, two tabs): "지난 ⌄" and
+   "주 ⌄" as wide as their words 4px apart, the count 8px further from either
+   (12 between); after "이번" its two choices share the row. */
+.relativeDateValue {
+  grid-area: value;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+}
+.relativeDateValue > [data-notion-select] {
+  flex: none;
+  width: auto;
+}
+.relativeDateValue[data-direction="this"] > [data-notion-select] {
+  flex: 1 1 auto;
+}
+/* Its choices' ⌄ as drawn (RelativeDateFilterValueInput: Notion's thin one,
+   9.88 by 16) in the secondary icon colour, in every editor alike (seen
+   2026-11-22 at 1440 dark, dpr 2, a quick and an advanced filter's). */
+.relativeDateValue [data-notion-select-button] > svg {
+  flex: none;
+  width: auto;
+  height: auto;
+  color: var(--icon-secondary);
+}
+/* A day condition's "사용자 지정 날짜 ⌄" before its day's field, 8px apart (Notion's, seen 2026-11-11). */
+.dateDayValue {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+.dateDayValue > [data-date-day-field] {
+  flex: 1 1 auto;
+}
+/* Its count: a faint field (bacSecTra, 1px of borPriTra outside, rounded
+   6) with its words 6px in, taking the row's room from 60px up to its own
+   110.13px, so a lone rule's window keeps it at 60 and a wider rule's lets it
+   grow (Notion's, seen 2026-11-22: quick 103.91 in a 260 window, advanced 60
+   alone and 110.13 beside a typed value); typed in, the input ring; the
+   browser's ▲▼ while pointed at or typed in (app/numberFields.css). */
+.relativeDateValue > .relativeDateCount {
+  flex: 1 1 0;
+  box-sizing: border-box;
+  width: 0;
+  min-width: 60px;
+  max-width: 110.13px;
+  height: 28px;
+  margin-inline: 8px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  outline: none;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.relativeDateValue > .relativeDateCount:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.ruleRow input:not([class]) {
+  min-width: 0;
+  width: 100%;
+  height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 4px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+}
+.ruleRow input:not([class]):focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.ruleSpacer {
+  display: block;
+}
+.ruleRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  font-size: 14px;
+}
+.ruleRemove:hover,
+.ruleRemove:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+.conjunctionRow {
+  display: flex;
+  align-items: center;
+  padding: 2px 3px;
+}
+.conjunctionLabel {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  padding: 0 6px;
+}
+
+/* In the view settings panel a rule's property and condition share a line
+   and what it compares with takes the next. */
+@container (max-width: 320px) {
+  .ruleRow {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 28px;
+    grid-template-areas:
+      "property condition remove"
+      "value value value";
+    margin: 0;
+  }
+  .ruleRow > :nth-child(1) {
+    grid-area: property;
+  }
+  .ruleRow > :nth-child(2) {
+    grid-area: condition;
+  }
+  .ruleRow > :nth-child(3):not(.ruleRemove) {
+    grid-area: value;
+  }
+  .ruleRow > .ruleRemove {
+    grid-area: remove;
+  }
+}
+
+/* A relative date's lists, as Notion's (seen 2026-11-06): 4px in, rows 28px
+   a pixel apart, the word 14px in the text's colour 8px into its row, ✓ 8px from its end. */
+.relativeChoiceMenu {
+  --select-inset: 4px;
+}
+.relativeChoiceOption + .relativeChoiceOption {
+  margin-top: 1px;
+}
+.relativeChoiceOption {
+  grid-template-columns: minmax(0, 1fr) 16px;
+  min-height: 28px;
+  padding: 0 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.relativeChoiceOption > span:first-child:empty {
+  display: none;
+}
+/* A dashboard widget's "필터 ✕" over its filters' list (Notion's, seen 2026-11-11). */
+.widgetFiltersHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding-inline: 12px 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.widgetFiltersHead strong {
+  font-weight: 600;
+}
+.widgetFiltersClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+/* A checkbox rule's value: the 16px box a checkbox cell shows, ringed or
+   blue with a white tick, at its button's start (Notion's filter value,
+   seen 2026-11-12: a 50.64 button, its ⌄ at the end when it is wider). */
+.checkboxFilterValue {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+.checkboxFilterBox {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: var(--filter-check-ring);
+  color: #fff;
+}
+.checkboxFilterBox[data-checked="true"] {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+  box-shadow: none;
+}
+.checkboxFilterOption > svg {
+  width: 16px;
+  height: 16px;
+}

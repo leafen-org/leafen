@@ -1,0 +1,48 @@
+/* The fonts rhwp falls back to for Hancom's, from rhwp-studio's set (SIL OFL 1.1). */
+@font-face { font-family: "Noto Sans KR"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NotoSansKR-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans KR"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NotoSansKR-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Sans KR"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NotoSansKR-ExtraLight.woff2") format("woff2"); font-weight: 200; font-display: swap; }
+@font-face { font-family: "Noto Serif KR"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NotoSerifKR-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Serif KR"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NotoSerifKR-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Nanum Gothic"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumGothic-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Nanum Gothic"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumGothic-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "나눔고딕"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumGothic-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "나눔고딕"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumGothic-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Nanum Myeongjo"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumMyeongjo-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Nanum Myeongjo"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumMyeongjo-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "나눔명조"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumMyeongjo-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "나눔명조"; src: url("./vendor/rhwp-studio-0.8.6/fonts/NanumMyeongjo-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Pretendard"; src: url("./vendor/rhwp-studio-0.8.6/fonts/Pretendard-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Pretendard"; src: url("./vendor/rhwp-studio-0.8.6/fonts/Pretendard-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Gowun Batang"; src: url("./vendor/rhwp-studio-0.8.6/fonts/GowunBatang-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Gowun Dodum"; src: url("./vendor/rhwp-studio-0.8.6/fonts/GowunDodum-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+:root { color-scheme: light; --ink: #191919; --muted: #6b6b6b; --line: #e3e2e0; --back: #f1f1ef; --bar: rgba(247, 247, 245, .94); }
+:root[data-theme="dark"] { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94); }
+/* The theme arrives once the app connects; until then the system's, so a dark window doesn't flash white. */
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94); } }
+html, body { margin: 0; height: 100%; background: var(--back); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+body { display: flex; flex-direction: column; }
+.state { color: var(--muted); font-size: 14px; text-align: center; margin: 40px 0; }
+/* The page count, or the save button and whether the file is saved. */
+.bar { position: sticky; top: 0; z-index: 2; flex: none; min-height: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px;
+  padding: 0 12px; font-size: 13px; color: var(--muted); background: var(--bar); border-bottom: 1px solid var(--line); }
+.bar[hidden], .save[hidden], .editor[hidden], #document[hidden] { display: none; }
+/* The page count or whether the file is saved, in a place of its own: the
+   buttons after it stay where they are as the words change (2026-10-16: a
+   click meant for "저장" landed on a tool when "아직 저장하지 않음" pushed it). */
+.status { min-width: 11em; text-align: end; white-space: nowrap; }
+.note { color: var(--muted); }
+.save { font: inherit; font-size: 13px; color: #fff; background: #2383e2; border: 0; border-radius: 4px; padding: 4px 12px; cursor: pointer; }
+.save:disabled { opacity: .6; cursor: default; }
+#document { flex: 1 1 auto; padding: 24px 16px 48px; }
+/* Pages as rhwp draws them, as wide as the frame allows up to their own size. */
+#document.pages .page { max-width: 794px; min-height: 200px; margin: 0 auto 16px; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .15); }
+#document.pages .page svg { display: block; width: 100%; height: auto; }
+.editor { flex: 1 1 auto; min-height: 0; }
+.editor iframe { display: block; border: 0; }
+@media (max-width: 640px) { #document { padding: 8px 0 24px; } #document.pages .page { margin-bottom: 8px; } }
+/* A phone's browser enlarges text it finds small, and lines laid out for the first size overlap (seen in iOS Safari, 2026-11-05). */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* Without a button showing, the status stands alone in the middle (the bar
+   keeps a hidden one at all times, "편집기로 열기" or "저장"). */
+.bar:not(:has(.save:not([hidden]))) .status { min-width: 0; text-align: center; }

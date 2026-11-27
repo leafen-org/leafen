@@ -1,0 +1,35 @@
+/* A view's heads stay under the top of the page as it scrolls on past them,
+   till their view's end comes up to them (useStickyViewHeads): they slide
+   down in their view's sideways box by as much as its top has gone past the
+   page's top (--sticky-heads-from on), at most --sticky-heads-travel. On the
+   page's own scrolling where the browser can, a view timeline, else as each
+   scroll tells. Over the view's rows and cards, under what a view lays over
+   its heads (--sticky-head-layer: a timeline's table over its dates). */
+.box {
+  view-timeline: --view-heads block;
+}
+.box [data-sticky-head] {
+  position: relative;
+  z-index: var(--sticky-head-layer, 7);
+}
+@supports (animation-timeline: view()) {
+  .box [data-sticky-head] {
+    animation: slide linear both;
+    animation-timeline: --view-heads;
+    animation-range: exit-crossing var(--sticky-heads-from, 0px)
+      exit-crossing calc(var(--sticky-heads-from, 0px) + var(--sticky-heads-travel, 0px));
+  }
+}
+@supports not (animation-timeline: view()) {
+  .box [data-sticky-head] {
+    translate: 0 var(--sticky-heads-shift, 0px);
+  }
+}
+@keyframes slide {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 0 var(--sticky-heads-travel, 0px);
+  }
+}

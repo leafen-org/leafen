@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "name": "notion-admin-token",
+  "operations": [
+    { "goName": "notionAdminTokenList", "tsName": "list", "method": "GET", "path": "/organizations/{organizationId}/notion-admin-tokens" },
+    { "goName": "notionAdminTokenCreate", "tsName": "create", "method": "POST", "path": "/organizations/{organizationId}/notion-admin-tokens" },
+    { "goName": "notionAdminTokenRevoke", "tsName": "revoke", "method": "POST", "path": "/organizations/{organizationId}/notion-admin-tokens/{tokenId}/revoke" }
+  ],
+  "bounds": [
+    { "goName": "notionAdminTokenMaxBodyBytes", "tsName": "bodyBytes", "value": 65536 },
+    { "goName": "notionAdminTokensPerPage", "tsName": "tokensPerPage", "value": 100 },
+    { "goName": "notionAdminTokenMaxCursorBytes", "tsName": "cursorBytes", "value": 1024 },
+    { "goName": "notionAdminTokenMaxRequestIDRunes", "tsName": "requestIdRunes", "value": 200 },
+    { "goName": "notionAdminTokenMaxLabelRunes", "tsName": "labelRunes", "value": 120 },
+    { "goName": "notionAdminTokenMaxResourceIDs", "tsName": "resourceIds", "value": 1000 },
+    { "goName": "notionAdminTokenMaxResourceIDRunes", "tsName": "resourceIdRunes", "value": 200 },
+    { "goName": "notionAdminTokenPrefixLength", "tsName": "tokenPrefixLength", "value": 24 },
+    { "goName": "notionAdminTokenLookupCandidateLimit", "tsName": "lookupCandidateLimit", "value": 4 },
+    { "goName": "notionAdminTokenScopeVersion", "tsName": "scopeVersion", "value": 1 },
+    { "goName": "notionAdminTokenCursorVersion", "tsName": "cursorVersion", "value": 1 }
+  ],
+  "strings": [
+    { "goName": "notionAdminTokenSecretPrefix", "tsName": "secretPrefix", "value": "ntn_admin_" }
+  ],
+  "errors": [
+    { "goName": "errorCodeNotionAdminTokenInvalid", "tsName": "invalid", "value": "LEAFEN_NOTION_ADMIN_TOKEN_INVALID" },
+    { "goName": "errorCodeNotionAdminTokenNotFound", "tsName": "notFound", "value": "LEAFEN_NOTION_ADMIN_TOKEN_NOT_FOUND" },
+    { "goName": "errorCodeNotionAdminTokenRequestReused", "tsName": "requestReused", "value": "LEAFEN_NOTION_ADMIN_TOKEN_REQUEST_REUSED" },
+    { "goName": "errorCodeNotionAdminTokenUnavailable", "tsName": "unavailable", "value": "LEAFEN_NOTION_ADMIN_TOKEN_UNAVAILABLE" },
+    { "goName": "errorCodeNotionAdminTokenCursorInvalid", "tsName": "cursorInvalid", "value": "LEAFEN_NOTION_ADMIN_TOKEN_CURSOR_INVALID" }
+  ],
+  "enums": [
+    {
+      "tsName": "NotionAdminTokenStatus",
+      "tsValuesName": "notionAdminTokenStatuses",
+      "values": [
+        { "goName": "notionAdminTokenStatusActive", "tsName": "active", "value": "active" },
+        { "goName": "notionAdminTokenStatusRevoked", "tsName": "revoked", "value": "revoked" }
+      ]
+    },
+    {
+      "tsName": "NotionAdminCapability",
+      "tsValuesName": "notionAdminCapabilities",
+      "values": [
+        { "goName": "notionAdminCapabilityLegalHoldRead", "tsName": "legalHoldRead", "value": "legal-hold:read" },
+        { "goName": "notionAdminCapabilityLegalHoldWrite", "tsName": "legalHoldWrite", "value": "legal-hold:write" },
+        { "goName": "notionAdminCapabilityLegalHoldWriteHighImpact", "tsName": "legalHoldWriteHighImpact", "value": "legal-hold:write-high-impact" },
+        { "goName": "notionAdminCapabilityLegalHoldExport", "tsName": "legalHoldExport", "value": "legal-hold:export" },
+        { "goName": "notionAdminCapabilityWorkspaceRead", "tsName": "workspaceRead", "value": "workspace:read" },
+        { "goName": "notionAdminCapabilityWorkspaceExport", "tsName": "workspaceExport", "value": "workspace:export" },
+        { "goName": "notionAdminCapabilityManagedUserSessionWrite", "tsName": "managedUserSessionWrite", "value": "managed-user-session:write" },
+        { "goName": "notionAdminCapabilityMCPClientConnectionRead", "tsName": "mcpClientConnectionRead", "value": "mcp-client-connection:read" },
+        { "goName": "notionAdminCapabilityMCPClientConnectionWriteHighImpact", "tsName": "mcpClientConnectionWriteHighImpact", "value": "mcp-client-connection:write-high-impact" },
+        { "goName": "notionAdminCapabilityPermissionGroupRead", "tsName": "permissionGroupRead", "value": "permission-group:read" },
+        { "goName": "notionAdminCapabilityPermissionGroupWrite", "tsName": "permissionGroupWrite", "value": "permission-group:write" },
+        { "goName": "notionAdminCapabilityCreditLimitPolicyRead", "tsName": "creditLimitPolicyRead", "value": "credit-limit-policy:read" },
+        { "goName": "notionAdminCapabilityCreditLimitPolicyWrite", "tsName": "creditLimitPolicyWrite", "value": "credit-limit-policy:write" },
+        { "goName": "notionAdminCapabilityWorkflowsRead", "tsName": "workflowsRead", "value": "workflows:read" },
+        { "goName": "notionAdminCapabilityWorkflowsWrite", "tsName": "workflowsWrite", "value": "workflows:write" },
+        { "goName": "notionAdminCapabilityPersonalAccessTokenRead", "tsName": "personalAccessTokenRead", "value": "personal-access-token:read" },
+        { "goName": "notionAdminCapabilityPersonalAccessTokenWriteHighImpact", "tsName": "personalAccessTokenWriteHighImpact", "value": "personal-access-token:write-high-impact" },
+        { "goName": "notionAdminCapabilityUserRead", "tsName": "userRead", "value": "user:read" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "notionAdminTokenResources",
+      "tsName": "NotionAdminTokenResources",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "LegalHoldIDs", "jsonName": "legalHoldIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenScopes",
+      "tsName": "NotionAdminTokenScopes",
+      "fields": [
+        { "goName": "Version", "jsonName": "version", "goType": "int", "tsType": "number" },
+        { "goName": "Capabilities", "jsonName": "capabilities", "goType": "[]string", "tsType": "NotionAdminCapability[]" },
+        { "goName": "Resources", "jsonName": "resources", "goType": "notionAdminTokenResources", "tsType": "NotionAdminTokenResources" }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenCreateInput",
+      "tsName": "NotionAdminTokenCreateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Capabilities", "jsonName": "capabilities", "goType": "[]string", "tsType": "NotionAdminCapability[]" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "LegalHoldIDs", "jsonName": "legalHoldIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "*string", "tsType": "string | null", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenRevokeInput",
+      "tsName": "NotionAdminTokenRevokeInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenResponse",
+      "tsName": "OrganizationAdminToken",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "NotionAdminTokenStatus" },
+        { "goName": "TokenPrefix", "jsonName": "tokenPrefix", "goType": "string", "tsType": "string" },
+        { "goName": "Scopes", "jsonName": "scopes", "goType": "notionAdminTokenScopes", "tsType": "NotionAdminTokenScopes" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "*string", "tsType": "string | null", "optional": true },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "*string", "tsType": "string | null", "optional": true },
+        { "goName": "RevokedAt", "jsonName": "revokedAt", "goType": "*string", "tsType": "string | null", "optional": true },
+        { "goName": "RevokedBy", "jsonName": "revokedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenMutationResponse",
+      "tsName": "NotionAdminTokenMutationResponse",
+      "fields": [
+        { "goName": "AdminToken", "jsonName": "adminToken", "goType": "notionAdminTokenResponse", "tsType": "OrganizationAdminToken" },
+        { "goName": "AdminTokenSecret", "jsonName": "adminTokenSecret", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "notionAdminTokenListResponse",
+      "tsName": "NotionAdminTokenListResponse",
+      "fields": [
+        { "goName": "AdminTokens", "jsonName": "adminTokens", "goType": "[]notionAdminTokenResponse", "tsType": "OrganizationAdminToken[]" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null", "optional": true }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,905 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "טעינת כתובות האימייל של החשבון",
+        "deniedEffect": "כתובות האימייל לא נטענו; הכתובות השמורות לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את כתובות האימייל הנוכחיות.",
+        "stateCheckAction": "יש להתחבר מחדש ולרענן את רשימת האימיילים לפני ביצוע שינוי."
+      },
+      "update": {
+        "operation": "ניהול כתובות האימייל של החשבון",
+        "deniedEffect": "בקשת האימייל לא התקבלה; הכתובות השמורות לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם בקשת האימייל הושלמה.",
+        "stateCheckAction": "יש לרענן את רשימת האימיילים ולבדוק אם התקבלה הודעת אימות לפני ניסיון נוסף."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "טעינת הגדרות ההתראות",
+        "deniedEffect": "לא ניתן היה לטעון את הגדרות ההתראות שלכם, והגדרותיכם השמורות לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אילו התראות אתם מקבלים.",
+        "stateCheckAction": "יש לסגור ולפתוח מחדש את ההגדרות כדי לטעון את הגדרות ההתראות לפני שינויין."
+      },
+      "update": {
+        "operation": "שינוי הגדרות התראות",
+        "deniedEffect": "הגדרות ההתראות שלכם לא שונו, והגדרותיכם הקודמות נשמרות.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הגדרות ההתראות שלכם השתנו.",
+        "stateCheckAction": "יש לסגור ולפתוח מחדש את ההגדרות כדי לבדוק את הגדרות ההתראות לפני שתשנו אותן שוב."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "טעינת פרופיל החשבון",
+        "deniedEffect": "לא ניתן היה לטעון את השם והתמונה שלכם, והפרופיל השמור לא השתנה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את השם והתמונה הנוכחיים שלכם.",
+        "stateCheckAction": "יש לסגור ולפתוח מחדש את ההגדרות כדי לטעון את הפרופיל לפני שתשנו אותו."
+      },
+      "update": {
+        "operation": "שמירת פרופיל החשבון",
+        "deniedEffect": "הפרופיל שלכם לא השתנה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם פרופיל החשבון נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את פרופיל החשבון ואת היסטוריית הביקורת לפני שתנסו שוב."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "שינוי האימות הדו-שלבי",
+        "deniedEffect": "שינוי האימות הדו-שלבי שביקשתם לא התקבל, וההגדרה הקודמת נשארת בתוקף.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את מצב האימות הדו-שלבי הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את אבטחת החשבון לפני שתנסו לשנות שוב את האימות הדו-שלבי."
+      },
+      "password": {
+        "operation": "שינוי סיסמת החשבון",
+        "deniedEffect": "הסיסמה לא שונתה, והסשנים הנוכחיים נשארים תקפים.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הסיסמה שונתה ואם הסשנים האחרים הסתיימו.",
+        "stateCheckAction": "יש לטעון מחדש את אבטחת החשבון ולהתחבר שוב אם ההפעלה הנוכחית כבר לא עובדת."
+      },
+      "read": {
+        "operation": "טעינת אבטחת החשבון",
+        "deniedEffect": "הגדרות האבטחה והסשנים לא נטענו, ומצב החשבון השמור לא השתנה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את מצב האימות הדו-שלבי והסשנים הנוכחיים.",
+        "stateCheckAction": "יש לטעון מחדש את אבטחת החשבון לפני ביצוע שינוי."
+      },
+      "recovery": {
+        "operation": "החלפת קודי השחזור",
+        "deniedEffect": "קודי השחזור החדשים לא התקבלו, והקודים שלא נוצלו קודם עדיין תקפים.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אילו קודי שחזור פעילים.",
+        "stateCheckAction": "יש לטעון מחדש את אבטחת החשבון לפני שתחליטו אם להחליף שוב את הקודים."
+      },
+      "sessionRevoke": {
+        "operation": "ביטול סשן החשבון",
+        "deniedEffect": "לא אושר שהסשן שנבחר בוטל, והסשנים האחרים לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הסשן שנבחר בוטל.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת הסשנים לפני שתחליטו אם לנסות שוב."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "ביטול גיבוי השרת",
+        "deniedEffect": "לא אושר שהגיבוי בוטל.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הגיבוי בוטל.",
+        "stateCheckAction": "יש לבדוק את מצב הגיבוי הנוכחי לפני שתנסו לבטל שוב."
+      },
+      "create": {
+        "operation": "יצירת גיבוי שרת",
+        "deniedEffect": "לא אושר שגיבוי חדש נוצר.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם בקשת הגיבוי התקבלה.",
+        "stateCheckAction": "יש לבדוק את הגיבוי הנוכחי לפני שליחת בקשה נוספת."
+      },
+      "download": {
+        "operation": "הורדת גיבוי השרת",
+        "deniedEffect": "לא הורד קובץ גיבוי מאומת.",
+        "uncertainEffect": "Leafen לא הצליח לאמת או להזרים את קובץ הגיבוי.",
+        "stateCheckAction": "יש לבדוק את מצב הגיבוי שהושלם לפני שתורידו שוב."
+      },
+      "retry": {
+        "operation": "ניסיון חוזר לגיבוי השרת",
+        "deniedEffect": "הגיבוי שנכשל לא הופעל מחדש.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הגיבוי הופעל מחדש.",
+        "stateCheckAction": "יש לבדוק את מצב הגיבוי הנוכחי לפני שתנסו שוב."
+      },
+      "status": {
+        "operation": "טעינת מצב גיבוי השרת",
+        "deniedEffect": "מצב הגיבוי לא נטען, ולא שונה שום מצב גיבוי.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את מצב הגיבוי הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את מצב הגיבוי לפני שתבצעו פעולה נוספת."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "טעינת דוח השרת",
+        "deniedEffect": "הדוח לא נטען, ולא שונה שום מצב דוח.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את תמונת המצב הנוכחית של הדוח.",
+        "stateCheckAction": "יש לטעון מחדש את הדוח הנוכחי לפני שתרעננו אותו."
+      },
+      "refresh": {
+        "operation": "רענון דוח השרת",
+        "deniedEffect": "לא אושר שנוצרה תמונת מצב חדשה של הדוח.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם תמונת המצב של הדוח השתנתה.",
+        "stateCheckAction": "יש לטעון את הדוח הנוכחי לפני שמרעננים שוב."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "טעינת לוח הזמנים של הגיבוי",
+        "deniedEffect": "לוח הזמנים של הגיבוי לא נטען, ולא שונתה שום הגדרה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את לוח הזמנים הנוכחי של הגיבוי.",
+        "stateCheckAction": "יש לטעון מחדש את לוח הזמנים של הגיבוי לפני ביצוע שינויים."
+      },
+      "restore": {
+        "operation": "שחזור השרת מגיבוי",
+        "deniedEffect": "נתוני השרת לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם השחזור הוכן.",
+        "stateCheckAction": "יש לטעון מחדש את הגדרות הגיבוי כדי לבדוק אם שחזור ממתין לפני ניסיון נוסף."
+      },
+      "save": {
+        "operation": "שמירת לוח הזמנים של הגיבוי",
+        "deniedEffect": "לוח הזמנים של הגיבוי לא השתנה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם לוח הזמנים של הגיבוי נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את לוח הזמנים של הגיבוי כדי לראות את ההגדרות התקפות לפני שמירה נוספת."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "טעינת הגדרות יומן הבקשות",
+        "deniedEffect": "הגדרות יומן הבקשות לא נטענו, ולא שונתה שום הגדרה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את הגדרות יומן הבקשות הנוכחיות.",
+        "stateCheckAction": "יש לטעון מחדש את הגדרות יומן הבקשות לפני ביצוע שינויים."
+      },
+      "save": {
+        "operation": "שמירת הגדרות יומן הבקשות",
+        "deniedEffect": "הגדרות יומן הבקשות לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הגדרות יומן הבקשות נשמרו.",
+        "stateCheckAction": "יש לטעון מחדש את הגדרות יומן הבקשות כדי לראות את ההגדרות התקפות לפני שמירה נוספת."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "טעינת שרת ה-proxy של הרשת",
+        "deniedEffect": "שרת ה-proxy של הרשת לא נטען, ולא שונתה שום הגדרה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את שרת ה-proxy הנוכחי של הרשת.",
+        "stateCheckAction": "יש לטעון מחדש את שרת ה-proxy של הרשת לפני ביצוע שינויים."
+      },
+      "save": {
+        "operation": "שמירת שרת ה-proxy של הרשת",
+        "deniedEffect": "שרת ה-proxy של הרשת לא השתנה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם שרת ה-proxy של הרשת נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את שרת ה-proxy של הרשת כדי לראות מהו ה-proxy התקף לפני שמירה נוספת."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "טעינת הגדרות השרת",
+        "deniedEffect": "ההגדרות לא נטענו, וההגדרות השמורות לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את הגדרות השרת הנוכחיות.",
+        "stateCheckAction": "יש לטעון מחדש את ההגדרות לפני ביצוע שינויים."
+      },
+      "save": {
+        "operation": "שמירת הגדרות השרת",
+        "deniedEffect": "ההגדרות החדשות לא התקבלו, וההגדרות ששמרתם קודם נשארות בתוקף.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם ההגדרות החדשות נשמרו.",
+        "stateCheckAction": "יש לטעון מחדש את ההגדרות ולהשוות את הערכים הנוכחיים לפני ניסיון נוסף."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "בדיקת מצב ההתחברות",
+        "deniedEffect": "לא נוצרה התחברות, ונתוני החשבון לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר באמצעות Leafen את מצב ההתחברות הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את הדף ואז להתחבר שוב."
+      },
+      "deviceCode": {
+        "operation": "התחברות של המכשיר הזה",
+        "deniedEffect": "לא בוצעה התחברות, ונתוני החשבון לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר באמצעות Leafen אם המכשיר הזה התחבר.",
+        "stateCheckAction": "יש להתחבר שוב עם קוד חדש."
+      },
+      "emailVerification": {
+        "operation": "אימות כתובת אימייל",
+        "deniedEffect": "כתובת האימייל לא אומתה, ולא בוצעה התחברות לחשבון.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם אימות האימייל הושלם.",
+        "stateCheckAction": "יש לנסות להתחבר; אם זה לא עובד, יש לפתוח שוב את הקישור שבאימייל."
+      },
+      "mfa": {
+        "operation": "השלמת האימות הדו-שלבי",
+        "deniedEffect": "לא בוצעה התחברות, ואתגר ה-MFA לא הושלם.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם האימות הדו-שלבי הושלם.",
+        "stateCheckAction": "יש להתחיל את ההתחברות מחדש."
+      },
+      "passwordResetConfirm": {
+        "operation": "שינוי הסיסמה",
+        "deniedEffect": "הסיסמה לא שונתה.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם הסיסמה שונתה.",
+        "stateCheckAction": "יש לנסות להתחבר עם הסיסמה החדשה; אם זה לא עובד, יש לבקש קישור איפוס חדש."
+      },
+      "passwordResetRequest": {
+        "operation": "בקשת איפוס סיסמה",
+        "deniedEffect": "הודעה לאיפוס סיסמה לא התקבלה למשלוח.",
+        "uncertainEffect": "לא ניתן היה לאשר אם בקשת האיפוס התקבלה.",
+        "stateCheckAction": "יש להמתין לאימייל לפני הגשת בקשה נוספת."
+      },
+      "providerExchange": {
+        "operation": "התחברות עם חשבון חיצוני",
+        "deniedEffect": "לא בוצעה התחברות, ונתוני החשבון לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר באמצעות Leafen את תוצאת ההתחברות החיצונית.",
+        "stateCheckAction": "יש להתחבר שוב באותו אופן."
+      },
+      "serverSetup": {
+        "operation": "הגדרת השרת של Leafen",
+        "deniedEffect": "חשבון מנהל/ת המערכת לא נוצר.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הגדרת השרת הושלמה.",
+        "stateCheckAction": "יש לטעון את הדף מחדש ולבדוק את מצב ההגדרה לפני ניסיון נוסף."
+      },
+      "signIn": {
+        "operation": "התחברות",
+        "deniedEffect": "לא בוצעה התחברות, ונתוני החשבון לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר באמצעות Leafen אם ההתחברות הושלמה.",
+        "stateCheckAction": "יש לרענן את הדף ולהתחבר שוב."
+      },
+      "signUp": {
+        "operation": "יצירת חשבון",
+        "deniedEffect": "חשבון חדש לא נוצר.",
+        "uncertainEffect": "לא ניתן היה לאשר אם החשבון נוצר.",
+        "stateCheckAction": "יש לנסות להתחבר; אם זה לא עובד, יש להירשם שוב."
+      },
+      "passkey": {
+        "operation": "התחברות באמצעות מפתח גישה",
+        "deniedEffect": "הכניסה לא אושרה.",
+        "uncertainEffect": "Leafen לא אישרה אם הכניסה הושלמה.",
+        "stateCheckAction": "יש להתחבר שוב באמצעות מפתח הגישה שלכם."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "טעינת תוכן הדף",
+        "deniedEffect": "תוכן הדף לא נטען, ותוכן שמור לא שונה.",
+        "uncertainEffect": "לא ניתן היה לאשר את תוכן הדף הנוכחי.",
+        "stateCheckAction": "יש לטעון את הדף מחדש לפני העריכה."
+      },
+      "update": {
+        "operation": "שמירת תוכן הדף",
+        "deniedEffect": "השינוי לא התקבל; התוכן העדכני ביותר בשרת נשאר בתוקף.",
+        "uncertainEffect": "לא ניתן היה לאשר אם התוכן נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את התוכן העדכני ולהשוות אותו לפני ניסיון נוסף."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "שמירת אוטומציה למאגר ידע",
+        "deniedEffect": "האוטומציה לא שונתה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם השינוי באוטומציה למאגר הידע נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את האוטומציה לפני ניסיון נוסף."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "שמירת מדיניות DLP",
+        "deniedEffect": "מדיניות ה-DLP החדשה לא נשמרה; המדיניות הקודמת נשארת בתוקף.",
+        "uncertainEffect": "לא ניתן היה לאשר אם מדיניות ה-DLP נשמרה.",
+        "stateCheckAction": "יש לטעון מחדש את מדיניות ה-DLP ואת היסטוריית הביקורת של הארגון לפני ניסיון נוסף."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "אימות דומיין SAML",
+        "deniedEffect": "הדומיין נשאר בהמתנה; תצורת SAML, היסטוריית הביקורת וסשני הכניסה לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר את מצב אימות הדומיין הנוכחי של SAML.",
+        "stateCheckAction": "יש לטעון מחדש את מצב הדומיין של SAML לפני ניסיון נוסף."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "מחיקת קובץ",
+        "deniedEffect": "הקובץ לא נמחק ולא שונה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הקובץ נמחק.",
+        "stateCheckAction": "יש לטעון מחדש את הקובץ ואת ההפניות אליו לפני שמחליטים אם לנסות שוב."
+      },
+      "upload": {
+        "operation": "העלאת קובץ",
+        "deniedEffect": "הקובץ החדש לא נשמר; קבצים קיימים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הקובץ נשמר.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת הקבצים לפני שמחליטים אם לנסות שוב."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "החלת מיפויי אנשים",
+        "deniedEffect": "המיפויים החדשים לא התקבלו.",
+        "uncertainEffect": "לא ניתן היה לאשר אילו מיפויים הוחלו.",
+        "stateCheckAction": "יש לטעון מחדש את תוצאות המיפוי לפני שמחילים אותן שוב."
+      },
+      "refresh": {
+        "operation": "רענון מיפויי אנשים",
+        "deniedEffect": "המיפויים העדכניים לא נטענו; מיפויים שמורים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את מצב המיפוי הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את חלונית המיפוי לפני שממשיכים."
+      },
+      "scan": {
+        "operation": "סריקת אנשים שיובאו",
+        "deniedEffect": "האנשים שיובאו לא הוצגו ברשימה, ומיפויים קיימים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את רשימת האנשים שיובאו כעת.",
+        "stateCheckAction": "יש לטעון מחדש את חלונית המיפוי לפני ביצוע שינויים."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "ביצוע אוטומציית הלחצן",
+        "deniedEffect": "פעולות הלחצן לא בוצעו, ותוכן הדף לא שונה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם אוטומציית הלחצן בוצעה.",
+        "stateCheckAction": "יש לטעון מחדש את התוכן שהושפע ואת מצב הביצוע לפני ניסיון נוסף."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "העתקת אסימון API של הארגון",
+        "deniedEffect": "האסימון לא אומת בלוח; האסימון עצמו לא שונה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הכתיבה ללוח הושלמה.",
+        "stateCheckAction": "יש לבדוק את הלוח לפני העתקה נוספת של האסימון."
+      },
+      "create": {
+        "operation": "יצירת אסימון API של הארגון",
+        "deniedEffect": "אסימון חדש לא אושר.",
+        "uncertainEffect": "לא ניתן היה לאשר אם האסימון נוצר.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת האסימונים לפני יצירת אסימון נוסף."
+      },
+      "list": {
+        "operation": "טעינת אסימוני API של הארגון",
+        "deniedEffect": "האסימונים לא נטענו, ואסימונים קיימים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את רשימת האסימונים הנוכחית.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת האסימונים לפני ביצוע שינויים."
+      },
+      "revoke": {
+        "operation": "ביטול אסימון API של הארגון",
+        "deniedEffect": "ביטול האסימון לא אושר.",
+        "uncertainEffect": "לא ניתן היה לאשר אם האסימון בוטל.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת האסימונים לפני ניסיון ביטול נוסף."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "טעינת דפי סביבת העבודה",
+        "deniedEffect": "הדפים לא נטענו, ונתוני סביבת העבודה השמורים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את דפי סביבת העבודה הנוכחיים.",
+        "stateCheckAction": "יש לטעון מחדש את סביבת העבודה לפני העריכה."
+      },
+      "create": {
+        "operation": "יצירת דף",
+        "deniedEffect": "דף חדש לא נוצר, ודפים קיימים לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הדף נוצר.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת הדפים ולבדוק אם הדף החדש קיים לפני ניסיון נוסף."
+      },
+      "title": {
+        "update": {
+          "operation": "שמירת כותרת הדף",
+          "deniedEffect": "שינוי הכותרת לא התקבל; הכותרת השמורה נשארת בתוקף.",
+          "uncertainEffect": "לא ניתן היה לאשר אם השינוי נשמר.",
+          "stateCheckAction": "יש לטעון מחדש את הדף ולבדוק את הכותרת הנוכחית."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "טעינת ניתוח נתונים של הדף",
+        "deniedEffect": "ניתוח הנתונים לא נטען, ונתוני הדף לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את ניתוח הנתונים הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את ניתוח הנתונים לפני הסקת מסקנות."
+      },
+      "policyUpdate": {
+        "operation": "שמירת מדיניות ניתוח נתונים",
+        "deniedEffect": "מדיניות ניתוח הנתונים החדשה לא התקבלה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם המדיניות נשמרה.",
+        "stateCheckAction": "יש לטעון מחדש את המדיניות ולהשוות אותה לפני ניסיון נוסף."
+      },
+      "preferencesRead": {
+        "operation": "טעינת העדפות ניתוח נתונים",
+        "deniedEffect": "העדפות ניתוח הנתונים לא נטענו, והגדרות שמורות לא שונו.",
+        "uncertainEffect": "לא ניתן היה לאשר את העדפות ניתוח הנתונים הנוכחיות.",
+        "stateCheckAction": "יש לטעון מחדש את ההעדפות לפני עריכתן."
+      },
+      "preferencesUpdate": {
+        "operation": "שמירת העדפות ניתוח נתונים",
+        "deniedEffect": "ההעדפות החדשות לא התקבלו.",
+        "uncertainEffect": "לא ניתן היה לאשר אם ההעדפות נשמרו.",
+        "stateCheckAction": "יש לטעון מחדש את ההעדפות ולהשוות אותן לפני ניסיון נוסף."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "שמירה בטוחה של שינוי לא מקוון",
+        "deniedEffect": "השינוי לא נשמר במכשיר הזה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם השינוי נשמר במכשיר הזה או בשרת.",
+        "stateCheckAction": "יש להעתיק את התוכן שנערך, ואז לטעון מחדש ולהשוות את המצב השמור."
+      },
+      "legacy": {
+        "operation": "העברת שינויים לא מקוונים",
+        "deniedEffect": "השינויים הלא מקוונים הישנים נשארו במקום שבו אוחסנו ולא נשלחו.",
+        "uncertainEffect": "לא ניתן היה לאשר אילו שינויים לא מקוונים ישנים הועברו.",
+        "stateCheckAction": "יש להשאיר את הכרטיסייה הזו פתוחה ולטעון מחדש לפני עריכה נוספת."
+      },
+      "refresh": {
+        "operation": "טעינה מחדש של שינויים ששוחזרו",
+        "deniedEffect": "השינויים ששוחזרו לא הוצגו, ונתונים שמורים לא הוחלפו.",
+        "uncertainEffect": "לא ניתן היה לאשר את הדף הנוכחי לאחר השחזור.",
+        "stateCheckAction": "יש לטעון מחדש את הדף לפני עריכה נוספת."
+      },
+      "replay": {
+        "operation": "שליחת שינויים לא מקוונים",
+        "deniedEffect": "השינוי שבתור נשאר ממתין ולא אושר על ידי השרת.",
+        "uncertainEffect": "לא ניתן היה לאשר אילו שינויים מהתור הגיעו לשרת.",
+        "stateCheckAction": "יש להשאיר את הכרטיסייה הזו פתוחה, להתחבר מחדש ולטעון מחדש לפני עריכה נוספת."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "חיפוש באתר הציבורי",
+        "deniedEffect": "תוצאות החיפוש לא נטענו, והתוכן שפורסם לא שונה.",
+        "uncertainEffect": "לא ניתן היה לאשר את תוצאות החיפוש הנוכחיות.",
+        "stateCheckAction": "יש לבדוק את מצב האתר לפני חיפוש נוסף."
+      },
+      "sharedPage": {
+        "operation": "טעינת דף משותף",
+        "deniedEffect": "הדף המשותף לא נטען, והתוכן שפורסם לא השתנה.",
+        "uncertainEffect": "לא ניתן היה לאשר את הדף המשותף הנוכחי.",
+        "stateCheckAction": "יש לבדוק את קישור השיתוף לפני שמנסים שוב."
+      },
+      "site": {
+        "operation": "טעינת האתר הציבורי",
+        "deniedEffect": "האתר הציבורי לא נטען, והתוכן שפורסם לא השתנה.",
+        "uncertainEffect": "לא ניתן היה לאשר את האתר הציבורי הנוכחי.",
+        "stateCheckAction": "יש לבדוק את כתובת האתר לפני שמנסים שוב."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "שחזור כניסה לטופס",
+        "deniedEffect": "טופס החברים לא נפתח, ולא נשלחה תשובה.",
+        "uncertainEffect": "Leafen לא אישרה את מצב הכניסה הנוכחי עבור הטופס הזה.",
+        "stateCheckAction": "יש לטעון מחדש את הטופס ולהתחבר שוב."
+      },
+      "configurationWrite": {
+        "operation": "שמירת הגדרות הטופס",
+        "deniedEffect": "לא אושר שהגדרות הטופס נשמרו.",
+        "uncertainEffect": "לא ניתן היה לאשר את תצורת הטופס הנוכחית.",
+        "stateCheckAction": "יש לטעון מחדש את הגדרות הטופס לפני שמירה נוספת."
+      },
+      "definitionRead": {
+        "operation": "טעינת טפסים",
+        "deniedEffect": "הטופס לא נטען, ולא נשלחה תשובה.",
+        "uncertainEffect": "לא ניתן היה לאשר את הגדרת הטופס הנוכחית.",
+        "stateCheckAction": "יש לטעון מחדש את הטופס לפני הזנת תשובה."
+      },
+      "optionsRead": {
+        "operation": "טעינת אפשרויות הטופס",
+        "deniedEffect": "האפשרויות המבוקשות לא נטענו, וטיוטת התשובה לא נשלחה.",
+        "uncertainEffect": "לא ניתן היה לאשר את האפשרויות הנוכחיות.",
+        "stateCheckAction": "יש לטעון מחדש את האפשרויות לפני שליחת הטופס."
+      },
+      "responseSubmit": {
+        "operation": "שליחת תשובה לטופס",
+        "deniedEffect": "התשובה לא התקבלה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם התשובה התקבלה.",
+        "stateCheckAction": "יש לבדוק את תוצאת הטופס לפני שליחה חוזרת של התשובה."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "טעינת תצורת זמן הריצה",
+        "deniedEffect": "תצורת זמן הריצה לא נטענה; הגדרות השרת השמורות לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר את תצורת זמן הריצה הנוכחית, ולכן פעילים ערכי ברירת מחדל בטוחים.",
+        "stateCheckAction": "יש לטעון מחדש את הדף כדי לקרוא את תצורת השרת הנוכחית."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "סנכרון שינויים בהמתנה",
+        "deniedEffect": "השינויים בהמתנה נשארו בתור ולא אושרו על ידי השרת.",
+        "uncertainEffect": "לא ניתן היה לאשר אילו שינויים בהמתנה הגיעו לשרת.",
+        "stateCheckAction": "יש להשאיר את הכרטיסייה פתוחה, להתחבר מחדש ולבדוק את מצב השמירה לפני ניסיון חוזר."
+      },
+      "pendingRead": {
+        "operation": "בדיקת שינויים בהמתנה",
+        "deniedEffect": "מספר השינויים בהמתנה לא נטען; השינויים שבתור לא בוטלו.",
+        "uncertainEffect": "לא ניתן היה לאשר כמה שינויים עדיין בהמתנה.",
+        "stateCheckAction": "יש להשאיר את הכרטיסייה פתוחה ולבדוק שוב את מצב הסנכרון."
+      },
+      "retry": {
+        "operation": "ניסיון חוזר של הסנכרון",
+        "deniedEffect": "הסנכרון לא אושר; השינויים בהמתנה נשארו בתור.",
+        "uncertainEffect": "לא ניתן היה לאשר את תוצאת הסנכרון האחרונה.",
+        "stateCheckAction": "יש לבדוק את מצב השמירה ואת החיבור לפני ניסיון חוזר נוסף."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "יצירת סביבת עבודה",
+        "deniedEffect": "סביבת עבודה חדשה לא נוצרה, והנתונים הקיימים לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר אם סביבת העבודה נוצרה.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת סביבות העבודה ולבדוק אם סביבת העבודה החדשה קיימת לפני שמנסים שוב."
+      },
+      "delete": {
+        "operation": "מחיקת סביבת העבודה לצמיתות",
+        "deniedEffect": "המחיקה לא התקבלה; סביבת העבודה והנתונים הקיימים לא השתנו.",
+        "uncertainEffect": "לא ניתן היה לאשר אם סביבת העבודה נמחקה.",
+        "stateCheckAction": "יש לטעון מחדש את רשימת סביבות העבודה לפני שמנסים שוב."
+      },
+      "member": {
+        "add": {
+          "operation": "הוספת חבר/ה לסביבת העבודה",
+          "deniedEffect": "החבר/ה לא נוספ/ה, ושום דבר לא השתנה.",
+          "uncertainEffect": "לא ניתן היה לאשר אם החבר/ה נוספ/ה לסביבת העבודה.",
+          "stateCheckAction": "יש לטעון מחדש את החברים, הפעילות והיסטוריית הביקורת לפני שמנסים שוב."
+        },
+        "revoke": {
+          "operation": "הסרת חבר/ה מסביבת העבודה",
+          "deniedEffect": "החבר/ה לא הוסר/ה, ושום דבר לא השתנה.",
+          "uncertainEffect": "לא ניתן היה לאשר אם החבר/ה הוסר/ה מסביבת העבודה.",
+          "stateCheckAction": "יש לטעון מחדש את החברים, הפעילות והיסטוריית הביקורת לפני שמנסים שוב."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "שמירת הגדרות סביבת העבודה",
+          "deniedEffect": "שינוי ההגדרות לא נשמר; ההגדרות הקודמות נשארות בתוקף.",
+          "uncertainEffect": "לא ניתן היה לאשר אם הגדרות סביבת העבודה נשמרו.",
+          "stateCheckAction": "יש לטעון מחדש את הגדרות סביבת העבודה, הפעילות והיסטוריית הביקורת לפני שמנסים שוב."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "ביטול ייצוא סביבת העבודה",
+        "deniedEffect": "הייצוא לא בוטל וייתכן שהוא עדיין מתבצע.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הייצוא בוטל.",
+        "stateCheckAction": "יש לרענן את סטטוס הייצוא לפני ביטול נוסף."
+      },
+      "download": {
+        "operation": "הורדת ייצוא סביבת העבודה",
+        "deniedEffect": "הארכיון לא הורד; הייצוא בשרת לא השתנה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הורדת הארכיון הושלמה.",
+        "stateCheckAction": "יש לבדוק את רשימת ההורדות לפני הורדה חוזרת."
+      },
+      "job": {
+        "operation": "ייצוא סביבת העבודה",
+        "deniedEffect": "הארכיון לא נוצר; סביבת העבודה המקורית לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר שקיים ארכיון שאפשר להשתמש בו עבור משימה זו.",
+        "stateCheckAction": "יש להתחיל ייצוא חלופי מסביבת העבודה הנוכחית."
+      },
+      "poll": {
+        "operation": "המתנה לייצוא סביבת העבודה",
+        "deniedEffect": "סטטוס הייצוא האחרון לא נטען; משימת הייצוא לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר את סטטוס הייצוא הנוכחי.",
+        "stateCheckAction": "יש לרענן את סטטוס הייצוא לפני ביצוע פעולה נוספת."
+      },
+      "retry": {
+        "operation": "ניסיון חוזר של ייצוא סביבת העבודה",
+        "deniedEffect": "הניסיון החוזר לא התקבל; משימת הייצוא הקיימת לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הניסיון החוזר התקבל.",
+        "stateCheckAction": "יש לרענן את סטטוס הייצוא לפני ניסיון חוזר נוסף."
+      },
+      "start": {
+        "operation": "התחלת ייצוא סביבת העבודה",
+        "deniedEffect": "משימת ייצוא חדשה לא התקבלה; סביבת העבודה לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר אם משימת ייצוא התקבלה.",
+        "stateCheckAction": "יש לרענן את סטטוס הייצוא האחרון לפני התחלת משימה נוספת."
+      },
+      "status": {
+        "operation": "טעינת סטטוס ייצוא סביבת העבודה",
+        "deniedEffect": "סטטוס הייצוא האחרון לא נטען; משימת הייצוא לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר את סטטוס הייצוא הנוכחי.",
+        "stateCheckAction": "יש לטעון מחדש את תיבת הדו-שיח של הייצוא לפני ביצוע פעולה נוספת."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "ביטול הייבוא",
+        "deniedEffect": "הייבוא לא בוטל וייתכן שהוא עדיין מתבצע.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הייבוא בוטל.",
+        "stateCheckAction": "יש לרענן את סטטוס הייבוא לפני ביטול נוסף."
+      },
+      "job": {
+        "operation": "ייבוא קובץ",
+        "deniedEffect": "לא נוצר דף; תוכן שיובא באופן חלקי הוסר.",
+        "uncertainEffect": "לא ניתן היה לאשר שקיים דף שאפשר להשתמש בו עבור ייבוא זה.",
+        "stateCheckAction": "יש לשמור את מזהה האבחון ולהתחיל ייבוא חדש מקובץ המקור."
+      },
+      "start": {
+        "operation": "התחלת ייבוא",
+        "deniedEffect": "ייבוא חדש לא התקבל ולא נוצר דף.",
+        "uncertainEffect": "לא ניתן היה לאשר אם הייבוא התקבל.",
+        "stateCheckAction": "יש לנסות שוב עם אותו קובץ ללא שינוי, כדי ש-Leafen יוכל להתחבר מחדש לאותה בקשה."
+      },
+      "status": {
+        "operation": "טעינת סטטוס הייבוא",
+        "deniedEffect": "סטטוס הייבוא האחרון לא נטען; משימת הייבוא לא השתנתה.",
+        "uncertainEffect": "לא ניתן היה לאשר את סטטוס הייבוא הנוכחי.",
+        "stateCheckAction": "יש לפתוח מחדש את תיבת הדו-שיח של הייבוא כדי להתחבר למשימה השמורה לפני ביצוע פעולה נוספת."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "טעינת מפתחות הגישה של החשבון",
+        "deniedEffect": "רשימת מפתחות הגישה לא נטענה; המפתחות השמורים לא השתנו.",
+        "uncertainEffect": "Leafen לא הצליח לאשר את רשימת מפתחות הגישה הנוכחית.",
+        "stateCheckAction": "יש להתחבר מחדש ולרענן את רשימת מפתחות הגישה לפני ביצוע שינוי."
+      },
+      "update": {
+        "operation": "ניהול מפתחות הגישה של החשבון",
+        "deniedEffect": "השרת לא שינה את מפתחות הגישה השמורים.",
+        "uncertainEffect": "Leafen לא הצליח לאשר אם שינוי מפתח הגישה הושלם.",
+        "stateCheckAction": "יש לרענן את רשימת מפתחות הגישה לפני שמנסים שוב. אם נוצר מפתח חדש אך לא נשמר כאן, יש לבדוק את מנהל המפתחות של המכשיר."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "הסיסמה הנוכחית שגויה.",
+    "currentPasswordNext": "אם שכחתם את הסיסמה, יש להתנתק ולאפס אותה מדף הכניסה.",
+    "code": "הקוד שגוי או שכבר נעשה בו שימוש.",
+    "codeNext": "יש להזין את הקוד שמוצג כעת באפליקציית האימות.",
+    "recoveryCode": "קוד השחזור שגוי או שכבר נעשה בו שימוש.",
+    "recoveryCodeNext": "יש להזין קוד שחזור שטרם נעשה בו שימוש.",
+    "accountDeactivated": "החשבון הזה הושבת על ידי מנהל/ת השרת.",
+    "accountDeactivatedNext": "יש לבקש ממנהל/ת המערכת להפעיל אותו מחדש.",
+    "organizationSSO": "הארגון הזה מאפשר כניסה רק באמצעות כניסה יחידה (SSO).",
+    "organizationSSONext": "יש להתחבר במקום זאת באמצעות חשבון החברה שלכם.",
+    "organizationPasswordTwoStep": "הארגון שלכם דורש מכם להתחבר באמצעות סיסמה ואימות דו-שלבי, ולא באמצעות קוד מכשיר.",
+    "organizationPasswordTwoStepNext": "יש להתחבר באמצעות כתובת האימייל והסיסמה שלכם; אם אין לכם סיסמה, יש לבקש ממנהל/ת מערכת סיסמה חד-פעמית.",
+    "deviceCode": "הקוד שגוי, כבר נעשה בו שימוש, פג תוקפו, או שהחלון שהציג אותו נסגר.",
+    "deviceCodeNext": "יש לקבל קוד חדש ולהזין אותו שוב.",
+    "setupCode": "קוד ההגדרה שגוי.",
+    "setupCodeNext": "יש לפתוח שוב את קישור ההגדרה שהשרת הדפיס, או להקליד את הקוד שבו השרת הופעל.",
+    "setupCodeMissing": "יש להזין את קוד ההגדרה.",
+    "setupCodeMissingNext": "פתיחת קישור ההגדרה שהשרת הדפיס ממלאת את השדה; גם הקוד שאיתו הופעל השרת מתאים.",
+    "sessionCapacity": "החשבון הזה הגיע למגבלת המכשירים.",
+    "sessionCapacityNext": "יש להתנתק ממכשיר שאינכם משתמשים בו עוד בהגדרות → חשבון → מכשירים, ואז לנסות שוב.",
+    "signInEnded": "בקשת הכניסה הזו הסתיימה: הזמן הקצוב תם או שהקוד הוזן לא נכון יותר מדי פעמים.",
+    "signInEndedNext": "יש להתחבר שוב באמצעות כתובת האימייל והסיסמה שלכם.",
+    "emailNotVerified": "האימייל של החשבון הזה עדיין לא אומת.",
+    "emailNotVerifiedNext": "יש לפתוח את הקישור בהודעת האימייל שקיבלתם כשנרשמתם, ואז להתחבר.",
+    "registrationFailed": "לא ניתן היה ליצור את החשבון.",
+    "registrationFailedNext": "אפשר לנסות שוב עוד מעט. אם הבעיה נמשכת, יש לפנות למנהל/ת המערכת של השרת הזה."
+  },
+  "labels": {
+    "reference": "מקור מידע"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "הארגון הזה לא יוצר חשבונות חדשים בעת כניסה באמצעות חשבון החברה.",
+    "samlAccountCreationOffNext": "יש לבקש ממנהל/ת המערכת של הארגון להזמין אתכם.",
+    "samlRetryAfterInvite": "יש להתחבר שוב לאחר שהוזמנתם.",
+    "samlIdentityDenied": "כתובת האימייל הזו לא יכולה להשתמש בכניסת החברה של הארגון הזה.",
+    "samlIdentityDeniedNext": "יש לבקש ממנהל/ת המערכת של הארגון לבדוק את דומיין האימייל ואת החברות שלכם.",
+    "samlRetryAfterAdministrator": "יש להתחבר שוב לאחר בדיקה של מנהל/ת המערכת.",
+    "samlResponseInvalid": "לא ניתן היה לאמת את תגובת כניסת החברה.",
+    "samlResponseInvalidNext": "יש להתחיל את תהליך הכניסה מחדש. אם זה ממשיך לקרות, יש לבקש ממנהל/ת המערכת של הארגון שלכם לבדוק את הגדרות SAML.",
+    "accountAlreadyExistsForEmailAddress": "כבר קיים חשבון עבור כתובת האימייל הזו.",
+    "accountEmailCouldNotAdmittedFor": "לא ניתן היה לשלוח את אימייל החשבון.",
+    "administratorSettingsDoNotMeetServer": "הגדרות מנהל/ת המערכת אינן עומדות בדרישות השרת.",
+    "administratorSettingsNotAvailableCurrentAccount": "הגדרות מנהל/ת המערכת אינן זמינות לחשבון הנוכחי.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "מנהל/ת מערכת אחר/ת כבר השלים/ה את הגדרת השרת.",
+    "anotherServerOperationTemporarilyLockedAccount": "פעולת שרת אחרת נעלה זמנית את אחסון החשבונות.",
+    "anotherServerOperationTemporarilyLockedDatabase": "פעולת שרת אחרת נעלה זמנית את מאגר הידע, ולכן לא ניתן היה להמשיך בייצוא.",
+    "anotherServerOperationTemporarilyLockedDlp": "פעולת שרת אחרת נעלה זמנית את אחסון מדיניות ה-DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "פעולת שרת אחרת נעלה זמנית את אחסון הקבצים.",
+    "anotherServerOperationTemporarilyLockedPage": "פעולת שרת אחרת נעלה זמנית את אחסון תוכן הדפים.",
+    "anotherServerOperationTemporarilyLockedProduct": "פעולת שרת אחרת נעלה זמנית את אחסון המוצר.",
+    "askOrganizationAdministratorToAllow": "יש לבקש ממנהל/ת מערכת של הארגון או מבעל/ת מרחב הצוות לאפשר זאת.",
+    "askServerAdministratorCheckEmailDelivery": "יש לבקש ממנהל/ת המערכת של השרת לבדוק את שליחת האימייל, ואז לנסות שוב.",
+    "backupArtifactNotCompleteYet": "קובץ הגיבוי עדיין לא הושלם.",
+    "backupStateNoLongerPermitsControl": "המצב הנוכחי של הגיבוי כבר אינו מאפשר את הפעולה הזו.",
+    "causeCouldNotDetermined": "לא ניתן היה לקבוע את הסיבה.",
+    "changeSaveReceiptAndSynchronizationState": "השינוי לא נשמר, ותוכן הדף לא השתנה.",
+    "checkCurrentBackupBeforeRetrying": "יש לבדוק את הגיבוי הנוכחי לפני שמנסים שוב.",
+    "checkCurrentJobStateBeforeDeciding": "יש לבדוק את מצב המשימה הנוכחי לפני שמחליטים אם לנסות שוב.",
+    "checkCurrentListBeforeTryingDifferent": "יש לבדוק את הרשימה הנוכחית לפני שמנסים פריט אחר.",
+    "checkCurrentServerSettingsBeforeTrying": "יש לבדוק את הגדרות השרת הנוכחיות לפני שמנסים שוב.",
+    "checkCurrentServerSetupStateBefore": "יש לבדוק את מצב הגדרת השרת הנוכחי לפני שמנסים שוב.",
+    "checkCurrentStateAndUseNew": "יש לבדוק את המצב הנוכחי, וליצור גיבוי חדש רק אם יש בו צורך.",
+    "checkEmailAndPassword": "יש לבדוק את האימייל והסיסמה.",
+    "checkServerSecretStorageThenSave": "יש לבדוק את אחסון הסודות של השרת, ואז לשמור שוב את אותן הגדרות.",
+    "checkServerStateThenLoadSettings": "יש לבדוק את מצב השרת, ואז לטעון שוב את ההגדרות.",
+    "createNewBackupAndInspectServer": "יש ליצור גיבוי חדש, ואם השגיאה חוזרת, לבדוק את אחסון השרת.",
+    "currentAccountNotAuthorizedForOperation": "לחשבון הנוכחי אין הרשאה לפעולה הזו.",
+    "currentStateMustCheckedBeforeRetry": "יש לבדוק את המצב הנוכחי לפני שאפשר להניח שניסיון חוזר בטוח.",
+    "currentStateMustCheckedBeforeRetrying": "יש לבדוק את המצב הנוכחי לפני שמנסים שוב.",
+    "dnsVerificationServiceTemporarilyUnavailable": "שירות אימות ה-DNS אינו זמין זמנית.",
+    "doNotAssumeUnchangedRetrySafe": "אין להניח שניסיון חוזר בטוח עד שאחסון השרת יתוקן.",
+    "doNotKeepRetryingIdentifierNew": "אין לנסות שוב ושוב את הבקשה הזו. יש לטעון מחדש קודם, ואז אפשר לנסות שוב בבטחה.",
+    "doNotResumeFailedJobStart": "אין להמשיך את המשימה שנכשלה. יש להתחיל במקומה ייצוא חדש.",
+    "doNotRetryBeforeLoadingLatest": "אין לנסות שוב לפני שטוענים את הגדרות השרת העדכניות ביותר.",
+    "doNotRetryDirectRequestUnchanged": "אין לנסות שוב את ההעלאה הזו ללא שינוי. יש להשתמש בהעלאה הניתנת לחידוש.",
+    "doNotRetryDirectRequestUnchanged2": "אין לנסות שוב את ההעלאה הזו ללא שינוי. יש להשתמש בהעלאת ארכיון הניתנת לחידוש.",
+    "doNotRetrySetupRequestSign": "אין לנסות שוב את בקשת ההגדרה הזו; יש להתחבר באמצעות חשבון מנהל/ת המערכת הקיים.",
+    "doNotReuseInvalidArtifactCreate": "אין להשתמש שוב בקובץ הגיבוי הלא תקין. יש ליצור גיבוי חדש.",
+    "doNotReuseLinkNewAction": "אין להשתמש שוב בקישור הזה. אפשר להתחיל פעולה חדשה בבטחה.",
+    "emailOrPasswordDidNotMatch": "האימייל או הסיסמה אינם תואמים.",
+    "externalSignInProviderCouldNot": "ספק הכניסה החיצוני לא הצליח להשלים את הבקשה.",
+    "fileLargerThanOneDirectUpload": "הקובץ הזה גדול מדי להעלאה ישירה אחת.",
+    "formStorageTemporarilyLockedByAnother": "אחסון הטפסים ננעל זמנית על ידי פעולת שרת אחרת.",
+    "leafenArchiveLargerThanOneDirect": "ארכיון Leafen הזה גדול מדי לייבוא ישיר אחד.",
+    "leafenDidNotReceiveServerResponse": "Leafen לא קיבל תגובה מהשרת.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen בונה מחדש את נתוני השימוש באחסון של הארגון.",
+    "leafenServiceCouldNotCompleteOperation": "השירות של Leafen לא הצליח להשלים את הפעולה.",
+    "isolatedRecordNotAppliedYourRequested": "הרשומה החלקית הוצאה הצידה, השינוי שלכם לא נשמר, ותוכן הדף לא השתנה.",
+    "jobCannotRetriedStartReplacementExport": "אי אפשר לנסות שוב את המשימה הזו. יש להתחיל ייצוא חלופי.",
+    "jobSArchiveNotPublishedAnd": "הארכיון של המשימה הזו לא נוצר, וסביבת העבודה המקורית לא השתנתה.",
+    "keepDiagnosticReferenceAndAskServer": "יש לשמור את מזהה האבחון ולבקש ממנהל/ת המערכת של השרת לתקן את אחסון השרת.",
+    "lastConfirmedSavedStateRestoredSo": "המצב השמור האחרון שאושר שוחזר, ולכן אפשר לנסות שוב את אותו שינוי בבטחה.",
+    "loadCurrentReportAndUseNew": "יש לטעון את הדוח הנוכחי, ואז לרענן שוב.",
+    "loadCurrentReportBeforeRefreshingAgain": "יש לטעון את הדוח הנוכחי לפני שמרעננים שוב.",
+    "loadCurrentReportBeforeTryingAgain": "יש לטעון את הדוח הנוכחי לפני שמנסים שוב.",
+    "newerOrIncompatibleStatePreventedOperation": "מצב חדש יותר או לא תואם מנע את הפעולה הזו.",
+    "noNewArchivePublishedAndSource": "לא נוצר ארכיון חדש, וסביבת העבודה המקורית והארכיונים הקודמים לא השתנו.",
+    "noNewSignInSessionCreated": "לא נוצר סשן כניסה חדש והסשנים הקיימים לא השתנו.",
+    "notKnownWhetherRetryingSafeUntil": "לא ידוע אם ניסיון חוזר בטוח עד שהמצב הנוכחי ייבדק.",
+    "organizationStorageAuthorityInconsistent": "רשומת השימוש באחסון של הארגון אינה עקבית.",
+    "organizationDlpBlocksOperation": "מדיניות מניעת דליפת הנתונים של הארגון שלכם חוסמת את הפעולה הזו.",
+    "takeOutTermOrAskAboutDlp": "יש להסיר כל מונח רגיש ולנסות שוב, או לפנות למנהל/ת מערכת של הארגון אם אינכם בטוחים.",
+    "organizationSettingsDoNotAllowOperation": "הגדרות הארגון או מרחב הצוות שלכם אינן מאפשרות זאת.",
+    "organizationStorageLimitWouldExceeded": "הפעולה תחרוג ממגבלת האחסון של הארגון.",
+    "serverDiskAlmostFull": "הדיסק של השרת כמעט מלא.",
+    "askServerAdministratorToFreeSpace": "יש לבקש ממנהל השרת לפנות מקום; זה יעבוד שוב כשיהיה מקום.",
+    "safeRetryOnceServerHasRoom": "אפשר לנסות שוב את אותה פעולה בבטחה כשיהיה מקום בשרת.",
+    "readDoesNotChangeSavedData": "הקריאה הזו אינה משנה נתונים שמורים, ולכן אפשר לנסות שוב בבטחה.",
+    "reloadCurrentBackupBeforeChoosingAnother": "יש לטעון מחדש את הגיבוי הנוכחי לפני שבוחרים פעולה אחרת.",
+    "reloadCurrentBackupStateBeforeContinuing": "יש לטעון מחדש את מצב הגיבוי הנוכחי לפני שממשיכים.",
+    "reloadCurrentStateBeforeDecidingWhether": "יש לטעון מחדש את המצב הנוכחי לפני שמחליטים אם לנסות שוב.",
+    "reloadSignInPageAndStart": "יש לרענן את דף הכניסה ולהתחבר שוב.",
+    "removeUnneededFilesOrAskOrganization": "יש להסיר קבצים מיותרים או לבקש ממנהל/ת החיוב של הארגון להגדיל את המגבלה.",
+    "reportChangedAfterScreenLoaded": "הדוח השתנה לאחר שהמסך הזה נטען.",
+    "requestIdentifierBelongsDifferentOperation": "כבר נעשה שימוש בבקשה הזו עבור פעולה אחרת.",
+    "requestIdentifierBelongsDifferentReportRefresh": "כבר נעשה שימוש בבקשה הזו עבור רענון דוח אחר.",
+    "requestedItemNoLongerExistsOr": "הפריט המבוקש אינו קיים עוד או שאינו גלוי לחשבון הזה.",
+    "retryExportAfterOtherServerOperation": "יש לנסות שוב את הייצוא הזה לאחר שפעולת השרת האחרת תסתיים.",
+    "retryExportJobAfterServerStorage": "יש לנסות שוב את משימת הייצוא הזו לאחר שאחסון השרת יתאושש.",
+    "retryOnlyAfterAccountOrPermission": "יש לנסות שוב רק לאחר שהחשבון או ההרשאה ישתנו.",
+    "retryOnlyAfterOrganizationSettingChanges": "יש לנסות שוב רק לאחר שההגדרה הזו תשתנה.",
+    "retrySameContentChangeAfterOther": "יש לנסות שוב את אותו שינוי בתוכן לאחר שפעולת השרת האחרת תסתיים.",
+    "retrySameContentChangeAfterServer": "יש לנסות שוב את אותו שינוי בתוכן לאחר שאחסון השרת יתאושש.",
+    "retrySameContentChangeNow": "יש לנסות שוב עכשיו את אותו שינוי בתוכן.",
+    "changeTooLargeForOneChange": "השינוי גדול מדי לביצוע בבת אחת. שינוי אחד יכול להכיל עד 64 MB, כולל טקסט.",
+    "pageKeepsWhatItHadBefore": "הדף נשאר כפי שהיה קודם.",
+    "makeTheChangeInParts": "יש לבצע זאת בחלקים: תחילה למחוק בחלקים את הבלוקים שבתוך בלוק רשימה נפתחת או מקטע גדולים, ולהדביק טקסט ארוך בחלקים.",
+    "sameSizeIsRefusedAgain": "אותו גודל יידחה שוב. לאחר החלוקה אפשר לנסות שוב בבטחה.",
+    "linkCannotBeKeptHere": "השינוי הזה מקשר דף או בלוק שאי אפשר לקשר כאן.",
+    "chooseAnotherPageOrRefresh": "יש לבחור דף אחר, או לרענן את הדף ולנסות שוב.",
+    "sameLinkIsRefusedAgain": "ניסיון לקשר שוב את אותו פריט יידחה שוב.",
+    "retrySameDomainVerificationAfterDns": "יש לנסות שוב את אימות הדומיין לאחר ששירות אימות ה-DNS יתאושש.",
+    "retrySameFileOperationAfterOther": "יש לנסות שוב את אותה פעולת קובץ לאחר שפעולת השרת האחרת תסתיים.",
+    "retrySameFileOperationAfterServer": "יש לנסות שוב את אותה פעולת קובץ לאחר שאחסון השרת יתאושש.",
+    "retrySameFormOperationAfterOther": "יש לנסות שוב את אותה פעולת טופס לאחר שפעולת השרת האחרת תסתיים.",
+    "retrySameFormOperationAfterServer": "יש לנסות שוב את אותה פעולת טופס לאחר שאחסון השרת יתאושש.",
+    "retrySameOperationAfterOtherServer": "יש לנסות שוב את אותה פעולה לאחר שפעולת השרת האחרת תסתיים.",
+    "retrySameOperationAfterServerStorage": "יש לנסות שוב את אותה פעולה לאחר שאחסון השרת יחזור לפעול.",
+    "returnSignInWithExistingAccount": "יש לחזור לדף הכניסה ולהתחבר באמצעות החשבון הקיים.",
+    "reviewAndCorrectEnteredServerSettings": "יש לבדוק ולתקן את הגדרות השרת שהוזנו.",
+    "reviewEnteredValuesAndCorrectHighlighted": "יש לבדוק את הערכים שהוזנו ולתקן את הפרטים המסומנים.",
+    "safeRetryAfterEmailDeliveryRestored": "ניתן לנסות שוב בבטחה לאחר שמשלוח האימייל יחזור לפעול.",
+    "safeRetryAfterServerResourceChecks": "ניתן לנסות שוב בבטחה לאחר שבדיקות משאבי השרת יחזרו לפעול.",
+    "safeRetryAfterTemporaryLockClears": "ניתן לנסות שוב בבטחה לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetryRead": "ניתן לנסות שוב את הקריאה הזו בבטחה.",
+    "safeRetrySameAuthenticationOperationAfter": "ניתן לנסות שוב בבטחה את אותה פעולת אימות לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameContentChangeAfter": "ניתן לנסות שוב בבטחה את אותו שינוי בתוכן לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetrySameContentChangeAfter2": "ניתן לנסות שוב בבטחה את אותו שינוי בתוכן לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameDlpPolicySave": "ניתן לנסות שוב בבטחה לשמור את אותה מדיניות DLP לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameDlpPolicySave2": "ניתן לנסות שוב בבטחה לשמור את אותה מדיניות DLP לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetrySameDomainVerificationAfter": "ניתן לנסות שוב בבטחה את אותו אימות דומיין לאחר שהשירות יחזור לפעול.",
+    "safeRetrySameFileOperationAfter": "ניתן לנסות שוב בבטחה את אותה פעולת קובץ לאחר שיתפנה מקום באחסון.",
+    "safeRetrySameFileOperationAfter2": "ניתן לנסות שוב בבטחה את אותה פעולת קובץ לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameFileOperationAfter3": "ניתן לנסות שוב בבטחה את אותה פעולת קובץ לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetrySameFormOperationAfter": "ניתן לנסות שוב בבטחה את אותה פעולת טופס לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameFormOperationAfter2": "ניתן לנסות שוב בבטחה את אותה פעולת טופס לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetrySameOperationAfterStorage": "ניתן לנסות שוב בבטחה את אותה פעולה לאחר שהאחסון יחזור לפעול.",
+    "safeRetrySameOperationAfterTemporary": "ניתן לנסות שוב בבטחה את אותה פעולה לאחר שהנעילה הזמנית תיפתח.",
+    "safeRetrySameSettingsAfterSecret": "ניתן לנסות שוב בבטחה את אותן הגדרות לאחר שאחסון הסודות יחזור לפעול.",
+    "safeRetrySameSettingsSaveAfter": "ניתן לנסות שוב בבטחה לשמור את אותן הגדרות לאחר תיקון הערכים הלא תקינים.",
+    "safeRetryWithSameJobIdentifier": "ניתן לנסות שוב בבטחה את אותה משימה.",
+    "safeRetryWithSameJobIdentity": "ניתן לנסות שוב בבטחה את אותה משימה.",
+    "safeSignInInsteadCreatingAnother": "אפשר להתחבר בבטחה במקום ליצור חשבון נוסף.",
+    "safeStartNewProviderSignIn": "אפשר להתחיל התחברות חדשה עם ספק הזהות מאוחר יותר.",
+    "safeTryAgainAfterCorrectingDetails": "ניתן לנסות שוב בבטחה לאחר תיקון הפרטים.",
+    "safeTryAgainAfterCorrectingInput": "ניתן לנסות שוב בבטחה לאחר תיקון הקלט.",
+    "safeTryAgainAfterWait": "ניתן לנסות שוב בבטחה לאחר ההמתנה.",
+    "serverTakesNoChangesNow": "השרת הזה לא מצליח להתחבר למקום הגיבוי שלו, ולכן הוא לא מקבל שינויים כרגע.",
+    "serverDataMovedElsewhere": "הנתונים של השרת הזה הועברו לשרת אחר.",
+    "doItOnNewServer": "יש לבצע זאת בשרת החדש.",
+    "serverDataMovedNoRetry": "ניסיון חוזר כאן לא ישמור את השינוי.",
+    "sameRequestIdentityCanRetriedSafely": "ניתן לנסות שוב את אותה בקשה בבטחה לאחר המתנה קצרה.",
+    "saveSameDlpPolicyAgainAfter": "יש לשמור שוב את אותה מדיניות DLP לאחר שאחסון השרת יחזור לפעול.",
+    "saveSameDlpPolicyAgainAfter2": "יש לשמור שוב את אותה מדיניות DLP לאחר שפעולת השרת האחרת תסתיים.",
+    "serverAccountStorageTemporarilyUnavailable": "אחסון החשבונות בשרת אינו זמין זמנית.",
+    "serverCannotCurrentlyConfirmResourceState": "לא ניתן כרגע לאשר את מצב המשאבים של השרת.",
+    "serverCouldNotCompleteAdministratorSettings": "לא ניתן היה להשלים את שמירת הגדרות המנהל/ת בשרת.",
+    "serverCouldNotCompleteAdministratorSetup": "לא ניתן היה להשלים את בקשת הגדרת המנהל/ת בשרת.",
+    "serverCouldNotCompleteBackupLifecycle": "לא ניתן היה להשלים את הגיבוי בשרת.",
+    "serverCouldNotLoadBackupState": "לא ניתן היה לטעון את מצב הגיבוי הזה בשרת.",
+    "serverCouldNotProtectAdministratorSecret": "לא ניתן היה להגן על ערכי הסוד של המנהל/ת בשרת.",
+    "serverCouldNotReadAdministratorState": "לא ניתן היה לקרוא את מצב המנהל/ת בשרת.",
+    "serverCouldNotReadOneExact": "לא ניתן היה לקרוא תמונת מצב עקבית של הדוח בשרת.",
+    "serverDetectedAndIsolatedIncompleteContent": "השרת זיהה רשומת תוכן חלקית והניח אותה בצד.",
+    "serverFileStorageTemporarilyUnavailable": "אחסון הקבצים בשרת אינו זמין זמנית.",
+    "serverFormStorageTemporarilyUnavailable": "אחסון הטפסים בשרת אינו זמין זמנית.",
+    "serverPageContentStorageTemporarilyUnavailable": "אחסון תוכן הדפים בשרת אינו זמין זמנית.",
+    "serverSettingsChangedAfterScreenLoaded": "הגדרות השרת השתנו לאחר שהמסך הזה נטען.",
+    "serverStorageTemporarilyUnavailable": "אחסון השרת אינו זמין זמנית.",
+    "serverStorageTemporarilyUnavailableSoArchive": "אחסון השרת לא היה זמין זמנית, ולכן לא ניתן היה ליצור את הארכיון.",
+    "serverStorageTemporarilyUnavailableSoDlp": "אחסון השרת אינו זמין זמנית, ולכן לא ניתן היה לשמור את מדיניות ה-DLP.",
+    "signInAttemptIdentifierAlreadyBelongs": "ניסיון ההתחברות הזה כבר נוצל עם פרטים אחרים.",
+    "signInOrAccountActionLink": "קישור ההתחברות או פעולת החשבון אינו תקף יותר.",
+    "signInWithAuthorizedAccountOr": "יש להתחבר עם חשבון מורשה או לבקש גישה ממנהל/ת המערכת.",
+    "signInWithExistingAdministratorAccount": "יש להתחבר עם חשבון מנהל/ת המערכת הקיים.",
+    "signInWithServerAdministratorAccount": "יש להתחבר עם חשבון מנהל/ת שרת או לבקש גישה ממנהל/ת מערכת אחר/ת.",
+    "startAccountActionAgainGetNew": "יש להתחיל שוב את הפעולה בחשבון כדי לקבל קישור חדש.",
+    "startReplacementExportFromLatestWorkspace": "יש להתחיל ייצוא חלופי מסביבת העבודה העדכנית.",
+    "storedBackupDidNotMatchVerified": "הגיבוי השמור לא תאם לקובץ שאומת.",
+    "submittedInformationDidNotMeetOperation": "המידע שנשלח לא עמד בדרישות הפעולה.",
+    "tooManyRequestsLimited": "בוצעו יותר מדי בקשות, ולכן הפעולה הזו מוגבלת.",
+    "tooManyRequestsMadeSoOperation": "בוצעו יותר מדי בקשות, ולכן הפעולה הזו מוגבלת זמנית.",
+    "tryAgainAfterServerStorageRecovers": "יש לנסות שוב לאחר שאחסון השרת יחזור לפעול.",
+    "tryAgainInHours_one": "יש לנסות שוב בעוד כשעה.",
+    "tryAgainInHours_two": "יש לנסות שוב בעוד כ-{{count}} שעות.",
+    "tryAgainInHours_other": "יש לנסות שוב בעוד כ-{{count}} שעות.",
+    "tryAgainInMinutes_one": "יש לנסות שוב בעוד כדקה.",
+    "tryAgainInMinutes_two": "יש לנסות שוב בעוד כ-{{count}} דקות.",
+    "tryAgainInMinutes_other": "יש לנסות שוב בעוד כ-{{count}} דקות.",
+    "tryAgainInSeconds_one": "יש לנסות שוב בעוד כ-{{count}} שנייה.",
+    "tryAgainInSeconds_two": "יש לנסות שוב בעוד כ-{{count}} שניות.",
+    "tryAgainInSeconds_other": "יש לנסות שוב בעוד כ-{{count}} שניות.",
+    "useAnotherSignInMethodOr": "יש להשתמש בשיטת התחברות אחרת או לנסות את הספק הזה מאוחר יותר.",
+    "useResumableArchiveUploadSoProgress": "יש להשתמש בהעלאת ארכיון הניתנת להמשך כדי שההתקדמות תמשיך מהמצב השמור.",
+    "useResumableUploadSoProgressCan": "יש להשתמש בהעלאה הניתנת להמשך כדי שההתקדמות תמשיך מהמצב השמור.",
+    "waitForCompletionThenRetryDownload": "יש להמתין לסיום ואז לנסות שוב את ההורדה.",
+    "waitForOtherServerOperationFinish": "יש להמתין לסיום פעולת השרת האחרת ולנסות שוב.",
+    "waitForStorageReconciliationAdvanceThen": "יש להמתין רגע עד שהאחסון יתעדכן ואז לנסות שוב את אותה פעולה.",
+    "waitMomentBeforeTryingAgain": "יש להמתין רגע לפני שמנסים שוב.",
+    "workspaceChangedWhileExportRunning": "סביבת העבודה השתנתה בזמן שהייצוא רץ.",
+    "youNotSignedInAndNo": "לא הייתם מחוברים, ונתוני החשבון לא שונו.",
+    "pageIsLocked": "הדף נעול, ולכן לא ניתן לבצע שינויים.",
+    "unlockPageThenTryAgain": "יש לבטל את נעילת הדף עבורכם או עבור כולם מתפריט הדף ואז לנסות שוב.",
+    "safeToRetryAfterUnlocking": "ניתן לנסות שוב בבטחה לאחר ביטול נעילת הדף.",
+    "databaseIsLocked": "מאגר הידע נעול, ולכן לא ניתן לשנות את המאפיינים והתצוגות שלו.",
+    "unlockDatabaseThenTryAgain": "יש לבטל את נעילת מאגר הידע עבורכם או עבור כולם מהלחצן \"נעול\" שלו, ולאחר מכן לנסות שוב.",
+    "databaseEditorsCanUnlock": "רק מי שיכול לערוך את מאגר הידע יכול לבטל את הנעילה שלו.",
+    "safeToRetryAfterDatabaseUnlocked": "אפשר לנסות שוב בבטחה לאחר ביטול נעילת מאגר הידע.",
+    "rowMoveNeedsFullAccess": "כדי להעביר אותו לדף אחר, נדרשת גישה מלאה אליו וגישת עריכה למקום שאליו הוא עובר.",
+    "askFullAccessHolderToMoveIt": "יש לבקש ממישהו בעל גישה מלאה להעביר אותו, או לבחור מקום שיש לכם הרשאת עריכה בו.",
+    "rowMoveRefusedUntilAccess": "העברתו תידחה שוב עד שתהיה לכם הגישה הזו.",
+    "otherWorkspaceCantMoveOrLink": "לא ניתן להעביר או לקשר דברים בין סביבות עבודה.",
+    "makeItAnewInThatWorkspace": "יש ליצור אותו בסביבת העבודה הזו ולהעתיק לשם את התוכן שלו. אפשר להעביר או להעתיק לשם דף שלם מחלון 'העברה אל', בבחירת סביבת העבודה.",
+    "otherWorkspaceRefusedAgain": "ניסיון נוסף יידחה מאותה סיבה.",
+    "signInEndedForThisBrowser": "ההתחברות בדפדפן הזה פגה תוקף או הסתיימה.",
+    "signInEndedForThisApp": "ההתחברות באפליקציה הזו פגה תוקף או הסתיימה.",
+    "signInAgainToContinue": "יש להתחבר שוב כדי להמשיך.",
+    "retryAfterSigningInAgain": "יש לנסות שוב לאחר התחברות מחדש.",
+    "serverRestoredSinceDeviceCopies": "הנתונים בשרת הזה השתנו, והעותקים במכשיר הזה הם מלפני השינוי.",
+    "changeKeptOnThisDeviceOnly": "השינוי לא נשמר בשרת; הוא נמצא רק במכשיר הזה.",
+    "takeServerContentAnew": "יש לבחור “טעינה מחדש מהשרת” כדי לקבל את התוכן הנוכחי של השרת.",
+    "retryAfterTakingContentAnew": "יש לנסות שוב לאחר הטעינה מחדש מהשרת.",
+    "propertyUsedByViewOrDependency": "אי אפשר לשנות את המאפיין כרגע: הוא הכותרת, או שהוא נמצא במאפיינים שנמחקו.",
+    "changeWhatUsesPropertyFirst": "יש לטעון את הדף מחדש כדי לראות את המאפיין כפי שהוא עכשיו.",
+    "retryAfterChangingWhatUsesProperty": "יש לשחזר קודם מאפיין שנמחק כדי לשנות אותו.",
+    "workspaceAlreadyHasContentForArchive": "בסביבת העבודה הזו כבר יש תוכן, ולכן לא ניתן להכניס אליה ארכיון של Leafen.",
+    "makeNewWorkspaceToImportArchive": "יש ליצור סביבת עבודה חדשה ולייבא אליה את הארכיון הזה.",
+    "retryInNewWorkspace": "ניתן לייבא אותו שוב בסביבת עבודה חדשה.",
+    "importFileDoesNotFitFormat": "הקובץ לא מתאים לפורמט ש-Leafen קורא, ולכן לא יובא דבר.",
+    "exportFileAgainToImport": "יש לייצא את הקובץ מחדש מהמקום שבו נוצר, ואז לייבא אותו.",
+    "sameFileRefusedAgain": "לא ניתן לייבא שוב את אותו קובץ.",
+    "pageBusyWithAnotherChange": "הדף הזה עסוק בשינוי אחר, ולכן לא ניתן לערוך אותו ברגע זה.",
+    "tryAgainOnceThatChangeIsDone": "יש לנסות שוב לאחר שהשינוי הזה יסתיים.",
+    "importPageInTrash": "הדף שאליו הייבוא מיועד נמצא בפח האשפה, ולכן לא יובא דבר.",
+    "restorePageThenImportAgain": "יש לשחזר את הדף מפח האשפה ואז לייבא שוב.",
+    "importPageDeletedForGood": "הדף שאליו הייבוא מיועד נמחק לצמיתות, ולכן לא יובא דבר.",
+    "ownerBringsDeletedPageBack": "בתוך 30 יום יכול הבעלים של סביבת העבודה לשחזר אותו תחת אבטחה ← שמירת נתונים; לאחר מכן יש לשחזר אותו מפח האשפה ולייבא שוב.",
+    "importAgainOnceRestored": "ניסיון חוזר לא ייבא אותו עד שהדף ישוחזר.",
+    "pageInTrashCantChange": "לא ניתן לשנות דף בפח האשפה עד שיוחזר.",
+    "restorePageThenTryAgain": "יש לשחזר את הדף מפח האשפה ואז לנסות שוב.",
+    "tryAgainOnceRestored": "ניסיון חוזר לא יצליח עד שהדף ישוחזר.",
+    "optionNameHasComma": "לא ניתן לכלול פסיק (,) בשם של אפשרות.",
+    "takeCommaOutOrSplitOption": "יש להסיר את הפסיק או לפצל לשתי אפשרויות.",
+    "optionRefusedUntilRenamed": "יש לנסות שוב לאחר שינוי השם.",
+    "optionNameTaken": "במאפיין הזה כבר יש אפשרות בשם הזה.",
+    "useAnotherOptionName": "יש להשתמש בשם אחר או לבחור את האפשרות שכבר קיימת.",
+    "optionsInUseLeftOut": "השינוי הזה משמיט אפשרויות שדפים משתמשים בהן.",
+    "keepOptionsOrDeleteOneByOne": "יש להשאיר את האפשרויות האלה, או למחוק אותן אחת-אחת מהתפריט של כל אפשרות.",
+    "optionsRefusedUntilKeptOrDeleted": "ניסיון נוסף ללא שינוי יידחה מאותה סיבה."
+  }
+}

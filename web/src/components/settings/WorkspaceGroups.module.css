@@ -1,0 +1,438 @@
+/* 설정 → 사람 → 그룹 ("새 그룹 생성" is WorkspaceGroupCreate.module.css), as Notion's (seen 2026-10-12; the
+   lead, tools and empty state measured again 2026-10-28: the lead 24px under
+   the tab row, 28px tools 17px under it, the empty state 18px under those). */
+.groups {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* :first-child, not `* + *`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+.groups > :where(:not(:first-child)) {
+  margin-top: 12px;
+}
+
+.lead {
+  margin: 24px 0 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.groups > .tools {
+  margin-top: 17px;
+}
+
+/* With groups the line on what they are for gives way, as Notion's (2026-11-11):
+   the tools' middle 48px under the tabs', the table 18px under the tools. */
+.groups > .tools:first-child {
+  margin-top: 8px;
+}
+
+.groups > .tableScroller {
+  margin-top: 18px;
+}
+
+.tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.tools .iconButton {
+  color: var(--icon-secondary);
+}
+
+.toolButtons {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+}
+
+.iconButton:hover:not(:disabled),
+.iconButton:focus-visible,
+.iconButton[aria-pressed="true"],
+.iconButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.iconButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.groups > .empty {
+  margin-top: 18px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 0 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.empty svg {
+  width: 32px;
+  height: 32px;
+  color: var(--icon-secondary);
+}
+
+.empty strong {
+  margin: 6px 0 5px;
+  color: var(--text-secondary);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.rowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.rowName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* A group opened: its members, and its deletion. */
+.rowButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: inherit;
+  text-align: start;
+}
+
+.rowButton:hover,
+.rowButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* 사람's tab row: the tabs, and the tab's actions on their right. */
+/* A narrow window puts the tab's actions under its tabs. */
+.tabRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Level with the tabs, as Notion's (seen 2026-10-28): the tab list's 8px top. */
+.tabActions {
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+/* The groups as a table, on the member table's parts (WorkspaceMemberTable),
+   as Notion's with 21 groups (2026-11-11, 1191 wide, dark): 그룹 299 wide and
+   pinned at the start with a line after it, 그룹 유형 and 그룹 소유자 at least
+   164, 멤버 and 연결된 팀스페이스 at least 124, each growing toward its share
+   and the table scrolling sideways under 875; the column names 12px, the rows
+   52px over their lines, a row opening its group's window. */
+.groups .table {
+  min-width: 875px;
+}
+
+.groups .tableRow {
+  grid-template-columns: 299px minmax(164px, 224px) minmax(164px, 264px) minmax(124px, 224px) minmax(124px, 224px);
+}
+
+.headLabel {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.groups .bodyRow {
+  min-height: 53px;
+  cursor: pointer;
+}
+
+.bodyRow:hover {
+  background: var(--bg-hover);
+}
+
+/* The group's column stays at the start as the rest scroll under it. */
+.groups .pinned {
+  position: sticky;
+  inset-inline-start: 0;
+  z-index: 1;
+  align-self: stretch;
+  border-inline-end: 1px solid var(--border-default);
+  background: var(--bg-app);
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+
+.groups .bodyRow:hover .pinned {
+  background: linear-gradient(var(--bg-hover), var(--bg-hover)) var(--bg-app);
+}
+
+.nameButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: start;
+}
+
+.nameButton:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--accent-blue);
+}
+
+/* A group's mark in its row: a 32px round tint, the people or its emoji 20px in it. */
+.rowMark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--letter-icon-bg);
+  color: var(--icon-secondary);
+}
+
+/* "관리자 관리" as Notion's gray tag: 11px/500 on an 18px tint. */
+.typeTag {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--action-mark-gray-bg);
+  color: var(--text-gray-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+/* The owners by their faces alone, as Notion's (its code: icons only). */
+.ownerFaces {
+  display: inline-flex;
+}
+
+.ownerFaces > .ownerFace + .ownerFace {
+  margin-inline-start: -6px;
+}
+
+.countCell {
+  color: var(--text-secondary);
+}
+
+/* "‹ › N 페이지" over a line under the rows: 30px arrows 4px apart, the
+   page 12px/500 in the secondary color, an arrow faint where there is no
+   page that way. */
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 31px;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+
+.pagerButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.pagerButton:hover:not(:disabled),
+.pagerButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.pagerButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pagerLabel {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.groupMark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-secondary);
+  line-height: 1;
+}
+
+.groupEmoji {
+  line-height: 1;
+}
+
+/* "그룹 유형 ⌄"'s card, as Notion's (seen 2026-11-11, dark): 320 wide, 10px
+   corners, 8px over its head and 6px under its foot; the head 12px — "그룹
+   유형" 500 in the secondary color, "모두 선택" in blue — its boxes 14px
+   beside 14px words on 29px lines, then a line and "지우기" with a 28px blue
+   "적용". */
+.typeCard {
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  padding: 8px 0 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+}
+
+.typeHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 0 6px;
+  padding-inline: 12px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.typeHead button {
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.typeHead button:hover {
+  background: var(--bg-hover);
+}
+
+.typeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 29px;
+  padding: 0 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.typeRow:hover {
+  background: var(--bg-hover);
+}
+
+.typeRow input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+.typeFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 6px 8px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.typeClear,
+.typeApply {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.typeClear {
+  color: var(--text-default);
+}
+
+.typeClear:hover {
+  background: var(--bg-hover);
+}
+
+.typeApply {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}

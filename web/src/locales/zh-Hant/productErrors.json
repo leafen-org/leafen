@@ -1,0 +1,899 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "載入帳號電子郵件地址",
+        "deniedEffect": "無法載入電子郵件地址，已儲存的地址未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的電子郵件地址。",
+        "stateCheckAction": "進行變更前，請先重新連接並重新整理電子郵件列表。"
+      },
+      "update": {
+        "operation": "管理帳號電子郵件地址",
+        "deniedEffect": "電子郵件要求未獲接受，已儲存的地址未變更。",
+        "uncertainEffect": "Leafen 無法確認電子郵件要求是否已完成。",
+        "stateCheckAction": "重新嘗試前，請先重新整理電子郵件列表並查看驗證郵件。"
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "載入通知設定",
+        "deniedEffect": "無法載入你的通知設定，已儲存的設定未變更。",
+        "uncertainEffect": "Leafen 無法確認你會收到哪些通知。",
+        "stateCheckAction": "變更通知設定前，請關閉並重新開啟設定，以載入你的通知設定。"
+      },
+      "update": {
+        "operation": "變更通知設定",
+        "deniedEffect": "你的通知設定未變更，先前的設定維持不變。",
+        "uncertainEffect": "Leafen 無法確認你的通知設定是否已變更。",
+        "stateCheckAction": "再次變更前，請關閉並重新開啟設定，以確認你的通知設定。"
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "載入帳號個人檔案",
+        "deniedEffect": "無法載入你的名字和照片，已儲存的個人檔案也未變更。",
+        "uncertainEffect": "Leafen 無法確認你目前的名字和照片。",
+        "stateCheckAction": "變更前，請關閉並重新開啟設定，以載入你的個人檔案。"
+      },
+      "update": {
+        "operation": "儲存帳號個人檔案",
+        "deniedEffect": "你的個人檔案未變更。",
+        "uncertainEffect": "Leafen 無法確認帳號個人檔案是否已儲存。",
+        "stateCheckAction": "重試前，請重新載入帳號個人檔案和稽核記錄。"
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "變更雙重驗證",
+        "deniedEffect": "要求的雙重驗證變更未獲接受，先前的設定仍然有效。",
+        "uncertainEffect": "Leafen 無法確認目前的雙重驗證狀態。",
+        "stateCheckAction": "嘗試其他雙重驗證變更前，請重新載入帳號安全性。"
+      },
+      "password": {
+        "operation": "變更帳號密碼",
+        "deniedEffect": "密碼未變更，目前的工作階段仍然有效。",
+        "uncertainEffect": "Leafen 無法確認密碼是否已變更，以及其他工作階段是否已結束。",
+        "stateCheckAction": "重新載入帳號安全性，若目前的工作階段已無法運作，請再次登入。"
+      },
+      "read": {
+        "operation": "載入帳號安全性",
+        "deniedEffect": "無法載入安全設定和工作階段，已儲存的帳號狀態未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的雙重驗證和工作階段狀態。",
+        "stateCheckAction": "變更前，請重新載入帳號安全性。"
+      },
+      "recovery": {
+        "operation": "取代復原代碼",
+        "deniedEffect": "新的復原代碼未獲接受，先前未使用的代碼仍然有效。",
+        "uncertainEffect": "Leafen 無法確認哪些復原代碼仍在生效。",
+        "stateCheckAction": "決定是否再次取代代碼前，請重新載入帳號安全性。"
+      },
+      "sessionRevoke": {
+        "operation": "撤銷帳號工作階段",
+        "deniedEffect": "所選的工作階段未確認已撤銷，其他工作階段未變更。",
+        "uncertainEffect": "Leafen 無法確認所選的工作階段是否已撤銷。",
+        "stateCheckAction": "決定是否重試前，請重新載入工作階段清單。"
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "取消伺服器備份",
+        "deniedEffect": "備份未確認已取消。",
+        "uncertainEffect": "Leafen 無法確認備份是否已取消。",
+        "stateCheckAction": "請在再次取消前檢查目前的備份狀態。"
+      },
+      "create": {
+        "operation": "建立伺服器備份",
+        "deniedEffect": "未確認已建立新的備份。",
+        "uncertainEffect": "Leafen 無法確認備份要求是否已接受。",
+        "stateCheckAction": "請在提交其他要求前檢查目前的備份。"
+      },
+      "download": {
+        "operation": "下載伺服器備份",
+        "deniedEffect": "未下載任何已驗證的備份檔案。",
+        "uncertainEffect": "Leafen 無法驗證或串流備份檔案。",
+        "stateCheckAction": "請在再次下載前檢查已完成的備份狀態。"
+      },
+      "retry": {
+        "operation": "重試伺服器備份",
+        "deniedEffect": "失敗的備份未重新啟動。",
+        "uncertainEffect": "Leafen 無法確認備份是否已重新啟動。",
+        "stateCheckAction": "請在再次重試前檢查目前的備份狀態。"
+      },
+      "status": {
+        "operation": "載入伺服器備份狀態",
+        "deniedEffect": "未載入備份狀態；未變更任何備份狀態。",
+        "uncertainEffect": "Leafen 無法確認目前的備份狀態。",
+        "stateCheckAction": "請在執行其他操作前重新載入備份狀態。"
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "載入伺服器報告",
+        "deniedEffect": "未載入報告；未變更任何報告狀態。",
+        "uncertainEffect": "Leafen 無法確認目前的報告快照。",
+        "stateCheckAction": "請在重新整理前重新載入目前的報告。"
+      },
+      "refresh": {
+        "operation": "重新整理伺服器報告",
+        "deniedEffect": "未確認已建立新的報告快照。",
+        "uncertainEffect": "Leafen 無法確認報告快照是否已變更。",
+        "stateCheckAction": "請在再次重新整理前載入目前的報告。"
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "載入備份排程",
+        "deniedEffect": "未載入備份排程；未變更任何設定。",
+        "uncertainEffect": "Leafen 無法確認目前的備份排程。",
+        "stateCheckAction": "請在變更前重新載入備份排程。"
+      },
+      "restore": {
+        "operation": "從備份還原伺服器",
+        "deniedEffect": "伺服器資料未變更。",
+        "uncertainEffect": "Leafen 無法確認是否已設定還原。",
+        "stateCheckAction": "請重新載入備份設定，確認是否有還原作業正在等待，再重新嘗試。"
+      },
+      "save": {
+        "operation": "儲存備份排程",
+        "deniedEffect": "備份排程未變更。",
+        "uncertainEffect": "Leafen 無法確認備份排程是否已儲存。",
+        "stateCheckAction": "請重新載入備份排程，確認目前生效的設定後再儲存。"
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "載入要求記錄設定",
+        "deniedEffect": "要求記錄設定未載入，未變更任何設定。",
+        "uncertainEffect": "Leafen 無法確認目前的要求記錄設定。",
+        "stateCheckAction": "變更要求記錄設定前，請先重新載入。"
+      },
+      "save": {
+        "operation": "儲存要求記錄設定",
+        "deniedEffect": "要求記錄設定未變更。",
+        "uncertainEffect": "Leafen 無法確認要求記錄設定是否已儲存。",
+        "stateCheckAction": "請重新載入要求記錄設定，確認目前生效的設定後再儲存。"
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "載入網路代理",
+        "deniedEffect": "網路代理未載入，未變更任何設定。",
+        "uncertainEffect": "Leafen 無法確認目前的網路代理。",
+        "stateCheckAction": "變更網路代理前，請先重新載入。"
+      },
+      "save": {
+        "operation": "儲存網路代理",
+        "deniedEffect": "網路代理未變更。",
+        "uncertainEffect": "Leafen 無法確認網路代理是否已儲存。",
+        "stateCheckAction": "請重新載入網路代理，確認目前生效的設定後再儲存。"
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "載入伺服器設定",
+        "deniedEffect": "設定未載入，已儲存的設定也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的伺服器設定。",
+        "stateCheckAction": "進行變更前，請先重新載入設定。"
+      },
+      "save": {
+        "operation": "儲存伺服器設定",
+        "deniedEffect": "新設定未被接受，先前儲存的設定仍繼續生效。",
+        "uncertainEffect": "Leafen 無法確認新設定是否已儲存。",
+        "stateCheckAction": "請重新載入設定，比對目前的值後再試一次。"
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "檢查登入狀態",
+        "deniedEffect": "未建立登入工作階段，帳號資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的登入狀態。",
+        "stateCheckAction": "重新載入頁面，然後再次登入。"
+      },
+      "deviceCode": {
+        "operation": "登入此裝置",
+        "deniedEffect": "你未登入，帳號資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認此裝置是否已登入。",
+        "stateCheckAction": "使用新的驗證碼再次登入。"
+      },
+      "emailVerification": {
+        "operation": "驗證電子郵件地址",
+        "deniedEffect": "電子郵件地址未經驗證，帳號也未登入。",
+        "uncertainEffect": "Leafen 無法確認電子郵件驗證是否已完成。",
+        "stateCheckAction": "請嘗試登入；若無法登入，請再次開啟電子郵件中的連結。"
+      },
+      "mfa": {
+        "operation": "完成雙重驗證",
+        "deniedEffect": "你未登入，MFA 驗證仍未完成。",
+        "uncertainEffect": "Leafen 無法確認雙重驗證是否已完成。",
+        "stateCheckAction": "重新開始登入流程。"
+      },
+      "passwordResetConfirm": {
+        "operation": "變更密碼",
+        "deniedEffect": "密碼未變更。",
+        "uncertainEffect": "Leafen 無法確認密碼是否已變更。",
+        "stateCheckAction": "請嘗試使用新密碼登入；若無法登入，請重新取得重設連結。"
+      },
+      "passwordResetRequest": {
+        "operation": "要求重設密碼",
+        "deniedEffect": "系統未受理任何密碼重設訊息的傳送。",
+        "uncertainEffect": "Leafen 無法確認重設要求是否已受理。",
+        "stateCheckAction": "請先等待電子郵件，再提出新的要求。"
+      },
+      "providerExchange": {
+        "operation": "使用外部帳號登入",
+        "deniedEffect": "你未登入，帳號資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認外部登入的結果。",
+        "stateCheckAction": "以相同方式再次登入。"
+      },
+      "serverSetup": {
+        "operation": "設定 Leafen 伺服器",
+        "deniedEffect": "管理員帳號未建立。",
+        "uncertainEffect": "Leafen 無法確認伺服器設定是否已完成。",
+        "stateCheckAction": "重新載入頁面並確認設定狀態，然後再試一次。"
+      },
+      "signIn": {
+        "operation": "登入",
+        "deniedEffect": "你未登入，帳號資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認登入是否完成。",
+        "stateCheckAction": "請重新整理頁面並再次登入。"
+      },
+      "signUp": {
+        "operation": "建立帳號",
+        "deniedEffect": "未建立新帳號。",
+        "uncertainEffect": "Leafen 無法確認帳號是否已建立。",
+        "stateCheckAction": "請先嘗試登入；若仍無法登入，請再次註冊。"
+      },
+      "passkey": {
+        "operation": "使用通行金鑰登入",
+        "deniedEffect": "登入未獲接受。",
+        "uncertainEffect": "Leafen 無法確認登入是否已完成。",
+        "stateCheckAction": "請使用通行金鑰再次登入。"
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "載入頁面內容",
+        "deniedEffect": "頁面內容未載入，已儲存的內容未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的頁面內容。",
+        "stateCheckAction": "編輯前請先重新載入頁面。"
+      },
+      "update": {
+        "operation": "儲存頁面內容",
+        "deniedEffect": "變更未獲接受；伺服器上的最新內容仍維持不變。",
+        "uncertainEffect": "Leafen 無法確認內容是否已儲存。",
+        "stateCheckAction": "重新載入最新內容並進行比對，然後再試一次。"
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "儲存資料庫自動化",
+        "deniedEffect": "自動化未變更。",
+        "uncertainEffect": "Leafen 無法確認資料庫自動化的變更是否已儲存。",
+        "stateCheckAction": "再次嘗試前，請先重新載入自動化。"
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "儲存 DLP 政策",
+        "deniedEffect": "未儲存新的 DLP 政策；先前的政策仍維持生效。",
+        "uncertainEffect": "Leafen 無法確認 DLP 政策是否已儲存。",
+        "stateCheckAction": "再次嘗試前，請先重新載入 DLP 政策與組織稽核記錄。"
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "驗證 SAML 網域",
+        "deniedEffect": "網域仍處於待處理狀態；SAML 設定、稽核紀錄和登入工作階段均未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的 SAML 網域驗證狀態。",
+        "stateCheckAction": "再次嘗試前，請先重新載入 SAML 網域狀態。"
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "刪除檔案",
+        "deniedEffect": "檔案未被刪除，也未變更。",
+        "uncertainEffect": "Leafen 無法確認檔案是否已刪除。",
+        "stateCheckAction": "決定是否重試前，請先重新載入檔案及其參照。"
+      },
+      "upload": {
+        "operation": "上傳檔案",
+        "deniedEffect": "新檔案未被儲存；現有檔案也未變更。",
+        "uncertainEffect": "Leafen 無法確認檔案是否已儲存。",
+        "stateCheckAction": "決定是否重試前，請先重新載入檔案列表。"
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "套用人員對應",
+        "deniedEffect": "新的對應未被接受。",
+        "uncertainEffect": "Leafen 無法確認已套用哪些對應。",
+        "stateCheckAction": "再次套用前，請先重新載入對應結果。"
+      },
+      "refresh": {
+        "operation": "重新整理人員對應",
+        "deniedEffect": "最新的對應未載入；已儲存的對應也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的對應狀態。",
+        "stateCheckAction": "繼續前，請先重新載入對應面板。"
+      },
+      "scan": {
+        "operation": "掃描匯入的人員",
+        "deniedEffect": "匯入的人員未列出，現有的對應也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前匯入的人員列表。",
+        "stateCheckAction": "進行變更前，請先重新載入對應面板。"
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "執行按鈕自動化",
+        "deniedEffect": "按鈕的動作未執行，頁面內容也未變更。",
+        "uncertainEffect": "Leafen 無法確認按鈕自動化是否已執行。",
+        "stateCheckAction": "再次嘗試前，請先重新載入受影響的內容和執行狀態。"
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "複製組織 API 權杖",
+        "deniedEffect": "無法在剪貼簿中確認權杖；權杖本身並未變更。",
+        "uncertainEffect": "Leafen 無法確認剪貼簿寫入是否完成。",
+        "stateCheckAction": "再次複製權杖前，請先檢查剪貼簿。"
+      },
+      "create": {
+        "operation": "建立組織 API 權杖",
+        "deniedEffect": "未確認是否已建立新權杖。",
+        "uncertainEffect": "Leafen 無法確認權杖是否已建立。",
+        "stateCheckAction": "建立另一個權杖前，請先重新載入權杖清單。"
+      },
+      "list": {
+        "operation": "載入組織 API 權杖",
+        "deniedEffect": "未載入權杖，現有權杖也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的權杖清單。",
+        "stateCheckAction": "進行變更前，請先重新載入權杖清單。"
+      },
+      "revoke": {
+        "operation": "撤銷組織 API 權杖",
+        "deniedEffect": "未確認是否已撤銷權杖。",
+        "uncertainEffect": "Leafen 無法確認權杖是否已撤銷。",
+        "stateCheckAction": "再次撤銷前，請先重新載入權杖清單。"
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "載入工作空間頁面",
+        "deniedEffect": "未載入頁面，已儲存的工作空間資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的工作空間頁面。",
+        "stateCheckAction": "編輯前，請先重新載入工作空間。"
+      },
+      "create": {
+        "operation": "建立頁面",
+        "deniedEffect": "未建立新頁面，現有頁面也未變更。",
+        "uncertainEffect": "Leafen 無法確認頁面是否已建立。",
+        "stateCheckAction": "再次嘗試前，請重新載入頁面清單，確認是否已出現新頁面。"
+      },
+      "title": {
+        "update": {
+          "operation": "儲存頁面標題",
+          "deniedEffect": "標題變更未獲接受，仍沿用已儲存的標題。",
+          "uncertainEffect": "Leafen 無法確認變更是否已儲存。",
+          "stateCheckAction": "請重新載入頁面，確認目前的標題。"
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "載入頁面分析",
+        "deniedEffect": "未載入分析資料，頁面資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的分析資料。",
+        "stateCheckAction": "下結論前，請先重新載入分析資料。"
+      },
+      "policyUpdate": {
+        "operation": "儲存分析政策",
+        "deniedEffect": "新的分析政策未獲接受。",
+        "uncertainEffect": "Leafen 無法確認政策是否已儲存。",
+        "stateCheckAction": "請先重新載入政策並比對，然後再試一次。"
+      },
+      "preferencesRead": {
+        "operation": "載入分析偏好設定",
+        "deniedEffect": "分析偏好設定未載入，已儲存的設定也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的分析偏好設定。",
+        "stateCheckAction": "請先重新載入偏好設定，然後再進行編輯。"
+      },
+      "preferencesUpdate": {
+        "operation": "儲存分析偏好設定",
+        "deniedEffect": "系統未接受新的偏好設定。",
+        "uncertainEffect": "Leafen 無法確認偏好設定是否已儲存。",
+        "stateCheckAction": "請先重新載入偏好設定並比對，然後再試一次。"
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "安全地儲存離線變更",
+        "deniedEffect": "此變更未儲存在本裝置上。",
+        "uncertainEffect": "Leafen 無法確認變更是否已儲存在本裝置或伺服器上。",
+        "stateCheckAction": "請複製編輯過的內容，然後重新載入並比對已儲存的狀態。"
+      },
+      "legacy": {
+        "operation": "移轉離線變更",
+        "deniedEffect": "較舊的離線變更仍留在原本儲存的位置，並未傳送。",
+        "uncertainEffect": "Leafen 無法確認哪些較舊的離線變更已移轉。",
+        "stateCheckAction": "請保持此分頁開啟，重新載入後再進行編輯。"
+      },
+      "refresh": {
+        "operation": "重新載入已復原的變更",
+        "deniedEffect": "已復原的變更未顯示，已儲存的資料也未替換。",
+        "uncertainEffect": "Leafen 無法確認復原後的目前頁面。",
+        "stateCheckAction": "請先重新載入頁面，然後再進行編輯。"
+      },
+      "replay": {
+        "operation": "傳送離線變更",
+        "deniedEffect": "已排入佇列的變更仍待處理，且未獲伺服器確認。",
+        "uncertainEffect": "Leafen 無法確認哪些已排入佇列的變更已送達伺服器。",
+        "stateCheckAction": "請保持此分頁開啟、重新連接並重新載入，然後再進行編輯。"
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "搜尋公開網站",
+        "deniedEffect": "搜尋結果未載入，已發布的內容也未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的搜尋結果。",
+        "stateCheckAction": "請先確認網站狀態，然後再搜尋。"
+      },
+      "sharedPage": {
+        "operation": "載入分享頁面",
+        "deniedEffect": "無法載入分享頁面，已發布的內容未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的分享頁面。",
+        "stateCheckAction": "請在重新嘗試前檢查分享連結。"
+      },
+      "site": {
+        "operation": "載入公開網站",
+        "deniedEffect": "無法載入公開網站，已發布的內容未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的公開網站。",
+        "stateCheckAction": "請檢查網站網址，然後重新嘗試。"
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "還原表單登入",
+        "deniedEffect": "無法開啟成員表單，未提交任何回應。",
+        "uncertainEffect": "Leafen 無法確認此表單目前的登入狀態。",
+        "stateCheckAction": "請重新載入表單並再次登入。"
+      },
+      "configurationWrite": {
+        "operation": "儲存表單設定",
+        "deniedEffect": "無法確認表單設定已儲存。",
+        "uncertainEffect": "Leafen 無法確認目前的表單設定。",
+        "stateCheckAction": "請在再次儲存前重新載入表單設定。"
+      },
+      "definitionRead": {
+        "operation": "載入表單",
+        "deniedEffect": "無法載入表單，未提交任何回應。",
+        "uncertainEffect": "Leafen 無法確認目前的表單定義。",
+        "stateCheckAction": "請在輸入回應前重新載入表單。"
+      },
+      "optionsRead": {
+        "operation": "載入表單選項",
+        "deniedEffect": "無法載入所要求的選項，未提交草稿回應。",
+        "uncertainEffect": "Leafen 無法確認目前的選項。",
+        "stateCheckAction": "請在提交表單前重新載入選項。"
+      },
+      "responseSubmit": {
+        "operation": "提交表單回應",
+        "deniedEffect": "回應未獲接受。",
+        "uncertainEffect": "Leafen 無法確認回應是否已被接受。",
+        "stateCheckAction": "請在再次提交回應前檢查表單結果。"
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "載入執行階段設定",
+        "deniedEffect": "無法載入執行階段設定；已儲存的伺服器設定未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的執行階段設定，因此已啟用安全的備援值。",
+        "stateCheckAction": "請重新載入頁面以讀取目前的伺服器設定。"
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "同步待處理的變更",
+        "deniedEffect": "待處理的變更仍留在佇列中，且未經伺服器確認。",
+        "uncertainEffect": "Leafen 無法確認哪些待處理的變更已送達伺服器。",
+        "stateCheckAction": "請保持此分頁開啟、重新連線，並在重試前檢查已儲存的狀態。"
+      },
+      "pendingRead": {
+        "operation": "檢查待處理的變更",
+        "deniedEffect": "未載入待處理變更的數量；已排入佇列的變更並未遭到捨棄。",
+        "uncertainEffect": "Leafen 無法確認目前還有多少變更待處理。",
+        "stateCheckAction": "請保持此分頁開啟，並再次檢查同步狀態。"
+      },
+      "retry": {
+        "operation": "重試同步",
+        "deniedEffect": "未確認同步；待處理的變更仍留在佇列中。",
+        "uncertainEffect": "Leafen 無法確認最新的同步結果。",
+        "stateCheckAction": "再次重試前，請檢查已儲存的狀態與連線。"
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "建立工作空間",
+        "deniedEffect": "未建立新的工作空間，現有資料也未變更。",
+        "uncertainEffect": "Leafen 無法確認工作空間是否已建立。",
+        "stateCheckAction": "請重新載入工作空間清單，確認是否有新的工作空間，然後再試一次。"
+      },
+      "delete": {
+        "operation": "永久刪除工作空間",
+        "deniedEffect": "刪除要求未被接受；工作空間與現有資料均未變更。",
+        "uncertainEffect": "Leafen 無法確認工作空間是否已刪除。",
+        "stateCheckAction": "請先重新載入工作空間清單，然後再試一次。"
+      },
+      "member": {
+        "add": {
+          "operation": "新增工作空間成員",
+          "deniedEffect": "未新增成員，且未進行任何變更。",
+          "uncertainEffect": "Leafen 無法確認工作空間成員是否已新增。",
+          "stateCheckAction": "請先重新載入成員、活動與稽核記錄，然後再試一次。"
+        },
+        "revoke": {
+          "operation": "移除工作空間成員",
+          "deniedEffect": "未移除成員，且未進行任何變更。",
+          "uncertainEffect": "Leafen 無法確認工作空間成員是否已移除。",
+          "stateCheckAction": "請先重新載入成員、活動與稽核記錄，然後再試一次。"
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "儲存工作空間設定",
+          "deniedEffect": "設定變更未儲存；先前的設定仍然有效。",
+          "uncertainEffect": "Leafen 無法確認工作空間設定是否已儲存。",
+          "stateCheckAction": "請先重新載入工作空間設定、活動與稽核記錄，然後再試一次。"
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "取消工作空間匯出",
+        "deniedEffect": "匯出作業未取消，可能仍在執行中。",
+        "uncertainEffect": "Leafen 無法確認匯出是否已取消。",
+        "stateCheckAction": "再次取消前，請先重新整理匯出狀態。"
+      },
+      "download": {
+        "operation": "下載工作空間匯出",
+        "deniedEffect": "封存檔未下載；伺服器上的匯出作業未變更。",
+        "uncertainEffect": "Leafen 無法確認封存檔是否已下載完成。",
+        "stateCheckAction": "再次下載前，請先查看下載清單。"
+      },
+      "job": {
+        "operation": "匯出工作空間",
+        "deniedEffect": "封存檔未建立；來源工作空間未變更。",
+        "uncertainEffect": "Leafen 無法確認此工作是否有可用的封存檔。",
+        "stateCheckAction": "請從目前的工作空間開始替代匯出。"
+      },
+      "poll": {
+        "operation": "等待工作空間匯出",
+        "deniedEffect": "無法載入最新的匯出狀態；匯出工作未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的匯出狀態。",
+        "stateCheckAction": "執行其他動作前，請先重新整理匯出狀態。"
+      },
+      "retry": {
+        "operation": "重試工作空間匯出",
+        "deniedEffect": "重試要求未獲接受；現有的匯出工作未變更。",
+        "uncertainEffect": "Leafen 無法確認重試要求是否已獲接受。",
+        "stateCheckAction": "再次重試前，請先重新整理匯出狀態。"
+      },
+      "start": {
+        "operation": "開始工作空間匯出",
+        "deniedEffect": "新的匯出工作未獲接受；工作空間未變更。",
+        "uncertainEffect": "Leafen 無法確認匯出工作是否已獲接受。",
+        "stateCheckAction": "開始另一個工作前，請先重新整理最新的匯出狀態。"
+      },
+      "status": {
+        "operation": "載入工作空間匯出狀態",
+        "deniedEffect": "無法載入最新的匯出狀態；匯出工作未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的匯出狀態。",
+        "stateCheckAction": "執行其他動作前，請先重新載入匯出對話方塊。"
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "取消匯入",
+        "deniedEffect": "匯入作業未取消，可能仍在執行中。",
+        "uncertainEffect": "Leafen 無法確認匯入是否已取消。",
+        "stateCheckAction": "再次取消前，請先重新整理匯入狀態。"
+      },
+      "job": {
+        "operation": "匯入檔案",
+        "deniedEffect": "未建立任何頁面；部分匯入的內容已移除。",
+        "uncertainEffect": "Leafen 無法確認此匯入是否有可用的頁面。",
+        "stateCheckAction": "請保留診斷參照，並從來源檔案開始新的匯入。"
+      },
+      "start": {
+        "operation": "開始匯入",
+        "deniedEffect": "新的匯入要求未獲接受，且未建立任何頁面。",
+        "uncertainEffect": "Leafen 無法確認匯入要求是否已獲接受。",
+        "stateCheckAction": "請勿變更檔案，直接重試同一個檔案，讓 Leafen 重新連接至同一個要求。"
+      },
+      "status": {
+        "operation": "載入匯入狀態",
+        "deniedEffect": "未載入最新的匯入狀態；匯入工作未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的匯入狀態。",
+        "stateCheckAction": "執行其他操作前，請重新開啟匯入對話方塊，以重新連接至已儲存的工作。"
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "載入帳號通行金鑰",
+        "deniedEffect": "未載入通行金鑰清單；已儲存的金鑰未變更。",
+        "uncertainEffect": "Leafen 無法確認目前的通行金鑰清單。",
+        "stateCheckAction": "進行變更前，請先重新連接並重新整理通行金鑰清單。"
+      },
+      "update": {
+        "operation": "管理帳號通行金鑰",
+        "deniedEffect": "伺服器未變更已儲存的通行金鑰。",
+        "uncertainEffect": "Leafen 無法確認通行金鑰變更是否已完成。",
+        "stateCheckAction": "請先重新整理通行金鑰清單，再重新嘗試。若已建立新金鑰但未儲存至此處，請檢查裝置的金鑰管理工具。"
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "目前密碼不正確。",
+    "currentPasswordNext": "如果忘記密碼，請登出並在登入頁面重設。",
+    "code": "代碼錯誤或已使用過。",
+    "codeNext": "請輸入驗證器應用程式目前顯示的代碼。",
+    "recoveryCode": "復原代碼錯誤或已使用過。",
+    "recoveryCodeNext": "請輸入尚未使用過的復原代碼。",
+    "accountDeactivated": "伺服器管理員已停用此帳號。",
+    "accountDeactivatedNext": "請洽詢管理員重新啟用。",
+    "organizationSSO": "此組織僅允許透過單一登入 (SSO) 登入。",
+    "organizationSSONext": "請改用公司帳號登入。",
+    "organizationPasswordTwoStep": "你的組織要求以密碼和雙重認證登入，不能使用裝置代碼。",
+    "organizationPasswordTwoStepNext": "請使用電子郵件和密碼登入；如果沒有密碼，請向管理員索取一次性密碼。",
+    "deviceCode": "驗證碼錯誤、已使用、已過期，或顯示驗證碼的視窗已關閉。",
+    "deviceCodeNext": "取得新的驗證碼並重新輸入。",
+    "setupCode": "設定代碼不正確。",
+    "setupCodeNext": "再次開啟伺服器列印的設定連結，或輸入伺服器啟動時使用的代碼。",
+    "setupCodeMissing": "請輸入設定代碼。",
+    "setupCodeMissingNext": "開啟伺服器印出的設定連結就會自動填入；用伺服器啟動時所帶的設定碼也可以。",
+    "sessionCapacity": "此帳號已達裝置數量上限。",
+    "sessionCapacityNext": "請在設定 → 帳號 → 裝置中登出不再使用的裝置，然後再試一次。",
+    "signInEnded": "此登入請求已結束：可能是逾時，或代碼輸入錯誤次數過多。",
+    "signInEndedNext": "請使用電子郵件和密碼再次登入。",
+    "emailNotVerified": "此帳號的電子郵件尚未確認。",
+    "emailNotVerifiedNext": "請開啟註冊時收到的電子郵件中的連結，然後登入。",
+    "registrationFailed": "無法建立帳號。",
+    "registrationFailedNext": "請稍後重新嘗試。如果持續失敗，請告知此伺服器的管理員。"
+  },
+  "labels": {
+    "reference": "參照"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "此組織不會在公司登入時建立新帳號。",
+    "samlAccountCreationOffNext": "請你的組織管理員邀請你。",
+    "samlRetryAfterInvite": "收到邀請後，請再次登入。",
+    "samlIdentityDenied": "此電子郵件無法使用此組織的公司登入。",
+    "samlIdentityDeniedNext": "請組織管理員確認電子郵件網域和你的成員資格。",
+    "samlRetryAfterAdministrator": "管理員確認後，請再次登入。",
+    "samlResponseInvalid": "無法驗證公司登入回應。",
+    "samlResponseInvalidNext": "請重新開始登入。如果問題持續發生，請洽詢組織管理員檢查 SAML 設定。",
+    "accountAlreadyExistsForEmailAddress": "此電子郵件地址已有帳號。",
+    "accountEmailCouldNotAdmittedFor": "無法傳送帳號電子郵件。",
+    "administratorSettingsDoNotMeetServer": "管理員設定不符合伺服器要求。",
+    "administratorSettingsNotAvailableCurrentAccount": "目前帳號無法使用管理員設定。",
+    "anotherAdministratorAlreadyCompletedServerSetup": "其他管理員已完成伺服器設定。",
+    "anotherServerOperationTemporarilyLockedAccount": "另一個伺服器作業暫時鎖定了帳號儲存空間。",
+    "anotherServerOperationTemporarilyLockedDatabase": "另一個伺服器作業暫時鎖定了資料庫，因此匯出無法繼續。",
+    "anotherServerOperationTemporarilyLockedDlp": "另一個伺服器作業暫時鎖定了 DLP 政策儲存空間。",
+    "anotherServerOperationTemporarilyLockedFile": "另一個伺服器作業暫時鎖定了檔案儲存空間。",
+    "anotherServerOperationTemporarilyLockedPage": "另一個伺服器作業暫時鎖定了頁面內容儲存空間。",
+    "anotherServerOperationTemporarilyLockedProduct": "另一個伺服器作業暫時鎖定了產品儲存空間。",
+    "askOrganizationAdministratorToAllow": "請要求組織管理員或團隊協作區擁有者允許此操作。",
+    "askServerAdministratorCheckEmailDelivery": "請要求伺服器管理員檢查電子郵件傳送狀態，然後再試一次。",
+    "backupArtifactNotCompleteYet": "備份檔案尚未完成。",
+    "backupStateNoLongerPermitsControl": "備份目前的狀態已不允許執行該操作。",
+    "causeCouldNotDetermined": "無法判斷原因。",
+    "changeSaveReceiptAndSynchronizationState": "變更未儲存，頁面內容維持不變。",
+    "checkCurrentBackupBeforeRetrying": "重新嘗試前，請先檢查目前的備份。",
+    "checkCurrentJobStateBeforeDeciding": "決定是否重新嘗試前，請先檢查目前的工作狀態。",
+    "checkCurrentListBeforeTryingDifferent": "嘗試其他項目前，請先檢查目前的清單。",
+    "checkCurrentServerSettingsBeforeTrying": "重新嘗試前，請先檢查目前的伺服器設定。",
+    "checkCurrentServerSetupStateBefore": "重新嘗試前，請先檢查目前的伺服器設定狀態。",
+    "checkCurrentStateAndUseNew": "請檢查目前的狀態，並僅在需要時建立新的備份。",
+    "checkEmailAndPassword": "請檢查電子郵件與密碼。",
+    "checkServerSecretStorageThenSave": "請檢查伺服器祕密儲存空間，然後再次儲存相同的設定。",
+    "checkServerStateThenLoadSettings": "請檢查伺服器狀態，然後再次載入設定。",
+    "createNewBackupAndInspectServer": "建立新的備份；如果錯誤再次發生，請檢查伺服器儲存空間。",
+    "currentAccountNotAuthorizedForOperation": "目前的帳號無權執行此操作。",
+    "currentStateMustCheckedBeforeRetry": "必須先檢查目前狀態，才能判斷重新嘗試是否安全。",
+    "currentStateMustCheckedBeforeRetrying": "重新嘗試前，必須先檢查目前的狀態。",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS 驗證服務暫時無法使用。",
+    "doNotAssumeUnchangedRetrySafe": "在伺服器儲存空間修復前，請勿假設重新嘗試是安全的。",
+    "doNotKeepRetryingIdentifierNew": "請勿持續重新嘗試此請求；請先重新載入，之後再進行新的嘗試才安全。",
+    "doNotResumeFailedJobStart": "請勿接續執行失敗的工作，請改為開始新的匯出。",
+    "doNotRetryBeforeLoadingLatest": "在載入最新的伺服器設定前，請勿重新嘗試。",
+    "doNotRetryDirectRequestUnchanged": "請勿直接重新嘗試此上傳；請改用可續傳上傳。",
+    "doNotRetryDirectRequestUnchanged2": "請勿直接重新嘗試此上傳；請改用可續傳的封存上傳。",
+    "doNotRetrySetupRequestSign": "請勿重試此設定請求；請使用現有的管理員帳號登入。",
+    "doNotReuseInvalidArtifactCreate": "請勿重複使用無效的備份檔案，並建立新的備份。",
+    "doNotReuseLinkNewAction": "請勿重複使用此連結；建立新動作是安全的。",
+    "emailOrPasswordDidNotMatch": "電子郵件或密碼不符。",
+    "externalSignInProviderCouldNot": "外部登入提供者無法完成此請求。",
+    "fileLargerThanOneDirectUpload": "此檔案太大，無法進行單次直接上傳。",
+    "formStorageTemporarilyLockedByAnother": "表單儲存空間遭其他伺服器作業暫時鎖定。",
+    "leafenArchiveLargerThanOneDirect": "此 Leafen 封存檔太大，無法進行單次直接匯入。",
+    "leafenDidNotReceiveServerResponse": "Leafen 未收到伺服器回應。",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen 正在重建組織儲存空間使用量狀態。",
+    "leafenServiceCouldNotCompleteOperation": "Leafen 服務無法完成此操作。",
+    "isolatedRecordNotAppliedYourRequested": "不完整的紀錄已擱置，你的變更未儲存，頁面內容維持不變。",
+    "jobCannotRetriedStartReplacementExport": "此工作無法重新嘗試，請開始替代匯出。",
+    "jobSArchiveNotPublishedAnd": "此工作的封存檔未建立，來源工作空間也未變更。",
+    "keepDiagnosticReferenceAndAskServer": "請保留診斷參考資訊，並要求伺服器管理員修復伺服器儲存空間。",
+    "lastConfirmedSavedStateRestoredSo": "最後確認的已儲存狀態已還原，因此可以安全地重新嘗試相同的變更。",
+    "loadCurrentReportAndUseNew": "請載入目前的報告，然後再次重新整理。",
+    "loadCurrentReportBeforeRefreshingAgain": "請先載入目前的報告，再重新整理。",
+    "loadCurrentReportBeforeTryingAgain": "請先載入目前的報告，再重新嘗試。",
+    "newerOrIncompatibleStatePreventedOperation": "較新或不相容的狀態導致此操作無法執行。",
+    "noNewArchivePublishedAndSource": "未建立新的封存檔，來源工作空間和先前的封存檔均維持不變。",
+    "noNewSignInSessionCreated": "未建立新的登入工作階段，現有工作階段也未變更。",
+    "notKnownWhetherRetryingSafeUntil": "在檢查目前狀態之前，無法得知重新嘗試是否安全。",
+    "organizationStorageAuthorityInconsistent": "組織的儲存空間使用量紀錄不一致。",
+    "organizationDlpBlocksOperation": "你的組織資料遺失防護政策封鎖了此操作。",
+    "takeOutTermOrAskAboutDlp": "請移除任何敏感詞彙後再試一次；若不確定，請洽詢組織管理員。",
+    "organizationSettingsDoNotAllowOperation": "你的組織或團隊協作區設定不允許此操作。",
+    "organizationStorageLimitWouldExceeded": "將會超過組織儲存空間上限。",
+    "serverDiskAlmostFull": "伺服器的磁碟幾乎已滿。",
+    "askServerAdministratorToFreeSpace": "請伺服器管理員釋出空間；騰出空間後就會恢復正常。",
+    "safeRetryOnceServerHasRoom": "伺服器騰出空間後，可以安全地再次嘗試相同操作。",
+    "readDoesNotChangeSavedData": "此讀取不會變更已儲存的資料，因此可以安全地重新嘗試。",
+    "reloadCurrentBackupBeforeChoosingAnother": "請先重新載入目前的備份，再選擇其他動作。",
+    "reloadCurrentBackupStateBeforeContinuing": "請先重新載入目前的備份狀態再繼續。",
+    "reloadCurrentStateBeforeDecidingWhether": "請重新載入目前狀態，再決定是否重試。",
+    "reloadSignInPageAndStart": "請重新整理登入頁面並再次登入。",
+    "removeUnneededFilesOrAskOrganization": "請移除不需要的檔案，或請組織帳單管理員提高上限。",
+    "reportChangedAfterScreenLoaded": "此畫面載入後，報告已變更。",
+    "requestIdentifierBelongsDifferentOperation": "此要求已用於其他動作。",
+    "requestIdentifierBelongsDifferentReportRefresh": "此要求已用於其他報告的重新整理。",
+    "requestedItemNoLongerExistsOr": "要求的項目已不存在，或無法由此帳號檢視。",
+    "retryExportAfterOtherServerOperation": "請等其他伺服器作業完成後再重試此匯出。",
+    "retryExportJobAfterServerStorage": "請在伺服器儲存空間恢復後重試此匯出工作。",
+    "retryOnlyAfterAccountOrPermission": "請僅在帳號或權限變更後再重試。",
+    "retryOnlyAfterOrganizationSettingChanges": "請僅在該設定變更後再重試。",
+    "retrySameContentChangeAfterOther": "請在其他伺服器作業完成後，重試相同的內容變更。",
+    "retrySameContentChangeAfterServer": "請在伺服器儲存空間恢復後，重試相同的內容變更。",
+    "retrySameContentChangeNow": "請立即重試相同的內容變更。",
+    "changeTooLargeForOneChange": "此內容太大，無法一次變更。單次變更上限為 64 MB（含文字）。",
+    "pageKeepsWhatItHadBefore": "頁面會維持原狀。",
+    "makeTheChangeInParts": "請分批進行：先分批刪除大型摺疊列表或區段內的區塊，再分批貼上長文字。",
+    "sameSizeIsRefusedAgain": "相同大小的內容會再次遭到拒絕；分割後即可放心重試。",
+    "linkCannotBeKeptHere": "此變更所連結的頁面或區塊無法在此處建立連結。",
+    "chooseAnotherPageOrRefresh": "請選擇其他頁面，或重新整理頁面後再試一次。",
+    "sameLinkIsRefusedAgain": "再次連結相同項目仍會遭到拒絕。",
+    "retrySameDomainVerificationAfterDns": "請在 DNS 驗證服務恢復後，重試相同的網域驗證。",
+    "retrySameFileOperationAfterOther": "請在其他伺服器作業完成後，重試相同的檔案作業。",
+    "retrySameFileOperationAfterServer": "請在伺服器儲存空間恢復後，重試相同的檔案作業。",
+    "retrySameFormOperationAfterOther": "請在其他伺服器作業完成後，重試相同的表單作業。",
+    "retrySameFormOperationAfterServer": "請在伺服器儲存空間恢復後，重試相同的表單作業。",
+    "retrySameOperationAfterOtherServer": "請在其他伺服器作業完成後，重試相同的作業。",
+    "retrySameOperationAfterServerStorage": "請在伺服器儲存空間恢復後，重試相同的作業。",
+    "returnSignInWithExistingAccount": "請返回並使用現有帳號登入。",
+    "reviewAndCorrectEnteredServerSettings": "請檢查並修正已輸入的伺服器設定。",
+    "reviewEnteredValuesAndCorrectHighlighted": "請檢查已輸入的值，並修正標示的資訊。",
+    "safeRetryAfterEmailDeliveryRestored": "電子郵件傳送恢復後，即可安全地重試。",
+    "safeRetryAfterServerResourceChecks": "伺服器資源檢查恢復後，即可安全地重試。",
+    "safeRetryAfterTemporaryLockClears": "暫時鎖定解除後，即可安全地重試。",
+    "safeRetryRead": "可以安全地重試此讀取作業。",
+    "safeRetrySameAuthenticationOperationAfter": "儲存空間恢復後，即可安全地重試相同的驗證操作。",
+    "safeRetrySameContentChangeAfter": "暫時鎖定解除後，即可安全地重試相同的內容變更。",
+    "safeRetrySameContentChangeAfter2": "儲存空間恢復後，即可安全地重試相同的內容變更。",
+    "safeRetrySameDlpPolicySave": "儲存空間恢復後，即可安全地再次儲存相同的 DLP 政策。",
+    "safeRetrySameDlpPolicySave2": "暫時鎖定解除後，即可安全地再次儲存相同的 DLP 政策。",
+    "safeRetrySameDomainVerificationAfter": "服務恢復後，即可安全地再次進行相同的網域驗證。",
+    "safeRetrySameFileOperationAfter": "儲存空間可用後，即可安全地再次執行相同的檔案操作。",
+    "safeRetrySameFileOperationAfter2": "儲存空間恢復後，即可安全地再次執行相同的檔案操作。",
+    "safeRetrySameFileOperationAfter3": "暫時鎖定解除後，即可安全地再次執行相同的檔案操作。",
+    "safeRetrySameFormOperationAfter": "儲存空間恢復後，即可安全地再次執行相同的表單操作。",
+    "safeRetrySameFormOperationAfter2": "暫時鎖定解除後，即可安全地再次執行相同的表單操作。",
+    "safeRetrySameOperationAfterStorage": "儲存空間恢復後，即可安全地再次執行相同操作。",
+    "safeRetrySameOperationAfterTemporary": "暫時鎖定解除後，即可安全地再次執行相同操作。",
+    "safeRetrySameSettingsAfterSecret": "機密儲存空間恢復後，即可安全地再次嘗試相同設定。",
+    "safeRetrySameSettingsSaveAfter": "修正無效的值後，即可安全地再次儲存相同設定。",
+    "safeRetryWithSameJobIdentifier": "可以安全地重試相同工作。",
+    "safeRetryWithSameJobIdentity": "可以安全地重試相同工作。",
+    "safeSignInInsteadCreatingAnother": "可以安全地直接登入，不必建立另一個帳號。",
+    "safeStartNewProviderSignIn": "稍後再重新登入該提供者帳號是安全的。",
+    "safeTryAgainAfterCorrectingDetails": "修正詳細資料後，即可安全地再試一次。",
+    "safeTryAgainAfterCorrectingInput": "修正輸入內容後，即可安全地再試一次。",
+    "safeTryAgainAfterWait": "等待後，即可安全地再試一次。",
+    "serverTakesNoChangesNow": "此伺服器無法連線至備份位置，因此目前不接受變更。",
+    "serverDataMovedElsewhere": "此伺服器的資料已移至其他伺服器。",
+    "doItOnNewServer": "請在新伺服器上執行。",
+    "serverDataMovedNoRetry": "在此處重試也無法儲存。",
+    "sameRequestIdentityCanRetriedSafely": "稍候片刻後，即可安全地重試相同請求。",
+    "saveSameDlpPolicyAgainAfter": "伺服器儲存空間恢復後，請再次儲存相同的 DLP 政策。",
+    "saveSameDlpPolicyAgainAfter2": "在其他伺服器操作完成後，請再次儲存相同的 DLP 政策。",
+    "serverAccountStorageTemporarilyUnavailable": "伺服器帳號儲存空間暫時無法使用。",
+    "serverCannotCurrentlyConfirmResourceState": "伺服器目前無法確認其資源狀態。",
+    "serverCouldNotCompleteAdministratorSettings": "伺服器無法完成管理員設定儲存作業。",
+    "serverCouldNotCompleteAdministratorSetup": "伺服器無法完成管理員設定請求。",
+    "serverCouldNotCompleteBackupLifecycle": "伺服器無法完成備份作業。",
+    "serverCouldNotLoadBackupState": "伺服器無法載入該備份狀態。",
+    "serverCouldNotProtectAdministratorSecret": "伺服器無法保護管理員的祕密值。",
+    "serverCouldNotReadAdministratorState": "伺服器無法讀取管理員狀態。",
+    "serverCouldNotReadOneExact": "伺服器無法讀取一致的報表快照。",
+    "serverDetectedAndIsolatedIncompleteContent": "伺服器發現一筆不完整的內容記錄，已將其隔離。",
+    "serverFileStorageTemporarilyUnavailable": "伺服器檔案儲存空間暫時無法使用。",
+    "serverFormStorageTemporarilyUnavailable": "伺服器表單儲存空間暫時無法使用。",
+    "serverPageContentStorageTemporarilyUnavailable": "伺服器頁面內容儲存空間暫時無法使用。",
+    "serverSettingsChangedAfterScreenLoaded": "載入此畫面後，伺服器設定已變更。",
+    "serverStorageTemporarilyUnavailable": "伺服器儲存空間暫時無法使用。",
+    "serverStorageTemporarilyUnavailableSoArchive": "伺服器儲存空間暫時無法使用，因此無法建立封存。",
+    "serverStorageTemporarilyUnavailableSoDlp": "伺服器儲存空間暫時無法使用，因此無法儲存 DLP 政策。",
+    "signInAttemptIdentifierAlreadyBelongs": "這次登入嘗試已使用過不同的登入詳細資訊。",
+    "signInOrAccountActionLink": "此登入或帳號動作連結已失效。",
+    "signInWithAuthorizedAccountOr": "請以已授權的帳號登入，或向管理員要求存取權限。",
+    "signInWithExistingAdministratorAccount": "請使用現有的管理員帳號登入。",
+    "signInWithServerAdministratorAccount": "請使用伺服器管理員帳號登入，或向其他管理員要求存取權限。",
+    "startAccountActionAgainGetNew": "請重新開始帳號動作，以取得新連結。",
+    "startReplacementExportFromLatestWorkspace": "請從最新工作空間開始替代匯出。",
+    "storedBackupDidNotMatchVerified": "儲存的備份與已驗證的檔案不符。",
+    "submittedInformationDidNotMeetOperation": "提交的資訊未符合操作要求。",
+    "tooManyRequestsLimited": "請求過多，因此此操作受到限制。",
+    "tooManyRequestsMadeSoOperation": "請求過多，因此此操作暫時受到限制。",
+    "tryAgainAfterServerStorageRecovers": "請在伺服器儲存空間恢復後重新嘗試。",
+    "tryAgainInHours_other": "請在約 {{count}} 小時後再試一次。",
+    "tryAgainInMinutes_other": "請在約 {{count}} 分鐘後再試一次。",
+    "tryAgainInSeconds_other": "請在約 {{count}} 秒後再試一次。",
+    "useAnotherSignInMethodOr": "請改用其他登入方式，或稍後再試此提供者。",
+    "useResumableArchiveUploadSoProgress": "請使用可續傳的封存檔上傳，以便從已儲存的狀態繼續進行。",
+    "useResumableUploadSoProgressCan": "請使用可續傳上傳，以便從已儲存的狀態繼續進行。",
+    "waitForCompletionThenRetryDownload": "請等待完成後再重新嘗試下載。",
+    "waitForOtherServerOperationFinish": "請等待其他伺服器操作完成後再試一次。",
+    "waitForStorageReconciliationAdvanceThen": "請稍待片刻讓儲存狀態補上進度，再重新嘗試相同操作。",
+    "waitMomentBeforeTryingAgain": "請稍後重新嘗試。",
+    "workspaceChangedWhileExportRunning": "匯出執行期間，工作空間已變更。",
+    "youNotSignedInAndNo": "你未登入，帳號資料也未進行任何變更。",
+    "pageIsLocked": "頁面已鎖定，因此無法進行變更。",
+    "unlockPageThenTryAgain": "請從頁面選單為自己或所有人解鎖頁面，然後再試一次。",
+    "safeToRetryAfterUnlocking": "解鎖頁面後即可安全地重新嘗試。",
+    "databaseIsLocked": "資料庫已鎖定，因此無法變更其屬性和瀏覽模式。",
+    "unlockDatabaseThenTryAgain": "請從資料庫的「已鎖定」按鈕為自己或所有人解鎖，然後重新嘗試。",
+    "databaseEditorsCanUnlock": "只有可編輯資料庫的人員才能解鎖。",
+    "safeToRetryAfterDatabaseUnlocked": "資料庫解鎖後即可安全地重新嘗試。",
+    "rowMoveNeedsFullAccess": "若要將其移至其他頁面，需要對它擁有完整存取權限，並對目的地擁有編輯權限。",
+    "askFullAccessHolderToMoveIt": "請向擁有完整存取權限的人員尋求協助移動，或選擇你有權編輯的位置。",
+    "rowMoveRefusedUntilAccess": "在你取得該存取權限之前，再次移動仍會被拒絕。",
+    "otherWorkspaceCantMoveOrLink": "項目無法在工作空間之間移動或連結。",
+    "makeItAnewInThatWorkspace": "請在該工作空間中重新建立，並將內容複製過去。如要移動或複製整頁，請從「移動到」選擇該工作空間。",
+    "otherWorkspaceRefusedAgain": "重新嘗試仍會因相同原因遭到拒絕。",
+    "signInEndedForThisBrowser": "此瀏覽器的登入已過期或已結束。",
+    "signInEndedForThisApp": "此應用程式的登入已過期或已結束。",
+    "signInAgainToContinue": "請再次登入以繼續。",
+    "retryAfterSigningInAgain": "請再次登入後重新嘗試。",
+    "serverRestoredSinceDeviceCopies": "此伺服器的資料已變更，本裝置的副本為變更前的版本。",
+    "changeKeptOnThisDeviceOnly": "變更並未儲存到伺服器，僅保留在本裝置上。",
+    "takeServerContentAnew": "選擇「從伺服器重新載入」以取得伺服器目前的內容。",
+    "retryAfterTakingContentAnew": "請從伺服器重新載入後再試一次。",
+    "propertyUsedByViewOrDependency": "此屬性目前無法變更：它是標題屬性，或位於已刪除的屬性中。",
+    "changeWhatUsesPropertyFirst": "請重新載入頁面，以查看屬性目前的狀態。",
+    "retryAfterChangingWhatUsesProperty": "請先還原已刪除的屬性，再進行變更。",
+    "workspaceAlreadyHasContentForArchive": "此工作空間已有內容，因此無法在其中匯入 Leafen 封存檔。",
+    "makeNewWorkspaceToImportArchive": "建立新的工作空間，並在其中匯入此封存檔。",
+    "retryInNewWorkspace": "你可以在新的工作空間中再次匯入。",
+    "importFileDoesNotFitFormat": "檔案不符合 Leafen 可讀取的格式，因此沒有匯入任何內容。",
+    "exportFileAgainToImport": "請從建立檔案的位置重新匯出，然後匯入該檔案。",
+    "sameFileRefusedAgain": "再次匯入相同檔案並不會成功。",
+    "pageBusyWithAnotherChange": "此頁面正在進行其他變更，因此暫時無法編輯。",
+    "tryAgainOnceThatChangeIsDone": "請在該項變更完成後重新嘗試。",
+    "importPageInTrash": "要匯入的頁面位於垃圾桶，因此未匯入任何內容。",
+    "restorePageThenImportAgain": "還原「垃圾桶」中的頁面，然後重新匯入。",
+    "importPageDeletedForGood": "要匯入的頁面已永久刪除，因此未匯入任何內容。",
+    "ownerBringsDeletedPageBack": "30 天內，工作空間擁有者可在「安全性」→「資料保留」中還原；之後再從垃圾桶還原並重新匯入。",
+    "importAgainOnceRestored": "在頁面還原之前，再次嘗試也不會匯入。",
+    "pageInTrashCantChange": "垃圾桶中的頁面在還原之前無法變更。",
+    "restorePageThenTryAgain": "還原「垃圾桶」中的頁面，然後重新嘗試。",
+    "tryAgainOnceRestored": "在頁面還原之前，再次嘗試不會成功。",
+    "optionNameHasComma": "選項名稱不能含有逗號 (,)。",
+    "takeCommaOutOrSplitOption": "請移除逗號，或將其分成兩個選項。",
+    "optionRefusedUntilRenamed": "請先變更名稱，再重新嘗試。",
+    "optionNameTaken": "此屬性已有同名選項。",
+    "useAnotherOptionName": "請改用其他名稱，或選擇現有的選項。",
+    "optionsInUseLeftOut": "此變更會略過頁面正在使用的選項。",
+    "keepOptionsOrDeleteOneByOne": "請保留這些選項，或從各選項的選單中逐一刪除。",
+    "optionsRefusedUntilKeptOrDeleted": "維持原樣再次嘗試，仍會因相同原因遭到拒絕。"
+  }
+}

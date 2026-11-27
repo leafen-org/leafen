@@ -1,0 +1,102 @@
+/* A state's lines as 설정's rows: the name on the left, the value at the end, no box
+   (2026-11-05: a grey box of 12px lines). */
+.summary {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A list's own margins go, below any row spacing around it. */
+:where(ul.summary) {
+  margin: 0;
+}
+
+/* The continuous copy's row and the backups under it read as one list, and
+   what a restore left above them stands apart as much (2026-11-06: 30px and
+   24px apart, the rest 46px). */
+.summary + .summary,
+[data-backup-restore-done] + .summary {
+  margin-top: 16px;
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.summaryRow strong,
+.summaryRow code,
+.summaryRow time {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  text-align: end;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.live {
+  min-height: 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* Nothing to say takes no room. */
+.live:empty {
+  min-height: 0;
+}
+
+.live[data-error="true"] {
+  color: var(--danger);
+}
+
+@container settings (max-width: 600px) {
+  .summaryRow {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .summaryRow strong,
+  .summaryRow code,
+  .summaryRow time,
+  .actions {
+    width: 100%;
+    text-align: start;
+  }
+}
+
+/* The line that says what a group does, over its rows. */
+.lead {
+  margin-bottom: 16px;
+}
+
+/* What most never need, folded under its question. */
+.fold {
+  margin-top: 24px;
+}
+
+.fold summary {
+  cursor: pointer;
+}
+
+.fold > p {
+  margin: 8px 0 0;
+  overflow-wrap: anywhere;
+}

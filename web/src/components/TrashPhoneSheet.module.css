@@ -1,0 +1,403 @@
+/* A phone's trash, as Notion's (seen 2026-11-10 at 402px): white rows across
+   the whole screen on the sheet's soft ground, each over a line, parted by
+   bands of the ground. Its search and filters stay while the list scrolls.
+   Its words are 16px on a 19.2px line throughout, the places 14px — smaller
+   than the 17px of Notion's other phone sheets (measured 2026-11-15 at 402pt
+   in iPhone Safari, dark, its "작업" sheet 17px at the same time). */
+.screen {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  /* The whole screen's own spacing, not the sheet body's. */
+  margin: -28px 0 -24px;
+}
+
+/* The search: 44px, a 16px magnifier 17px in, the 16px words from 40px, and
+   an 18px "ⓧ" 15px from the end once something is typed. */
+.search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  height: 45px;
+  padding-inline: calc(17px + var(--phone-safe-start, 0px)) calc(15px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--icon-tertiary);
+}
+
+.search input,
+.field input {
+  flex: 1 1 60px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  line-height: 19.2px;
+}
+
+.clear,
+.fieldClear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-tertiary);
+}
+
+/* The filters: 44px rows over their line, the icon in a 22px slot 20px in,
+   the 16px name on its 19.2px line from 62px, centred in the row, 6px of
+   ground between them and 27px under the last. */
+.filters {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 27px;
+}
+
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+  height: 45px;
+  padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  line-height: 19.2px;
+  text-align: start;
+}
+
+.filterRow:active,
+.page:active,
+.person:active,
+.choiceRow:active {
+  background: var(--bg-hover);
+}
+
+.filterIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  outline: none;
+}
+
+/* The list's line over its first row, on the ground. */
+.rows {
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* A trashed page: 44px for its name alone, 64.4 with its place; its icon in a
+   22px slot 21px in (a page's drawn at 25px, as Notion's fills it), the 16px
+   name 12px down from 58px over the 14px place 2px under it, both on 19.2px
+   lines; 24px restore and delete with 14px icons 4px apart, 16px from the end. */
+.row {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-inline-end: calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.page {
+  display: flex;
+  flex: 1;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 15px;
+  min-width: 0;
+  padding-block: 11px;
+  padding-inline: calc(21px + var(--phone-safe-start, 0px)) 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  text-align: start;
+}
+
+.row > .page:active {
+  background: transparent;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--icon-secondary);
+}
+
+/* With a place under the name the row is 12px above and below its words
+   and the icon sits 3px lower, as Notion's; a name alone centres in 44px. */
+[data-placed="true"] > .page {
+  padding-block: 12px;
+}
+
+[data-placed="true"] .icon {
+  margin-top: 3px;
+}
+
+.row:not([data-placed="true"]) .title {
+  line-height: 22px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title,
+.place {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title {
+  font-size: 16px;
+  line-height: 19.2px;
+}
+
+.place {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 19.2px;
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  gap: 4px;
+  margin-inline-start: 12px;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.action:active:not([aria-disabled="true"]) {
+  background: var(--bg-hover);
+}
+
+/* Deleting forever, dim to all but the workspace's owners. */
+.action[aria-disabled="true"] {
+  opacity: 0.4;
+}
+
+/* Nothing to show: a row of its own, 17px secondary words 16px in. */
+.note {
+  display: flex;
+  align-items: center;
+  min-height: 45px;
+  margin: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+/* A filter's screen: 26px of ground under the head, a line, then 4px down
+   and 8px in its white 52px field over a line, and 32px of ground over the
+   rows. */
+.pickTop {
+  flex: none;
+  margin-top: 26px;
+  padding: 4px 8px 32px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* The chosen as chips — a 24px picture (a page's icon in an 18px slot 8px
+   further in), the 17px name 6px on and a 12px "×" — 15px apart, 16px in;
+   the search after them in 18px words; a 20px "ⓧ" 17px from the end. */
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 15px;
+  row-gap: 8px;
+  min-height: 53px;
+  padding-block: 14px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(17px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+.field input {
+  height: 24px;
+  font-size: 18px;
+}
+
+.fieldClear {
+  margin-inline-start: auto;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.chip[data-kind="in"] {
+  padding-inline-start: 8px;
+}
+
+/* A page's icon in an 18px slot, drawn a little past it as Notion's. */
+.chipIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 24px;
+  color: var(--icon-secondary);
+}
+
+.chipLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-inline-start: 1px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+/* A page or teamspace to pick: a trashed page's row without its buttons. */
+.choiceRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 11px;
+  padding-inline: calc(21px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font: inherit;
+  text-align: start;
+}
+
+/* A person to pick: 44px, a 28px picture 20px in, the 17px name from 62px. */
+.person {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.personName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mark {
+  color: var(--text-secondary);
+}
+
+/* A wider touch screen's (TrashPhoneSheet's wide), as Notion's iPad (seen
+   2026-11-13 at 1210, 2x): under the sheet's own head and padding, a 44px
+   white search field 12px round, 16px over the pages' round white group,
+   whose rows start their icon 12px in and their name 46px in, the restore
+   and delete 8px apart; only the list scrolls. */
+.screen[data-wide="true"] {
+  gap: 16px;
+  margin: 0;
+}
+
+.screen[data-wide="true"] .search {
+  border-bottom: 0;
+  border-radius: 12px;
+  padding-inline: 12px;
+}
+
+.screen[data-wide="true"] .rows {
+  overflow: hidden;
+  border-top: 0;
+  border-radius: 12px;
+}
+
+.screen[data-wide="true"] .row:last-child {
+  border-bottom: 0;
+}
+
+.screen[data-wide="true"] .page {
+  gap: 12px;
+  padding-inline-start: 12px;
+}
+
+.screen[data-wide="true"] .actions {
+  gap: 8px;
+}

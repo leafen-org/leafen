@@ -1,0 +1,272 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Weekly canary. govulncheck on push/PR only catches an advisory when
+  # something is pushed; this covers one landing against an unchanged dependency
+  # in a quiet week. Every job in this workflow runs on the schedule,
+  # deliberately: guarding the others with `if: github.event_name != 'schedule'`
+  # would silently fail to apply to any job added later, and a weekly check that
+  # main still builds green is worth having on its own.
+  #
+  # Note GitHub disables scheduled workflows in public repositories after 60 days
+  # with no repository activity, so this is bounded coverage, not a standing
+  # guarantee — Dependabot security alerts are the durable channel.
+  #
+  # 04:17 Monday UTC: off-hour and off-minute, because GitHub delays schedules at
+  # the top of every hour, and benchmark.yml already holds 06:00 daily.
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (Go ${{ matrix.go }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Minimum supported (go.mod floor) + latest stable. Keep the upper bound
+        # in step with the govulncheck job below as new Go releases land.
+        go: ["1.23", "1.26"]
+    env:
+      YGO_REQUIRE_NODE: "1"
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: testutil/package-lock.json
+      - run: npm ci
+        working-directory: testutil
+      - run: go mod download
+      - run: go mod verify
+      - run: go vet ./...
+      # `./...` includes the #70 convergence fuzzer: TestFuzzConvergence (1000
+      # seeds, Go-vs-Go), TestFuzzCorpus (frozen reproducers), and
+      # TestFuzzCrossImpl (vs real Yjs — runs here because `npm ci` above
+      # installs yjs; it self-skips only when node/yjs are absent).
+      # Coverage runs in its own job: -race with -covermode=atomic together
+      # cost about 3x either one alone.
+      - run: go test -race -timeout 120s ./...
+      - name: CGo-free build (pure Go)
+        run: CGO_ENABLED=0 go build ./persistence/sqlite/... ./cmd/ygo-server/...
+
+  # mobile/ is its own module: golang.org/x/mobile, which gomobile bind needs in
+  # the module graph, requires a newer Go than the root module's floor.
+  mobile:
+    name: Mobile
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version-file: mobile/go.mod
+          cache: true
+          cache-dependency-path: mobile/go.sum
+      - run: go mod verify
+      - run: go vet ./...
+      - run: go test -race -timeout 120s ./...
+      - name: CGo-free build (pure Go)
+        run: CGO_ENABLED=0 go build ./...
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
+        with:
+          version: v2.12.2
+          working-directory: mobile
+      # The runner image ships the Android SDK, an NDK and a JDK. Generated JNI
+      # code can fail to compile where Go code is fine, so bind for real.
+      - run: go install tool
+      - run: gomobile bind -target=android -androidapi 21 -o mobile.aar .
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    env:
+      YGO_REQUIRE_NODE: "1"
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: "1.23"
+          cache: true
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: testutil/package-lock.json
+      - run: npm ci
+        working-directory: testutil
+      - run: go test -timeout 120s -coverprofile=coverage.txt -covermode=set ./...
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
+        with:
+          files: coverage.txt
+          fail_ci_if_error: false
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: "1.23"
+          cache: true
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
+        with:
+          version: v2.12.2
+
+  vuln:
+    name: Vulnerability scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          # Track the latest 1.26 patch so the scan always runs on a toolchain
+          # with current standard-library fixes (avoids failing on stdlib CVEs
+          # that are already fixed in a newer patch). check-latest fetches the
+          # newest matching patch from the version manifest instead of using the
+          # runner image's cached (often lagging) patch — without it the scan
+          # red-walls on a freshly-published stdlib CVE until the image updates.
+          go-version: "1.26"
+          check-latest: true
+          cache: true
+      # Same trap as benchmark.yml's benchstat install, pre-empted: govulncheck
+      # is a tool tracking @latest, so the day x/vuln requires a Go newer than
+      # the version pinned above, this step fails unless Go may fetch a
+      # toolchain. actions/setup-go set GOTOOLCHAIN=auto through v5 and flipped
+      # the default to local in v7, so that permission is no longer inherited.
+      # Not currently broken — 1.26 is new enough today — but this is the
+      # security scan, and it should not start failing on someone else's release
+      # schedule.
+      - env:
+          GOTOOLCHAIN: auto
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - run: govulncheck ./...
+      - run: govulncheck ./...
+        working-directory: mobile
+
+  release-docs:
+    name: Release docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      # The release job publishes RELEASE_NOTES.md's top section under the tag
+      # it is given and reads the version from CHANGELOG.md's top heading. If
+      # the two files disagree about what the newest version is, one of those
+      # two reads is wrong and the mistake only surfaces at tag time.
+      - name: CHANGELOG and RELEASE_NOTES agree on the newest version
+        run: |
+          chg=$(grep -m1 -oE '^## \[[0-9]+\.[0-9]+\.[0-9]+\]' CHANGELOG.md | tr -d '#[] ')
+          rel=$(grep -m1 -oE '^## v[0-9]+\.[0-9]+\.[0-9]+' RELEASE_NOTES.md | sed 's/^## v//')
+          if [ "$chg" != "$rel" ]; then
+            echo "::error::CHANGELOG.md leads with [$chg] but RELEASE_NOTES.md leads with v$rel. Both files are newest-first and the release job reads both, so they must name the same version."
+            exit 1
+          fi
+          echo "Both files lead with $chg."
+      # Catches the omission at review time instead of at tag time, where the
+      # only remedy is a docs-only PR to a PR-protected main before anything
+      # can ship. CONTRIBUTING's exemption is encoded as the path filter below.
+      - name: Behaviour changes carry entries
+        if: ${{ github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'no-release-notes') }}
+        run: |
+          set -euo pipefail
+          # Fail closed. An unresolvable base or an empty diff means this step
+          # is not looking at the PR's changes, and the path filter below would
+          # then find no source files and pass — reporting green while checking
+          # nothing. That is worse than not having the check at all.
+          base="origin/$GITHUB_BASE_REF"
+          if ! git rev-parse --verify --quiet "$base" >/dev/null; then
+            echo "::error::Cannot resolve $base. The checkout needs fetch-depth: 0 for the merge-base diff below."
+            exit 1
+          fi
+          changed=$(git diff --name-only "$base...HEAD")
+          if [ -z "$changed" ]; then
+            echo "::error::Empty diff against $base. Refusing to report success without having examined any files."
+            exit 1
+          fi
+          # Library source = a non-test .go file outside examples/ and
+          # benchmarks/. Tests, testdata, markdown, CI, tooling and examples
+          # ride along with the next release and need no entry of their own.
+          # testutil/ is deliberately NOT exempt: it exports symbols, and
+          # v1.40.0 was a MINOR precisely because testutil/fuzz gained some.
+          src=$(printf '%s\n' "$changed" | grep -E '\.go$' | grep -vE '_test\.go$' | grep -vE '^(examples|benchmarks)/' || true)
+          if [ -z "$src" ]; then
+            echo "No library source changed — entries not required."
+            exit 0
+          fi
+          echo "Library source changed:"; printf '%s\n' "$src" | sed 's/^/  /'
+          missing=
+          printf '%s\n' "$changed" | grep -qx 'CHANGELOG.md' || missing="$missing CHANGELOG.md"
+          printf '%s\n' "$changed" | grep -qx 'RELEASE_NOTES.md' || missing="$missing RELEASE_NOTES.md"
+          if [ -n "$missing" ]; then
+            echo "::error::This PR changes library source but does not touch:$missing. Add an entry to each — see CONTRIBUTING.md, \"CHANGELOG and release notes\". If the change ships no behaviour at all, apply the 'no-release-notes' label to skip this check."
+            exit 1
+          fi
+          echo "Entries present in both files."
+
+  conformance-fixtures:
+    name: Conformance fixture drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@dc2769abcc0fcfbadfc1df54081c1608579ef6b2 # v2
+        with:
+          egress-policy: audit
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
+        with:
+          go-version: "1.26"
+          cache: true
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: testutil/package-lock.json
+      - run: npm ci
+        working-directory: testutil
+      - run: make fixtures
+      # Regenerated conformance fixtures must match what's committed. `git add -A`
+      # first so NEW/untracked or deleted files are caught, not just edits.
+      - run: |
+          git add -A -- crdt/testdata/'*_yjs_fixtures.json'
+          git diff --cached --exit-code -- crdt/testdata/'*_yjs_fixtures.json'

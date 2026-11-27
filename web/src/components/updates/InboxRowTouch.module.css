@@ -1,0 +1,171 @@
+/* A notification's touch ways (InboxRow, useInboxRowGestures), as Notion's
+   Android app (seen 2026-11-21 on a Galaxy A90 at 411, light). */
+
+/* A swipe left slides the row over its one action. */
+.slide {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-app);
+  transition: transform 160ms ease;
+  touch-action: pan-y;
+}
+
+.slide[data-dragging="true"] {
+  transition: none;
+}
+
+:global([data-touch="true"]) .slide {
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+/* Under the row, still while it slides: a gray ground the whole pull long
+   — (240,239,237), the faint line's gray on white — and "보관" kept at the
+   row's end, 98 wide: a 20px mark over its 16px word, 7 apart, in the
+   secondary gray, the pair in the row's middle; the row, drawn over it,
+   uncovers it as it goes. */
+.swipeGround {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  justify-content: flex-end;
+  background: linear-gradient(var(--border-subtle), var(--border-subtle)), var(--bg-app);
+}
+
+.swipeAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 98px;
+  height: 100%;
+  padding: 0;
+  border-radius: 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* A long press's card under the row (InboxRowCard): 4px corners, its rows
+   42 high from 4 in, a 20px mark 12 in and the words 15 after it, ending 14
+   before the card's edge. */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  padding-block: 4px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.cardItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 42px;
+  padding-block: 0;
+  padding-inline: 12px 14px;
+  border-radius: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 20px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.cardItem > svg {
+  flex: 0 0 auto;
+  color: var(--icon-primary);
+}
+
+/* In a phone's inbox, the Notion Android app's frame (InboxPhoneFrame.tsx,
+   measured 2026-11-21 on the A90 at 411): rows to the screen's edge on its
+   warm ground, the mark 20 in and the words 56 in, the time and dot ending
+   20 from the edge; the line under each, rgb(240, 239, 237), from the words'
+   start to the screen's edge. */
+:global([data-placement="phone"]) .row {
+  border-bottom: 0;
+}
+
+:global([data-placement="phone"]) .row::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset-inline: 56px 0;
+  bottom: 0;
+  height: 1px;
+  background: color-mix(in srgb, var(--border-default) 60%, var(--bg-app));
+}
+
+:global([data-placement="phone"]) .slide {
+  background: var(--bg-sidebar);
+}
+
+:global([data-placement="phone"]) .main {
+  padding-inline: 20px;
+  border-radius: 0;
+}
+
+/* A phone row's content, as the app's (measured 2026-11-21 on the A90 at
+   411 from w2270's reminder row, glyph advances read against Leafen's own on
+   that phone): the words and the line under them 16px on 24 lines, 12.5
+   apart; the time 13px and its unread dot 6 round, 4 after it, both at the
+   line's top; a reminder's alarm in a 24 round of rgb(240, 239, 237), its
+   16 mark rgb(31, 31, 31); the mark 11 under the row's top, the words 14,
+   and 18.5 under the last line to the line under the row. Dark unmeasured. */
+:global([data-placement="phone"]) .main {
+  --reminder-round: rgb(240, 239, 237);
+  --reminder-mark: rgb(31, 31, 31);
+  padding-block: 10px 18.5px;
+}
+
+:global([data-theme="dark"] [data-placement="phone"]) .main {
+  --reminder-round: var(--border-secondary);
+  --reminder-mark: var(--icon-primary);
+}
+
+:global([data-placement="phone"]) .main > :first-child {
+  margin-top: 1px;
+}
+
+:global([data-placement="phone"]) .main [data-inbox-lead="reminder"] {
+  border-radius: 50%;
+  background: var(--reminder-round);
+  color: var(--reminder-mark);
+}
+
+:global([data-placement="phone"]) .main [data-inbox-lead="reminder"] > svg {
+  width: 16px;
+  height: 16px;
+}
+
+:global([data-placement="phone"]) .main [data-inbox-body] {
+  gap: 12.5px;
+}
+
+:global([data-placement="phone"]) .main :is([data-inbox-words], [data-inbox-preview]) {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+:global([data-placement="phone"]) .main [data-inbox-trail] {
+  align-items: flex-start;
+  gap: 4px;
+  height: auto;
+  margin-top: -1.5px;
+}
+
+:global([data-placement="phone"]) .main [data-inbox-time] {
+  font-size: 13px;
+  line-height: 16px;
+}
+
+:global([data-placement="phone"]) .main [data-inbox-dot] {
+  width: 6px;
+  height: 6px;
+  margin-top: 5px;
+}

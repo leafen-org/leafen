@@ -1,0 +1,220 @@
+/* Notion's phone "작업" sheet fonts (seen 2026-10-27): three 85px tiles side by
+   side in one group, a 24px "Ag" over its name, the chosen one blue. Its white
+   fills its frame from the top, without the pixel a sheet's other groups stand
+   down by (PhoneSheet's .group --group-frame-above), so its corners are whole
+   12s and the rows' group is 16 under it (Notion's at 411, 2026-11-25: a page's
+   and a database page's sheet, 85 high from 93, the next group at 194; its
+   white the frame's from the top, Chrome's rules and the app's pixels). */
+.fonts {
+  --group-frame-above: 0px;
+  display: flex;
+}
+
+.font {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 85px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 12px;
+}
+
+.font > span:last-child {
+  color: var(--text-secondary);
+}
+
+.fontSample {
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.font[data-font="serif"] .fontSample {
+  font-family: var(--font-serif, Georgia, serif);
+}
+
+.font[data-font="mono"] .fontSample {
+  font-family: var(--font-mono);
+}
+
+.font[data-active="true"],
+.font[data-active="true"] > span:last-child {
+  color: var(--accent-blue);
+}
+
+.font:disabled {
+  opacity: 0.5;
+}
+
+/* Who edited last, in a group of its own under the others, as Notion's phone
+   "작업" sheets of a page (seen 2026-11-15 on the A90 at 411: a 379×115
+   group, 12px round): "최종 편집 일시" 15/500 in grey 12px under its white's
+   top (a pixel under its place, PhoneSheet's .group) and 16px in, then the person with their 20px face, the time and the
+   word count in 15px lighter grey, 20px lines 2px apart, the person 6px under
+   the heading, 12px under the last — as a block's sheet (BlockActionPhoneSheet).
+   Scrolled to its end, the group runs to the sheet's foot with no space under
+   it (seen 2026-11-15 on the A90 at 411: the group's foot at the scroller's,
+   781.3 both): it takes back the 24px the sheet's rows end on (PhoneSheet's
+   .body). */
+.foot {
+  padding-block: 12px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+.foot:last-child {
+  margin-block-end: -24px;
+}
+
+.foot > [role="separator"] {
+  display: none;
+}
+
+.foot > div:not([role="separator"]) {
+  gap: 2px;
+  padding: 0;
+  color: var(--text-tertiary);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.foot > div > * {
+  margin-block-start: 0;
+}
+
+.foot > div > span:first-child {
+  color: var(--text-secondary);
+}
+
+.foot > div > span:nth-child(2) {
+  gap: 4px;
+  margin-block-start: 4px;
+}
+
+.foot :global([data-avatar]) {
+  --avatar-size: 20px !important;
+}
+
+/* A line of text in a half sheet, as a confirmation's. */
+.note {
+  margin: 0 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "연결", as Notion's phone (seen 2026-11-13 at 402pt): a connection's
+   first letter in a 22px outlined tile. */
+.connectionGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* "활성화된 연결"'s two lines, as Notion's phone: the name 15px over who
+   made it 13px, "›" in the row's middle. */
+:global([data-connection-row]) > span:nth-child(2) > span:first-child {
+  font-size: 15px;
+}
+:global([data-connection-row]) > span:nth-child(2) > span:last-child {
+  font-size: 13px;
+}
+:global([data-connection-row]) > svg:last-child {
+  align-self: center;
+}
+
+/* "연결 추가하기"'s search: a 45px group of its own, its words 8px in, not
+   focused as the sheet turns (Notion's phone, seen 2026-11-13). */
+.connectionSearch {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 45px;
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+}
+.connectionSearch > input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+/* Its "입력 값 지우기" (SearchClearButton) once it holds words, 12px in from
+   the group's edge, as Notion's phone sheet searches (seen 2026-11-17 in
+   Android Chrome at 411). */
+.connectionSearchClear {
+  margin-inline: 0 4px;
+}
+
+/* A connection's sheet: "연결 출처 📄 〈page〉" over a rule, then "기능" and
+   what it may do (✓ blue) and may not (✕), 15px gray lines 24px apart. */
+.connectionSource {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+.connectionSource > span {
+  flex: none;
+  margin-inline-end: 5px;
+}
+.connectionSource > strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.connectionCapabilities {
+  display: grid;
+  padding-block: 8px 6px;
+  padding-inline: calc(28px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 24px;
+}
+.connectionCapabilities > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.connectionCapabilities > span:first-child {
+  margin-inline-start: -3px;
+}
+.connectionCapabilities > span > svg {
+  flex: none;
+  color: var(--accent-blue);
+}
+.connectionCapabilities > span[data-on="false"] {
+  color: var(--text-tertiary);
+}
+/* A capability it lacks: its words faint, its ✕ the faint icon colour,
+   as Notion's (seen 2026-11-17: texTer words, icoTer ✕). */
+.connectionCapabilities > span[data-on="false"] > svg {
+  color: var(--icon-tertiary);
+}
+.connectionCreator {
+  margin: 0 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 20px;
+}

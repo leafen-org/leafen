@@ -1,0 +1,38 @@
+/* A database's description under its title, as Notion's (seen 2026-10-01):
+   14px on 21px lines across the title's width, its placeholder in gray; its
+   words where the title's are and the view tabs' row 16 under it (Notion's,
+   seen 2026-11-14: words at 374 under a title at 374 on its page, 804 under
+   804 in a side peek at 1440; tabs 162.4 under a box ending 146.4). Under an
+   icon they start where its glyph does instead, (36 − 28) / 2 into its 36px
+   box (Notion's, seen 2026-11-15 at 1440: words at 378 under an icon box at
+   374 for a template's icon and an emoji alike, its padding 12 for 8). */
+.field {
+  width: 100%;
+  min-height: 28px;
+  margin-bottom: 4px;
+  padding-block: 3px 4px;
+  padding-inline: var(--page-title-inset, 0px) 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  outline: none;
+}
+
+/* On the caret's line, as every rich field's placeholder (floated, no height). */
+.field[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+.field[aria-readonly="true"][data-empty="true"]::before {
+  content: none;
+}
+
+:global([data-database-head-icon="true"]) .field {
+  padding-inline-start: calc(var(--page-title-inset, 0px) + (36px - 28px) / 2);
+}

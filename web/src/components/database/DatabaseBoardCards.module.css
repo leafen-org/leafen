@@ -1,0 +1,161 @@
+.boardCards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* Where a column's shown cards end, taking no room between them and "+". */
+.boardCardsEnd {
+  flex: none;
+  height: 0;
+  margin-top: -8px;
+}
+.boardCardSlot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* Where a dragged card would land: a 4px line as wide as the cards in the
+   middle of the gap between them, the cards staying where they are
+   (Notion's, seen 2026-11-15 in Chrome at 1440: 260x4 rgba(35,131,226,.43)
+   between cards 9.5px apart; past the last card in a column's empty part). */
+.boardDropLine {
+  position: absolute;
+  inset-inline: 0;
+  z-index: 2;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+.boardDropLine[data-side="before"] { top: -6px; }
+.boardDropLine[data-side="after"] { bottom: -6px; }
+/* After a column's last card (its top, empty), taking no room. */
+.boardDropEnd {
+  position: relative;
+  flex: none;
+  height: 0;
+  margin-top: -8px;
+}
+/* Notion's card (seen 2026-11-04): round 10, a window's ground, a soft shadow under its line. */
+/* A card's edge is a 1px ring around its box, and a coloured column's cards
+   take the column's colour in it and, in dark, in their ground (Notion's, seen
+   2026-11-05, light and dark; --c-card-* in app/optionColors.css). Without
+   column colours it is a card in no colour, as a gallery's: the grey ring
+   over the plain ground (Notion's, seen 2026-11-12: rgba(255,255,243,.082)
+   over rgba(255,255,255,.055), rgb(47,47,47) pointed at, in dark). */
+.card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--card-bg, var(--c-card-bg-plain));
+  box-shadow: var(--board-card-shadow), 0 0 0 1px var(--card-ring, var(--c-card-ring-gray));
+  cursor: pointer;
+  /* Native render virtualization, same approach as .tableRow; one not yet
+     drawn holds a title-only card's place. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 40px;
+}
+/* One new to a column already drawn paints in its first frame (lib/arrivingWhole.ts). */
+.card[data-arriving] {
+  content-visibility: visible;
+}
+.card[draggable="true"] {
+  cursor: grab;
+}
+/* The card dragged stays as it was where it was; the browser carries its
+   faint picture with the pointer (Notion's, seen 2026-11-15). */
+.card[data-dragging="true"] {
+  cursor: grabbing;
+}
+.card:hover,
+.card:focus-visible {
+  background: var(--card-hover, var(--c-card-hover-plain));
+  outline: none;
+}
+/* With column colours on, a default option's column and the empty one hold
+   cards on the window's ground, not the plain see-through one (Notion's
+   var(--c-bacEle), seen 2026-11-16: rgb(32,32,32) in dark, white in light;
+   a coloured column's own ground overrides it, DatabaseCardValues). */
+.board[data-column-colors="true"] .boardCol {
+  --card-bg: var(--c-card-bg-default);
+  --card-hover: var(--c-card-hover-default);
+}
+.card[data-size="small"] .cardCover {
+  height: 74px;
+}
+.card[data-size="large"] .cardCover {
+  height: 132px;
+}
+.cardCover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 96px;
+  background: var(--c-bg-gray);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.cardCover[data-fit-image="true"] {
+  background-size: contain;
+}
+/* "페이지 콘텐츠" is taller, as Notion's medium card (148px, seen 2026-10-08). */
+.cardCover[data-page-content-preview] {
+  height: 148px;
+}
+.card[data-size="small"] .cardCover[data-page-content-preview] {
+  height: 114px;
+}
+.card[data-size="large"] .cardCover[data-page-content-preview] {
+  height: 204px;
+}
+.cardCover[data-has-image="true"] {
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+.cardIcon {
+  font-size: 30px;
+  line-height: 1;
+}
+/* A card's title as Notion's (seen 2026-11-04, every card size and both
+   layouts): 15px/500 on its 22.5px line, the line 8px down and the text 11px
+   in from the card's edge, a page icon 18px with the text 8px after it; 6px
+   under it its properties begin. */
+/* A title always wraps, in either layout and with "모든 콘텐츠 줄바꿈" off too:
+   that setting is for the values under it (Notion's, seen 2026-11-05). Its
+   line breaks show as lines, wrapped or not (seen 2026-11-11). */
+.cardTitle {
+  padding: 8px 10px 6px;
+  font-size: 15px;
+  font-weight: 500;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+/* A card being made: its title typed in place, as a card title. */
+.card[data-board-draft-card] {
+  cursor: text;
+}
+/* Nothing under the title, a card is 40 high, its title on a 24px row as
+   one with an icon has; so is a card being made (Notion's, seen 2026-11-03
+   and 11-04). Values left empty don't show, so their place goes too: a card
+   whose shown values are all empty is a title's card (Notion's, seen
+   2026-11-12: 40 high with its date and select shown and both empty). */
+.cardMeta:empty,
+.card:not(:has(> .cardMeta :is(.cardLine, .cardFullLine):not(:empty), > .cardMeta [data-subitem-count])) > .cardMeta {
+  display: none;
+}
+.card:not(:has(> .cardMeta :is(.cardLine, .cardFullLine):not(:empty), > .cardMeta [data-subitem-count])) > .cardTitle,
+.card[data-board-draft-card] [data-board-draft-title] {
+  min-height: 40px;
+  padding-bottom: 8px;
+}
+.boardDraftTitle {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+}

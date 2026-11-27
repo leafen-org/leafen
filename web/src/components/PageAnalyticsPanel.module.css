@@ -1,0 +1,656 @@
+.backdrop {
+  position: fixed;
+  z-index: 34;
+  inset: 0;
+  border: 0;
+  background: rgba(15, 15, 15, 0.08);
+}
+
+.panel {
+  position: fixed;
+  z-index: 35;
+  inset-block: 0;
+  inset-inline: auto 0;
+  display: flex;
+  flex-direction: column;
+  width: min(385px, 100vw);
+  overflow: hidden;
+  /* Its edge, its tabs' line and the lines between updates are Notion's
+     faint divider (its borSecTra, seen 2026-11-11: dark
+     rgba(255, 255, 243, 0.082), light #2a1c0012). */
+  border-inline-start: 1px solid var(--border-subtle);
+  background: var(--bg-app);
+  box-shadow: calc(-10px * var(--inline-sign, 1)) 0 30px rgba(15, 15, 15, 0.12);
+  animation: analyticsPanelIn 180ms cubic-bezier(0.16, 0.82, 0.32, 1);
+}
+
+/* Docked beside the open page under its bar in the docked panels' frame
+   (app/sidePanels.css), as Notion's 385px panel (seen 2026-11-01): no shade
+   or shadow, its tabs first in a 53px row, right under the bar (2026-11-25). */
+.docked .tab {
+  min-height: 52px;
+}
+
+.dockedTitle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes analyticsPanelIn {
+  from { transform: translateX(calc(16px * var(--inline-sign, 1))); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { animation: none; }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding-block: 0;
+  padding-inline: 16px 12px;
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.close {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--text-secondary);
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.close:hover { background: var(--bg-hover); }
+
+.tabs {
+  display: flex;
+  gap: 18px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tab {
+  position: relative;
+  min-height: 39px;
+  padding: 0;
+  border: 0;
+  color: var(--text-secondary);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tab[data-active="true"] { color: var(--text-default); }
+
+.tab[data-active="true"]::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--text-default);
+  content: "";
+}
+
+.content,
+.updates {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 18px 16px 28px;
+}
+
+/* No views in the period: Notion's "페이지 애널리틱스 없음" (seen 2026-11-11),
+   a 32px mark over a 16px heading and 14px words, grey and centred in a
+   250px column, alone in the middle of the tab or under a period chosen. */
+.content[data-empty] {
+  display: flex;
+  flex-direction: column;
+}
+
+.content[data-empty="alone"] { padding-block: 0; }
+
+.empty {
+  display: flex;
+  width: 250px;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: auto;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.emptyHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.emptyHeading {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.emptyDescription {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.updates > p,
+.muted,
+.anonymousNote {
+  margin: 0 0 14px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.section {
+  margin-top: 24px;
+}
+
+.section h3 {
+  margin: 0 0 10px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* "생성자", "최근 편집자": 12px 500, a lighter grey, as Notion's. */
+.section h4 {
+  margin: 12px 0 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* "조회수 (총 N회)" and the period, as Notion's head row. */
+.viewsHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.viewsHead h3 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.viewsHead h3 { white-space: nowrap; }
+.viewsHead h3 > span { color: var(--text-secondary); font-weight: 400; }
+
+/* A choice as wide as its words, not its row. */
+.viewsHead .selectFit,
+.historyCard .selectFit {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: auto;
+}
+
+/* The period button: blue, borderless, a calendar before and a chevron after. */
+.viewsHead .rangeButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  /* A pale blue pill, as Notion's "📅 지난 28일 ⌄" (seen 2026-11-07). */
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.viewsHead .rangeButton:hover { background: color-mix(in srgb, var(--accent-blue) 22%, transparent); }
+
+.chart {
+  position: relative;
+  margin: 10px 0 4px;
+}
+
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.chartTick { fill: var(--text-default); font-size: 12px; }
+.chartAxis { stroke: var(--text-tertiary); stroke-width: 1; }
+.chartTotalArea { fill: color-mix(in srgb, var(--accent-blue) 12%, transparent); }
+.chartTotalLine { fill: none; stroke: var(--accent-blue); stroke-width: 1.5; }
+.chartUniqueArea { fill: rgba(215, 150, 9, 0.12); }
+.chartUniqueLine { fill: none; stroke: rgba(215, 150, 9, 0.75); stroke-width: 1.5; }
+.chartCross { stroke: var(--text-tertiary); stroke-dasharray: 5 2; }
+.chartDot { fill: var(--accent-blue); }
+
+/* The point's tooltip: dark, 12px, its date and the two counts. */
+.chartTip {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  gap: 2px;
+  margin-block: 10px 0;
+  margin-inline: 10px 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  color: #fff;
+  background: rgb(54, 53, 47);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chartKeyTotal,
+.chartKeyUnique {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-inline-end: 6px;
+  border-radius: 2px;
+  background: var(--accent-blue);
+}
+
+.chartKeyUnique { background: rgb(215, 150, 9); }
+
+/* "내 조회 기록 표시": a grey card with its choice on the right. */
+.historyCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+
+.historyCard > span { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
+.historyCard strong { color: var(--text-default); font-size: 14px; font-weight: 500; line-height: 20px; }
+.historyCard > span > small { color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+
+.historyCard .historyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: auto;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  background: var(--bg-app);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* A person: face, name, how long ago on the right. */
+.people { margin: 0; padding: 0; list-style: none; }
+.people li { display: flex; align-items: center; gap: 8px; min-height: 28px; }
+.personName { overflow: hidden; flex: 1 1 auto; color: var(--text-default); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.personAgo { flex: 0 0 auto; color: var(--text-secondary); font-size: 14px; }
+
+.avatar {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  background: var(--bg-hover);
+  font-size: 11px;
+}
+
+.error { margin: 12px 0; color: var(--danger); font-size: 12px; }
+
+/* A page's updates, as Notion's updates tab lists them (seen 2026-11-11):
+   each 12px within above and below, the panel's 16px at the sides, and a
+   1px line the panel's whole width between one and the next — the list
+   runs to the panel's edges and from right under its tabs. */
+.updateList {
+  display: flex;
+  flex-direction: column;
+  margin: -18px -16px 18px;
+  padding: 0;
+  list-style: none;
+}
+
+/* The face in a 36px column, 4px in and 2px down, its words 8px after it,
+   as Notion's (seen 2026-11-13: the words 52px in from the panel's edge). */
+.update {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 16px;
+}
+
+.update + .update {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.updateAvatar {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  margin-block-start: 2px;
+  margin-inline-start: 4px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  background: var(--bg-hover);
+  font-size: 11px;
+}
+
+.updateBody {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.updates .updateSummary {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.4;
+  padding-inline-end: 24px;
+}
+
+.updatePageLink { color: inherit; font-weight: 600; text-decoration: none; }
+.updateWho { font-weight: 600; }
+.updatePageLink:hover, .updateMeta a:hover { text-decoration: underline; }
+.updateMeta a { color: inherit; text-decoration: none; }
+
+/* 4px under the summary and 8px over the changes with the body's 2px gap,
+   12px/16.8px, as Notion's (seen 2026-11-13). */
+.updates .updateMeta {
+  display: flex;
+  min-width: 0;
+  margin: 2px 0 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16.8px;
+  white-space: nowrap;
+}
+
+.updateTime,
+.updatePlaceGap,
+.updatePlaceWhole {
+  flex: none;
+}
+
+/* Where the page is, one line however deep, each name shrinking from its own
+   width and ending in "…", a space each side of the "·" and the "/", as
+   Notion's (seen 2026-11-13). */
+.updatePlace {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.updatePlaceGap {
+  white-space: pre;
+}
+
+.updatePlacePiece {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* What an update changed, 3px apart, as Notion's (seen 2026-11-13): a line
+   21px high 4px in above and below, the title's name in a 21px row 7px
+   down and its value in a 24px row 4px under it; "N개 항목 더 보기" 2px
+   before the lines' start (updates/UpdateChangesMore). */
+/* A line keeps 3px under it; a property's or the title's name and value
+   none, so a row's properties stack 49px apart, as Notion's (seen 2026-11-13). */
+.updateChanges {
+  --update-more-shift: -2px;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+}
+
+/* The title property's icon and name (12px, faint) over the new title
+   (14px/21px), as Notion's (seen 2026-11-06). */
+.updateTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.updateTitleLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 21px;
+  padding-top: 7px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.updateTitleLabel svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+.updateTitle a {
+  padding-block: 1.5px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  text-decoration: none;
+}
+
+.updateTitle a [data-added] {
+  color: var(--c-accent-blue);
+  background: var(--action-mark-blue-bg);
+}
+
+.updateTitle a:hover { text-decoration: underline; }
+
+/* A cleared value: its old one struck and faded, as the workspace's updates
+   show it (its value: updates/UpdatePropertyValue). */
+.updateTitle a[data-change="cleared"] {
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+/* A line's own breaks stay, as the page shows them (Notion's, seen 2026-11-16: a pasted "line one⏎line two" two lines). */
+.updateLine { display: block; margin-bottom: 3px; padding-block: 4px; text-decoration: none; white-space: pre-wrap; }
+.updateLine:hover { filter: brightness(1.08); }
+
+/* A new line is added whole, blue on a faint blue band; a changed line (and
+   the title) marks the words added to it blue on Notion's faint blue mark —
+   the workspace's updates the same (Notion, seen 2026-11-13 dark and light:
+   rgb(39, 131, 222) on rgba(35, 131, 226, .14), the mark rgba(67, 155, 255,
+   .24) dark and rgba(0, 124, 215, .094) light). */
+.updateLine[data-change="added"]:not([data-blank]) {
+  color: var(--c-accent-blue);
+  background: var(--bg-block-selected);
+}
+
+.updateLine [data-added] {
+  color: var(--c-accent-blue);
+  background: var(--action-mark-blue-bg);
+}
+
+.updateLine[data-change="changed"] { color: var(--text-default); }
+
+/* A boxed line is its box (updates/UpdateLine), on the added band. */
+.updateLine[data-boxed][data-change] {
+  background: none;
+  padding-block: 0;
+}
+
+/* A deleted line, box or sub-page under its own "삭제됨" (12px, faint, 8px
+   above it), its words struck and faded, 6px over what follows; a box keeps
+   its frame and strikes its words (UpdateBlockBox). Notion's, seen 2026-11-13. */
+.updateDeleted {
+  display: flex;
+  flex-direction: column;
+}
+
+.updateDeletedLabel {
+  padding-top: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.updateLine[data-change="deleted"]:not([data-boxed]) {
+  margin-bottom: 9px;
+  color: var(--text-default);
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+
+/* A sub-page's line: a page's mark, 20px, and its name 6px after it. */
+.updateLine[data-page-line] {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.updateLine[data-page-line] svg {
+  flex: none;
+}
+
+.updateLoading {
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+}
+
+/* Each update's "버전 보기", which opens the page's history at it. */
+.updateVersion {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.updateVersion:hover { background: var(--bg-hover); }
+
+/* A discussion among the updates, as Notion's (seen 2026-11-11): the words
+   it was left on in the page's resting mark, each comment's writer (12px,
+   faint) over its text (14px), and an outlined "답글" — the quote 29px under
+   the line's top, a writer 25px under it, the text 24px under its writer and
+   "답글" 34px under the last text. */
+.updates .updateDiscussionSummary { padding-inline-end: 0; }
+
+.updateDiscussionLine,
+.updateComment {
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.updateDiscussionLine {
+  display: block;
+  padding: 2px 0 4px;
+}
+
+.updateComment {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 2px;
+}
+
+.updateDiscussionQuote {
+  border-bottom: 2px solid rgba(255, 203, 0, 0.35);
+  background: rgba(255, 203, 0, 0.12);
+}
+
+.updateDiscussionQuote[data-resolved] {
+  border-bottom: 0;
+  background: none;
+}
+
+.updateCommentAuthor {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.updateCommentText { white-space: pre-wrap; }
+
+.updateReply {
+  align-self: flex-start;
+  height: 32px;
+  margin-top: 11px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.updateReply:hover { background: var(--bg-hover); }
+
+
+/* An empty updates tab, as Notion's (seen 2026-11-06): its one line in the
+   middle of a 220px band under the tabs, 200px wide, grey, no button. */
+.updatesEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
+  margin: -18px -16px 0;
+}
+
+.updatesEmpty > span {
+  max-width: 200px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}

@@ -1,0 +1,937 @@
+{
+  "schemaVersion": 1,
+  "name": "auth",
+  "bounds": [
+    { "goName": "minimumAuthPasswordLength", "tsName": "minimumPasswordLength", "value": 8 },
+    { "goName": "maxAuthEmailLength", "tsName": "emailLength", "value": 254 },
+    { "goName": "maxAuthNameLength", "tsName": "nameLength", "value": 160 },
+    { "goName": "maxAccountProfileRequestIDRunes", "tsName": "profileRequestIdRunes", "value": 255 },
+    { "goName": "maxAccountProfileAvatarRunes", "tsName": "profileAvatarRunes", "value": 4096 },
+    { "goName": "accountProfileMaxBodyBytes", "tsName": "profileBodyBytes", "value": 8192 },
+    { "goName": "accountProfileReceiptLimit", "tsName": "profileReceiptLimit", "value": 100 },
+    { "goName": "authVerificationTokenTTLSeconds", "tsName": "verificationTokenTTLSeconds", "value": 86400 },
+    { "goName": "authPasswordResetTokenTTLSeconds", "tsName": "passwordResetTokenTTLSeconds", "value": 3600 },
+    { "goName": "authProviderStateTTLSeconds", "tsName": "providerStateTTLSeconds", "value": 600 },
+    { "goName": "authProviderExchangeTTLSeconds", "tsName": "providerExchangeTTLSeconds", "value": 120 },
+    { "goName": "maxAuthProviderResponseBytes", "tsName": "providerResponseBytes", "value": 1048576 },
+    { "goName": "switcherKeyLimit", "tsName": "switcherKeyLimit", "value": 32 },
+    { "goName": "maxSwitcherHolderRunes", "tsName": "switcherHolderRunes", "value": 200 },
+    { "goName": "switcherListWorkspaceLimit", "tsName": "switcherListWorkspaces", "value": 100 },
+    { "goName": "authSessionLimit", "tsName": "sessionLimit", "value": 25 },
+    { "goName": "maxAuthLoginRequestIDRunes", "tsName": "loginRequestIdRunes", "value": 255 },
+    { "goName": "maxAuthSessionUserAgentLength", "tsName": "sessionUserAgentLength", "value": 512 },
+    { "goName": "maxAuthSessionIPLength", "tsName": "sessionIPLength", "value": 64 },
+    { "goName": "authAuditPageLimit", "tsName": "authAuditPageLimit", "value": 100 },
+    { "goName": "authMFAFactorLimit", "tsName": "mfaFactorLimit", "value": 8 },
+    { "goName": "authMFARecoveryCodeLimit", "tsName": "mfaRecoveryCodeLimit", "value": 8 },
+    { "goName": "authMFAChallengeTTLSeconds", "tsName": "mfaChallengeTTLSeconds", "value": 300 },
+    { "goName": "authMFAChallengeAttemptLimit", "tsName": "mfaChallengeAttemptLimit", "value": 5 },
+    { "goName": "authMFATOTPPeriodSeconds", "tsName": "totpPeriodSeconds", "value": 30 },
+    { "goName": "authMFATOTPDigits", "tsName": "totpDigits", "value": 6 },
+    { "goName": "maxAccountDeletionRequestIDRunes", "tsName": "deletionRequestIdRunes", "value": 128 },
+    { "goName": "accountDeletionWorkspaceListLimit", "tsName": "deletionWorkspaceListLimit", "value": 100 },
+    {"goName": "passkeyLimit", "tsName": "passkeyLimit", "value": 5},
+    {"goName": "passkeyCeremonyTTLSeconds", "tsName": "passkeyCeremonyTTLSeconds", "value": 300},
+    {"goName": "passkeyMaxBodyBytes", "tsName": "passkeyBodyBytes", "value": 196608}
+  ],
+  "errors": [
+    {
+      "goName": "errorCodeAccountEmailLimit",
+      "tsName": "accountEmailLimit",
+      "value": "LEAFEN_ACCOUNT_EMAIL_LIMIT"
+    },
+    {
+      "goName": "errorCodeAccountEmailManaged",
+      "tsName": "accountEmailManaged",
+      "value": "LEAFEN_ACCOUNT_EMAIL_MANAGED"
+    },
+    {
+      "goName": "errorCodeAccountEmailPrimary",
+      "tsName": "accountEmailPrimary",
+      "value": "LEAFEN_ACCOUNT_EMAIL_PRIMARY"
+    },
+    {
+      "goName": "errorCodeAccountEmailChallengeInvalid",
+      "tsName": "accountEmailChallengeInvalid",
+      "value": "LEAFEN_ACCOUNT_EMAIL_CHALLENGE_INVALID"
+    },
+    {
+      "goName": "errorCodeAccountEmailChanged",
+      "tsName": "accountEmailChanged",
+      "value": "LEAFEN_ACCOUNT_EMAIL_CHANGED"
+    },
+    {
+      "goName": "errorCodeAccountEmailMissing",
+      "tsName": "accountEmailMissing",
+      "value": "LEAFEN_ACCOUNT_EMAIL_MISSING"
+    },
+    {
+      "goName": "errorCodeAccountEmailFailed",
+      "tsName": "accountEmailFailed",
+      "value": "LEAFEN_ACCOUNT_EMAIL_FAILED"
+    },
+    { "goName": "errorCodeInvalidInput", "tsName": "invalidInput", "value": "LEAFEN_INVALID_INPUT" },
+    { "goName": "errorCodeAccountExists", "tsName": "accountExists", "value": "LEAFEN_ACCOUNT_EXISTS" },
+    { "goName": "errorCodeRegistrationFailed", "tsName": "registrationFailed", "value": "LEAFEN_REGISTRATION_FAILED" },
+    { "goName": "errorCodeSignupRestricted", "tsName": "signupRestricted", "value": "LEAFEN_SIGNUP_RESTRICTED" },
+    { "goName": "errorCodeSignupInvitationInvalid", "tsName": "signupInvitationInvalid", "value": "LEAFEN_SIGNUP_INVITATION_INVALID" },
+    { "goName": "errorCodeSignupPolicyUnavailable", "tsName": "signupPolicyUnavailable", "value": "LEAFEN_SIGNUP_POLICY_UNAVAILABLE" },
+    { "goName": "errorCodeInvalidCredentials", "tsName": "invalidCredentials", "value": "LEAFEN_INVALID_CREDENTIALS" },
+    { "goName": "errorCodeSessionFailed", "tsName": "sessionFailed", "value": "LEAFEN_SESSION_FAILED" },
+    { "goName": "errorCodeAuthSessionCapacity", "tsName": "sessionCapacity", "value": "LEAFEN_AUTH_SESSION_CAPACITY" },
+    { "goName": "errorCodeAuthSessionRequestIDReused", "tsName": "sessionRequestIdReused", "value": "LEAFEN_AUTH_SESSION_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeAuthSessionInvalid", "tsName": "sessionInvalid", "value": "LEAFEN_AUTH_SESSION_INVALID" },
+    { "goName": "errorCodeAuthSessionUnavailable", "tsName": "sessionUnavailable", "value": "LEAFEN_AUTH_SESSION_UNAVAILABLE" },
+    { "goName": "errorCodeAuthSessionNotFound", "tsName": "sessionNotFound", "value": "LEAFEN_AUTH_SESSION_NOT_FOUND" },
+    { "goName": "errorCodeAuthSessionListFailed", "tsName": "sessionListFailed", "value": "LEAFEN_AUTH_SESSION_LIST_FAILED" },
+    { "goName": "errorCodeAuthSessionRevokeFailed", "tsName": "sessionRevokeFailed", "value": "LEAFEN_AUTH_SESSION_REVOKE_FAILED" },
+    { "goName": "errorCodeMFAAlreadyEnabled", "tsName": "mfaAlreadyEnabled", "value": "LEAFEN_MFA_ALREADY_ENABLED" },
+    { "goName": "errorCodeMFAFactorNotFound", "tsName": "mfaFactorNotFound", "value": "LEAFEN_MFA_FACTOR_NOT_FOUND" },
+    { "goName": "errorCodeMFACodeInvalid", "tsName": "mfaCodeInvalid", "value": "LEAFEN_MFA_CODE_INVALID" },
+    { "goName": "errorCodeMFARecoveryCodeInvalid", "tsName": "mfaRecoveryCodeInvalid", "value": "LEAFEN_MFA_RECOVERY_CODE_INVALID" },
+    { "goName": "errorCodeMFAChallengeInvalid", "tsName": "mfaChallengeInvalid", "value": "LEAFEN_MFA_CHALLENGE_INVALID" },
+    { "goName": "errorCodeMFAReadFailed", "tsName": "mfaReadFailed", "value": "LEAFEN_MFA_READ_FAILED" },
+    { "goName": "errorCodeMFAEnrollmentFailed", "tsName": "mfaEnrollmentFailed", "value": "LEAFEN_MFA_ENROLLMENT_FAILED" },
+    { "goName": "errorCodeMFAConfirmationFailed", "tsName": "mfaConfirmationFailed", "value": "LEAFEN_MFA_CONFIRMATION_FAILED" },
+    { "goName": "errorCodeMFADisableFailed", "tsName": "mfaDisableFailed", "value": "LEAFEN_MFA_DISABLE_FAILED" },
+    { "goName": "errorCodeMFARecoveryRegenerationFailed", "tsName": "mfaRecoveryRegenerationFailed", "value": "LEAFEN_MFA_RECOVERY_REGENERATION_FAILED" },
+    { "goName": "errorCodeEmailVerificationRequired", "tsName": "emailVerificationRequired", "value": "LEAFEN_EMAIL_VERIFICATION_REQUIRED" },
+    { "goName": "errorCodeEmailDeliveryFailed", "tsName": "emailDeliveryFailed", "value": "LEAFEN_EMAIL_DELIVERY_FAILED" },
+    { "goName": "errorCodeEmailDeliveryUncertain", "tsName": "emailDeliveryUncertain", "value": "LEAFEN_EMAIL_DELIVERY_UNCERTAIN" },
+    { "goName": "errorCodeEmailServerUnreachable", "tsName": "emailServerUnreachable", "value": "LEAFEN_EMAIL_SERVER_UNREACHABLE" },
+    { "goName": "errorCodeEmailServerTimeout", "tsName": "emailServerTimeout", "value": "LEAFEN_EMAIL_SERVER_TIMEOUT" },
+    { "goName": "errorCodeEmailEncryptionFailed", "tsName": "emailEncryptionFailed", "value": "LEAFEN_EMAIL_ENCRYPTION_FAILED" },
+    { "goName": "errorCodeEmailSignInRefused", "tsName": "emailSignInRefused", "value": "LEAFEN_EMAIL_SIGN_IN_REFUSED" },
+    { "goName": "errorCodeEmailSenderRefused", "tsName": "emailSenderRefused", "value": "LEAFEN_EMAIL_SENDER_REFUSED" },
+    { "goName": "errorCodeEmailRecipientRefused", "tsName": "emailRecipientRefused", "value": "LEAFEN_EMAIL_RECIPIENT_REFUSED" },
+    { "goName": "errorCodeAuthMessageStateRecovered", "tsName": "authMessageStateRecovered", "value": "LEAFEN_AUTH_MESSAGE_STATE_RECOVERED" },
+    { "goName": "errorCodeAuthTokenInvalid", "tsName": "authTokenInvalid", "value": "LEAFEN_AUTH_TOKEN_INVALID" },
+    { "goName": "errorCodeAuthTokenConsumed", "tsName": "authTokenConsumed", "value": "LEAFEN_AUTH_TOKEN_CONSUMED" },
+    { "goName": "errorCodeEmailVerificationFailed", "tsName": "emailVerificationFailed", "value": "LEAFEN_EMAIL_VERIFICATION_FAILED" },
+    { "goName": "errorCodePasswordResetFailed", "tsName": "passwordResetFailed", "value": "LEAFEN_PASSWORD_RESET_FAILED" },
+    { "goName": "errorCodePasswordChangeFailed", "tsName": "passwordChangeFailed", "value": "LEAFEN_PASSWORD_CHANGE_FAILED" },
+    { "goName": "errorCodeAuthProviderNotFound", "tsName": "providerNotFound", "value": "LEAFEN_AUTH_PROVIDER_NOT_FOUND" },
+    { "goName": "errorCodeAuthProviderUnavailable", "tsName": "providerUnavailable", "value": "LEAFEN_AUTH_PROVIDER_UNAVAILABLE" },
+    { "goName": "errorCodeAuthProviderResponseInvalid", "tsName": "providerResponseInvalid", "value": "LEAFEN_AUTH_PROVIDER_RESPONSE_INVALID" },
+    { "goName": "errorCodeAuthProviderStateInvalid", "tsName": "providerStateInvalid", "value": "LEAFEN_AUTH_PROVIDER_STATE_INVALID" },
+    { "goName": "errorCodeAuthProviderClaimsInvalid", "tsName": "providerClaimsInvalid", "value": "LEAFEN_AUTH_PROVIDER_CLAIMS_INVALID" },
+    { "goName": "errorCodeAuthProviderExchangeInvalid", "tsName": "providerExchangeInvalid", "value": "LEAFEN_AUTH_PROVIDER_EXCHANGE_INVALID" },
+    { "goName": "errorCodeAuthProviderExchangeConsumed", "tsName": "providerExchangeConsumed", "value": "LEAFEN_AUTH_PROVIDER_EXCHANGE_CONSUMED" },
+    { "goName": "errorCodeAuthProviderAccountFailed", "tsName": "providerAccountFailed", "value": "LEAFEN_AUTH_PROVIDER_ACCOUNT_FAILED" },
+    { "goName": "errorCodeAccountLanguageInvalid", "tsName": "accountLanguageInvalid", "value": "LEAFEN_ACCOUNT_LANGUAGE_INVALID" },
+    { "goName": "errorCodeAccountLanguageReadFailed", "tsName": "accountLanguageReadFailed", "value": "LEAFEN_ACCOUNT_LANGUAGE_READ_FAILED" },
+    { "goName": "errorCodeAccountLanguageSaveFailed", "tsName": "accountLanguageSaveFailed", "value": "LEAFEN_ACCOUNT_LANGUAGE_SAVE_FAILED" },
+    { "goName": "errorCodeAccountStateReadFailed", "tsName": "accountStateReadFailed", "value": "LEAFEN_ACCOUNT_STATE_READ_FAILED" },
+    { "goName": "errorCodeAccountProfileInvalid", "tsName": "accountProfileInvalid", "value": "LEAFEN_ACCOUNT_PROFILE_INVALID" },
+    { "goName": "errorCodeAccountProfileIdentityReused", "tsName": "accountProfileIdentityReused", "value": "LEAFEN_ACCOUNT_PROFILE_IDENTITY_REUSED" },
+    { "goName": "errorCodeAccountProfileRevisionConflict", "tsName": "accountProfileRevisionConflict", "value": "LEAFEN_ACCOUNT_PROFILE_REVISION_CONFLICT" },
+    { "goName": "errorCodeAccountProfileReadFailed", "tsName": "accountProfileReadFailed", "value": "LEAFEN_ACCOUNT_PROFILE_READ_FAILED" },
+    { "goName": "errorCodeAccountDeletionInvalid", "tsName": "accountDeletionInvalid", "value": "LEAFEN_ACCOUNT_DELETION_INVALID" },
+    { "goName": "errorCodeAccountDeletionConfirmationMismatch", "tsName": "accountDeletionConfirmationMismatch", "value": "LEAFEN_ACCOUNT_DELETION_CONFIRMATION_MISMATCH" },
+    { "goName": "errorCodeAccountDeletionBlocked", "tsName": "accountDeletionBlocked", "value": "LEAFEN_ACCOUNT_DELETION_BLOCKED" },
+    { "goName": "errorCodeAccountDeletionFailed", "tsName": "accountDeletionFailed", "value": "LEAFEN_ACCOUNT_DELETION_FAILED" },
+    { "goName": "errorCodeAccountProfileSaveFailed", "tsName": "accountProfileSaveFailed", "value": "LEAFEN_ACCOUNT_PROFILE_SAVE_FAILED" },
+    { "goName": "errorCodeAccountProfileStorageUnavailable", "tsName": "accountProfileStorageUnavailable", "value": "LEAFEN_ACCOUNT_PROFILE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeAccountProfileDatabaseBusy", "tsName": "accountProfileDatabaseBusy", "value": "LEAFEN_ACCOUNT_PROFILE_DATABASE_BUSY" },
+    { "goName": "errorCodeAuthStorageUnavailable", "tsName": "authStorageUnavailable", "value": "LEAFEN_AUTH_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeAuthDatabaseBusy", "tsName": "authDatabaseBusy", "value": "LEAFEN_AUTH_DATABASE_BUSY" }
+    ,{ "goName": "errorCodeAuthAuditUnavailable", "tsName": "authAuditUnavailable", "value": "LEAFEN_AUTH_AUDIT_UNAVAILABLE" }
+    ,{ "goName": "errorCodeSwitcherListsOff", "tsName": "switcherListsOff", "value": "LEAFEN_SWITCHER_LISTS_OFF" }
+    ,{ "goName": "errorCodeSwitcherKeyInvalid", "tsName": "switcherKeyInvalid", "value": "LEAFEN_SWITCHER_KEY_INVALID" }
+    ,{ "goName": "errorCodeSwitcherKeyUnknown", "tsName": "switcherKeyUnknown", "value": "LEAFEN_SWITCHER_KEY_UNKNOWN" }
+    ,{ "goName": "errorCodeSwitcherFailed", "tsName": "switcherFailed", "value": "LEAFEN_SWITCHER_FAILED" }
+    ,{ "goName": "errorCodeAuthAuditReadFailed", "tsName": "authAuditReadFailed", "value": "LEAFEN_AUTH_AUDIT_READ_FAILED" }
+    ,{ "goName": "errorCodeAuthAuditCursorInvalid", "tsName": "authAuditCursorInvalid", "value": "LEAFEN_AUTH_AUDIT_CURSOR_INVALID" },
+    {"goName": "errorCodePasskeyUnavailable", "tsName": "passkeyUnavailable", "value": "LEAFEN_PASSKEY_UNAVAILABLE"},
+    {"goName": "errorCodePasskeyInvalid", "tsName": "passkeyInvalid", "value": "LEAFEN_PASSKEY_INVALID"},
+    {"goName": "errorCodePasskeyConflict", "tsName": "passkeyConflict", "value": "LEAFEN_PASSKEY_CONFLICT"},
+    {"goName": "errorCodePasskeyLimit", "tsName": "passkeyLimit", "value": "LEAFEN_PASSKEY_LIMIT"},
+    {"goName": "errorCodePasskeyFailed", "tsName": "passkeyFailed", "value": "LEAFEN_PASSKEY_FAILED"},
+    {"goName": "errorCodeDeviceCodeInvalid", "tsName": "deviceCodeInvalid", "value": "LEAFEN_DEVICE_CODE_INVALID"},
+    {"goName": "errorCodeDeviceCodeLimited", "tsName": "deviceCodeLimited", "value": "LEAFEN_DEVICE_CODE_LIMITED"},
+    {"goName": "errorCodePasswordWait", "tsName": "passwordWait", "value": "LEAFEN_PASSWORD_WAIT"},
+    {"goName": "errorCodeDeviceCodeFailed", "tsName": "deviceCodeFailed", "value": "LEAFEN_DEVICE_CODE_FAILED"},
+    {"goName": "errorCodeInvitationJoinLimited", "tsName": "invitationJoinLimited", "value": "LEAFEN_INVITATION_JOIN_LIMITED"},
+    {"goName": "errorCodeDeviceSignInRestricted", "tsName": "deviceSignInRestricted", "value": "LEAFEN_DEVICE_SIGN_IN_RESTRICTED"}
+  ],
+  "enums": [
+    {
+      "tsName": "AuthAuditMethod",
+      "tsValuesName": "authAuditMethods",
+      "values": [
+        { "goName": "authAuditMethodPasswordSignup", "tsName": "passwordSignup", "value": "password_signup" },
+        { "goName": "authAuditMethodPasswordSignin", "tsName": "passwordSignin", "value": "password_signin" },
+        { "goName": "authAuditMethodOAuthSignin", "tsName": "oauthSignin", "value": "oauth_signin" },
+        { "goName": "authAuditMethodMFATOTP", "tsName": "mfaTOTP", "value": "mfa_totp" },
+        { "goName": "authAuditMethodMFARecovery", "tsName": "mfaRecovery", "value": "mfa_recovery" },
+        { "goName": "authAuditMethodSAMLSignin", "tsName": "samlSignin", "value": "saml_signin" },
+        { "goName": "authAuditMethodPasskeySignin", "tsName": "passkeySignin", "value": "passkey_signin" },
+        { "goName": "authAuditMethodDeviceCode", "tsName": "deviceCode", "value": "device_code" },
+        { "goName": "authAuditMethodInvitationJoin", "tsName": "invitationJoin", "value": "invitation_join" },
+        { "goName": "authAuditMethodSetup", "tsName": "setup", "value": "setup" }
+      ]
+    },
+    {
+      "tsName": "AuthAuditPhase",
+      "tsValuesName": "authAuditPhases",
+      "values": [
+        { "goName": "authAuditPhaseRequest", "tsName": "request", "value": "request" },
+        { "goName": "authAuditPhaseVerify", "tsName": "verify", "value": "verify" }
+      ]
+    },
+    {
+      "tsName": "AuthAuditOutcome",
+      "tsValuesName": "authAuditOutcomes",
+      "values": [
+        { "goName": "authAuditOutcomeSuccess", "tsName": "success", "value": "success" },
+        { "goName": "authAuditOutcomeFailure", "tsName": "failure", "value": "failure" }
+      ]
+    },
+    {
+      "tsName": "AuthMessageKind",
+      "tsValuesName": "authMessageKinds",
+      "values": [
+        { "goName": "authMessageVerification", "tsName": "verification", "value": "verification" },
+        { "goName": "authMessagePasswordReset", "tsName": "passwordReset", "value": "password_reset" }
+      ]
+    },
+    {
+      "tsName": "AuthMessageStatus",
+      "tsValuesName": "authMessageStatuses",
+      "values": [
+        { "goName": "authMessagePending", "tsName": "pending", "value": "pending" },
+        { "goName": "authMessageSending", "tsName": "sending", "value": "sending" },
+        { "goName": "authMessageDelivered", "tsName": "delivered", "value": "delivered" },
+        { "goName": "authMessageFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "authMessageUncertain", "tsName": "uncertain", "value": "uncertain" },
+        { "goName": "authMessageConsumed", "tsName": "consumed", "value": "consumed" }
+      ]
+    },
+    {
+      "tsName": "AuthProviderID",
+      "tsValuesName": "authProviderIDs",
+      "values": [
+        { "goName": "authProviderGoogle", "tsName": "google", "value": "google" },
+        { "goName": "authProviderOIDC", "tsName": "oidc", "value": "oidc" }
+      ]
+    },
+    {
+      "tsName": "AuthProviderStateStatus",
+      "tsValuesName": "authProviderStateStatuses",
+      "values": [
+        { "goName": "authProviderStatePending", "tsName": "pending", "value": "pending" },
+        { "goName": "authProviderStateProcessing", "tsName": "processing", "value": "processing" },
+        { "goName": "authProviderStateFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "authProviderStateConsumed", "tsName": "consumed", "value": "consumed" }
+      ]
+    },
+    {
+      "tsName": "AuthProviderExchangeStatus",
+      "tsValuesName": "authProviderExchangeStatuses",
+      "values": [
+        { "goName": "authProviderExchangePending", "tsName": "pending", "value": "pending" },
+        { "goName": "authProviderExchangeConsumed", "tsName": "consumed", "value": "consumed" }
+      ]
+    },
+    {
+      "tsName": "AccountLanguagePreference",
+      "tsValuesName": "accountLanguagePreferences",
+      "goValuesName": "accountLanguagePreferenceValues",
+      "tsSelectableValuesName": "selectableAccountLanguagePreferences",
+      "goSelectableValuesName": "selectableAccountLanguagePreferenceValues",
+      "values": [
+        { "goName": "accountLanguageSystem", "tsName": "system", "value": "system" },
+        { "goName": "accountLanguageKo", "tsName": "ko", "value": "ko" },
+        { "goName": "accountLanguageEn", "tsName": "en", "value": "en" },
+        { "goName": "accountLanguageJa", "tsName": "ja", "value": "ja" },
+        { "goName": "accountLanguageZhHans", "tsName": "zhHans", "value": "zh-Hans" },
+        { "goName": "accountLanguageZhHant", "tsName": "zhHant", "value": "zh-Hant" },
+        { "goName": "accountLanguageEs", "tsName": "es", "value": "es" },
+        { "goName": "accountLanguageFr", "tsName": "fr", "value": "fr" },
+        { "goName": "accountLanguageDe", "tsName": "de", "value": "de" },
+        { "goName": "accountLanguagePtBR", "tsName": "ptBR", "value": "pt-BR" },
+        { "goName": "accountLanguagePtPT", "tsName": "ptPT", "value": "pt-PT" },
+        { "goName": "accountLanguageIt", "tsName": "it", "value": "it" },
+        { "goName": "accountLanguageNl", "tsName": "nl", "value": "nl" },
+        { "goName": "accountLanguageSv", "tsName": "sv", "value": "sv" },
+        { "goName": "accountLanguageDa", "tsName": "da", "value": "da" },
+        { "goName": "accountLanguageNb", "tsName": "nb", "value": "nb" },
+        { "goName": "accountLanguageFi", "tsName": "fi", "value": "fi" },
+        { "goName": "accountLanguagePl", "tsName": "pl", "value": "pl" },
+        { "goName": "accountLanguageCs", "tsName": "cs", "value": "cs" },
+        { "goName": "accountLanguageSk", "tsName": "sk", "value": "sk" },
+        { "goName": "accountLanguageHu", "tsName": "hu", "value": "hu" },
+        { "goName": "accountLanguageRo", "tsName": "ro", "value": "ro" },
+        { "goName": "accountLanguageEl", "tsName": "el", "value": "el" },
+        { "goName": "accountLanguageHr", "tsName": "hr", "value": "hr" },
+        { "goName": "accountLanguageSr", "tsName": "sr", "value": "sr" },
+        { "goName": "accountLanguageSl", "tsName": "sl", "value": "sl" },
+        { "goName": "accountLanguageBg", "tsName": "bg", "value": "bg" },
+        { "goName": "accountLanguageUk", "tsName": "uk", "value": "uk" },
+        { "goName": "accountLanguageRu", "tsName": "ru", "value": "ru" },
+        { "goName": "accountLanguageAr", "tsName": "ar", "value": "ar" },
+        { "goName": "accountLanguageHe", "tsName": "he", "value": "he" },
+        { "goName": "accountLanguageFa", "tsName": "fa", "value": "fa" },
+        { "goName": "accountLanguageUr", "tsName": "ur", "value": "ur" },
+        { "goName": "accountLanguageHi", "tsName": "hi", "value": "hi" },
+        { "goName": "accountLanguageBn", "tsName": "bn", "value": "bn" },
+        { "goName": "accountLanguageTa", "tsName": "ta", "value": "ta" },
+        { "goName": "accountLanguageTe", "tsName": "te", "value": "te" },
+        { "goName": "accountLanguageMr", "tsName": "mr", "value": "mr" },
+        { "goName": "accountLanguageGu", "tsName": "gu", "value": "gu" },
+        { "goName": "accountLanguageKn", "tsName": "kn", "value": "kn" },
+        { "goName": "accountLanguagePa", "tsName": "pa", "value": "pa" },
+        { "goName": "accountLanguageMl", "tsName": "ml", "value": "ml" },
+        { "goName": "accountLanguageNe", "tsName": "ne", "value": "ne" },
+        { "goName": "accountLanguageSi", "tsName": "si", "value": "si" },
+        { "goName": "accountLanguageVi", "tsName": "vi", "value": "vi" },
+        { "goName": "accountLanguageTh", "tsName": "th", "value": "th" },
+        { "goName": "accountLanguageId", "tsName": "id", "value": "id" },
+        { "goName": "accountLanguageMs", "tsName": "ms", "value": "ms" },
+        { "goName": "accountLanguageFil", "tsName": "fil", "value": "fil" },
+        { "goName": "accountLanguageMy", "tsName": "my", "value": "my" },
+        { "goName": "accountLanguageKm", "tsName": "km", "value": "km" },
+        { "goName": "accountLanguageTr", "tsName": "tr", "value": "tr" },
+        { "goName": "accountLanguageAz", "tsName": "az", "value": "az" },
+        { "goName": "accountLanguageKk", "tsName": "kk", "value": "kk" },
+        { "goName": "accountLanguageUz", "tsName": "uz", "value": "uz" },
+        { "goName": "accountLanguageSw", "tsName": "sw", "value": "sw" },
+        { "goName": "accountLanguageAm", "tsName": "am", "value": "am" },
+        { "goName": "accountLanguageAf", "tsName": "af", "value": "af" },
+        { "goName": "accountLanguageHa", "tsName": "ha", "value": "ha" }
+      ]
+    },
+    {
+      "tsName": "AccountDeletionBlocker",
+      "tsValuesName": "accountDeletionBlockers",
+      "values": [
+        { "goName": "accountDeletionBlockerNone", "tsName": "none", "value": "none" },
+        { "goName": "accountDeletionBlockerLastAdministrator", "tsName": "lastAdministrator", "value": "last_administrator" },
+        { "goName": "accountDeletionBlockerSharedOrganization", "tsName": "sharedOrganization", "value": "shared_organization" },
+        { "goName": "accountDeletionBlockerLegalHold", "tsName": "legalHold", "value": "legal_hold" },
+        { "goName": "accountDeletionBlockerLegalHoldCustodian", "tsName": "legalHoldCustodian", "value": "legal_hold_custodian" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "accountEmailAddress",
+      "tsName": "AccountEmailAddress",
+      "fields": [
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Primary",
+          "jsonName": "primary",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Verified",
+          "jsonName": "verified",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "accountEmailState",
+      "tsName": "AccountEmailState",
+      "fields": [
+        {
+          "goName": "Emails",
+          "jsonName": "emails",
+          "goType": "[]accountEmailAddress",
+          "tsType": "AccountEmailAddress[]"
+        },
+        {
+          "goName": "Revision",
+          "jsonName": "revision",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CanAdd",
+          "jsonName": "canAdd",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Limit",
+          "jsonName": "limit",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "accountEmailAddInput",
+      "tsName": "AccountEmailAddInput",
+      "fields": [
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "BaseRevision",
+          "jsonName": "baseRevision",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "accountEmailConfirmInput",
+      "tsName": "AccountEmailConfirmInput",
+      "fields": [
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Nonce",
+          "jsonName": "nonce",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "VerificationCode",
+          "jsonName": "verificationCode",
+          "goType": "string",
+          "tsType": "string"
+        },
+        { "goName": "CurrentVerificationCode", "jsonName": "currentVerificationCode", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountEmailMutationInput",
+      "tsName": "AccountEmailMutationInput",
+      "fields": [
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "BaseRevision",
+          "jsonName": "baseRevision",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "accountEmailPending",
+      "tsName": "AccountEmailPending",
+      "fields": [
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Nonce",
+          "jsonName": "nonce",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ExpiresAt",
+          "jsonName": "expiresAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        { "goName": "CurrentEmail", "jsonName": "currentEmail", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "registrationInput",
+      "tsName": "RegistrationInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Invitation", "jsonName": "invitation", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "loginInput",
+      "tsName": "LoginInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ReplaceOldestSession", "jsonName": "replaceOldestSession", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "sessionUserResponse",
+      "tsName": "SessionUser",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "sessionResponse",
+      "tsName": "Session",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "SessionID", "jsonName": "sessionId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "User", "jsonName": "user", "goType": "sessionUserResponse", "tsType": "SessionUser" }
+      ]
+    },
+    {
+      "goName": "authSessionResponse",
+      "tsName": "AuthSession",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "string", "tsType": "string" },
+        { "goName": "UserAgent", "jsonName": "userAgent", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IP", "jsonName": "ip", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Country", "jsonName": "country", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Current", "jsonName": "current", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SecondFactor", "jsonName": "secondFactor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Registered", "jsonName": "registered", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountDeviceCodeResponse",
+      "tsName": "AccountDeviceCode",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "authDeviceCodeInput",
+      "tsName": "AuthDeviceCodeInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "ReplaceOldestSession", "jsonName": "replaceOldestSession", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "authAppSignInInput",
+      "tsName": "AuthAppSignInInput",
+      "fields": [
+        { "goName": "AppReturn", "jsonName": "appReturn", "goType": "string", "tsType": "string" },
+        { "goName": "AppChallenge", "jsonName": "appChallenge", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAppSignInResponse",
+      "tsName": "AuthAppSignIn",
+      "fields": [
+        { "goName": "ReturnURL", "jsonName": "returnUrl", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAddressHandoffInput",
+      "tsName": "AuthAddressHandoffInput",
+      "fields": [
+        { "goName": "PushEndpoint", "jsonName": "pushEndpoint", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "authAddressHandoffResponse",
+      "tsName": "AuthAddressHandoff",
+      "fields": [
+        { "goName": "Pass", "jsonName": "pass", "goType": "string", "tsType": "string" },
+        { "goName": "To", "jsonName": "to", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAddressHandoffExchangeInput",
+      "tsName": "AuthAddressHandoffExchangeInput",
+      "fields": [
+        { "goName": "Pass", "jsonName": "pass", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAddressHandoffExchangeResponse",
+      "tsName": "AuthAddressHandoffExchange",
+      "fields": [
+        { "goName": "Session", "jsonName": "session", "goType": "sessionResponse", "tsType": "Session" },
+        { "goName": "Notifications", "jsonName": "notifications", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Passkey", "jsonName": "passkey", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "authInvitationJoinInput",
+      "tsName": "AuthInvitationJoinInput",
+      "fields": [
+        { "goName": "Invitation", "jsonName": "invitation", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authMFAFactorResponse",
+      "tsName": "AuthMFAFactor",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Verified", "jsonName": "verified", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authMFAStateResponse",
+      "tsName": "AuthMFAState",
+      "fields": [
+        { "goName": "Factors", "jsonName": "factors", "goType": "[]authMFAFactorResponse", "tsType": "AuthMFAFactor[]" },
+        { "goName": "RecoveryCodesRemaining", "jsonName": "recoveryCodesRemaining", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "authMFAEnrollmentResponse",
+      "tsName": "AuthMFAEnrollment",
+      "fields": [
+        { "goName": "FactorID", "jsonName": "factorId", "goType": "string", "tsType": "string" },
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string" },
+        { "goName": "QRCodeURI", "jsonName": "qrCodeUri", "goType": "string", "tsType": "string" },
+        { "goName": "RecoveryCodes", "jsonName": "recoveryCodes", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "authMFAChallengeResponse",
+      "tsName": "AuthMFAChallenge",
+      "fields": [
+        { "goName": "MFARequired", "jsonName": "mfaRequired", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string" },
+        { "goName": "AttemptsRemaining", "jsonName": "attemptsRemaining", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "authMFAChallengeInput",
+      "tsName": "AuthMFAChallengeInput",
+      "fields": [
+        { "goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string" },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authMFARecoveryInput",
+      "tsName": "AuthMFARecoveryInput",
+      "fields": [
+        { "goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string" },
+        { "goName": "RecoveryCode", "jsonName": "recoveryCode", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authMFAConfirmInput",
+      "tsName": "AuthMFAConfirmInput",
+      "fields": [
+        { "goName": "FactorID", "jsonName": "factorId", "goType": "string", "tsType": "string" },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authMFARevalidationInput",
+      "tsName": "AuthMFARevalidationInput",
+      "fields": [
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "authMFARecoveryCodesResponse",
+      "tsName": "AuthMFARecoveryCodes",
+      "fields": [
+        { "goName": "RecoveryCodes", "jsonName": "recoveryCodes", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "authAuditEventResponse",
+      "tsName": "AuthAuditEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Method", "jsonName": "method", "goType": "string", "tsType": "AuthAuditMethod" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "AuthAuditPhase" },
+        { "goName": "Outcome", "jsonName": "outcome", "goType": "string", "tsType": "AuthAuditOutcome" },
+        { "goName": "ReasonCode", "jsonName": "reasonCode", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ReasonStatus", "jsonName": "reasonStatus", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Reference", "jsonName": "reference", "goType": "string", "tsType": "string" },
+        { "goName": "UserAgent", "jsonName": "userAgent", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IP", "jsonName": "ip", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAuditHistoryResponse",
+      "tsName": "AuthAuditHistory",
+      "fields": [
+        { "goName": "Events", "jsonName": "events", "goType": "[]authAuditEventResponse", "tsType": "AuthAuditEvent[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "errorBody",
+      "tsName": "AuthErrorBody",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string" },
+        { "goName": "Reference", "jsonName": "reference", "goType": "string", "tsType": "string" },
+        { "goName": "Target", "jsonName": "target", "goType": "*apiErrorTarget", "tsType": "AuthErrorTarget", "optional": true },
+        { "goName": "Fields", "jsonName": "fields", "goType": "[]apiErrorField", "tsType": "AuthErrorField[]", "optional": true },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Cause", "jsonName": "cause", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "apiErrorTarget",
+      "tsName": "AuthErrorTarget",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "string" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "apiErrorField",
+      "tsName": "AuthErrorField",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Problem", "jsonName": "problem", "goType": "string", "tsType": "string" },
+        { "goName": "Allowed", "jsonName": "allowed", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "errorResponse",
+      "tsName": "AuthError",
+      "fields": [
+        { "goName": "Error", "jsonName": "error", "goType": "errorBody", "tsType": "AuthErrorBody" }
+      ]
+    },
+    {
+      "goName": "signupInvitationInput",
+      "tsName": "SignupInvitationInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "signupInvitationResponse",
+      "tsName": "SignupInvitation",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "InviterName", "jsonName": "inviterName", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceName", "jsonName": "workspaceName", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string" },
+        { "goName": "AsksToJoin", "jsonName": "asksToJoin", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "registrationVerificationResponse",
+      "tsName": "RegistrationVerification",
+      "fields": [
+        { "goName": "VerificationRequired", "jsonName": "verificationRequired", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "authEmailInput",
+      "tsName": "AuthEmailInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authTokenInput",
+      "tsName": "AuthTokenInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "passwordResetConfirmInput",
+      "tsName": "PasswordResetConfirmInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string" },
+        { "goName": "PasswordConfirm", "jsonName": "passwordConfirm", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "accountPasswordChangeInput",
+      "tsName": "AccountPasswordChangeInput",
+      "fields": [
+        { "goName": "CurrentPassword", "jsonName": "currentPassword", "goType": "string", "tsType": "string" },
+        { "goName": "NewPassword", "jsonName": "newPassword", "goType": "string", "tsType": "string" },
+        { "goName": "NewPasswordConfirm", "jsonName": "newPasswordConfirm", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "passwordResetConfirmResponse",
+      "tsName": "PasswordResetConfirmResult",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authAcceptedResponse",
+      "tsName": "AuthAccepted",
+      "fields": [
+        { "goName": "Accepted", "jsonName": "accepted", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "authProviderSummary",
+      "tsName": "AuthProviderSummary",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "authProviderListResponse",
+      "tsName": "AuthProviderList",
+      "fields": [
+        { "goName": "Providers", "jsonName": "providers", "goType": "[]authProviderSummary", "tsType": "AuthProviderSummary[]" }
+      ]
+    },
+    {
+      "goName": "authProviderExchangeInput",
+      "tsName": "AuthProviderExchangeInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "Verifier", "jsonName": "verifier", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountLanguageStateResponse",
+      "tsName": "AccountLanguageState",
+      "fields": [
+        { "goName": "LanguagePreference", "jsonName": "languagePreference", "goType": "*string", "tsType": "string | null" },
+        { "goName": "LanguageOnboardingCompleted", "jsonName": "languageOnboardingCompleted", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "accountLanguagePreferenceInput",
+      "tsName": "AccountLanguagePreferenceInput",
+      "fields": [
+        { "goName": "LanguagePreference", "jsonName": "languagePreference", "goType": "string", "tsType": "AccountLanguagePreference" }
+      ]
+    },
+    {
+      "goName": "accountPasswordStateResponse",
+      "tsName": "AccountPasswordState",
+      "fields": [
+        { "goName": "MustChangePassword", "jsonName": "mustChangePassword", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Administrator", "jsonName": "administrator", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PasswordSet", "jsonName": "passwordSet", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "accountProfileResponse",
+      "tsName": "AccountProfile",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "accountProfileMutationInput",
+      "tsName": "AccountProfileMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BaseRevision", "jsonName": "baseRevision", "goType": "int", "tsType": "number" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "accountProfileMutationReceipt",
+      "tsName": "AccountProfileMutationReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "accountProfileMutationResponse",
+      "tsName": "AccountProfileMutationResponse",
+      "fields": [
+        { "goName": "Profile", "jsonName": "profile", "goType": "accountProfileResponse", "tsType": "AccountProfile" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "accountProfileMutationReceipt", "tsType": "AccountProfileMutationReceipt" }
+      ]
+    },
+    {
+      "goName": "accountDeletionWorkspace",
+      "tsName": "AccountDeletionWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "accountDeletionPreviewResponse",
+      "tsName": "AccountDeletionPreview",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "DeletedWorkspaces", "jsonName": "deletedWorkspaces", "goType": "[]accountDeletionWorkspace", "tsType": "AccountDeletionWorkspace[]" },
+        { "goName": "DeletedWorkspaceCount", "jsonName": "deletedWorkspaceCount", "goType": "int", "tsType": "number" },
+        { "goName": "LeftWorkspaces", "jsonName": "leftWorkspaces", "goType": "[]accountDeletionWorkspace", "tsType": "AccountDeletionWorkspace[]" },
+        { "goName": "LeftWorkspaceCount", "jsonName": "leftWorkspaceCount", "goType": "int", "tsType": "number" },
+        { "goName": "Blocker", "jsonName": "blocker", "goType": "string", "tsType": "AccountDeletionBlocker" }
+      ]
+    },
+    {
+      "goName": "accountDeletionInput",
+      "tsName": "AccountDeletionInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "accountDeletionResponse",
+      "tsName": "AccountDeletionAccepted",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "DeletedWorkspaceCount", "jsonName": "deletedWorkspaceCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {"goName": "passkeyCapability", "tsName": "PasskeyCapability", "fields": [{"goName": "Available", "jsonName": "available", "goType": "bool", "tsType": "boolean"}, {"goName": "Origin", "jsonName": "origin", "goType": "string", "tsType": "string"}, {"goName": "RPID", "jsonName": "rpId", "goType": "string", "tsType": "string"}]},
+    {"goName": "accountPasskeyEntry", "tsName": "AccountPasskeyEntry", "fields": [{"goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string"}, {"goName": "RPID", "jsonName": "rpId", "goType": "string", "tsType": "string"}, {"goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string"}, {"goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "string", "tsType": "string"}, {"goName": "BackedUp", "jsonName": "backedUp", "goType": "bool", "tsType": "boolean"}]},
+    {"goName": "accountPasskeyState", "tsName": "AccountPasskeyState", "fields": [{"goName": "Entries", "jsonName": "entries", "goType": "[]accountPasskeyEntry", "tsType": "AccountPasskeyEntry[]"}, {"goName": "Revision", "jsonName": "revision", "goType": "string", "tsType": "string"}, {"goName": "Limit", "jsonName": "limit", "goType": "int", "tsType": "number"}, {"goName": "CanAdd", "jsonName": "canAdd", "goType": "bool", "tsType": "boolean"}, {"goName": "SSORequired", "jsonName": "ssoRequired", "goType": "bool", "tsType": "boolean"}, {"goName": "Capability", "jsonName": "capability", "goType": "passkeyCapability", "tsType": "PasskeyCapability"}]},
+    {"goName": "passkeyRegistrationBeginInput", "tsName": "PasskeyRegistrationBeginInput", "fields": [{"goName": "BaseRevision", "jsonName": "baseRevision", "goType": "string", "tsType": "string"}, {"goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string"}]},
+    {"goName": "passkeyCeremonyResponse", "tsName": "PasskeyCeremony", "fields": [{"goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string"}, {"goName": "Options", "jsonName": "options", "goType": "map[string]any", "tsType": "Record<string, unknown>"}]},
+    {"goName": "passkeyRegistrationFinishInput", "tsName": "PasskeyRegistrationFinishInput", "fields": [{"goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string"}, {"goName": "Credential", "jsonName": "credential", "goType": "map[string]any", "tsType": "Record<string, unknown>"}]},
+    {"goName": "passkeyRemoveInput", "tsName": "PasskeyRemoveInput", "fields": [{"goName": "BaseRevision", "jsonName": "baseRevision", "goType": "string", "tsType": "string"}, {"goName": "CredentialID", "jsonName": "credentialId", "goType": "string", "tsType": "string"}]},
+    {"goName": "passkeyLoginBeginInput", "tsName": "PasskeyLoginBeginInput", "fields": [{"goName": "Challenge", "jsonName": "challenge", "goType": "string", "tsType": "string"}, {"goName": "AppReturn", "jsonName": "appReturn", "goType": "string", "tsType": "string", "optional": true}, {"goName": "AppChallenge", "jsonName": "appChallenge", "goType": "string", "tsType": "string", "optional": true}]},
+    {"goName": "passkeyLoginFinishInput", "tsName": "PasskeyLoginFinishInput", "fields": [{"goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string"}, {"goName": "Credential", "jsonName": "credential", "goType": "map[string]any", "tsType": "Record<string, unknown>"}, {"goName": "Verifier", "jsonName": "verifier", "goType": "string", "tsType": "string"}, {"goName": "ReplaceOldestSession", "jsonName": "replaceOldestSession", "goType": "bool", "tsType": "boolean", "optional": true}]},
+    {"goName": "switcherKeyIssueInput", "tsName": "SwitcherKeyIssueInput", "fields": [{"goName": "Holder", "jsonName": "holder", "goType": "string", "tsType": "string"}]},
+    {"goName": "switcherKeyResponse", "tsName": "SwitcherKey", "fields": [{"goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string"}, {"goName": "Holder", "jsonName": "holder", "goType": "string", "tsType": "string"}, {"goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number"}, {"goName": "UsedAt", "jsonName": "usedAt", "goType": "int64", "tsType": "number"}]},
+    {"goName": "switcherKeyIssuedResponse", "tsName": "SwitcherKeyIssued", "fields": [{"goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string"}, {"goName": "Entry", "jsonName": "entry", "goType": "switcherKeyResponse", "tsType": "SwitcherKey"}]},
+    {"goName": "switcherKeyListResponse", "tsName": "SwitcherKeyList", "fields": [{"goName": "Keys", "jsonName": "keys", "goType": "[]switcherKeyResponse", "tsType": "SwitcherKey[]"}, {"goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean"}]},
+    {"goName": "switcherListAccount", "tsName": "SwitcherListAccount", "fields": [{"goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string"}, {"goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string"}, {"goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string"}]},
+    {"goName": "switcherListWorkspace", "tsName": "SwitcherListWorkspace", "fields": [{"goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string"}, {"goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string"}, {"goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string"}, {"goName": "Guest", "jsonName": "guest", "goType": "bool", "tsType": "boolean"}, {"goName": "Unread", "jsonName": "unread", "goType": "bool", "tsType": "boolean"}]},
+    {"goName": "switcherListApp", "tsName": "SwitcherListApp", "fields": [{"goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string"}, {"goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>"}, {"goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string"}]},
+    {"goName": "switcherListResponse", "tsName": "SwitcherList", "fields": [{"goName": "Origin", "jsonName": "origin", "goType": "string", "tsType": "string"}, {"goName": "ServerName", "jsonName": "serverName", "goType": "string", "tsType": "string"}, {"goName": "ServerAlias", "jsonName": "serverAlias", "goType": "string", "tsType": "string"}, {"goName": "Account", "jsonName": "account", "goType": "switcherListAccount", "tsType": "SwitcherListAccount"}, {"goName": "Workspaces", "jsonName": "workspaces", "goType": "[]switcherListWorkspace", "tsType": "SwitcherListWorkspace[]"}, {"goName": "Apps", "jsonName": "apps", "goType": "[]switcherListApp", "tsType": "SwitcherListApp[]"}]},
+    {"goName": "passkeyLoginResponse", "tsName": "PasskeyLoginResult", "fields": [{"goName": "Session", "jsonName": "session", "goType": "*sessionResponse", "tsType": "Session", "optional": true}, {"goName": "ReturnURL", "jsonName": "returnUrl", "goType": "string", "tsType": "string", "optional": true}]}
+  ]
+}

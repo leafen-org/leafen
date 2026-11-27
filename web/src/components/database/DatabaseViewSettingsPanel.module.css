@@ -1,0 +1,581 @@
+/* A database's view settings, as Notion's (seen 2026-09-30): a 290px panel
+   at the window's right under the top bar, its items 28px rows with an
+   icon, a name, what is set and a chevron; each opens in the panel. On a
+   database's page (seen 2026-11-02) the 290px column ends where the page's
+   column does (--dock-gap, useDockedPanelTop), its white ground behind a
+   1px line running on to the window's edge, over the page. */
+.panel {
+  position: fixed;
+  z-index: 1001;
+  top: var(--page-panel-top, var(--topbar-height));
+  inset-inline-end: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Its column and ground beyond: dockedPanelColumn.module.css. */
+  width: min(291px, 100vw);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 8px 16px;
+  border-inline-start: 1px solid var(--border-default);
+  background: var(--bg-app);
+}
+/* It, or its body, holds the focus while one screen gives way to another, with no ring of its own. */
+.panel:focus, .panelBody:focus { outline: none; }
+/* An inline database's, under its button (DatabaseToolbarMenus): its 42px head stays over a body that scrolls alone once it is cut to the window
+   (Notion's, seen 2026-11-15: a board's layout screen scrolling from under its head; a dashboard's list, a table's layout screen). */
+.panel[data-popover="true"] { inset-inline-end: auto; bottom: auto; width: min(290px, 100vw); padding: 0; border: 0; border-radius: var(--radius-menu); box-shadow: var(--shadow-menu); }
+.panel[data-popover="true"] > .close { z-index: 3; }
+.panel[data-popover="true"] .panelBody { position: relative; inset: auto; flex: 1 1 auto; min-height: 0; margin-top: 42px; }
+/* A new relation made from here takes its place until it is made or
+   given up (RelationPropertyCreationDialog). */
+/* A narrow toolbar's menu begins with "새 페이지" in blue and "페이지
+   템플릿 ›", 4px in and 4px down, 1px apart, as Notion's (seen 2026-11-02
+   at 768px: rows 282 wide at 4 and 33, the view's name row under them). */
+.newPageRows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: -6px -4px 18px;
+}
+.newPageRows > .item {
+  gap: 8px;
+}
+.newPageRows > .newPageRow,
+.newPageRows > .newPageRow .itemIcon {
+  color: var(--accent-blue);
+}
+.newPageRows > .newPageRow {
+  font-weight: 500;
+}
+
+.panel[data-relation-creating] {
+  visibility: hidden;
+}
+
+/* A round 20px close, 15px under the top and 16px in (seen 2026-10-27),
+   in a database page's panel from its column's end. */
+.close {
+  position: absolute;
+  top: 15px;
+  inset-inline-end: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  /* Notion's round close (seen 2026-11-03): rgba(42, 28, 0, 0.07) under a 14px ×; rgba(255, 255, 235, 0.1) in dark. */
+  background: var(--round-close-bg);
+  color: var(--text-secondary);
+}
+
+/* Docked, a 42px head stays over a body that scrolls alone, its scrollbar
+   from under the head, as Notion's every screen (seen 2026-11-06, 11-07:
+   head 166–208, body from 208): the panel itself stays put, each screen's
+   heading shows in the head (panelHead.tsx) and keeps its place in the body
+   unseen, so the rows sit where they did. The × 15px down and 16px from the
+   column's right edge however wide (Notion's, seen 2026-11-18 at dpr 1). */
+.panel[data-docked-panel="true"] {
+  overflow: hidden;
+  padding: 0;
+}
+.panel[data-docked-panel="true"] > .close {
+  z-index: 3;
+  top: 15px;
+  inset-inline-end: 16px;
+}
+.panelHead {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  height: 42px;
+  overflow: hidden;
+  background: var(--bg-app);
+}
+.panelBody {
+  position: absolute;
+  inset: 42px 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+/* Its foot, docked or a popover, 8 under a screen's last row as Notion's (seen 2026-11-21); a screen whose foot differs takes from it or adds to it. */
+.panelContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: -42px;
+  padding: 10px 8px 8px;
+}
+.headingKept {
+  visibility: hidden;
+}
+.headingShown {
+  position: absolute;
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  margin-block: 0 6px;
+  margin-inline: 0 30px;
+  padding: 0 4px;
+}
+/* A screen headed by "←" and its name, as Notion's every screen's (2026-11-05, 11-18): "←" 24×22
+   10 in, 8 before the name (42 in, 14.5px under the panel's top), what follows 50px under it. */
+.heading:has(> .back) {
+  gap: 8px;
+  margin-block: 3px 4px;
+  padding-inline-start: 2px;
+}
+/* One opened on its own (the toolbar's or a view's "필터 편집하기"), its name
+   alone 16px in and 17px down, the first thing 6px under it (Notion's, seen
+   2026-11-06). */
+.heading:not(.mainHeading):not(:has(> .back)) {
+  margin-top: 3px;
+  padding-inline-start: 7px;
+}
+
+/* "설정 보기" over the view's name, as Notion's (seen 2026-10-27): 12px on
+   a 16px line, 17px under the panel's top and 8px in from the rows; the
+   name's row 17px under it and 8px over the first setting. */
+.mainHeading {
+  min-height: 16px;
+  margin-block: 7px 16px;
+  margin-inline: 0 30px;
+  padding: 0 8px;
+}
+
+.mainHeading .label {
+  line-height: 16px;
+}
+/* A layout builder tab's, with no "×": "설정 보기" 12px under the top and
+   the name's row 36 (Notion's, seen 2026-11-12 at 1440: 225.4 and 249.4 in
+   a window from 213.4, against 17 and 50 in a view's own). */
+.panel[data-layout-tab-settings="true"] .mainHeading {
+  margin-block: 2px 7px;
+  margin-inline-end: 0;
+}
+
+/* A new view's settings sit lower than a view's own: its name 4px further
+   down and its layouts 20px under the name (Notion's, seen 2026-11-05: name
+   220–248, tiles from 268, against 216–244 in "설정 보기"). */
+.newViewHeading {
+  margin-bottom: 20px;
+}
+/* Its "새 보기" in 14px/600 in the text's own colour, centred where "설정 보기" is (Notion's, seen 2026-11-06; colour 2026-11-17). */
+.newViewHeading .label {
+  font-size: 14px;
+  font-weight: 600; color: var(--text-default);
+}
+.newViewScreen { padding-top: 12px; }
+/* Its card layouts in a box as wide as the name row, and 21px more before
+   its database (Notion's, seen 2026-11-05). */
+.newViewScreen [data-card-layout-tiles] { margin-inline: 4px; }
+/* A phone's "새 보기" sheet: groups 16px apart, its database a group of its own (Notion's, A90 411, 2026-11-18). */
+.phoneList .newViewScreen { padding-top: 0; }
+.phoneList .newViewScreen:is(*, :has([data-layout-settings]:empty)) + .newViewDatabase { margin-top: 16px; padding-block: 0; }
+.phoneList .newViewDatabase .item { border-radius: 12px; }
+/* Its database row is 32px, its 28px line 2px in from top and foot (Notion's,
+   seen 2026-11-15: the row's box padded 2px 0), the line where it was. */
+.newViewDatabase {
+  margin-top: 19px;
+  padding-block: 2px;
+}
+/* Its database 9px under the line its cards end in when no settings follow. */
+.newViewScreen:has([data-layout-settings]:empty) + .newViewDatabase {
+  margin-top: 7px;
+}
+.newViewScreen [role="separator"] {
+  margin: 5px 0 9px;
+}
+
+.heading strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "설정 보기"·"데이터 소스 설정" are texSec, as Notion's (seen 2026-10-11). */
+.label,
+.section {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.section {
+  margin: 8px 0;
+  padding: var(--menu-label-padding);
+  line-height: var(--menu-label-line-height);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.back:hover, .back:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.viewName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 4px 7px;
+}
+
+/* The view's icon button, 28px with a line, and its name field with the
+   "i" for a description at its end (seen 2026-10-05). */
+.viewIconButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.viewIconButton:hover:not(:disabled),
+.viewIconButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.viewNameBox {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.viewName input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  padding-inline-end: 30px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The ⓘ (DescribeButton) at the name field's end, 6 in, as Notion's (2026-11-18). */
+.describe {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 6px;
+  transform: translateY(-50%);
+}
+
+.viewDescription {
+  margin: -2px 4px 6px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+  resize: none;
+}
+
+.viewDescription:focus {
+  border-color: var(--focus); box-shadow: var(--name-field-ring-focus-out);
+  outline: none;
+}
+
+.viewName input:disabled {
+  color: var(--text-tertiary);
+}
+
+.viewName input:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+
+/* Its words and value on a 1.2 line, 16.8px, as Notion's rows (seen 2026-11-18, dpr 1: "레이아웃" 90.59 in a row from 86). */
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: 1.2;
+  text-align: start;
+}
+
+.item:hover:not(:disabled), .panel .item[aria-expanded="true"], /* a row whose menu is open stays lit, as Notion's (seen 2026-11-17) */
+.item:focus-visible:not(:disabled) {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A row it can't open is Notion's disabled menu row: the whole row at 40%, its words and mark in their own colours,
+   "데이터베이스"'s source in the text's (seen 2026-11-15 on the desktop in dark and on a phone, A90, in light). */
+.item:disabled { cursor: default; opacity: 0.4; }
+
+.item[data-view-setting="database"]:disabled .itemMeta {
+  color: var(--text-default);
+}
+
+/* A line's "›" is icoTer and its mark icoPri, as Notion's (seen 2026-10-11). */
+.item > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+/* Its 20px mark 8px in, the name 8px past it (Notion's, seen 2026-11-06). */
+.itemIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: var(--icon-primary);
+}
+
+/* A name alone reads whole on as many lines as it takes, the row growing round it and its mark in the middle (Notion's,
+   2026-11-24, two tabs: "보기 링크 복사" given the Russian words, two lines, 33.6); a name beside a value and the
+   value follow DatabaseSettingValueRow. */
+.itemLabel { flex: 1 1 auto; min-width: 0; overflow: hidden; overflow-wrap: break-word; }
+
+.itemMeta {
+  color: var(--text-tertiary);
+  font-size: 14px; /* Notion's value beside a settings line (seen 2026-11-08) */
+}
+
+.itemMeta + svg {
+  margin-inline-start: -2px;
+}
+
+/* "↗" before a linked source's name, 18px and 4 from it (Notion's, seen 2026-11-08). */
+.itemMetaArrow {
+  margin-inline-end: 4px;
+  vertical-align: -4px;
+}
+
+.itemMetaIcon {
+  display: inline-flex;
+  margin-inline-end: 6px;
+  vertical-align: -4px;
+}
+
+/* The line between groups, as Notion's view settings (seen 2026-10-27):
+   10px under the rows above, 8px over the next row (16px over a group's
+   name), 8px in from the rows' sides; it keeps its 1px when the panel
+   scrolls. */
+.divider {
+  flex: none;
+  height: 1px;
+  margin: 10px 8px 7px; /* 11 under the row above, as Notion's (seen 2026-11-06) */
+  background: var(--menu-divider);
+}
+/* A form's "폼 설정" is tighter, as Notion's (seen 2026-11-09): its first row
+   12 under the name field (40 from the field's top, a view's 36), and a row
+   41 below the one over a line (a view's 48). A dashboard's list stands 16
+   under the field and its lines 8 under the row above, a row 45 below the one
+   over a line (Notion's, seen 2026-11-15 at 1440 beside a table's 36 and 48), as a chart's lines are (seen 2026-11-18). */
+.panel[data-form-settings] .viewName { margin-block-end: 11px; }
+.panel[data-form-settings] .divider { margin-block: 5px; }
+.panel[data-dashboard-settings] .viewName { margin-block-end: 15px; }
+.panel[data-dashboard-settings] .divider, .panel:has([data-chart-settings]) .divider { margin-block-start: 7px; }
+
+/* The page stays under the open panel, as Notion's table, board and
+   calendar (seen 2026-11-02); a feed's column narrows to beside it (the
+   page's scroll marked by the feed in it, pageScrollHost.ts). */
+:global(html[data-database-view-settings-open] [data-page-scroll][data-page-scroll-feed="true"]) {
+  padding-inline-end: min(calc(291px + var(--dock-gap, 0px)), 100vw);
+}
+/* A table under it has its width more room at its end, so its last columns
+   roll out from under it, as Notion's (seen 2026-11-14: the table 290px
+   wider to roll while its settings are open, as they were before they
+   close); a property's settings roll its column beside it
+   (revealColumnBesidePanel). */
+:global(html[data-database-view-settings-open] [data-table-scroll] > [role="grid"]) {
+  padding-inline-end: min(291px, 100vw);
+}
+
+/* The settings each item opens, drawn as in their toolbar menus. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* A new view's "완료": 28px high, 8px under the line above and 8px in at
+   its sides, never pressed shorter by the panel's height (Notion's, seen
+   2026-11-06: 243×28 under 데이터베이스's 259px row). */
+.done { flex: 0 0 auto; height: 28px; margin: 8px 8px 0; border-radius: 6px; background: var(--accent-blue); color: var(--accent-blue-text); font-size: 14px; font-weight: 500; }
+
+/* A phone's settings sheet, as Notion's (seen 2026-10-21 at 375px): the
+   view's name alone in a white 12px-round group 45px high (its icon 20px
+   13px in, the name 16px 11px on, the "i" at the end), then 45px rows in
+   white groups 16px apart where the panel has lines — 22px icons 13px in,
+   17px names 11px on, values in 17px gray, an 18px "›" 16px from the end,
+   rows parted by a 1px line — and "데이터 소스 설정" 15px/500 in gray over
+   its group. The sheet's head names it. A group's white starts 1px under
+   its place and its last row is 44px, its line hidden, as Notion's (seen
+   2026-11-11 at 402pt: its rows sit 1px down in a group that cuts off the
+   last one's line). */
+.phoneList {
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneList > .heading {
+  display: none;
+}
+
+/* Its icon gray in a 30px lined box 8 in, the name 6 on (Notion's "설정", "새 보기", 2026-11-15, A90). */
+.phoneList .viewName {
+  gap: 6px;
+  min-height: 44px;
+  margin: 1px 0 16px;
+  padding-block: 0;
+  padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+
+.phoneList .viewIconButton {
+  width: 30px;
+  height: 30px;
+  color: var(--icon-c-gray);
+}
+
+.phoneList .viewName input {
+  height: 44px;
+  padding-block: 0;
+  padding-inline: 0 28px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+}
+
+.phoneList .viewName input:focus {
+  box-shadow: none;
+}
+
+.phoneList .describe {
+  inset-inline-end: 0;
+}
+
+.phoneList .viewDescription {
+  margin: -8px 0 16px;
+  padding-block: 10px; padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(13px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 12px;
+  background: var(--bg-app);
+  font-size: 16px;
+}
+
+.phoneList .item {
+  gap: 11px;
+  line-height: inherit;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+
+.phoneList .item:hover:not(:disabled) {
+  background: var(--bg-app);
+}
+
+.phoneList .item:active:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+/* A group's first and last rows round it; a chart's settings start groups of their own. */
+.phoneList > .item:first-child,
+.phoneList .viewName + .item,
+.phoneList .viewDescription + .item,
+.phoneList .divider + .item,
+.phoneList .section + .item {
+  margin-top: 1px;
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+}
+
+.phoneList .item:last-child,
+.phoneList .item:has(+ .divider),
+.phoneList .item:has(+ .section, + [data-chart-settings]) {
+  min-height: 44px;
+  border-bottom: 0;
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+}
+
+.phoneList .itemIcon {
+  width: 22px;
+}
+
+.phoneList .itemIcon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.phoneList .itemMeta {
+  font-size: 17px;
+}
+
+.phoneList .item > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.phoneList .divider {
+  height: 16px;
+  margin: 0;
+  background: transparent;
+}
+
+/* A group's name 16px under the group above and 8px over its own, the
+   panel's 8px margins left off, as tall as a sheet's group heading
+   (PhoneSheetRowParts; "데이터 소스 설정" 18.17 at 411, 17.8 at 402). */
+.phoneList .section {
+  margin: 0;
+  padding-block: 0 8px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 15px;
+  line-height: var(--phone-sheet-head-line, 17.8px);
+}

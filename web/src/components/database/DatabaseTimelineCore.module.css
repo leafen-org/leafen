@@ -1,0 +1,625 @@
+
+/* ── Timeline view ─────────────────────────────────────────── */
+/* As Notion's (seen 2026-11-01 at 1280px): from the page's left edge to its
+   right one, its dates and bars scrolling under a 36px line of months whose
+   ends hold "≫ 〈month〉" where the text starts and the zoom, ‹ 오늘 › where
+   it ends; 32px of days over a faint line; the bars' area a shade off the
+   page, its weekends a little more. */
+/* In a box of its own — a layout builder's tab, a page's tab, a column —
+   "≫" 2px in and ‹ 오늘 › ending 8px from its end, as in a page's text with
+   its table shut (below; Notion's builder tab, seen 2026-11-12 at 1440: the
+   month at 94 and "오늘" at 646 in a box at 64..714). */
+.timeline {
+  /* Its heads, held under the page's top, stay under its table and controls (useStickyViewHeads). */
+  --sticky-head-layer: 4;
+  --timeline-offset: 8px;
+  --timeline-offset-end: 16px;
+  --timeline-lane: 36px;
+  --timeline-body: color-mix(in srgb, var(--bg-app), var(--text-default) 1%);
+  --timeline-weekend-shade: color-mix(in srgb, var(--bg-app), var(--text-default) 4%);
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+}
+/* In a page's text, Notion's (seen 2026-11-03 at 1280 and 1600): with its
+   table open, across the page, the table 90px from the page's left edge and
+   ‹ 오늘 › ending 14px from its right; with it shut, in the database's box
+   from 8px before the text, "≫" 2px in and ‹ 오늘 › ending 8px from its end.
+   Its box where a table's is, 6px left of the page's edge once the text
+   stands centred (--page-wide-edge; seen 2026-11-12 at 1440: 264–1419). */
+.timeline[data-page-wide="true"] {
+  --timeline-offset: calc(98px + var(--page-wide-edge, 0px));
+  --timeline-offset-end: calc(22px - var(--page-wide-edge, 0px));
+  width: var(--page-wide-width);
+  max-width: none;
+  margin-inline-start: calc((var(--page-wide-offset) + var(--page-wide-edge, 0px)) * -1);
+}
+/* On a database's own page the table starts 8px before the text as the
+   page's other views do, as Notion's (seen 2026-11-07 at 999: 96–375, "이름" at 104). */
+:global([data-database-page="true"]) .timeline[data-page-wide="true"] {
+  --timeline-offset: 104px;
+}
+.timeline[data-page-wide="boxed"] {
+  width: calc(100% + 8px);
+  max-width: none;
+  margin-inline-start: -8px;
+}
+/* On a database's own page, its table shut, ‹ 오늘 › ends where the text
+   does, 8px past its box (Notion's, seen 2026-11-12 at 1440: "›" ending at
+   1344 by a box ending at 1336, the month at 396 as in the box). */
+:global([data-database-page="true"]) .timeline[data-page-wide="boxed"] .timelineControls {
+  margin-inline-end: -16px;
+}
+/* A page's tab: in the box a page's database has, from 8px before the
+   text, its month at the box's start with no "≫" — the table is the
+   builder's to open (Notion's, seen 2026-11-12 at 1440: the month at 487.5
+   in a box 487.5..1195.5, "›" ending at 1187.5). With the table the builder
+   opened, across the page as in a page's text, its "«" kept out of sight
+   (Notion's: the names' column 360..640, "›" ending at 1411). */
+:global([data-row-layout-tab-panel]) .timeline:not([data-page-wide="true"], :global([data-phone="true"]) *) {
+  width: calc(100% + 8px);
+  max-width: none;
+  margin-inline-start: -8px;
+}
+:global([data-row-layout-tab-panel]) .timeline:not([data-page-wide="true"], :global([data-phone="true"]) *) .timelineHeading { padding-inline-start: 0; }
+:global([data-row-layout-tab-panel]) .timelineTableToggle { display: none; }
+:global([data-row-layout-tab-panel]) .timeline[data-page-wide="true"] .timelineTableToggle { display: inline-flex; visibility: hidden; }
+.timelineToolbar {
+  position: absolute;
+  top: 1px;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  height: 36px;
+  pointer-events: none;
+}
+.timelineTitle {
+  flex: 0 0 auto;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+/* "≫" 6px before the text's edge and the month 4px after it, on the page's
+   colour from the page's edge, over the months under them. */
+.timelineHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  height: 36px;
+  padding-block: 10.5px 0;
+  padding-inline: max(0px, calc(var(--timeline-offset) - 6px)) 0;
+  background: var(--bg-app);
+  pointer-events: auto;
+}
+.timelineTableToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+.timelineTableToggle:hover { background: var(--bg-hover); }
+.timelineNewRowTitle { width: 100%; min-width: 0; align-self: stretch; padding: 3px 8px; background: transparent; color: var(--text-default); outline: none; }
+/* The zoom, then ‹ 오늘 › ending where the text does: 24px each, 14px. */
+.timelineControls {
+  display: flex;
+  align-items: flex-start;
+  flex: 0 0 auto;
+  gap: 0;
+  height: 36px;
+  padding-block: 9.5px 0;
+  padding-inline: 0 max(0px, calc(var(--timeline-offset-end, var(--timeline-offset)) - 8px));
+  background: var(--bg-app);
+  pointer-events: auto;
+}
+.timelineControls > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.timelineControls > button[aria-label] {
+  width: 24px;
+  padding: 0;
+  color: var(--icon-secondary);
+}
+.timelineControls > button:hover,
+.timelineControls > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.timelineControls > * {
+  flex-shrink: 0;
+}
+/* "+ 새로 만들기" a 36px line under the bars, its plus at the text's edge:
+   8px past the box's, and on a database's own page, where the days run on
+   under the page's margin, as far past it (Notion's, seen 2026-11-11: the
+   plus at 374 by days from 270, its words at 396; 8px in, in a page's text). */
+.timelineCreateRow { position: sticky; inset-inline-start: calc(var(--timeline-offset) + var(--timeline-bleed, 0px)); display: flex; align-items: center; gap: 6px; height: 36px; padding: 0; color: var(--text-secondary); font-size: 14px; }
+.timelineCreateRow:hover { color: var(--text-default); }
+/* Its table and dates run in the reading direction: where the screen reads
+   from the right its days run from the right, earlier on the right, its
+   table laid over the chart's right and its bars' titles at their right end,
+   as Notion's in Hebrew (seen 2026-11-11: 31 at the right edge, 22 at the
+   left, the table and "+ 새로 만들기" on the right). Its words still read by
+   their own direction. */
+.timelineBody {
+  position: relative;
+  min-width: 0;
+}
+.timelineScroll {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+/* A database's own page runs its dates and bars across the page, the bar of
+   today in the page's middle, its controls staying on the title's line, as
+   Notion's (seen 2026-11-05: days from the window's edge at 270 to 1425). */
+:global([data-database-page="true"]) .timeline:not([data-show-table="true"]):not(:global([data-phone="true"]) *) .timelineScroll {
+  --timeline-bleed: 96px;
+  max-width: none;
+  margin-inline-end: -104px;
+  margin-inline-start: -96px;
+}
+/* The bars' area runs 28px under "+ 새로 만들기"; the dates over it keep the
+   page's colour. */
+.timelineCanvas {
+  position: relative;
+  min-width: max-content;
+  padding-bottom: 28px;
+  background: var(--timeline-body);
+}
+/* A database block's own timeline runs its bars' area 4px under "+ 새로
+   만들기" in a page's text, its bar right under that, and 28px on its own
+   page, the bar at the window's foot (useOwnPageViewFill when it is short).
+   With its table open the table's 36px row of calculations comes under "+ 새로
+   만들기" and the area runs on 32px past it in a page's text, its last 4px
+   under the area's end, and 43px on its own page (Notion's, seen 2026-11-15:
+   1440×723 and 1024×723, 46 rows). */
+:global([data-inline-database-wrapper] > section > [data-view-type="timeline"]) .timelineCanvas:not(:global([data-phone="true"]) *) {
+  padding-bottom: 4px;
+}
+:global([data-inline-database-wrapper] > section > [data-view-type="timeline"]) .timeline[data-show-table="true"] .timelineCanvas:not(:global([data-phone="true"]) *) {
+  padding-bottom: 32px;
+}
+:global([data-database-page="true"] [data-inline-database-wrapper] > section > [data-view-type="timeline"]) .timelineCanvas:not(:global([data-phone="true"]) *) {
+  padding-bottom: 28px;
+}
+:global([data-database-page="true"] [data-inline-database-wrapper] > section > [data-view-type="timeline"]) .timeline[data-show-table="true"] .timelineCanvas:not(:global([data-phone="true"]) *) {
+  padding-bottom: 43px;
+}
+/* In a page's text, its table shut, the bars' area ends on a faint line, its
+   scrollbar under it; with the table open or on its own page none (Notion's,
+   seen 2026-11-13 at 1440: a 1px line 216 under the months' top). */
+:global([data-inline-database-wrapper]:not([data-database-page="true"] *) > section > [data-view-type="timeline"]) .timeline:not([data-show-table="true"]) .timelineCanvas:not(:global([data-phone="true"]) *) {
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+/* In a page's text it starts 4px under the view tabs, the table open or not,
+   where its own page's starts right under them (Notion's, seen 2026-11-11:
+   tabs 305–345, months' line from 349). */
+:global([data-inline-database-wrapper]:not([data-database-page="true"] *) > section > [data-view-type="timeline"]) .timeline:not(:global([data-phone="true"]) *) {
+  margin-top: 4px;
+}
+.timelineCanvas[data-weekends="true"] {
+  background-image: linear-gradient(to right, var(--timeline-weekend-shade) 0 var(--timeline-weekend), transparent 0);
+  background-position: var(--timeline-weekend-at) 0;
+  background-size: var(--timeline-week) 100%;
+}
+/* Counted from the right where the days run from there. */
+:root[dir="rtl"] .timelineCanvas[data-weekends="true"] {
+  background-image: linear-gradient(to left, var(--timeline-weekend-shade) 0 var(--timeline-weekend), transparent 0);
+  background-position: right var(--timeline-weekend-at) top 0;
+}
+.timelineMonths,
+.timelineDays,
+.timelineLanes {
+  display: grid;
+}
+/* A month's name at its first day, 14px/500 on a 21px line 13px down, level
+   with the heading's month (Notion's, seen 2026-11-06). */
+.timelineMonth {
+  box-sizing: border-box;
+  height: 36px;
+  overflow: hidden;
+  padding-top: 13px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  white-space: nowrap;
+}
+.timelineDays {
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+/* Each day's number 12px, 6px down its 32px; today's white in a 22px red
+   circle. */
+.timelineDay {
+  box-sizing: border-box;
+  height: 32px;
+  padding-top: 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+}
+/* A narrow column's label (quarter, year, five years) stands centered on its
+   day's start, on one line (Notion's, seen 2026-11-09). */
+.timelineDay[data-on-tick="true"] {
+  position: relative;
+  overflow: visible;
+}
+.timelineDay[data-on-tick="true"] > span {
+  position: absolute;
+  inset-inline-start: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+/* A week's day: its weekday, then its number in a 22px box 7px either side
+   of it, darker (Notion's, seen 2026-11-03); today's box is the circle. */
+.timelineDay > [data-timeline-weekday] {
+  font-weight: 500;
+}
+.timelineDay > [data-timeline-weekday] + span {
+  display: inline-block;
+  min-width: 22px;
+  padding: 0 7px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.timelineDay[data-today="true"] > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: -3px;
+  border-radius: 50%;
+  background: var(--today-circle-bg);
+  color: #fff; font-weight: 500; /* Notion's white 500 date in its dark timeline too (seen 2026-11-15), not the calendar's. */
+}
+.timelineDay[data-today="true"] > [data-timeline-weekday] + span {
+  width: auto;
+  border-radius: 11px;
+}
+/* Lanes keep their own height at the top of the empty area rather than
+   stretching to fill it, so a lone bar stays one line tall. */
+.timelineLanes {
+  position: relative;
+  grid-auto-rows: minmax(var(--timeline-lane), auto);
+  align-content: start;
+}
+/* Now, a 1px red line down the bars' area under the dates. */
+.timelineToday {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 1px;
+  background: var(--c-accent-red);
+  pointer-events: none;
+}
+/* Its top a 7px dot on the dates' line, in the days' row. */
+.timelineNowDot {
+  position: absolute;
+  top: 29px;
+  z-index: 4;
+  width: 7px;
+  height: 7px;
+  margin-inline-start: -3px;
+  border-radius: 50%;
+  background: var(--c-accent-red);
+  pointer-events: none;
+}
+/* A bar 34px on its 36px line, 2px after its first day and 1px before its
+   last one ends, a card on popBac raised in shaOutMd (Notion's, seen 2026-11-24 twice). */
+.timelineBar {
+  align-self: start;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: calc(var(--timeline-lane) - 2px);
+  margin-block: 1px;
+  margin-inline: 2px 1px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-raised);
+  color: var(--text-default);
+  cursor: grab;
+  text-align: start;
+  user-select: none;
+}
+.timelineBar:is([data-dates-fixed="true"], [data-read-only="true"]) {
+  cursor: pointer;
+}
+/* A bar moved whole is drawn where it would land at 40%, its place left
+   empty (Notion's, seen 2026-11-15 in Chrome at 1440). */
+.timelineBar[data-moving="whole"] {
+  z-index: 4;
+  opacity: 0.4;
+  cursor: grabbing;
+}
+.timelineBar:not([data-read-only="true"]):hover,
+.timelineBar:focus-within {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* Its title 6px into the bar, as Notion's (seen 2026-11-02). */
+.timelineBarOpen {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 14px;
+  padding: 0;
+  align-self: stretch;
+  color: inherit;
+  cursor: inherit;
+}
+.timelineBarOpen:focus-visible {
+  outline: none;
+}
+.timelineSubitemIndent {
+  flex: 0 0 auto;
+  height: 1px;
+}
+/* The title keeps its width on one line with the values beside it, so many
+   linked pages neither hide the title nor make the bar taller (2026-10-06:
+   sixteen did both); what the bar cannot hold runs on past its end. */
+.timelineBarTitle {
+  overflow: hidden;
+  flex: 0 0 auto;
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The shown values before or after the title, as the view orders them, 10
+   apart, past the bar's end where it is short, as Notion's (seen 2026-11-05:
+   a one-day bar's values run on after it; 2026-11-12: before it where the
+   view puts the title after them). */
+.timelineBarMeta {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.timelineBarMeta * {
+  flex-wrap: nowrap;
+}
+.timelineBarMeta:empty,
+.timelineBarProp:empty {
+  display: none;
+}
+.timelineBarProp {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+/* Notion's bar chips: 13px words on their 18px line, 8px either side (seen 2026-11-12, 11-15). */
+.timelineBarProp .chip {
+  --chip-height: 18px;
+  padding-inline: 8px;
+  font-size: 13px;
+}
+/* A grouped timeline's lanes start right under its dates; beside a table
+   they start with the table's rows, under the dates, which cover the first
+   group's head and columns' names, as Notion's (seen 2026-11-01 at 1280px). */
+.timelineLanes[data-grouped] {
+  padding: 0;
+}
+.timelineLanes[data-grouped="table"] {
+  margin-top: -68px;
+}
+.timelineMonths,
+.timelineDays {
+  position: relative;
+  z-index: 3;
+  background: var(--bg-app);
+}
+/* A group's head, as Notion's timeline (seen 2026-11-01 at 1280px): 32px
+   with its toggle at the start edge, kept there as the canvas scrolls; 36px
+   beside a table. Its "⋯" and "+" show while it is pointed at. */
+.timelineGroupHead {
+  grid-column: 1 / -1;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding-top: 2px;
+}
+.timelineGroupHead[data-table="true"] {
+  height: 36px;
+  padding-top: 0;
+}
+.timelineGroupHeadInner {
+  position: sticky;
+  inset-inline-start: 0;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* On the canvas they stay 8px before where the text starts as it scrolls,
+   past the page's margin the days run under on a database's own page, as
+   Notion's (seen 2026-11-01 and 2026-11-11: the toggle there, "+ 새로
+   만들기"'s plus 8px on, at 374 by days from 270; "+ 신규 그룹" 10px on). */
+.timelineLanes .timelineGroupHeadInner {
+  inset-inline-start: calc(var(--timeline-table-inset) + var(--timeline-bleed, 0px));
+}
+.timelineLanes .timelineGroupAdd > button {
+  inset-inline-start: calc(var(--timeline-table-inset) + var(--timeline-bleed, 0px) + 8px);
+}
+.timelineLanes .timelineNewGroup > button {
+  inset-inline-start: calc(var(--timeline-table-inset) + var(--timeline-bleed, 0px) + 10px);
+}
+.timelineGroupHead:hover .tableGroupAction,
+.timelineGroupHead:focus-within .tableGroupAction {
+  opacity: 1;
+}
+/* A group's "+ 새로 만들기": its plus 8px in and its words 30px in, grey on
+   the canvas and lighter beside a table, across the table's width. */
+.timelineGroupAdd {
+  grid-column: 1 / -1;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  height: 36px;
+}
+.timelineGroupAdd > button {
+  position: sticky;
+  inset-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.timelineGroupAdd > button svg {
+  color: var(--icon-tertiary);
+}
+.timelineGroupAdd[data-table="true"] > button {
+  flex: 1 1 auto;
+  padding-inline-start: 8px;
+  color: var(--text-tertiary);
+}
+.timelineGroupAdd[data-table="true"] > button:hover,
+.timelineGroupAdd[data-table="true"] > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* "+ 신규 그룹" (the views' one button, ViewGroupAdd): 4px into its 38px
+   lane, 10px in on the canvas and in the table's middle beside one. */
+.timelineNewGroup {
+  grid-column: 1 / -1;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 38px;
+}
+.timelineNewGroup[data-table="true"] {
+  justify-content: center;
+}
+.timelineNewGroup > button {
+  position: sticky;
+  inset-inline-start: 10px;
+}
+/* A phone's, as Notion's (seen 2026-11-01 at 375px): rows and
+   "+ 새로 만들기" 44px, its plus 18px ("+ 신규 그룹" is the views' one
+   button's phone size). */
+:global([data-phone="true"]) .timelineGroupAdd {
+  height: 44px;
+}
+:global([data-phone="true"]) .timelineGroupAdd > button svg {
+  width: 18px;
+  height: 18px;
+}
+/* A phone's, as Notion's (seen 2026-11-01 at 375px): no table, so no "≫",
+   the month 8px before the text; ‹ › 26px with 18px arrows; bars 42px on
+   44px lines, "+ 새로 만들기" 44px with an 18px plus, 100px under it. */
+:global([data-phone="true"]) .timeline {
+  --timeline-lane: 44px;
+}
+:global([data-phone="true"]) .timelineTableToggle {
+  display: none;
+}
+/* A phone's box keeps its edges (not measured in a box of its own). */
+:global([data-phone="true"]) .timeline:not([data-page-wide]) {
+  --timeline-offset: 0px;
+  --timeline-offset-end: 0px;
+}
+:global([data-phone="true"]) .timelineHeading {
+  padding-block: 11.5px 0;
+  padding-inline: max(0px, calc(var(--timeline-offset) - 8px)) 0;
+}
+:global([data-phone="true"]) .timelineControls > button[aria-label] {
+  width: 26px;
+}
+/* The arrows' marks, the only buttons there holding one, picked by that and
+   not by their names: an attribute before a descendant had Chrome work out
+   again every mark (svg) under any element whose name (aria-label) changed —
+   the page area's at each screen, settings window or trash opened or closed,
+   some 400 marks a time (2026-11-15). */
+:global([data-phone="true"]) .timelineControls > button > svg {
+  width: 18px;
+  height: 18px;
+}
+:global([data-phone="true"]) .timelineCanvas {
+  padding-bottom: 100px;
+}
+:global([data-phone="true"]) .timelineDay {
+  padding-top: 7px;
+}
+:global([data-phone="true"]) .timelineCreateRow {
+  height: 44px;
+}
+:global([data-phone="true"]) .timelineCreateRow svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* A bar's sub-items, as Notion's (seen 2026-11-05): a line from the parent's start down to each; an open row ends in a lane that shows the bar a new one would be. */
+.timelineSubitemElbow {
+  align-self: start;
+  height: calc(100% - var(--timeline-lane) / 2);
+  min-width: 14px;
+  margin-inline-start: 12px;
+  border-bottom: 1px solid var(--border-strong, var(--text-tertiary));
+  border-inline-start: 1px solid var(--border-strong, var(--text-tertiary));
+  border-end-start-radius: 6px;
+  pointer-events: none;
+}
+.timelineSubitemLink {
+  z-index: 1;
+  align-self: center;
+  justify-self: start;
+  margin-inline-start: 40px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.timelineSubitemLink:hover {
+  background: var(--bg-hover);
+}
+.timelineSubitemLane {
+  position: relative;
+  min-height: var(--timeline-lane);
+  cursor: pointer;
+}
+.timelineSubitemGhost {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  pointer-events: none;
+}

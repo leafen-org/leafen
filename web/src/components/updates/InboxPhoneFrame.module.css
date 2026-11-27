@@ -1,0 +1,125 @@
+/* A phone's inbox in the Notion Android app's frame (InboxPhoneFrame.tsx;
+   measured 2026-11-21 on the A90 at 411, 2.625x, light). Dark unmeasured. */
+
+/* The top bar: 48 high under the window's top, its buttons' height. */
+.bar {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 48px;
+  padding-inline: 16px 20px;
+}
+
+/* The workspace's icon: a 40 circle, a 1px rgb(240, 239, 237) ring, 3 of
+   white, the icon 32 round within; its press 48 square. */
+.workspace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.workspaceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 3px;
+  overflow: hidden;
+  border: 1px solid rgb(240, 239, 237);
+  border-radius: 50%;
+  background: var(--bg-app);
+  font-size: 22px;
+  line-height: 1;
+}
+
+.workspaceIcon > * {
+  border-radius: 50%;
+}
+
+.workspaceIcon[data-letter="true"] {
+  color: var(--text-secondary);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+/* The inbox's tab, pressed: 75×40, round, rgb(234, 232, 230), its tray 20
+   filled in the icons' dark ink, a 6 red dot rgb(229, 102, 90) at its top
+   right while something is unread. */
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 40px;
+  margin-inline-start: auto;
+  border-radius: 20px;
+  background: rgb(234, 232, 230);
+  color: var(--icon-primary);
+}
+
+.unread {
+  position: absolute;
+  top: 11.2px;
+  inset-inline-start: calc(50% + 5px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--unread-mark);
+}
+
+:global([data-theme="dark"]) .tab {
+  background: var(--bg-active);
+}
+
+:global([data-theme="dark"]) .workspaceIcon {
+  border-color: var(--border-default);
+}
+
+/* An empty inbox, as the app's (measured 2026-11-21 on the A90 at 411, light):
+   a ✓ in the accent blue, 22.5 square with its 2 line's round ends, 14 over
+   its words; the words 16px on 27.25 lines in the secondary grey, in the
+   middle, the note wrapped 52 from each side; the whole in the screen's
+   middle: the list's head above it (114) less the list's foot room under it
+   (76, UpdatesPanelChrome.module.css) kept under it. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding-block: 0 38px;
+  padding-inline: 52px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 27.25px;
+  text-align: center;
+}
+
+.emptyMark {
+  width: 22.5px;
+  height: 22.5px;
+  margin-block-end: 14px;
+  overflow: visible;
+  fill: none;
+  stroke: var(--accent-blue);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Korean lines break between words, as the app's; Japanese and Chinese,
+   which have no spaces, break between characters by their own rules. */
+.emptyWords {
+  overflow-wrap: anywhere;
+}
+.emptyWords:lang(ko) {
+  word-break: keep-all;
+}

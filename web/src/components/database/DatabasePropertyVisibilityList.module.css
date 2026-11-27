@@ -1,0 +1,451 @@
+/* Notion's "속성 표시 여부" list (seen 2026-09-30, 290px panel): a 28px grey
+   group line with "모두 숨기기" or "모두 표시하기" in blue at its right, then
+   28px rows: an 18x24 drag handle, a 20px icon, the name in 14px and a 24px
+   eye button at the right. A row stays clear under the pointer and while a
+   button in it has the keyboard, only that button lighting — the property,
+   group and sub-group lists alike (Notion's, seen 2026-11-18 at 1440 in both
+   themes: the 274x28 row transparent, the focused ⠿ its own box and ring). */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 11px -4px 0;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.group + .group {
+  margin-top: 5px;
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.groupHead > :first-child {
+  min-width: 0;
+  line-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The action's own line (PropertyVisibilityGroup), as Notion's phone sheet
+   has it (below); on a desktop the action stands in it as in the head. */
+.groupActionLine {
+  display: flex;
+  flex: none;
+}
+
+.groupAction {
+  flex: none;
+  padding: 2px 6px;
+  line-height: 14px;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.groupAction:hover,
+.groupAction:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The library's "모두 숨기기" waits while one column alone is shown. */
+.groupAction:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.handle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 24px;
+  margin-inline-end: 6px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+
+.handle:disabled {
+  cursor: default;
+}
+
+/* A property's ⠿ is Notion's button kind (seen 2026-11-18, both themes): its
+   grip in the tertiary icon gray and a box under the pointer. A group's is
+   the plain kind of Notion's other database menu lists: the secondary gray
+   and no box. */
+.row[data-view-property] .handle {
+  color: var(--icon-tertiary);
+}
+.row[data-view-property] .handle:hover:not(:disabled),
+.handle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 6px;
+  color: var(--text-default);
+}
+
+/* A group's option, in the grouping screen's list that shares these rows. */
+.chip {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0 6px;
+  overflow: hidden;
+  border-radius: 4px;
+  font-weight: 500;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A grouping's groups name themselves in 500, their name ending 8 short of
+   the pin or eye after it (Notion's table and board group lists, seen
+   2026-11-12 at 1440 dark: "대상 가", "관계 없음" 14/500, the name's box
+   ending 8 before the pin's); the property list's names stay 400. A phone's
+   sheet keeps its own (below). */
+.list:is([data-group-list], [data-sub-group-list]) .name {
+  margin-inline-end: 8px;
+  font-weight: 500;
+}
+:global([data-phone-settings]) .list:is([data-group-list], [data-sub-group-list]) .name {
+  margin-inline-end: 0;
+  font-weight: inherit;
+}
+/* A checkbox group's box before its property's name. */
+.name > [data-group-checkbox] {
+  margin-inline-end: 6px;
+}
+/* A related page's group, its page's glyph before its title (Notion's, seen 2026-10-11). */
+.name > svg[data-group-page] {
+  margin-inline-end: 6px;
+  color: var(--icon-secondary);
+  vertical-align: -4px;
+}
+
+/* The eye, as the pin below, is one of the menu row's small buttons
+   (DatabaseMenuRowTool). */
+.eye {
+  composes: tool from "./DatabaseMenuRowTool.module.css";
+  color: var(--text-default);
+}
+
+.eye[aria-pressed="false"] {
+  color: var(--text-tertiary);
+}
+
+/* "›" 9 past the eye's glyph, at the row's end, its rows 4 further in (Notion's "표 속성", seen 2026-11-12). */
+.open {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 24px;
+  margin-inline-start: 5px;
+  padding: 0;
+  color: var(--text-tertiary);
+}
+
+.list[data-opens-properties] .row {
+  padding-inline-start: 8px;
+}
+
+/* A board group's pin, in the secondary icon color, filled once pinned (Notion's, seen 2026-10-11). */
+.pin {
+  composes: tool from "./DatabaseMenuRowTool.module.css";
+  color: var(--icon-secondary);
+}
+
+.pin:focus-visible {
+  outline: none;
+}
+
+.pin:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* A hidden sub-group waits greyed at the list's end (Notion's, seen 2026-10-11). */
+.row[data-shown="false"] .name {
+  opacity: 0.5;
+}
+/* So does a hidden group, by hand or as empty while empty groups hide, at
+   0.4 (Notion's, seen 2026-11-11 on a desktop and a phone). */
+[data-group-list] .row[data-shown="false"] .name {
+  opacity: 0.4;
+}
+
+.eye:focus-visible {
+  outline: none;
+}
+
+/* The title is always shown. */
+.eye:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.empty {
+  padding: 6px 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* A phone's settings sheet, as Notion's (seen 2026-10-23 at 375px): each
+   group's 15px/500 gray name 16px under what is above it, its blue action in
+   12px at the end, then 10px on its rows in a white 12px-round group — 45px
+   rows parted by a 1px line, the handle 22px 10px in, the property's icon
+   4px on, its name in 17px 7px on, the eye 16px at the end. A grouping's
+   options have their 18px handle 20px in and their chips in 14px. */
+:global([data-phone-settings]) .list {
+  margin: 0;
+}
+
+:global([data-phone-settings]) .group + .group {
+  margin-top: 0;
+}
+
+/* The name a sheet's group heading's 16.5 line and its action the desktop's
+   12px "모두 숨기기" in its 2px by 6px box, the two on one baseline, which
+   makes the heading 18.68 high on Notion's A90 (2026-11-18 at 411: the
+   heading 154–172.68, the action's box ending 16 in from the group's end,
+   the rows from 180.68). In "속성 표시 여부" — a view's and the library's —
+   the name stands in the heading's middle and the action on its own 16.5
+   line's baseline, the heading 18.45 high in iPhone Safari, and each row is
+   drawn 1px under its place (margin 1px 0 -1px), its white from 9 under the
+   heading and the group's white n×45−1 high (Notion's, seen 2026-11-25 in
+   iPhone Safari at 402 and 874, dpr 3, two tabs: the heading 148, its name
+   148.97, the action 148.06, the rows 175.45). */
+:global([data-phone-settings]) .groupHead {
+  align-items: baseline;
+  height: auto;
+  margin: 16px 0 8px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+:global([data-phone-settings]) .groupHead > :first-child {
+  line-height: 16.5px;
+}
+
+:global([data-phone-settings]) [data-property-visibility] .groupHead > :first-child {
+  align-self: center;
+}
+
+:global([data-phone-settings]) .groupActionLine {
+  display: block;
+  line-height: 16.5px;
+}
+
+:global([data-phone-settings]) .groupActionLine > .groupAction {
+  display: inline-flex;
+  vertical-align: baseline;
+}
+
+:global([data-phone-settings]) [data-property-visibility] .row {
+  margin-block: 1px -1px;
+}
+
+/* While a search holds words a row goes without its drag handle: Notion's
+   icon stands in a 16 box 2 past the row's 16 and the name 10 past that
+   box, at 44 (seen 2026-11-25 in iPhone Safari at 402, two tabs) — here the
+   19 icon box centred where that one is (26) and the name at 44. */
+:global([data-phone-settings]) [data-property-visibility][data-searching] .row {
+  padding-inline-start: calc(16.5px + var(--phone-safe-start, 0px));
+}
+
+:global([data-phone-settings]) [data-property-visibility][data-searching] .icon {
+  margin-inline-end: 8.5px;
+}
+
+:global([data-phone-settings]) [data-property-visibility][data-searching] .handle {
+  display: none;
+}
+
+/* Notion's rows lie in a 12-round box that clips them, the last row's line
+   and the pixel it was moved by cut off: its white ends where the box does. */
+:global([data-phone-settings]) [data-property-visibility] .row:last-child {
+  height: 44px;
+  margin-bottom: 0;
+}
+
+:global([data-phone-settings]) .groupAction {
+  line-height: 14.4px;
+}
+
+:global([data-phone-settings]) .row {
+  height: 45px;
+  padding-block: 0;
+  padding-inline: calc(10px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .groupHead + .row,
+:global([data-phone-settings]) .group > .row:first-child {
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+}
+
+:global([data-phone-settings]) .row:last-child {
+  border-bottom: 0;
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+}
+
+:global([data-phone-settings]) .handle {
+  width: 22px;
+  height: 22px;
+  margin-inline-end: 4px;
+  color: var(--icon-tertiary);
+}
+
+:global([data-phone-settings]) .handle svg {
+  width: 22px;
+  height: 22px;
+}
+
+:global([data-phone-settings]) .icon {
+  width: 19px;
+  height: 19px;
+  margin-inline-end: 7px;
+  color: var(--icon-primary);
+}
+
+:global([data-phone-settings]) .eye {
+  color: var(--icon-primary);
+}
+
+:global([data-phone-settings]) .eye svg {
+  width: 16px;
+  height: 16px;
+}
+
+:global([data-phone-settings]) [data-group-list] .row {
+  padding-inline-start: calc(20px + var(--phone-safe-start, 0px));
+}
+
+:global([data-phone-settings]) [data-group-list] .handle {
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 7px;
+}
+
+:global([data-phone-settings]) [data-group-list] .handle svg,
+:global([data-phone-settings]) [data-group-list] .eye svg {
+  width: 18px;
+  height: 18px;
+}
+
+:global([data-phone-settings]) [data-group-list] .chip {
+  font-size: 14px;
+}
+
+:global([data-phone-settings]) .empty {
+  padding-block: 13px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 17px;
+}
+/* The grouping screen's groups (Notion's, seen 2026-11-06): under a line 9px
+   below the switches, 12px in from the panel's sides, "그룹" 11px under it,
+   the groups 7px under that line, each its handle 8px in and its chip 9px
+   past the handle. */
+:global([data-group-settings]) + .list {
+  position: relative;
+  margin-top: 14px;
+}
+:global([data-group-settings]) + .list::before {
+  position: absolute;
+  top: -11px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  height: 1px;
+  background: var(--menu-divider);
+  content: "";
+}
+:global([data-group-settings]) + .list .groupHead {
+  margin-bottom: 7px;
+}
+:global([data-group-settings]) + .list .row {
+  padding-inline-start: 8px;
+}
+:global([data-group-settings]) + .list .handle + .name {
+  margin-inline-start: 3px;
+}
+/* A phone's, as Notion's phone (seen 2026-11-11 at 402pt): no line, "그룹"
+   23pt under the settings' group and its groups 50pt under it, the handle's
+   dots 45pt from the sheet's side and the chip right after them, "모두
+   숨기기" 23pt from the group's end. */
+:global([data-phone-settings]) [data-group-settings] + .list {
+  margin-top: 0;
+}
+:global([data-phone-settings]) [data-group-settings] + .list::before {
+  content: none;
+}
+:global([data-phone-settings]) [data-group-settings] + .list .groupHead {
+  margin: 14px 0 10px;
+}
+:global([data-phone-settings]) [data-group-settings] + .list .groupAction {
+  padding-inline: 6px;
+}
+:global([data-phone-settings]) [data-group-settings] + .list .row {
+  padding-inline-start: calc(20px + var(--phone-safe-start, 0px));
+}
+:global([data-phone-settings]) [data-group-settings] + .list .handle {
+  margin-inline-end: 1px;
+}
+:global([data-phone-settings]) [data-group-settings] + .list .handle + .name {
+  margin-inline-start: 0;
+}
+/* A hidden group's eye, shut, in the secondary icon grey (Notion's phone). */
+:global([data-phone-settings]) [data-group-settings] + .list .eye[aria-pressed="false"] {
+  color: var(--icon-secondary);
+}

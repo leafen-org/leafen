@@ -1,0 +1,152 @@
+
+/* Equation, as Notion's (seen 2026-10-30): the block 8px in (the row's 5px
+   and 3px here), the formula 4px in and 16px in from Notion's block (10px
+   from this row, 6px narrower) at the body's 16px, so KaTeX draws it at
+   1.21em with 1em above and below, in a line of the body's font; hovering
+   shows no background. Its button, the formula's box or the empty row,
+   stands 8px in from the block on every side (the row's 5px and 6px, and
+   3px and 2px here), as Notion's (seen 2026-11-01: its grey while edited is
+   704px of the 720; 2026-11-20 at 1440, dpr 1: 704×68.2 in 720×84.2 for
+   "E = mc²", 704×49 in 720×65 empty): the block's room round it chooses
+   the block (SpecialBlockContent EquationBlock). */
+.equationBlock {
+  width: 100%;
+  padding: 3px 2px;
+}
+.equationPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 10px;
+  color: var(--text-default);
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* Each line of the formula 2px apart above and below, as Notion's own rule
+   on KaTeX's (".notion-frame .katex-display .base", seen 2026-10-30), which
+   makes "E=mc²" 28px, not KaTeX's 24px. Since KaTeX 0.18 a line is
+   ".katex-base". */
+.equationPreview :global(.katex-display .katex-base) {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+/* The formula is centred in the box less 32px on its right, so 16px left of
+   the block's middle, and a long one wraps between its terms, as Notion's
+   (".notion-frame .katex-display .katex" and ".katex > .katex-html", seen
+   2026-11-01). */
+.equationPreview :global(.katex-display .katex) {
+  padding-inline-end: 32px;
+}
+/* The formula's line fills the box, as Notion's (seen 2026-11-13: its
+   ".katex-display" 688px of the 704), so a "\tag{1}" stands at the box's
+   end, 40px in from the block's, not over the formula's last column. */
+.equationPreview :global(.katex-display) {
+  flex-grow: 1;
+}
+.equationPreview :global(.katex > .katex-html) {
+  white-space: normal;
+}
+/* An empty math block, as Notion's: a grey row with its icon and
+   "Add a TeX equation" (seen 2026-10-16); the block being edited is grey,
+   Notion's rgba(33,27,23,.05) (seen 2026-11-01). */
+/* The empty row itself is the shared one (BlockEmptyPopover.module.css). */
+div.equationEmpty {
+  cursor: inherit;
+}
+.equationBlock[data-editing="true"] .equationEmpty,
+.equationBlock[data-editing="true"] .equationPreview {
+  background: var(--bg-hover);
+}
+.equationBlock:not([data-readonly="true"]) > .equationButton {
+  cursor: pointer;
+}
+/* TeX KaTeX can't read: its error in the body's words, from the start, on
+   a square red box the formula's width, red while edited too, as Notion's
+   (seen 2026-11-13: 704×32 in its 720×48 block, 4px 8px in, redBacSec). */
+.equationPreview[data-equation-error="true"],
+.equationBlock[data-editing="true"] .equationPreview[data-equation-error="true"] {
+  display: block;
+  border-radius: 0;
+  background: var(--c-bg-red);
+  text-align: start;
+  overflow: auto;
+}
+
+/* Mermaid diagram preview, as Notion's (seen 2026-10-31): in the code's
+   own box with no line between, 12px under the source and 24px over the
+   box's foot, centred in the box less 22px each side. Code that can't be
+   drawn keeps its own foot over the reason (Notion's, 2026-11-14, 11-15). */
+.mermaidPreview {
+  display: flex;
+  justify-content: center;
+  padding: 0 22px 24px;
+  overflow-x: auto;
+}
+.codeBlock:has(.mermaidPreview > :not(.mermaidError)) .code .editable,
+.codeBlock:has(.mermaidPreview > :not(.mermaidError)) .codeHighlighted {
+  padding-bottom: 12px;
+}
+/* A node's words fill at least the 120px they wrap at, so "Start" sits in a
+   180×54 box as Notion's does; Mermaid measures them so while drawing. */
+:global(svg[id^="mermaid-"] .nodeLabel) {
+  display: inline-block;
+  min-width: 120px;
+}
+/* A diagram alone stands 40 under and over its block's edge, the block's 8 and this, as Notion's (seen 2026-11-05: 258 in 338). */
+[data-mermaid-preview][data-format="preview"] .mermaidPreview {
+  padding-block: 32px;
+}
+.codeBody[data-hidden="true"] {
+  display: none;
+}
+.mermaidDiagram {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  cursor: zoom-in;
+}
+/* The drawing's holder spans the block, so a diagram draws at its own size up
+   to the block's width, as Notion's (seen 2026-11-13: a 416px and a 636px
+   flowchart drawn 416 and 620 wide): sized by its picture, the holder gave a
+   picture as wide as it a browser's 300px, and every diagram shrank to it. */
+.mermaidDiagram > div {
+  width: 100%;
+}
+.mermaidDiagram svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+.mermaidEmpty {
+  color: var(--text-tertiary);
+  font-size: 13px;
+  padding: 8px 0;
+}
+/* A diagram its code cannot draw says why under a rule across the block,
+   12px in, in red 12/16 page type, its first words 500, as Notion's
+   (measured 2026-11-06 and 2026-11-15). */
+.mermaidPreview:has(> .mermaidError) {
+  padding: 0;
+}
+.mermaidError {
+  width: 100%;
+  padding: 12px;
+  border-top: 1px solid var(--border-default);
+}
+.mermaidErrorRaw {
+  margin: 0;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--danger);
+  /* The code it quotes keeps its "-->", not the page type's arrow. */
+  font-variant-ligatures: no-contextual;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.mermaidErrorTitle {
+  font-weight: 500;
+}

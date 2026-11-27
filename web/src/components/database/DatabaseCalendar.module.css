@@ -1,0 +1,419 @@
+
+/* ── Calendar view ─────────────────────────────────────────── */
+.calendar {
+  max-width: 100%;
+  min-width: 0;
+  padding: 4px 0 20px;
+}
+/* A database block's own calendar keeps 15px under its last week in a page's
+   text, as Notion's (seen 2026-11-08 at 1303px); on its own page the block
+   keeps the room (EditorDatabaseBlocks). */
+:global([data-inline-database-wrapper] > section > [data-view-type="calendar"]) .calendar {
+  padding-bottom: 15px;
+}
+:global([data-database-page="true"]:not([data-phone="true"] *) [data-inline-database-wrapper] > section > [data-view-type="calendar"]) .calendar {
+  padding-bottom: 0;
+}
+.calendarToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  margin-top: -4px;
+  margin-bottom: 2px;
+}
+/* Its month row and weekdays stay at the page's top as the days go under
+   them, on the ground the calendar stands on — the page, or a coloured
+   block's (--table-surface) — the 2px between them too (useStickyViewHeads;
+   Notion's, seen 2026-11-12: 44–112 under a 44px bar). */
+:global([data-sticky-heads]) .calendarToolbar[data-sticky-head],
+:global([data-sticky-heads]) .calendarWeekday[data-sticky-head] {
+  background: var(--table-surface, var(--bg-app));
+}
+:global([data-sticky-heads]) .calendarToolbar[data-sticky-head] {
+  box-shadow: 0 2px 0 var(--table-surface, var(--bg-app)), 0 -1px 0 var(--table-surface, var(--bg-app));
+}
+/* The month 8px in, the "오늘" between its arrows at the row's end, as Notion's
+   (seen 2026-11-05: a 42px row, 36×24 오늘 and 24×24 arrows touching). */
+.calendarTitle {
+  flex: 0 0 auto;
+  margin-inline-start: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+.calendarControls {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.calendarControls > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.calendarControls > button:hover,
+.calendarControls > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.calendarControls > .calendarTodayButton {
+  height: 24px;
+  padding: 0 4px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.calendarControls > .calendarNavButton {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+}
+.calendarNavButton svg {
+  display: block;
+}
+.calendarControls .notionSelectButton {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 12px;
+  justify-content: stretch;
+  height: 28px;
+  padding: 0 7px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  text-align: start;
+}
+/* The month as Notion's (seen 2026-11-03): weekday names on a 24px line with
+   one rule under it, then the days in 1px lines with the first column's left
+   line; weekend days on the soft ground, other months' days in gray. */
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  max-width: 100%;
+  min-width: 0;
+}
+.calendarGridWeek {
+  display: contents;
+}
+.calendar[data-layout="week"] .calendarGrid {
+  grid-template-rows: 25px minmax(372px, 1fr);
+}
+.calendarGrid[data-weekends="hidden"] {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.calendar:not(:global([data-phone="true"]) *) { min-width: 500px; }
+/* The weekday's 18px line at the top of its 24px row, the rule under it
+   past the row, the weeks' own days from under the rule (Notion's, seen
+   2026-11-06 and 2026-11-11: weekdays 210–234, the first week from 235). */
+.calendarWeekday {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 25px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+/* A weekday is the ground the calendar stands on, a callout's grey in one (Notion's, seen 2026-11-16: its weekdays
+   clear over the callout's rgb(56,56,54) dark, its weekends their own rgb(32,32,32)). */
+.calendarCell {
+  position: relative;
+  min-height: 124px;
+  border-inline-end: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  background: var(--table-surface, var(--bg-app));
+}
+.calendarGridWeek > .calendarCell:first-child {
+  border-inline-start: 1px solid var(--border-default);
+}
+.calendarCell[data-weekend="true"] {
+  background: var(--bg-soft);
+}
+/* A week shown alone 372px tall at least, as Notion's (seen 2026-11-07 and
+   2026-11-11 at 1440, 546 and 723 tall: weeks 235–607). */
+.calendar[data-layout="week"] .calendarCell {
+  min-height: 372px;
+}
+.calendarCell[data-outside="true"] .calendarDayHead > span {
+  color: var(--text-tertiary);
+}
+/* The day a dragged card would land on is washed blue whole, its head and
+   the cards over it too, inside its lines and with no edge of its own
+   (Notion's, seen 2026-11-15 in Chrome at 1440: rgba(35,131,226,.14) over a
+   cell 134x135 inside its 1px lines, a range's bar across it covered too). */
+.calendarCell[data-drag-over="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(35, 131, 226, 0.14);
+  pointer-events: none;
+}
+.calendarDayHead {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-block: 4px 0;
+  padding-inline: 8px 4px;
+}
+/* The day 14px on a 24px line, 11px from the cell's edge (its line counted);
+   today in a 24px red circle 5px from it with the day in white. */
+.calendarDayHead > span {
+  min-width: 24px;
+  height: 24px;
+  margin-inline-start: auto;
+  padding: 0 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 24px;
+  text-align: end;
+  white-space: nowrap;
+}
+/* A month's first day names its month with a space after it, which a
+   calendar in a page keeps, as Notion's page text does: its words end a
+   space short of the days' edge (seen 2026-11-12: "11월 1일 " ending at
+   580.4 where the days end at 584.2); a database's own page drops it. */
+:global([data-inline-database-wrapper]) .calendarDayHead > span[data-month-start] {
+  white-space: pre;
+}
+:global([data-database-page="true"]) .calendarDayHead > span[data-month-start] {
+  white-space: nowrap;
+}
+.calendarCell[data-today="true"] .calendarDayHead > span {
+  width: 24px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--today-circle-bg);
+  color: var(--today-circle-text);
+  text-align: center;
+}
+.calendarDayHead > button {
+  display: var(--day-add-display, none);
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+}
+/* The cell takes the state its day's "+" reads: a pointer or focus state
+   over a "button" restyled every button on the page at each focus move
+   (2026-11-12: about 10 ms a move on a table of 30 rows by 40 properties). */
+.calendarCell:hover,
+.calendarCell:focus-within {
+  --day-add-display: inline-flex;
+}
+.calendarDayHead > button:hover,
+.calendarDayHead > button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+/* A day's cards in the week's lines: each card sits in its first day and
+   reaches across the days it covers, as Notion's bar does for a range; the
+   lines' tops are measured so a week's lines line up, 6px apart (seen
+   2026-10-17: 28px cards on a 34px pitch; 2026-11-11: the first 33px under
+   the week's top, 6px in from the day's start, a day's width less 12px
+   wide). A day keeps its line at its end, the first day its start's too, so
+   the cards' box is 13px narrower than a day in each. */
+.calendarCards {
+  position: relative;
+  margin-block: 5px 0;
+  margin-inline: 6px;
+}
+.calendarGridWeek > .calendarCell:first-child .calendarCards {
+  margin-inline-start: 5px;
+}
+/* A day's card 6px inside the day's edges, spanning days at their full pitch;
+   every card keeps a line for each property the view shows, filled or not,
+   and a week's line is as tall as its tallest, as Notion's (seen 2026-11-06:
+   with 8 shown, every card 220px though none filled more than 7). */
+.calendarCard {
+  position: absolute;
+  inset-inline-start: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: calc(var(--calendar-span, 1) * (100% + 13px) - 12px);
+  min-height: 28px;
+  overflow: hidden;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--calendar-card-bg);
+  /* Notion's card: a faint drop and a 1px ring, no border (seen 2026-10-17). */
+  box-shadow: var(--calendar-card-shadow);
+  text-align: start;
+}
+/* A range that began before the week or goes on after it runs to that edge
+   of the week, up to the week's last line, square there, its title 12px in
+   where it goes on (Notion's, seen 2026-11-11: a whole week's 945 of 946). */
+.calendarCard[data-continues-before="true"] {
+  inset-inline-start: -6px;
+  width: calc(var(--calendar-span, 1) * (100% + 13px) - 6px);
+  padding-inline-start: 12px;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+.calendarCard[data-continues-after="true"] {
+  width: calc(var(--calendar-span, 1) * (100% + 13px) - 7px);
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+.calendarCard[data-continues-before="true"][data-continues-after="true"] {
+  width: calc(var(--calendar-span, 1) * (100% + 13px) - 1px);
+}
+/* While a card is dragged the days under the pointer take it, not the bars over them. */
+.calendar[data-card-dragging="true"] .calendarCard {
+  pointer-events: none;
+}
+.calendarCard[draggable="true"] {
+  cursor: grab;
+}
+/* The card dragged stays as it was; the browser carries its faint picture (Notion's, seen 2026-11-15). */
+.calendarCard[data-dragging="true"] {
+  cursor: grabbing;
+}
+.calendarCard:hover,
+.calendarCard:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The name on a 21px line, 4px under the card's top, 3px over the values
+   (Notion's, seen 2026-11-06), its time after it at the line's end. */
+.calendarCardHead {
+  display: block;
+  min-width: 0;
+}
+/* A timed date's time 10px/600 in the secondary colour, 4px after the name,
+   which it cuts short (Notion's, seen 2026-11-11: "One day" to "C…" in a
+   narrow day). */
+.calendarCardTime {
+  float: inline-end;
+  height: 14px;
+  margin-inline-start: 4px;
+  padding-top: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
+}
+.calendarCardTitle {
+  display: block;
+  min-height: 24px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Each shown property its own 24px line, its value 12px in the text's colour,
+   all of them however many, as Notion's (seen 2026-11-05). */
+.calendarCardMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 0;
+  min-height: calc(var(--calendar-meta-lines, 0) * 24px);
+}
+/* A value's chips stay on one line, each as wide as its name, and the line is
+   cut at the card's edge; a chip wider than the card alone ends its name in
+   "…" (Notion's calendar, seen 2026-11-12: "엡실론 제타 에타 세" cut, "Long
+   option na…" in a 123 card), each 18px with its words on an 18px line
+   (--chip-height, seen 2026-11-15). */
+.calendarCardProp {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 24px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 18px;
+}
+/* A card without properties to show is its title alone, 28px. */
+.calendarCardProp:empty {
+  display: none;
+}
+.calendarCardProp .chip {
+  flex: none;
+  --chip-height: 18px;
+  font-size: 12px;
+}
+/* A rollup's option wider than the card is cut too, with no "…" (seen
+   2026-11-12: "Long option name o" in a 135 card, a multi-select's "Long
+   option na…" under it). */
+.calendarCardProp .chip[data-rollup-option] {
+  max-width: none;
+}
+/* A relation's or rollup's pages stay on the line as a board card's do, cut
+   at the card's edge: 12px/500 names after 16px icons, 6px apart (seen
+   2026-11-12: "첫 관련 page 이름" then "Second related page" cut). */
+.calendarCardProp .relationChips {
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+.calendarCardProp .relationChip {
+  flex: none;
+  gap: 3px;
+  max-width: none;
+  height: 18px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.calendarCardProp .relationChip .relationPageIcon {
+  width: 16px;
+  height: 16px;
+}
+.calendarCardProp .relationChip .relationPageIcon :is(svg, img) {
+  width: 14.4px;
+  height: 14.4px;
+}
+/* A date stays on its line and is cut at the card's edge, mid-word, with no
+   "…": "2026년 11월 12일 오전 9:00" shows "2026년 11" in a one-day card 68
+   wide (Notion's calendar, seen 2026-11-09). */
+.calendarCardProp[data-prop-type="date"],
+.calendarCardProp[data-prop-type="date"] > * {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  text-overflow: clip;
+}
+/* "페이지 제목 줄바꿈": a card's whole title over lines (Notion's, off by default, seen 2026-10-05). */
+.calendar[data-wrap-titles="true"] .calendarCardTitle {
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* No values shown, its comment count on the name's line at the card's end,
+   4px after the name it cuts short, 20px high 1px under the line's top, its
+   bubble 12px and its number in the name's weight (Notion's calendar, seen
+   2026-11-06; its end 2026-11-15: the count floated after a name 79.6 wide in
+   a 123px card). */
+.calendarCardHead > [data-row-comment-count] {
+  float: inline-end;
+  margin-top: 1px;
+  margin-inline-start: 4px;
+  font-weight: 600;
+}
+.calendarCardHead > [data-row-comment-count] svg {
+  width: 12px;
+  height: 12px;
+}

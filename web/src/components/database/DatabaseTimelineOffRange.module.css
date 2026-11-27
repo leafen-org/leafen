@@ -1,0 +1,80 @@
+/* A row past the shown days: a 16px gray box, round 4, with a dark arrow,
+   8px in from that edge of its lane (its start or end in the reading
+   direction, the table's edge where one is open) and kept there as the days
+   scroll (Notion's, seen 2026-11-06, 2026-11-11 and 2026-11-13). */
+.timelineOffRange {
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* Centred in a 30px box 2px into the lane. */
+  padding-bottom: 2px;
+  pointer-events: none;
+}
+.timelineOffRange[data-side="start"] {
+  justify-content: flex-start;
+}
+.timelineOffRangeButton {
+  position: sticky;
+  inset-inline-end: 8px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  pointer-events: auto;
+}
+.timelineOffRange[data-side="start"] .timelineOffRangeButton {
+  inset-inline-end: auto;
+  inset-inline-start: calc(var(--timeline-cover, 0px) + 8px);
+}
+/* A bar wholly past: its arrow stands in a 220×30 box at that edge, all of
+   it pressed as the arrow, and with the pointer anywhere in it the bar's
+   dates show 4px past the arrow over the page's colour (Notion's, seen
+   2026-11-17: the box 220px from the days' end or the table's edge, the
+   dates at 28px, 4px padded). A bar the edge cuts keeps the arrow alone,
+   its shown part pressed as the bar. */
+.timelineOffRange:not([data-cut]) .timelineOffRangeButton {
+  justify-content: flex-end;
+  width: 220px;
+  height: 30px;
+  inset-inline-end: 0;
+}
+.timelineOffRange[data-side="start"]:not([data-cut]) .timelineOffRangeButton {
+  justify-content: flex-start;
+  inset-inline-start: var(--timeline-cover, 0px);
+}
+.timelineOffRange:not([data-cut]) .timelineOffRangeArrow {
+  margin-inline: 4px 8px;
+}
+.timelineOffRange[data-side="start"]:not([data-cut]) .timelineOffRangeArrow {
+  order: -1;
+  margin-inline: 8px 4px;
+}
+.timelineOffRangeArrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--icon-secondary);
+  color: var(--bg-app);
+}
+.timelineOffRangeDate {
+  visibility: hidden;
+  padding-inline: 4px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* Pointed at, its dates show and it lightens (Notion's, seen 2026-11-13
+   dark: #e6e5e3 from #ada9a3, the dates #f0efed). */
+.timelineOffRangeButton:hover .timelineOffRangeDate,
+.timelineOffRangeButton:focus-visible .timelineOffRangeDate {
+  visibility: visible;
+}
+.timelineOffRangeButton:hover .timelineOffRangeArrow,
+.timelineOffRangeButton:focus-visible .timelineOffRangeArrow {
+  background: var(--icon-primary);
+}

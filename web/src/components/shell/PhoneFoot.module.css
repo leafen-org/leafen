@@ -1,0 +1,47 @@
+/* A phone's foot (PhoneFoot.tsx), as the Notion Android app's (measured
+   2026-11-21 on the A90 at 411, light): two round 48 buttons 16 from each
+   side, 4 over the window's foot, white in a 1px ring with a soft shadow,
+   their icons 20 in the icons' dark ink. The ring is borSec's light value
+   (240, 239, 237); the dark one, not seen, stays the border colour. */
+.foot {
+  --phone-foot-ring: var(--border-secondary);
+  position: absolute;
+  inset-inline: 16px;
+  bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+/* A page's stands over the page, under its menus and sheets. */
+.foot[data-phone-foot="page"] {
+  position: fixed;
+  z-index: 110;
+}
+
+.foot > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid var(--phone-foot-ring);
+  border-radius: 50%;
+  background: var(--bg-app);
+  box-shadow: 0 2px 6px rgb(25 25 25 / 4%);
+  color: var(--icon-primary);
+  pointer-events: auto;
+}
+
+:global([data-theme="dark"]) .foot {
+  --phone-foot-ring: var(--border-default);
+}
+
+:global([data-theme="dark"]) .foot > button {
+  background: var(--bg-elevated);
+}
+
+.foot > button:active {
+  background: var(--bg-hover);
+}

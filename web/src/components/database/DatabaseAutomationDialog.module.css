@@ -1,0 +1,469 @@
+/* An automation's desktop dialog, as Notion's (seen 2026-10-24 at 1280px):
+   500 wide in the middle, rounded 12px; its head 16px in (name 17px/500 over
+   a 14px grey "〈DB ⌄〉 의 모든 페이지에 적용", a #f0efed line under), a round
+   24px "×"; the conditions and actions in a body that scrolls; "취소" and a
+   blue "활성화" 20px in at its foot. Its top stays 88px down and its height
+   is its content's, at least 600 and at most the window's height less 88
+   above and below — a short window's both 100vh − 176 (Notion's, seen
+   2026-11-18 in Chrome at 1440: 547 in a 723 tall window, fit-content
+   between 600 and 697 in an 873 one), so it grows before its body scrolls. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: fixed;
+  top: 88px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  flex-direction: column;
+  width: min(500px, calc(100vw - 32px));
+  height: fit-content;
+  min-height: min(600px, calc(100vh - 176px));
+  max-height: calc(100vh - 176px);
+  transform: translateX(-50%);
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+}
+
+/* Its rows 4px in from the line under them; the name stops 4px before the
+   "×" (38px from the dialog's end, 18 into the head's 20) and where it
+   applies runs on under it to the end (Notion's, seen 2026-11-15 at 1440:
+   the name 442 and the line 460 wide). */
+.head {
+  margin: 12px 16px 0;
+  padding-block: 2px 8px;
+  padding-inline: 4px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.name {
+  width: calc(100% - 18px);
+  height: 32px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 500;
+  outline: none;
+}
+
+/* The scope's line, a saved automation's switch first: the switch, 6, "활성"
+   in grey, a short line, then the scope, as Notion's (seen 2026-11-09: 30×18
+   at 21 in, "활성" 6 after it, the scope 17 after "활성"). */
+.scopeLine {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.activeRow {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  margin-inline-end: 8px;
+  padding-inline-end: 8px;
+  border-inline-end: 1px solid var(--border-secondary);
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* "<database> ⌄ 의 모든 페이지에 적용" under the name, as Notion's (seen
+   2026-11-06): grey 14px, the database's name a 24px pill 1 in from the
+   name's line, its words 6 in and its ⌄ 6 after them, shaded under the
+   pointer. One line: the words around the pill stay whole and a long name
+   gives way, cut short with "…" (Notion's, seen 2026-11-15 at 1440 in two
+   dialogs: its "auto auto" grid, the secondary grey #ada9a3 on dark). */
+.scope {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 24px;
+  margin: 3px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.scopeButton {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 24px;
+  margin-block: 0;
+  margin-inline: 1px 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+}
+
+.scopeName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scopeButton:not(:disabled):hover,
+.scopeButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Its ⌄ in a 9-wide box, as Notion's, the mark itself as drawn. */
+.scopeButton svg {
+  margin-inline: -2.5px;
+  color: var(--icon-secondary);
+}
+
+/* 16px kept under its last row, counted in the dialog's height as it grows
+   and left at the foot of the scroll (Notion's, seen 2026-11-18). */
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 17px 16px 0;
+  padding-bottom: 16px;
+  overflow-y: auto;
+}
+
+.readOnly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.section {
+  display: grid;
+  gap: 8px;
+}
+
+/* "다음 경우에 사용:" stands in a 24px line, its first card 4px under. */
+.section[data-conditions] > .sectionLabel {
+  min-height: 24px;
+  margin-bottom: -4px;
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.scheduleChip:hover {
+  background: var(--bg-hover);
+}
+
+/* A condition: a card on the dialog's own ground (white, rgb(32,32,32) dark,
+   Notion's seen 2026-11-10), its line 12px under its top and over its foot —
+   44px, 46.4 with value chips (seen 2026-11-11) — its mark 14px in and words
+   40px in, 76px short of its end (AutomationConditionCard.module.css). */
+.card {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 1px;
+  padding-block: 12px;
+  padding-inline: 14px 12px;
+  border-radius: 10px;
+  background: var(--modal-bg);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px var(--automation-card-drop);
+}
+
+/* A condition card's mark in Notion's secondary grey, #ada9a3 on dark (seen 2026-11-15, its "단계" select card). */
+.cardIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+/* A property's 16px mark a fifth larger in its card, 19.2 round the same
+   middle, as Notion's (seen 2026-11-22 at 1440 dark: its relation and title
+   cards' marks 19.2 wide in a 20px box, the list card's 16 in its square). */
+.propertyMark {
+  display: inline-flex;
+}
+
+.propertyMark > svg {
+  transform: scale(1.2);
+}
+
+/* An event's words in 500 ("페이지 추가"); a property's sentence keeps its own
+   weights and lines (PhoneAutomationCondition.module.css .sentence), a
+   deleted property's words 400 (Notion's, seen 2026-11-11). */
+.cardLabel {
+  composes: room from "./AutomationConditionCard.module.css";
+  display: inline-flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding-block: 0;
+  padding-inline-start: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: start;
+}
+
+.cardLabel[data-sentence] {
+  font-weight: 400;
+}
+
+.cardLabel[data-gone] {
+  color: var(--danger);
+}
+
+/* A card's "⋯" shows while the pointer is on the card or the keyboard is in
+   it, as Notion's (seen 2026-11-10, dark): a 24px button rounded 4px on the
+   page's ground, its 16px dots grey, in a ringed 28px group rounded 6px on
+   the card's, 8px from the card's end and top, over its words' room. */
+.cardTools {
+  composes: dots from "./AutomationConditionCard.module.css";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--modal-bg);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+}
+
+:is(.card:hover, .card:focus-within) .cardTools,
+/* A touch screen shows it on every card, no pointer bringing it (Notion's iPad, seen 2026-11-13). */
+:global([data-touch="true"]) .cardTools {
+  opacity: 1;
+}
+
+.cardDots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: var(--bg-app);
+  color: var(--icon-secondary);
+  transition: background 0.1s ease-in-out;
+}
+
+.cardDots:hover,
+.cardDots:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.cardDots svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* "Every" 6px before the chip in English, its words 14px medium; the chip alone in Korean (Notion's
+   title, seen 2026-11-19 in Chrome 1440: "Every" 40.6 wide at 527, the chip from 573.6). */
+.scheduleTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.scheduleTitle > span {
+  font-weight: 500;
+}
+
+.scheduleChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+/* "+ 새 조건": a ringed 46px row 1px in from the cards' sides, its "+" in a
+   20px slot 12px in and the words 8px after it — the rule "+ 새 작업" and a
+   button's rows follow too (Notion's, seen 2026-11-15: 15 and 41 from the
+   row's edge). */
+.add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  margin: 0 1px;
+  padding: 0 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.add:hover {
+  background: var(--bg-hover);
+}
+
+.add svg {
+  margin-inline: 2px;
+}
+
+/* The 2×56px line joining the conditions to "작업". */
+.line {
+  display: block;
+  width: 2px;
+  height: 56px;
+  margin: 16px auto 9px;
+  background: var(--border-default);
+}
+
+.actions {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px 16px;
+}
+
+.footEnd {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Small and grey before the button, as Notion's "활성화하려면 오류를 수정하세요." (its tertiary grey, seen 2026-11-08). */
+.footNote {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.save {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cancel { composes: cancel from "../DialogButtons.module.css"; }
+
+/* Its words 8px in from each side (Notion's "활성화" and "완료", seen 2026-11-15). */
+.save {
+  padding: 0 8px;
+  border: 0;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+/* Dimmed while something is missing, yet pressed it shows what (Notion's, seen 2026-11-08). */
+.save:disabled,
+.save[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* A button's: its name at 17px/400, and one blue "저장" across the foot
+   (Notion's, seen 2026-11-02: 460×32 at 20px in). */
+.buttonName {
+  width: 100%;
+  font-weight: 400;
+}
+/* A database button's window, as Notion's (seen 2026-11-06 at 1280px): its
+   name 34px in over a rule 148px from the top, "다음 경우에 사용:" 4px over
+   its card, the line 24px under that and 29px over "작업". */
+.buttonHead {
+  padding-block: 2px 14px;
+  padding-inline: 18px 34px;
+}
+/* Its body keeps nothing under its last row: Notion's button window shares
+   the automation dialog's height rule but not its body's 16px (seen
+   2026-11-18 in Chrome at 1440). */
+.buttonBody {
+  margin-top: 11px;
+  padding-bottom: 0;
+}
+.buttonTrigger {
+  gap: 4px;
+}
+.buttonLine {
+  margin: 24px auto 29px;
+}
+/* Its ✕ is 20px, the automation window's 24 (both Notion's, 2026-11-06). */
+.buttonClose {
+  width: 20px;
+  height: 20px;
+}
+.wideFoot {
+  justify-content: stretch;
+}
+.wideSave {
+  flex: 1 1 auto;
+}

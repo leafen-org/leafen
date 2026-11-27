@@ -1,0 +1,35 @@
+/* A row page's data tab shows its database as Notion's inline database in a
+   page's text (seen 2026-11-24 in two Chrome tabs at dpr 2, the sidebar
+   shut): its box from 8 before the text, the tabs and the first column at
+   the text's start, "새로 만들기" 8 in from the box's end
+   (--database-view-end). This view starts at the text, so it is the box less
+   its first 8.
+   - On a page opened whole the box ends 8 past the text, at the page's own
+     margin (684: 96..573 by a text on 104..565; 800: 96..689; 880:
+     96..769) — but on a page of the usual width whose frame is 885 or more,
+     its text 677 or more, the box keeps Notion's 708 from its start (900:
+     96..804 past a text ending at 781; 920: 96..804; 940: 102.5..810.5;
+     1100: 182.5..890.5; 1440: 352.5..1060.5, 4 short of the text).
+   - A peek's, side or center, ends 7 short of its text: its page's room less
+     a scroll bar (seen 2026-11-24 at 1440: 556..1349 by a text ending at
+     1356 in a side peek, 358.5..1051.5 by 1058.5 in a center one). */
+[data-row-layout-tab-panel]:not([data-phone="true"] *) {
+  container: row-tab-text / inline-size;
+}
+[data-row-layout-tab-panel] > [data-database-view]:not([data-phone="true"] *) {
+  --database-view-end: 8px;
+  max-width: none;
+  margin-inline-end: 7px;
+}
+[data-row-page-mode="full"] [data-row-layout-tab-panel] > [data-database-view]:not([data-phone="true"] *) {
+  margin-inline-end: -8px;
+}
+@container row-tab-text (min-width: 677px) {
+  [data-row-page-mode="full"]:not([data-full-width="true"]) [data-row-layout-tab-panel] > [data-database-view]:not([data-phone="true"] *) {
+    width: 700px;
+    margin-inline-end: 0;
+  }
+}
+[data-row-layout-tab-panel] > [data-database-view]:not([data-phone="true"] *) [data-database-toolbar] {
+  margin-inline-end: var(--database-view-end);
+}

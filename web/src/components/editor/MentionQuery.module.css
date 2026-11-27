@@ -1,0 +1,54 @@
+/* The words typed after "@" or "/" while their menu is open, as Notion's
+   (seen 2026-10-28): a pale pill whose 5.5px outline is its own tone — 2.5px
+   in a comment box. */
+.pill {
+  border-radius: 0.5px;
+  background: var(--bg-block-empty);
+  outline: 5.5px solid var(--bg-block-empty);
+}
+
+.pill[data-mention-query="comment"] {
+  outline-width: 2.5px;
+}
+
+/* A "/" with nothing after it yet says what typing does, after it in the
+   pill, in the faint grey, as Notion's (seen 2026-11-11, "검색어를 입력하세요"). */
+.pill[data-query-placeholder]::after {
+  content: attr(data-query-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+/* Nothing faint shows after a syllable being composed (Notion's, seen 2026-11-13). */
+[data-composing] .pill[data-query-placeholder]::after {
+  display: none;
+}
+
+/* The pill stands alone in a suggestion its words were typed in, as Notion's
+   (seen 2026-11-18 in Chrome at 1440, dark, a page and a database page's side
+   peek: its "/" in the words' own color, no blue, tint or line under it): the
+   suggestion's span gives up its marks, and its other words keep theirs on
+   the pieces mentionQuery draws around the pill. The attributes twice put it
+   over an open card's darker marks (CommentAnchorMarks). */
+[data-native-annotation][data-native-annotation][data-suggestion][data-suggestion]:has(.pill) {
+  color: inherit;
+  background: none;
+  border-bottom: none;
+  padding-bottom: 0;
+  text-decoration: none;
+}
+[data-suggested-near-query="insert"],
+[data-suggested-near-query="format"] {
+  color: var(--suggestion-insert-text);
+  background: var(--suggestion-insert-tint);
+  border-bottom: 2px solid var(--suggestion-insert-line);
+  padding-bottom: 1px;
+}
+[data-suggested-near-query="delete"] {
+  color: var(--text-disabled);
+  background: var(--suggestion-delete-tint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  border-bottom: 2px solid var(--suggestion-delete-line);
+  padding-bottom: 1px;
+}

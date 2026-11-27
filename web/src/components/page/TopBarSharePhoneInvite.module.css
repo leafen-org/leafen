@@ -1,0 +1,158 @@
+/* The phone share sheet's invite screen (SharePhoneInvite in TopBarSharePhone.tsx), apart from the sheet's
+   other screens; its grey fields take the sheet's tint. */
+
+/* The invite screen, as Notion's "사용자 초대" (seen 2026-10-27): the field
+   on white under the head, then grey headings over flat white rows. */
+.screen {
+  --share-tint: rgba(42, 28, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  margin: -28px 0 -24px;
+}
+
+:global([data-theme="dark"]) .screen {
+  --share-tint: rgba(255, 255, 243, 0.082);
+}
+
+/* As Notion's phone invite field (seen 2026-11-12, 402pt): 42 tall with a line under it; the people chosen
+   are grey chips on their own rows, 6 apart, and the field's words go on a row under them, 67 in all with one row. */
+.inviteField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-block: 9px; padding-inline: calc(9px + var(--phone-safe-start, 0px)) calc(9px + var(--phone-safe-end, 0px));
+  box-sizing: border-box;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+/* The line under the head lies on the field's white, not the head's grey, as
+   Notion's (seen 2026-11-12 at 402pt: rgb(240, 239, 237) in the light): the
+   field draws it in the head's place. */
+:global([data-phone-sheet][data-share-phone-invite][data-share-invite-step] > [data-even="true"]) {
+  border-bottom: 0;
+}
+
+.inviteField[data-chips="true"] {
+  padding-bottom: 4px;
+}
+
+.inviteField input {
+  flex: 1 0 100%;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+}
+
+/* One grey chip for an address, a member, a guest or a group alike, as Notion's phone (unlike its desktop's
+   guest colour): 24 tall, 16px words 8 in, a thin 9px cross in 14 six after them and seven from the end. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  height: 24px;
+  padding-block: 0;
+  padding-inline: 8px 7px;
+  border-radius: 4px;
+  background: var(--share-tint);
+  color: var(--text-default);
+  font-size: 16px;
+}
+
+.chip > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip button {
+  display: inline-flex;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+/* A heading over a group of rows, as Notion's (seen 2026-11-12 at 402pt): its 16.5 line 28.625 under
+   what is above and 8.625 over the rows, 53.75 in all; under a row it starts on that row's bottom line,
+   so "사용자 선택" stands 52.75 between the role row and the first person. */
+.screenLabel {
+  margin: 0;
+  padding-block: 28.625px 8.625px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 16.5px;
+}
+
+.screenRow + .screenLabel {
+  margin-block-start: -1px;
+}
+
+.screenRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  text-align: start;
+}
+
+/* A group of rows has its top line on the screen's grey and the rest on the
+   rows' white, as Notion's (seen 2026-11-12 at 402pt: rgb(234, 232, 230) over
+   "전체 허용" and the first person, rgb(240, 239, 237) under each). */
+.screenLabel + .screenRow {
+  box-shadow: 0 -1px 0 var(--border-subtle);
+}
+
+.screenRow[data-person] {
+  padding-inline-start: calc(20px + var(--phone-safe-start, 0px));
+}
+
+.screenLabelText {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.screenMore {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+}
+
+.screenAvatar {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+
+/* "(나)" after the inviting person's name, in the secondary grey (Notion's, seen 2026-11-12). */
+.screenYou {
+  color: var(--text-secondary);
+}

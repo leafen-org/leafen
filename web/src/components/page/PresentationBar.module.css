@@ -1,0 +1,66 @@
+/* A presentation's bar (PresentationBar), a page's and a PowerPoint file's,
+   as Notion's (seen 2026-11-09 and 2026-11-12): 24px above the window's foot
+   in its middle, fading in and out in 300ms. */
+.controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.controls[data-shown="true"] {
+  opacity: 1;
+}
+
+/* Notion's bacEle ground and shaOutMd edge, #202020 in dark (seen 2026-11-09). */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 40px;
+  padding: 4px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-raised);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  /* Notion's graTexAccPri, the same gray in both themes (seen 2026-11-09). */
+  color: var(--text-gray-accent);
+}
+
+.button:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.button:disabled {
+  opacity: 0.4;
+}
+
+/* 14px on 20px lines (Notion's, measured 2026-11-12 on a PowerPoint file's bar). */
+.count {
+  padding: 0 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.separator {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--border-default);
+}

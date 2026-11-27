@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "name": "page-duplication",
+  "operations": [
+    { "goName": "pageDuplicationStart", "tsName": "startPageDuplication", "method": "POST", "path": "/pages/{pageId}/duplicate" },
+    { "goName": "pageDuplicationRead", "tsName": "readPageDuplication", "method": "GET", "path": "/page-duplications/{jobId}" }
+  ],
+  "bounds": [
+    { "goName": "maxPageDuplicationRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "maxPageDuplicationItemsPerTurn", "tsName": "itemsPerTurn", "value": 32 }
+  ],
+  "errorCodes": [
+    { "goName": "errorCodePageDuplicationInvalid", "tsName": "invalid", "value": "LEAFEN_PAGE_DUPLICATION_INVALID" },
+    { "goName": "errorCodePageDuplicationNotFound", "tsName": "notFound", "value": "LEAFEN_PAGE_DUPLICATION_NOT_FOUND" },
+    { "goName": "errorCodePageDuplicationRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_PAGE_DUPLICATION_REQUEST_ID_REUSED" },
+    { "goName": "errorCodePageDuplicationConflict", "tsName": "conflict", "value": "LEAFEN_PAGE_DUPLICATION_CONFLICT" },
+    { "goName": "errorCodePageDuplicationDestinationLocked", "tsName": "destinationLocked", "value": "LEAFEN_PAGE_DUPLICATION_DESTINATION_LOCKED" },
+    { "goName": "errorCodePageDuplicationUnsupportedContent", "tsName": "unsupportedContent", "value": "LEAFEN_PAGE_DUPLICATION_UNSUPPORTED_CONTENT" },
+    { "goName": "errorCodePageDuplicationStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_PAGE_DUPLICATION_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodePageDuplicationDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_PAGE_DUPLICATION_DATABASE_BUSY" },
+    { "goName": "errorCodePageDuplicationUnavailable", "tsName": "unavailable", "value": "LEAFEN_PAGE_DUPLICATION_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "PageDuplicationStatus",
+      "tsValuesName": "pageDuplicationStatuses",
+      "values": [
+        { "goName": "pageDuplicationStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "pageDuplicationStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "pageDuplicationStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "PageDuplicationPhase",
+      "tsValuesName": "pageDuplicationPhases",
+      "values": [
+        { "goName": "pageDuplicationPhaseDiscovering", "tsName": "discovering", "value": "discovering" },
+        { "goName": "pageDuplicationPhaseCopying", "tsName": "copying", "value": "copying" },
+        { "goName": "pageDuplicationPhasePublishing", "tsName": "publishing", "value": "publishing" },
+        { "goName": "pageDuplicationPhaseCleaning", "tsName": "cleaning", "value": "cleaning" },
+        { "goName": "pageDuplicationPhaseCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "pageDuplicationPhaseFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "pageDuplicationInput",
+      "tsName": "PageDuplicationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "DestinationParentID", "jsonName": "destinationParentId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "WithoutContent", "jsonName": "withoutContent", "goType": "bool", "tsType": "boolean" },
+        { "goName": "DestinationWorkspaceID", "jsonName": "destinationWorkspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DestinationTeamspaceID", "jsonName": "destinationTeamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ToPrivatePages", "jsonName": "toPrivatePages", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageDuplicationProgress",
+      "tsName": "PageDuplicationProgress",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Discovered", "jsonName": "discovered", "goType": "int", "tsType": "number" },
+        { "goName": "Copied", "jsonName": "copied", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageDuplicationResponse",
+      "tsName": "PageDuplicationResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "SourceRootPageID", "jsonName": "sourceRootPageId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetRootPageID", "jsonName": "targetRootPageId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "PageDuplicationStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "PageDuplicationPhase" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "pageDuplicationProgress", "tsType": "PageDuplicationProgress" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ]
+}

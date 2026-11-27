@@ -1,0 +1,69 @@
+/* Team Quiz, in Leafen's light and dark look. */
+:root {
+  color-scheme: light dark;
+  --text: #37352f;
+  --muted: rgba(55, 53, 47, 0.65);
+  --line: rgba(55, 53, 47, 0.12);
+  --hover: rgba(55, 53, 47, 0.06);
+  --bg: #ffffff;
+  --accent: #6b4fbb;
+  --good: rgba(219, 237, 219, 0.95);
+  --bad: rgba(255, 226, 221, 0.95);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+:root[data-theme="dark"] {
+  --text: rgba(255, 255, 255, 0.86);
+  --muted: rgba(255, 255, 255, 0.55);
+  --line: rgba(255, 255, 255, 0.12);
+  --hover: rgba(255, 255, 255, 0.06);
+  --bg: #191919;
+  --accent: #9a7fe0;
+  --good: rgba(43, 89, 63, 0.75);
+  --bad: rgba(110, 54, 48, 0.75);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+main { max-width: 760px; margin: 0 auto; padding: 28px 24px 48px; }
+h1 { margin: 0 0 4px; font-size: 26px; font-weight: 700; }
+.lead { margin: 0 0 20px; color: var(--muted); }
+.tables { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 8px 0 16px; }
+.tables button { min-height: 64px; border: 1px solid var(--line); border-radius: 10px; background: none; color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+.tables button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+label { display: grid; gap: 4px; margin-bottom: 12px; color: var(--muted); font-size: 13px; }
+input { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+button.primary, button.secondary { height: 36px; padding: 0 14px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer; }
+button.primary { border: 0; background: var(--accent); color: #fff; }
+button.secondary { border: 1px solid var(--line); background: none; color: var(--text); }
+button:disabled { opacity: 0.5; cursor: default; }
+.players { display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; margin: 12px 0 16px; padding: 0; list-style: none; }
+.players li { padding: 2px 10px; border-radius: 999px; background: var(--hover); font-size: 14px; }
+.players li[data-answered="true"] { box-shadow: inset 0 0 0 1px var(--accent); }
+.players li { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; max-width: 100%; overflow-wrap: anywhere; }
+.players button.small { height: 24px; padding: 0 8px; font-size: 12px; }
+.players .remove { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 13px; }
+.meta { color: var(--muted); font-size: 13px; }
+.question { margin: 8px 0 16px; font-size: 22px; font-weight: 700; }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.choices button { min-height: 72px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: none; color: var(--text); font: inherit; font-size: 17px; text-align: start; cursor: pointer; }
+.choices button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+.choices button:disabled { opacity: 0.6; cursor: default; }
+.choices button:disabled[aria-pressed="true"], .choices button:disabled[data-right="true"] { opacity: 1; }
+.choices button[data-right="true"] { background: var(--good); }
+.choices button[data-wrong="true"] { background: var(--bad); }
+.timer { height: 6px; margin: 4px 0 16px; overflow: hidden; border-radius: 3px; background: var(--hover); }
+.timer span { display: block; height: 100%; background: var(--accent); transition: width 1s linear; }
+ol.ranking { padding-inline-start: 20px; font-size: 18px; }
+ol.ranking li:first-child { font-weight: 700; }
+.link { padding: 8px 10px; border: 1px dashed var(--line); border-radius: 8px; font-size: 13px; user-select: all; }
+.error { color: #d44c47; font-size: 13px; }
+.badge { display: inline-block; margin-inline-start: 6px; padding: 0 6px; border-radius: 4px; background: var(--hover); color: var(--muted); font-size: 12px; font-weight: 600; vertical-align: middle; }
+@media (max-width: 599px) {
+  main { padding: 20px 16px 40px; }
+  h1 { font-size: 22px; }
+  .tables { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .choices { grid-template-columns: 1fr; }
+  .choices button { min-height: 56px; }
+  .question { font-size: 19px; }
+}
+.status { color: var(--muted); font-size: 13px; }

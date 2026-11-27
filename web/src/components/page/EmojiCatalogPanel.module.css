@@ -1,0 +1,360 @@
+/* The emoji tab's list, as Notion's picker (seen 2026-09-30): under the top
+   row (EmojiPickerTop.module.css) the grid, twelve to a row, and the group
+   bar below. Measured 2026-11-01 in a 408×390 picker: the grid from 90 the
+   picker's width across, 32px cells 12 in, a 51px bar under a hairline. */
+
+/* The list ends 6px under its last row and never scrolls sideways: where
+   the platform's scrollbar takes its width the grid's right edge is cut,
+   as Notion's (seen 2026-11-02; ours showed a sideways bar). */
+.scroll {
+  flex: 0 1 auto;
+  min-height: 0;
+  height: 249px;
+  margin: 0 -8px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: none;
+}
+
+/* A touch card's list fills the card down to the group bar, its emoji 32px
+   in 44px cells from 9px in, nine a row across 414, as Notion's iPad
+   (TouchPickerCard; seen 2026-11-13 at 834). */
+[data-touch-card="true"] .scroll {
+  flex: 1 1 auto;
+  height: auto;
+}
+[data-touch-card="true"] .grid {
+  grid-template-columns: repeat(auto-fill, 44px);
+  padding: 0 9px;
+}
+[data-touch-card="true"] .emoji {
+  height: 44px;
+  font-size: 32px;
+}
+[data-touch-card="true"] .emoji img {
+  width: 32px;
+  height: 32px;
+}
+
+/* An iPad's card (a touch screen wider than a phone) lists its groups as
+   Notion's iPad (seen 2026-11-17 in Safari at 834, light, with and without
+   a recent group): each group's name in a 19.5px box 6 under the group
+   before, its words 6 under the box's top and centred in the rest; the first
+   row of cells 19 under the box, 3 more under that row and 10 under the
+   group's last, a one-row group having both. */
+:global(body:not([data-phone="true"])) [data-touch-card="true"] [data-emoji-section] > .sectionLabel {
+  display: flex;
+  align-items: center;
+  height: 19.5px;
+  margin-bottom: 9px;
+  padding: 6px 8px 0;
+}
+:global(body:not([data-phone="true"])) [data-touch-card="true"] [data-emoji-section] > .grid {
+  grid-template-rows: 47px;
+  grid-auto-rows: 44px;
+  margin-top: 0;
+  padding-block: 10px;
+}
+
+/* A phone's pickers (the reaction sheet, PhoneEmojiSheet, and a page icon's
+   card on a phone, TouchPickerCard) draw the list as PhonePickerList.module.css
+   says, as Notion's (seen 2026-11-14 at 411px, the card's 2026-11-17 at 411
+   and 402): each group's name 16 under the one before, its emoji on white
+   between hairlines 10 over and under them, the "+" cell their 44px; and the
+   groups' bar at their foot over a hairline, its 32px buttons 6px round, their
+   marks 26px in the icons' grey even when chosen. */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .sectionLabel {
+  padding-top: 16px;
+}
+/* A later group's name stands 4.7px higher, over the white of the group
+   before: Notion's list gives a group's first row 91.5px where it draws
+   96.2 (seen 2026-11-14: names 12 under the white before, 37.5 between). */
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) [data-emoji-section] + [data-emoji-section] .sectionLabel {
+  padding-top: calc(16px - 4.7px);
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .grid {
+  padding-block: 10px;
+  box-shadow: 0 -1px 0 var(--border-subtle), 0 1px 0 var(--border-subtle);
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .addCell {
+  height: 44px;
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .groups {
+  flex: none;
+  gap: 0;
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .groupButton,
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .groupButton[aria-pressed="true"] {
+  flex: 0 0 32px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+:is([data-emoji-sheet="true"], [data-phone="true"] [data-touch-card="true"]) .groupButton svg {
+  width: 26px;
+  height: 26px;
+}
+/* The reaction sheet's body is the picker alone, edge to edge; a page icon's
+   card keeps its 8px sides, which its list and bar draw across. */
+[data-emoji-sheet="true"] [data-emoji-catalog] {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+[data-emoji-sheet="true"] :is(.scroll, .groups) {
+  margin: 0;
+}
+
+/* A picker without tabs (a reaction's) is 356px as Notion's: its list
+   255px over the bar (measured 2026-11-02). */
+[data-icon-tabs-hidden="true"] .scroll {
+  height: 255px;
+}
+
+/* A callout's picker from "아이콘 편집" with no icon yet is 356px as the
+   reaction's, its tab row taking 40px of the list (Notion's, 2026-11-06). */
+[data-icon-picker-short="true"] .scroll {
+  height: 215px;
+}
+
+/* A line's ":" menu has no filter row: its grid runs from the menu's top,
+   305px over the bar in a 356px menu (Notion's, 2026-11-01). */
+[data-emoji-in-line="true"] .scroll {
+  height: 305px;
+  margin-top: -8px;
+}
+
+/* A group's name 12px on a 12px line, 12 under the group's top and 9
+   over its first row, 8 in (Notion's 19.5px name box, 2026-11-01). */
+.sectionLabel {
+  margin-top: 6px;
+  padding: 6px 8px 1.5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 32px);
+  margin-top: 9px;
+  padding: 0 12px;
+}
+
+/* A filter's few matches in one list, from the list's top with no group
+   name over them (Notion's, 2026-11-02). */
+.rankedGrid {
+  margin-top: 0;
+}
+
+/* A line's ":" menu with a few matches: the rows of them alone
+   (Notion's, measured 2026-11-02). */
+.compactGrid {
+  margin-top: 0;
+  padding: 0;
+  outline: none;
+}
+
+.emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: 4px;
+  /* 24px emoji, as Notion's (2026-11-02; ours were 22). */
+  font-size: 24px;
+  line-height: 1;
+}
+
+/* A workspace emoji's picture takes an emoji's room, whatever its size
+   (2026-10-16: a 64px picture ran out of its 32px cell). */
+.emoji img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.emoji:hover,
+.emoji:focus-visible,
+.emoji[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The emoji the arrows moved to is ringed as well; the one the pointer
+   first rests on after them stays plain until the pointer moves into
+   another and takes the highlight (pointerHover), as Notion's grid (seen
+   2026-11-14). */
+[data-keyed="true"] .emoji[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+[data-keyed="true"] .emoji:not([data-active="true"]):hover {
+  background: transparent;
+}
+
+/* "사용자 지정"'s first cell, where an emoji can be added: a 28px ring with
+   a 16px plus, as Notion's (measured 2026-11-01). */
+.addCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+}
+.addRing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--button-outline);
+  border-radius: 15px;
+  color: var(--icon-secondary);
+}
+.addRing:hover,
+.addRing:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.noMatches {
+  padding: 8px 10px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 92px;
+  padding: 0 12px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.groups {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  margin: 0 -8px -8px;
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--border-secondary);
+}
+
+/* 32px buttons with 22px marks, as Notion's group bar (seen 2026-10-07). */
+.groupButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+}
+
+.groupButton:not(:disabled):hover,
+.groupButton:focus-visible,
+.groupButton[aria-pressed="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.groupButton:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* A picker narrower than its 408px (a screen under 432px, a phone's) keeps
+   whole columns, as many 32px cells as fit, and its group bar's buttons give
+   room — not a half-cut twelfth column and a cut last button (2026-11-06,
+   a 402px iPhone). */
+@media (max-width: 431px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, 32px);
+  }
+  .groups {
+    gap: 0;
+    padding-inline: 8px;
+  }
+  .groupButton {
+    flex: 0 1 32px;
+    min-width: 0;
+  }
+}
+
+.groups[data-hidden="true"] {
+  visibility: hidden;
+}
+
+/* A line's ":" menu finding nothing, as Notion's (seen 2026-11-12): one
+   32px row, "결과 없음" in 12px gray 10px in, and "+ 이모지 추가" a 28px
+   bordered button 8px from its end. */
+.emptyBand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding-block: 2px;
+  padding-inline: 2px 8px;
+  outline: none;
+}
+.emptyBandText {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+.emptyBandAdd {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 4px 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.emptyBandAdd:hover,
+.emptyBandAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "이모지 추가" under "결과 없음", as Notion's. */
+.addEmoji {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+.addEmoji:hover,
+.addEmoji:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

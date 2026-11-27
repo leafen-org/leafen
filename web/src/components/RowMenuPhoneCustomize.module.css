@@ -1,0 +1,80 @@
+/* A locked page's line across "페이지 사용자 지정" under its head, as Notion's
+   (seen 2026-11-16 on the A90's Chrome at 411): 12px grey words between two
+   faint lines on the sheet's own colour, 6px over and under them, centred —
+   an 18px lock 6px before "페이지 잠김", then its 20px button 2px on, 4px in,
+   600. It spans the sheet, over the body's 16px edges, and the rows follow
+   16px under it as under the head. */
+.lockLine {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin: -16px -16px 0;
+  padding-block: 6px;
+  border-block: 1px solid var(--border-subtle);
+  background: var(--bg-soft);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.lockMark {
+  flex: none;
+  margin-inline-end: 6px;
+  color: var(--icon-secondary);
+}
+
+.lockButton {
+  height: 20px;
+  margin-inline-start: 2px;
+  padding-block: 0;
+  padding-inline: 4px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lockButton:active {
+  background: var(--bg-hover);
+}
+
+/* Its rows as Notion's there: the 22px mark 15px in, the label 64px in, a
+   switch 4px from the row's end, and inline comments' "기본 ⌄" a 32px button
+   16px from it — 14px grey words 8px in, a 16px chevron fainter 6px after
+   them, 4px from its end. */
+.rows > button {
+  padding-inline-start: calc(15px + var(--phone-safe-start, 0px));
+}
+
+.rows > button:has([data-switch-mark]) {
+  padding-inline-end: calc(4px + var(--phone-safe-end, 0px));
+}
+
+/* While the lock holds the rows keep their words; only the switch is faint. */
+.held > button:disabled {
+  opacity: 1;
+}
+
+.held [data-switch-mark] {
+  opacity: 0.4;
+}
+
+.choice {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.choiceMark {
+  flex: none;
+  color: var(--icon-tertiary);
+}

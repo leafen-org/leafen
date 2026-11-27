@@ -1,0 +1,599 @@
+/* ── Inline marks ──────────────────────────────────────────── */
+/* A database cell's formatted text shows the same marks (`richMarks`). A code
+   block's own text sits in a `code` the editor makes inside it, which is no mark. */
+/* Inline code as Notion's (seen 2026-10-31, light and dark): 0.85em, red, on
+   the hover tint, 0.2em by 0.4em in, rounded 4; bold is 600. */
+:is(.editable, .richMarks) code:not([data-node-view-content-react]):not(:global(.code-highlight)) {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--bg-hover);
+  color: var(--c-red);
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+}
+/* Given a text color, inline code takes it, as Notion's (seen 2026-11-08: gray
+   code is rgb(125,122,117) in dark; red only without one, in every block). */
+:is(.editable, .richMarks) [data-native-color] code:not([data-node-view-content-react]):not(:global(.code-highlight)) {
+  color: inherit;
+}
+:is(.editable, .richMarks) :is(strong, b) {
+  font-weight: 600;
+}
+:is(.editable, .richMarks) a {
+  color: inherit;
+  opacity: 0.7;
+  text-decoration: underline;
+  text-decoration-color: var(--link-underline);
+  text-decoration-thickness: 0.05em;
+  text-underline-offset: 10%;
+  cursor: pointer;
+}
+/* A mention is one box in its line with its words inline in it, so the
+   browser's copy of read-only text reads it in the line ("Ask @이름"), as
+   Notion's inline mentions copy — a flex box's items would each break it. */
+:is(.editable, .richMarks) [data-mention] {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+:is(.editable, .richMarks) a[data-mention] {
+  text-decoration: none;
+  cursor: pointer;
+}
+:is(.editable, .richMarks) a[data-mention]:hover {
+  background: var(--bg-active);
+}
+/* A published page's mention of a page or database the visitor cannot open
+   (Notion, seen 2026-10-01): a gray crossed-out eye, then "사용 권한 없음" in
+   medium weight over the light underline, without the arrow. */
+:is(.editable, .richMarks) [data-mention][data-mention-unavailable] {
+  display: inline;
+  padding: 0;
+  border-radius: 1px;
+  background: none;
+  font-weight: 500;
+  line-height: inherit;
+  white-space: normal;
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-decoration-color: var(--mention-underline);
+  text-underline-offset: 0.1em;
+  transition: background-color 100ms ease-in, box-shadow 100ms ease-in;
+}
+:is(.editable, .richMarks) [data-mention][data-mention-unavailable]:hover {
+  background: var(--mention-hover);
+  box-shadow: 0 0 0 3px var(--mention-hover);
+}
+:is(.editable, .richMarks) [data-mention][data-mention-unavailable]::before {
+  content: "";
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-inline-end: 0.5em;
+  vertical-align: -0.25em;
+  /* Notion's secondary icon gray (dark rgb(173,169,163), seen 2026-11-09). */
+  background: var(--icon-secondary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M96.68,57.87a4,4,0,0,1,2.08-6.6A130.13,130.13,0,0,1,128,48c34.88,0,66.57,13.26,91.66,38.35,18.83,18.83,27.3,37.62,27.65,38.41a8,8,0,0,1,0,6.5c-.35.79-8.82,19.57-27.65,38.4q-4.28,4.26-8.79,8.07a4,4,0,0,1-5.55-.36ZM213.92,210.62a8,8,0,1,1-11.84,10.76L180,197.13A127.21,127.21,0,0,1,128,208c-34.88,0-66.57-13.26-91.66-38.34C17.51,150.83,9,132.05,8.69,131.26a8,8,0,0,1,0-6.5C9,124,17.51,105.18,36.34,86.35a135,135,0,0,1,25-19.78L42.08,45.38A8,8,0,1,1,53.92,34.62Zm-65.49-48.25-52.69-58a40,40,0,0,0,52.69,58Z'/%3E%3C/svg%3E") center / 1.1em 1.1em no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M96.68,57.87a4,4,0,0,1,2.08-6.6A130.13,130.13,0,0,1,128,48c34.88,0,66.57,13.26,91.66,38.35,18.83,18.83,27.3,37.62,27.65,38.41a8,8,0,0,1,0,6.5c-.35.79-8.82,19.57-27.65,38.4q-4.28,4.26-8.79,8.07a4,4,0,0,1-5.55-.36ZM213.92,210.62a8,8,0,1,1-11.84,10.76L180,197.13A127.21,127.21,0,0,1,128,208c-34.88,0-66.57-13.26-91.66-38.34C17.51,150.83,9,132.05,8.69,131.26a8,8,0,0,1,0-6.5C9,124,17.51,105.18,36.34,86.35a135,135,0,0,1,25-19.78L42.08,45.38A8,8,0,1,1,53.92,34.62Zm-65.49-48.25-52.69-58a40,40,0,0,0,52.69,58Z'/%3E%3C/svg%3E") center / 1.1em 1.1em no-repeat;
+}
+:is(.editable, .richMarks) [data-mention="date"],
+:is(.editable, .richMarks) [data-mention="person"] {
+  cursor: pointer;
+}
+:is(.editable, .richMarks) [data-mention="date"]:hover,
+:is(.editable, .richMarks) [data-mention="person"]:hover {
+  background: var(--bg-active);
+}
+:is(.editable, .richMarks) [data-mention="date"] {
+  color: var(--text-secondary);
+}
+/* An automation field's mention of what its run gives, as Notion's chips
+   (seen 2026-10-23, measured 2026-10-25 at 1280px): inline on its line, 2px
+   4px in, rounded 4, palGra100 behind, its kind's 14px icon in icoSec at the
+   words' top and 4px before them. A variable an earlier action defines is
+   blue, its icon too. */
+:is(.editable, .richMarks) [data-mention="automation"] {
+  display: inline;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--automation-chip-bg);
+  color: var(--text-primary);
+  line-height: inherit;
+  white-space: nowrap;
+}
+:is(.editable, .richMarks) [data-automation-icon] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-inline-end: 4px;
+  vertical-align: text-top;
+  color: var(--icon-secondary);
+}
+:is(.editable, .richMarks) [data-automation-icon] svg {
+  display: block;
+}
+:is(.editable, .richMarks) [data-mention="automation"][data-automation-variable] {
+  background: var(--automation-variable-chip-bg);
+  color: var(--automation-variable-chip-text);
+}
+:is(.editable, .richMarks) [data-automation-variable] [data-automation-icon] {
+  color: inherit;
+}
+/* A template's mention that takes its value when the template is used, as
+   Notion's (seen 2026-11-09): the text's own color at half strength, its "@"
+   at half of that, a little lighter than a date's grey; it is pointed at for
+   its tip (richtext.ts). */
+:is(.editable, .richMarks) [data-mention="template"] {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--text-primary);
+  opacity: 0.5;
+  cursor: pointer;
+}
+:is(.editable, .richMarks) [data-mention="template"] [data-mention-at] {
+  opacity: 0.5;
+}
+:is(.editable, .richMarks) [data-mention="date"][data-date-reminder] {
+  color: var(--accent-blue);
+}
+/* Its alarm follows the words, 1.1em and 4px after them, as Notion's (seen
+   2026-11-05), its foot on their baseline. */
+:is(.editable, .richMarks) [data-mention="date"][data-date-reminder]::after {
+  content: "";
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin-inline-start: 4px;
+  vertical-align: baseline;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216ZM61.66,37.66l-32,32A8,8,0,0,1,18.34,58.34l32-32A8,8,0,0,1,61.66,37.66Zm176,32a8,8,0,0,1-11.32,0l-32-32a8,8,0,0,1,11.32-11.32l32,32A8,8,0,0,1,237.66,69.66ZM184,128a8,8,0,0,1,0,16H128a8,8,0,0,1-8-8V80a8,8,0,0,1,16,0v48Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216ZM61.66,37.66l-32,32A8,8,0,0,1,18.34,58.34l32-32A8,8,0,0,1,61.66,37.66Zm176,32a8,8,0,0,1-11.32,0l-32-32a8,8,0,0,1,11.32-11.32l32,32A8,8,0,0,1,237.66,69.66ZM184,128a8,8,0,0,1,0,16H128a8,8,0,0,1-8-8V80a8,8,0,0,1,16,0v48Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+:is(.editable, .richMarks) [data-mention="date"][data-reminder-due="true"] {
+  color: var(--c-accent-red);
+}
+/* A date or a person reads as grey text, its "@" lighter, as Notion's do,
+   inline in its line with the line's own white space: a long one breaks
+   with the words where its line wraps (a wrapped cell's, a page's text) and
+   stays whole on a line that doesn't, as Notion's (seen 2026-11-16 in a
+   200px wrapped text cell: "@2026년 11월 16일 → 2026" / "년 11월 26일",
+   "@테스트연결(한" / "지) 뒤"). */
+:is(.editable, .richMarks) :is([data-mention="date"], [data-mention="person"], [data-mention="group"], [data-mention="teamspace"]) {
+  display: inline;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--text-secondary);
+  line-height: inherit;
+  white-space: inherit;
+}
+:is(.editable, .richMarks) :is([data-mention="date"], [data-mention="person"], [data-mention="group"], [data-mention="teamspace"]):hover {
+  background: none;
+}
+:is(.editable, .richMarks) [data-mention-at] {
+  opacity: 0.6;
+}
+/* A mention of someone who isn't here has a bar for a name, 75 by 8, round
+   4, 2px after its "@", standing on the line, as Notion's (seen 2026-11-11);
+   its words are under it, unseen. */
+:is(.editable, .richMarks) [data-person-missing] {
+  display: inline-block;
+  overflow: hidden;
+  inline-size: 75px;
+  block-size: 8px;
+  margin-inline-start: 2px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: transparent;
+  font-size: 0;
+  vertical-align: baseline;
+}
+/* An inline equation is drawn in its line and steps as one piece; a click
+   edits it, shown selected meanwhile, and an empty one reads "√x New
+   equation" on the gray background, unmarked, as Notion's (seen 2026-09-30,
+   2026-11-11: 24px tall, a 1.1em icon 0.2em before the words). */
+.editable[contenteditable="true"] [data-equation] {
+  cursor: pointer;
+}
+:is(.editable, .richMarks) [data-equation][data-equation-editing="true"] {
+  border-radius: 3px;
+  background: var(--bg-selected);
+}
+:is(.editable, .richMarks) [data-equation][data-equation-empty="true"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2em;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--c-bg-gray);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+:is(.editable, .richMarks) [data-equation][data-equation-empty="true"] svg {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+/* A page or a database named in text reads as Notion's: its icon with a small
+   arrow, then its title in medium weight over a light underline, in the
+   color of the words around it (a caption's grey, a colored line's color)
+   and not dimmed as a plain link is.
+   A page with an emoji icon shows it (PageMentionIconStyles). Inside
+   another link (an inbox row, a card) the page's link is text but reads the
+   same. */
+:is(.editable, .richMarks) :is(a[data-mention="page"], span[data-mention="page"][href], [data-mention="database"]):not([data-mention-unavailable]) {
+  display: inline;
+  position: relative;
+  padding: 0;
+  border-radius: 1px;
+  background: none;
+  color: inherit;
+  opacity: 1;
+  font-weight: 500;
+  line-height: inherit;
+  white-space: normal;
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-decoration-color: var(--mention-underline);
+  text-underline-offset: 0.1em;
+  transition: background-color 100ms ease-in, box-shadow 100ms ease-in;
+}
+:is(.editable, .richMarks) :is(a[data-mention="page"], span[data-mention="page"][href], [data-mention="database"]):not([data-mention-unavailable]):hover {
+  background: var(--mention-hover);
+  box-shadow: 0 0 0 3px var(--mention-hover);
+}
+:is(.editable, .richMarks) :is(a[data-mention="page"], span[data-mention="page"][href], [data-mention="database"]):not([data-mention-unavailable])::before {
+  content: "";
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-inline-end: 0.5em;
+  /* At the text's top, as Notion's page icon box (seen 2026-11-01), so the
+     line keeps its height; an emoji sits lower (pageMentionIconCss). */
+  vertical-align: text-top;
+  background: var(--text-secondary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M4.5 2.5h5l3 3v8h-8z'/%3E%3Cpath d='M9.5 2.5v3h3'/%3E%3C/svg%3E") center / 1.1em 1.1em no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M4.5 2.5h5l3 3v8h-8z'/%3E%3Cpath d='M9.5 2.5v3h3'/%3E%3C/svg%3E") center / 1.1em 1.1em no-repeat;
+}
+/* A database mention opens the page holding its database (TextBlockEditable). */
+:is(.editable, .richMarks) [data-mention="database"][data-database-id]:not([data-mention-unavailable]) {
+  cursor: pointer;
+}
+/* Notion's table (seen 2026-11-22: a 14×10.5 frame, three rows and two columns, 1.25 lines filling the 20px box); named as the page rule is, or its document would win. */
+:is(.editable, .richMarks) :is(a, span)[data-mention="database"][data-database-id]:not([data-mention-unavailable])::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.25'%3E%3Crect x='3' y='4.75' width='14' height='10.5' rx='1.5'/%3E%3Cpath d='M3 8.25h14M3 11.75h14M10 4.75v10.5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.25'%3E%3Crect x='3' y='4.75' width='14' height='10.5' rx='1.5'/%3E%3Cpath d='M3 8.25h14M3 11.75h14M10 4.75v10.5'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+:is(.editable, .richMarks) :is(a[data-mention="page"], span[data-mention="page"][href], [data-mention="database"]):not([data-mention-unavailable])::after {
+  content: "";
+  position: absolute;
+  top: 0.45em;
+  inset-inline-start: 0.5em;
+  width: 1em;
+  height: 1em;
+  background: var(--mention-arrow) center / contain no-repeat;
+  pointer-events: none;
+}
+/* An outside page's mention as Notion's link mention (seen 2026-11-11):
+   its icon 1.2em, 0.3em before the words and 0.22em under their line,
+   rounded 3px — or, without one, a grey link 1em in a 1.25em box at the
+   text's top; the site's name grey, 0.3em before the title; the title in
+   medium weight over a page mention's light underline; the pointer on it
+   lays a page mention's grey under it. */
+:is(.editable, .richMarks) a[data-mention="external"] {
+  display: inline;
+  padding: 0;
+  border-radius: 1px;
+  background: none;
+  color: inherit;
+  opacity: 1;
+  line-height: inherit;
+  white-space: normal;
+  transition: background-color 100ms ease-in, box-shadow 100ms ease-in;
+}
+/* The text's link the mention keeps is drawn by the mention alone, not as a
+   dimmed, underlined link around it. */
+:is(.editable, .richMarks) a:has([data-mention="external"]) {
+  opacity: 1;
+  text-decoration: none;
+}
+:is(.editable, .richMarks) a[data-mention="external"]:hover {
+  background: var(--mention-hover);
+  box-shadow: 0 0 0 3px var(--mention-hover);
+}
+:is(.editable, .richMarks) [data-mention="external"] img {
+  width: 1.2em;
+  height: 1.2em;
+  margin-inline-end: 0.3em;
+  vertical-align: -0.22em;
+  border-radius: 3px;
+  object-fit: cover;
+}
+:is(.editable, .richMarks) [data-mention="external"] [data-mention-icon="link"] {
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+  margin-inline-end: 0.3em;
+  vertical-align: text-top;
+  background: var(--icon-secondary);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M7 9a2.6 2.6 0 0 0 3.7.2l2.1-2.1a2.6 2.6 0 0 0-3.7-3.7l-.9.9'/%3E%3Cpath d='M9 7a2.6 2.6 0 0 0-3.7-.2L3.2 8.9a2.6 2.6 0 0 0 3.7 3.7l.9-.9'/%3E%3C/svg%3E") center / 1em 1em no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.3' stroke-linecap='round'%3E%3Cpath d='M7 9a2.6 2.6 0 0 0 3.7.2l2.1-2.1a2.6 2.6 0 0 0-3.7-3.7l-.9.9'/%3E%3Cpath d='M9 7a2.6 2.6 0 0 0-3.7-.2L3.2 8.9a2.6 2.6 0 0 0 3.7 3.7l.9-.9'/%3E%3C/svg%3E") center / 1em 1em no-repeat;
+}
+:is(.editable, .richMarks) [data-mention="external"] [data-mention-provider] {
+  margin-inline-end: 0.3em;
+  color: var(--text-secondary);
+}
+/* A workspace emoji is its picture in the line, or a deleted one's dashed
+   "?", with no chip around it, as in Notion's title (seen 2026-11-10:
+   the "?" 50px with 20px after it at 40px, nothing behind it). */
+:is(.editable, .richMarks) [data-mention="custom_emoji"] {
+  display: inline;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+:is(.editable, .richMarks) [data-mention="external"] [data-mention-label="external"] {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 0.05em;
+  text-decoration-color: var(--mention-underline);
+  text-underline-offset: 0.1em;
+}
+:is(.editable, .richMarks) [data-color="gray"] { color: var(--c-gray); }
+:is(.editable, .richMarks) [data-color="brown"] { color: var(--c-brown); }
+:is(.editable, .richMarks) [data-color="orange"] { color: var(--c-orange); }
+:is(.editable, .richMarks) [data-color="yellow"] { color: var(--c-yellow); }
+:is(.editable, .richMarks) [data-color="green"] { color: var(--c-green); }
+:is(.editable, .richMarks) [data-color="blue"] { color: var(--c-blue); }
+:is(.editable, .richMarks) [data-color="purple"] { color: var(--c-purple); }
+:is(.editable, .richMarks) [data-color="pink"] { color: var(--c-pink); }
+:is(.editable, .richMarks) [data-color="red"] { color: var(--c-red); }
+:is(.editable, .richMarks) [data-color="gray_background"] { background: var(--c-bg-gray); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="brown_background"] { background: var(--c-bg-brown); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="orange_background"] { background: var(--c-bg-orange); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="yellow_background"] { background: var(--c-bg-yellow); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="blue_background"] { background: var(--c-bg-blue); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="green_background"] { background: var(--c-bg-green); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="purple_background"] { background: var(--c-bg-purple); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="pink_background"] { background: var(--c-bg-pink); border-radius: 3px; }
+:is(.editable, .richMarks) [data-color="red_background"] { background: var(--c-bg-red); border-radius: 3px; }
+/* Suggested edits: text suggested in, text suggested away, and text whose
+   formatting is suggested, as Notion's (seen 2026-11-14, light and dark;
+   their tints by theme 2026-11-15): a faint tint of blue or gray, a 2px line
+   of it under with 1px between, the words blue (palUiBlu700) or as disabled
+   text and struck through by 1px; a removal a comment's edge splits keeps 2px
+   after each piece but its last (nativeTiptapSuggestionSplits.ts). With its
+   card open, CommentAnchorMarks marks it darker. */
+:is(.editable, .richMarks) [data-suggestion="insert"],
+:is(.editable, .richMarks) [data-suggestion="format"] {
+  color: var(--suggestion-insert-text);
+  background: var(--suggestion-insert-tint);
+  border-bottom: 2px solid var(--suggestion-insert-line);
+  padding-bottom: 1px;
+}
+:is(.editable, .richMarks) [data-suggestion="delete"] {
+  color: var(--text-disabled);
+  background: var(--suggestion-delete-tint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  border-bottom: 2px solid var(--suggestion-delete-line);
+  padding-bottom: 1px;
+}
+.editable [data-suggestion="delete"]:has(> [data-suggestion-split]) { margin-inline-end: 2px; }
+/* Text an open thread was left on is marked by CommentAnchorMarks, square at
+   its ends as Notion's (2026-11-15, dark and light: 0); only a flash rounds it. */
+.editable [data-comment-id][data-comment-flash="true"] {
+  border-radius: 3px;
+  background: rgba(255, 212, 0, 0.36);
+  box-shadow: 0 0 0 2px rgba(203, 145, 47, 0.28);
+}
+/* A switch at a menu row's end, as Notion's table menu has for its header row and column (seen 2026-10-11). */
+.menuSwitch { margin-inline-start: auto; }
+
+/* A link's own bar and window, as Notion's (seen 2026-11-04); its icon 6px
+   in from its start and its address 24px in after a globe, 27px after a
+   page's icon (seen 2026-11-11). */
+.linkPill {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  max-width: 420px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+  color: var(--icon-secondary);
+}
+.linkPillGlobe {
+  flex: none;
+}
+/* A page's icon, 15px, carries a page link's arrow, 12px, 6px right and 5px
+   down on it, as Notion's names a page (seen 2026-11-11). */
+.linkPillPageIcon {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  margin-inline-end: 2px;
+}
+.linkPillPageIcon::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  inset-inline-start: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--mention-arrow) center / contain no-repeat;
+  pointer-events: none;
+}
+.linkPillAddress {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.linkPillButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.linkPillButton:hover {
+  background: var(--bg-hover);
+}
+.linkEditWindow {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(330px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 8px 0 5px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.linkEditWindow .tbLinkInput {
+  display: block;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 4px 8px 0;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+.linkEditWindow .tbLinkInput:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+/* A page link's field while the focus is elsewhere (LinkPageChip), as
+   Notion's (seen 2026-11-12): a 28px chip 16px in from the window's sides,
+   4px higher than the field and ending 8px sooner, its page's icon in a 20px
+   box 4px before the title, 14px. */
+.linkPageChip {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  width: calc(100% - 32px);
+  height: 28px;
+  min-height: 0;
+  margin: 0 16px -4px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.linkPageChipIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.linkPageChipTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Each label stands 28px above its field and 18px below the field before,
+   as Notion's edit window (seen 2026-11-07: labels at 10 and 84, fields at 38
+   and 112, "링크 제거" at 162 in a window 189 high). */
+.linkEditLabel {
+  display: block;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  text-indent: 12px;
+}
+div.linkEditLabel {
+  padding-bottom: 4px;
+}
+label.linkEditLabel {
+  margin-top: 12px;
+}
+.linkEditWindow label.linkEditLabel .tbLinkInput {
+  margin-top: 12px;
+}
+.linkEditDivider {
+  height: 1px;
+  margin: 6px 0 1px;
+  background: var(--border-default);
+}
+.linkEditRemove {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  margin: 0 4px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.linkEditRemove:hover {
+  background: var(--bg-hover);
+}
+/* A picture's link window (ImageLinkWindow) keeps the focus itself once
+   Escape leaves its field, unringed. Linked, it has no words field: its line
+   8px under the address, "링크 제거" 4px under the line and 4px over the
+   foot, as Notion's (seen 2026-11-12: field at 38..66, line at 74, 링크 제거
+   79..107, 111 high); what a changed address finds shows only while the
+   field has the focus, "링크 제거" back in its place once it is left. */
+.imageLinkWindow:focus {
+  outline: none;
+}
+.imageLinkWindow.linkEditWindow {
+  padding-bottom: 4px;
+}
+.imageLinkWindow .linkEditDivider {
+  margin: 4px 0 0;
+}
+.imageLinkLeft .tbLinkList {
+  display: none;
+}
+
+/* A database's name keeps its formatting but draws all its words in the
+   name's own type and color, as Notion's (seen 2026-11-09: bold, italic,
+   underline, strikethrough, code and colors in an inline and a full-page
+   database's name look as its plain words); its links stay underlined. */
+.richMarks.plainMarks.plainMarks :is(strong, b, em, i, u, s, code, [data-color]) {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}

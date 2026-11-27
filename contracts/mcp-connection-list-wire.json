@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "name": "mcp-connection-list",
+  "operations": [
+    {
+      "goName": "mcpConnectionList",
+      "tsName": "list",
+      "method": "GET",
+      "path": "/mcp/connections"
+    },
+    {
+      "goName": "organizationUserKeyPolicyRead",
+      "tsName": "readUserKeyPolicy",
+      "method": "GET",
+      "path": "/organizations/{organizationId}/user-key-policy"
+    },
+    {
+      "goName": "organizationUserKeyPolicyUpdate",
+      "tsName": "updateUserKeyPolicy",
+      "method": "PUT",
+      "path": "/organizations/{organizationId}/user-key-policy"
+    }
+  ],
+  "bounds": [
+    { "goName": "mcpConnectionListDefaultPageSize", "tsName": "defaultPageSize", "value": 16 },
+    { "goName": "mcpConnectionListMaximumPageSize", "tsName": "maximumPageSize", "value": 32 },
+    { "goName": "mcpConnectionListCursorBytes", "tsName": "cursorBytes", "value": 2048 }
+  ],
+  "errors": [
+    { "goName": "errorCodeMCPConnectionListInvalid", "tsName": "invalid", "value": "LEAFEN_MCP_CONNECTION_LIST_INVALID" },
+    { "goName": "errorCodeMCPConnectionListCursorInvalid", "tsName": "cursorInvalid", "value": "LEAFEN_MCP_CONNECTION_LIST_CURSOR_INVALID" },
+    { "goName": "errorCodeMCPConnectionListRevisionChanged", "tsName": "revisionChanged", "value": "LEAFEN_MCP_CONNECTION_LIST_REVISION_CHANGED" },
+    { "goName": "errorCodeMCPConnectionListScopeInvalid", "tsName": "scopeInvalid", "value": "LEAFEN_MCP_CONNECTION_SCOPE_INVALID" },
+    { "goName": "errorCodeMCPConnectionListFailed", "tsName": "failed", "value": "LEAFEN_MCP_CONNECTION_LIST_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "mcpConnectionListWorkspace",
+      "tsName": "MCPConnectionListWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Blocked", "jsonName": "blocked", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionListItem",
+      "tsName": "MCPConnectionListItem",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "ClientName", "jsonName": "clientName", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Resource", "jsonName": "resource", "goType": "string", "tsType": "string" },
+        { "goName": "Scopes", "jsonName": "scopes", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "AccessScope", "jsonName": "accessScope", "goType": "string", "tsType": "\"read\" | \"content\" | \"structure\" | \"admin\"", "optional": true },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]mcpConnectionListWorkspace", "tsType": "MCPConnectionListWorkspace[]" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "*int64", "tsType": "number | null" },
+        { "goName": "RevokedAt", "jsonName": "revokedAt", "goType": "*int64", "tsType": "number | null" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "*int64", "tsType": "number | null" },
+        { "goName": "Reconnect", "jsonName": "reconnect", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Moves", "jsonName": "moves", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Pages", "jsonName": "pages", "goType": "*int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionListResponse",
+      "tsName": "MCPConnectionListResponse",
+      "fields": [
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "int64", "tsType": "number" },
+        { "goName": "Connections", "jsonName": "connections", "goType": "[]mcpConnectionListItem", "tsType": "MCPConnectionListItem[]" },
+        { "goName": "ActiveConnections", "jsonName": "activeConnections", "goType": "int", "tsType": "number" },
+        { "goName": "ConnectionLimit", "jsonName": "connectionLimit", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "organizationUserKeyPolicy",
+      "tsName": "OrganizationUserKeyPolicy",
+      "fields": [
+        { "goName": "KeysAllowed", "jsonName": "keysAllowed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "MaxScope", "jsonName": "maxScope", "goType": "string", "tsType": "\"read\" | \"content\" | \"structure\" | \"admin\"" },
+        { "goName": "MaxDays", "jsonName": "maxDays", "goType": "int", "tsType": "number" }
+      ]
+    }
+  ]
+}

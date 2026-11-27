@@ -1,0 +1,125 @@
+/* A quick filter's sheet on a phone, as Notion's (seen 2026-10-21 at 375px
+   and 2026-11-12 at 402pt): the head's middle third holds a row from its
+   start — a date's part 500 or a name (.lead), then the condition 600 with its
+   "⌄" 4px on — each in a 2px-padded box 2px in and 4px apart, the first 10px in.
+   Where the row runs past the third the part gives way first (cut, not
+   dotted, past 150px too), then the "⌄" is cut from its end; the
+   condition's words are never shortened but end where the third does, cut
+   through a letter without dots ("값을 포함하는 데이|", Notion's, seen
+   2026-11-17 on a Galaxy A90 at 411 and iPhone Safari at 402: its middle
+   third hides what runs past it). "⋯" grey at the head's left. */
+.head {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+/* The part gives way well before the condition (its shrink far heavier). */
+.part,
+.lead {
+  flex: 0 1000 auto;
+  min-width: 0;
+  max-width: 150px;
+  margin-inline: 10px 4px;
+  padding-inline: 2px;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+/* A name before "비어 있음" is bare words 8px in, the condition's box right
+   after it (Notion's phone, seen 2026-11-15 at 402pt: "선택" 142–170, "비어
+   있음" from 174 in the 134–268 third). */
+.lead {
+  margin-inline: 8px 0;
+  padding-inline: 0;
+}
+
+.part {
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.condition {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-inline: 2px 4px;
+  padding-block: 0;
+  padding-inline: 2px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.condition:first-child {
+  margin-inline-start: 10px;
+}
+
+.condition > span {
+  flex: none;
+  white-space: nowrap;
+}
+
+.name {
+  font-weight: 500;
+}
+
+.condition > .chevron {
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.chevron svg {
+  flex: none;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-start: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+/* A typed value in its own row. */
+input.fieldInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* A typed value's box: the field 8px in, as Notion's (seen 2026-10-23), its
+   "ⓧ" right after it, the row's 11px gap taken back (seen 2026-11-15). */
+div.field {
+  padding-inline-start: 8px;
+}
+div.field > [data-filter-value-clear] {
+  margin-inline-start: -11px;
+}

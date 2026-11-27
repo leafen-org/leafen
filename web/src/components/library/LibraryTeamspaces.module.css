@@ -1,0 +1,175 @@
+/* The teamspaces view's table, as Notion's (seen 2026-10-07 at 1000, 1280
+   and 1600px; LibraryView.module.css keeps its width and its scroller): its
+   columns 35%, 35%, 15% and 15% of it with 8px more each but the last; 37px
+   rows with no fill under the pointer; the handle and the box in the gutter,
+   "▶" eight in, then the glyph and the name, "…" at the name column's end. */
+.table .description {
+  flex: 0 0 calc(100% * 0.35 + 8px);
+}
+
+.table .security {
+  flex: 0 0 calc(100% * 0.15 + 8px);
+}
+
+.table .members {
+  flex: 1 0 calc(100% * 0.15 - 24px);
+}
+
+/* A phone's runs on past the screen, 848 wide from 32 in, its columns the
+   same parts of it — the name's head too, as its rows, 35% and 8 more — and
+   the screen scrolls it sideways, as Notion's phone (seen 2026-11-16 in
+   iPhone Safari at 402: the columns at 32, 336.8, 641.6 and 776.8, the
+   scroller 904 across). */
+:global([data-phone="true"]) .table {
+  min-width: 848px;
+}
+
+:global([data-phone="true"]) .table [role="row"] .nameHead {
+  flex-basis: calc(100% * 0.35 + 8px);
+}
+
+.row {
+  position: relative;
+  display: flex;
+  height: 37px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.row .description,
+.row .security,
+.row .members {
+  color: var(--text-default);
+}
+
+/* A kind's mark 4px before its name, as Notion's library (seen 2026-11-11). */
+.row .security {
+  gap: 4px;
+}
+
+.row[data-drop-side="before"] {
+  box-shadow: inset 0 2px 0 var(--accent-blue);
+}
+
+.row[data-drop-side="after"] {
+  box-shadow: inset 0 -2px 0 var(--accent-blue);
+}
+
+.row[data-dragging="true"] {
+  opacity: 0.5;
+}
+
+.row .nameCell {
+  gap: 8px;
+  padding-inline-start: 8px;
+}
+
+.handle,
+.more {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+
+.handle {
+  position: absolute;
+  top: 6px;
+  inset-inline-start: -55px;
+  cursor: grab;
+}
+
+.more {
+  margin-inline-start: auto;
+  margin-inline-end: 6px;
+}
+
+.row:hover .handle,
+.row:hover .more,
+.handle:focus-visible,
+.more:focus-visible {
+  opacity: 1;
+}
+
+.handle:hover,
+.more:hover,
+.handle:focus-visible,
+.more:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* A teamspace's ▶ stands by its 14px name: 11.2px (Notion, seen 2026-11-14). */
+.row .toggle {
+  position: static;
+  flex: 0 0 auto;
+  color: var(--text-default);
+  font-size: 14px;
+  transform: none;
+}
+
+.glyph { composes: glyph from "../teamspace/TeamspaceGlyph.module.css"; }
+
+.name {
+  overflow: hidden;
+  color: var(--text-default);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "+ 새로 추가" under a teamspace's pages, its mark under their icons. */
+.table .add {
+  padding-inline-start: 50px;
+}
+
+/* A touch screen's rows start where Notion's phone's and iPad's do (seen
+   2026-11-16 in Safari at 402 and 834: the name 68 in from the table's
+   start — 100 by a table at 32, 472 by one at 404 — "▶", the teamspace's 20
+   mark and the name in the same steps as here). A phone's handle waits in
+   the page's 32 of side room, as a window's in the gutter. */
+:global([data-touch="true"]) .row .nameCell {
+  padding-inline-start: 4px;
+}
+
+:global([data-phone="true"]) .handle {
+  inset-inline-start: -28px;
+}
+
+/* Its "⋯" stays out while its menu is open. */
+button.moreOpen {
+  opacity: 1;
+}
+
+/* Grouped, an open group's head and rows stand 8px in from its name, as
+   Notion's (its code, read 2026-11-16: paddingInlineStart 8). */
+.groupBody {
+  padding-inline-start: 8px;
+}
+
+/* A group with nothing to list (LibraryTeamspaceGroupEmpty): Notion's row
+   pads 6 above and below a cell that pads 6 more, its words 12px on 18px
+   lines, tertiary, 8px into the name column and cut short with "…". Its
+   height names its element, over the library row's at one class
+   (LibraryView.module.css .row). */
+div.noneRow {
+  height: auto;
+}
+
+.noneRow .noneCell {
+  display: block;
+  padding-block: 12px;
+  padding-inline-start: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

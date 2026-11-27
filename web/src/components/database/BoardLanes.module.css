@@ -1,0 +1,100 @@
+/* A board split by a sub-group (Notion's, seen 2026-10-10): the columns'
+   heads once on top, each sub-group a row across them with its name and a
+   cell per column; cells keep the columns' width and 12px gap. The first
+   sub-group's 36px head sits right under the columns' 40px heads, and each
+   next one 16px under the cells before it, which end 8px under their last
+   "+ 새 페이지" (Notion's, seen 2026-11-15 at 1440: heads at 174.4, the first
+   sub-group's at 214.4, its cards at 258.4, the next head 24 under the last
+   "+ 새 페이지"). */
+.lanes {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+}
+
+.lane + .lane {
+  margin-top: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.row > [data-board-part] {
+  min-height: 0;
+}
+
+.row > [data-board-part="head"] {
+  padding-bottom: 0;
+}
+
+.row > [data-board-part="cell"] {
+  padding-top: 8px;
+}
+
+.lane {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Its fold, name, count and "⋯ +" side by side on a 24px line 6px into it. */
+.laneHead {
+  position: sticky;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: 36px;
+}
+
+.count {
+  padding: 0 6px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+
+.laneHead:hover [data-lane-action],
+.laneHead:focus-within [data-lane-action] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A 24px fold at the board's start, the name's 4px inset right after it. */
+.fold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+/* Its triangle 11.2px, 0.7 of the board's 16px (Notion's, seen 2026-11-15). */
+.fold svg {
+  width: 11.2px;
+  height: 11.2px;
+}
+
+.fold[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.fold:hover,
+.fold:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The sub-groups' "+ 신규 그룹" (the views' one button) 8px under the last
+   sub-group and 8px in from the board's start, kept there as the board
+   scrolls sideways (Notion's, seen 2026-11-12 at 1440: x 382 for a board at
+   374, 16px under the last "+ 새 페이지"). */
+.addLane {
+  position: sticky;
+  inset-inline-start: 8px;
+  margin-top: 8px;
+  margin-inline-start: 8px;
+}

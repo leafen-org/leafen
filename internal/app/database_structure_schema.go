@@ -1,0 +1,3 @@
+package app
+
+const databaseStructureAuthoritySchemaVersion = databaseRelationValueAuthoritySchemaVersion

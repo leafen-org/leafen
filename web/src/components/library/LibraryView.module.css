@@ -1,0 +1,641 @@
+/* The library, as Notion's (seen 2026-10-01, again 2026-10-31): a
+   database-like page with view tabs and a table of 37px rows, columns 420px
+   then 200px each, and a 24px gutter left of the names for a row's "열기".
+   Its head is 8px down, the 32px title 3px into a 41.4px row 8px in, then
+   8px to the tabs' 40px row. */
+
+.wrap {
+  --library-side: 96px;
+  padding: 0 var(--library-side) 80px;
+  min-width: 0;
+}
+
+/* A pages view ends at its table scroller's foot, under its rows' 192 and the
+   sideways bar, as Notion's (seen 2026-11-16 at 1440: "최근"'s page scrolls
+   to 2165, its scroller's foot). */
+.wrap:is([data-library-view="recents"], [data-library-view="favorites"], [data-library-view="shared"], [data-library-view="private"]) {
+  padding-bottom: 0;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 41.4px;
+  margin-top: 8px;
+  padding-inline-start: 8px;
+}
+
+/* Title and button share one line, 8 apart, the button at its end, beside the side peek too; with no
+   room for the whole title the button goes under it. The title is never cut by its line: longer than it
+   (behind a wide side peek) it runs on into the end side, as Notion's (seen 11-18, a peek two thirds of
+   1024 and of 900: 96px sides, the 138px title whole), cut a phone's side, 24px, short of the pane's end. */
+.title {
+  flex: 0 0 auto;
+  max-width: calc(100% + var(--library-side) - 24px);
+  margin: 0;
+  padding-top: 3px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.newPage {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.newPage:hover,
+.newPage:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+/* The tabs and the table sit 8px in from the title's edge, and the table
+   runs on to the window's edge, as Notion's. */
+/* The table lines up with the tabs, as Notion's (seen 2026-10-07 at 751
+   and 1280px); the scroll starts further left so the rows' boxes and
+   handles in the gutter show. */
+/* The scroller spans the page from the sidebar's edge, its table 104px in and
+   12px of room then 180 more under its rows or its band, so its sideways bar
+   stands as low as Notion's (seen 2026-11-13 at 1440: the scroller at 270,
+   1170 wide, a "zzqx" search's 387 tall from 141 with its 36px head and 144px
+   band; the teamspaces' table has the 180 alone). */
+.tableScroll {
+  padding-block-end: 192px;
+  padding-inline-end: var(--library-side);
+  padding-inline-start: calc(var(--library-side) + 8px);
+  margin-inline-start: calc(var(--library-side) * -1);
+  overflow-x: auto;
+}
+.tableScroll:has(.teamspaceTable) {
+  padding-block-end: 180px;
+}
+/* An empty view's columns still run wider than the page, as Notion's, but its
+   scroller reaches past the window's bottom, so its bar is never left under
+   the message (Notion's, seen 2026-11-05: 613px from 141 in a 683px window). */
+.tableScroll:has([data-library-empty]),
+.tableScroll:has([data-library-documents-empty]) {
+  min-height: calc(100dvh - 70px);
+}
+
+/* The lines run the column's whole width past the last column, and 24px on,
+   as Notion's (seen 2026-11-05; 2026-11-13: its head line 1044 wide for four
+   columns of 1020). */
+.table {
+  width: 1220px;
+  min-width: 100%;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.headRow,
+.row {
+  position: relative;
+  display: flex;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.headRow {
+  position: relative;
+  z-index: 2;
+  background: var(--bg-default);
+  height: 36px;
+  color: var(--text-tertiary);
+}
+
+.row {
+  height: 37px;
+}
+
+.nameColumn,
+.column {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Clipped without being a scroller of its own, so a row's "열기" keeps to the
+   table's visible end (.openRowDock). */
+.nameColumn {
+  position: relative;
+  flex: 0 0 420px;
+  padding-inline-start: 24px;
+  overflow: clip;
+}
+
+.column {
+  flex: 0 0 200px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+}
+
+.headRow .nameColumn {
+  padding: 0;
+}
+
+.headRow .column {
+  padding: 0;
+}
+
+.pageButton,
+.sourceButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: var(--radius);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.pageButton {
+  margin-inline-start: 2px;
+  font-weight: 500;
+}
+
+.sourceButton {
+  margin-inline-start: -6px;
+  color: var(--text-secondary);
+}
+
+/* A row's cells read in the default color, as Notion's (seen 2026-10-11:
+   creator, source and times 14px/400 in the page title's color). */
+.row .column,
+.row .sourceButton {
+  color: var(--text-default);
+}
+
+.pageButton:hover,
+.pageButton:focus-visible,
+.sourceButton:hover,
+.sourceButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A row's name cell, as Notion's library (seen 2026-11-09): its icon, which
+   opens the icon picker, then its name, which with the cell's empty part
+   renames the page (LibraryRowEdits.tsx), unmarked under the pointer; the
+   cell ends 5px before the column's end. */
+.nameCell {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 100%;
+  margin-inline-end: 5px;
+  padding-inline-start: 8px;
+}
+
+.nameIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.nameTitle {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+  cursor: default;
+}
+
+.nameIcon:focus-visible,
+.nameTitle:focus-visible {
+  border-radius: var(--radius);
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "열기" under the pointer, as the table's title cell (DatabaseTableSelection.module.css):
+   a 55×24 plate 6px down and 4px in from the cell's end (Notion's library, seen 2026-11-09),
+   or 4px in from the table's visible end where the column runs past it, a side
+   peek beside the library (Notion's, seen 2026-11-14 at 1440: 661–716 by a
+   table ending at 720). */
+.openRowDock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding-block-start: 6px;
+  padding-inline-end: 4px;
+  pointer-events: none;
+}
+
+/* Its scroller keeps the page's side as padding past the table's end, which a
+   sticky plate keeps clear of: so 4px from the scroller's own edge. Its look
+   is the rows' shared one (RowOpenButton.module.css): the word in capitals
+   0.5px apart, as Notion's library (seen 2026-11-14 at 1440, "열기" 12/500/18,
+   uppercase, 0.5px). */
+.openRow {
+  composes: button from "../RowOpenButton.module.css";
+  position: sticky;
+  inset-inline-end: calc(4px - var(--library-side, 96px));
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.row:hover .openRow,
+.openRow:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* A touch screen has no pointer to bring it out: every row keeps its
+   "열기", its words alone on a raised plate, as a database table's there
+   (DatabaseTableSelection.module.css), 10px down and 5px in from the
+   names' column's end (Notion's library, seen 2026-11-14: 347–381 by a
+   column ending at 386 in a 45px row at 402, 485–519 by one ending at 524
+   in a 37px row at 834). */
+:global([data-touch="true"]) .openRow {
+  opacity: 1;
+  pointer-events: auto;
+  background: var(--bg-elevated);
+}
+
+:global([data-touch="true"]) .openRow svg,
+:global([data-touch="true"]) .openRow::before {
+  display: none;
+}
+
+:global([data-touch="true"]) .openRowDock {
+  padding-block-start: 10px;
+  padding-inline-end: 0;
+}
+
+.pageTitle,
+.cellText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.empty {
+  margin-block: 0;
+  margin-inline: 24px 0;
+  padding: 12px 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* An empty view, as Notion's (its library code, read 2026-10-31; the empty
+   favorites seen the same day): a 370px block as wide as the list's place
+   under the head (2026-11-03: not the table's width) with, in its middle, a 32px mark, 12px on a 14/20 500 line and a 340px 14/20 note 2px
+   under it, and for the private pages a button 20px under that. */
+.emptyView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 370px;
+  width: calc(100% + 8px);
+  margin-inline-start: -8px;
+  color: var(--icon-secondary);
+  text-align: center;
+}
+.emptyText {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 340px;
+}
+.emptyTitle {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.emptyBody {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.emptyCreate {
+  margin-top: 8px;
+}
+/* Notion's band for a view that shows nothing: 144px from 8px before the table to the
+   view's right padding, held there while the table scrolls sideways, its buttons 12px
+   apart in the middle. */
+.noResults {
+  position: sticky;
+  inset-inline-start: -8px;
+  margin-inline-start: -8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 144px;
+}
+/* Notion's gray outline button (seen 2026-10-31): 28px, 8px in, a 1px line, 14px/500,
+   an 11px mark 5px before the words. */
+.emptyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.emptyButton svg {
+  width: 11px;
+  height: 11px;
+  flex: none;
+}
+.emptyButton:hover,
+.emptyButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.noResultsNote {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.noResultsTip {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+
+.showMore {
+  height: 32px;
+  margin-block: 4px 0;
+  margin-inline: 24px 0;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.showMore:hover,
+.showMore:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+/* A phone's page keeps Notion's phone sides, 24px, as its pages do, its
+   head and table under the same rules as a window's: the title 2px in (the
+   heading's own 2px, a window's 8), "새 페이지" ending at the side, the tabs
+   and the table 8px in, the scroller across the whole screen (Notion's phone,
+   seen 2026-11-14 in iPhone Safari at 402: the title's words at 26, the pill
+   and the table at 32, "새 페이지" and the tools ending at 378, the scroller
+   0 to 402). */
+:global([data-phone="true"]) .wrap {
+  --library-side: 24px;
+  padding: 0 var(--library-side) 64px;
+}
+
+:global([data-phone="true"]) .header {
+  padding-inline: 2px 0;
+}
+
+:global([data-phone="true"]) .tableScroll {
+  padding-block-end: 0;
+}
+
+/* A touch screen's rows, as Notion's library on an iPhone and an iPad (seen
+   2026-11-14 in Safari at 402 and 834): every row's ▶ dark, 4px into the
+   gutter, its icon in a 22px frame 36px in and its name 7px after it (▶
+   108, icon 140, name 167 by a column at 104 on the iPad; 36, 68 and 95 by
+   one at 32 on the iPhone). */
+:global([data-touch="true"]) .nameCell {
+  gap: 7px;
+  margin-inline-start: 4px;
+  padding-inline-start: 6px;
+}
+
+:global([data-touch="true"]) .nameIcon {
+  width: 22px;
+  height: 22px;
+}
+
+/* A phone's table, as Notion's phone library (seen 2026-11-14 at 402): its
+   words 16px, rows 45px, the column names 15px faint, 32px in after 18px
+   marks 8px in, and the names' column no wider than the page between its
+   sides (354); a row's icon frame 2px over its words' 20px line, 1.5px
+   above the row's middle (the frame at 9.5, the line at 11.5). */
+:global([data-phone="true"]) .table {
+  font-size: 16px;
+}
+
+:global([data-phone="true"]) .row {
+  height: 45px;
+}
+
+:global([data-phone="true"]) :is(.row, .headRow) .nameColumn {
+  flex-basis: min(420px, calc(100vw - 2 * var(--library-side)));
+}
+
+:global([data-phone="true"]) .columnButton,
+:global([data-phone="true"]) .columnStatic {
+  gap: 6px;
+  padding-inline: 8px 6px;
+  font-size: 15px;
+  line-height: 18px;
+}
+
+:global([data-phone="true"]) .nameIcon {
+  margin-block-end: 3px;
+}
+
+:global([data-phone="true"]) :is(.nameTitle, .pageButton, .sourceButton) {
+  font-size: 16px;
+}
+
+/* A column's header opens its menu: "정렬" and "콘텐츠 줄바꿈하기". */
+.columnHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+/* A head is its column's filled mark, then its name 32px in (Notion, seen
+   2026-10-07); the handle takes the mark's place under the pointer. */
+.columnButton,
+.columnStatic {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 0 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.headGlyph {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.headGlyphIcon {
+  display: inline-flex;
+}
+
+.headHandle {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  opacity: 0;
+}
+
+.columnButton:hover .headHandle,
+.columnButton:focus-visible .headHandle {
+  opacity: 1;
+}
+
+.columnButton:hover .headGlyphIcon,
+.columnButton:focus-visible .headGlyphIcon {
+  opacity: 0;
+}
+
+.headLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.columnButton:hover,
+.columnButton:focus-visible,
+.columnButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "콘텐츠 줄바꿈하기" lets a column's text run onto more lines. */
+.row[data-wrapped="true"] {
+  height: auto;
+  min-height: 37px;
+}
+
+[data-wrap="true"] .pageTitle,
+[data-wrap="true"] .cellText,
+.column[data-wrap="true"] {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+[data-wrap="true"] .pageButton,
+[data-wrap="true"] .sourceButton {
+  height: auto;
+  min-height: 28px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* The teamspaces view, as Notion's (seen 2026-10-07 at 1000, 1280 and
+   1600px): the table runs to 8px short of the page's edge, at least 704px,
+   10px under the tabs, its name column 35% of it and 8px more; its rows are
+   LibraryTeamspaces.module.css's. */
+.teamspaceTable {
+  width: 100%;
+  min-width: 704px;
+  margin-top: 10px;
+}
+
+.teamspaceTable .nameColumn {
+  flex: 0 0 calc(100% * 0.35 + 8px);
+}
+
+/* Its heads' names 30px into their columns (seen 2026-10-31). */
+.teamspaceTable .headRow .columnStatic {
+  gap: 6px;
+}
+
+/* A teamspace's pages read lighter than the teamspaces, as Notion's. */
+.teamspaceTable .pageButton {
+  font-weight: 400;
+}
+
+.columnStatic {
+  cursor: default;
+}
+
+/* Its pills stand 8 in from the tabs' line, as Notion's (seen 2026-11-05). */
+.wrap [data-quick-filter-bar] {
+  padding-inline-start: 8px;
+}

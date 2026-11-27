@@ -1,0 +1,32 @@
+/* A sheet head whose title does not keep to its third (PhoneSheet's
+   `titleFit`). */
+
+/* "spills": the title runs on past its third, uncut — where Leafen's letters
+   run wider than Notion's in a title Notion's third holds whole (the account
+   sheet's "계정과 워크스페이스" at 390px; "적용할 페이지 위치", 121.9px of
+   a 137px third on a Galaxy A90 at 411, seen 2026-11-17). */
+.spills > strong {
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* "shares": "‹", the title and "완료" each as wide as what they hold, spread
+   to the head's edges, giving way together where they do not fit — "‹"
+   keeps its width, "완료" narrows to its widest letter and breaks in two, and
+   the title takes the rest, cutting what it lets be cut. Notion's automation
+   condition (seen 2026-11-17 on a Galaxy A90 at 411): a short title in the
+   middle (154px from 128.5), a long one from 60 to 363 by a 48.8px "완료" in
+   two lines. */
+.shares[data-title-fit] {
+  display: flex;
+  justify-content: space-between;
+}
+
+.shares[data-title-fit] > * {
+  flex: 0 1 auto;
+  min-width: auto;
+}
+
+.shares[data-title-fit] > strong {
+  min-width: 0;
+}

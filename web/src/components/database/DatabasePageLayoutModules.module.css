@@ -1,0 +1,304 @@
+/* The page layout builder's module cards in its framed canvas (PageLayoutCanvas), with their heads,
+   the "⠿" that drags a module or a panel row (PageLayoutSidebar) and the drop line: split out of
+   DatabasePageLayoutBuilder.module.css. The builder's frame and its column of modules carry this file's
+   .frame and .modules beside their own, and a panel row's "⠿" its .dragHandle beside the builder's. */
+
+.modules {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.module {
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-default);
+}
+
+.module[data-selected="true"] {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px var(--accent-blue);
+}
+
+/* A card in the desktop frame, as Notion's (seen 2026-10-25 at 1280px): a
+   0.5px light blue ring, rounded 8; a 32px head of its 14px blue name on a
+   blue tint, the "⠿" 6px in and the name 4px on (10px in without it), the
+   24px "⋯" 4px from the end; the body 12px in all round. */
+.frame .module {
+  border: 0;
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--accent-blue) 34%, transparent);
+}
+
+.frame .module[data-selected="true"] {
+  box-shadow: 0 0 0 1.25px var(--accent-blue), inset 0 0 0 1.25px var(--accent-blue);
+}
+
+.frame .moduleHead {
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  background: color-mix(in srgb, var(--accent-blue) 7%, transparent);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.frame .moduleHead > span:first-child:not([role="button"]) {
+  margin-inline-start: 4px;
+}
+
+/* Its "⋯" on a light blue square wherever it shows, as Notion's (seen 2026-11-12: its chosen card's too). */
+.frame .moduleHead button,
+.frame .moduleHead button:hover {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+}
+
+.frame .moduleBody {
+  padding: 12px;
+}
+
+/* The title's card: "백링크 없음" 8px down, the page's name right under it,
+   their words, the icon's, the details button's and the pinned names' on
+   one line 8 in from the body's edge, as on the page itself (Notion's
+   builder, seen 2026-11-14 at 1440: the body at 76.5, the words at 84.5). */
+.frame .backlinks {
+  margin-top: 8px;
+}
+
+.frame .title {
+  line-height: 48px;
+}
+
+/* The property group's lines, 34px, 4px apart. */
+.frame [data-layout-preview-property] + [data-layout-preview-property] {
+  margin-top: 4px;
+}
+
+/* The page's card: its discussion head 13px grey 8px in, its comment line
+   11px under it — the field's tools at its end only where the comment
+   field rule shows them (commentFieldToolsShown: none in a preview); the
+   content's "비어 있음" 16px faint, 8px down. */
+.frame .comments {
+  padding-block: 3px 12px;
+  padding-inline: 8px 0;
+}
+
+.frame .comments > div:first-child {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* A relations group's card, as Notion's (seen 2026-11-07): "관계형" 2px left
+   of "댓글", its lines 6px under it, their marks 2px left of it, the card 15px
+   under the last. */
+.frame .comments[data-layout-relations] { padding-bottom: 3px; }
+.frame [data-layout-relations] > [data-relations-heading] { margin-block: 0 6px; margin-inline: -2px 0; }
+.frame [data-layout-relations] > [data-relation-line="minimized"] { margin-inline-start: -6px; }
+/* A section in it: 14px left of the card's name, 4px over its pages, a page's
+   name 6px after its icon, the card 12px under its actions. */
+.frame [data-layout-relations] > [data-relation-line="section"] { margin-block: -2px 0; margin-inline: -8px 0; }
+.frame [data-layout-relations] > [data-relation-line="section"] [data-layout-preview-property] { row-gap: 4px; }
+.frame [data-layout-relations] > [data-relation-line="section"] [data-row-relation-chip] { gap: 6px; }
+.frame .comments[data-layout-relations]:has(> [data-relation-line="section"]:last-child) { padding-bottom: 0; }
+
+.frame .commentLine {
+  height: 27px;
+  margin-top: 11px;
+  gap: 5.5px;
+}
+
+/* The field's face stands at its 27px line's top, its words in the middle
+   (Notion's builder, seen 2026-11-25 at 1440 dpr 1: face 29px under the
+   head's words, as the first thread's). */
+.frame .commentLine > :first-child { align-self: flex-start; }
+
+/* The previewed page's open threads, drawn as the page draws them
+   (RowPageDiscussionsPreview), between the head and the field: the first
+   face 29px under the head's words and the field's face 16px under the
+   last words, as on the page (Notion's builder, seen 2026-11-25 at 1440 dpr
+   1, two tabs); a phone's area keeps the same room under its head. */
+.discussions:has([data-comment-thread], [data-reaction-emoji]) { margin-top: 11px; }
+.frame .discussions:has([data-comment-thread], [data-reaction-emoji]) + .commentLine { margin-top: 0; }
+
+.frame .commentTools {
+  display: flex;
+  gap: 6px;
+  margin-block: 0;
+  margin-inline: auto 4.5px;
+  color: var(--icon-secondary);
+}
+
+.frame .commentTools > span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+
+.frame .commentSend {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--icon-tertiary);
+  color: var(--bg-default);
+}
+
+.frame .emptyContent {
+  min-height: 80px;
+  padding-top: 8px;
+  color: var(--text-disabled);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.frame .adder button {
+  width: 32px;
+  height: 32px;
+  background: rgba(35, 131, 226, 0.14);
+}
+
+.moduleHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 10px 6px;
+  background: color-mix(in srgb, var(--accent-blue) 8%, transparent);
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.moduleHead > span {
+  flex: 1;
+  min-width: 0;
+}
+
+/* A module's or row's "⠿", which drags it; where it would land shows as a blue line. */
+.moduleHead > .dragHandle, .dragHandle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  border-radius: 4px;
+  color: inherit;
+  cursor: grab;
+}
+.dragHandle:hover { background: var(--bg-hover); }
+.dragHandle:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+/* Its own modules and rows only: a bare attribute rule drew the line on every
+   dragged-over row of the app, the sidebar's too (2026-11-13). */
+.module[data-drop="before"] { box-shadow: inset 0 2px 0 var(--accent-blue); }
+.module[data-drop="after"] { box-shadow: inset 0 -2px 0 var(--accent-blue); }
+
+.moduleHead button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  color: var(--accent-blue);
+  opacity: var(--module-tools-shown, 0);
+}
+
+/* The module takes the state its head's buttons read: a pointer state over
+   "button" restyled every button on the page at each pointer move
+   (2026-11-12: about a thousand on a page with a table). */
+.module:hover,
+.module[data-selected="true"] {
+  --module-tools-shown: 1;
+}
+.moduleHead button:focus-visible,
+.moduleHead button[aria-expanded="true"] {
+  opacity: 1;
+  outline: none;
+}
+
+.moduleHead button:hover {
+  background: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+}
+
+.moduleBody {
+  padding: 12px 16px 14px;
+  font-size: 14px;
+}
+
+/* "백링크 없음": a faint 28px pill whose arrow is 8px in, its words 6px on,
+   and the page's name 8px in under it, as Notion's (seen 2026-10-25). */
+.backlinks {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-disabled);
+  font-size: 14px;
+}
+
+/* The arrow's box narrowed to its drawing, a little over half the box. */
+.backlinks svg {
+  margin-block: 0;
+  margin-inline: -3.5px -4px;
+}
+
+.title {
+  margin: 0;
+  padding-inline-start: 8px;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.section {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  color: var(--text-secondary);
+}
+
+.placeholder {
+  color: var(--text-tertiary);
+}
+
+/* The page's comment line: the viewer's 24px picture, then "댓글 추가" 5px on,
+   as Notion's builder draws it (seen 2026-10-25 at 375px and 1280px). */
+.commentLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+}
+
+.adder {
+  display: flex;
+  justify-content: center;
+}
+
+.adder button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+  color: var(--accent-blue);
+}
+
+.adder button:hover,
+.adder button:focus-visible {
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+  outline: none;
+}

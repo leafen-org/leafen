@@ -1,0 +1,90 @@
+/* A phone's own settings (SettingsPhoneScreen.tsx), as Notion's in iPhone
+   Safari (seen 2026-11-14, 402pt): a section's rows run on under its 20px
+   title with no group headings, each row its name in 15px/500 over what it
+   says in 13px with its control at its end, 48px from the next with a 1px
+   line halfway, none over a section's first. Leafen's own blocks — the
+   profile, a device, a sign-in, the user ID — stand as rows the same way;
+   개인정보 보호 keeps its heading, as a section's title, as Notion's does,
+   and the sign-ins theirs, "로그인 기록".
+   Desktop windows and the other sections' screens keep their own layout.
+   These classes join the account's others (accountSettingsStyles.ts). */
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .section + .section {
+  margin-top: 0;
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .sectionTitle {
+  display: none;
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .sectionHeader {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .securityRow {
+  margin-top: 23.5px;
+  padding-top: 23.5px;
+  border-top: 1px solid var(--border-default);
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .securityRow strong {
+  font-size: 15px;
+}
+
+/* A row's panel is flat and adds no room of its own, as the account's
+   security on a desktop; a note stands 24px under the row before it, the
+   next row's line 24px under it. */
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .securityPanel {
+  margin-top: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-account-console]) .notice {
+  margin-block: 24px 0;
+}
+
+/* A section's first row: push, the theme, this server's account. */
+:global([data-phone="true"] [data-settings-phone] :is([data-account-notifications], [data-account-preferences]) > section:first-of-type) > .sectionTitle + .securityRow,
+:global([data-phone="true"] [data-settings-phone] [data-account-console] > section:first-of-type > div:first-child) > .securityRow:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* 개인정보 보호 under its 20px title 48px under the row before, as Notion's;
+   Leafen's own "로그인 기록" the same, its note under the title and each
+   sign-in a row under its line, as a note and the row after it (above) —
+   left untitled, its sign-ins read as more devices (2026-11-16). */
+:global([data-phone="true"] [data-settings-phone] [data-account-console] :is([data-preferences-group="privacy"], [data-sign-in-history])).section {
+  margin-top: 48px;
+}
+
+:global([data-phone="true"] [data-settings-phone] :is([data-preferences-group="privacy"], [data-sign-in-history])) > .sectionTitle {
+  display: block;
+  margin: 0;
+  padding: 0 0 12px;
+  border: 0;
+  color: var(--text-default);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 25px;
+}
+
+:global([data-phone="true"] [data-settings-phone] [data-preferences-group="privacy"]) > .sectionTitle + .securityRow {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* The first rows of the places the phone gives the account's security
+   (AccountSecurityShare.tsx): the password over the theme, the account's
+   deletion under "위험 구역". */
+:global([data-phone="true"] [data-settings-phone] [data-account-sign-in]) > .sectionTitle + .securityPanel > .securityRow:first-child,
+:global([data-phone="true"] [data-settings-phone] [data-account-danger-zone]) .section > .securityRow:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}

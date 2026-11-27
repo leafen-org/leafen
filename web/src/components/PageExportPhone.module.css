@@ -1,0 +1,139 @@
+/* A page's export on a phone (PageExportPhone.tsx), as Notion's (measured
+   2026-11-17 in iPhone Safari at 402, dark): the phone's full-screen list
+   rule (editor/PhoneMenu.module.css) — a 44 head over a line, its name
+   16px 600 in its middle third on the head's top line, the blue "닫기"
+   16px 500 16 from its end; groups 28 under what is over them, their rows
+   across the screen, 45 each on the raised ground, a line over the first
+   and under each — with no marks: a row's name 16px 16 in, its value grey
+   16px at its end 16 from the edge, a switch 51 × 31 there; "내보내기" a
+   row of its own in blue. */
+.head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 1fr) 1fr;
+  height: 44px;
+  box-shadow: 0 1px 0 var(--border-subtle);
+  background: var(--bg-soft);
+  color: var(--text-default);
+}
+
+.title {
+  grid-column: 2;
+  margin: 0;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.close {
+  grid-column: 3;
+  justify-self: end;
+  height: 44px;
+  padding-block: 0;
+  padding-inline: 16px;
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.close:disabled {
+  opacity: 0.4;
+}
+
+.body {
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 24px;
+  border: 0;
+}
+
+/* A group 28 under what is over it, its line over its first row the
+   group above's last line (Notion's rows at 73 and 191 under a 44 head). */
+.section {
+  margin-bottom: -1px;
+  padding-top: 28px;
+}
+
+.rows {
+  margin-top: 1px;
+  box-shadow: 0 -1px 0 var(--border-subtle);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 45px;
+  padding-block: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  line-height: 19.2px;
+  text-align: start;
+}
+
+button.row:active {
+  background: var(--bg-hover);
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.value {
+  flex: none;
+  color: var(--text-secondary);
+  line-height: 22px;
+}
+
+.action {
+  color: var(--accent-blue);
+}
+
+/* Faint while the organization's settings keep the export in, as the desktop's dimmed button. */
+.action[data-off="true"] {
+  opacity: 0.4;
+}
+
+.progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.note,
+.error {
+  margin: 8px 16px 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.note {
+  color: var(--text-secondary);
+}
+
+.error {
+  color: var(--danger);
+}

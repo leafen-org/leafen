@@ -1,0 +1,45 @@
+/* An action's failure under the row it is about (lib/useNoticeFor
+   useRowNotice). Under a list row (SettingsItemRows .row) it takes the row's
+   line: the row's own line goes, and the failure, lined up with the row's
+   words past its 28px icon and 10px gap, ends with the line 10px below it,
+   as the row's words do. */
+div:has(+ .afterRow) {
+  border-bottom-color: transparent;
+}
+
+.afterRow {
+  padding-block-end: 10px;
+  padding-inline-start: 38px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* In a table it is a row of its own under the row it is about, across every
+   column, with no line between the two — the settings' tables collapse their
+   borders, where a hidden edge takes the row's line away — and its words wrap. */
+tr.tableRow > td {
+  border-top: hidden;
+  padding-top: 0;
+  white-space: normal;
+}
+
+/* A notice about a whole list or page (ListNotice) stands 12px above the rows
+   that follow it — a list's first row, the page's first group, the next
+   notice — as the settings notice (.notice) stands over a list. */
+.overRows {
+  margin-block-end: 12px;
+}
+
+/* A list's failed read with its way to read again after the words, as a
+   read that failed says it elsewhere (ReadFailed). */
+.readAgain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+}
+
+/* A list's failed read in its empty line's place (EmptyLineReadFailed) stands
+   12px under what is above it, as the settings empty line (.emptyState) does. */
+.inEmptyLine {
+  margin-block-start: 12px;
+}

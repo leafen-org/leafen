@@ -1,0 +1,113 @@
+/* A phone's list, as Notion's (seen 2026-10-25 at 375px, inline and full
+   page, grouped or not): each row 4px 4px 4px 5px in, its 30px title line
+   (the 22px icon, the 16px/500 title 32px in) over its properties' line,
+   30px in, 30px high and 6px more (6px with none to show) — 44px, 74px with
+   a property, 2px apart; an option's pill 18px, 8px in, 13px; no pencil.
+   "+ 새 페이지" is 44px, its 20px plus 6px in and its 16px words where the
+   titles are; "+ 신규 그룹" 30px with the 20px plus and 16px words. Its first
+   row starts 5px under the view's tools, 7px under its view pill, by every
+   list's 4px and the row's 1px (Notion's list 4px 0 and each row's box 1px
+   0, read 2026-11-15 on a Galaxy A90 at 411), a grouped list's first head
+   2px, groups follow one another with no space, and a group with no value
+   names itself in 15px. An inline list ends 38px short of the screen's edge,
+   and grouped, lines each row from 30px in to its end. */
+:global([data-phone="true"]) .list[data-grouped="true"] {
+  padding-top: 3px;
+}
+:global([data-phone="true"]) .listRow {
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0 5px;
+  padding-block: 4px;
+  padding-inline: 5px 4px;
+}
+/* A long title stays on its icon's line, cut short, with its checkbox beside it. */
+:global([data-phone="true"]) .listTitle {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 30px;
+}
+:global([data-phone="true"]) .listRow [data-row-card-tools] {
+  display: none;
+}
+/* The values line under the title holds each value in its wide screen's
+   cell, 14px words 8px in on 30px, the cells 2px apart and the first 17px
+   in, so its words start 30px into the row (Notion's, read 2026-11-15 on a
+   Galaxy A90 at 411: words, a number, an option and a date after the
+   title); a status takes its 20px pill. */
+:global([data-phone="true"]) .listMeta {
+  flex: 0 0 100%;
+  flex-wrap: wrap;
+  gap: 0 2px;
+  max-width: none;
+  min-height: 36px;
+  margin-inline-start: 0;
+  padding-block: 0 6px;
+  padding-inline: 17px 0;
+}
+:global([data-phone="true"]) .listMeta .listField .chip[data-status-chip] {
+  --chip-height: 20px;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+/* A row's checkbox stays by its title, on the first line (2026-11-08). */
+:global([data-phone="true"]) .listCompletion {
+  align-self: flex-start;
+  height: 38px;
+}
+/* A row whose shown values are all empty keeps its title's line and the 6px
+   under it, its values' line left out (Notion's, seen 2026-11-15 at 402pt: a
+   row 44 high, 74 with a date shown, 2 apart). */
+:global([data-phone="true"]) .listLead:not(:has(.listField:not(:empty), .listAddDate)) {
+  display: none;
+}
+:global([data-phone="true"]) .listMeta:not(:has(.listField:not(:empty), .listAddDate)) {
+  height: 6px;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+/* What the view lists before the title stays on the title's line before its
+   icon, each value 14px in its 8px-in cell as on a wider screen, and a row
+   with nothing listed after the title has no values line: 38px (Notion's,
+   read 2026-11-15 on a Galaxy A90 at 411 — a date before the title, the
+   rows 40 apart; with words after the title too, 44 and 74). */
+:global([data-phone="true"]) .listMeta:empty {
+  display: none;
+}
+:global([data-phone="true"]) .listMeta .chip:not([data-status-chip]) {
+  --chip-height: 18px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+:global([data-phone="true"]) [data-database-placement="inline"] .list {
+  margin-inline-end: 14px;
+}
+/* A database's own page ends its list 32px short of the edge, as its gallery
+   (DatabasePhoneCards; Notion's, read 2026-11-15 on a Galaxy A90 at 411: rows
+   347 wide from 32px in). */
+:global([data-phone="true"] :is([data-kind="database"], [data-database-page="true"])) [data-database-placement="inline"] .list {
+  margin-inline-end: 8px;
+}
+:global([data-phone="true"]) [data-database-placement="inline"] .list[data-grouped="true"] .listRow {
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 30px, var(--border-secondary) 30px) 1;
+}
+:global([data-phone="true"]) .listGroupHead:not(:first-child) {
+  padding-top: 0;
+}
+:global([data-phone="true"]) .listGroupHead .tableGroupLabel:not([data-table-group-chip="true"]) {
+  font-size: 15px;
+}
+:global([data-phone="true"]) .listNew {
+  gap: 6px;
+  height: 44px;
+  padding-inline-start: 6px;
+  font-size: 16px;
+}
+:global([data-phone="true"]) .listNew svg {
+  width: 20px;
+  height: 20px;
+}

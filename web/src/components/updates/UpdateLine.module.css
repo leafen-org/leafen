@@ -1,0 +1,86 @@
+/* An update's changed line by its block's kind, as Notion's (seen 2026-11-17, 1440 dark, two tabs each): every mark in
+   the line's own colour — blue on an added line's band, struck and faded with a deleted line. */
+
+/* A toggle's caret and a to-do's box before the words, which wrap beside them. */
+.marked {
+  display: flex;
+  align-items: flex-start;
+}
+.words {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A toggle's caret: a 14px box 6px from either side and 6px down, the caret 0.8em at its top, its words 26px in. */
+.caret {
+  display: flex;
+  flex: none;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-block: 6px 0;
+  margin-inline: 6px;
+}
+.caretIcon {
+  display: block;
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* A to-do's box: 16px, a 1px line rounded 1.5px, 3px down and 6px before its words; done, blue with the page's tick. */
+.check {
+  flex: none;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  margin-block: 3px 0;
+  margin-inline-end: 6px;
+  border: 1px solid currentColor;
+  border-radius: 1.5px;
+}
+.check[data-checked] {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+}
+
+/* A bulleted item's bullet and a numbered one's "1." — always 1, as each line stands alone — in 28px. */
+.list {
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 28px 0;
+  list-style-type: disc;
+}
+.list[data-list="numbered"] {
+  list-style-type: decimal;
+}
+
+/* A heading's and a toggle heading's words, with no mark. */
+.heading {
+  font-weight: 600;
+}
+
+/* An added callout's box on the added band, which holds its margins. */
+.band {
+  display: flow-root;
+  background: var(--bg-block-selected);
+}
+
+/* A made button's, breadcrumb's, image's or synced block's empty band, a bookmark's empty slot: one line high. */
+.empty {
+  display: block;
+  height: 21px;
+}
+
+/* A deleted button: its box and its workflow's steps 8px under it, struck and faded together, 6px over what follows. */
+.struck {
+  display: block;
+  margin-block-end: 6px;
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+.steps {
+  display: block;
+  margin-block-start: 8px;
+  font-size: 14px;
+  line-height: 21px;
+}

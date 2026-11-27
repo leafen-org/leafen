@@ -1,0 +1,236 @@
+/* The Notion token guide's screens, part 3: Leafen's own Notion window by
+ * hand (notionTokenGuideLeafen.tsx) — its head, its three steps, the token
+ * step under "Notion에서 할 일" and the scope step — as ImportDialog draws it. */
+
+.leafenPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: calc(100% - 26px);
+  padding: 11px 16px 10px;
+}
+
+.leafenWindowHead {
+  display: grid;
+  gap: 1px;
+}
+
+.leafenWindowHead strong {
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.leafenWindowHead span {
+  overflow: hidden;
+  color: var(--rec-text2);
+  font-size: 8.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* The steps: badge and name, the shown one on a fill with a blue badge. */
+.leafenSteps {
+  display: flex;
+  gap: 4px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--rec-border);
+}
+
+.leafenSteps span {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 19px;
+  border-radius: 5px;
+  color: var(--rec-text3);
+  font-size: 8.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.leafenSteps span[data-active] {
+  background: var(--rec-hover);
+  color: var(--rec-text);
+}
+
+.leafenSteps b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--rec-hover);
+  color: var(--rec-text2);
+  font-size: 7px;
+  font-weight: 600;
+}
+
+.leafenSteps span[data-active] b {
+  background: var(--rec-blue);
+  color: #fff;
+}
+
+.leafenBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
+  align-content: start;
+  flex: 1;
+  min-height: 0;
+}
+
+.leafenCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  padding: 8px 10px;
+  border: 1px solid var(--rec-border);
+  border-radius: 7px;
+}
+
+.leafenCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.leafenCardHead strong,
+.leafenListTitle {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* "Notion 토큰 만들기": Leafen's outlined button. */
+.leafenButton {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 3px 8px;
+  border: 1px solid var(--rec-input-border);
+  border-radius: 5px;
+  color: var(--rec-text);
+  font-size: 8.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Notion's four steps, numbered, as lines. */
+.leafenStepLines {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-inline-start: 12px;
+  color: var(--rec-text3);
+  font-size: 7px;
+}
+
+.leafenStepLines li::marker {
+  font-size: 7px;
+}
+
+.leafenInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 21px;
+  padding: 0 8px;
+  border: 1px solid var(--rec-input-border);
+  border-radius: 5px;
+  color: var(--rec-text);
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.leafenInputFocus {
+  border-color: var(--rec-blue);
+}
+
+.leafenPlaceholder {
+  color: var(--rec-text3);
+}
+
+/* The token comes in at the paste (the field's click). */
+.leafenTokenValue {
+  letter-spacing: 0.3px;
+  opacity: 0;
+  animation: guideTokenIn 0.01s linear 1.05s forwards;
+}
+
+.leafenFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 7px;
+  border-top: 1px solid var(--rec-border);
+}
+
+.leafenPrimary {
+  position: relative;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: var(--rec-blue);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* "토큰 저장" waits for a token: dim until it is pasted. */
+.leafenPrimaryOff {
+  opacity: 0.45;
+}
+
+.leafenPrimaryWakes {
+  opacity: 0.45;
+  animation: guideTokenIn 0.01s linear 1.05s forwards;
+}
+
+.leafenSecondary {
+  color: var(--rec-text);
+  font-size: 9px;
+}
+
+.leafenRootRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--rec-hover);
+}
+
+/* Leafen's box is 11px, over the connection screen's 10px box it also
+   wears (NotionTokenGuideConnection.module.css .checkbox) by naming its
+   element. */
+i.leafenCheckbox {
+  width: 11px;
+  height: 11px;
+}
+
+@keyframes guideTokenIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leafenTokenValue,
+  .leafenPrimaryWakes {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* A phone-width frame: the window's lead gives way so the token's field and
+ * the foot stay in view. */
+@container (max-width: 420px) {
+  .leafenWindowHead span {
+    display: none;
+  }
+}

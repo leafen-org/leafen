@@ -1,0 +1,633 @@
+/* A row shown only for a sub-item or parent the filter keeps fades, as Notion's (seen 2026-10-11). */
+.tableRow[data-subitem-context="true"] > [role="gridcell"] {
+  opacity: 0.5;
+}
+.tableRow {
+  position: relative;
+  display: grid;
+  border-bottom: 0;
+}
+/* A row out of view is neither styled, laid out nor painted until it comes
+   near it, keeping a one-line row's 37px (or the height it last had): a page
+   opening with three tables of 50 rows below its fold laid all of them out
+   at once (2026-11-13, a page of 35k elements: 160–175 ms of its first
+   frame, 30 after), and a sidebar folding beside it styled them all again
+   (240 ms, 30 after). Kept whole while it holds the focus — its written
+   cell's box and its chosen cell's fill dot stand over the rows around it —
+   while someone else is in it (their mark stands above the cell), and in a
+   table whose rows take their values' height, which it can't know unlaid.
+   A row new to a table already drawn is painted whole in its first frame
+   (data-arriving, lib/arrivingWhole.ts): skipped there, its cells showed
+   empty for a frame. */
+.tableRow:not([data-wraps="true"], [data-row-remote="true"], :focus-within, :has([data-cell-held]), [data-arriving]) {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 37px;
+}
+.tableRow[data-row-drag-over="true"][data-drop-side="before"]::before,
+.tableRow[data-row-drag-over="true"][data-drop-side="after"]::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--table-gutter-width);
+  inset-inline-end: 0;
+  z-index: 3;
+  /* 4px in Notion's faint blue (seen 2026-11-15 in Chrome at 1440: 963x4 rgba(35,131,226,.43) from the rows' start). */
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+/* Inside the row box, so the line is never cut by the row above or below. */
+.tableRow[data-row-drag-over="true"][data-drop-side="before"]::before {
+  top: 0;
+}
+.tableRow[data-row-drag-over="true"][data-drop-side="after"]::after {
+  bottom: 0;
+}
+/* The row dragged stays as it was where it was; the browser carries its faint picture (Notion's, seen 2026-11-15). */
+/* A selected row is tinted from its first cell on, as Notion's is
+   (rgba(35, 131, 226, 0.14), seen 2026-10-06), in one piece over the lines
+   between its cells, shown or hidden, and not over its foot's line (Notion's
+   one 36px layer over a 37px row, seen 2026-11-15): each cell's tint covers its own end
+   line too; one chosen on another of its lines ("row") too, its box not shown (2026-11-24). */
+.tableRow[data-row-selected] > .cell::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0 -1px;
+  background: var(--bg-block-selected);
+  pointer-events: none;
+}
+/* After a row's last property its bottom line goes on under the head's "+"
+   to the table's end, at least that column's 64px when the table scrolls,
+   and a chosen row's tint with it (Notion's, seen 2026-11-02). */
+.trailingGridCell {
+  min-width: 56px;
+  min-height: 37px;
+  border-bottom: 1px solid var(--table-grid-border);
+  pointer-events: none;
+}
+.tableRow[data-row-selected] > .trailingGridCell {
+  background: var(--bg-block-selected);
+}
+
+.table[data-inline-empty-preview="true"] .tableHead,
+.table[data-inline-empty-preview="true"] .newRowRail {
+  width: 100%;
+}
+
+/* A row is 37px with its 1px bottom line, as Notion's (seen 2026-10-01).
+   What a cell holds hangs from its top, its first line where a one-line row
+   has it however tall another value makes the row, wrapped or not (Notion's,
+   seen 2026-11-08: every value's first line 7.5px down in rows 36, 57, 141
+   and 519 high); the marks beside a title stand on that line. */
+.cell {
+  --cell-line: 36px;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-height: 37px;
+  border-inline-end: 1px solid var(--table-grid-border);
+  border-bottom: 1px solid var(--table-grid-border);
+  padding: 0 2px;
+  overflow: visible;
+}
+.cell:focus {
+  outline: none;
+}
+.cell[data-table-empty-fill] {
+  border-inline-end: 0;
+}
+/* A chosen cell, as Notion's (seen 2026-11-02 at 1280px, light and dark): a 2px blue ring inside its lines on a faint blue
+   ground, 2px round, over its value and any colour the cell has; held apart from the focus too (chosenCellHeld.ts); a
+   timeline table's too. A title cell holding the focus for its row (data-row-focus, chosenItemFocus.ts) is not chosen:
+   it draws the keyboard's ring alone, while the keys lead, as Notion's (seen 2026-11-24). */
+:is(.cell, .timelineTableCell):is(:focus, [data-cell-held="true"]) { z-index: 1; }
+.cell[data-row-focus="true"]:focus-visible { box-shadow: var(--keyboard-focus-ring); }
+/* A range's other cells take the chosen cell's ground alone (useTableCellRange), a timeline table's too (useTimelineTableRange). */
+:is(.cell, .timelineTableCell)[data-cell-range="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(35, 131, 226, 0.07);
+  pointer-events: none;
+}
+:is(.cell, .timelineTableCell):is(:focus:not([data-row-focus="true"]), [data-cell-held="true"])::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  background: rgba(35, 131, 226, 0.07);
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
+  pointer-events: none;
+}
+/* A reader who may only read chooses no cell: a press shows nothing, as Notion's cells for a read-only guest (seen 2026-11-07). Nor does a phone (DatabaseTablePhoneCell.module.css). */
+:is(.cell, .timelineTableCell)[data-cell-inert="true"]:is(:focus, [data-cell-held="true"])::before {
+  content: none;
+}
+/* The chosen cell's corner dot, pulled up or down to fill its column, as Notion's: 9px, a 2px blue ring on the page's
+   ground, over the cell's bottom right corner; a range has none. */
+.cellFill {
+  display: none;
+  position: absolute;
+  inset-inline-end: -4px;
+  bottom: -5px;
+  z-index: 5;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--accent-blue);
+  border-radius: 50%;
+  background: var(--bg-app);
+  cursor: ns-resize;
+}
+.cell:is(:focus:not([data-row-focus="true"]), [data-cell-held="true"]):not(:global([data-phone="true"]) *) > .cellFill {
+  display: block;
+}
+.table[data-cell-range="true"] .cell:is(:focus, [data-cell-held="true"]) > .cellFill {
+  display: none;
+}
+/* A value with an open discussion keeps the mark the row page's line gives
+   it until the discussion is resolved, as Notion's cell (seen 2026-11-03), a
+   timeline table's too, and the cell's own edit button not at all (Notion's
+   person value, seen 2026-11-05). */
+:is(.cell, .timelineTableCell)[data-property-discussed="true"] :is([data-number-text], [data-table-typed-value] > span, .linkText, .valueMark, .dateValue) {
+  background: rgba(255, 203, 0, 0.12);
+  border-bottom: 2px solid rgba(255, 203, 0, 0.35);
+}
+/* A select's chips, people and pages keep their look inside one square mark
+   round them all (Notion's, seen 2026-11-05: 2px round a select's chips;
+   2026-11-11: 4px round people and pages); otherwise the mark lays out nothing. */
+.valueMark {
+  display: contents;
+}
+:is(.cell, .timelineTableCell):is([data-property-discussed="true"], [data-cell-discussing="true"]) .valueMark {
+  display: inline-flex;
+  flex-wrap: inherit;
+  align-items: center;
+  gap: inherit;
+  min-width: 0;
+  max-width: 100%;
+  padding: 2px;
+}
+/* What the cell can't show stays inside the mark, cut at its end. */
+:is(.cell, .timelineTableCell):is([data-property-discussed="true"], [data-cell-discussing="true"]) :is(.personChips, .relationChips) > .valueMark {
+  overflow: hidden;
+  padding: 4px;
+}
+/* People's mark is as high as a page's, 27px: their 20px chips stand 3px into
+   its bottom room, and it sits 7px below the cell's top, the chips 3px lower
+   than unmarked (Notion's, seen 2026-11-11). */
+:is(.cell, .timelineTableCell):is([data-property-discussed="true"], [data-cell-discussing="true"]) .personChips > .valueMark {
+  align-self: flex-start;
+  margin-block-start: 4px;
+}
+:is(.cell, .timelineTableCell):is([data-property-discussed="true"], [data-cell-discussing="true"]) .personChips > .valueMark > * {
+  margin-block-end: -3px;
+}
+/* While a cell's discussion is open its value is marked as commented words
+   are (its tools: PropertyValueTools). */
+:is(.cell, .timelineTableCell)[data-cell-discussing="true"] :is([data-number-text], [data-table-typed-value] > span, .linkText, .valueMark, .dateValue) {
+  background: rgba(255, 203, 0, 0.24);
+  border-bottom: 2px solid rgb(255, 203, 0);
+}
+
+/* A title, text, number, link, email or phone value is written in a box over its cell, as Notion's: 1px up and left, the
+   cell's width with its end line (100% is within it), ending before that line (1440 and phone, 2026-11-25), at least 240px, in the
+   window (fitCellEditor), 8px 9px in, 14/21 text that wraps, the menus' ground and shadow, over its row's "열기" and "확장" (3) in any cell
+   (a phone's: Notion's app, A90 2026-11-25); a timeline table's too, a phone's at its sizes (DatabaseTablePhoneCell); open while its ⌘K window has the focus. */
+:is(.cell, .timelineTableCell):has(.cellInput:is(:focus, [data-field-held])) {
+  z-index: 4;
+}
+/* The editor asks after its own focus (a :has() on the cell before it had
+   every element put in the page work out more of its styles again, AppShell
+   .main). */
+:is(.cell, .timelineTableCell) > .cellEditor:has(.cellInput:is(:focus, [data-field-held])) {
+  position: absolute;
+  top: -1px;
+  /* Where it opened, its row moved away since (useHeldCellEditor). */
+  translate: var(--cell-editor-hold-x, 0px) var(--cell-editor-hold-y, 0px);
+  inset-inline-start: calc(-1px - var(--cell-editor-shift, 0px));
+  z-index: 4;
+  align-items: flex-start;
+  width: max(calc(100% + 1px), 240px);
+  min-height: calc(100% + 2px);
+  padding: 8px 9px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  overflow: visible;
+}
+/* A number's box keeps a one-line row's 38px in a taller row, where the
+   others cover their cell (Notion's, seen 2026-11-08: 240×38 over a 141px
+   row's number, 240×142 over its link, email, phone, text and title). */
+:is(.cell, .timelineTableCell) > .cellEditor:has(.cellInput[data-number]:focus) {
+  min-height: 38px;
+}
+/* Asked of the field itself, not by a :has() on the cell before it: that
+   restyled every field of every table under a :has() that changed (a table's
+   "+ 새 페이지", 2026-11-15); the class twice keeps the rule's weight. */
+:is(.cell, .timelineTableCell) > .cellEditor .cellInput.cellInput:is(:focus, [data-field-held]) {
+  height: auto;
+  min-height: 21px;
+  padding: 0;
+  line-height: 21px;
+}
+:is(.cell, .timelineTableCell) > .cellEditor .richCellInput.richCellInput:is(:focus, [data-field-held]) { white-space: pre-wrap; word-break: break-word; }
+:is(.cell, .timelineTableCell) > .cellEditor .titleCellIcon:has(~ .cellInput:is(:focus, [data-field-held]), ~ * .cellInput:is(:focus, [data-field-held])) { display: none; }
+.cell[data-title="true"] {
+  font-weight: 500;
+}
+/* A row the view has no more, drawn on out of sight while the box its value
+   is written in stays open where it opened (useHeldCellEditor): it takes no
+   room among the rows, nor past them, and only that box shows. */
+.tableRow[data-row-held-out="true"] {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+}
+.tableRow[data-row-held-out="true"] > .cell > .cellEditor[data-cell-editor-held="true"] {
+  visibility: visible;
+}
+/* Once a column wraps a title's line, its page's 22px mark 7.5px from top and foot, makes a one-line row 38px, the text
+   where it was; untitled it stays 37, two lines 58 (Notion's, 2026-11-08, -11 and -16 by rows' tops). A touch screen's
+   "열기" (24) stands in that line too, so a one-line row is 40 titled or not, two lines 58 — a phone's line 20 high
+   11.5 from top and foot, 48 and 64 — unwrapped 37 and 45 (Notion's iPad 834 and iPhone 402 in Safari, 2026-11-16: a row
+   made through Notion's API has its title unwrapped). The mark keeps to its title's first line (1440, 834 and 402). */
+.tableRow[data-wraps="true"] > .cell[data-title="true"]:has(.titleCellIcon) { min-height: 38px; }
+.tableRow[data-wraps="true"] .titleCellIcon { align-self: flex-start; margin-block-start: var(--title-mark-top, 9px); }
+:global([data-touch="true"]) .tableRow[data-wraps="true"] > .cell[data-title="true"] > .openRow { margin-block: var(--title-line-pad, 7.5px); }
+:global([data-phone="true"]) .tableRow[data-wraps="true"] > .cell[data-title="true"] { --title-line-pad: 11.5px; --title-mark-top: 11.5px; padding-top: 0; }
+:global([data-phone="true"]) .tableRow[data-wraps="true"] > .cell[data-title="true"] .cellInput { padding-block: var(--title-line-pad); line-height: 20px; }
+.cellEditor {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--cell-line);
+  overflow: hidden;
+}
+/* A cell that only shows its value (a locked page's) draws the cell it draws
+   when it may be edited, its editing parts asleep: a press is its cell's,
+   choosing it, as it was over the value shown read-only (cellReadOnly.ts). */
+.cellEditor[data-cell-read-only="true"] {
+  pointer-events: none;
+}
+/* The title's page icon sits 8px into its cell and its text 32px, as
+   Notion's (seen 2026-10-10), after the toggle's room while sub-items are on. */
+:is(.cell, .timelineTableCell)[data-title="true"] .cellEditor {
+  padding-inline-end: 0;
+  padding-inline-start: 4px;
+}
+/* A title followed by its sub-item mark keeps to its text, the mark right after it. */
+.cell[data-subitem-meta="true"] .cellEditor {
+  flex: 0 1 auto;
+  width: auto;
+}
+/* A title shown without editing lines up with an editable one. */
+.cell[data-title="true"] .cellEditor [data-table-typed-value] {
+  padding-inline-start: 0;
+}
+.cell[data-title="true"] [data-table-typed-value] > span {
+  gap: 0;
+}
+.cell[data-title="true"] [data-table-typed-value] > span > span:last-child {
+  padding-inline-start: 4px;
+}
+/* A value shown without editing, as in a read-only table or a locked row,
+   reads as the editable cell's text; chips keep their own look. */
+.cellEditor [data-table-typed-value] {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 4px 6px;
+}
+.cellEditor [data-table-typed-value] > span:not([style]) {
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* Table cells stay single-line for uniform row height; the column's Wrap toggle
+   lets multi-value/long content flow onto multiple lines. */
+.cell .cellEditor .chips,
+.cell .cellEditor .relationChips,
+.cell .cellEditor .personChips,
+.cell .cellEditor [data-file-attachments] {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+.cell[data-wrap="true"] .cellEditor .chips,
+.cell[data-wrap="true"] .cellEditor .relationChips,
+.cell[data-wrap="true"] .cellEditor .personChips,
+.cell[data-wrap="true"] .cellEditor [data-file-attachments] {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+/* A files value: its files 8px apart on one line, each narrowed to no less
+   than its icon's 40px, or, wrapped, one under another 6px apart from 6px
+   down, each at most the cell's width; one file is one line, the row 37
+   either way. Its "+" takes no room and shows to the keyboard only —
+   Notion's cell shows none under the pointer (seen 2026-11-14: three files
+   at 40, 40 and 88 in a 200px cell unwrapped; wrapped, at 6, 36 and 66 in a
+   96px row, its line under them). */
+.cell .cellEditor [data-file-attachments] {
+  --cell-edit-trigger-shown: 0;
+  gap: 8px;
+}
+.cell .cellEditor [data-file-attachments] > .fileChip {
+  min-width: 40px;
+}
+.cell[data-wrap="true"] .cellEditor > .filesCell {
+  align-self: flex-start;
+}
+.cell[data-wrap="true"] .cellEditor [data-file-attachments] {
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 6px 8px;
+  min-height: 0;
+  padding-block: 6px 5px;
+}
+.cell .cellEditor [data-file-attachments] > .propertyCellEditTrigger {
+  position: absolute;
+  top: 5px;
+  inset-inline-end: 6px;
+}
+/* Unwrapped, related pages — a relation's or a rollup's — keep their whole
+   names and the cell cuts the line, a long one with no "…" (Notion's, seen
+   2026-11-12: a 269px name in a 200px cell), as an unwrapped card does. */
+.cell:not([data-wrap="true"]) .cellEditor .relationChip {
+  flex: none;
+  max-width: none;
+}
+/* In a column set to wrap, a related page's name runs on under its icon
+   from the cell's start, its lines 21px apart, as Notion's (seen 2026-11-07). */
+.cell[data-wrap="true"] .relationChip {
+  display: block;
+  height: auto;
+  line-height: 21px;
+}
+.cell[data-wrap="true"] .relationChip .relationPageIcon {
+  display: inline-flex;
+  margin-inline-end: 6px;
+  vertical-align: -4px;
+}
+.cell[data-wrap="true"] .relationChip :is(.relationChipLink, .relationChipText) {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+}
+/* Its pages start 8px down like a wrapped value's lines, the next page's
+   line 27px under the last and 8px under the last line, a relation's and a
+   rollup's alike (Notion's, seen 2026-11-12: lines at 10, 37, 64 and 91, a
+   page over two lines making a 59px row), and its "+" takes no room, as an
+   option cell's; empty, it keeps an option cell's 20px room (below). */
+.cell[data-wrap="true"] .cellEditor .relationChips {
+  align-items: flex-start;
+  align-content: flex-start;
+  row-gap: 6px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.cell[data-wrap="true"] .cellEditor .relationChips > .propertyCellEditTrigger {
+  position: absolute;
+  top: 5px;
+  inset-inline-end: 6px;
+}
+/* A long option stays on one line, cut with "…" at the cell's width, wrapped
+   or not, as Notion's (seen 2026-11-06: a 184px chip in a 200px cell); the
+   cell's hidden "+" takes no room, so it never wraps under the value.
+   Unwrapped, options keep their own widths and the cell cuts the line
+   (seen 2026-11-08: five options in a 200px cell, none narrowed) — a
+   rollup's statuses as its options (seen 2026-11-12: "Done", "Not started",
+   "In progress" at 63, 102 and 101 in a 200px cell, the third cut). */
+.cell .cellEditor .chips .chip {
+  flex-shrink: 0;
+}
+.cell .cellEditor .chips .chip:not([data-status-chip]) {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: var(--chip-height, 20px);
+}
+/* Its options start 8px down, line after line 6px apart, one or many, with
+   8px under the last line: one line fills the row's 36px, two make it 63
+   with its line (Notion's, measured 2026-11-08), and an empty cell's room
+   is one line's — a wrapped relation's too, 37px with one page (2026-11-15). */
+.cell .cellEditor .chips {
+  align-items: flex-start;
+  align-content: flex-start;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+.cell .cellEditor .chips > .cellEmpty, .cell[data-wrap="true"] .cellEditor .relationChips > .cellEmpty {
+  height: 20px;
+}
+.cell .cellEditor .chips > .propertyCellEditTrigger {
+  position: absolute;
+  top: 5px;
+  inset-inline-end: 6px;
+}
+/* Not for a row a wheel brought under a still pointer, till it moves (pointerHover.ts; Notion's "+ ⋮⋮", its "열기" not). */
+:global(:root:not([data-pointer-still])) .tableRow:hover > .rowGutterCell,
+.tableRow[data-row-selected="true"] > .rowGutterCell,
+.tableRow[data-row-dragging="true"] > .rowGutterCell,
+:global(:root:not([data-pointer-still])) .rowGutterCell:hover,
+.rowGutterCell:focus-within {
+  opacity: var(--row-gutter-opacity, 1);
+  pointer-events: auto;
+}
+.rowGutterButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+}
+.rowGutterButton:hover,
+.rowGutterButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+.rowGutterButton svg,
+.rowDragHandle svg,
+.openRow svg {
+  pointer-events: none;
+}
+/* A row's controls sit as Notion's do before the first column, inline and on
+   a database's page alike (seen 2026-11-03, 2026-11-18): its box 9px off, its
+   handle (18px) ending 44px off where the table's box starts, and "+" (24px)
+   against it at the 86px margin's start. Frozen columns keep the box's 36px. */
+.rowGutterCell > * {
+  flex: none;
+  /* Hidden while the row's title is written in (below), else as its margin. */
+  visibility: var(--row-gutter-tools);
+}
+/* Frozen, the controls' margin stays drawn over what scrolls under it and
+   only its controls wait for the pointer. */
+.table[data-frozen-columns] .rowGutterCell {
+  opacity: 1;
+}
+.table[data-frozen-columns] .rowGutterCell > * {
+  opacity: var(--row-gutter-shown, 0);
+  transition: opacity 0.1s;
+}
+/* The margin itself takes the state its controls read: a focus or pointer
+   state over "> *" restyled the whole page at each focus move (2026-11-12:
+   about 70 ms a move on a table of 30 rows by 40 properties). */
+:global(:root:not([data-pointer-still])) .table[data-frozen-columns] .tableRow:hover > .rowGutterCell,
+.table[data-frozen-columns] .tableRow[data-row-selected="true"] > .rowGutterCell,
+.table[data-frozen-columns] .tableRow[data-row-dragging="true"] > .rowGutterCell,
+:global(:root:not([data-pointer-still])) .table[data-frozen-columns] .rowGutterCell:hover,
+.table[data-frozen-columns] .rowGutterCell:focus-within {
+  --row-gutter-shown: 1;
+}
+.rowGutterCell > .rowDragHandle {
+  width: 18px;
+  margin-inline-end: 19px;
+}
+/* Writing in a row's title, its "+", handle and box stay away even with the
+   pointer over the row, as Notion's (seen 2026-11-07); a frozen margin keeps
+   its ground. The margin itself asks after the title beside it: a :has() on
+   the row before its controls had every element put anywhere in the page
+   work out the page's every style again (AppShell .main). */
+.tableRow > .rowGutterCell:has(~ .cell[data-title="true"] [contenteditable="true"]:focus) {
+  --row-gutter-tools: hidden;
+}
+/* A key pressed in the table puts away what the row under a still pointer
+   shows — its "+", handle and box, its "열기" — until the mouse moves, as
+   Notion's (seen 2026-11-12, 2026-11-14; useKeysHideRowTools). A chosen or
+   dragged row keeps its box, a frozen margin its ground. */
+[data-table-scroll][data-keys-pressed="true"] [data-table-row-id]:not([data-row-selected="true"], [data-row-dragging="true"]) > [data-table-row-gutter-cell]:not(:focus-within) {
+  --row-gutter-shown: 0;
+}
+[data-table-scroll][data-keys-pressed="true"] [role="grid"]:not([data-frozen-columns]) [data-table-row-id]:not([data-row-selected="true"], [data-row-dragging="true"]) > [data-table-row-gutter-cell]:not(:focus-within) {
+  opacity: 0;
+  pointer-events: none;
+}
+[data-table-scroll][data-keys-pressed="true"] [data-table-row-id] [data-table-row-open]:not(:focus-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+[data-table-scroll][data-keys-pressed="true"] + [data-table-row-handle-layer] [data-table-row-handle-strip]:not(:focus-within) {
+  visibility: hidden;
+}
+.rowSelect {
+  cursor: pointer;
+}
+
+/* A view may hide the lines between columns. */
+.table[data-vertical-lines="hidden"] .cell {
+  border-inline-end-color: transparent;
+}
+/* A wrapped value past the reach its table opened with — a text, files,
+   choices, people, relations — sets no row's height, as Notion's (seen
+   2026-11-03, 2026-11-06, 2026-11-14; useWrappedTextCut): it wraps in the
+   height the row's other values give it and the rest is cut, until "확장"
+   grows its row (WrappedTextExpand); a text written shows whole. */
+.tableRow:not([data-text-expanded="true"]) > .cell[data-wrap-cut="true"] > .cellEditor:not(:has(.cellInput:focus)) {
+  position: absolute;
+  inset: 0 2px;
+  align-items: flex-start;
+}
+/* A wrapped value its row grows for fills its cell, its value staying at the
+   top, so a press anywhere in the cell writes it, as Notion's (seen
+   2026-11-06 low in a tall row's text and number cells). */
+.cell[data-wrap="true"][data-cell-typing]:not([data-title="true"], [data-wrap-cut="true"]) > .cellEditor {
+  align-self: stretch;
+  align-items: flex-start;
+}
+.cell[data-wrap="true"][data-cell-typing="editor"] > .cellEditor > button:only-child {
+  align-self: stretch;
+}
+/* A date's first line sits 7.5px down in its cell, one line or wrapped to
+   more, as a text's (Notion's, seen 2026-11-08: 7.5px over and under its
+   lines in a 36px row and a 141px one). */
+.cell .dateButton {
+  min-height: 36px;
+  padding-block: 7.5px;
+}
+/* An empty value holds one 21px line, as a value's, so its row stays 37px
+   whatever box pads it — a date's, a number's or a link's, wrapped or not. */
+.cell .cellEmpty {
+  height: 21px;
+}
+/* Wrapped, a date's range wraps too, as Notion's (seen 2026-11-05). */
+.cell[data-wrap="true"] .dateValue {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+/* "확장": 20px, 6px from the cell's end, its top the first line's (7.5px), in
+   the secondary icon colour, shown while the cell is cut, and in place of its
+   value tools while it is pointed at (Notion's, seen 2026-11-24, two tabs). */
+.wrappedTextExpand {
+  position: absolute;
+  top: 7.5px;
+  inset-inline-end: 6px;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+.wrappedTextExpand:hover,
+.wrappedTextExpand:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.cell > .wrappedTextExpand:not([hidden]) {
+  display: inline-flex;
+}
+.cell:has(.cellInput:focus) > .wrappedTextExpand {
+  display: none;
+}
+/* A cut value's lines by "확장"'s own 22px line (a 20px button on a 21px line's baseline) stop short of it — the first two, the rest run on (Notion's float 20×22 at the text's end, seen 2026-11-06, 2026-11-24
+   in two tabs); the cell says "확장" shows (WrappedTextExpand), not a :has(), which restyled every text cell at each press (2026-11-15). */
+.tableRow:not([data-text-expanded="true"]) > .cell[data-cut-shown="true"] [data-cell-editor] :is([contenteditable], [data-rich-cell-shown]):not(:focus)::before {
+  float: inline-end;
+  width: 20px;
+  height: 22px;
+  content: "";
+}
+.cell[data-cut-shown="true"]:hover > [data-place] { display: none; }
+
+/* The last frozen column ends in the stronger line, as Notion's (#e6e5e3,
+   seen 2026-11-03), even where the view hides the others. */
+.table .cell[data-frozen-edge="true"] {
+  border-inline-end-color: var(--border-default);
+}
+
+/* A phone's rows are 45px, as Notion's at 375px (seen 2026-10-25); a wider touch screen's empty table's lines too (iPad 834, 2026-11-16). */
+:global([data-touch="true"]) .tableRow[data-table-empty-row] > .cell, :global([data-phone="true"]) .cell,
+:global([data-phone="true"]) .trailingGridCell {
+  min-height: 45px;
+}
+:global([data-phone="true"]) .cellEditor {
+  min-height: 42px;
+}
+/* Its words sit 1px under the middle, as Notion's (the title 12.5px down). */
+:global([data-phone="true"]) .cell {
+  --cell-line: 42px;
+  padding-top: 2px;
+}
+
+/* A row's comment count sits right after its title, as Notion's (seen
+   2026-11-05): the title's editor told by the count beside it. */
+:is(.cell, .timelineTableCell) > .cellEditor:has(~ [data-row-comment-count]),
+:is(.cell, .timelineTableCell) > [data-row-comment-count] ~ .cellEditor {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+}
+/* Told by its title cell (TableGridRow), not a :has() on it, as above. */
+:is(.cell, .timelineTableCell)[data-row-commented="true"] > .cellEditor :is(:global(.tiptap), [data-rich-cell-shown]) {
+  flex: 0 1 auto;
+  width: fit-content;
+  min-width: 0;
+}

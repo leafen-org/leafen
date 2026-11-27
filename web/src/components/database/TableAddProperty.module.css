@@ -1,0 +1,328 @@
+/* The "+" after a table's last column and the new property it opens, as
+   Notion's (seen 2026-09-30): a 28px button, then a header cell with a name
+   field and, under it, a menu of the types in two columns by group. */
+/* "+ ⋯" right after the last column, nothing between, as Notion's (seen
+   2026-11-07: 28px each, 56px in all, its rows' tail as wide); where the rows
+   run on past them to the page's width, the head's cell stays as wide as
+   they are, the rows' room past it empty under the head's line (Notion's
+   iPad at 834, seen 2026-11-16: "+ ⋯" 64 in a row running 154 past the last
+   column). */
+.cell {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+}
+
+/* In a table run across a page's text its column goes on 8px past "+ ⋯", its
+   rows' lines with it, and the page's margin follows (DatabaseTableChrome's
+   page-wide end), as Notion's (seen 2026-11-15 at 768, 900 and 1440: rows
+   ending 8px after "⋯", the page's margin after them) — but on a phone,
+   whose rows end at "⋯" (iPhone 17 Safari at 402pt, 2026-11-16). */
+:global([data-page-wide="true"]:not([data-database-page="true"] *, [data-phone="true"] *)) .cell:not([data-open="true"]) {
+  padding-inline-end: 8px;
+}
+
+/* Open, the new column's cell is 378px, as Notion's (seen 2026-11-06 at 1280). */
+.cell[data-open="true"] {
+  width: 378px;
+  padding: 0 8px;
+  border-inline-end: 1px solid var(--table-grid-border);
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+}
+
+/* "+ 속성 추가" at the cell's start, as Notion's new table (seen 2026-10-24 at
+   1280px: 83×28, 14px), in its gray accent text, the same in both themes
+   and fainter than the column names (graTexAccPri, seen 2026-11-14). */
+.cell[data-labeled="true"] {
+  padding-inline-start: 0;
+}
+
+.add[data-labeled="true"] {
+  gap: 4px;
+  width: auto;
+  padding: 0 4px;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.add:hover,
+.add:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+/* A touch screen's "+ ⋯" are 32px each, 64px in all, their marks in the
+   middle (Notion's, read 2026-11-15 on a Galaxy A90 at 411: 512, 544, 576
+   after a 480px table's columns; an iPad's at 834 the same 64), where a
+   computer's are 28. */
+:global([data-touch="true"]) .add:not([data-labeled="true"]) {
+  width: 32px;
+  height: 32px;
+}
+
+/* Its words keep their grey under the pointer, only the ground lit (seen 2026-11-14). */
+.add[data-labeled="true"]:hover,
+.add[data-labeled="true"]:focus-visible {
+  color: var(--text-gray-accent);
+}
+
+.name {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.name:focus,
+.name:focus-visible {
+  outline: none;
+}
+
+/* The types' list is 400 wide with nothing to scroll, its two columns 192
+   each 8 in from either edge, and the window grows by a scrollbar's room
+   where the platform draws one beside the list: 415 by a 15px scrollbar
+   that keeps the columns at 192, as Notion's (seen 2026-11-21 at 1440, dpr
+   1, dark: 415 with the list scrolling, 400 with a search's few finds or
+   none). The list's 6 and its groups' 2 make Notion's 8; its words are
+   388 wide (TablePropertyTypeChoices' groups). A phone's keeps 12 from
+   the window's edges. */
+.menu {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: min(400px, calc(100vw - 2 * var(--popover-edge)));
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The new column's box and its types, as Notion's (seen 2026-11-03 at 1280px,
+   2026-11-06, 2026-11-14): a 28 box, 6px round, 2px 4px in, over the new
+   column from its start 4px into the header line — a 24px icon button, then
+   the name field 32px in — and 4px under it the menu of types, 11px out to
+   the box's start. The window is its types' menu wide (.menu's rule: 415 by
+   a 15px scrollbar, 400 with nothing to scroll) and the box spans it 11 in
+   from either side, 393 or 378 (seen 2026-11-21 at 1440, dpr 1, dark). */
+.panel {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+}
+
+.nameBox {
+  display: flex;
+  flex: 0 0 auto;
+  align-self: stretch;
+  margin-inline: 11px;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: var(--bg-app);
+}
+
+.iconButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.iconButton:hover,
+.iconButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.typeMenu {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: min(400px, calc(100vw - 2 * var(--popover-edge)));
+  max-width: 100%;
+  min-height: 0;
+  margin-top: 4px;
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The types' head, as Notion's (seen 2026-11-21 at 1440 in two tabs, dark,
+   and its token sheet for light): a 28 row, its words 12/500 in the
+   secondary text color 11 past the types' start (Notion's 3 and 8 in), 10
+   under the menu's top as Notion's first section's head (its 8 and 2), and 4
+   over the types (the groups' 2 and this 2). The list's 6 and the groups'
+   2 stand for Notion's 8. */
+.label {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-block: 4px 2px;
+  margin-inline-start: 5px;
+  padding-inline: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* The search the 🔍 opens, as Notion's "유형 검색 중…" (seen 2026-11-21 at
+   1440 in two tabs, dark, and its token sheet for light): a 28 field 6 under
+   the head and 12 over the types, 16 in from either edge of the menu (its
+   section's 8 and its own 8), radius 6, 3 6 in, its 14/20 words on bacSecTra
+   with no border; typed in, a 1px blue ring inside and out (inpBluFocRin),
+   and left, a 1px borPriTra line outside. */
+.search {
+  flex: none;
+  box-sizing: border-box;
+  height: 28px;
+  margin: 4px 10px 10px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--layout-search-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.search:focus {
+  box-shadow: var(--menu-search-focus-ring);
+}
+
+/* Nothing found, nothing shows under the search: the menu ends 12px under
+   it, where the types would start (Notion's, seen 2026-11-21 at 1440). */
+.search[data-alone] {
+  margin-bottom: 6px;
+}
+
+/* The groups, one list for the pointer and for the keys it takes from the
+   fields, stacked as the menu would stack them, with no ring of its own
+   (Notion's keys go to the page). */
+.groups {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  width: min(388px, calc(100vw - 2 * var(--popover-edge) - 12px));
+  outline: none;
+}
+
+/* Two touching columns of 32px rows 2px apart, 8px in from the window's
+   edge, as Notion's (seen 2026-11-07 and 2026-11-10: 192 by 32, a 34px
+   pitch). */
+.group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 0;
+  padding: 2px;
+}
+
+/* Groups after the first are set off by a line, as Notion's (seen
+   2026-11-21 at 1440, dpr 1): 7 under the row above, its rows 8 under it,
+   4 in from the rows at either end — a search's finds too, under their
+   group's line even with none of the first's over them, the line then 11
+   under the field ("수" finds 수식 under a line, "자" 숫자 over one). */
+.group[data-later-group] {
+  position: relative;
+  margin-top: 5px;
+  padding-top: 9px;
+}
+
+.group[data-later-group]::before {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 6px;
+  height: 1px;
+  background: var(--border-default);
+  content: "";
+}
+
+.search + .groups > .group[data-later-group]:first-child {
+  margin-top: 1px;
+}
+
+.type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.type > svg {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.type > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The pointer grounds the type under it apart from the one the arrows
+   marked, as Notion's (seen 2026-11-14: ↓ moves on, the pointer's type keeps
+   its ground). */
+.type:hover,
+.type[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+/* A type the data source can't take more of, at 40%, as Notion's dimmed
+   "ID" (seen 2026-11-11); its "?" shows under the pointer. */
+.type[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* Its "ⓘ" (PropertyTypeInfo) on the row under the pointer only: a row the
+   keys marked shows none, and the pointer's keeps it as the keys move on
+   (Notion's, seen 2026-11-21 at 1440 in two tabs). */
+.type:hover > [data-property-type-info] {
+  display: inline-flex;
+}

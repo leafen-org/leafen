@@ -1,0 +1,203 @@
+/* The window a guest asks to become a member in, as Notion's "워크스페이스
+   멤버로 Notion 체험하기" (seen 2026-11-12, dark): 382px, round 12, a round
+   22px "×" 10px in at the top right, 24px in around the title (26/32 700)
+   and its three lines (a 20px blue mark, the words 16px after it at 14/20
+   500, the first part grey), 20px apart; a lined foot 16px in with "게스트로
+   계속" (grey words) and "사용 권한 요청" (a 36px grey button). Over the
+   title, 24px in, Leafen's own 334×205 picture where Notion's is
+   (MembershipAskPicture.tsx). */
+/* 40px from the window's top and foot, as Notion's (643 tall in a 723
+   window, its foot scrolled under). */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(382px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.close {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-end: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+.body {
+  padding: 24px;
+}
+
+.picture {
+  display: block;
+  width: 334px;
+  max-width: 100%;
+  height: auto;
+  margin-block-end: 24px;
+  color: var(--text-default);
+}
+
+.pictureSurface {
+  fill: var(--modal-bg);
+}
+
+.pictureRing {
+  stroke: var(--modal-bg);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.points li > svg {
+  flex: 0 0 auto;
+  color: var(--accent-blue);
+}
+
+.muted {
+  color: var(--text-secondary);
+}
+
+.foot {
+  padding: 16px;
+  border-block-start: 1px solid var(--border-secondary);
+}
+
+/* Notion's "메시지 추가" (14/20, grey) and its field 8px under it: 68px
+   high, 4px 10px in, round 6, a faint fill and a 1px ring, its text 14/20;
+   the buttons 16px under it. */
+.messageLabel {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.messageField {
+  box-sizing: border-box;
+  height: 68px;
+  margin-block: 8px 16px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.message {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  resize: none;
+  outline: none;
+}
+
+.message:disabled {
+  cursor: default;
+}
+
+.error {
+  margin: 0 0 12px;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guest {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Notion's grey button (dark rgb(44, 44, 43), the lined foot's color). */
+.send {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 8px;
+  background: var(--border-secondary);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.send:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .guest:hover {
+    background: var(--bg-hover);
+  }
+}

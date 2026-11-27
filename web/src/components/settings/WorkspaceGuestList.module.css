@@ -1,0 +1,198 @@
+/* The guests' table, as Notion's 사람 › 게스트 (seen 2026-11-09, a Plus
+   workspace): "활성" 14px/500 on a 32px line 19px under the tabs (7px under
+   the tab row, which ends 12px below them), which holds
+   the ticked guests' actions at its end, 20px over the table; the head and
+   rows are the member table's (WorkspaceMemberTable.module.css), the
+   columns a 26px tick (its 14px box ending the cell), 사용자 271px, 사용
+   권한 the rest and a 78px end holding the row's 24px "…". */
+.guests {
+  margin-block-start: 7px;
+}
+
+/* "사용 권한" over the column, in line with the words of its "페이지 N개". */
+.accessHead {
+  padding-inline-start: 8px;
+}
+
+.activeLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+  margin-block-end: 20px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 26px 271px minmax(240px, 1fr) 78px;
+  align-items: center;
+  min-height: 42px;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+
+.row[data-manage="false"] {
+  grid-template-columns: 271px minmax(240px, 1fr);
+}
+
+/* The head row as the member table's: 32px, a line above and below. */
+.row.head {
+  min-height: 32px;
+  box-shadow: inset 0 1px 0 var(--border-default), inset 0 -1px 0 var(--border-default);
+}
+
+.checkCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+/* "페이지 N개 ⌄": 28px, 0 8px inside, 6px corners, 14px/400, its chevron in
+   the secondary color 6px after the count (seen 2026-11-16). */
+.pagesButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.pagesButton svg {
+  color: var(--icon-secondary);
+}
+
+.pagesButton:hover,
+.pagesButton:focus-visible,
+.pagesButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.endCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 12px;
+}
+
+.moreButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.moreButton:hover,
+.moreButton:focus-visible,
+.moreButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.pagesButton:disabled,
+.moreButton:disabled {
+  opacity: 0.5;
+}
+
+/* The ticked guests' actions: two 30px buttons in one 1px-lined box with 6px
+   corners, "게스트 N명 업그레이드" in blue and "워크스페이스에서 제거" in red,
+   each 0 12px 0 10px inside with its 16px mark. An outlined group: its box and
+   the line between its buttons are borPriTra, as Notion's split "새로 만들기"
+   line (seen 2026-11-24; the guest list itself not compared — no test
+   workspace has guests). */
+.bulk {
+  display: inline-flex;
+  align-items: stretch;
+  height: 32px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bulkButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 10px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.bulkButton + .bulkButton {
+  border-inline-start: 1px solid var(--button-outline);
+}
+
+.bulkButton[data-danger="true"] {
+  color: var(--danger-outline-text);
+}
+
+.bulkButton:hover,
+.bulkButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.bulkButton:disabled {
+  opacity: 0.5;
+}
+
+/* No guests yet, as Notion's 사람 › 게스트 (seen 2026-10-28): a dashed box the
+   content's width, 296px high, its top 79px under the tabs' top, a 24px
+   person with a plus over "아직 게스트 없음" 14px/500, 12px apart, in the
+   middle. Notion's "연락처 가져오기" under them is left out. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 296px;
+  margin-top: 39px;
+  padding: 16px;
+  border: 1px dashed rgba(70, 68, 64, 0.45);
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+:global([data-theme="dark"]) .empty {
+  border-color: rgb(47, 47, 47);
+}
+
+.empty svg {
+  width: 24px;
+  height: 24px;
+}

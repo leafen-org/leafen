@@ -1,0 +1,139 @@
+/* The card a page shows on hover, its mention's or its block's, as Notion's
+   (seen 2026-10-31): 260px, rounded 10px; its 26px icon 21px down and 16px
+   in, the place and the title under it, then its first blocks drawn small
+   (SearchPagePreview's card variant) in a body 76px tall. It takes no
+   pointer, as Notion's (seen 2026-11-24: pointer-events none), so the pointer
+   coming onto it has left the mention, which closes it (useMentionHover). */
+.card {
+  position: fixed;
+  z-index: 240;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 260px;
+  overflow: hidden;
+  padding: 21px 16px 5.8px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  pointer-events: none;
+}
+
+/* Nothing under its title but 28px of the card, as Notion's empty page's
+   (measured 2026-11-13: 4px and an empty 24px row). */
+.card[data-bare="true"] {
+  padding-bottom: 28px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  font-size: 22px;
+  line-height: 1;
+}
+
+/* Its place: each page 12px in the light grey, cut to fit, a "/" 4px from each. */
+.location {
+  display: flex;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.crumb {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.separator {
+  flex: none;
+  padding: 0 4px;
+  font-size: 11px;
+}
+
+.title {
+  width: 100%;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18.4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  height: 76.4px;
+  margin-block: 5.8px 0;
+  margin-inline: -1.7px 0;
+  overflow: hidden;
+}
+/* Its foot fades into the card, as Notion's (seen 2026-10-31). */
+.body::after {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  height: 43.7px;
+  background: linear-gradient(transparent, var(--bg-elevated));
+  content: "";
+  pointer-events: none;
+}
+
+/* A page with a picture shows its first instead of its blocks, as Notion's
+   (seen 2026-10-31): the card's width, 84px tall, cut to fill, 4px under
+   the title and 16px over the card's foot. */
+.picture {
+  display: block;
+  align-self: stretch;
+  height: 84px;
+  margin: 4px 0 10.2px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  object-fit: cover;
+}
+/* A photo with its credit (CreditedPicture) stands in a box that takes the picture's room round it, so the
+   credit sits on the picture's foot. */
+.pictureFrame {
+  margin: 4px 0 10.2px;
+}
+.pictureFrame > .picture {
+  margin: 0;
+}
+
+/* A database's card ends in a picture of a table, as Notion's: a small
+   button at the top right over a few ruled rows. */
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.tableNew {
+  align-self: flex-end;
+  width: 28px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent-blue);
+}
+
+.tableRow {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-hover);
+}

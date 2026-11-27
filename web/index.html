@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ko" data-leafen-generation="2">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- What every browser knows; the keys that depend on the browser (a
+         soft keyboard shortening the window, iOS holding its scale) are
+         added as the app starts (lib/iosViewport.ts): a key iPhone Safari
+         doesn't know was an error in its console on every page. A phone
+         held on its side gives the page the whole screen, under the
+         camera's cutout and the corners, as Notion's (viewport-fit=cover,
+         seen 2026-11-16 in iPhone 17 Safari at 874: left inside the safe
+         area, the page was 750 wide and, slid aside by the drawer, cut off
+         62px from the screen's edge); the app keeps what is in it out of
+         them (AppShell.module.css). Given from the first, not as the app
+         starts: Safari, its page laid out inside the safe area, kept it
+         scrolled 62px aside when the key came after. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" href="/favicon.ico" />
+    <!-- Safari's share sheet and home screen take the touch icon (Notion's
+         head gives one too); the tab keeps the small icon above. -->
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>Leafen</title>
+    <!-- The person's light or dark look before anything is drawn: the app
+         sets it only once its code runs, so a dark screen began light. The
+         build puts the script's text here (scripts/page-own-parts.mjs): a
+         file asked for failed with the rest when the network went right
+         after the page. -->
+    <script src="/theme-init.js"></script>
+    <!-- The loading screen before any of the app's code and styles have
+         come, on the app's background: after a second, the 48px mark alone
+         in the middle of the screen, where the app's own loading screen
+         draws it. Gone once the app draws (main.tsx hides it;
+         ProductLoadingScreen.tsx carries on from it; appStyles.ts holds the
+         app until its styles). The mark is the page's own picture, put in by
+         the build (scripts/page-own-parts.mjs), so a request that fails
+         never leaves it broken; when the app doesn't come, two lines 18px
+         under it say so with "다시 시도" (theme-init.js), the mark staying
+         where it was. -->
+    <style>
+      html{background:#fff}html[data-theme=dark]{background:#191919}
+      #boot-screen{position:fixed;inset:0;box-sizing:border-box;display:grid;place-items:center;padding:24px;pointer-events:none}
+      #boot-screen>div{position:relative;display:flex;flex-direction:column;align-items:center;width:100%;max-width:420px;opacity:0;animation:boot-reveal 140ms ease 1000ms forwards}
+      #boot-screen img{display:block;width:48px;height:48px;object-fit:contain}
+      #boot-screen p{position:absolute;top:calc(100% + 18px);inset-inline:0;display:flex;flex-direction:column;align-items:center;margin:0;color:#7d7a75;font:13px/19.5px -apple-system,system-ui,"Segoe UI",sans-serif;text-align:center}
+      #boot-screen button{margin:0;padding:0;border:0;background:none;color:#2c2c2b;font:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer;pointer-events:auto}
+      #boot-screen button:disabled{color:inherit;cursor:default}
+      html[data-theme=dark] #boot-screen p{color:#ada9a3}html[data-theme=dark] #boot-screen button:enabled{color:#f0efed}
+      #boot-screen[hidden]{display:none}
+      @keyframes boot-reveal{to{opacity:1}}
+      @media (prefers-reduced-motion:reduce){#boot-screen>div{animation-duration:1ms}}
+    </style>
+    <!-- A phone's status bar and the toolbar at its foot keep Leafen's soft
+         ground, as Notion's in every screen (seen 2026-11-10, iPhone Safari:
+         249,248,247, dark 32 — page, drawer, inbox, search, settings,
+         sheets); the page sets no theme-color, as Notion's, so Android's
+         Chrome keeps its own toolbar. Safari colors each bar from a short
+         fixed or sticky box at that edge of the screen — the one it took
+         keeps its color while it stays, though moved off the screen, until
+         it reads the bars again — then from a box fixed over the screen
+         there, and else from the body's ground (globals.css gives a phone's
+         body the soft ground; 4px is too short to be taken, 8px is). So
+         these two strips show for the loading screen's first moment, before
+         the app's styles give the body its ground, as Notion's skip link
+         holds its bars once at load. After that nothing on a phone that is
+         short at an edge or covers the screen is fixed or sticky — AppShell's
+         band, the top bar, the drawer's shade, the sheets and every layer
+         over the whole screen are laid on the page (phoneBarGround.ts) — so
+         when Safari reads the bars again, as a fixed box comes or goes, the
+         body's ground holds them. Leafen added to an iPhone's home screen
+         (iOS 26 and later) blurs what stands at the top of its window under
+         the status bar, unless a box fixed at that edge is taken for the bar
+         (seen 2026-11-21 in iOS 27's simulator: the top bar, the drawer's
+         workspace name and the settings' title drawn blurred; sharp with 5px
+         or more of a ground fixed there, not with 4px or a clear one): there
+         the top strip stays, 6px of the soft ground over the top of each
+         screen — 8px cut the settings' title — and the status bar keeps that
+         ground. -->
+    <style>
+      .bar-ground{display:none}
+      @media (hover:none) and (pointer:coarse) and (max-width:599px),(hover:none) and (pointer:coarse) and (max-device-width:599px),(hover:none) and (pointer:coarse) and (max-device-height:599px){
+        .bar-ground{display:block;position:fixed;inset-inline:0;height:16px;z-index:2147483647;pointer-events:none;background:#f9f8f7;animation:bar-ground-up 1ms linear 300ms forwards}
+        html[data-theme=dark] .bar-ground{background:#202020}
+        .bar-ground[data-edge=top]{top:0}
+        .bar-ground[data-edge=bottom]{bottom:0;animation-name:bar-ground-down}
+      }
+      @supports (-webkit-touch-callout:none){@media (display-mode:standalone){.bar-ground[data-edge=top]{height:6px;animation:none}}}
+      @keyframes bar-ground-up{to{transform:translateY(-100vh)}}
+      @keyframes bar-ground-down{to{transform:translateY(100vh)}}
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div id="boot-screen" aria-hidden="true"><div><img data-page-mark src="/icon-96.png" alt="" width="48" height="48" /><p></p></div></div>
+    <div class="bar-ground" data-edge="top" aria-hidden="true"></div>
+    <div class="bar-ground" data-edge="bottom" aria-hidden="true"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

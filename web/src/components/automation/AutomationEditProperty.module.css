@@ -1,0 +1,704 @@
+/* An edit-property card's sentence (AutomationEditProperty.tsx), as Notion's
+   (seen 2026-10-24 at 1280px): 14px words, the property's name in 500, the
+   value's 20px pills 4px round between them, apart by the language's own
+   spaces and nothing else (seen 2026-11-11: "태그 속성을 [빨강] 및 [파랑]
+   값으로 바꾸기"). */
+.sentence {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: start;
+  white-space: break-spaces;
+}
+
+/* The sentence over a red line saying its formula's type is wrong (Notion's, seen 2026-11-10). */
+.sentenceWrong {
+  display: inline-grid;
+  gap: 2px;
+  min-width: 0;
+  text-align: start;
+}
+
+.typeWrong {
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.sentence strong {
+  font-weight: 500;
+}
+
+/* In the dialog its line is 20px, 22.4 with value chips, as a condition's
+   (Notion's, seen 2026-11-11: "글 지우기" 44px, "단계 속성을 [Won] 값으로
+   설정" 46.4). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .sentence {
+  line-height: 20px;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .sentence[data-valued] {
+  line-height: 22.4px;
+}
+
+/* People's lines touch and stay 20px, 21 where a person is among them
+   (Notion's, seen 2026-11-11: 44 and 66 high cards). */
+.sentence[data-people] {
+  row-gap: 0;
+}
+
+.sentence[data-people="members"] > * {
+  padding-top: 1px;
+}
+
+.pill,
+.valueChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  height: 20px;
+  overflow: hidden;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valueChip {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.valueChip[data-empty] {
+  color: var(--text-tertiary);
+}
+
+/* A day written, on a round grey ground (Notion's, seen 2026-11-10). */
+.valueChip[data-date] {
+  border-radius: 10px;
+  padding: 0 8px;
+}
+
+/* A run's time or day, blue on blue with its calendar, and a formula's "내 값" with its mark (Notion's, seen 2026-11-10). */
+.runChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  height: 20px;
+  overflow: hidden;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--action-mark-blue-bg);
+  color: var(--c-accent-blue);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* A property deleted: "〈이름〉 속성 삭제됨" in red 14px/20 (Notion's, seen 2026-11-11). */
+/* A deleted property's words in the accent red, as its condition's (Notion's
+   rgb(229, 100, 88), dark on the desktop and light on a phone, seen 2026-11-11). */
+.gone {
+  display: inline-flex;
+  align-items: center;
+  color: var(--danger);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "← 속성 편집": the action list's page of properties, as Notion's (seen
+   2026-11-10): a 36px head across the list — a 16px "←" 10px in, 12/500
+   grey words 34px in — the search 8px under it and 12px in (242 × 28), then
+   28px rows 1px apart 12px under it, each a 19.2px mark in a 20px box 8px
+   in, its words 36px in and "›" 8px from its end. */
+.pick {
+  display: grid;
+  gap: 1px;
+}
+
+.pickBack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin: -4px -4px 0;
+  border: 0;
+  padding: 0 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: start;
+}
+
+.pickRow:hover,
+.optionRow:hover,
+.optionRow[data-lit],
+.formulaRow:hover {
+  background: var(--bg-hover);
+}
+
+.search {
+  height: 28px;
+  min-height: 0;
+  box-sizing: border-box;
+  margin: 7px 8px 11px;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.search:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.pickRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  padding-block: 0;
+  padding-inline: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.pickIcon {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 20px;
+}
+
+.pickName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickRow > svg:last-child {
+  color: var(--icon-tertiary);
+}
+
+/* The value's window under its card or line, Notion's menu (seen
+   2026-11-10 on a checkbox, a select, a number and a date, from a card and
+   from a page line): 4px in, its head across it — 36px, "←" 20px 8px in, the
+   12/500 grey words 34px in (8px with no "←"), a blue "완료" 8px from its end
+   — or a line's "속성 설정" alone, 12px in and 10px down, 33px; a line 12px
+   in under the head where a list follows; lists of 28px rows 1px apart, 4px
+   in and 4px from what is over and under them, their words 12px in; a field
+   8px in, 4px under the head; then a line 12px in and "Σ 사용자 지정 수식
+   작성 ›" (Σ in a 20px box 12px in, words 40px in, "›" 12px from the end). */
+.editor {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-menu);
+  padding: 4px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.editorHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 0 4px;
+}
+
+.editor > .editorHead {
+  flex: none;
+  gap: 6px;
+  height: 36px;
+  min-height: 0;
+  box-sizing: border-box;
+  margin: -4px -4px 0;
+  padding: 0 8px;
+}
+
+.editor > .lineHead {
+  height: auto;
+  padding: 10px 12px 8px;
+}
+
+/* "날짜 선택"'s head stays inside the window's 4px, its words 22 down and
+   "완료" ending 24 from the edge, the days 8 under it (Notion's, seen
+   2026-11-10 at 1975 dark: words' middle 22, "완료" to 224, fields at 48). */
+.editor > .pickHead {
+  margin: 0;
+  padding-inline: 4px 16px;
+}
+
+.editorTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editor > .editorHead .editorTitle {
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.editor > .lineHead .editorTitle {
+  line-height: 15px;
+}
+
+/* The line under a head, over its list, and over "Σ …". */
+.rule {
+  display: block;
+  flex: none;
+  height: 1px;
+  margin: 0 8px;
+  background: var(--border-default);
+}
+
+.back,
+.done {
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+
+.back {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  color: var(--icon-secondary);
+}
+
+.done {
+  padding: 2px 4px;
+  color: var(--accent-blue);
+}
+
+.editor > .editorHead .done {
+  line-height: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  padding: 4px;
+}
+
+/* Words' field 12px in from the window's sides and foot, as Notion's (seen
+   2026-11-11, a text property's 242×28 field in its 266 window). */
+.field:has(> [data-automation-words]) {
+  padding: 4px 8px 8px;
+}
+
+/* A number's or an address's own field: 28px, soft, its words 6px in (Notion's, seen 2026-11-10). */
+.field > input {
+  height: 28px;
+  min-height: 0;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: var(--automation-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.field > input:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.options {
+  display: grid;
+}
+
+.editor > .editorHead + .options {
+  padding-top: 4px;
+}
+
+/* Its faint ring stays while it is typed in; the pills and the search wrap in
+   their own column, "⊗" (16) at its end (Notion's, seen 2026-11-11). */
+.optionField {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  box-sizing: border-box;
+  margin: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: var(--automation-field-bg);
+  box-shadow: var(--name-field-ring);
+  cursor: text;
+}
+
+/* Each line of pills 22 high, the search alone on a line under them 20 (Notion's, seen 2026-11-11). */
+.optionTokens {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 4px;
+  min-width: 0;
+}
+
+.optionTokens > input {
+  flex: 1;
+  min-width: 60px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+/* A value set grows it to 30, its pills at its top 4px in and its words 1px
+   under them, "⊗" (16) 6px from its end (Notion's, seen 2026-11-11). */
+.optionField:has(.pill) {
+  align-items: flex-start;
+}
+
+.optionTokens > .pill {
+  margin-block-end: 4px;
+}
+
+.optionField .pill button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.optionField .pill button:hover {
+  background: var(--bg-hover);
+}
+
+.optionTokens > .pill,
+.optionTokens > .pill[data-status-pill] {
+  padding-inline-end: 2px;
+}
+
+.optionClear {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 16px;
+  height: 18px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--icon-tertiary);
+}
+
+.optionList {
+  display: grid;
+  gap: 1px;
+  padding: 4px 0;
+}
+
+.optionField + .optionList {
+  margin-top: 8px;
+}
+
+/* A multi-select's "다음으로 교체… ⌄" 16px under its field and 8px in, its
+   list right under it (Notion's, seen 2026-11-11). */
+.optionModes {
+  display: flex;
+  padding: 16px 4px 0;
+}
+
+.optionRow,
+.formulaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.optionRow > svg {
+  margin-inline-start: auto;
+}
+
+/* An option's pill in the list and in the field 18px in 12px words; a
+   status's rounded with its 8px dot, in a card too (Notion's, seen
+   2026-11-11). */
+.optionRow > .pill,
+.optionTokens > .pill {
+  height: 18px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.pill[data-status-pill] {
+  gap: 5px;
+  padding-block: 0;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+}
+
+.optionRow > .pill[data-status-pill],
+.optionTokens > .pill[data-status-pill] {
+  border-radius: 9px;
+}
+
+.pill[data-status-pill]::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+}
+
+/* A status's groups, each under a faint line 12px in and its name in 12px
+   500 grey, 6px apart (Notion's, seen 2026-11-11). */
+.optionList[data-status] {
+  gap: 0;
+  padding: 0;
+}
+
+.statusGroup {
+  position: relative;
+  display: grid;
+  gap: 1px;
+  margin-top: 6px;
+  padding: 6px 0 4px;
+}
+
+.statusGroup::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline: 8px;
+  height: 1px;
+  background: var(--border-default);
+}
+
+.statusGroupName {
+  margin: 6px 8px 8px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.formulaRow > span:nth-child(2) {
+  flex: 1;
+}
+
+.formulaRow > span:first-child {
+  width: 20px;
+  color: var(--icon-secondary);
+  text-align: center;
+}
+
+/* "Σ 사용자 지정 수식 작성 ›" at a value's foot, under its line. */
+.foot {
+  display: grid;
+  flex: none;
+}
+
+.foot > .rule {
+  margin-bottom: 4px;
+}
+
+/* On a phone the value is a screen of its own (Notion's, seen 2026-10-24 at
+   375px): the field a flat white row of 17px words, each option a 45px row
+   of its 16px pill, "Σ 사용자 지정 수식 작성 ›" a row at the screen's foot. */
+.phoneField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 52px;
+  box-sizing: border-box;
+  padding-block: 12px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+
+.phoneField > input {
+  flex: 1 1 120px;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  line-height: 24px;
+  outline: none;
+}
+
+.phonePill {
+  display: inline-flex;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0 8px;
+  border-radius: 4px;
+  font-size: 16px;
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phoneValue {
+  display: grid;
+  gap: 8px;
+  padding-block: 12px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+
+.phoneStack {
+  padding-bottom: 46px;
+}
+
+.phoneFormula {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-app);
+}
+
+/* A notification card's "받는 사람 선택 ⌄" chip and its short list. */
+.kindWrap {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  /* A word's space from the words after it, as the target chip's. */
+  margin-inline-end: -4px;
+}
+
+.kindChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 6px;
+  background: var(--bg-hover);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+
+/* Grey while no kind is chosen, as Notion's "받는 사람 선택" (seen 2026-11-08). */
+/* In a database automation's card head it is 20 high, 4 round, as Notion's (seen 2026-11-09). */
+:global([data-automation-dialog]) header .kindChip {
+  height: 20px;
+  border-radius: 4px;
+}
+
+.kindChip[data-automation-recipient-kind=""] {
+  color: var(--text-secondary);
+}
+
+/* Red words behind its mark on the pale red of every unfinished chip once asked for with none chosen (seen 2026-11-08, 11-15). */
+.kindChip[aria-invalid="true"] {
+  color: var(--danger); background: var(--unfinished-chip-ground);
+}
+.kindChip > svg:last-child {
+  color: var(--icon-secondary);
+}
+
+.kindWrap > div {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+  z-index: 5;
+  min-width: 160px;
+  margin-top: 0;
+}
+
+/* A field's name over it ("사람", "속성", "메시지"): 14px grey, as Notion's. */
+.fieldName {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* A field naming nothing it needs, in Notion's red (seen 2026-11-01). */
+.fieldName[data-warning] {
+  font-weight: 500;
+  color: var(--danger);
+}
+
+/* The properties' screen: "←" grey and 22px, as Notion's automation sheet. */
+:global([data-automation-property-pick]) :global([data-phone-sheet-start]) {
+  color: var(--icon-secondary);
+}
+
+:global([data-automation-property-pick]) :global([data-phone-sheet-start]) svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* The value's window over the dialog: a line's and an option list's 260 wide, another card's and "+ 작업 추가"'s
+   266, "날짜 선택"'s days 248 or its widest line (Notion's, seen 2026-11-02, 2026-11-10, 2026-11-19). */
+.popover {
+  position: fixed;
+  width: 260px;
+  outline: none;
+}
+.popover[data-wide="true"] {
+  width: 266px;
+}
+.popover:has([data-automation-date-picker]) {
+  width: min-content;
+  min-width: 248px;
+}
+.popover > .editor {
+  max-height: inherit;
+  overflow: auto;
+}

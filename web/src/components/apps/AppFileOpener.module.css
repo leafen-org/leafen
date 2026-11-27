@@ -1,0 +1,54 @@
+/* An app's screen over the page for one file, as Notion's file preview: the
+   whole area right of the sidebar, edge to edge, on the page's background
+   (seen 2026-11-05: fixed from the sidebar's edge, a 48px head, no corners);
+   the sidebar stays as it was. `left` is the page area's edge (inline). */
+.backdrop { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; inset-inline-start: 0; display: flex; background: var(--bg-app); }
+/* On a touch screen it keeps to what shows above the soft keyboard (followVisualViewport in AppFileOpener). */
+.backdrop[data-visual-viewport] { top: var(--visual-viewport-top, 0px); bottom: auto; height: var(--visual-viewport-height, 100%); }
+.dialog { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; background: var(--bg-app);
+  color: var(--text-default); overflow: hidden; }
+/* Notion's (measured 2026-11-06): 48px under a #2c2c2b line in dark, 16px each side. */
+.header { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px; border-bottom: 1px solid var(--border-secondary); }
+.spacer { flex: 1; min-width: 0; }
+/* A plain-table sheet's tabs start the head 10px in, as Notion's preview's (2026-11-15: its first pill 16px in). */
+.header > [data-document-sheet-tabs] { margin-inline-start: -6px; }
+/* A narrow head gives up the words before the buttons: the app's mark
+   shortens to nothing first, and close stays in reach (2026-11-07: at 768
+   with the sidebar open, close sat past the window). Who else has it open is
+   never cut: a head that can't hold it whole lays it on its own line under
+   the head (useNoteUnderHead), its words where the head's begin. */
+.others { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-secondary); font-size: 13px; }
+.othersUnder { margin: 0; padding: 6px 16px; border-bottom: 1px solid var(--border-secondary); color: var(--text-secondary); font-size: 13px; overflow-wrap: anywhere; }
+.mark { flex: 0 1000 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-tertiary); font-size: 12px; }
+/* Notion's "나가기": 24px, its × 9.4px across in the icons' grey (measured 2026-11-06); ours fills 86% of its box. */
+.close { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: transparent; color: var(--icon-secondary); border: 0; border-radius: 6px; padding: 0; font: inherit; cursor: pointer; }
+.close svg { width: 11px; height: 11px; }
+.close:hover, .close:focus-visible { background: var(--bg-hover); }
+/* Leafen's own preview (DocumentPreview): Notion's preview head has "다운로드하기" beside close. */
+/* Notion's, measured 2026-11-05: 24px high, 6px sides and corners, an 11px arrow before the words. */
+.download { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 6px; border: 1px solid var(--button-outline);
+  border-radius: 6px; background: transparent; color: var(--text-default); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+/* Its mark about 11px, 7px in and 6px before the words, as Notion's (2026-11-06: 10.6×11.7 and 11); ours fills 78% of its box. */
+.download svg { width: 14px; height: 14px; margin: 0 -1px; flex: none; }
+.download:hover, .download:focus-visible { background: var(--bg-hover); }
+.frame { flex: 1; min-height: 0; width: 100%; border: 0; display: block; }
+.previewFailed { margin: 40px 16px; color: var(--text-secondary); font-size: 14px; text-align: center; }
+/* Said once the person can no longer change the page: the app reads on, saving stops. */
+.editingEnded { margin: 0; padding: 8px 16px; border-bottom: 1px solid var(--border-default); color: var(--text-secondary); font-size: 13px; }
+/* Said once the app is gone from the server while the window holds changes, with them to download. */
+.appGone { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+/* Leafen's question when a save met a newer version, over the app. */
+.conflict { position: absolute; inset: 0; display: grid; place-items: center; padding: 16px; background: var(--modal-shade); }
+/* It holds the focus while it asks (AppFileOpener.tsx); the question is no control to outline. */
+.conflict:focus { outline: none; }
+.conflictBox { width: min(100%, 400px); display: flex; flex-direction: column; gap: 4px; padding: 20px; border-radius: var(--modal-radius);
+  background: var(--modal-bg); color: var(--text-default); box-shadow: var(--shadow-modal); }
+.conflictTitle { margin: 0; font-size: 16px; font-weight: 600; }
+.conflictBody { margin: 0 0 8px; color: var(--text-secondary); font-size: 14px; }
+.choice { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; border: 1px solid var(--border-default);
+  border-radius: 6px; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer; }
+.choice:hover, .choice:focus-visible { background: var(--bg-hover); }
+.choiceName { font-size: 14px; font-weight: 500; }
+.choiceHint { color: var(--text-secondary); font-size: 12px; }
+.cancel { composes: cancel from "../DialogButtons.module.css"; align-self: flex-end; margin-top: 4px; font-family: inherit; cursor: pointer; }
+@media (max-width: 640px) { .header { padding: 0 8px; } .othersUnder { padding-inline: 8px; } }

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "name": "enterprise-legal-hold",
+  "operations": [
+    { "goName": "legalHoldList", "tsName": "list", "method": "GET", "path": "/organizations/{organizationId}/legal-holds" },
+    { "goName": "legalHoldCreate", "tsName": "create", "method": "POST", "path": "/organizations/{organizationId}/legal-holds" },
+    { "goName": "legalHoldRelease", "tsName": "release", "method": "POST", "path": "/organizations/{organizationId}/legal-holds/{legalHoldId}/release" }
+  ],
+  "bounds": [
+    { "goName": "legalHoldMaxBodyBytes", "tsName": "bodyBytes", "value": 512000 },
+    { "goName": "legalHoldMaxPageSize", "tsName": "pageSize", "value": 100 },
+    { "goName": "legalHoldMaxMutationIDRunes", "tsName": "mutationIdRunes", "value": 200 },
+    { "goName": "legalHoldMaxNameRunes", "tsName": "nameRunes", "value": 200 },
+    { "goName": "legalHoldMaxReasonRunes", "tsName": "reasonRunes", "value": 1000 },
+    { "goName": "legalHoldMaxScopeIDRunes", "tsName": "scopeIdRunes", "value": 255 }
+  ],
+  "errors": [
+    { "goName": "errorCodeLegalHoldInvalid", "tsName": "invalid", "value": "LEAFEN_LEGAL_HOLD_INVALID" },
+    { "goName": "errorCodeLegalHoldNotFound", "tsName": "notFound", "value": "LEAFEN_LEGAL_HOLD_NOT_FOUND" },
+    { "goName": "errorCodeLegalHoldUnavailable", "tsName": "unavailable", "value": "LEAFEN_LEGAL_HOLD_UNAVAILABLE" },
+    { "goName": "errorCodeLegalHoldPreventsPermanentDelete", "tsName": "preventsPermanentDelete", "value": "LEAFEN_LEGAL_HOLD_PREVENTS_PERMANENT_DELETE" }
+  ],
+  "enums": [
+    {
+      "tsName": "LegalHoldStatus",
+      "tsValuesName": "legalHoldStatuses",
+      "values": [
+        { "goName": "legalHoldStatusActive", "tsName": "active", "value": "active" },
+        { "goName": "legalHoldStatusReleased", "tsName": "released", "value": "released" }
+      ]
+    },
+    {
+      "tsName": "LegalHoldScopeKind",
+      "tsValuesName": "legalHoldScopeKinds",
+      "values": [
+        { "goName": "legalHoldScopeAll", "tsName": "all", "value": "all" },
+        { "goName": "legalHoldScopeWorkspace", "tsName": "workspace", "value": "workspace" },
+        { "goName": "legalHoldScopePage", "tsName": "page", "value": "page" },
+        { "goName": "legalHoldScopeCustodian", "tsName": "custodian", "value": "custodian" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "legalHoldScopeInput",
+      "tsName": "LegalHoldScopeInput",
+      "fields": [
+        { "goName": "All", "jsonName": "all", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "PageIDs", "jsonName": "pageIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "CustodianUserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "legalHoldCreateInput",
+      "tsName": "LegalHoldCreateInput",
+      "fields": [
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Scope", "jsonName": "scope", "goType": "legalHoldScopeInput", "tsType": "LegalHoldScopeInput" }
+      ]
+    },
+    {
+      "goName": "legalHoldReleaseInput",
+      "tsName": "LegalHoldReleaseInput",
+      "fields": [
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "legalHoldScopeResponse",
+      "tsName": "LegalHoldScope",
+      "fields": [
+        { "goName": "All", "jsonName": "all", "goType": "bool", "tsType": "boolean" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "PageIDs", "jsonName": "pageIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "CustodianUserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "legalHoldResponse",
+      "tsName": "LegalHold",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "LegalHoldStatus" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Scope", "jsonName": "scope", "goType": "legalHoldScopeResponse", "tsType": "LegalHoldScope" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ReleasedBy", "jsonName": "releasedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ReleasedAt", "jsonName": "releasedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "legalHoldListResponse",
+      "tsName": "LegalHoldList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]legalHoldResponse", "tsType": "LegalHold[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ]
+}

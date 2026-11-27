@@ -1,0 +1,486 @@
+
+/* Files cells */
+.filesCell {
+  position: relative;
+  width: 100%;
+}
+.filesChips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 31px;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+.filesChips[data-readonly="true"] {
+  min-height: 0;
+  padding: 0;
+  cursor: default;
+}
+.filesChips:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A file: its 20px icon and name on a ground, as Notion's (seen 2026-10-25:
+   24px high, 6px in, 4px between, 14px text). */
+.fileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--c-bg-gray);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 24px;
+}
+/* A picture shows itself alone: at most 24px high, a smaller one at its own
+   size (1×1 a dot, 16×16 16px), at the top of its line, its shape kept,
+   corners 4, no pill and no name, as Notion's cell (seen 2026-11-10 and
+   2026-11-13); a broken one the browser's broken picture, 16px. */
+.fileImageChip {
+  display: inline-flex;
+  align-items: flex-start;
+  min-width: 0;
+  max-width: 100%;
+  height: 24px;
+}
+.fileImage {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 24px;
+  border-radius: 4px;
+}
+/* A broken one keeps its 16px whatever the value's other files take, as
+   Notion's (seen 2026-11-16: two beside a link's chip cut to "https://examp…"). */
+.fileImageChip:has(img[data-image-failed]) {
+  flex-shrink: 0;
+}
+.fileImagePending {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--c-bg-gray);
+}
+/* On a card's line (board, gallery) a file is a 20px pill of 12px words and
+   a picture 20px high, the line 28px with 4px over and under it and the pill
+   10px in from the card's edge; in a list row a 20px pill of 13px words, as
+   Notion's (seen 2026-11-12 at 1440). */
+.cardLine:has(> .filesChips) { padding: 4px 5px; }
+:is(.cardLine, .listField) .fileChip { height: 20px; font-size: 12px; line-height: 20px; }
+.listField .fileChip { font-size: 13px; }
+:is(.cardLine, .listField) .fileImageChip { height: 20px; }
+:is(.cardLine, .listField) .fileImage { max-height: 20px; }
+.fileName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fileChipLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.fileChipLink:focus-visible {
+  outline: none;
+}
+.fileActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  font-size: 13px;
+  line-height: 1;
+}
+.fileActionButton:hover,
+.fileActionButton:focus-visible,
+.fileActionButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.fileThumb,
+.fileMenuThumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  background: var(--bg-app);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
+}
+.fileThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+/* A file that isn't a picture shows its icon alone. */
+.fileThumb:not([data-image]) {
+  background: none;
+  box-shadow: none;
+  color: inherit;
+}
+.fileMenuThumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+/* A file that isn't a picture shows its icon alone, in the text color. */
+.fileMenuThumb:not([data-image]) {
+  background: none;
+  box-shadow: none;
+  color: inherit;
+}
+.fileThumb[data-image="true"],
+.fileMenuThumb[data-image="true"] {
+  background-color: var(--c-bg-gray);
+}
+/* A picture that couldn't be loaded: its broken picture on the page colour,
+   as Notion's thumbnail (seen 2026-10-21). */
+.fileThumb[data-image-failed="true"],
+.fileMenuThumb[data-image-failed="true"] {
+  background-color: var(--bg-app);
+}
+/* The files editor over its cell, as Notion's (seen 2026-11-11, dark): 240
+   wide (or the cell's width), wider to its longest file's name (CellMenuPortal
+   fitWidth), rounded 6, the menu's ground and shadow; its
+   files' 28px lines 4px in, a line 12px in from its sides under them, and
+   "모두 다운로드하기" and "+ 파일 또는 이미지를 추가하세요" 4px in, 1px apart
+   (3px down on an empty value, 34 high), their words 36px in, 14px in the
+   secondary gray. */
+.filesMenu {
+  position: absolute;
+  z-index: 53;
+  top: 0;
+  inset-inline-start: 0;
+  width: 240px;
+  padding: 0;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.filesMenuDropSurface {
+  border-radius: 6px;
+  transition:
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+/* Holding the focus after a file is added from the window it opened by
+   itself, it shows no ring, as Notion's. */
+.filesMenuDropSurface:focus {
+  outline: none;
+}
+.filesMenuDropSurface[data-file-drop-active="true"] {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--accent-blue) 16%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-blue) 88%, transparent);
+}
+.filesMenuDropSurface[data-file-drop-active="true"] .filesMenuAction:last-child {
+  background: color-mix(in srgb, var(--accent-blue) 18%, var(--bg-hover));
+  color: var(--accent-blue);
+}
+.filesMenuRule {
+  height: 1px;
+  margin: 0 12px;
+  background: var(--border-default);
+}
+.filesMenuAdd {
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+}
+.filesMenuDropSurface[data-empty="true"] .filesMenuAdd {
+  padding-block: 3px;
+}
+.filesMenuAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+.filesMenuAction > svg {
+  flex: none;
+  width: 20px;
+  color: var(--icon-secondary);
+}
+.filesMenuAction > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.filesMenuAction:hover,
+.filesMenuAction:focus-visible,
+.filesMenuAction[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The add window (PropertyFilesAddWindow.tsx), Notion's 300 by 128 (seen
+   2026-11-11): its upload tab's blue button 12px under the tabs with "폴더
+   업로드" (28px) 4px beside it, the hint 14px under them in 12px tertiary
+   gray, 16px over the window's foot; the link tab is the media window's. */
+.filesAddWindow {
+  z-index: 2;
+  /* The keyboard's ring as the theme draws it, read here, outside the tab a
+     press marks ringless (styles.css data-pointer-focus). */
+  --files-add-open-ring: var(--keyboard-focus-ring);
+}
+/* The window an empty value opens by itself rings its first tab though a
+   press opened it, as Notion's (2026-11-26, two tabs at two times), until
+   a press inside it; opened from its "+" line by a press, no ring. */
+.filesAddWindow [data-rings-at-open]:focus {
+  box-shadow: var(--files-add-open-ring);
+}
+.filesAddUpload {
+  display: grid;
+  gap: 14px;
+  padding: 12px 8px 16px;
+}
+.filesAddButtons {
+  display: flex;
+  gap: 4px;
+}
+.filesAddButtons > button:first-child {
+  flex: 1 1 auto;
+  width: auto;
+}
+.filesAddFolder {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+.filesAddFolder:hover,
+.filesAddFolder:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.filesAddFolder:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.filesAddHint {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+.filesUploadProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 7px;
+  border-radius: 5px;
+  background: var(--bg-hover);
+}
+.filesUploadProgressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.filesUploadProgressHeader strong {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+}
+.filesUploadProgressName {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.filesUploadProgressTrack {
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--border-subtle);
+}
+.filesUploadProgressTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-blue);
+}
+/* Its files' lines 4px in, as Notion's (seen 2026-11-11): 28px, rounded 6,
+   the icon 8px in, the name 14px 8px after it, "⋯" (24px) 2px from the end. */
+.filesMenuList {
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  overflow: visible;
+}
+/* Its "⋯" in an 18px slot 8px in, the 24px button over the slot's end by 6,
+   as Notion's (seen 2026-11-11, dark). */
+.filesMenuItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 20px 20px minmax(0, 1fr) 18px;
+  gap: 8px;
+  align-items: center;
+  min-height: 28px;
+  padding-block: 2px;
+  padding-inline: 8px;
+  border-radius: 6px;
+}
+.filesMenuItem > .fileActionButton {
+  margin-inline-end: -6px;
+}
+/* A picture's line: the picture where the icon and name go, 8px from the
+   line's top and foot, the ⠿ and "⋯" at its top (seen 2026-11-11, dark:
+   a square picture 180×180 in a 196 line). */
+.filesMenuItem[data-image-line] {
+  align-items: start;
+  padding-block: 8px;
+}
+.filesMenuItem[data-image-line] > .fileActionButton {
+  align-self: start;
+}
+.fileMenuImage {
+  grid-column: span 2;
+  display: flex;
+  min-width: 0;
+}
+.fileMenuImage img {
+  display: block;
+  max-width: 100%;
+  max-height: 180px;
+}
+/* Its room while the picture is on its way. */
+.fileMenuImageEmpty {
+  display: inline-flex;
+  height: 40px;
+}
+.filesMenuItem:hover,
+.filesMenuItem:focus-within {
+  background: var(--bg-hover);
+}
+/* A file's ⠿ at the start of its line, as Notion's (seen 2026-11-11, dark):
+   20×24 at 8 in, its 16px glyph in the secondary icon gray, on every line;
+   the dragged line goes with the pointer, the others making way. */
+.fileDragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+/* Pressed, it shows no ring when keys follow (⌘Z), as Notion's; it is no
+   stop of Tab. */
+.filesMenuItem .fileDragHandle[role="button"]:focus {
+  outline: none;
+  box-shadow: none;
+}
+.fileMenuText {
+  display: flex;
+  min-width: 0;
+  color: var(--text-default);
+  text-decoration: none;
+}
+.fileMenuText:focus-visible,
+.fileMenuImage:focus-visible {
+  outline: none;
+}
+.fileMenuText span {
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A name typed here is Notion's name field (seen 2026-10-17). */
+.fileRenameInput {
+  min-width: 0;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  outline: none;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.fileRenameInput:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.fileActionButton {
+  align-self: center;
+  justify-self: end;
+}
+/* A file's "⋯" menu, as Notion's (seen 2026-11-11): 200 wide from under
+   "⋯", 4px in, 28px rows 1px apart of 14px words. */
+.fileActionMenu {
+  position: absolute;
+  top: 32px;
+  inset-inline-end: 4px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 200px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.fileActionMenu[data-placement="above"] {
+  top: auto;
+  bottom: 32px;
+}
+.fileActionMenu > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.fileActionMenu > button:hover,
+.fileActionMenu > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

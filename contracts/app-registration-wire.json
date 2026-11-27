@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "name": "app-registration",
+  "operations": [
+    { "goName": "appRegistrationList", "tsName": "list", "method": "GET", "path": "/apps" },
+    { "goName": "appRegistrationCreate", "tsName": "create", "method": "POST", "path": "/apps" },
+    { "goName": "appRegistrationUpdate", "tsName": "update", "method": "PATCH", "path": "/apps/{appId}" },
+    { "goName": "appRegistrationDelete", "tsName": "remove", "method": "DELETE", "path": "/apps/{appId}" },
+    { "goName": "workspaceAppList", "tsName": "workspaceList", "method": "GET", "path": "/workspaces/{workspaceId}/apps" },
+    { "goName": "workspaceAppUpdate", "tsName": "workspaceUpdate", "method": "PATCH", "path": "/workspaces/{workspaceId}/apps/{appId}" },
+    { "goName": "workspaceAppRemove", "tsName": "workspaceRemove", "method": "DELETE", "path": "/workspaces/{workspaceId}/apps/{appId}" }
+  ],
+  "bounds": [
+    { "goName": "appRegistrationMaxPerOwner", "tsName": "maxPerOwner", "value": 50 },
+    { "goName": "appRegistrationMaxRedirects", "tsName": "maxRedirects", "value": 8 },
+    { "goName": "appRegistrationMaxNameRunes", "tsName": "maxNameRunes", "value": 100 }
+  ],
+  "errors": [
+    { "goName": "errorCodeAppRegistrationInvalid", "tsName": "invalid", "value": "LEAFEN_APP_REGISTRATION_INVALID" },
+    { "goName": "errorCodeAppRegistrationNotFound", "tsName": "notFound", "value": "LEAFEN_APP_REGISTRATION_NOT_FOUND" },
+    { "goName": "errorCodeAppRegistrationLimit", "tsName": "limit", "value": "LEAFEN_APP_REGISTRATION_LIMIT" },
+    { "goName": "errorCodeAppRegistrationFailed", "tsName": "failed", "value": "LEAFEN_APP_REGISTRATION_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "appRegistrationWire",
+      "tsName": "AppRegistration",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "RedirectURIs", "jsonName": "redirectUris", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Installs", "jsonName": "installs", "goType": "int", "tsType": "number" },
+        { "goName": "ActsAs", "jsonName": "actsAs", "goType": "string", "tsType": "\"person\" | \"integration\"" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appRegistrationListResponse",
+      "tsName": "AppRegistrationListResponse",
+      "fields": [
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appRegistrationWire", "tsType": "AppRegistration[]" }
+      ]
+    },
+    {
+      "goName": "appRegistrationInput",
+      "tsName": "AppRegistrationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "RedirectURIs", "jsonName": "redirectUris", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ActsAs", "jsonName": "actsAs", "goType": "string", "tsType": "\"person\" | \"integration\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceAppWire",
+      "tsName": "WorkspaceApp",
+      "fields": [
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"member\" | \"guest\"" },
+        { "goName": "InstalledBy", "jsonName": "installedBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceAppListResponse",
+      "tsName": "WorkspaceAppListResponse",
+      "fields": [
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]workspaceAppWire", "tsType": "WorkspaceApp[]" }
+      ]
+    },
+    {
+      "goName": "workspaceAppRoleInput",
+      "tsName": "WorkspaceAppRoleInput",
+      "fields": [
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"member\" | \"guest\"" }
+      ]
+    }
+  ]
+}

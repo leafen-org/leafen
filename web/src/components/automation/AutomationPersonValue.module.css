@@ -1,0 +1,288 @@
+/* A person property's value (AutomationPersonValue.tsx), as Notion's window
+   (seen 2026-11-11, 1975 dark, 266 wide): the field right under the head 8px
+   in (250 wide, 28 high and growing, soft and ringed, 4px 6px in); the mode
+   19px under it, 8px in (12/18, 2px in, round 6); the list right under the
+   mode, 28px rows 1px apart 4px in, a source's 20px mark 8px in and its words
+   8px after it, a person's 14px box in a 20px cell 8px in, their 20px face 8px
+   after it and their name 6px after the face. A line's window has no mode and
+   no boxes. */
+.people {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.field {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  gap: 0;
+  min-height: 28px;
+  box-sizing: border-box;
+  margin: 0 4px;
+  border-radius: 6px;
+  padding: 4px 6px;
+  background: var(--automation-field-bg);
+  box-shadow: var(--name-field-ring);
+  cursor: text;
+}
+
+.tokens {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+
+.search {
+  flex: 1 0 60px;
+  min-width: 60px;
+  height: 20px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.clear {
+  display: inline-flex;
+  flex: none;
+  margin-top: 2px;
+  border: 0;
+  border-radius: 20px;
+  padding: 0;
+  background: transparent;
+  color: var(--icon-tertiary);
+}
+
+/* Those picked in the field: a person's 16px face and 12px name, who runs it
+   and the page's creator in blue tags 18 high, each with a 12px "×" in an
+   18px button 2px from its sides. */
+.fieldPerson,
+.fieldSource {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 18px;
+  box-sizing: border-box;
+  font-size: 12px;
+  line-height: 14.4px;
+  white-space: nowrap;
+}
+
+.fieldPerson {
+  margin-inline-end: 6px;
+  color: var(--text-default);
+}
+
+.fieldPerson > :first-child {
+  margin-inline-end: 6px;
+}
+
+.fieldSource {
+  border-radius: 6px;
+  padding: 2px 4px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+}
+
+.fieldSource > svg {
+  flex: none;
+  margin-inline-end: 4px;
+}
+
+.fieldPerson > button,
+.fieldSource > button {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin: 0 2px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.fieldPerson > button:hover,
+.fieldSource > button:hover {
+  background: var(--bg-hover);
+}
+
+.modeRow {
+  display: flex;
+  flex: none;
+  padding: 19px 4px 0;
+}
+
+/* Its thin chevron's box is the drawing's own width, 8.64 × 14, 6 after the
+   words, the button 2 in at each side, as Notion's (seen 2026-11-11, measured
+   again 2026-11-22: "다음으로 교체… ⌄" 93.95, "추가… ⌄" 49.06). */
+.mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  border: 0;
+  border-radius: 6px;
+  padding: 0 2px;
+  background: transparent;
+  color: var(--automation-mode-text);
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.mode > svg {
+  color: var(--icon-secondary);
+}
+
+.mode:hover {
+  background: var(--bg-hover);
+}
+
+.list {
+  display: grid;
+  flex: 0 1 auto;
+  align-content: start;
+  gap: 1px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+/* A line's list 15px under its field, as Notion's (seen 2026-11-11). */
+.people[data-automation-people="line"] .list {
+  padding-top: 15px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 16.8px;
+  cursor: pointer;
+}
+
+.row[data-lit] {
+  background: var(--bg-hover);
+}
+
+.row > svg {
+  flex: none;
+  color: var(--icon-primary);
+}
+
+.who {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.boxCell {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.box {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  box-sizing: border-box;
+  border-radius: 3px;
+  box-shadow: var(--filter-check-ring);
+  color: #fff;
+}
+
+.box[data-checked] {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+  box-shadow: none;
+}
+
+/* In a card's sentence, as Notion's (seen 2026-11-11): a person's 20px face
+   6px before their name, who runs it and the page's creator in a blue tag 20
+   high, 4px in, round 6, its 14px mark 4px before its words; a list's comma
+   right after its item. */
+.item {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.person {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.source {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  padding: 0 4px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+
+/* In a line's field: 16px faces and 12px words, the tags 18 high. */
+.smallChips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.person[data-small],
+.source[data-small] {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 14.4px;
+  white-space: nowrap;
+}
+
+.person[data-small] > :first-child,
+.source[data-small] > svg {
+  flex: none;
+}
+
+.source[data-small] {
+  height: 18px;
+}

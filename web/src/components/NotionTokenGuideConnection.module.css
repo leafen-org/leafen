@@ -1,0 +1,331 @@
+/* The Notion token guide's screens, part 2: the connection's own page in
+ * Notion's developer tools — "콘텐츠 사용 권한" with the "페이지 사용 권한
+ * 관리" picker it opens, and "구성" with the API token and "기능". */
+
+/* ---- the page's cards ---- */
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  padding: 8px 10px;
+  border: 1px solid var(--rec-border);
+  border-radius: 7px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cardHeadText {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.cardHeadText strong,
+.cardTitle {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.cardHeadText span,
+.cardLead {
+  overflow: hidden;
+  margin: 0;
+  color: var(--rec-text2);
+  font-size: 7.5px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cardLead {
+  margin-top: -3px;
+}
+
+/* "편집 권한": blue words, no button's fill. */
+.textButton,
+.blueText {
+  position: relative;
+  flex: 0 0 auto;
+  color: var(--rec-blue);
+  font-size: 8.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.cardSearch {
+  padding: 4px 7px;
+  border: 1px solid var(--rec-input-border);
+  border-radius: 5px;
+  background: var(--rec-input-bg);
+  color: var(--rec-text3);
+  font-size: 8px;
+}
+
+/* ---- "페이지 사용 권한 관리", opened by "편집 권한" ---- */
+
+.accessBackdrop {
+  position: absolute;
+  inset: 26px 0 0;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  background: var(--rec-backdrop);
+  opacity: 0;
+  animation: guideAccessIn 0.18s ease-out 0.95s forwards;
+}
+
+.accessModal {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 4px;
+  width: min(300px, 92%);
+  padding: 9px 12px 10px;
+  border: 1px solid var(--rec-border);
+  border-radius: 8px;
+  background: var(--rec-surface);
+  box-shadow: var(--rec-menu-shadow);
+}
+
+/* The page outline over the title. */
+.accessIcon {
+  justify-self: center;
+  width: 9px;
+  height: 11px;
+  border: 1.3px solid var(--rec-text2);
+  border-radius: 2px;
+}
+
+.accessTitle {
+  justify-self: center;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.accessLead {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin: -2px 0 2px;
+  color: var(--rec-text2);
+  font-size: 7.5px;
+  text-align: center;
+}
+
+.accessList {
+  display: grid;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--rec-border);
+  border-radius: 5px;
+}
+
+.groupRow,
+.topPagesRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 5px;
+  color: var(--rec-text2);
+  font-size: 7.5px;
+}
+
+.groupRow {
+  border-radius: 4px;
+  background: var(--rec-hover);
+}
+
+.groupRow i {
+  font-style: normal;
+}
+
+.topPagesRow .blueText {
+  font-size: 7.5px;
+}
+
+.pageRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 5px;
+  font-size: 8.5px;
+  white-space: nowrap;
+}
+
+.pageRow strong {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+.pageGlyph {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 9px;
+  border: 1.2px solid var(--rec-text2);
+  border-radius: 1.5px;
+}
+
+.accessFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 3px;
+  color: var(--rec-text);
+  font-size: 8.5px;
+}
+
+/* A checkbox; ticked (Notion's blue with a white tick) on its own, or at the
+ * scene's click with checkboxTicks. */
+.checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border: 1.2px solid var(--rec-text3);
+  border-radius: 2.5px;
+  font-style: normal;
+}
+
+.checkbox::after {
+  content: "";
+  width: 5px;
+  height: 2.5px;
+  margin-top: -1.5px;
+  border-bottom: 1.4px solid #fff;
+  border-inline-start: 1.4px solid #fff;
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.checkboxOn {
+  border-color: var(--rec-blue);
+  background: var(--rec-blue);
+}
+
+.checkboxOn::after {
+  opacity: 1;
+}
+
+.checkboxTicks {
+  animation: guideBoxTicks 0.01s linear 1.8s forwards;
+}
+
+.checkboxTicks::after {
+  animation: guideTickIn 0.01s linear 1.8s forwards;
+}
+
+@keyframes guideBoxTicks {
+  to {
+    border-color: var(--rec-blue);
+    background: var(--rec-blue);
+  }
+}
+
+@keyframes guideTickIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes guideAccessIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- "구성": the API token and "기능" ---- */
+
+.tokenFields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.tokenField {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+  min-width: 0;
+}
+
+.tokenDots {
+  flex: 1;
+  overflow: hidden;
+  font-size: 7.5px;
+  letter-spacing: 0.5px;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.tokenIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  color: var(--rec-text2);
+  font-size: 8.5px;
+  font-style: normal;
+}
+
+.copyIcon {
+  background: var(--rec-hover);
+}
+
+.checkRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.checkRow .checkbox {
+  margin-top: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .accessBackdrop,
+  .checkboxTicks,
+  .checkboxTicks::after {
+    animation: none;
+    opacity: 1;
+  }
+
+  .checkboxTicks {
+    border-color: var(--rec-blue);
+    background: var(--rec-blue);
+  }
+}
+
+/* A phone-width frame: of the two fields only the token's stays, and the
+ * cards' leads give way. */
+@container (max-width: 420px) {
+  .tokenFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tokenField:first-child,
+  .cardLead {
+    display: none;
+  }
+}

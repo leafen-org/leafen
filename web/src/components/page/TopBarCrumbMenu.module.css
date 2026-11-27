@@ -1,0 +1,111 @@
+/* A path piece's menu, as Notion's (seen 2026-10-28, 1280 light and dark):
+   240px, 4px in, rows 1px apart; a head names the place of top pages. The
+   path's page is chosen blue, the pages above it on the path tinted as
+   pointed at; a row with pages under it ends in a pale "›". */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 240px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+  overscroll-behavior: contain;
+}
+.head {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+  cursor: pointer;
+}
+.row:hover,
+.row[data-on-path="true"],
+.row[data-open="true"] {
+  background: var(--bg-hover);
+}
+.row[data-current="true"] {
+  background: rgba(0, 121, 228, 0.075);
+}
+:global([data-theme="dark"]) .row[data-current="true"] {
+  background: rgba(68, 153, 255, 0.118);
+}
+/* The path's teamspace is tinted a little warmer than a page passed through. */
+.row[data-teamspace="true"][data-on-path="true"] {
+  background: rgba(66, 35, 3, 0.047);
+}
+:global([data-theme="dark"]) .row[data-teamspace="true"][data-on-path="true"] {
+  background: rgba(252, 252, 252, 0.047);
+}
+.icon {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-default);
+}
+.glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3.5px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--text-secondary);
+  font-size: 13.75px;
+  line-height: 1;
+}
+:global([data-theme="dark"]) .glyph {
+  background: rgba(255, 255, 235, 0.1);
+}
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* "외 N개": the rest of the list in the secondary color, no icon. */
+.rest {
+  color: var(--text-secondary);
+}
+.more {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-disabled);
+}
+/* A teamspace's side list with no pages says so in a quiet row. */
+.empty {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 16.8px;
+  white-space: nowrap;
+}

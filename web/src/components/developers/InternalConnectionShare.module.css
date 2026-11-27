@@ -1,0 +1,288 @@
+/* "🔒 공유 ⌄" on a connection page's bar and its window, as Notion's (seen
+   2026-11-21 at 1440, dpr 1): the button 28px with a faint line, 14px; the
+   window 456px, 8px under it at its end, "공유" 14/500 over a line; 16px in,
+   a 32px field and the blue "공유" 8px apart — 32px high, its words 12px in
+   from each side, as Notion's button rule has it (borderRadius 6,
+   paddingInline 12, size lg, read in its developer portal code 2026-11-16),
+   48px in Korean and as wide as its words in any other; the people 21px under
+   them — a 32px face, 10px, the name 14/20 over the email 13/18, "모두 허용
+   ⌄" 24px at the end — 10px apart; "링크 복사" 32px at the end under a
+   line, 12px in. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.trigger:hover {
+  background: var(--bg-hover);
+}
+
+.trigger svg {
+  color: var(--icon-secondary);
+}
+
+.popup {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: 456px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.head {
+  padding: 10px 16px 9px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.body {
+  padding: 16px 16px 13px;
+}
+
+.inviteRow {
+  display: flex;
+  gap: 8px;
+}
+
+/* The field and the people found under it, as wide as the field whatever
+   the button's words. */
+.fieldBox {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  height: 32px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.field:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.invite {
+  flex: none;
+  height: 32px;
+  padding-inline: 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.invite:hover {
+  background: var(--accent-blue-hover);
+}
+
+.invite:disabled {
+  opacity: 0.4;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 36px;
+  inset-inline: 0;
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.suggestion:hover,
+.suggestion:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 21px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.me {
+  color: var(--text-tertiary);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  margin-inline-start: 4px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.note {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.role:hover,
+.role[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+.error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.foot {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 12px;
+  padding-inline: 16px 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.copy:hover {
+  background: var(--bg-hover);
+}
+
+.menu {
+  position: fixed;
+  width: 200px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

@@ -1,0 +1,3 @@
+package app
+
+const instanceProductExportArtifactsTable = "leafen_instance_product_export_artifacts"

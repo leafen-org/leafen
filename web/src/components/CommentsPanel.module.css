@@ -1,0 +1,671 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.panel {
+  position: fixed;
+  z-index: 121;
+  top: var(--page-panel-top, var(--topbar-height));
+  inset-inline-end: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(390px, 100vw);
+  max-height: none;
+  overflow: hidden;
+  border-top: 1px solid var(--border-default);
+  border-inline-start: 1px solid var(--border-default);
+  border-radius: 0;
+  background: var(--bg-app);
+  box-shadow: rgba(15, 15, 15, 0.08) calc(-8px * var(--inline-sign, 1)) 0 24px;
+}
+
+.inlinePanel {
+  position: relative;
+  z-index: auto;
+  inset: auto;
+  width: 100%;
+  max-height: none;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px 9px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.anchorPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 10px 14px 0;
+  padding: 8px 9px;
+  border-inline-start: 3px solid var(--accent-blue);
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.anchorPreview strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.title {
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  font-size: 14px;
+}
+
+.close svg {
+  color: currentColor;
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.composer {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+/* A page's comment line under its title or a database page's, as Notion's
+   (seen 2026-10-25 at 1280px and 375px, under a title 2026-10-28): a 24px
+   picture, the 27px field 5.5px on. */
+.inlinePanel .composer {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 5.5px;
+  padding: 0 0 12px;
+}
+/* Under a database page's properties the line runs 8px past the words on
+   either side, as Notion's (seen 2026-11-02: 720 wide on the page at 1280,
+   488 in a side peek, 708 in a centre one; 2026-11-14 on a phone at 411:
+   18–393 by words from 26). A phone's field row ends by TitleDiscussion's rule. */
+:global([data-row-page-comments]) .inlinePanel .composer {
+  margin-inline: -8px;
+  padding-inline: 8px;
+}
+/* Under its threads the field keeps 16px over the line, as Notion's discussion (seen 2026-11-13 at 1440, full and at the side; 12 with none; 2026-11-14 alike on a Galaxy A90 at 411). */
+:global([data-row-page-comments]) .inlinePanel:has(.list:not(:empty)) .composer { padding-bottom: 16px; }
+/* Its tools end 4px short of the line's end, in its 8px side, as Notion's
+   (seen 2026-11-12 at 1440: the send at 1179.5–1203.5 by a line to 1207.5). */
+:global([data-row-page-comments]:not([data-phone="true"] *)) .inlinePanel .composerFoot {
+  margin-inline-end: -4px;
+}
+.inlinePanel .inlineComposerAvatar {
+  width: 24px;
+  height: 24px;
+  margin-top: 0;
+}
+/* On a phone no tools until the field is pressed or written in, then a line of 📎 and a 28px send 16px apart (no "@"), 1.5px
+   under the field and 3px over the box's foot, as Notion's under a database page's properties and a title (seen 2026-11-14). */
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] .composerFoot {
+  flex-basis: 100%;
+  justify-content: flex-end;
+  min-height: 28px;
+  margin-block: 1.5px 3px;
+}
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] :where(.composer):not(.composer:focus-within):has(.commentField[data-empty="true"]) .composerFoot,
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] [data-comment-mention] {
+  display: none;
+}
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] .composerActions {
+  gap: 16px;
+}
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] [data-comment-send] {
+  width: 26px;
+  height: 26px;
+  margin: 1px;
+}
+
+.inlineComposerAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+/* A comment's field in the comments panel draws no edge until it is typed
+   in, then Notion's input ring, as Notion's discussions panel answer field
+   (seen 2026-11-24: none at rest, inpBluFocRin while typed in). */
+.composerBox {
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--bg-app);
+  transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+/* The words, then the tools at the right — under the words when the line
+   leaves the words too little room, as Notion's in a narrow page column
+   (seen 2026-11-06: 128px wide, "댓글 추가" whole and 📎 @ ↑ under it). */
+.inlinePanel .composerBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.composerBox:focus-within {
+  border-color: var(--focus);
+  box-shadow: var(--name-field-ring-focus-out);
+}
+.inlinePanel .composerBox:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+/* A comment's text box (CommentRichField): it grows as it is typed in, up
+   to a point, and says what to write while empty. */
+.commentFieldBox {
+  min-width: 0;
+}
+.commentField {
+  min-height: 30px;
+  max-height: 160px;
+  overflow-y: auto;
+  outline: none;
+  color: var(--text-default);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+.commentField[data-empty="true"]::before {
+  float: inline-start;
+  height: 0;
+  content: attr(data-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+.composer .commentField {
+  padding: 9px 10px 7px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.inlinePanel .composer .commentFieldBox {
+  flex: 1 1 120px;
+}
+/* Its words stop 11px short of the 📎 (their box 6px before the tools, the
+   words 5px in) and start 2.5 in, 8 after the picture, their 20px line 2 under
+   its top, as Notion's (seen 2026-11-12 at 1440, 2026-11-14 at 1024 and 402). */
+.inlinePanel .composer .commentField {
+  min-height: 27px;
+  max-height: 120px;
+  padding-block: 2px 5px;
+  padding-inline: 2.5px 11px;
+  font-size: 14px;
+  line-height: 20px;
+}
+:global([data-phone="true"]) .inlinePanel .composer .commentField { padding-inline-end: 4px; }
+/* A page's field on a phone runs its row, the words 5px short of the row's end (TitleDiscussion). */
+:global([data-phone="true"]) .inlinePanel[data-comments-mode="page-inline"] .composer .commentField { padding-inline-end: 5px; }
+.composerFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 38px;
+  padding-block: 6px;
+  padding-inline: 10px 7px;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* Its tools centre on the field's first line, their top 2px over the words'
+   line, as Notion's in every field (seen 2026-11-15 at 1440: a page's, a
+   margin card's and a reply's 24px tools 0.5 under their 27px field's top). */
+.inlinePanel .composerFoot {
+  order: 2;
+  margin-inline-start: auto;
+  min-height: 24px;
+  padding: 0;
+  border-top: 0;
+}
+
+.inlinePanel .composerFoot > span {
+  display: none;
+}
+
+/* With files, they take the line under the words and the tools sit at the
+   right under them, as Notion's (seen 2026-11-06). */
+.inlinePanel .composerBox > [data-comment-pending-attachments] {
+  flex-basis: 100%;
+  order: 1;
+}
+
+.inlinePanel .composerBox:has(> [data-comment-pending-attachments]) .composerFoot {
+  flex-basis: 100%;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.composerActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.composer[data-idle="true"] .composerActions {
+  visibility: hidden;
+}
+
+/* Left empty, a page's line has no tools, holding no room (commentFieldToolsShown). */
+.inlinePanel .composer[data-idle="true"] .composerFoot {
+  display: none;
+}
+
+.submitButton {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.submitButton:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.submitButton:focus-visible {
+  outline: none;
+  filter: brightness(0.96);
+}
+
+.list {
+  overflow-y: auto;
+  padding: 8px 8px 14px;
+}
+
+.inlinePanel .tabs {
+  padding-block: 10px 6px;
+  padding-inline: 30px 0;
+  border-bottom: 0;
+}
+
+.inlinePanel .list {
+  overflow: visible;
+  padding-block: 4px 10px;
+  padding-inline: 23px 0;
+}
+
+.inlinePanel .list:empty {
+  display: none;
+}
+
+/* Under a page's title its threads start at the field's edge, as Notion's,
+   the field's face 16px under the last comment's words (seen 2026-10-28). */
+.inlinePanel[data-comments-mode="page-inline"] .list {
+  padding: 0 0 10px;
+}
+
+/* On a database page "댓글" stands 8px over its first comment's name, as
+   Notion's (seen 2026-11-06): that comment's own 6px top comes out of the
+   heading's 8, which an empty page keeps over its field. */
+:global([data-row-page-comments]) .inlinePanel[data-comments-mode="page-inline"] .list {
+  margin-top: -6px;
+}
+
+.empty {
+  padding: 22px 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* A thread's comments, replies and reply box share one column of 24px
+   faces, their words 8px after, as Notion's (seen 2026-10-28). */
+.comment {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 7px;
+  border-radius: 6px;
+}
+
+/* Open beside its block, as Notion's margin card (seen 2026-10-29): 12px in,
+   no hover tint, the reply row's face 16px under the last words, its box 3px
+   above the face, 4px past the words on both sides and 9px over the card's
+   edge. */
+.comment[data-beside="true"] {
+  padding: 12px 12px 9px;
+}
+
+.comment[data-beside="true"]:hover {
+  background: transparent;
+}
+
+.comment[data-beside="true"] > .replyRowAvatar {
+  margin-top: 8px;
+}
+
+.comment[data-beside="true"] > .replyRowAvatar + * {
+  margin-top: 5px;
+  margin-inline-end: -4px;
+}
+
+/* "모든 토론": its threads are drawn as under a page's title (AllDiscussions). */
+.panel[data-comments-mode="all-discussions"] .list {
+  padding: 0 0 14px;
+}
+
+/* A resolved thread keeps its words' colours, as Notion's "모든 토론" shows
+   one (seen 2026-11-06). */
+
+/* Under a page's title, as Notion's (seen 2026-10-08): a thread's comments in
+   one column, their pictures (as small as the field's) at the field's edge
+   and joined by a line. Each comment's buttons end at the column's end, the
+   frame's own side in, as Notion's (2026-11-14: 1207.5 at 1440, 393 at 411). */
+.flatThread {
+  display: grid;
+}
+
+.flatThread > .comment {
+  --comment-pill-right: 7px;
+  margin: 0 -7px;
+}
+
+.flatThread .avatar {
+  border-radius: 50%;
+  font-size: 11px;
+}
+
+.flatThread > .comment:not(:last-child)::before {
+  position: absolute;
+  top: 34px;
+  bottom: -4px;
+  inset-inline-start: 18.5px;
+  width: 1px;
+  background: var(--border-default);
+  content: "";
+}
+
+.comment[data-target="true"] {
+  background: transparent;
+}
+
+.comment[data-target="true"]::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  bottom: 9px;
+  inset-inline-start: 0;
+  width: 2px;
+  border-radius: 999px;
+  background: rgba(35, 131, 226, 0.62);
+}
+
+.comment[data-target="true"]:hover {
+  background: var(--bg-hover);
+}
+
+.comment[data-active="true"],
+.reply[data-active="true"] {
+  background: var(--comment-active-bg);
+  box-shadow: inset 0 0 0 1px rgba(203, 145, 47, 0.35);
+}
+
+.reply[data-active="true"] {
+  border-radius: 6px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.commentBody {
+  min-width: 0;
+}
+
+/* The name 14px/500 and the time 12px after it, on the face's 24px line;
+   the words 4px under, 20px lines (Notion's, seen 2026-10-28). */
+/* In a narrow column each piece stays whole and the next goes under it, not
+   a letter to a line (Notion's name and "10월 12일" are one line in a 128px
+   page column, seen 2026-11-06); a name wider than the column ends in "…". */
+.commentMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 6px;
+  min-width: 0;
+  min-height: 24px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.commentMeta > * {
+  white-space: nowrap;
+}
+
+.commentMeta > span:first-child {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+
+.anchorLabel {
+  display: inline-flex;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.commentText {
+  padding-top: 4px;
+  white-space: pre-wrap;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.commentMention {
+  overflow-wrap: anywhere;
+}
+
+.commentQuote {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 5px;
+  padding: 6px 8px;
+  border-inline-start: 3px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.commentActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.comment:hover .commentActions,
+.comment:focus-within .commentActions {
+  opacity: 1;
+}
+
+.commentActions button {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.commentActions button:hover,
+.commentActions button:focus-visible,
+.commentActions button[aria-pressed="true"] {
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.replies {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.reply {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+}
+
+/* A thread's faces joined by a 1.5px line down their column, from 6px under
+   one face to 6px over the next (the first reply 16px under the thread's
+   words, replies 16px apart), the reply row's face left out, as Notion's in
+   a block's card and in "모든 토론" (seen 2026-11-06, 11-09). */
+.comment:has(> .replies) > .commentBody,
+.replies > .reply:not(:last-child) > .replyBody {
+  position: relative;
+}
+
+.comment:has(> .replies) > .commentBody::after,
+.replies > .reply:not(:last-child) > .replyBody::after {
+  position: absolute;
+  top: 30px;
+  bottom: -10px;
+  inset-inline-start: -20.75px;
+  width: 1.5px;
+  background: var(--border-secondary);
+  content: "";
+}
+
+/* The reader's face by a thread's reply box, level with the box's line. */
+.replyRowAvatar {
+  margin-top: var(--reply-face-top, 3.5px);
+}
+
+.replyAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.replyBody {
+  min-width: 0;
+}
+
+:global([data-phone="true"]) .panel {
+  top: var(--page-panel-top, var(--topbar-height));
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  width: auto;
+  border-inline-start: 0;
+}
+
+:global([data-phone="true"]) .inlinePanel {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  border: 0;
+}
+
+/* A phone's picture is 24 too, its words 8 after it (Notion's, seen 2026-11-14). */
+:global([data-phone="true"]) .inlinePanel .composer { grid-template-columns: 24px minmax(0, 1fr); }
+
+:global([data-phone="true"]) .inlinePanel .tabs,
+:global([data-phone="true"]) .inlinePanel .list {
+  padding-inline-start: 0;
+}
+
+:global([data-touch="true"]) .commentActions {
+  opacity: 1;
+}

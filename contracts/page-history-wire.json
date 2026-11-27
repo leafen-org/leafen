@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 1,
+  "name": "page-history",
+  "operations": [
+    { "goName": "pageHistoryList", "tsName": "list", "method": "GET", "path": "/pages/{pageId}/history" },
+    { "goName": "pageHistorySnapshot", "tsName": "snapshot", "method": "GET", "path": "/pages/{pageId}/history/{versionId}" },
+    { "goName": "pageHistoryRestore", "tsName": "restore", "method": "POST", "path": "/pages/{pageId}/history/{versionId}/restore" },
+    { "goName": "pageHistoryRevert", "tsName": "revert", "method": "POST", "path": "/pages/{pageId}/history/{versionId}/revert" },
+    { "goName": "pageHistoryChanges", "tsName": "changes", "method": "GET", "path": "/pages/{pageId}/history/{versionId}/changes" },
+    { "goName": "pageHistoryBookmarkList", "tsName": "bookmarkList", "method": "GET", "path": "/pages/{pageId}/history-bookmarks" },
+    { "goName": "pageHistoryBookmarkCreate", "tsName": "bookmarkCreate", "method": "POST", "path": "/pages/{pageId}/history-bookmarks" },
+    { "goName": "pageHistoryBookmarkUpdate", "tsName": "bookmarkUpdate", "method": "PATCH", "path": "/pages/{pageId}/history-bookmarks/{bookmarkId}" },
+    { "goName": "pageHistoryBookmarkDelete", "tsName": "bookmarkDelete", "method": "DELETE", "path": "/pages/{pageId}/history-bookmarks/{bookmarkId}" },
+    { "goName": "pageHistoryBlockLastEdit", "tsName": "blockLastEdit", "method": "GET", "path": "/pages/{pageId}/blocks/last-edit" },
+    { "goName": "pageLockRecordList", "tsName": "lockRecords", "method": "GET", "path": "/pages/{pageId}/lock-records" },
+    { "goName": "pageHistoryDatabaseAt", "tsName": "databaseAt", "method": "GET", "path": "/pages/{pageId}/history-databases/{blockId}" }
+  ],
+  "bounds": [
+    { "goName": "pageHistoryPageSize", "tsName": "pageSize", "value": 50 },
+    { "goName": "pageHistoryBlockPageSize", "tsName": "blockPageSize", "value": 200 },
+    { "goName": "pageHistoryChangePageSize", "tsName": "changePageSize", "value": 200 },
+    { "goName": "pageHistoryDatabasePreviewRows", "tsName": "databasePreviewRows", "value": 50 },
+    { "goName": "pageHistoryCursorBytes", "tsName": "cursorBytes", "value": 2048 },
+    { "goName": "pageHistoryMaxReplayEvents", "tsName": "maxReplayEvents", "value": 256 },
+    { "goName": "pageHistoryRestoreMaxBodyBytes", "tsName": "restoreMaxBodyBytes", "value": 16384 },
+    { "goName": "pageHistoryBookmarkNameMaxChars", "tsName": "bookmarkNameMaxChars", "value": 200 },
+    { "goName": "pageHistoryBookmarkMaxBodyBytes", "tsName": "bookmarkMaxBodyBytes", "value": 4096 },
+    { "goName": "pageHistoryBookmarkListWindow", "tsName": "bookmarkListWindow", "value": 200 },
+    { "goName": "pageHistoryBlockLastEditIDs", "tsName": "blockLastEditIds", "value": 100 },
+    { "goName": "pageLockRecordPageSize", "tsName": "lockRecordPageSize", "value": 20 }
+  ],
+  "errors": [
+    { "goName": "errorCodePageHistoryInvalid", "tsName": "invalid", "value": "LEAFEN_PAGE_HISTORY_INVALID" },
+    { "goName": "errorCodePageHistoryCursorInvalid", "tsName": "cursorInvalid", "value": "LEAFEN_PAGE_HISTORY_CURSOR_INVALID" },
+    { "goName": "errorCodePageHistoryVersionMissing", "tsName": "versionMissing", "value": "LEAFEN_PAGE_HISTORY_VERSION_MISSING" },
+    { "goName": "errorCodePageHistoryRevisionChanged", "tsName": "revisionChanged", "value": "LEAFEN_PAGE_HISTORY_REVISION_CHANGED" },
+    { "goName": "errorCodePageHistoryRestoreConflict", "tsName": "restoreConflict", "value": "LEAFEN_PAGE_HISTORY_RESTORE_CONFLICT" },
+    { "goName": "errorCodePageHistoryFailed", "tsName": "failed", "value": "LEAFEN_PAGE_HISTORY_FAILED" },
+    { "goName": "errorCodePageHistoryBookmarkMissing", "tsName": "bookmarkMissing", "value": "LEAFEN_PAGE_HISTORY_BOOKMARK_MISSING" },
+    { "goName": "errorCodePageHistoryRevertTooFar", "tsName": "revertTooFar", "value": "LEAFEN_PAGE_HISTORY_REVERT_TOO_FAR" }
+  ],
+  "records": [
+    {
+      "goName": "pageHistoryVersionWire",
+      "tsName": "PageHistoryVersion",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "VersionCursor", "jsonName": "versionCursor", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ConnectionName", "jsonName": "connectionName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ConnectionKind", "jsonName": "connectionKind", "goType": "string", "tsType": "\"integration\" | \"agent\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryActorProfile",
+      "tsName": "PageHistoryActorProfile",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "App", "jsonName": "app", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryListResponse",
+      "tsName": "PageHistoryListResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotFrontier", "jsonName": "snapshotFrontier", "goType": "int", "tsType": "number" },
+        { "goName": "Versions", "jsonName": "versions", "goType": "[]pageHistoryVersionWire", "tsType": "PageHistoryVersion[]" },
+        { "goName": "ActorProfiles", "jsonName": "actorProfiles", "goType": "[]pageHistoryActorProfile", "tsType": "PageHistoryActorProfile[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Creation", "jsonName": "creation", "goType": "*pageHistoryVersionWire", "tsType": "PageHistoryVersion", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryBlockWire",
+      "tsName": "PageHistoryBlock",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Position", "jsonName": "position", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Content", "jsonName": "content", "goType": "json.RawMessage", "tsType": "Record<string, unknown>" },
+        { "goName": "PlainText", "jsonName": "plainText", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageHistoryDatabasePropertyWire",
+      "tsName": "PageHistoryDatabaseProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Config", "jsonName": "config", "goType": "json.RawMessage", "tsType": "Record<string, unknown>" }
+      ]
+    },
+    {
+      "goName": "pageHistoryDatabaseRowWire",
+      "tsName": "PageHistoryDatabaseRow",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Values", "jsonName": "values", "goType": "map[string]pageHistoryRowValue", "tsType": "Record<string, { type: string; value: unknown; spans?: unknown[] }>" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "HasContent", "jsonName": "hasContent", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryDatabaseWire",
+      "tsName": "PageHistoryDatabase",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "FullPage", "jsonName": "fullPage", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]pageHistoryDatabasePropertyWire", "tsType": "PageHistoryDatabaseProperty[]", "optional": true },
+        { "goName": "Rows", "jsonName": "rows", "goType": "[]pageHistoryDatabaseRowWire", "tsType": "PageHistoryDatabaseRow[]", "optional": true },
+        { "goName": "HasMoreRows", "jsonName": "hasMoreRows", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Later", "jsonName": "later", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Unchanged", "jsonName": "unchanged", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Linked", "jsonName": "linked", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Views", "jsonName": "views", "goType": "[]pageHistoryDatabaseViewWire", "tsType": "PageHistoryDatabaseView[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryDatabaseViewWire",
+      "tsName": "PageHistoryDatabaseView",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyWidths", "jsonName": "propertyWidths", "goType": "map[string]float64", "tsType": "Record<string, number>", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistorySnapshotResponse",
+      "tsName": "PageHistorySnapshotResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotFrontier", "jsonName": "snapshotFrontier", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "Cover", "jsonName": "cover", "goType": "string", "tsType": "string" },
+        { "goName": "CoverPosition", "jsonName": "coverPosition", "goType": "float64", "tsType": "number" },
+        { "goName": "Font", "jsonName": "font", "goType": "string", "tsType": "\"default\" | \"serif\" | \"mono\"", "optional": true },
+        { "goName": "SmallText", "jsonName": "smallText", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Values", "jsonName": "values", "goType": "map[string]pageHistoryRowValue", "tsType": "Record<string, { type: string; value: unknown; spans?: unknown[] }>", "optional": true },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "[]pageHistoryBlockWire", "tsType": "PageHistoryBlock[]" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "[]pageHistoryDatabaseWire", "tsType": "PageHistoryDatabase[]", "optional": true },
+        { "goName": "RelationRowTitles", "jsonName": "relationRowTitles", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageHistoryChangeWire",
+      "tsName": "PageHistoryChange",
+      "fields": [
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"edited\" | \"moved\" | \"typeChanged\" | \"renamed\" | \"pageEdited\" | \"databaseEdited\" | \"propertyChanged\" | \"viewCreated\" | \"rowAdded\" | \"rowEdited\" | \"rowRemoved\"" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockType", "jsonName": "blockType", "goType": "string", "tsType": "string" },
+        { "goName": "FromType", "jsonName": "fromType", "goType": "string", "tsType": "string" },
+        { "goName": "Deleted", "jsonName": "deleted", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ItemID", "jsonName": "itemId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FromName", "jsonName": "fromName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ToName", "jsonName": "toName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewName", "jsonName": "viewName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewType", "jsonName": "viewType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RowValues", "jsonName": "rowValues", "goType": "[]pageHistoryRowValueChangeWire", "tsType": "PageHistoryRowValueChange[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryRowValueChangeWire",
+      "tsName": "PageHistoryRowValueChange",
+      "fields": [
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyName", "jsonName": "propertyName", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "From", "jsonName": "from", "goType": "string", "tsType": "string" },
+        { "goName": "To", "jsonName": "to", "goType": "string", "tsType": "string" },
+        { "goName": "FromSpans", "jsonName": "fromSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "ToSpans", "jsonName": "toSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryChangesResponse",
+      "tsName": "PageHistoryChangesResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "SinceID", "jsonName": "sinceId", "goType": "string", "tsType": "string" },
+        { "goName": "Changes", "jsonName": "changes", "goType": "[]pageHistoryChangeWire", "tsType": "PageHistoryChange[]" },
+        { "goName": "ActorProfiles", "jsonName": "actorProfiles", "goType": "[]pageHistoryActorProfile", "tsType": "PageHistoryActorProfile[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageHistoryRestoreRequest",
+      "tsName": "PageHistoryRestoreRequest",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BaseRevision", "jsonName": "baseRevision", "goType": "int", "tsType": "number" },
+        { "goName": "RestoreDatabases", "jsonName": "restoreDatabases", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "KeepDatabaseProperties", "jsonName": "keepDatabaseProperties", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "KeepRowValues", "jsonName": "keepRowValues", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "KeepRowNames", "jsonName": "keepRowNames", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "DatabaseID", "jsonName": "databaseId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryRestoreReceipt",
+      "tsName": "PageHistoryRestoreReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "RestoredVersionID", "jsonName": "restoredVersionId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotFrontier", "jsonName": "snapshotFrontier", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number", "deprecated": "The old name of snapshotFrontier, the same number, still written for clients that read it: the version history's frontier after the change, which a next restore's or revert's baseRevision takes. It is not the page's revision (page.revision)." },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageHistoryRestoreResponse",
+      "tsName": "PageHistoryRestoreResponse",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "pageHistoryRestoreReceipt", "tsType": "PageHistoryRestoreReceipt" }
+      ]
+    },
+    {
+      "goName": "pageHistoryRevertRequest",
+      "tsName": "PageHistoryRevertRequest",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BaseRevision", "jsonName": "baseRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Connection", "jsonName": "connection", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Through", "jsonName": "through", "goType": "int64", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryRevertKept",
+      "tsName": "PageHistoryRevertKept",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Field", "jsonName": "field", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "\"changedLater\" | \"holdsLaterBlocks\" | \"database\" | \"page\"" }
+      ]
+    },
+    {
+      "goName": "pageHistoryRevertResponse",
+      "tsName": "PageHistoryRevertResponse",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "pageHistoryRestoreReceipt", "tsType": "PageHistoryRestoreReceipt" },
+        { "goName": "Reverted", "jsonName": "reverted", "goType": "int", "tsType": "number" },
+        { "goName": "Kept", "jsonName": "kept", "goType": "[]pageHistoryRevertKept", "tsType": "PageHistoryRevertKept[]" }
+      ]
+    },
+    {
+      "goName": "pageHistoryBookmarkWire",
+      "tsName": "PageHistoryBookmark",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "AuthorID", "jsonName": "authorId", "goType": "string", "tsType": "string" },
+        { "goName": "VersionCreatedAt", "jsonName": "versionCreatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageHistoryBookmarkListResponse",
+      "tsName": "PageHistoryBookmarkListResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Bookmarks", "jsonName": "bookmarks", "goType": "[]pageHistoryBookmarkWire", "tsType": "PageHistoryBookmark[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageHistoryBookmarkCreateRequest",
+      "tsName": "PageHistoryBookmarkCreateRequest",
+      "fields": [
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageHistoryBookmarkUpdateRequest",
+      "tsName": "PageHistoryBookmarkUpdateRequest",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageHistoryBookmarkResponse",
+      "tsName": "PageHistoryBookmarkResponse",
+      "fields": [
+        { "goName": "Bookmark", "jsonName": "bookmark", "goType": "pageHistoryBookmarkWire", "tsType": "PageHistoryBookmark" }
+      ]
+    },
+    {
+      "goName": "pageLockRecordWire",
+      "tsName": "PageLockRecord",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "Locked", "jsonName": "locked", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ConnectionName", "jsonName": "connectionName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ConnectionKind", "jsonName": "connectionKind", "goType": "string", "tsType": "\"integration\" | \"agent\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageLockRecordListResponse",
+      "tsName": "PageLockRecordListResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Records", "jsonName": "records", "goType": "[]pageLockRecordWire", "tsType": "PageLockRecord[]" },
+        { "goName": "ActorProfiles", "jsonName": "actorProfiles", "goType": "[]pageHistoryActorProfile", "tsType": "PageHistoryActorProfile[]" }
+      ]
+    },
+    {
+      "goName": "pageHistoryDatabaseAtResponse",
+      "tsName": "PageHistoryDatabaseAtResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" },
+        { "goName": "Database", "jsonName": "database", "goType": "*pageHistoryDatabaseWire", "tsType": "PageHistoryDatabase", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageBlockLastEditResponse",
+      "tsName": "PageBlockLastEdit",
+      "fields": [
+        { "goName": "EditedAt", "jsonName": "editedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "EditorID", "jsonName": "editorId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "EditorName", "jsonName": "editorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "EditorVia", "jsonName": "editorVia", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "EditorApp", "jsonName": "editorApp", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "EditorViaKind", "jsonName": "editorViaKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "CreatorID", "jsonName": "creatorId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatorName", "jsonName": "creatorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatorVia", "jsonName": "creatorVia", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatorViaKind", "jsonName": "creatorViaKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatorApp", "jsonName": "creatorApp", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    }
+  ]
+}

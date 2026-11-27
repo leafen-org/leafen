@@ -1,0 +1,179 @@
+/* Notion's "새 데이터베이스" panel by a new database (seen 2026-10-30): 290px,
+   4px in, a 14px head with its ×, 44–45px items with a 20px mark, a small gray
+   "추천" heading over the suggestions' tinted marks, a rule, then the 32px
+   link to an existing data source. */
+.panel {
+  box-sizing: border-box;
+  width: min(290px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: calc(100vh - 2 * var(--popover-edge));
+  overflow: auto;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* On a database's own page it hangs as its view settings do (Notion's, seen
+   2026-11-04: under the toolbar row down to the window's bottom, its column
+   ending where the page's does, a 1px line on its left, no shadow), its
+   rows where they stand when it floats (seen 2026-11-09). */
+.panel[data-docked="true"] {
+  position: fixed;
+  z-index: 1001;
+  inset-inline-end: 0;
+  bottom: 0;
+  /* Its column and ground beyond: dockedPanelColumn.module.css. */
+  width: min(291px, 100vw);
+  max-height: none;
+  padding: 4px 4px 16px;
+  border-inline-start: 1px solid var(--border-default);
+  border-radius: 0;
+  background: var(--bg-app);
+  box-shadow: none;
+}
+/* A 42px head, its name 16px in and its × 12px from the end, both 25px
+   down; after "←" (24px, 10px in) the name stands 42px in (Notion's, seen
+   2026-11-09 in each of its screens, floating or hung). */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding-block: 4px 0;
+  padding-inline: 12px;
+}
+.head strong {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.close,
+.back {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: var(--icon-secondary);
+}
+.close { background: var(--border-subtle); }
+.back { width: 24px; height: 22px; margin-inline: -6px 2px; border-radius: 6px; }
+.close:hover,
+.back:hover { background: var(--bg-hover); }
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  text-align: start;
+}
+.item > svg { flex: none; color: var(--icon-secondary); }
+.item:hover:not(:disabled),
+.item[data-active="true"]:not(:disabled),
+.item:focus-visible { background: var(--bg-hover); outline: none; }
+.item:focus-visible { box-shadow: var(--keyboard-focus-ring); }
+.item.small { min-height: 32px; }
+/* The start screen's rows, as Notion's (seen 2026-11-07 at 999px): a 32px
+   place for the icon 6px in and the name 8px after it, 46px in, a blank
+   source's "+" and a suggestion's picture each in a tile filling it. Rows
+   45px and 1px apart, a blank source's 44 (seen 2026-11-09 at 1054, floating
+   or hung: "비어 있는 새 데이터 소스" 44, "CSV 가져오기" 1px under it 45, the
+   suggestions 45 each 46 apart); the link to an existing source 32. */
+.start { gap: 8px; padding: 0 6px; }
+.start + .start { margin-top: 1px; }
+.item.start:not(.small) { min-height: 45px; }
+.item.start.blank { min-height: 44px; }
+.start > svg { margin: 0 6px; }
+.start > .mark { width: 32px; height: 32px; }
+.start > .mark:not([data-tone]) { color: var(--icon-secondary); }
+.heading {
+  padding: 8px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  font-size: 16px;
+  line-height: 1;
+}
+.mark[data-tone="green"] { background: color-mix(in srgb, var(--c-accent-green) 14%, transparent); }
+.mark[data-tone="blue"] { background: color-mix(in srgb, var(--c-accent-blue) 14%, transparent); }
+.mark[data-tone="red"] { background: color-mix(in srgb, var(--c-accent-red) 14%, transparent); }
+.mark[data-tone="orange"] { background: color-mix(in srgb, var(--c-accent-orange) 14%, transparent); }
+.mark[data-tone="yellow"] { background: color-mix(in srgb, var(--c-accent-yellow) 14%, transparent); }
+/* A rule 12px in, 4px from what is over and under it (Notion's, seen 2026-11-09). */
+.rule {
+  height: 1px;
+  margin: 4px 8px;
+  border: 0;
+  background: var(--border-default);
+}
+/* The search under the head: 266px, 12px in and 8px down (Notion's, seen
+   2026-11-09), its words 6px in. */
+.search {
+  box-sizing: border-box;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 8px 8px 4px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+}
+.search:focus { outline: none; box-shadow: var(--name-field-ring-focus); }
+/* The search a database opened alone starts with: "입력 값 지우기" over its
+   end, 2px in, its words 6px in and up to 26px from its end while it holds
+   any; focused, a 2px ring half in and half out. 12px under it the first
+   row, 18px the "기존 데이터 소스" a search found, 8px the band where it found
+   none (Notion's, seen 2026-11-17 at 1440: the search 216-244, the empty
+   source 256, the heading's words 263, the band 252). */
+.searchBox { position: relative; display: block; margin: 8px; }
+.searchBox > .search { display: block; width: 100%; margin: 0; }
+.searchBox > .search:focus { box-shadow: var(--name-field-ring-focus); }
+.search[data-filled] { padding-inline-end: 26px; }
+.searchBox + .rows > .start:first-child { margin-top: 12px; }
+.searchBox + .rows > .listHeading:first-child { margin-top: 18px; }
+/* What that search found ends on "+ 새 '〈search〉' 데이터 소스" and "CSV
+   가져오기" in a band of the menu's ground the panel's width, 4px apart
+   from what is over it and 4px around its rows (Notion's, seen 2026-11-17:
+   #252525 under a hung panel in the dark). */
+.foot { margin: 4px -4px 0; padding: 4px; background: var(--bg-elevated); }
+/* The sources' lists, as Notion's in each screen that lists them (seen
+   2026-11-09): a gray heading 14px under what is over it, then the sources
+   1px apart, 9px under it — 45px with their place on a second line in the
+   paler gray (Notion's --c-texTer, #7d7a75 dark and #a19e99 light, read
+   2026-11-17 in "/연결"'s list), 28 without (DataSourceListRow); "자세히 표시"
+   a 28px row after them. */
+.listHeading { margin: 14px 0 9px; padding: 0 8px; line-height: var(--menu-label-line-height); }
+.source { margin-top: 1px; }
+.source:focus-visible { box-shadow: var(--keyboard-focus-ring); }
+.note { margin: 0; padding: 8px; color: var(--text-secondary); font-size: 13px; }
+/* A waiting linked view's "자세히 표시": a 28px gray line under its sources. */
+.item.more { gap: 8px; min-height: 28px; margin-top: 1px; color: var(--text-secondary); }
+/* A search's name in "새 '〈search〉' 데이터 소스", cut short on one line. */
+.blankName { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows { display: contents; }
+.panel:focus-visible { outline: none; }

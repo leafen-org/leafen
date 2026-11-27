@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 2,
+  "name": "organization-audit",
+  "operations": [
+    { "goName": "organizationAuditEventList", "tsName": "listEvents", "method": "GET", "path": "/organizations/{organizationId}/audit-events" },
+    { "goName": "organizationAuditExportList", "tsName": "listExports", "method": "GET", "path": "/organizations/{organizationId}/audit-exports" },
+    { "goName": "organizationAuditExportCreate", "tsName": "createExport", "method": "POST", "path": "/organizations/{organizationId}/audit-exports" },
+    { "goName": "organizationAuditExportGet", "tsName": "getExport", "method": "GET", "path": "/organizations/{organizationId}/audit-exports/{exportId}" },
+    { "goName": "organizationAuditExportDownload", "tsName": "downloadExport", "method": "GET", "path": "/organizations/{organizationId}/audit-exports/{exportId}/download" },
+    { "goName": "accountHistoryRead", "tsName": "readAccountHistory", "method": "GET", "path": "/organizations/{organizationId}/account-history/{userId}" },
+    { "goName": "accountHistoryPolicyRead", "tsName": "readAccountHistoryPolicy", "method": "GET", "path": "/organizations/{organizationId}/account-history-policy" },
+    { "goName": "accountHistoryPolicyUpdate", "tsName": "updateAccountHistoryPolicy", "method": "PUT", "path": "/organizations/{organizationId}/account-history-policy" },
+    { "goName": "viewDisplayPolicyRead", "tsName": "readViewDisplayPolicy", "method": "GET", "path": "/organizations/{organizationId}/view-display-policy" },
+    { "goName": "viewDisplayPolicyUpdate", "tsName": "updateViewDisplayPolicy", "method": "PUT", "path": "/organizations/{organizationId}/view-display-policy" }
+  ],
+  "bounds": [
+    { "goName": "organizationAuditMaxBodyBytes", "tsName": "bodyBytes", "value": 65536 },
+    { "goName": "organizationAuditEventsPerPage", "tsName": "eventsPerPage", "value": 100 },
+    { "goName": "organizationAuditExportEventsPerTurn", "tsName": "exportEventsPerTurn", "value": 100 },
+    { "goName": "organizationAuditExportChunkMaxBytes", "tsName": "exportChunkBytes", "value": 2097152 },
+    { "goName": "organizationAuditExportDownloadChunkWindow", "tsName": "downloadChunkWindow", "value": 4 },
+    { "goName": "organizationAuditExportsPerPage", "tsName": "exportsPerPage", "value": 20 },
+    { "goName": "organizationAuditMaxMutationIDRunes", "tsName": "mutationIdRunes", "value": 200 },
+    { "goName": "organizationAuditMaxFilterRunes", "tsName": "filterRunes", "value": 120 },
+    { "goName": "organizationAuditMaxCursorBytes", "tsName": "cursorBytes", "value": 1024 },
+    { "goName": "organizationAuditMaxMetadataBytes", "tsName": "metadataBytes", "value": 8192 },
+    { "goName": "accountHistoryPerPage", "tsName": "historyPerPage", "value": 50 }
+  ],
+  "errors": [
+    { "goName": "errorCodeOrganizationAuditInvalid", "tsName": "invalid", "value": "LEAFEN_ORGANIZATION_AUDIT_INVALID" },
+    { "goName": "errorCodeOrganizationAuditNotFound", "tsName": "notFound", "value": "LEAFEN_ORGANIZATION_AUDIT_NOT_FOUND" },
+    { "goName": "errorCodeOrganizationAuditTooLarge", "tsName": "tooLarge", "value": "LEAFEN_ORGANIZATION_AUDIT_TOO_LARGE" },
+    { "goName": "errorCodeOrganizationAuditUnavailable", "tsName": "unavailable", "value": "LEAFEN_ORGANIZATION_AUDIT_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "OrganizationAuditExportFormat",
+      "tsValuesName": "organizationAuditExportFormats",
+      "values": [
+        { "goName": "organizationAuditExportFormatJSONL", "tsName": "jsonl", "value": "jsonl" },
+        { "goName": "organizationAuditExportFormatCSV", "tsName": "csv", "value": "csv" },
+        { "goName": "organizationAuditExportFormatJSON", "tsName": "json", "value": "json" }
+      ]
+    },
+    {
+      "tsName": "OrganizationAuditExportStatus",
+      "tsValuesName": "organizationAuditExportStatuses",
+      "values": [
+        { "goName": "organizationAuditExportStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "organizationAuditExportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "organizationAuditExportStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "organizationAuditExportStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "organizationAuditEventResponse",
+      "tsName": "OrganizationAuditEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "TargetType", "jsonName": "targetType", "goType": "string", "tsType": "string" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "Metadata", "jsonName": "metadata", "goType": "map[string]any", "tsType": "Record<string, unknown>" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ActorApp", "jsonName": "actorApp", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorName", "jsonName": "actorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetName", "jsonName": "targetName", "goType": "*string", "tsType": "string | null", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationAuditEventListResponse",
+      "tsName": "OrganizationAuditEventList",
+      "fields": [
+        { "goName": "Events", "jsonName": "events", "goType": "[]organizationAuditEventResponse", "tsType": "OrganizationAuditEvent[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationAuditExportCreateInput",
+      "tsName": "OrganizationAuditExportCreateInput",
+      "fields": [
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "OrganizationAuditExportFormat" },
+        { "goName": "Limit", "jsonName": "limit", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetType", "jsonName": "targetType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Since", "jsonName": "since", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Until", "jsonName": "until", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Actor", "jsonName": "actor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Target", "jsonName": "target", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationAuditExportResponse",
+      "tsName": "OrganizationAuditExport",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationAuditExportStatus" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "OrganizationAuditExportFormat" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetType", "jsonName": "targetType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Since", "jsonName": "since", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Until", "jsonName": "until", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number" },
+        { "goName": "Limit", "jsonName": "limit", "goType": "int", "tsType": "number" },
+        { "goName": "EventCount", "jsonName": "eventCount", "goType": "int", "tsType": "number" },
+        { "goName": "ProcessedEvents", "jsonName": "processedEvents", "goType": "int", "tsType": "number" },
+        { "goName": "ContentBytes", "jsonName": "contentBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ContentSHA256", "jsonName": "contentSha256", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DownloadPath", "jsonName": "downloadPath", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationAuditExportContentResponse",
+      "tsName": "OrganizationAuditExportContent",
+      "fields": [
+        { "goName": "AuditExport", "jsonName": "auditExport", "goType": "organizationAuditExportResponse", "tsType": "OrganizationAuditExport" }
+      ]
+    },
+    {
+      "goName": "organizationAuditExportListResponse",
+      "tsName": "OrganizationAuditExportList",
+      "fields": [
+        { "goName": "AuditExports", "jsonName": "auditExports", "goType": "[]organizationAuditExportResponse", "tsType": "OrganizationAuditExport[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountHistoryItem",
+      "tsName": "AccountHistoryItem",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"sign_in\" | \"audit\" | \"to_me\"" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorName", "jsonName": "actorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetType", "jsonName": "targetType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetName", "jsonName": "targetName", "goType": "*string", "tsType": "string | null", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Masked", "jsonName": "masked", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Outcome", "jsonName": "outcome", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ReasonStatus", "jsonName": "reasonStatus", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Method", "jsonName": "method", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Device", "jsonName": "device", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Metadata", "jsonName": "metadata", "goType": "map[string]any", "tsType": "Record<string, unknown>", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountHistoryResponse",
+      "tsName": "AccountHistory",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Scope", "jsonName": "scope", "goType": "string", "tsType": "\"self\" | \"all\" | \"scoped\"" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]accountHistoryItem", "tsType": "AccountHistoryItem[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "accountHistoryPolicyResponse",
+      "tsName": "AccountHistoryPolicy",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "ScopedView", "jsonName": "scopedView", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "accountHistoryPolicyInput",
+      "tsName": "AccountHistoryPolicyInput",
+      "fields": [
+        { "goName": "ScopedView", "jsonName": "scopedView", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "viewDisplayPolicyResponse",
+      "tsName": "ViewDisplayPolicy",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Display", "jsonName": "display", "goType": "string", "tsType": "\"person\" | \"shown\" | \"hidden\"" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "viewDisplayPolicyInput",
+      "tsName": "ViewDisplayPolicyInput",
+      "fields": [
+        { "goName": "Display", "jsonName": "display", "goType": "string", "tsType": "\"person\" | \"shown\" | \"hidden\"" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    }
+  ]
+}

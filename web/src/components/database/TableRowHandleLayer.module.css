@@ -1,0 +1,52 @@
+/* The handle layer beside a table's scroll box (TableRowHandleLayer): it
+   takes no room, and what it draws stands where the scroll box's row
+   controls' margin starts, over the page or a column beside the table. */
+.layer {
+  position: absolute;
+  z-index: 6;
+  width: 0;
+  height: 0;
+}
+/* The cut strip before the rows' boxes, which finds the row level with the
+   pointer as the rows' own margin does; a touch screen has no pointer over it. */
+.reach {
+  position: absolute;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .reach {
+    pointer-events: auto;
+  }
+}
+/* As a row's controls' margin lays them out (DatabaseTableChrome .rowGutterCell,
+   DatabaseTableRows), on the row's first 36px line: "+" against the handle,
+   the box's 16 before its 9px end. Out here the handle ends 2px outside the
+   cut, 46px before the first column (21px before the box), "+" 88px before,
+   as Notion's (seen 2026-11-09 and 2026-11-18 in a column scrolled 100 at
+   1440: "+" 790.5, ⠿ 814.5–832.5, the cut 834.5; unscrolled 44px, as the
+   rows' own margin). */
+.strip {
+  position: absolute;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-template-rows: 36px;
+  align-items: center;
+  justify-content: end;
+  padding-inline-end: 9px;
+  color: var(--icon-tertiary);
+  pointer-events: none;
+}
+.strip > :not(.boxRoom) {
+  pointer-events: auto;
+}
+.strip > [data-row-menu-handle] {
+  width: 18px;
+  margin-inline-end: 21px;
+}
+.boxRoom {
+  width: 16px;
+}
+/* After a wheel under a still pointer, till it moves, no row's "+ ⋮⋮" (pointerHover.ts), as the rows' own margin. */
+:global(:root[data-pointer-still]) .strip {
+  visibility: hidden;
+}

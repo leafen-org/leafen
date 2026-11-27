@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Windows app's MSIX manifest, for the Microsoft Store: the program runs
+  with full trust as it does unpackaged. scripts/package-desktop.mjs (msix)
+  fills the {{…}} values; the package's identity and publisher are the ones
+  Partner Center gives, from the environment, and its languages (resources)
+  the app's catalogs' by the tags checked against the store's list and a
+  Windows install, English first as the default (storeLanguageTags there).
+
+  The data stays where the program unpackaged keeps it, %APPDATA%\Leafen,
+  outside the package's own storage (Windows 11 by the excluded folder,
+  Windows 10 with AppData unvirtualized), so removing the app leaves it.
+  The app opens at login by the startup task, off until the app turns it on
+  (desktop/packaged_windows.go), behind its window as the Run key opens the
+  program unpackaged.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+  xmlns:virtualization="http://schemas.microsoft.com/appx/manifest/virtualization/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap10 desktop desktop6 virtualization rescap">
+  <Identity Name="{{identityName}}" Publisher="{{publisher}}" Version="{{version}}" ProcessorArchitecture="{{architecture}}" />
+  <Properties>
+    <DisplayName>Leafen</DisplayName>
+    <PublisherDisplayName>{{publisherDisplayName}}</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
+    <virtualization:FileSystemWriteVirtualization>
+      <virtualization:ExcludedDirectories>
+        <virtualization:ExcludedDirectory>$(KnownFolder:RoamingAppData)\Leafen</virtualization:ExcludedDirectory>
+      </virtualization:ExcludedDirectories>
+    </virtualization:FileSystemWriteVirtualization>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+  <Resources>
+    {{resources}}
+  </Resources>
+  <Applications>
+    <Application Id="Leafen" Executable="{{program}}" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Leafen" Description="Leafen workspace" BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" />
+      <Extensions>
+        <desktop:Extension Category="windows.startupTask" Executable="{{program}}" EntryPoint="Windows.FullTrustApplication" uap10:Parameters="--background">
+          <desktop:StartupTask TaskId="LeafenAtLogin" Enabled="false" DisplayName="Leafen" />
+        </desktop:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="leafen">
+            <uap:DisplayName>Leafen</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+</Package>

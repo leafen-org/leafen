@@ -1,0 +1,276 @@
+/* A condition's option or people search (AutomationConditionPicks.tsx), as
+   Notion's (seen 2026-11-17 in Chrome at 1440 and on a Galaxy A90 at 411).
+   On a desktop a field 4px and 6px in on a faint tint, 28px high with no
+   chip; on a phone the screen's search group's own 14px and 16px in, 52px.
+   The chips wrap with their gaps after and under each, the words centred on
+   their line taking what is left of it (60px at least), and "ⓧ" at the
+   field's end on the first line. */
+.field {
+  display: flex;
+  align-items: flex-start;
+  min-height: 28px;
+  box-sizing: border-box;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.field:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+:global([data-theme="dark"]) .field {
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: rgba(255, 255, 255, 0.094) 0 0 0 1px;
+}
+
+.field[data-phone] {
+  min-height: 52px;
+  padding: 14px 16px;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.picks {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+
+.words {
+  display: flex;
+  flex: 1 1 60px;
+  min-width: 60px;
+}
+
+.field[data-phone] .words {
+  margin-inline-end: 8px;
+}
+
+.words input {
+  width: 100%;
+  min-width: 0;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.field[data-phone] .words input {
+  height: 24px;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+/* The desktop's "ⓧ" 2px down its 18px place, centred on the chips' line. */
+.field:not([data-phone]) > [data-search-clear] {
+  margin-block-start: 2px;
+}
+
+/* An option's chip on a desktop: its pill, 18px of 12px words 6px in, then its "×". */
+.option {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  max-width: 100%;
+  height: 18px;
+  margin-block: 0 4px;
+  margin-inline: 0 4px;
+  padding-inline-start: 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+/* An option's chip on a phone: the phone filter's chosen pill, 24px of 16px words 8px in and its "×". */
+.phoneOption {
+  composes: pill fieldPill from "./DatabasePhonePickers.module.css";
+}
+
+.optionName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field[data-phone] .picks > [data-automation-condition-pick] {
+  margin-block: 0 8px;
+  margin-inline: 0 8px;
+}
+
+/* A person's chip: face, name and "×" on no ground, 6px from the next. */
+.person {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  max-width: 100%;
+  height: 18px;
+  margin-block: 0 6px;
+  margin-inline: 0 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 14.4px;
+  white-space: nowrap;
+}
+
+.field[data-phone] .picks > .person {
+  height: 20px;
+  margin-block: 0 6px;
+  margin-inline: 0 6px;
+  font-size: 14px;
+  line-height: 16.8px;
+}
+
+.person > :first-child {
+  flex: none;
+  margin-inline-end: 6px;
+}
+
+.personName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.option > button,
+.person > button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-inline: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+}
+
+.option > button:hover,
+.person > button:hover {
+  background: var(--bg-hover);
+}
+
+/* An option's "×" in the secondary icons' grey (Notion's fill rgb(173, 169, 163) dark, rgb(142, 139, 134) light). */
+.option > button {
+  color: var(--icon-secondary);
+}
+
+.field[data-phone] .person > button {
+  width: 20px;
+  height: 20px;
+}
+
+.person > button svg {
+  opacity: 0.5;
+}
+
+/* A person to pick: 28px on a desktop, 8px in and a pixel apart, the face
+   8px in; 45px on a phone, the face 16px in; dimmed to 0.4 under "모든 옵션". */
+.personRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 28px;
+  margin-inline: 4px;
+  padding-block: 0;
+  padding-inline: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+/* The pointer's row and the keys' row (useConditionListKeys) on Notion's
+   .055 ground; a dimmed one, though the keys' under "모든 옵션", shows none. */
+.personRow:not([data-phone]):hover:not(:disabled),
+.personRow[data-lit]:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.personRow[data-phone] {
+  width: 100%;
+  min-height: 45px;
+  margin-inline: 0;
+  padding-inline: 16px;
+  border-bottom: 1px solid var(--border-secondary);
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.personRow[data-phone]:active:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.personRow[data-dimmed] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.personRow > :first-child {
+  flex: none;
+}
+
+.personRowName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The desktop's people, a pixel apart, 4px more above and below them than
+   an option list's rows (Notion's: "모든 옵션" 41px over the first person, 37
+   over the first option; the last person 8px over the window's foot). */
+.people {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-block: 4px;
+}
+
+/* A card's people (ConditionSentencePeople), as Notion's (seen 2026-11-18 in
+   Chrome at 1440): a 20px face 6px from the name, 4px apart, on the line's
+   20px. */
+.sentencePeople {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.sentencePerson {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  height: 20px;
+}
+
+.sentencePerson > :first-child {
+  flex: none;
+  margin-inline-end: 6px;
+}
+
+.sentencePersonName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

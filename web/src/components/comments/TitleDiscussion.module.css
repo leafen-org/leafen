@@ -1,0 +1,104 @@
+/* A page's own discussion under its title, or under a database page's
+   properties (CommentsPanel inline). */
+
+/* Its line is Notion's faint layout divider (seen 2026-11-12: dark
+   rgba(255,255,255,.094), light rgba(55,53,47,.09)). */
+.titleDiscussion [data-comments-composer] {
+  border-bottom-color: var(--title-discussion-divider);
+}
+
+/* Under a page's title, as Notion's on a computer (seen 2026-11-12, 1440
+   wide) and a phone (2026-11-14 at 411: its line 18–393 by a text column
+   from 26): the line runs 6px past the title's column on either side, the
+   faces and words start 8px in, at the title's words. Each comment stands
+   8px under its frame's top and 8px over its foot, 64px in all, and the
+   field 8px under the last; the field is 12px over the line while it is
+   alone, 16px under comments. */
+:global([data-page-comments-inline-host]) .titleDiscussion {
+  width: auto;
+  margin-inline: -6px;
+  padding-inline-start: 8px;
+}
+:global([data-page-comments-inline-host]) .titleDiscussion [role="list"] {
+  padding: 0;
+}
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comments-composer] {
+  margin-inline-start: -8px;
+  padding-block: 8px 16px;
+  padding-inline: 8px 0;
+}
+/* The list named by its own attribute: a role ties nothing (check-css-sibling-invalidation.mjs). */
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comments-list]:empty + [data-comments-composer] {
+  padding-block-end: 12px;
+}
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comment-thread] > [data-comment-id],
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comment-thread] > [data-thread-step] > [data-comment-id] {
+  --comment-pad-top: 8px;
+  padding-block: var(--comment-pad-top) 8px;
+}
+/* Each comment's buttons stand over its first line — its face's top — 4px on
+   a computer and 3px on a phone, wherever its frame's top room puts that, as
+   Notion's: top −4px over the comment's head at 1440 and −3px in the head's
+   row at 411, under a page's title and a database page's properties alike
+   (seen 2026-11-15 in Chrome at 1440 and on a Galaxy A90 at 411). */
+.titleDiscussion [data-comment-thread] > [data-comment-id],
+.titleDiscussion [data-comment-thread] > [data-thread-step] > [data-comment-id] {
+  --comment-pad-top: 6px;
+  --comment-pill-top: calc(var(--comment-pad-top) - var(--comment-pill-over, 4px));
+  padding-block-start: var(--comment-pad-top);
+}
+:global([data-phone="true"]) .titleDiscussion [data-comment-thread] > [data-comment-id],
+:global([data-phone="true"]) .titleDiscussion [data-comment-thread] > [data-thread-step] > [data-comment-id] {
+  --comment-pill-over: 3px;
+}
+/* Under a database page's properties its threads' column runs to the line's
+   end too, 8px past the words' column, as under a title: Notion's comments
+   there span 26–393 at 411 and 495.5–1207.5 at 1440, their words and buttons
+   to its end (seen 2026-11-14). */
+:global([data-row-page-comments]) .titleDiscussion [role="list"] {
+  margin-inline-end: -8px;
+}
+/* The page's own reactions 6px into it and the field's row 18px under them
+   (seen 2026-11-14: 30, 73 and 112 under the title at 1440; 18 under the
+   title, then 18 and 12, at 411). */
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comment-reactions="page"] {
+  margin-block: 6px 10px;
+}
+/* The thread's line starts 6px under its first comment's face and runs on
+   into the steps under it (TitleThreadReplies), its ends rounded, in the
+   faint line colour; threads stand 4px apart and the field follows the last
+   (Notion's, seen 2026-11-25 in Chrome at 1440, dpr 2, a page's and a
+   database page's discussion in two tabs: line 38–66 under a comment of 64,
+   #2c2c2b dark). */
+:global([data-page-comments-inline-host]) .titleDiscussion [data-comment-thread] > [data-comment-id]:not(:last-child)::before {
+  top: 38px;
+  bottom: -2px;
+  border-radius: 2px;
+  background: var(--border-secondary);
+}
+.titleDiscussion [data-comment-thread] + [data-comment-thread] {
+  margin-block-start: 4px;
+}
+/* On a computer it starts 24px under the title, a phone's 12 (PageHeader). */
+:global(body:not([data-phone="true"]) [data-page-comments-inline-host]) .titleDiscussion {
+  padding-block-start: 4px;
+}
+/* On a phone the field runs its row with the tools under it (CommentsPanel):
+   the row ends 4px short of the line's end while it starts a discussion and
+   at the end under comments, the words 5px short of the row's end and the
+   tools at it — Notion's new discussion and reply fields, under a title and a
+   database page's properties alike (seen 2026-11-14 on a Galaxy A90 at 411:
+   line 18–393, words 58–384 alone and 58–388 under a comment, tools to 389
+   and 393). */
+:global([data-phone="true"]) .titleDiscussion[data-comments-mode="page-inline"] [data-comments-composer] {
+  padding-inline-end: 0;
+}
+:global([data-phone="true"]) .titleDiscussion[data-comments-mode="page-inline"] [data-comments-list]:empty + [data-comments-composer] {
+  padding-inline-end: 4px;
+}
+/* The layout builder's preview of a database page's discussion draws its
+   threads without their buttons — no "▯ 열기", "↩" or "⋯", not even on a touch
+   screen — as Notion's builder (seen 2026-11-25; RowPageDiscussionsPreview). */
+:global([data-layout-preview-discussions]) .titleDiscussion [data-comment-hover-actions] {
+  display: none;
+}

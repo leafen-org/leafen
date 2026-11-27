@@ -1,0 +1,125 @@
+/* A linked view waiting for its source, as Notion's (seen 2026-11-02 at
+   1280px, a 290px block): a 40px tab row, then a 48px folder 65px under it,
+   "새 표" in gray and the bordered "데이터 소스 연결". Its tab stands where a
+   view block's tabs do, 2px in (a dashboard's, seen 2026-11-09), a chosen
+   view tab's 32px chip, inline and on its own page alike (seen 2026-11-09:
+   12px in, a 20px icon, its name 6px after, 20px round). */
+.frame {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 290px;
+  padding: 0 2px;
+}
+/* Opened alone in a side peek its tab stands 48px under the peek's bar, or
+   12px under its icon, as a dashboard's (Notion's, seen 2026-11-09). */
+:global([data-inline-database-peek-title][data-nameless="true"]) ~ * .frame {
+  margin-top: 4px;
+}
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 20px;
+  background: var(--bg-tab-selected);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* Another waiting view's tab, unchosen: no chip, its words grey, as a view
+   block's other tabs. */
+.tab[data-chosen="false"] {
+  background: none;
+  color: var(--text-secondary);
+}
+/* "+" after the tabs, a 28px grey round button, as a view block's: shown
+   while the pointer is on the tab row, wherever along it, or the button has
+   the keys or its menu open (Notion's, seen 2026-11-11 at 1440px, waiting
+   and mixed blocks alike: the pointer over the block's folder hides it). */
+.plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 9999px;
+  background: none;
+  color: var(--icon-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tabs:hover .plus,
+.plus:focus-visible,
+.plus[aria-expanded="true"] {
+  opacity: 1;
+}
+:global([data-touch="true"]) .plus {
+  opacity: 1;
+}
+.plus:hover,
+.plus:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* On a phone the pill opens the views sheet, its "⌄" after the name. */
+button.tab {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+.empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 65px 0 63px;
+}
+.mark {
+  position: relative;
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  color: var(--icon-tertiary);
+}
+.mark > svg:first-child {
+  width: 48px;
+  height: 48px;
+}
+.mark > svg:last-child {
+  position: absolute;
+  bottom: 4px;
+  inset-inline-start: 2px;
+  border-radius: 999px;
+  background: var(--bg-app);
+}
+.title {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  line-height: 24px;
+}
+.connect {
+  height: 32px;
+  margin-top: 14px;
+  padding: 0 12px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.connect:hover,
+.connect:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

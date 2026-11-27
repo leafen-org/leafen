@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 5,
+  "name": "organization",
+  "operations": [
+    { "goName": "organizationList", "tsName": "list", "method": "GET", "path": "/organizations" },
+    { "goName": "organizationPeopleSearch", "tsName": "searchPeople", "method": "GET", "path": "/organizations/{organizationId}/people" },
+    { "goName": "organizationStorageLimitUpdate", "tsName": "updateStorageLimit", "method": "PUT", "path": "/organizations/{organizationId}/storage-policy" },
+    { "goName": "organizationSharingSecurityPolicyRead", "tsName": "readSharingSecurityPolicy", "method": "GET", "path": "/organizations/{organizationId}/sharing-security-policy" },
+    { "goName": "organizationWorkspaceList", "tsName": "listWorkspaces", "method": "GET", "path": "/organizations/{organizationId}/workspaces" },
+    { "goName": "organizationSharingSecurityPolicyUpdate", "tsName": "updateSharingSecurityPolicy", "method": "PUT", "path": "/organizations/{organizationId}/sharing-security-policy" },
+    { "goName": "organizationSettingsSnapshot", "tsName": "settingsSnapshot", "method": "GET", "path": "/organizations/{organizationId}/settings-snapshot" },
+    { "goName": "organizationSettingsMutation", "tsName": "mutateSettings", "method": "POST", "path": "/organizations/{organizationId}/settings-mutations" }
+  ],
+  "bounds": [
+    { "goName": "maxOrganizationsPerResponse", "tsName": "organizationsPerResponse", "value": 100 },
+    { "goName": "organizationListCursorVersion", "tsName": "listCursorVersion", "value": 1 },
+    { "goName": "organizationListMaxCursorBytes", "tsName": "listCursorBytes", "value": 1024 },
+    { "goName": "organizationPeopleDefaultResults", "tsName": "peopleDefaultResults", "value": 8 },
+    { "goName": "organizationPeopleMaxResults", "tsName": "peopleMaxResults", "value": 50 },
+    { "goName": "organizationPeopleQueryRunes", "tsName": "peopleQueryRunes", "value": 120 },
+    { "goName": "organizationIdentifierMaxRunes", "tsName": "identifierRunes", "value": 255 },
+    { "goName": "organizationStorageMutationMaxBodyBytes", "tsName": "storageMutationBodyBytes", "value": 4096 },
+    { "goName": "organizationStoragePolicyRequestIDRunes", "tsName": "storagePolicyRequestIdRunes", "value": 255 },
+    { "goName": "organizationStoragePolicyReceiptLimit", "tsName": "storagePolicyReceiptLimit", "value": 100 },
+    { "goName": "organizationStoragePolicyResponseBytes", "tsName": "storagePolicyResponseBytes", "value": 16384 },
+    { "goName": "organizationSharingSecurityMutationMaxBodyBytes", "tsName": "sharingSecurityMutationBodyBytes", "value": 4096 },
+    { "goName": "organizationSharingSecurityRequestIDRunes", "tsName": "sharingSecurityRequestIdRunes", "value": 255 },
+    { "goName": "organizationSharingSecurityReceiptLimit", "tsName": "sharingSecurityReceiptLimit", "value": 100 },
+    { "goName": "organizationSharingSecurityResponseBytes", "tsName": "sharingSecurityResponseBytes", "value": 16384 },
+    { "goName": "organizationSettingsCursorVersion", "tsName": "settingsCursorVersion", "value": 1 },
+    { "goName": "organizationSettingsCursorBytes", "tsName": "settingsCursorBytes", "value": 4096 },
+    { "goName": "organizationSettingsMemberPageSize", "tsName": "settingsMemberPageSize", "value": 50 },
+    { "goName": "organizationSettingsGroupPageSize", "tsName": "settingsGroupPageSize", "value": 25 },
+    { "goName": "organizationSettingsDomainPageSize", "tsName": "settingsDomainPageSize", "value": 25 },
+    { "goName": "organizationSettingsMutationBodyBytes", "tsName": "settingsMutationBodyBytes", "value": 16384 },
+    { "goName": "organizationSettingsRequestIDRunes", "tsName": "settingsRequestIdRunes", "value": 255 },
+    { "goName": "organizationSettingsMutationValueRunes", "tsName": "settingsMutationValueRunes", "value": 512 },
+    { "goName": "organizationSettingsGroupNameRunes", "tsName": "settingsGroupNameRunes", "value": 100 },
+    { "goName": "organizationSettingsReceiptLimit", "tsName": "settingsReceiptLimit", "value": 100 },
+    { "goName": "organizationSettingsResponseBytes", "tsName": "settingsResponseBytes", "value": 131072 }
+  ],
+  "errors": [
+    { "goName": "errorCodeOrganizationNotFound", "tsName": "notFound", "value": "LEAFEN_ORGANIZATION_NOT_FOUND" },
+    { "goName": "errorCodeOrganizationAuthorityInvalid", "tsName": "authorityInvalid", "value": "LEAFEN_ORGANIZATION_AUTHORITY_INVALID" },
+    { "goName": "errorCodeOrganizationListCursorInvalid", "tsName": "listCursorInvalid", "value": "LEAFEN_ORGANIZATION_LIST_CURSOR_INVALID" },
+    { "goName": "errorCodeOrganizationPeopleQueryInvalid", "tsName": "peopleQueryInvalid", "value": "LEAFEN_ORGANIZATION_PEOPLE_QUERY_INVALID" },
+    { "goName": "errorCodeOrganizationStorageLimitInvalid", "tsName": "storageLimitInvalid", "value": "LEAFEN_ORGANIZATION_STORAGE_LIMIT_INVALID" },
+    { "goName": "errorCodeOrganizationStoragePolicyRequestIDReused", "tsName": "storagePolicyRequestIdReused", "value": "LEAFEN_ORGANIZATION_STORAGE_POLICY_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeOrganizationStoragePolicyConflict", "tsName": "storagePolicyConflict", "value": "LEAFEN_ORGANIZATION_STORAGE_POLICY_CONFLICT" },
+    { "goName": "errorCodeOrganizationStorageLimitExceeded", "tsName": "storageLimitExceeded", "value": "LEAFEN_ORGANIZATION_STORAGE_LIMIT_EXCEEDED" },
+    { "goName": "errorCodeOrganizationStorageReconciliationPending", "tsName": "storageReconciliationPending", "value": "LEAFEN_ORGANIZATION_STORAGE_RECONCILIATION_PENDING" },
+    { "goName": "errorCodeOrganizationStorageStateInvalid", "tsName": "storageStateInvalid", "value": "LEAFEN_ORGANIZATION_STORAGE_STATE_INVALID" },
+    { "goName": "errorCodeOrganizationSharingSecurityInvalid", "tsName": "sharingSecurityInvalid", "value": "LEAFEN_ORGANIZATION_SHARING_SECURITY_INVALID" },
+    { "goName": "errorCodeOrganizationSharingSecurityRequestIDReused", "tsName": "sharingSecurityRequestIdReused", "value": "LEAFEN_ORGANIZATION_SHARING_SECURITY_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeOrganizationSharingSecurityConflict", "tsName": "sharingSecurityConflict", "value": "LEAFEN_ORGANIZATION_SHARING_SECURITY_CONFLICT" },
+    { "goName": "errorCodeOrganizationSharingSecurityStateInvalid", "tsName": "sharingSecurityStateInvalid", "value": "LEAFEN_ORGANIZATION_SHARING_SECURITY_STATE_INVALID" },
+    { "goName": "errorCodeOrganizationSharingSecurityBlocked", "tsName": "sharingSecurityBlocked", "value": "LEAFEN_ORGANIZATION_SHARING_SECURITY_BLOCKED" },
+    { "goName": "errorCodeOrganizationSettingsInvalid", "tsName": "settingsInvalid", "value": "LEAFEN_ORGANIZATION_SETTINGS_INVALID" },
+    { "goName": "errorCodeOrganizationSettingsCursorInvalid", "tsName": "settingsCursorInvalid", "value": "LEAFEN_ORGANIZATION_SETTINGS_CURSOR_INVALID" },
+    { "goName": "errorCodeOrganizationSettingsRequestIDReused", "tsName": "settingsRequestIdReused", "value": "LEAFEN_ORGANIZATION_SETTINGS_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeOrganizationSettingsConflict", "tsName": "settingsConflict", "value": "LEAFEN_ORGANIZATION_SETTINGS_CONFLICT" },
+    { "goName": "errorCodeOrganizationSettingsStateInvalid", "tsName": "settingsStateInvalid", "value": "LEAFEN_ORGANIZATION_SETTINGS_STATE_INVALID" },
+    { "goName": "errorCodeOrganizationSettingsGroupConflict", "tsName": "settingsGroupConflict", "value": "LEAFEN_ORGANIZATION_SETTINGS_GROUP_CONFLICT" },
+    { "goName": "errorCodeOrganizationSettingsVerificationFailed", "tsName": "settingsVerificationFailed", "value": "LEAFEN_ORGANIZATION_SETTINGS_VERIFICATION_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "OrganizationRole",
+      "tsValuesName": "organizationRoles",
+      "values": [
+        { "goName": "organizationRoleOwner", "tsName": "owner", "value": "owner" },
+        { "goName": "organizationRoleAdmin", "tsName": "admin", "value": "admin" },
+        { "goName": "organizationRoleSecurityAdmin", "tsName": "securityAdmin", "value": "security_admin" },
+        { "goName": "organizationRoleBillingAdmin", "tsName": "billingAdmin", "value": "billing_admin" },
+        { "goName": "organizationRoleMember", "tsName": "member", "value": "member" },
+        { "goName": "organizationRoleGuest", "tsName": "guest", "value": "guest" }
+      ]
+    },
+    {
+      "tsName": "OrganizationAdminRole",
+      "tsValuesName": "organizationAdminRoles",
+      "values": [
+        { "goName": "organizationAdminRoleCompliance", "tsName": "compliance", "value": "compliance" },
+        { "goName": "organizationAdminRolePeople", "tsName": "people", "value": "people" },
+        { "goName": "organizationAdminRoleIT", "tsName": "it", "value": "it" },
+        { "goName": "organizationAdminRoleAnalytics", "tsName": "analytics", "value": "analytics" },
+        { "goName": "organizationAdminRoleBilling", "tsName": "billing", "value": "billing" }
+      ]
+    },
+    {
+      "tsName": "OrganizationMemberStatus",
+      "tsValuesName": "organizationMemberStatuses",
+      "values": [
+        { "goName": "organizationMemberStatusActive", "tsName": "active", "value": "active" },
+        { "goName": "organizationMemberStatusDeactivated", "tsName": "deactivated", "value": "deactivated" }
+      ]
+    },
+    {
+      "tsName": "OrganizationWorkspaceCreationPolicy",
+      "tsValuesName": "organizationWorkspaceCreationPolicies",
+      "values": [
+        { "goName": "organizationWorkspaceCreationOwnersAdmins", "tsName": "ownersAdmins", "value": "owners_admins" },
+        { "goName": "organizationWorkspaceCreationMembers", "tsName": "members", "value": "members" }
+      ]
+    },
+    {
+      "tsName": "OrganizationGroupAuthority",
+      "tsValuesName": "organizationGroupAuthorities",
+      "values": [
+        { "goName": "organizationGroupAuthorityManual", "tsName": "manual", "value": "manual" },
+        { "goName": "organizationGroupAuthoritySCIM", "tsName": "scim", "value": "scim" }
+      ]
+    },
+    {
+      "tsName": "OrganizationSettingsAction",
+      "tsValuesName": "organizationSettingsActions",
+      "values": [
+        { "goName": "organizationSettingsActionWorkspaceCreationPolicy", "tsName": "workspaceCreationPolicy", "value": "workspace_creation_policy" },
+        { "goName": "organizationSettingsActionGroupCreate", "tsName": "groupCreate", "value": "group_create" },
+        { "goName": "organizationSettingsActionGroupUpdate", "tsName": "groupUpdate", "value": "group_update" },
+        { "goName": "organizationSettingsActionGroupDelete", "tsName": "groupDelete", "value": "group_delete" },
+        { "goName": "organizationSettingsActionGroupMemberAdd", "tsName": "groupMemberAdd", "value": "group_member_add" },
+        { "goName": "organizationSettingsActionGroupMemberRemove", "tsName": "groupMemberRemove", "value": "group_member_remove" },
+        { "goName": "organizationSettingsActionDomainAdd", "tsName": "domainAdd", "value": "domain_add" },
+        { "goName": "organizationSettingsActionDomainVerify", "tsName": "domainVerify", "value": "domain_verify" },
+        { "goName": "organizationSettingsActionDomainRemove", "tsName": "domainRemove", "value": "domain_remove" },
+        { "goName": "organizationSettingsActionMemberDeactivate", "tsName": "memberDeactivate", "value": "member_deactivate" },
+        { "goName": "organizationSettingsActionMemberReactivate", "tsName": "memberReactivate", "value": "member_reactivate" },
+        { "goName": "organizationSettingsActionMemberRemove", "tsName": "memberRemove", "value": "member_remove" },
+        { "goName": "organizationSettingsActionMemberRole", "tsName": "memberRole", "value": "member_role" },
+        { "goName": "organizationSettingsActionOwnerTransfer", "tsName": "ownerTransfer", "value": "owner_transfer" },
+        { "goName": "organizationSettingsActionAdminRoleAdd", "tsName": "adminRoleAdd", "value": "admin_role_add" },
+        { "goName": "organizationSettingsActionAdminRoleRemove", "tsName": "adminRoleRemove", "value": "admin_role_remove" },
+        { "goName": "organizationSettingsActionFeedRetention", "tsName": "feedRetention", "value": "feed_retention" },
+        { "goName": "organizationSettingsActionAnalyticsRetention", "tsName": "analyticsRetention", "value": "analytics_retention" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "organizationWorkspaceSummary",
+      "tsName": "OrganizationWorkspaceSummary",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "organizationWorkspaceListResponse",
+      "tsName": "OrganizationWorkspaceList",
+      "fields": [
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]organizationWorkspaceSummary", "tsType": "OrganizationWorkspaceSummary[]" }
+      ]
+    },
+    {
+      "goName": "organizationResponse",
+      "tsName": "Organization",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" },
+        { "goName": "AdminRoles", "jsonName": "adminRoles", "goType": "[]string", "tsType": "OrganizationAdminRole[]" },
+        { "goName": "PolicyVersion", "jsonName": "policyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "SettingsRevision", "jsonName": "settingsRevision", "goType": "int", "tsType": "number" },
+        { "goName": "StorageLimitBytes", "jsonName": "storageLimitBytes", "goType": "*int64", "tsType": "number | null" },
+        { "goName": "Capabilities", "jsonName": "capabilities", "goType": "*organizationSettingsCapabilities", "tsType": "OrganizationSettingsCapabilities", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationMembershipResponse",
+      "tsName": "OrganizationMembership",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" }
+      ]
+    },
+    {
+      "goName": "organizationPerson",
+      "tsName": "OrganizationPerson",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationRole", "jsonName": "organizationRole", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "organizationPeopleResponse",
+      "tsName": "OrganizationPeopleResponse",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string" },
+        { "goName": "Limit", "jsonName": "limit", "goType": "int", "tsType": "number" },
+        { "goName": "People", "jsonName": "people", "goType": "[]organizationPerson", "tsType": "OrganizationPerson[]" }
+      ]
+    },
+    {
+      "goName": "organizationStorageLimitUpdateInput",
+      "tsName": "OrganizationStorageLimitUpdateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedPolicyVersion", "jsonName": "expectedPolicyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "StorageLimitBytes", "jsonName": "storageLimitBytes", "goType": "*int64", "tsType": "number | null" }
+      ]
+    },
+    {
+      "goName": "organizationStoragePolicyReceipt",
+      "tsName": "OrganizationStoragePolicyReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "PolicyVersion", "jsonName": "policyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationStorageLimitUpdateResponse",
+      "tsName": "OrganizationStorageLimitUpdateResponse",
+      "fields": [
+        { "goName": "Organization", "jsonName": "organization", "goType": "organizationResponse", "tsType": "Organization" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "organizationStoragePolicyReceipt", "tsType": "OrganizationStoragePolicyReceipt" }
+      ]
+    },
+    {
+      "goName": "organizationSharingSecurityPolicy",
+      "tsName": "OrganizationSharingSecurityPolicy",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "PolicyVersion", "jsonName": "policyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "PublicWebSharing", "jsonName": "publicWebSharing", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExternalEmailSharing", "jsonName": "externalEmailSharing", "goType": "bool", "tsType": "boolean" },
+        { "goName": "GuestAccess", "jsonName": "guestAccess", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Exports", "jsonName": "exports", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CrossWorkspaceCopies", "jsonName": "crossWorkspaceCopies", "goType": "bool", "tsType": "boolean" },
+        { "goName": "GuestInvites", "jsonName": "guestInvites", "goType": "string", "tsType": "\"members\" | \"owners\"" },
+        { "goName": "MemberAdds", "jsonName": "memberAdds", "goType": "string", "tsType": "\"owners\" | \"approval\"" },
+        { "goName": "PageAccessRequests", "jsonName": "pageAccessRequests", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewLinks", "jsonName": "viewLinks", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewLinkMaxSeconds", "jsonName": "viewLinkMaxSeconds", "goType": "int", "tsType": "number" },
+        { "goName": "ViewLinkSingleUseOnly", "jsonName": "viewLinkSingleUseOnly", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewLinkWithoutSecret", "jsonName": "viewLinkWithoutSecret", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UserHTML", "jsonName": "userHtml", "goType": "bool", "tsType": "boolean" },
+        {"goName": "MembershipRequests", "jsonName": "membershipRequests", "goType": "string", "tsType": "\"non_guests\" | \"guests\" | \"all\" | \"none\""},
+        { "goName": "RestrictedTeamspaceAdds", "jsonName": "restrictedTeamspaceAdds", "goType": "string", "tsType": "\"owners\" | \"teamspace_owners\" | \"members\"" },
+        { "goName": "RestrictedPageAdds", "jsonName": "restrictedPageAdds", "goType": "string", "tsType": "\"owners\" | \"approval\" | \"members\"" },
+        { "goName": "PendingGuestPrivatePages", "jsonName": "pendingGuestPrivatePages", "goType": "bool", "tsType": "boolean" },
+        { "goName": "GuestInviteRequests", "jsonName": "guestInviteRequests", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RestrictedPrivatePages", "jsonName": "restrictedPrivatePages", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSharingSecurityPolicyUpdateInput",
+      "tsName": "OrganizationSharingSecurityPolicyUpdateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedPolicyVersion", "jsonName": "expectedPolicyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "PublicWebSharing", "jsonName": "publicWebSharing", "goType": "*bool", "tsType": "boolean" },
+        { "goName": "ExternalEmailSharing", "jsonName": "externalEmailSharing", "goType": "*bool", "tsType": "boolean" },
+        { "goName": "GuestAccess", "jsonName": "guestAccess", "goType": "*bool", "tsType": "boolean" },
+        { "goName": "Exports", "jsonName": "exports", "goType": "*bool", "tsType": "boolean" },
+        { "goName": "CrossWorkspaceCopies", "jsonName": "crossWorkspaceCopies", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "GuestInvites", "jsonName": "guestInvites", "goType": "*string", "tsType": "\"members\" | \"owners\"", "optional": true },
+        { "goName": "MemberAdds", "jsonName": "memberAdds", "goType": "*string", "tsType": "\"owners\" | \"approval\"", "optional": true },
+        { "goName": "PageAccessRequests", "jsonName": "pageAccessRequests", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ViewLinks", "jsonName": "viewLinks", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ViewLinkMaxSeconds", "jsonName": "viewLinkMaxSeconds", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "ViewLinkSingleUseOnly", "jsonName": "viewLinkSingleUseOnly", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ViewLinkWithoutSecret", "jsonName": "viewLinkWithoutSecret", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "UserHTML", "jsonName": "userHtml", "goType": "*bool", "tsType": "boolean", "optional": true },
+        {"goName": "MembershipRequests", "jsonName": "membershipRequests", "goType": "*string", "tsType": "\"non_guests\" | \"guests\" | \"all\" | \"none\"", "optional": true},
+        { "goName": "RestrictedTeamspaceAdds", "jsonName": "restrictedTeamspaceAdds", "goType": "*string", "tsType": "\"owners\" | \"teamspace_owners\" | \"members\"", "optional": true },
+        { "goName": "RestrictedPageAdds", "jsonName": "restrictedPageAdds", "goType": "*string", "tsType": "\"owners\" | \"approval\" | \"members\"", "optional": true },
+        { "goName": "PendingGuestPrivatePages", "jsonName": "pendingGuestPrivatePages", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "GuestInviteRequests", "jsonName": "guestInviteRequests", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "RestrictedPrivatePages", "jsonName": "restrictedPrivatePages", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationSharingSecurityPolicyReceipt",
+      "tsName": "OrganizationSharingSecurityPolicyReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "PolicyVersion", "jsonName": "policyVersion", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSharingSecurityPolicyUpdateResponse",
+      "tsName": "OrganizationSharingSecurityPolicyUpdateResponse",
+      "fields": [
+        { "goName": "Policy", "jsonName": "policy", "goType": "organizationSharingSecurityPolicy", "tsType": "OrganizationSharingSecurityPolicy" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "organizationSharingSecurityPolicyReceipt", "tsType": "OrganizationSharingSecurityPolicyReceipt" }
+      ]
+    },
+    {
+      "goName": "organizationListResponse",
+      "tsName": "OrganizationList",
+      "fields": [
+        { "goName": "Organizations", "jsonName": "organizations", "goType": "[]organizationResponse", "tsType": "Organization[]" },
+        { "goName": "Memberships", "jsonName": "memberships", "goType": "[]organizationMembershipResponse", "tsType": "OrganizationMembership[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsCapabilities",
+      "tsName": "OrganizationSettingsCapabilities",
+      "fields": [
+        { "goName": "CanReadSettings", "jsonName": "canReadSettings", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManagePeople", "jsonName": "canManagePeople", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageSecurity", "jsonName": "canManageSecurity", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageBilling", "jsonName": "canManageBilling", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanViewAuditLog", "jsonName": "canViewAuditLog", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanSearchContent", "jsonName": "canSearchContent", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageLegalHolds", "jsonName": "canManageLegalHolds", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageIdentity", "jsonName": "canManageIdentity", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageIntegrations", "jsonName": "canManageIntegrations", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanViewAnalytics", "jsonName": "canViewAnalytics", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageRoles", "jsonName": "canManageRoles", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanTransferOwnership", "jsonName": "canTransferOwnership", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsSummary",
+      "tsName": "OrganizationSettingsSummary",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerID", "jsonName": "ownerId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" },
+        { "goName": "AdminRoles", "jsonName": "adminRoles", "goType": "[]string", "tsType": "OrganizationAdminRole[]" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "WorkspaceCreationPolicy", "jsonName": "workspaceCreationPolicy", "goType": "string", "tsType": "OrganizationWorkspaceCreationPolicy" },
+        { "goName": "FeedRetentionDays", "jsonName": "feedRetentionDays", "goType": "int", "tsType": "number", "zeroMeans": "0 keeps the updates feed with no limit by age." },
+        { "goName": "AnalyticsRetentionDays", "jsonName": "analyticsRetentionDays", "goType": "int", "tsType": "number", "zeroMeans": "0 keeps page analytics and page views with no limit by age." },
+        { "goName": "Capabilities", "jsonName": "capabilities", "goType": "organizationSettingsCapabilities", "tsType": "OrganizationSettingsCapabilities" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsMember",
+      "tsName": "OrganizationSettingsMember",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" },
+        { "goName": "AdminRoles", "jsonName": "adminRoles", "goType": "[]string", "tsType": "OrganizationAdminRole[]" },
+        { "goName": "CanManageLifecycle", "jsonName": "canManageLifecycle", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageRole", "jsonName": "canManageRole", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManageAdminRoles", "jsonName": "canManageAdminRoles", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanTransferOwnership", "jsonName": "canTransferOwnership", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RequiresContentReassignment", "jsonName": "requiresContentReassignment", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsGroupMember",
+      "tsName": "OrganizationSettingsGroupMember",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationMemberID", "jsonName": "organizationMemberId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "OrganizationRole" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationMemberStatus" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsGroup",
+      "tsName": "OrganizationSettingsGroup",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ManagedBy", "jsonName": "managedBy", "goType": "string", "tsType": "OrganizationGroupAuthority" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]organizationSettingsGroupMember", "tsType": "OrganizationSettingsGroupMember[]" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number" },
+        { "goName": "MembersHasMore", "jsonName": "membersHasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsDomain",
+      "tsName": "OrganizationSettingsDomain",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Domain", "jsonName": "domain", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "RecordName", "jsonName": "recordName", "goType": "string", "tsType": "string" },
+        { "goName": "RecordValue", "jsonName": "recordValue", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationCheckedAt", "jsonName": "verificationCheckedAt", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationErrorCode", "jsonName": "verificationErrorCode", "goType": "string", "tsType": "string" },
+        { "goName": "VerificationFound", "jsonName": "verificationFound", "goType": "string", "tsType": "string" },
+        { "goName": "VerifiedAt", "jsonName": "verifiedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsAuditEvent",
+      "tsName": "OrganizationSettingsAuditEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "TargetType", "jsonName": "targetType", "goType": "string", "tsType": "string" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "Metadata", "jsonName": "metadata", "goType": "map[string]any", "tsType": "Record<string, unknown>" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" },
+        { "goName": "ActorApp", "jsonName": "actorApp", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ActorName", "jsonName": "actorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetName", "jsonName": "targetName", "goType": "*string", "tsType": "string | null", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationSettingsSnapshotResponse",
+      "tsName": "OrganizationSettingsSnapshot",
+      "fields": [
+        { "goName": "SnapshotIdentity", "jsonName": "snapshotIdentity", "goType": "string", "tsType": "string" },
+        { "goName": "Organization", "jsonName": "organization", "goType": "organizationSettingsSummary", "tsType": "OrganizationSettingsSummary" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]organizationSettingsMember", "tsType": "OrganizationSettingsMember[]" },
+        { "goName": "Groups", "jsonName": "groups", "goType": "[]organizationSettingsGroup", "tsType": "OrganizationSettingsGroup[]" },
+        { "goName": "Domains", "jsonName": "domains", "goType": "[]organizationSettingsDomain", "tsType": "OrganizationSettingsDomain[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsMutationInput",
+      "tsName": "OrganizationSettingsMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "OrganizationSettingsAction" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "SecondaryTargetID", "jsonName": "secondaryTargetId", "goType": "string", "tsType": "string" },
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsMutationReceipt",
+      "tsName": "OrganizationSettingsMutationReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationSettingsMutationResponse",
+      "tsName": "OrganizationSettingsMutationResponse",
+      "fields": [
+        { "goName": "Organization", "jsonName": "organization", "goType": "*organizationSettingsSummary", "tsType": "OrganizationSettingsSummary | null" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]organizationSettingsMember", "tsType": "OrganizationSettingsMember[]" },
+        { "goName": "Group", "jsonName": "group", "goType": "*organizationSettingsGroup", "tsType": "OrganizationSettingsGroup | null" },
+        { "goName": "Domain", "jsonName": "domain", "goType": "*organizationSettingsDomain", "tsType": "OrganizationSettingsDomain | null" },
+        { "goName": "DeletedID", "jsonName": "deletedId", "goType": "string", "tsType": "string" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "organizationSettingsMutationReceipt", "tsType": "OrganizationSettingsMutationReceipt" }
+      ]
+    }
+  ]
+}

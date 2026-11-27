@@ -1,0 +1,500 @@
+/* The form reads as a page, as Notion's respondents see it (seen 2026-10-08):
+   no card around its head or its questions; its icon reaches up into the
+   cover above it. */
+.header {
+  overflow-wrap: anywhere;
+}
+
+/* A cover over the page's top and side margins, 30% of the window high,
+   as a page's (Notion's respondent page and preview, seen 2026-11-08); the
+   page's top margin goes under it, and its side margins are the page's and
+   the preview window's (PublicFormView.module.css, FormPreviewDialog.module.css). */
+.cover {
+  margin: 0 calc(-1 * (var(--form-page-inline, 22px) + var(--form-page-bleed, 0px)));
+}
+
+.headerBody {
+  padding: 24px 0 8px;
+}
+/* Who answers comes under the head: the title at the top, then 24 under the
+   description, the questions 30 below, as Notion's (seen 2026-11-05). */
+.header:has(+ .respondent) .headerBody {
+  padding-top: 0;
+}
+.header + .respondent {
+  margin-top: 16px;
+}
+
+/* "다음 이름으로 응답 제출 [나] 〈이름〉" above a signed-in respondent's form,
+   as Notion's (seen 2026-11-03): a 33 tall box (6 10 in, rounded 6) of
+   14px/21 secondary words, the face 20. */
+.respondent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* Its wash is a phone's choices' too (Notion's rgba(84, 72, 49, 0.04) on both, seen 2026-11-15 at 411). */
+.respondent, :global([data-phone="true"]) .choice { background: color-mix(in srgb, var(--text-default) 4%, transparent); }
+
+.respondentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The icon 78 square, 8 in from the column, 42 up into a cover, 48 over
+   what follows (Notion's preview, seen 2026-11-08). */
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 78px;
+  margin-block: 0 24px;
+  margin-inline: 8px 0;
+  font-size: 78px;
+  line-height: 1;
+}
+
+.cover + * .icon {
+  margin-top: -42px;
+}
+
+.cover + * .headerBody {
+  padding-top: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 48px;
+  overflow-wrap: anywhere;
+}
+
+.description,
+.questionDescription {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* The form's description reads as its text, 16 under the title (Notion's, seen 2026-11-05). */
+.description {
+  margin-top: 16px;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* Questions 30 apart, the first 30 under what comes before, as Notion's
+   (seen 2026-11-03). */
+.questions {
+  display: grid;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.question {
+  padding: 0;
+}
+
+/* A question's title: 24px/700 on a 30px line, 6 above and below; a
+   required one's "*" plain and pale beside it. */
+.questionLabel {
+  display: block;
+  padding: 6px 0;
+  color: var(--text-default);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.required {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+/* A required question unanswered at "보내기": its "*" red and, 8 under its
+   answer, "이 질문은 필수입니다." 12px in red (seen 2026-11-03); its answer's
+   box ringed red, 1px in and 1px out, a list of choices not (seen 2026-11-08). */
+.question[data-missing] .required {
+  color: var(--danger);
+}
+
+.question[data-missing] :is(.input, .textarea, .dateAnswerButton),
+.question[data-missing] .dateAnswer [data-schedule-date] {
+  box-shadow: inset 0 0 0 1px var(--danger), 0 0 0 1px var(--danger);
+}
+
+.question[data-missing] [data-form-answer] button[aria-haspopup="dialog"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 1px var(--danger);
+}
+
+.missing {
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* "(원하는 만큼 선택)" under a question that takes as many as wanted, 20
+   above its answer. */
+.questionHint {
+  display: block;
+  margin: 4px 0 20px;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* A question's description right under its name, 16px on 24 with 4 above
+   and below, in the secondary color, as Notion's (seen 2026-11-08) and the
+   builder's card (FormQuestionCard.module.css .questionDescription). */
+.questionDescription {
+  margin: 0;
+  padding: 4px 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* A typed answer: 38 tall, 12 under its title, a 1px strong ring rounded 6,
+   16px words 10 in; a picked one (a date, a page, a person) the same box 8
+   under it, "입력한 답변" pale and ⇕ at its end. */
+.input,
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: var(--form-answer-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.input {
+  min-height: 38px;
+  padding: 5px 10px;
+}
+
+.input:focus,
+.textarea:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* A list of choices 8 under its title: 32 tall rows reaching 8 past the
+   answers on either side, the round or square mark 12 before the name. */
+.choiceList {
+  display: grid;
+  gap: 0;
+  margin-block: 8px 0;
+  margin-inline: -8px 0;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 32px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.choice:hover {
+  background: var(--bg-hover);
+}
+
+/* A phone's choices are boxes across the column, 4 apart, the mark 8 in (Notion's, seen 2026-11-08 at 375 and 2026-11-15 at 411). */
+:global([data-phone="true"]) .choiceList { gap: 4px; margin-inline: 0; }
+
+.choice input,
+.checkboxAnswer input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.choiceMarker {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-app);
+}
+
+.choiceMarker[data-radio] {
+  border-radius: 50%;
+}
+
+/* The input named by its own class, which ties it to the marker after it: a
+   `type` ties nothing, every button carrying one (check-css-sibling-invalidation.mjs). */
+.choiceInput:checked + .choiceMarker {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+  box-shadow: inset 0 0 0 4px var(--accent-blue);
+}
+
+.choiceInput:checked + .choiceMarker[data-radio] {
+  box-shadow: inset 0 0 0 4.5px var(--accent-blue);
+  background: var(--bg-app);
+}
+
+.choiceInput:focus-visible + .choiceMarker,
+.choiceInput:focus-visible + .choiceMarker[data-radio] {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.choiceInput:disabled + .choiceMarker {
+  opacity: .5;
+}
+
+.checkboxAnswer { /* Its label 12px after the box on the box's line, 16px on 24 (Notion's, seen 2026-11-17). */
+  display: inline-flex; align-items: center; gap: 12px;
+  margin-top: 14px;
+  cursor: pointer;
+}
+.checkboxLabel { font-size: 16px; line-height: 24px; overflow-wrap: anywhere; }
+
+.pickedMark {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+.submit {
+  min-height: 36px;
+  margin-top: 48px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: rgb(44, 44, 43);
+  color: rgb(240, 239, 237);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  cursor: pointer;
+}
+
+.submit[data-color="gray"] { background: rgb(166, 162, 153); color: white; }
+.submit[data-color="brown"] { background: rgb(159, 107, 83); color: white; }
+.submit[data-color="yellow"] { background: rgb(203, 145, 47); color: white; }
+.submit[data-color="orange"] { background: rgb(217, 115, 13); color: white; }
+.submit[data-color="green"] { background: rgb(68, 131, 97); color: white; }
+.submit[data-color="azure"] { background: rgb(51, 126, 169); color: white; }
+.submit[data-color="purple"] { background: rgb(144, 101, 176); color: white; }
+.submit[data-color="pink"] { background: rgb(193, 76, 138); color: white; }
+.submit[data-color="red"] { background: rgb(212, 76, 71); color: white; }
+.submit:disabled { cursor: default; opacity: .55; }
+
+@media (max-width: 640px) {
+  .cover { height: 120px; }
+}
+
+/* A dropdown answer (FormDropdown), drawn as a typed answer is. */
+.dropdown {
+  position: relative;
+  display: block;
+  margin-top: 8px;
+}
+
+.dropdownRequired {
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: 11px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* A date answer (dateField): the app's calendar behind a field drawn as a
+   typed answer is. */
+.dateAnswer {
+  position: relative;
+  display: block;
+  margin-top: 8px;
+}
+
+.dateAnswer [data-schedule-date] {
+  min-height: 38px;
+  padding-block: 0;
+  padding-inline: 10px 28px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: var(--form-answer-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+}
+
+.dateAnswer > .pickedMark {
+  position: absolute;
+  top: 11px;
+  inset-inline-end: 6px;
+  pointer-events: none;
+}
+
+.dateAnswer [data-schedule-date][data-empty="true"] {
+  color: var(--text-tertiary);
+}
+
+.dateAnswer [data-schedule-date]:is(:focus-visible, [aria-expanded="true"]) {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* A file question's grey bar, as Notion's (seen 2026-11-24): 8 under its title, palTraGra100, 8 in, 12 round; "[📄 업로드]", a white button on whiButBac,
+   36 tall, 12 in, its mark 8 before 16px words in 500, and the 14px limits 8 after it; the files sent listed under it by name. */
+.fileAnswer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+.fileBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  background: var(--form-file-bar-bg);
+}
+.fileUpload {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--white-button-bg);
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.fileUpload:disabled { color: var(--text-secondary); }
+.fileLimits {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fileList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.fileChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding-block: 2px;
+  padding-inline: 8px 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-size: 14px;
+}
+.fileChip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fileChip button {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 3px;
+  color: var(--icon-secondary);
+}
+.fileFailed {
+  color: var(--danger);
+  font-size: 12px;
+}
+
+.dateAnswerButton {
+  display: block;
+  width: 100%;
+  min-height: 38px;
+  padding-block: 0;
+  padding-inline: 10px 28px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: var(--form-answer-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.dateAnswerButton[data-empty="true"] { color: var(--text-tertiary); }
+.dateAnswerButton:disabled { cursor: default; }
+.dateAnswerButton:focus-visible,
+.dateAnswerButton[aria-expanded="true"] { box-shadow: var(--name-field-ring-focus); outline: none; }
+
+.dateAnswerClear {
+  width: 100%;
+  margin-top: 4px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.dateAnswerClear:hover,
+.dateAnswerClear:focus-visible { background: var(--bg-hover); outline: none; }
+
+.clearChoice {
+  align-self: flex-start;
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  /* Notion's "선택 초기화": 16px 500 (seen 2026-11-15 at 1440 and in Android Chrome at 411). */
+  font: inherit;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/* A long answer: 86 high, its lines 28, not resized by hand, as Notion's (seen 2026-11-05). */
+textarea.textarea { min-height: 86px; padding: 4px 10px; line-height: 28px; resize: none; field-sizing: content; }

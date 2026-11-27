@@ -1,0 +1,532 @@
+/* Settings, as Notion's window (seen 2026-10-02): 90% of the window's
+   width, its height less 100px from 50px down, a 240px list at its side.
+   Its ground is every window's (--modal-bg, Notion's bacEle), the list on
+   the sidebar's (bacSec) and the sections on a page's (bacPri) — in dark
+   #202020, #202020 and #191919 (read 2026-11-17 at 1440, every section). */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  width: 90vw;
+  height: calc(100vh - 100px);
+  height: calc(100dvh - 100px);
+  margin: 50px auto 0;
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.dialog:focus { outline: none; }
+
+/* The list, as Notion's (seen 2026-10-28): "검색 설정" 8px from the top and
+   sides, the full width, over the groups, which scroll under it on their
+   own. A group's name is a 28px line, its items 2px apart. */
+.nav {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 8px 8px 0;
+  background: var(--bg-sidebar);
+}
+
+/* "검색 설정" at the list's top, as Notion's: it finds the settings' rows.
+   6px in, its magnifier (SettingsSearchMark) in a 24px box, the words 6px
+   after the box on 20px lines, on a faint tint (seen 2026-11-17 at 1440),
+   running up to "입력 값 지우기" while words are in (162 of 182). */
+.search {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 28px;
+  margin: 0 0 12px;
+  padding-block: 0;
+  padding-inline: 6px;
+  border-radius: 6px;
+  /* bacSecTra with 1px of borPriTra inside, in either theme (Notion's, seen 2026-11-22 light and dark). */
+  background: var(--name-field-bg);
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-tertiary);
+}
+
+.searchMark {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 6px;
+}
+
+.search:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+/* Found rows as Notion lists them (measured 2026-11-07): a 28px line naming
+   the group and section, 2px, then 46px rows, their name and line one line
+   each, cut with "…"; 12px between sections. */
+.results {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 12px;
+}
+
+/* The sections, which a narrow window lays in one scrolling strip under the search. */
+.navGroups {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 12px;
+}
+
+/* Until the reads that add items have settled (SettingsWindow.tsx). */
+.navGroups[data-pending="true"] { visibility: hidden; }
+
+.resultGroup {
+  display: grid;
+  gap: 2px;
+}
+
+.resultPath {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  text-align: start;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.result {
+  display: grid;
+  min-width: 0;
+  width: 100%;
+  padding-block: 4px;
+  padding-inline: 8px 6px;
+  border-radius: 6px;
+  text-align: start;
+}
+
+.resultPath:hover,
+.resultPath:focus-visible,
+.result:hover,
+.result:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.result strong,
+.result span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.result strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.result span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.noResults {
+  padding: 12px 8px;
+  color: var(--text-secondary);
+  font: 14px/20px var(--font-ui);
+}
+
+.navGroup {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.navGroup + .navGroup {
+  margin-top: 12px;
+}
+
+.navGroupLabel {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* As Notion's (seen 2026-10-11): the chosen item on the hover tint, its icon the primary icon color; under the
+   pointer the chosen one takes the tint half again (Notion's rule, its stylesheet and two tabs 2026-11-21: dark .055 → .082). */
+.navItem:hover, .navItem:focus-visible, .navItem[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.navItem[data-active="true"]:is(:hover, :focus-visible) { background: rgb(from var(--bg-hover) r g b / calc(alpha * 1.5)); }
+
+.navItem svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+.navItem[data-active="true"] svg { color: var(--icon-primary); }
+
+.navAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  font-size: 12px;
+}
+
+/* A name too long is cut 12px from the item's end with no "…", as Notion's own items (seen 2026-11-18 in French, two
+   tabs). Leafen's own items (Notion's list has none: the server's, other servers, enterprise) read whole in every
+   language, going on to a second line as a long name in Notion's view settings does (German, Japanese cut 2026-11-24). */
+.navLabel { min-width: 0; margin-inline-end: 4px; overflow: hidden; text-overflow: clip; white-space: nowrap; }
+.navItem[data-leafen-own] { height: auto; min-height: 28px; padding-block: 3px; }
+.navItem[data-leafen-own] .navLabel { white-space: normal; overflow-wrap: anywhere; }
+
+.updateMarker {
+  width: 6px;
+  height: 6px;
+  margin-inline-start: auto;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+
+/* The sections follow the room this panel has, not the screen's. */
+.panel {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  /* Room kept for the scroll bar, unlike Notion's on purpose: a section that
+     grows or shrinks moved the switches on the right by 15px as the bar came
+     or went, and a second press on the same spot missed (2026-11-06). */
+  scrollbar-gutter: stable;
+  container: settings / inline-size;
+  background: var(--bg-app);
+}
+
+/* An address or a word longer than its line breaks to fit (as before, in
+   Korean only: English words keep their width). */
+:lang(ko) .panel {
+  overflow-wrap: anywhere;
+}
+
+/* At most 800px in the middle, at least 60px from either side, as Notion's
+   (seen 2026-10-28: 777px in a 1280px window, 800px in a 1600px one). A
+   narrower window keeps 5% of its width at the sides, 36px over and 44px
+   under (seen 2026-10-29: 51.2px at 1024, 38.4px at 768, 32px at 640).
+   사이드바, its list beside a 280px preview, fills the panel inside those
+   sides instead, as Notion's (seen 2026-11-18 at 1440, dpr 1: 372..1293
+   where every other screen keeps 432.5..1232.5; the same 777px at 1280),
+   as the account's email page does. */
+.content {
+  position: relative;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 36px min(60px, 5vw) 44px;
+}
+.content[data-settings-content="sidebar"], .emailContent { max-width: none; }
+
+/* The end of the title's line: a section's link there sits level with the
+   title at the content's right edge, as Notion's "사람 디렉토리 보기 ↗"
+   (seen 2026-11-07: a 32px line, the link centred on it). */
+.titleAction {
+  position: absolute;
+  top: 36px;
+  inset-inline-end: min(60px, 5vw);
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+.titleAction:empty { display: none; }
+
+/* 26px on a 32px line, as Notion's every section (seen 2026-11-18 at 1440, dpr 1: 86..118, its line under at 126). */
+.title {
+  margin: 0 0 12px;
+  color: var(--text-default);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+/* A title without a line under it keeps the same room over its first group (as weak as .title, for SettingsTouchHead). */
+.title:where(:not(:has(+ .subtitle)):not(:has(+ .titleAction + .subtitle))) {
+  margin-bottom: 36px;
+}
+
+/* The line under it, as Notion's (seen 2026-10-11): 16px, the default color, 8px below the title and 44px over its first group. */
+.subtitle {
+  margin: -4px 0 44px;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+.subtitle:has(.subtitleLink) {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.subtitleLink {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-blue);
+}
+.subtitleLink:hover {
+  text-decoration: underline;
+}
+
+.emailContent { padding: 28px min(60px, 5vw) 64px; }
+/* A page inside a section, as Notion's 이메일 관리하기 (seen 2026-10-30): a
+   28px line 10px in from the window's sides, its section a 14px gray button
+   6px in, a faint slash 4px after it, the page's name 5px after that, and a
+   line 9px under it 36px over the page. */
+.breadcrumb { display: flex; align-items: center; margin: -18px calc(10px - min(60px, 5vw)) 36px; padding-bottom: 9px; border-bottom: 1px solid var(--border-default); font-size: 14px; line-height: 20px; }
+.breadcrumb button { height: 28px; padding: 0 6px; border-radius: 6px; color: var(--text-secondary); }
+.breadcrumb button:hover { background: var(--bg-hover); }
+.breadcrumb > span[aria-hidden] { margin-block: 0; margin-inline: 4px 5px; color: var(--icon-tertiary); }
+
+.close {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: var(--icon-secondary);
+}
+
+/* A round 22px button with a 14px ×, as Notion's (seen 2026-10-28). */
+.close > svg {
+  width: 14px;
+  height: 14px;
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+/* A phone's settings (SettingsPhoneScreen.tsx), as Notion's in iPhone
+   Safari (seen 2026-11-14, 402pt): the whole screen on the soft ground, a
+   44px head over a hairline, then one long screen 18px in from its sides,
+   each section under a 20px title, 25px tall with 12px under it, the first
+   18px under the head (its head, sections and rows: SettingsPhone.module.css). */
+:global([data-phone="true"]) .dialog {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  border-radius: 0;
+  background: var(--bg-soft);
+  box-shadow: none;
+}
+
+/* Its sections stand on that soft ground, not a page's. */
+:global([data-phone="true"]) .panel {
+  background: none;
+}
+
+:global([data-phone="true"]) .content {
+  padding: 18px 18px 48px;
+}
+
+:global([data-phone="true"]) .content [data-settings-part] {
+  scroll-margin-top: 18px;
+}
+
+/* A section's own screen: its head names it, so a link at its title's end
+   leads the screen. */
+:global([data-phone="true"]) .titleAction {
+  position: static;
+  justify-content: flex-end;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+:global([data-phone="true"]) .titleAction:empty {
+  display: none;
+}
+
+/* A window narrower than 600px without the phone mark (a narrow browser or
+   desktop window) lays settings out as the phone does: under 600px the
+   240px list would leave the sections 60–110px (2026-11-08 at 390px).
+   Notion keeps its list at 606px, the narrowest a desktop Chrome window
+   gets (2026-11-13: window 545, list 240, sections 305 — as here). */
+@media (max-width: 599px) {
+  .dialog {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .nav {
+    gap: 6px;
+    overflow: visible;
+    padding-block: 8px;
+    padding-inline: 12px 44px;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .search {
+    margin: 0;
+  }
+
+  .results {
+    max-height: 50dvh;
+  }
+
+  .navGroups {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0;
+  }
+
+  .navGroup {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 4px;
+  }
+
+  .navGroup + .navGroup {
+    margin-top: 0;
+  }
+
+  .navGroupLabel {
+    display: none;
+  }
+
+  .navItem {
+    width: auto;
+    flex: 0 0 auto;
+  }
+  .navLabel, .navItem[data-leafen-own] .navLabel { margin-inline-end: 0; white-space: nowrap; }
+
+  .content {
+    padding: 20px 16px 48px;
+  }
+
+  .close {
+    top: 0;
+    inset-inline-end: 0;
+    z-index: 1;
+    width: 44px;
+    height: 45px;
+    border-radius: 0;
+    background: var(--bg-sidebar);
+  }
+}
+
+/* A row picked from the search, lit as Notion lights it (seen 2026-11-07):
+   8px past it above and below and 12px to the sides, 12px round, a mark's
+   blue behind its words, fading in and out over a quarter second around the
+   rest of five. Coming into sight, it keeps 64px of room from the edge. */
+.foundRow {
+  position: relative;
+  z-index: 0;
+  scroll-margin-block: 64px;
+}
+
+.foundRow::before {
+  content: "";
+  position: absolute;
+  inset: -8px -12px;
+  z-index: -1;
+  border-radius: 12px;
+  background: var(--action-mark-blue-bg);
+  pointer-events: none;
+  animation: foundRowLit 5s ease-in-out both;
+}
+
+@keyframes foundRowLit {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  95% { opacity: 1; }
+  100% { opacity: 0; }
+}

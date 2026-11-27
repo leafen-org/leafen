@@ -1,0 +1,498 @@
+/* The view settings' properties screens: a search, then the view's shown
+   and hidden properties (DatabasePropertyVisibilityList) or the data
+   source's properties, each opened for its details, new properties and the
+   deleted ones. The search is Notion's (seen 2026-09-30): 28px, a faint
+   ground and a hairline ring that stays as it is while typing. */
+.sourcePropertiesMenu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 4px 6px;
+}
+
+/* In the view settings panel the panel's foot ends it, 8 under the last row
+   (DatabaseViewSettingsPanel .panelContent). */
+[data-view-settings-screen] > .sourcePropertiesMenu {
+  padding-bottom: 0;
+}
+[data-view-settings-screen] .propertyEditRows > :last-child {
+  margin-bottom: 0;
+}
+
+.sourcePropertySearch {
+  display: block;
+}
+
+/* A property's settings, as Notion's "속성 편집" (seen 2026-11-11 at 1440):
+   the name's row and the rows from edge to edge, the rows 16px under the
+   name and 28px a pixel apart — the type, its access and the type's own
+   settings, then a line 8px from the rows over and under it and the
+   table's wrap and status display, duplicate and delete. */
+.sourcePropertiesMenu[data-property-edit] {
+  padding-inline: 0;
+}
+
+.propertyEditRows {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2px;
+}
+
+.propertyEditRows > :is(button, label, [data-property-app-editor]) {
+  margin-top: 0;
+  margin-bottom: 1px;
+}
+
+.propertyEditRows > .layoutAction {
+  padding-inline: 8px;
+}
+
+.propertyEditRows > .layoutDivider {
+  margin: 7px 8px 8px;
+}
+
+.propertyEditRows .propertyHeaderFieldset {
+  margin-bottom: 0;
+}
+
+/* A status's first group 11px under the row over it and 9px over its
+   options, and the line 8px under the last, as Notion's; an ID's prefix
+   button 8px over the line too. */
+.propertyEditRows :is([data-status-options], [data-id-prefix-editor]) {
+  margin-bottom: 1px;
+}
+
+.propertyEditRows [data-status-options] > .propertyOptionHead:first-child {
+  margin: 10px 0 9px;
+}
+
+/* A title's type, which cannot change, faded as Notion's (0.4). */
+.propertyEditRows > [data-locked="title"] {
+  opacity: 0.4;
+}
+
+/* A property's "유형" in the view settings, as Notion's (seen 2026-11-11 at
+   1440): the types 4px wider than the settings' rows each side, under
+   "유형", a 28px line of 12px grey 8px in with its 20px 🔍 4px after it,
+   4px over the first; the search 8px in, 5px under the line and 8px over
+   the types; the types 28px a pixel apart, each its 20px icon 8px in and
+   its name 8px past it, the lit one's "?" and the current one's 16px ✓ at
+   the end, 8px in and 8px apart. */
+.sourcePropertiesMenu [data-type-heading] {
+  gap: 1px;
+  margin-inline: -4px;
+}
+
+.propertyTypeHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding-inline: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+
+.propertyTypeSearch {
+  flex: none;
+  box-sizing: border-box;
+  height: var(--name-field-height);
+  margin: 4px 8px 7px;
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.propertyTypeSearch:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.sourcePropertiesMenu [data-type-heading] > .propertyHeaderTypeOption {
+  display: flex;
+  margin-top: 0;
+}
+
+.sourcePropertiesMenu [data-type-heading] > .propertyTypeHead + .propertyHeaderTypeOption {
+  margin-top: 3px;
+}
+
+[data-type-heading] > .propertyHeaderTypeOption > span:nth-child(2) {
+  flex: 1 1 auto;
+}
+
+/* Outside the panel the menu closes with its own ×. */
+.sourcePropertiesMenu[data-closable="true"] .sourcePropertySearch {
+  margin-inline-end: 28px;
+}
+
+.sourcePropertySearch input {
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--menu-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+/* Ringed blue while typed in, as Notion's "속성을 검색하세요" (seen 2026-11-05). */
+.sourcePropertySearch input:focus {
+  box-shadow: var(--filter-text-focus);
+}
+
+.sourcePropertyClose {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+/* "속성 편집"'s list, as Notion's (seen 2026-11-06): 16px under the search,
+   its rows 4px wider than it each side, 28px a pixel apart, each its 20px
+   mark 8px in and its name 8px past it. */
+.sourcePropertyList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 10px -4px 0;
+}
+
+.sourcePropertyRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 0 4px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.sourcePropertyRow:hover,
+.sourcePropertyRow:focus-within {
+  background: var(--bg-hover);
+}
+
+/* A property's name opens its settings. */
+.propertyToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.propertyToggle > svg {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.propertyToggle > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sourcePropertyRow > button:not(.propertyToggle),
+.sourcePropertyClose {
+  flex: none;
+}
+
+.sourcePropertyRow > button:not(.propertyToggle) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  font-size: 13px;
+}
+
+.sourcePropertyRow > button:not(.propertyToggle):hover:not(:disabled),
+.sourcePropertyRow > button:not(.propertyToggle):focus-visible:not(:disabled),
+.sourcePropertyClose:hover,
+.sourcePropertyClose:focus-visible,
+.sourcePropertyActions button:hover,
+.sourcePropertyActions button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.sourcePropertyRow > button:not(.propertyToggle):disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.sourcePropertyActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-default);
+}
+
+.sourcePropertyActions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.sourcePropertyEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* The deleted properties' heading. */
+
+/* A phone's settings sheet, as Notion's (seen 2026-10-23 at 375px): the
+   search alone in a white 12px-round group 45px high, its 16px words 8px
+   in, its field ending 16 in (2026-11-25); 16px under it the properties in a white group — 45px rows parted by a
+   1px line, the 19px icon 16px in, the 17px name 9px on, an 18px "›" 16px
+   from the end — and 16px under that "새 속성" in gray, its 22px icon 13px
+   in, as the settings' rows. The deleted properties follow under their
+   gray name. */
+:global([data-phone-settings]) .sourcePropertiesMenu {
+  gap: 0;
+  padding: 0;
+}
+
+/* A property's settings: its groups 16px apart, the first under the head as
+   the list's search. */
+:global([data-phone-settings]) .sourcePropertiesMenu[data-property-edit] {
+  gap: 16px;
+  margin-top: -6px;
+}
+
+:global([data-phone-settings]) .sourcePropertySearch {
+  display: flex;
+  align-items: center;
+  height: 45px;
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-top: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+}
+
+:global([data-phone-settings]) .sourcePropertiesMenu[data-closable="true"] .sourcePropertySearch {
+  margin-inline-end: 0;
+}
+
+:global([data-phone-settings]) .sourcePropertySearch input {
+  height: 44px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+}
+/* Its "입력 값 지우기" once it holds words, a 24 box 12 in from the end, a
+   view's and the library's alike (Notion's, seen 2026-11-25 at 402). */
+:global([data-phone-settings]) .sourcePropertySearchClear {
+  margin-inline: 0 -4px;
+}
+
+/* As wide as the search over it: the desktop's -4px sides are not here.
+   Each group's white starts 1px under its place and its rows are 44px over
+   a line, the last without one, so a group of n rows takes n×45px and the
+   next starts 16px on, as Notion's "속성" (seen 2026-11-11 at 402pt: the
+   search's white 88–132, the properties' from 149, rows 45 apart). */
+:global([data-phone-settings]) .sourcePropertyList {
+  gap: 0;
+  margin: 16px 0 0;
+  overflow: hidden;
+  border-top: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+}
+
+:global([data-phone-settings]) .sourcePropertyRow {
+  gap: 8px;
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .sourcePropertyRow:last-child {
+  min-height: 44px;
+  border-bottom: 0;
+}
+
+:global([data-phone-settings]) .sourcePropertyRow:hover,
+:global([data-phone-settings]) .sourcePropertyRow:focus-within {
+  background: var(--bg-app);
+}
+
+:global([data-phone-settings]) .propertyToggle {
+  gap: 9px;
+  height: 44px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .propertyToggle > svg {
+  width: 19px;
+  height: 19px;
+  color: var(--icon-primary);
+}
+
+:global([data-phone-settings]) .sourcePropertyRow > button:not(.propertyToggle) {
+  min-width: 18px;
+  height: 44px;
+  padding: 0;
+  color: var(--icon-tertiary);
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .sourcePropertyRow > button:not(.propertyToggle) svg {
+  width: 18px;
+  height: 18px;
+}
+
+:global([data-phone-settings]) .sourcePropertyActions {
+  gap: 0;
+  margin-top: 16px;
+  padding-top: 0;
+  overflow: hidden;
+  border-top: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+}
+
+:global([data-phone-settings]) .sourcePropertyActions button {
+  gap: 11px;
+  height: 44px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  font-size: 17px;
+}
+
+:global([data-phone-settings]) .sourcePropertyActions button:hover,
+:global([data-phone-settings]) .sourcePropertyActions button:focus-visible {
+  background: var(--bg-app);
+  color: var(--text-secondary);
+}
+
+:global([data-phone-settings]) .sourcePropertyActions button svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* The deleted ones' gray name stands over their rows, as a group's does. */
+:global([data-phone-settings]) [data-deleted-properties] {
+  overflow: visible;
+  background: transparent;
+}
+
+:global([data-phone-settings]) [data-deleted-properties] .sourcePropertyRow {
+  background: var(--bg-app);
+}
+
+:global([data-phone-settings]) [data-deleted-properties] .sourcePropertyRow:last-child {
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+}
+
+:global([data-phone-settings]) .sourcePropertyEmpty {
+  margin-top: 16px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+
+/* "삭제한 속성 N ›" under "+ 새 속성", and the deleted screen's "모두 영구
+   삭제하기" under a rule, as Notion's (seen 2026-11-02): a 28px line with a
+   20px mark, its count and "›" in gray. */
+.sourcePropertyMore,
+.sourcePropertyDeleteAll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.sourcePropertyMore > svg:first-child,
+.sourcePropertyDeleteAll > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+.sourcePropertyMore > span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sourcePropertyMore > small {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.sourcePropertyMore > svg:last-child {
+  color: var(--icon-tertiary);
+}
+.sourcePropertyDeleteAll {
+  margin-top: 6px;
+  border-top: 1px solid var(--border-default);
+  border-radius: 0;
+  padding-top: 6px;
+  height: 34px;
+  color: var(--text-secondary);
+}
+.sourcePropertyMore:hover,
+.sourcePropertyMore:focus-visible,
+.sourcePropertyDeleteAll:hover:not(:disabled),
+.sourcePropertyDeleteAll:focus-visible:not(:disabled) {
+  background: var(--bg-hover);
+  outline: none;
+}

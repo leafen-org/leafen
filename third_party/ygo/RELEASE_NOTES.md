@@ -1,0 +1,2691 @@
+## v1.57.1
+
+**Who is affected: anyone storing binary or composite values in text
+formatting attributes, and anyone that reuses the buffer it hands to
+`ApplyUpdateV2`.**
+
+- **A binary value decoded from a V2 update is copied.** It used to point into
+  the caller's update buffer, so reusing or pooling that buffer changed the
+  document underneath you. Nothing in the API said the buffer had to outlive
+  the call, and it no longer has to.
+- **Attribute values compare as Yjs compares them.** The old comparison was
+  `reflect.DeepEqual`, which is stricter than Yjs on scalars — `int64(1)` and
+  `float64(1)` were two values where Yjs sees one number — and each
+  disagreement wrote a format marker Yjs does not write. A nested object still
+  compares by content, not by Yjs's identity rule, because ygo copies the maps
+  and slices you pass and so can never hold your object. If you rely on the
+  exact markers a document holds, a document edited by this version can differ
+  from one edited by an earlier one.
+- **A binary attribute goes into a V1 update in Yjs's form.** It went out as
+  base64. Note that V1 format values are JSON and JSON has no binary type, so
+  neither form gives you a `[]byte` back: a Yjs peer read the old value as the
+  string `"AQI="`, and reads the new one as an object keyed by index, which is
+  what it reads from its own peers. V2 is unaffected and still carries the
+  type. Documents written before this version keep the base64 string they
+  already hold, and still read back as that string.
+
+## v1.57.0
+
+- **New: `crdt.ApplyUpdateV1Held`.** It applies a V1 update as
+  `ApplyUpdateV1Landed` does and also reports whether the document already
+  held all of it, so a peer that holds the same document needs none of it.
+- **V1 updates and state vectors list clients as Yjs does.** With more than
+  one client, the V1 encoders now write clients in descending order, so their
+  bytes equal Yjs's. A reader of the bytes sees the same document; only code
+  that compares V1 bytes with bytes ygo wrote before sees a change.
+- **The update `OnUpdate` hands out carries only the transaction's
+  deletions.** It carried every deletion the document held, so each update
+  grew with the document's history: after 1,000 separate deletions, a
+  one-character insert gave a 2,951-byte update where Yjs sends 12. Every
+  `provider/websocket` server stores, relays and broadcasts these updates. A
+  reader that keeps every update, as the persistence adapters do, still holds
+  every deletion. A reader that kept only the newest update and relied on it
+  to list every earlier deletion must keep them all, or read the state with
+  `EncodeStateAsUpdateV1`, which still writes every deletion.
+- **A panicking commit no longer wedges a document.** A panic raised while a
+  transaction committed left the document's write lock held, and every later
+  use of that document blocked forever. Inserting a value the encoder refuses
+  — a channel, say — into a document with an `OnUpdate` observer reached it.
+  The panic still reaches the caller; the document stays usable.
+- **`OnUpdate` runs only for a transaction that changes the document.** It
+  ran after every transaction, also for an update the document already held
+  (a client that reconnects sends again what the server did not
+  acknowledge), a delete of deleted content, or an empty `Transact`. A
+  refused apply that integrated part of its update still calls it for that
+  part, as Yjs does. If your code expected one call per transaction, use
+  `OnAfterTransaction`, which still runs for every transaction. A
+  `provider/websocket` server no longer stores or relay-publishes such an
+  update, and does not send a peer's update to the other peers when the room
+  already held all of it; an update the room parks still goes to them.
+  `Server.Apply` returns `ErrNoChanges` when `fn`'s transactions change
+  nothing. Treat it as a benign outcome rather than a failure: the document
+  already held what `fn` asked for. A caller that retries, alarms or answers
+  5xx on any non-nil error should single it out with `errors.Is`.
+- **The update is encoded after the transaction's GC.** Content that one
+  transaction both inserted and deleted went out in full, where Yjs sends a
+  `ContentDeleted` tombstone; relays sent it to peers and persistence stored
+  it. Such updates are now smaller, for local transactions and remote
+  applies. Yjs also merges some adjacent deleted structs into one before it
+  encodes, and ygo does not yet, so such an update can still differ from
+  Yjs's bytes. The update `ApplyUpdateV1Landed` returns for a failed apply
+  is encoded at the same point. Peers on either version
+  converge, and updates an earlier version stored load as before. With GC
+  off, or with an `UndoManager` attached, the bytes do not change.
+- **`OnAfterTransaction` runs before `OnUpdate`.** ygo called `OnUpdate`
+  first; Yjs emits `afterTransaction` first, so code ported from Yjs that
+  reads state set in `afterTransaction` from its `update` handler saw it one
+  transaction late. A transaction started inside an `OnAfterTransaction`
+  callback now emits its update before the outer transaction's update, as one
+  started inside an observer already did; Yjs queues it until the outer one
+  is done. Peers and stored update logs still
+  converge.
+- **A panicking observer no longer stops the other observers.** The other
+  observers of the same type, the deep observers, `OnAfterTransaction`,
+  `OnUpdate` and `OnSubdocs` did not run, so a relay or a store that listens
+  on `OnUpdate` lost that transaction's update. Now every observer runs, and
+  then the panic reaches the caller of `Transact` or `ApplyUpdate` as before.
+  If more than one observer panics, the caller gets the last panic, as in
+  Yjs. Other observers now run after an observer panics, so they must not
+  expect the panicking observer's work to be complete.
+- **A write into a deleted nested type calls no observers.** It called that
+  type's observers and the deep observers of its ancestors, also for a peer's
+  write made before the peer saw the deletion (with GC off), and deleting a
+  nested type that had children called its own `Observe` and `ObserveDeep`.
+  Code that relied on these calls to see that a type was deleted must use the
+  observers of the type that lost the entry, which still fire for the
+  deletion.
+- **Observers fire in a fixed order.** The observers of the types a
+  transaction changed fired in Go map order, which changes from run to run.
+  Now `Observe` callbacks fire in the order the transaction first changed each
+  type, then `ObserveDeep` callbacks fire for each changed type and its
+  ancestors in that order, as in Yjs. For an applied update, the order is the
+  order its structs integrate, then the order of its deletions.
+- **A text whose own observer panics does not start the format cleanup.**
+  After a remote change, ygo deletes the format markers the change left
+  redundant, in a separate transaction with a nil origin. It still did so for
+  a text whose observer panicked, and a panic in any type observer before the
+  decision skipped the cleanup for every text. Now each text decides for
+  itself, as in Yjs. Where markers stay, text inserted there later can take
+  their formatting, as it does in Yjs.
+- **A local delete of formatted text cleans up format markers as Yjs does.**
+  `YText.Delete` used its own rule, which kept some markers Yjs deletes and
+  deleted some Yjs keeps, and `ApplyDelta`'s delete deleted none. The same
+  edits then gave different documents in ygo and in Yjs, and text a peer
+  inserted next to such a marker at the same time could get different
+  formatting. Both now use Yjs's `deleteText` rule.
+- **Faster delete sets.** Sorting a delete set no longer allocates. The bytes
+  are unchanged.
+- **Faster full-state encodes and snapshots after deletions.** The delete set
+  that `EncodeStateAsUpdateV1`, `EncodeStateAsUpdateV2`, `CaptureSnapshot` and
+  `DeleteSetFromDoc` write is built in one pass. The bytes are unchanged.
+- **Faster encodes against a state vector.** `EncodeStateAsUpdateV1`,
+  `EncodeStateAsUpdateV2` and the update each transaction hands to `OnUpdate`
+  no longer visit every item the peer already has. The bytes are unchanged.
+
+## v1.56.2
+
+**Who is affected: clustered deployments whose rooms can be evicted and
+re-created while `AttachRelay` is still running.** The exposure is the same
+attach window v1.56.1 addressed — a relay that delivers traffic from inside
+`Start` — with a room that leaves and comes back inside it.
+
+v1.56.1 holds a room's `RoomActivated` back for the length of the attach
+window and issues it once `Start` returns. Those held activations were
+tracked by room name. A room leaves `s.rooms` before its teardown runs — the
+teardown first waits for the room's persistence goroutine to drain — so a
+replacement under the same name can be created, and hold its own activation,
+while its predecessor's teardown is still pending. The predecessor's teardown
+then took whatever entry sat under that name, which was the replacement's: the
+resident room was never offered to the relay, and with a relay that subscribes
+per room it stayed unsubscribed for as long as it was resident. Edits from the
+other nodes never arrived, and the room silently diverged across the cluster.
+The mirror case cost a subscription the other way, with the teardown waiting
+out an in-flight activation and then issuing a `RoomDeactivated` that
+unsubscribed the room still using it.
+
+Held activations are now keyed by room instance, so a teardown settles only
+its own room's activation and a replacement keeps its own. The rest of the
+attach handshake is unchanged.
+
+## v1.56.1
+
+**Who is affected: clustered deployments that call `AttachRelay` on a relay
+other nodes are already publishing on.** What matters is whether the relay
+delivers anything while `Start` runs, not whether this server is taking
+connections yet: the delivery itself creates the room, so attaching before
+you serve — what `cmd/ygo-server` does — narrows the window but does not
+close it.
+
+`AttachRelay` started the relay before recording it on the server. A message
+delivered in that window found the server unattached: the room it created came
+up with no outbound lane, no observers publishing its changes, and no
+`RoomActivated` call. The room stayed unwired until it unloaded, so its peers'
+edits on this node never reached the other nodes, and with a relay that
+subscribes per room the other nodes' edits never reached it either. The room
+silently split across the cluster until the last peer left it. The same window
+also left the echo sentinel nil, and all four attach fields were read without
+the lock that guarded the writes, which the race detector reported.
+
+The attach state is now a single value committed **before** `relay.Start`, and
+undone if `Start` fails — so a failed `Start` still leaves the server
+unattached and the call retryable, as before.
+
+A room created in that window keeps its outbound backlog on its lane until
+`Start` returns, and its `RoomActivated` is held back and issued once `Start`
+succeeds — a relay that subscribes per room cannot accept an activation
+before then, and nothing repeats the call, so the room would never be
+subscribed. Publishing to a relay that has not finished starting invites
+a refusal, and the payload is already off the lane by then, so the edit would
+be lost rather than retried.
+
+**Behaviour change for relay implementations.** Because the server is wired
+before `Start` runs, a relay can now receive `RoomActivated` and `Publish`
+calls before its own `Start` has returned, and a custom relay that assumes
+`Start` completes first should be checked. Both bundled relays handle it.
+`MemRelay`'s callbacks do not depend on `Start`. The Redis relay's
+`RoomActivated` already blocked on the lock `Start` holds and then subscribed
+normally, but its `Publish` returned `ErrRelayNotStarted` for as long as
+`Start` was running — contradicting its own documented contract, which
+reserves that error for a relay `Start` has not been called on. `Publish` now
+waits for an in-flight `Start` and publishes once it finishes; it still fails
+fast when no `Start` has been called, and when the `Start` that ran failed.
+
+`RoomActivated` and `RoomDeactivated` now wait one out as well. Taking the
+relay's lock only made them wait out a `Start` that already held it: a room
+activated before `Start` reached the lock was dropped silently and never
+subscribed, and nothing repeats the call.
+
+Two further fixes on the same attach path: `Shutdown` cancelled the relay
+context only after joining the outbound lane workers, so it could hang
+forever on an attach that had not finished, and `Sink.Inject` stamped its
+echo-guard origin before loading the room — if the attach was rolled back and
+retried while that load blocked, the room's observers held a different
+sentinel and published the remote update straight back to the cluster.
+
+No API changes.
+
+## v1.56.0
+
+**Who is affected: servers that set `Server.OnPeerUpdate` and need to know who
+sent each update.** Everyone else sees no change.
+
+`ConnectionConfig` gains `Identity any`. Return it from `Server.Authorize`
+with whatever names the connection's user, and `Server.OnPeerUpdate` receives
+it as `PeerUpdateInfo.Identity` with every update that connection sends. ygo
+never reads the value.
+
+**It identifies the sender, not the author.** A reconnecting client answers
+sync step-1 with a step-2 carrying everything it holds, items other users
+authored included, and that frame reaches the hook under the reconnecting
+connection's identity. `OnPeerUpdate` also fires only for peers on this node:
+updates relayed from other cluster nodes, and `Server.Apply`, bypass it. An
+audit log built on `Identity` alone will therefore both misattribute and miss
+edits; for per-item authorship read the client IDs in `PeerUpdateInfo.Update`,
+which are the CRDT's own and are not an authenticated identity either.
+
+`Server.OnTokenAuth` replaces the connection's whole `ConnectionConfig` when it
+accepts a token, as it already did for `ReadOnly`. A hook that returns no
+`Identity` therefore clears the one `Authorize` attached, and one that returns
+only an `Identity` clears `ReadOnly` — making a read-only connection
+read-write. Return both. Connections accepted by `AuthFunc`, or with no auth
+hook, carry a nil `Identity` until an accepted token supplies one.
+
+
+## v1.55.0
+
+**Who is affected: servers that bridge many awareness clients over a single
+websocket connection.** Everyone else sees no change.
+
+`Server.MaxAwarenessClientsPerConn` is new and on by default. A client can claim
+any awareness client ID, so one connection could fill a room's presence budget
+and, with a relay attached, have the fabricated IDs fanned to every node that
+holds the room. Each entry of a frame is now judged as the room applies it: an
+entry that would take a connection past the cap is refused, logged at debug,
+and reaches neither the room, its other peers nor the relay, while the rest of
+the frame applies.
+
+`0`, the default, selects 64. A negative value disables the gate and restores
+the previous behaviour, and a positive value is used as given. This inverts the
+`0 = unlimited` convention of `MaxAwarenessBytesPerRoom` and
+`MaxAwarenessClientsPerRoom`.
+
+The cap is not a limit on room size. Only client IDs the connection introduced
+that are still live count against it. A browser tab introduces one. The
+timeout-removal broadcasts y-protocols clients send, which name other clients'
+IDs as nulls, and the full-state echoes they send, which re-assert IDs the room
+already holds, cost nothing.
+
+Because a removal frees the slot, the cap bounds concurrent presence rather
+than how many IDs a connection creates over its lifetime: each ID a connection
+introduces and retires leaves a tombstone. `MaxAwarenessClientsPerRoom` bounds
+tombstones, and `AwarenessExpiry` reclaims them; neither is on by default, so
+set both if untrusted peers can reach the server.
+
+An embedder that fans many users through one connection introduces as many IDs
+as it carries, so it must raise the cap or disable it. The setting is
+server-wide: a trusted bridge beside untrusted browsers raises it for all of
+them.
+
+With the gate on, peers can no longer claim client ID `0`, the room's own
+awareness client: no removal from the wire could retire it, so it stayed until
+the room was evicted. Disconnect behaviour also narrows. A connection's
+departure removes the awareness IDs it introduced and has not itself removed,
+where before it removed every ID the connection had ever named in a frame.
+Presence a connection only updated — an ID another connection or the relay
+introduced — stays with whoever introduced it until that owner leaves,
+`AwarenessExpiry` sweeps it, or the room is evicted. Set `AwarenessExpiry` if your clients take
+over each other's IDs. Disabling the gate with a negative value keeps the old
+tracking ceiling, but tracks only IDs named by entries the room applied.
+
+**Who is affected: servers that set `MaxAwarenessClientsPerRoom`.**
+
+Removal tombstones count toward the cap, so churn could fill a room with them
+and lock new clients out until `AwarenessExpiry` reclaimed them, or for good
+without it. Now a new client asserting presence at the cap reclaims the oldest
+tombstone instead. An unseen client's removal is still refused at the cap, and
+so is a newcomer when every entry is live. The reclaimed tombstone's clock is
+forgotten early, the same trade-off `PurgeTombstones` makes after its grace
+period, though here it can happen without `AwarenessExpiry`: a delayed stale
+update for that client is then accepted as new.
+
+**Who is affected: clustered servers that want to keep relayed presence from
+crowding out local clients.** Opt-in; nothing changes unless you set it.
+
+`Server.MaxForeignAwarenessClients` refuses presence relayed from another node,
+for a client ID that is not currently live (new, or removed and returning), once
+the room holds this many live awareness entries. A client that is live keeps
+updating. `0`, the default, disables it, and a value at or above a bounded
+`MaxAwarenessClientsPerRoom` has no effect.
+
+Sizing needs care, because a number that looks safe shuts out most of a room:
+
+- Set it as a large fraction of `MaxAwarenessClientsPerRoom`. Reserving
+  roughly 1/8 of the cap for local clients is a reasonable starting point.
+- In an N-node cluster, relayed presence is legitimately about (N-1)/N of a
+  room's users, so the reservation you want is the small side. A sub-cap sized
+  like a minority quota shuts out most of the room.
+- `Inject` creates a room with no local peers when it is not resident, and all
+  presence in it is relayed. There the sub-cap is that node's entire presence
+  ceiling for the room. Without it the ceiling is `MaxAwarenessClientsPerRoom`,
+  or none when that is unset.
+- The threshold counts all live entries, local and relayed, so once local
+  clients fill the room, relayed presence is shut out sooner than a true
+  per-origin quota would shut it out.
+
+A refused entry is skipped without an error, so the relay does not see a routine
+refusal as a delivery failure.
+
+Local peers now receive an awareness frame as sent only when the room applied
+it exactly; otherwise they get the room's state for the clients it applied, so
+presence the room refused, discarded as stale or dropped as invalid no longer
+reaches them. It also stops the server re-broadcasting the equal-clock echoes
+y-websocket clients send of every awareness update they apply, so an update
+costs about N frames in a room of N clients rather than N².
+
+New exported API in `awareness`: `Awareness.ApplyUpdateWith` with
+`ApplyOptions`, `AdmitEntry` and `ApplyResult`, which the server uses for both
+caps, and `Awareness.SetMaxForeignClients`. `docs/CLUSTERING.md` covers both
+settings.
+
+**`YText.WalkFormatting` exposes live formatting boundaries.** Concurrent
+formatting and deletion can leave formatting markers without visible text.
+`ToDelta` describes visible text, so those markers are absent from its output.
+Applications that validate formatting keys and values or account for live CRDT
+items can inspect them through the new callback. `YXmlText` inherits the method.
+
+The walk holds the document read lock. Call it outside transactions, and do not
+mutate values or call document APIs from the callback. Returning an error stops
+the walk and returns that error unchanged. The helper does not modify the
+document or change merging, encoding, or existing readers.
+
+Closes #317.
+
+**Accessing a root as a different type now panics instead of discarding it.**
+The first accessor fixes a named root's type for the document's lifetime.
+`GetText("x")` after `GetMap("x")` used to replace the map and lose its
+contents; it now panics with an error wrapping the new `crdt.ErrRootTypeMismatch`
+and leaves the map unchanged. A root that has only arrived in a peer's update
+has no type yet, so the first local accessor still decides it, as in Yjs. Code
+that relied on the silent replacement now panics. The mobile bindings recover
+the panic: methods with an error return return one wrapping
+`crdt.ErrRootTypeMismatch`, and `GetText` returns `""`, so a mismatch cannot
+crash the iOS or Android host app. Closes #293.
+
+## v1.54.0
+
+**Who is affected: anyone who applies updates from peers they do not fully
+trust, which includes every `provider/websocket` server.**
+
+A V1 update whose delete set contains a range of length 0 deleted the whole
+item at that clock. Any connected peer could send a 6-byte update that wiped
+text or array content another client wrote, and Yjs peers, which delete
+nothing for such a range, diverged from ygo. Zero-length ranges are now
+ignored, matching Yjs. Converting such an update to V2 with `UpdateV1ToV2`
+also produced an update that failed to decode; the V2 encoder now drops these
+ranges, since they delete nothing. No API or wire format changes.
+
+**Who is affected: servers that set `HocuspocusFraming` for
+`@hocuspocus/provider` clients.** Connections on plain y-websocket framing get
+no `SyncStatus`. On either framing, a partly applied update now reaches the
+room's other peers (below).
+
+`@hocuspocus/provider` counts the edits it has sent and lowers the count only
+when the server answers one with a `SyncStatus` (tag 8) message, which
+`@hocuspocus/server` sends after every SyncStep2 or Update. ygo defined the tag
+but never sent it, so against ygo the provider's `hasUnsyncedChanges` stayed
+true for as long as the connection lived, and an editor could never tell its
+edits had reached the server.
+
+With `HocuspocusFraming` set, ygo now answers every SyncStep2 or Update, under
+Sync (tag 0) or SyncReply (tag 4), with exactly one `SyncStatus`, in the order
+the frames arrived, so a client can pair each answer with the frame it sent:
+
+| The client sends | The room | `SyncStatus` |
+|---|---|---|
+| a SyncStep2 or Update | applies it | 1 |
+| a SyncStep2 or Update | does not fully apply it (it overflows `MaxPendingItems`, say) | 0 |
+| an Update, read-only | does not take it | 0 |
+| a SyncStep2, read-only | already holds everything in it | 1 |
+| a SyncStep2, read-only | lacks something in it, and does not take it | 0 |
+| a sync frame that does not decode | closes the connection with 1002 | none |
+
+Three answers differ from `@hocuspocus/server` 2.15.3, on purpose:
+
+- **An update the room does not fully apply.** `@hocuspocus/server` answers 1
+  there: Yjs has no cap on pending structs, so it parks an update that
+  overflows `MaxPendingItems`, and y-protocols swallows any error from an
+  update that does not decode. An answer of 1 tells the client the room holds
+  an edit it does not. ygo answers 0 and keeps the connection, so the client
+  keeps the edit. An unrelated update on the same connection is answered 1.
+  The client's own next edits come after the part the room never took, so
+  the room parks them waiting for it: each is answered 1 while it fits under
+  the cap, as any update that parks is, and 0 once the cap is full. The room
+  shows none of them until the part it lacks arrives.
+- **A sync message that does not decode** (its sub-type is unknown or
+  missing, or its payload is cut short). On a read-write connection,
+  `@hocuspocus/server` answers a SyncStep2 or Update whose payload is cut short
+  with 1 and keeps the connection, because y-protocols' `readSyncStep2` catches
+  the read error along with the apply error. Other such messages get 0 (a
+  read-only Update) or a 4403 close (an unknown or missing sub-type, a SyncStep1,
+  a read-only SyncStep2). ygo sends no `SyncStatus` for any of them and closes
+  with 1002 (protocol error): an answer of 1 would acknowledge an edit the room
+  never saw, and 4403 would strand the provider. From the moment ygo queues
+  that close, it handles no later frame from the connection, including frames
+  already received.
+- **A read-only SyncStep2 whose update does not decode.** `@hocuspocus/server`
+  closes the connection with 4403, because its `snapshotContainsUpdate` check
+  throws. ygo answers 0 and keeps the connection: the room does not hold the
+  update, and 4403 would strand the provider.
+
+`crdt.SnapshotContainsUpdateV1` is new: it reports whether a snapshot already
+holds everything a V1 update carries, as Yjs `snapshotContainsUpdate` does.
+`crdt.DocContainsUpdateV1` is new too: the same check against a live document,
+which decodes the update first, takes only the document's read lock, and
+checks the update's deletion ranges against the store in one forward pass per
+client. The read-only SyncStep2 answer uses it, so the answer to a viewer's
+SyncStep2 no longer takes the room's exclusive lock.
+
+**The part of a partly applied update now reaches the other peers.** ygo
+integrates an update item by item, so one that overflows `MaxPendingItems` can
+leave part of itself in the room. The server used to broadcast nothing for
+such an update; it now broadcasts exactly the part that integrated, on either
+framing. `crdt.ApplyUpdateV1Landed` is new: it applies an update as
+`ApplyUpdateV1` does and, when the apply fails, returns that part as a V1
+update.
+
+**Closing a connection now stops its input.** Once the server queues a close
+for a connection (the 1002 above, or 4401 after a failed in-band auth), the
+read loop handles nothing more from it, as it already did after a
+context-cause close.
+
+**Who is affected: servers that want to look at a read-write peer's update
+before it applies** — a per-document size bound, schema validation, write
+moderation — or that want a lock of their own held across the apply.
+
+`Server.OnPeerUpdate`, if set, runs in place of the room's own apply of a
+read-write peer's SyncStep2 or Update (Sync/SyncReply, tags 0/4). It is handed
+the room name, its document, the update's V1 bytes and the transaction origin,
+and an `apply` function that applies the update exactly as the room does
+without a hook. A second call to `apply` returns `ErrPeerUpdateApplied`.
+`apply` must be called before the hook returns: a call after that applies
+nothing and returns `ErrPeerUpdateHookReturned`, since by then the peer has
+been answered and the update would reach no other peer.
+
+An update the hook refuses (it returns, or panics, without `apply` having
+applied it) is not broadcast, is answered `SyncStatus(0)` on a
+Hocuspocus-framed connection, and closes the peer after that answer:
+
+| The hook | Close |
+|---|---|
+| returns or wraps a `*PeerClose{Code, Reason}`, Code 1000 or 3000-4999 | Code and Reason, the reason cut to 123 bytes at a rune boundary |
+| returns a `*PeerClose` with any other code | 4205 "Reset Connection" |
+| returns any other error, or panics | 4205 "Reset Connection" |
+
+The close is needed because the client's later edits build on the refused
+one, so the room could not integrate them: without it they would park in the
+room, be answered `SyncStatus(1)` and reach the other peers, who would park
+them too. The client still holds the refused edit, so when it reconnects it
+sends it again, with any edit built on it, and the hook sees each of them
+again; an edit the hook applies that builds on a refused one parks in the
+room. `@hocuspocus/provider` 2.x reconnects at once after a 4205 close, so a
+hook that keeps refusing a 2.x client keeps closing it; a `*PeerClose` with
+4401 stops it reconnecting. 4.x waits its configured `delay` first. Plain
+y-websocket connections are closed the same way.
+
+When the hook calls `apply` and the room itself does not take the update (it
+overflows `MaxPendingItems`, say), the peer is answered as without a hook and
+keeps the connection, unless the hook returns a `*PeerClose`. An update
+`apply` applied is broadcast and answered `SyncStatus(1)` whatever the hook
+returns afterward. Read-only peers never reach the hook, as before. Nil, the
+default, leaves every peer's update applied exactly as it was.
+
+This is the counterpart of `@hocuspocus/server`'s `beforeHandleMessage`
+(`packages/server/src/Connection.ts`), which runs before the message
+handler's own apply and closes the connection on a rejection with the error's
+code and reason, or with `ResetConnection` (4205) when it has none.
+
+## v1.53.1
+
+**Who is affected: servers that set `RoomIdleTimeout` and write to rooms with
+`Apply`, or run a cluster relay.** With `RoomIdleTimeout` at zero (the
+default), nothing changes.
+
+With `RoomIdleTimeout` set, the background sweeper evicts an empty room once it
+has been idle that long, but it only considers rooms carrying an idle stamp,
+and only the last peer leaving set one. `Apply` and the relay's `Inject` clear
+the stamp while they run and never set it again. So a room that only `Apply`
+wrote to, or that a relay delivery created on a node where no peer had joined
+it, stayed in memory until the process exited, and `MaxResidentRooms` did not
+count it. Worse, a single `Apply` on a room whose last peer had already left
+wiped that room's stamp, so a server that answers reads or writes through
+`Apply` kept every room it ever touched.
+
+`Apply` and `Inject` now stamp the room idle when they return — on success, on
+`ErrNoChanges`, on any other error and when `fn` panics — if no peer is
+connected. The sweeper then evicts the room `RoomIdleTimeout` after the last
+call, flushing it durably first as it does for any idle room, and
+`MaxResidentRooms` counts it. A room is never evicted while a call on it is
+still running, and a peer that joins clears the stamp as before. No API or
+wire format changes. Without a persistence adapter an evicted room's state is
+discarded, so a server that keeps state in memory through `Apply` alone should
+configure persistence or leave `RoomIdleTimeout` at zero.
+
+## v1.53.0
+
+**Who is affected:** anyone building the iOS or Android bindings with
+`gomobile bind`. Server and library users see no change.
+
+**The Android bindings build again.** Following the README's
+`gomobile bind -target=android` failed twice over: current `gomobile` refuses
+to run unless `golang.org/x/mobile` is in the module's dependencies, and once
+that was added, the generated JNI code did not compile because
+`SyncClient.SetOnStatus`'s parameter name clashed with a name gobind uses
+internally. The parameter is renamed, which changes nothing for callers.
+
+**`mobile/` is now a separate Go module.** `golang.org/x/mobile` requires
+Go 1.26, and putting it in the root module would have forced every user of
+ygo onto Go 1.26. Instead `mobile/` has its own `go.mod`, which pins the
+`gomobile` and `gobind` tools and builds against your checkout. The build
+commands now run from inside `mobile/`:
+
+```sh
+cd mobile
+go install tool
+gomobile bind -target=ios .
+gomobile bind -target=android -androidapi 21 .
+```
+
+The root module still requires only Go 1.23, with the same dependencies.
+
+**This is a minor release because a package moved.** The root module no longer
+contains `github.com/reearth/ygo/mobile`. Go code that imported it directly,
+rather than binding it, must now require the new module, which needs Go 1.26:
+
+```sh
+go get github.com/reearth/ygo/mobile@v1.53.0
+```
+
+CI now runs a real Android bind on every pull request, so this cannot
+silently break again. Closes #315.
+
+## v1.52.0
+
+**Who is affected: nobody, unless you choose to be.** If your server never
+cancels a request context with a cause of its own, nothing changes.
+
+**What is new.** A server that embeds `provider/websocket` can now end a single
+peer's session with an application close code. Cancel that peer's request
+context with `context.WithCancelCause`, passing a cause that implements
+`CloseCode() (int, string)`. The peer then receives a close frame with that code
+and reason instead of the connection simply dropping.
+
+This is for cases where the client needs to know *why* it was disconnected —
+for example, a user whose access was revoked while their document was open.
+Without a close code, the client sees an abnormal closure (1006), which looks
+like a network failure, so it reconnects. With one (say 4001, "session
+revoked"), the client can stop and tell the user what happened.
+
+The cause may be wrapped, as in `fmt.Errorf("revoking %s: %w", user, cause)`.
+Only codes 1000 and 3000–4999 are sent, since a client rejects the others as a
+protocol error. The reason is truncated to 123 bytes, the most a close frame can
+carry, and invalid UTF-8 is dropped from it. From the cancel on, the server
+ignores everything the peer sends, so a revoked client cannot keep editing by
+not reading its socket; the close frame waits at most one second.
+
+**What stays the same.** A context cancelled with any other cause, with no
+cause, or with a code that cannot be sent closes the socket exactly as before,
+with no close frame. No exported API was added. Closes #264.
+
+## v1.51.13
+
+**Who is affected:** servers that apply updates from peers they do not trust,
+and code that deletes nested shared types or reads documents with `ToJSON`,
+`ToSlice`, `Entries` or `ToXML`.
+
+**A very deep document can no longer crash the process.** Deleting a nested
+shared type, or reading a document as JSON or XML, used one goroutine stack
+frame per nesting level. A peer could build a document millions of levels deep
+through many small updates, and deleting or reading it then ended the whole
+process, every room on a server included, with a fatal stack overflow that
+`recover` cannot catch. Building such a document takes tens of megabytes of
+updates and gigabytes of heap at Go's default stack limit. These operations no
+longer grow the goroutine stack with depth, and give the same results in the
+same order.
+
+**`ToJSON` is faster and holds the document lock for less time.**
+`YArray.ToJSON` and `YMap.ToJSON` write JSON directly instead of building
+intermediate slices and maps. They copy values out under the read lock and
+format them after releasing it, so concurrent writers wait less than before:
+52–76% less lock time on 10,000-element containers. Output bytes are
+unchanged.
+
+**Upgrading.** No API change. Thanks to @sjawhar for the fix.
+
+## v1.51.12
+
+**Overlapping updates no longer duplicate content.** When out-of-order V1/V2
+updates partially overlap a pending text or array range, the retry now skips
+its already received prefix and inserts only the new suffix. This also applies
+to orphaned ranges after container garbage collection, preserving correct clocks
+across checkpoint restore so later updates are not silently skipped.
+
+**Large dependency queues restore faster.** The V1/V2 within-update resolver
+processes producers before their dependents and completes contiguous client tails
+before returning to consumers. This accelerates reverse client chains, including
+updates with multiple structs per client, without leaving ready tails for costly
+later insertion. The same range index tracks prefix coverage, preventing shorter
+overlapping copies from hiding a producer and forcing repeated retries.
+
+Small queues and queues making no progress avoid the dependency index. Complex
+queues use temporary memory proportional to their size; remaining unresolved
+items retain the fixed-point fallback and the configured persistent pending limit.
+The public API and update encodings remain compatible.
+
+**Documents several people typed into load, merge and catch up in
+milliseconds.** When peers take turns editing one text, each peer's structs
+depend on the others', and loading the document, merging its updates or
+receiving them out of order used to take seconds once it grew to tens of
+thousands of edits. For five peers and 20,000 turns:
+
+| | before | after |
+|---|---:|---:|
+| load the full state | ~200 ms | ~8 ms |
+| `MergeUpdatesV1` of the state and 500 updates | ~1.8 s | ~4 ms |
+| apply the 20,000 updates newest first | ~3.1 s | ~12 ms |
+
+A blocked struct now waits for the one clock it is missing instead of being
+retried after every other struct, and merges infer each struct's parent by
+following its origin chain once. Documents end up exactly as before, and as
+in Yjs. Thanks to @melodysdreamj for the report and the proposed approach
+(#311).
+
+## v1.51.11
+
+**Who is affected:** anyone reading ygo's record of live and deleted items
+(`InsertSetFromDoc`, the delete set) after concurrent edits. `ToJSON` and
+`ToXML` already matched Yjs.
+
+**What changed.** When one peer deletes a nested type while another is still
+writing into it, Yjs discards the late write. ygo kept it as a live item that
+nothing could reach. It now discards it too, in V1 and V2, whether or not the
+deleted container has been garbage collected. With garbage collection on (the
+default), the discarded content is also no longer included when the document
+is encoded.
+
+**Do I need to do anything?** No. Documents saved by earlier versions load as
+before.
+
+## v1.51.10
+
+**Crafted V2 updates can no longer pin a CPU core.** This affects servers
+on v1.51.8 or v1.51.9 that apply V2 updates from untrusted peers. v1.51.8 added
+a scan of an update's group headers before decoding. For JSON content in a V2
+update, the scan did work proportional to the item's declared length, up to
+about a million steps per item, without reading any input. An update of a few
+dozen bytes could keep a core busy for seconds, and a crafted one for much
+longer, before being rejected. The scan now skips that content in constant
+time.
+
+**Who is affected: anyone who stores rooms with `persistence.MemoryPersistence`,
+`persistence.FilePersistence` or `persistence/sqlite` (for example through
+`NewServerWithPersistence(persistence.NewLegacyAdapter(...))`), and anyone who
+calls `Server.BroadcastUpdate` or runs a cluster relay.** Custom persistence
+adapters are not changed.
+
+**Large edits are stored, and so is everything after them.** These
+stores check each update before writing it by decoding it on its own, and that
+check held at most 100,000 structs waiting for state it did not have. Decoded
+on its own, an update from a client whose earlier edits are already stored is
+missing everything it builds on, so all of its structs wait. Any such update
+of more than 100,000 structs, or a batch of smaller ones the server coalesced
+past that count, was refused with `crdt: invalid update` although the room had
+applied it. With the default write coalescing, the refused batch stayed queued
+and each later edit joined it, so nothing more in that room was stored: the
+room stayed in memory after its last peer left, and every edit since the
+refused one was lost when it closed. The check now has no such limit. Updates
+that do not decode are still refused.
+
+**Large relayed updates reach every peer.** `BroadcastUpdate` ran the same
+check, so it refused such an update with `ErrInvalidUpdate` after the room had
+applied it, and a clustered node that received one from another node applied
+it to its room but never sent it to its own peers. It now uses the stores'
+check. `MaxPendingItems` still caps each room's document.
+
+**Custom adapters.** A `VersionedPersistence` that checks updates by applying
+them to a bare `crdt.New()` refuses the same updates; the `AppendUpdate` godoc
+shows how to build the scratch document instead. No API or wire format
+changes.
+
+## v1.51.9
+
+**Map updates avoid unrelated-key conflict scans.** New keys and replacements
+immediately after their current winner bypass the scan; concurrent writes
+resolve against the same key. XML attributes and child elements use separate
+conflict orders, preserving child order regardless of update delivery order.
+The public API and wire format are unchanged.
+
+## v1.51.8
+
+**Who is affected:** servers that apply updates from untrusted peers. Updates
+encoded by yjs or ygo are unaffected by the behaviour change below.
+
+**Repeated client groups now behave like yjs.** An update can carry more than
+one wire group for the same client, although no standard encoder produces
+one. ygo used to integrate every such group, and overlapping groups put
+duplicate structs in the document, showed repeated text and moved the state
+vector backwards, without an error. ygo now keeps only the last group for each
+client and drops the earlier ones, exactly as yjs does, so both reach the same
+document. Content that appears only in an earlier group for a client is no
+longer applied. `MergeUpdates`, `DiffUpdate` and `EncodeStateVectorFromUpdate`
+follow the same rule, so they agree with applying the update. (#305, #308)
+
+**Crafted incomplete updates are cheap to reject again.** Since v1.51.7 the
+pending-limit preflight kept a full decoder copy for each blocked wire group
+when the missing dependency was present in the update but could never resolve,
+for example in a dependency cycle. Such an update could allocate dozens of
+times its own size before being rejected. Preflight now keeps only a compact
+record per blocked group, so rejection costs at most about 11 times the
+update's size, and updates that can resolve are still accepted. (#306)
+
+**Upgrading.** No API change.
+
+## v1.51.7
+
+**Who is affected:** servers that store or exchange large full-document updates,
+such as checkpoints from documents with many clients, where structs refer to
+other structs later in the same update.
+
+**Complete checkpoints no longer fail the pending limit.** ygo parked any
+struct whose dependency had not been integrated yet, and counted it against
+the limit on pending structs. A complete but large checkpoint could therefore
+be rejected, so the document could not be loaded from it. ygo now resolves
+dependencies inside the update first; only structs that are still missing
+afterwards count against the limit. If an update is rejected, none of its structs are added to
+the pending queue, but changes already applied before the rejection stay.
+Incomplete or crafted updates are still rejected quickly and with little
+memory. The pending limit, wire format and public API are unchanged. Thanks
+to @kovaa-dev.
+
+## v1.51.6
+
+**Replacing a map value no longer scans unrelated keys.** Direct replacements
+skip the shared-list scan when placed immediately after the key's previous
+rightmost value. Concurrent and non-adjacent replacements retain conflict
+resolution.
+
+## v1.51.5
+
+**Who is affected:** documents with long editing histories where a transaction
+deletes many separate ranges, for example clearing scattered text or many
+array items at once.
+
+**Faster cleanup after deletes.** After each transaction ygo garbage-collects
+the content it deleted. For every deleted range it used to scan the client's
+history from the beginning; it now jumps straight to the right place. A pass
+over 50,000 structs with sparse deletions went from about 212 ms to under a
+millisecond. Nothing else changes. Thanks to @kovaa-dev for the fix.
+
+**Upgrading.** No API change.
+
+## v1.51.4
+
+**Who is affected:** anyone using rich text (`YText` with formatting), embeds,
+or `ApplyDelta`, especially alongside yjs clients.
+
+**Formatting now behaves like yjs.** Inserting text or an embed with attributes
+inside formatted text used to keep the surrounding formatting too; it now gets
+exactly the attributes you pass, as in yjs. `Insert` with no attributes still
+continues the formatting around it. `ApplyDelta` follows the delta exactly.
+
+**Stale formatting is cleaned up after remote deletes.** When a collaborator
+deleted all the text a format covered, ygo kept the leftover markers, so text
+typed there later came out bold or italic unexpectedly. It now removes them the
+way yjs does.
+
+**What you might notice:**
+
+- After a remote update to formatted text, you may see a second, local update
+  and observer round with a nil origin: that is the cleanup, and it is broadcast
+  like any edit. The default `UndoManager` records it, as yjs does.
+- Servers applying many remote formatting edits to very large documents do more
+  work per update (a walk of the text, as yjs does). Plain text is unaffected.
+
+**Upgrading.** No API change.
+
+## v1.51.3
+
+**Who is affected:** anyone whose documents get concurrent text inserts, once
+a peer receives several of one client's inserts in a single apply: a late
+joiner's sync step 2, an offline client catching up, a server loading a stored
+state. Any state that peer then encodes (a sync step 2 it answers, a compacted
+log, `RunGC` followed by an encode) passes the problem to every peer that
+loads it.
+
+**Concurrent inserts could end up in different places on different peers.**
+Applying an update merged adjacent items from one client into a single item
+whenever their clocks were contiguous and nothing sat between them. Yjs merges
+two items only when the right one was inserted directly after the left one and
+both were inserted toward the same right neighbour (their right origin),
+because the merged item keeps only the left item's origins. ygo did not check
+the right origins. The peer that merged them then placed the next concurrent
+insert inside that run differently from the peers that had received the items
+one at a time, and any state it encoded gave the right item's characters a
+right origin they never had, so ygo and Yjs alike decoded them elsewhere.
+`RunGC`'s tombstone merge had the same gap and could move live text whose
+origin was inside the second tombstone.
+
+Both merges now require the right item's origin to be the left item's last
+character and the two right origins to be equal, as `Item.mergeWith` does.
+Items that do not qualify stay separate, so such a document keeps a few more
+items than before.
+
+**Upgrading.** No API or wire format change. A state that an earlier version
+already encoded or compacted keeps its merged items and their wrong right
+origins: this release stops new ones from being written but does not repair
+stored ones.
+
+## v1.51.2
+
+**Who is affected:** servers and clients that call `GetText`, `GetArray`,
+`GetMap` or `GetXmlFragment` only after applying updates, for example after a
+sync step.
+
+**Edits that arrived out of order could vanish.** If an update for a document
+root arrived before an edit it depends on, and the code then accessed that root
+for the first time before the missing edit arrived, the waiting update was
+attached to a placeholder and never showed up. That peer stayed different from
+everyone else for good. Accessing a root now picks up waiting updates too.
+
+**Upgrading.** No API change.
+
+## v1.51.1
+
+**Who is affected:** anyone using `UndoManager` or `YArray.Move`, and anyone
+exchanging V1 updates with yjs peers that carry legacy JSON content.
+
+**Undo no longer touches other people's edits.** Undo groups edits made close
+together into one step. That step used to cover every change in its time
+span, including a collaborator's insert that arrived in between, so pressing
+undo could delete their work. It could also overwrite a map entry a
+collaborator had changed since. Undo now tracks exactly which edits it
+recorded, as yjs does, and leaves everything else alone. Every transaction
+also claimed to be local, so a default `UndoManager` recorded remote updates
+as your own; `Transaction.Local` is now `false` for applied updates.
+
+**Undo restores nested content.** Deleting an entry that held a nested text,
+map or array and pressing undo brought it back empty. It now comes back with
+its contents. Edits inside nested types are now recorded for undo too, and
+undoing two quick edits on a fresh document no longer leaves the first behind.
+
+**`YArray.Get` no longer panics after undo, redo or a move.** Reads could
+crash with an index out of range, or return the wrong element. Undoing a move
+could also make the element disappear from reads while still counting in
+`Len`.
+
+**V1 legacy JSON content is readable both ways.** Older yjs content stored as
+JSON failed to decode in the V1 format, in either direction. It now matches
+yjs, and data an older ygo stored in its previous format still loads.
+
+**Staging a type into itself panics instead of crashing later.**
+
+**`YArray.Move` fixes.** Moving an element you already moved now takes effect,
+undoing the delete of a moved element puts it back where you moved it, and
+array change events now report undone moves, so an editor bound to the events
+stays in step.
+
+**`RunGC` no longer makes maps diverge.** Garbage collection could merge
+deleted entries belonging to different keys, after which peers disagreed on a
+key's value.
+
+**A map write could vanish on other peers.** Setting a key whose previous
+value arrived from yjs as a merged run could keep the new value locally while
+every other peer dropped it. Copying text with `ApplyDelta` also lost embeds;
+both now behave as in yjs.
+
+**Undo matches yjs more closely**, including which value wins when two
+collaborators' restored values compete for one key.
+
+**XML and JSON edge cases.** An XML node can no longer be put into two parents
+at once, legacy JSON attributes read correctly, and Go values that JSON cannot
+represent (functions, channels) are rejected instead of silently replacing the
+whole value with `null`.
+
+**Upgrading.** No API change, but check these behaviour changes:
+
+- Observers reading `Transaction.Local` now see `false` for remote changes.
+- `Undo`/`Redo` skip steps that would no longer change anything, so one call
+  may undo an older step, and they return `false` when nothing changed.
+- Something inserted and deleted within one undo step stays deleted on undo.
+  Call `StopCapturing` between the two if you want separate steps.
+- XML `Insert` panics on a node that is already attached or staged elsewhere
+  (including a child of a detached node you never attached: delete it from that
+  node first), and text inserts panic on functions, channels or shared types
+  passed as values. Both used to be
+  accepted and corrupted the document.
+- **Rolling upgrades:** ygo 1.51.0 and older cannot read V1 updates carrying
+  legacy JSON content written by this version. Upgrade all nodes before
+  relaying such documents in V1, or use V2.
+
+## v1.51.0
+
+**Who is affected:** anyone who applies *merged* updates one at a time with
+`ApplyUpdateV1` or `ApplyUpdateV2` — for example a custom persistence adapter
+that replays its stored log on load, or a peer that receives the output of
+`MergeUpdatesV1` / yjs `mergeUpdates`. If your adapter rebuilds documents by
+merging its whole log first (every adapter bundled with ygo does), you were not
+affected on load. Applications that compact a stored log by merging rows were
+affected, and so were yjs clients loading a snapshot such a document produced.
+
+**What went wrong.** Merging two updates from the same client that are not
+consecutive — say its 1st and 3rd edits — produces an update with a marker
+saying "clocks withheld here". ygo read that marker the wrong way round, as
+"the receiver already has these". So when the 2nd edit arrived, ygo believed it
+already had it and threw it away. Nothing reported an error; the document was
+just missing that edit, permanently. Worse, a snapshot of that document
+(`EncodeStateAsUpdateV1`) was malformed, and yjs threw a `TypeError` loading it.
+
+The websocket server can produce these merges itself: it batches persistence
+writes, and when several goroutines commit to one room concurrently their
+updates can reach the batcher out of order.
+
+**What changed.** Edits after the marker now wait until the missing range
+arrives, then apply — the same outcome as yjs, in either arrival order.
+
+**Upgrading.** No API change. Documents already rebuilt with an edit missing
+are not repaired by upgrading; if the original update log is still stored,
+reloading from it with this version restores the edit.
+
+**Also fixed: the V1/V2 format converters.** `UpdateV1ToV2` and
+`UpdateV2ToV1` only worked on a document's *first* update. Anything later — an
+ordinary incremental edit, or an update that only deletes — came back as an
+empty update, with no error. If you convert updates between formats at an edge
+(for example to talk to a V2 client), those edits never reached the other side.
+Both now produce exactly the bytes yjs's own converters do.
+
+**Also fixed: snapshots taken while an update is waiting.** When an update
+arrives before one it depends on, ygo holds it until the missing one shows up.
+`EncodeStateAsUpdateV1`/`V2` used to leave held updates out, so a snapshot
+taken in that window — a compaction, or a sync reply to a new peer — lost them
+for good. Snapshots now include them, byte for byte as yjs does. Thanks to
+@sjawhar for the report and reproduction.
+
+## v1.50.0
+
+**Who is affected: nobody, unless you choose to be.** This release adds a
+second way for `cluster/redis` to move updates between nodes. The existing way
+is the default and is unchanged — if you do not set the new
+`Config.Transport` field, your cluster behaves exactly as it did in v1.49.x,
+down to the Redis commands it issues.
+
+**What you may want to opt into.** Until now, a multi-node deployment relayed
+updates over Redis pub/sub, which is *at-most-once*: if a node cannot keep up
+with the stream of messages — a slow moment, a network blip, Redis
+disconnecting a client whose buffer overflowed — the messages it missed are
+gone. Nothing reports it. Because collaborative updates depend on each other,
+one missed update quietly parks every later edit from that same client on that
+node, and the node only catches up when the room is next loaded from storage.
+On a busy room that is never loaded again, so it never catches up.
+
+`Transport: Streams` replaces that mechanism with Redis Streams, which keep
+recent messages instead of forgetting them. A node that falls behind, restarts,
+or joins late reads what it missed instead of losing it.
+
+**What it guarantees, precisely.** Delivery is at-least-once **within the
+window Redis is asked to retain** — `min(StreamRetention, StreamMaxLen ÷ your
+publish rate)`, 60 seconds and 4096 messages per room by default. This is not a
+no-loss guarantee and we will not describe it as one: the retained history is
+trimmed at both ends, so a node that falls further behind than the window loses
+whatever was trimmed underneath it. The difference from pub/sub is not that
+loss became impossible. It is that loss became **bounded and visible** — a new
+`Relay.StreamStats()` counter, `Gaps`, goes non-zero when it happens, and a
+single `Gaps` means the window was too small for how far behind that node
+actually got. Size the window for the worst delay you intend to survive: a
+deploy rollover, a long garbage-collection pause, a node restart.
+
+One limit on that visibility, stated plainly: `Gaps` detects a jump only after
+the process has seen a baseline for the publishing node, and those baselines
+live in memory. A relay that has just restarted takes whatever sequence number
+it reads first as its baseline, so anything trimmed away **while it was down**
+leaves `Gaps` at zero. Loss over a reader's own downtime is bounded by the
+retention window rather than reported — which is the other reason to size the
+window for your restart and deploy times.
+
+**What it costs, and why pub/sub is still here.** Publishing to pub/sub costs
+Redis nothing: it hands the message to whoever is listening and forgets it.
+Writing to a stream is a real write — it replicates, it goes into your AOF/RDB
+if you have persistence on, and it holds memory proportional to
+`retention × update rate × update size` for every room on the node (roughly
+800KB per busy room at the defaults). Reading costs a small steady stream of
+commands even when nothing is happening, and that cost **grows with how many
+rooms a node holds**: each reader issues one `XREAD` per 512 stream keys, and
+each room has two, so an idle node costs `Readers × ceil(2 × rooms ÷ Readers ÷
+512) ÷ ReadBlock` commands per second — 16 per second at the defaults for a
+node under about a thousand rooms, and roughly 160 per second at ten thousand.
+Size Redis from the formula rather than from the small-cluster figure.
+
+**Size Redis for every room you have ever used, not for the rooms in use at
+once.** The retention window bounds how big each room's stream gets; it does
+not bound how many streams exist. This release sets no expiry on stream keys,
+and the trimmer only visits rooms a node currently holds, so once a room has
+gone quiet everywhere its two keys stay where they are, holding their last
+window, for as long as that Redis instance lives. If your room names are a
+bounded set of documents, that is a one-off ceiling you can multiply out. If
+they are per-session or per-tenant and unbounded, budget for the whole history
+or delete the keys from an operations job in the meantime. Expiring idle keys
+automatically is the intended fix and is tracked in #248.
+
+So pub/sub is **not deprecated and is not going away**. At-most-once is a
+legitimate choice when your rooms are hot, your Redis is sized for fan-out
+rather than for writes, and catching up from storage on reload is good enough
+for you. Choose Streams when a missed update between reloads is not acceptable
+to you, and pay for it in Redis memory and write throughput.
+
+**Migrating a live cluster without splitting it.** A mixed cluster delivers in
+one direction only. A Streams node does not publish to pub/sub, so a pub/sub
+node never sees its edits — that half is what matters, and it is why switching
+a running cluster straight over would leave half of it deaf for the length of
+the rollout. The other half crosses: this release does not gate the *receiving*
+side on the setting, so a Streams node still subscribes to its rooms' pub/sub
+channels and does apply what a pub/sub node publishes. Do not rely on that —
+it means a half-migrated cluster is one-way rather than symmetric, and it also
+means choosing Streams does not by itself remove the pub/sub connection from
+the node's Redis footprint. Gating the receiving side too is tracked
+in #249.
+
+The way through is the third setting, `Transport: Both`, which publishes to and
+reads from both mechanisms at once:
+
+1. Roll every node from the default to `Both`.
+2. Once no pub/sub-only node is left, roll every node from `Both` to `Streams`.
+
+Reverse the two steps to go back. `Both` needs no deduplication — receiving an
+update twice is harmless, because applying the same update again does nothing —
+so there is no window during the rollout where correctness depends on the order
+you restart your nodes. It does double the publish work, so it is a transition
+state rather than somewhere to stay.
+
+**Two things to know before you turn it on.**
+
+- **Redis Cluster is not supported**, and for the Streams tier that is
+  deliberate rather than unfinished. Reading many rooms in one command requires
+  every one of them to live on the same Cluster shard, and pinning them there
+  would put each node's reader count into the key names — so two nodes
+  configured slightly differently would read and write *different* streams for
+  the same room and never notice. Single-node Redis or Sentinel, as before.
+- **Leave `Config.NodeID` unset unless you have a reason not to.** By default
+  each process gets a fresh random identity, which means a restarted node
+  reads back its own last window of writes from Redis and recovers them. A
+  fixed `NodeID` makes the node recognise and skip its own messages, so its
+  own pre-restart writes have to come from storage instead.
+
+**What to watch.** `Relay.StreamStats()` is new and separate from the existing
+`Relay.Stats()`. Alert on `Gaps` **appearing at all**; alert on a sustained
+*rate* of `Stalled` (a room's local consumer cannot keep up) or `Deferred`
+(rooms being read before they are ready). `Trimmed` and `Restarts` are
+informational — the second one exists so that a node restarting is never
+miscounted as data loss. `Replayed` is a **batching gauge, not an alarm**: it
+counts the entries a reader merged into one update instead of pushing them one
+by one, so any room taking more than about four remote updates a second shows a
+permanent rate at the default read interval, and that is the tier working
+normally. Use it to watch inbound volume and to see catch-up bursts stand out
+against a room's own baseline; do not put a threshold on it.
+[docs/CLUSTERING.md](docs/CLUSTERING.md) has the full posture.
+
+**One note for anyone who ran this from the branch before release.** The stream
+key layout changed late in development — the sync/awareness marker now comes
+before the room name, so that a room whose name begins with `a:` cannot collide
+with another room's presence stream. A pre-release build's streams will not
+line up with a v1.50.0 build's. Nothing released was ever affected.
+
+**Nothing else changed.** No existing signature, default, or Redis command
+moved. Closes #206.
+## v1.49.5
+
+**Who is affected: anyone using `provider/client` with `Options.Token` against
+a server that can reject it.** If you do not set `Token`, nothing here changes
+for you.
+
+v1.49.3 fixed a rejected authentication token being sent twice. It fixed most
+of it. The client announces its token and sends its opening sync message
+without waiting, and v1.49.3 taught both of those writes to notice a rejection
+that had already arrived. But the client also *answers* the server: when the
+server asks what the client has, the client replies — and that reply is sent in
+the same instant the rejection may be arriving. When it was, the reply failed to
+send, the failure looked like an ordinary network glitch, and the client
+reconnected with the same refused token.
+
+So the symptom is the same as before, through a different door: **two failed
+authentication attempts instead of one**. As before there was no infinite
+retry, no hang, and no data loss — `Connect` still returned `ErrAuthRejected`
+and stopped. It matters if your server counts failed authentications toward
+rate-limiting or account lockout.
+
+**What changed.** The check now lives in one place that every send goes
+through, instead of being attached to two of them. There turned out to be five
+such sends, not the two the previous fix hardened — a test that simply counts
+them now fails if a new one is added without the check, which is how this
+problem reached a release twice.
+
+The same change removes a subtler problem in the previous fix: it read the
+connection directly while the client's own reader was already reading it, which
+the WebSocket library does not allow. That is also why it worked only
+sometimes — the two readers competed for the very message the check needed. It
+now asks the existing reader instead.
+
+**Present since v1.48.0**, and only narrowed by v1.49.3. It kept failing our
+own test suite intermittently after that release, which is how it was caught.
+## v1.49.4
+
+**Who is affected: anyone using the built-in `websocket.MemoryPersistence` whose
+compaction can fail.** In practice that means a corrupt stored record the merge
+cannot fold. If your folds succeed, nothing here changes for you — the healthy
+path is byte-for-byte the same cadence it always was.
+
+`MemoryPersistence` batches its housekeeping: every so many writes it folds a
+room's accumulated update records back into one. When that fold failed, it was
+retried on *every* subsequent write instead of waiting for the next batch. Each
+retry re-read and re-merged the whole log — work the previous failure had
+already shown would not succeed, over a log that only grew.
+
+The result was quadratic: with the fold failing, 800 writes cost 791 compaction
+attempts and merged 320,355 records. It is now 7 attempts and 1,270 records. The
+saving grows with the workload — 33× less merge work at 100 writes, 252× at 800.
+
+**No data was ever at risk.** A fold that fails leaves the records exactly where
+they were, and an un-folded record is still a stored record that still loads.
+This was a cost problem — wasted CPU on a store that was already unhealthy —
+not a correctness one.
+
+**What changed.** Each consecutive failure now doubles the number of writes
+before the next attempt, up to 64× the normal interval, and the first success
+puts it straight back to normal. It stays capped rather than backing off
+forever, because a fold that never runs is a log that never shrinks: a store
+that recovers has to be noticed, and the un-folded backlog has to stay bounded.
+Counting in writes rather than seconds means an idle room does not retry at all,
+and a recovered one is retried as soon as it is being used again.
+
+Explicit `Compact` calls, `LoadDoc`, and `Server.CompactEvery` are unchanged —
+they always fold on demand, and `Server.CompactEvery` already had its own
+spacing.
+
+**Present since v1.49.0.** Closes #239.
+
+Also in this release: the pure-Go SQLite driver behind `persistence/sqlite` and
+the offline client's local store moves from `modernc.org/sqlite` v1.34.5 to
+v1.39.0, picking up five minor versions of upstream fixes. That is as far as it
+can go for now — the next release requires Go 1.24 and the current one requires
+Go 1.25, against this module's Go 1.23 floor. Raising the floor would break
+consumers still on 1.23, so it stays where it is.
+
+## v1.49.3
+
+**Who is affected: anyone using `provider/client` with `Options.Token` against a
+server that can reject it.** If you do not set `Token`, nothing here changes for
+you.
+
+A rejected authentication token could be sent to the server twice instead of
+once. The client still gave up correctly after that — `Connect` returned
+`ErrAuthRejected` and stopped — so there was never an infinite retry loop, a
+hang, or any data loss. The practical impact is that a client with a bad
+credential made two failed authentication attempts, which matters if your server
+counts those toward rate-limiting or account lockout.
+
+**Why it happened.** The client announces its token and then immediately sends
+its opening sync message, without waiting for a reply. Both of the ways a
+rejection is recognised arrive on the *receiving* side. When the server rejected
+the token and closed fast enough, the client's second message failed to send, it
+never got as far as reading, and a refused credential looked like an ordinary
+network glitch — so it reconnected and tried the same token again.
+
+The rejection was not lost; it was sitting unread. A failed send does not mean
+the other side has stopped talking. The client now checks for it before deciding
+a failure was retryable.
+
+**Present since v1.48.0**, and in every release since. It surfaced as an
+intermittent CI failure that the existing test could not reproduce on demand;
+the new test forces the exact timing every run.
+
+**Upgrade notes:** none. No API change, no behaviour change for anyone not using
+`Token`.
+
+## v1.49.2
+
+**Who is affected: nobody's running code.** This release changes no library
+source — `crdt`, `provider`, `cluster`, `persistence` and `mobile` are
+byte-identical to v1.49.1. It ships one corrected benchmark file. If you are
+upgrading for a fix, you already have it.
+
+It is tagged so the corrected measurements have a version to cite.
+
+**What changed.** The benchmark suite added in #180 could not see the cost it
+was pointed at, in three separate ways, and that mattered: it agreed with the
+performance claims in #189 rather than testing them, so one proposed
+optimisation was implemented and reviewed clean before measurement showed it
+made the common path slower.
+
+- The suite's original observed-transaction benchmark is blind by construction.
+  A single client appending merges into a handful of items, so its walk is
+  effectively O(1) regardless of document size.
+- Its replacement measured a document that grew while being measured, so the
+  result described `b.N` rather than the document size it named. One figure was
+  16x artifact.
+- Its fixture was quadratic, which put realistic document sizes out of reach.
+- The delete-set benchmark sampled 1/10/100/1000 ranges and skipped 0/2/4/8/16,
+  which is where every real workload sits.
+
+**What it produced.** With a benchmark that measures the right shape, the
+performance epic went from nine asserted findings to one large measured one —
+building an observer's delta costs roughly 1000x the edit itself on a
+100k-item document — plus two rejections and three claims recorded as
+unverified. #189 now carries all of it, and #181, #184, #185 and #188 are
+closed into it.
+
+**Upgrade notes:** none. There is nothing to migrate and no behaviour change.
+
+## v1.49.1
+
+**Who is affected: anyone whose documents have deletion history and who loads
+them through `ApplyUpdateV2`.** That is most persistence backends, since
+`encode_state_as_update_v2` / `encodeStateAsUpdateV2` is the usual on-disk
+format. If your documents were written by `yrs` or by `yjs` and have ever had a
+nested shared type deleted, ygo has been reading them **incompletely**, with no
+error returned.
+
+This is a data-loss fix. Upgrade before your application persists anything it
+read back through `ApplyUpdateV2`, because writing a partially-decoded document
+back over its source destroys the part that did not decode.
+
+- **`ApplyUpdateV2` silently dropped content on GC structs (#231).** The GC
+  branch recorded the collected clock range in the delete set but never
+  occupied that range in the client's struct list, so every later struct from
+  that client looked like a clock gap and was parked in the pending queue
+  permanently — waiting on a predecessor that was already present in the same
+  update. Returned `nil` while doing it. Measured on 94 real `yrs`-written
+  documents: yjs read 974 nodes, ygo read 535, and 63 of 94 documents were
+  wrong. `ApplyUpdateV1` was never affected, and the fix makes V2 follow the
+  V1 path exactly.
+
+- **Conformance fixtures now cover GC structs (#232).** None of the 202
+  pre-existing V2 fixtures contained one, which is how #231 reached a release.
+
+**If you have already persisted a partially-decoded document:** upgrading does
+not undo that. Check your storage for a soft-delete or object-version window
+and restore the pre-overwrite copy. A cheap guard worth adding regardless of
+this fix: after decoding a full-state update, treat `doc.PendingStats().Items
+> 0` as a failed load rather than a smaller document, and refuse to write it
+back.
+
+## v1.49.0
+
+**Who is affected:** three separate audiences, so read the one that is you.
+
+- **The `MemoryPersistence` performance fix (#186)** affects only callers who
+  explicitly construct `websocket.MemoryPersistence`
+  (`websocket.NewMemoryPersistence()`) — **not** every deployment. A fresh
+  `websocket.NewServer()` has no persistence adapter at all, and nothing under
+  `provider/`, `cmd/`, or `examples/` constructs `MemoryPersistence` outside
+  its own tests; you have to opt into it via `NewServerWithPersistence`.
+- **The shutdown durability fix (#229)** affects **anyone running
+  `provider/websocket` with any persistence adapter at all**, in the default
+  configuration. If you call `Server.Shutdown` on a server that has peers
+  connected, you were losing committed transactions.
+- **The `provider/client` follow-ups (#228)** affect anyone using
+  `provider/client`, the embeddable sync client shipped in v1.48.0. One of
+  the three is directly visible on the *server* side too: every graceful
+  client disconnect was logging as an abnormal closure (code 1006).
+
+**What you must do:** nothing — all three are drop-in fixes with unchanged
+constructors and signatures. The write path gets cheaper (see the trade
+below), `Shutdown` gets more honest, and `provider/client` disconnects now
+look like what they are.
+
+### Fixed: `MemoryPersistence` re-merged the whole document on every write (#186)
+
+**The bug.** `MemoryPersistence.StoreUpdate` ran
+`crdt.MergeUpdatesV1(existing, update)` against the room's **entire**
+accumulated state on every incremental write — an O(document) cost per write,
+so a session of N updates cost O(document²) overall. `PersistenceAdapter`'s
+own doc warns adapters not to do exactly this; the built-in adapter was doing
+it.
+
+**The fix.** `MemoryPersistence` now delegates to `persistence.MemoryPersistence`
++ `persistence.LegacyAdapter` (`KeepVersions = 1`) instead of re-merging by
+hand: each write **appends** the update — O(update), not O(document) — and
+the room folds its own backlog into one blob every `CompactEvery` writes
+(new field, default 500, matching `provider/client`'s own compaction
+default). The O(document) fold still happens, but only once per
+`CompactEvery` writes instead of on every single one.
+
+**Measured**, old merge-on-write vs. new append-then-compact, timing a single
+`StoreUpdate` against a room already holding N updates:
+
+| Updates already in room | Before | After | Improvement |
+|---|---|---|---|
+| 100 | 13,975 ns/op | 1,457 ns/op | 9.6× |
+| 1,000 | 132,871 ns/op | 1,710 ns/op | 77.7× |
+| 10,000 | 1,676,329 ns/op | 4,653 ns/op | 360× |
+
+**Read the acceptance bar honestly, not generously.** #186 asked for "flush
+cost no longer grows with doc size." Taken literally, that is **not fully
+met**: per-write cost is now `append + O(document)/CompactEvery`, so it still
+grows with document size — the growth constant is divided by `CompactEvery`
+(500 by default), not eliminated. It *is* met in the sense that actually
+matters day to day: cost no longer grows **per write** in proportion to the
+document, because most writes are a cheap append and only one in
+`CompactEvery` pays the fold. Flat, constant-time writes aren't achievable
+for this storage model at all — `LoadDoc` has to keep returning the whole
+room as one V1 blob, so any bounded-record scheme must periodically fold the
+full document, and that fold is inherently O(document). See
+[docs/PERSISTENCE.md](docs/PERSISTENCE.md) for the same framing in the
+adapter's own docs.
+
+**The trade, stated plainly:** `LoadDoc` is no longer O(1). It now folds
+whatever records the room still holds — bounded by `CompactEvery` — and
+persists that fold, so subsequent loads are cheap again until the log builds
+back up. Writes are continuous and loads happen once per room residency, so
+this is the right direction to trade in, but it is not free.
+
+**Two corrections to the issue, verified against the code, worth knowing if
+you read #186 directly:**
+
+1. It calls `MemoryPersistence` "the default adapter." It is not.
+   `websocket.NewServer()` is documented as shipping with no persistence at
+   all, and the type is opt-in via `NewServerWithPersistence`.
+2. Its acceptance criterion points at a benchmark
+   (`BenchmarkMemoryPersistence_FlushVsDocSize` in `persistence/`) that
+   measures a **different type** (`persistence.MemoryPersistence`) on a
+   **different path** (`LoadDoc`, not `StoreUpdate`) than the one this issue
+   is actually about. This release adds
+   `BenchmarkWSMemoryPersistence_StoreUpdateVsDocSize` in
+   `provider/websocket`, which measures the type and path #186 is actually
+   about — the numbers above come from it.
+
+### Added: `Compact`, `CompactEvery` (#186)
+
+New exported surface on `MemoryPersistence`, which is why this ships MINOR
+rather than PATCH even though it's a bug fix — nothing existing changes
+behaviour or signature.
+
+- **`Compact(ctx, room) error`** folds a room's appended records into one
+  now, on demand. It also satisfies the optional `CompactableAdapter`
+  interface, so `Server.CompactEvery` and the server's on-unload compaction
+  work against `MemoryPersistence` too, additively on top of its own
+  threshold.
+- **`CompactEvery int`** (field) sets the self-compaction threshold; 0 or
+  less means the default of 500.
+
+**Deliberately not added:** `StoreUpdateContext`. An in-memory append has
+nothing to abort, so implementing the context-aware `PersistenceAdapterContext`
+variant would only cost writes — it would newly satisfy that interface and
+switch the server's persistence worker onto its cancellable-ctx path, where
+the coalescing-disabled path's final shutdown drain reuses a ctx a separate
+goroutine cancels concurrently with that same drain. A committed update still
+sitting in the queue when that race goes the wrong way is discarded with only
+a log line. Measured while this was still in the branch: 51-151 of 200
+concurrent writes dropped across 20 trials during a concurrent `Shutdown`,
+attributable to this method.
+
+That figure is **not** a claim that removing it makes such a `Shutdown` race
+lossless. A separate, pre-existing gap in the coalescing-disabled shutdown
+drain — it drains its queue exactly once and exits, whatever the adapter —
+drops writes under this same repro shape regardless of which
+`PersistenceAdapter` is behind it. What this removal fixes is specifically the
+extra, compounding loss this method caused on top of that. The underlying gap
+was filed as #229 and is fixed separately in this same release — next.
+
+### Fixed: transactions committed during `Shutdown` were silently dropped (#229)
+
+**This one affects everybody with persistence configured, in the default
+configuration**, and is unrelated to `MemoryPersistence`. It was found during
+the whole-branch review of #186 and verified as pre-existing against v1.48.0.
+
+**The bug.** Each room's persistence worker exited on `Server.Shutdown` by
+draining its 256-slot queue **once** and returning. Its producer — the
+`doc.OnUpdate` observer — watched only the room-teardown signal, never the
+server's shutdown signal. And `Shutdown` closes the shutdown signal as its
+*first* act but the peer connections much later, so peer read loops keep
+committing for the entire close-connections-and-join window. Every
+transaction committed after that one-shot sweep went into a buffer nobody was
+reading, and disappeared — no error, no counter, not even a log line. The
+package's own doc comment promised the opposite: *"draining any buffered
+updates before returning so that no committed transaction is silently lost."*
+
+This is the same shape as the relay-side [#202](https://github.com/reearth/ygo/issues/202)
+fixed in v1.46.0: `Shutdown` winding a consumer down while producers were
+still producing.
+
+**The fix — and why it is not the obvious one.** The tempting shape is to
+quiesce the producers first and let the worker exit once they are provably
+gone. We deliberately did not do that. Producers here are peer read loops with
+no join point, `ServeHTTP` handlers that can register mid-shutdown, and any
+caller holding a `*crdt.Doc`; "provably gone" is not provable, and a wrong
+guess there turns silent data loss into a **hung `Shutdown`** — a strictly
+worse failure. `Shutdown`'s ordering is therefore completely unchanged.
+
+Instead the handoff itself was made race-free. The worker now closes a new
+per-room retirement latch as the **first** act of every exit path — before its
+final drain, not after — which leaves the producer exactly two cases and no
+third:
+
+1. the send completed while the latch was open, so `close(latch)` and
+   therefore the final drain that follows it both happen after the send: the
+   drain is guaranteed to pick the update up;
+2. the latch is already closed, which a `select` on a closed channel always
+   observes with certainty: the committing goroutine performs the write
+   itself.
+
+The producer's escape hatch (needed so a full buffer can't wedge a committing
+transaction once the worker is gone) still exists — it now has a durable
+destination instead of the floor.
+
+**Also fixed, the second half of #229:** the coalescing-disabled path passed
+the worker's **cancellable** context — the one a sibling goroutine cancels on
+shutdown — to its final drain, so every `PersistenceAdapterContext`
+implementation (`persistence/sqlite` via `NewLegacyAdapterContext`, and any
+adapter that honours `ctx`) returned `ctx.Err()` and discarded the write.
+Measured at 51-151 of 200 concurrent writes dropped per trial. Both paths'
+final flushes now use `context.Background()`, and a store aborted by
+cancellation is **retained** and re-stored on the exit path rather than
+dropped — the same retain-and-re-flush rule the coalescing path already
+applied to an unflushed batch. Cancellation still aborts a write already in
+flight when shutdown begins, so it no longer decides which committed
+transactions count.
+
+**Read that last point precisely — it is a trade, not a free win.** Because the
+final flush and the retained re-stores now run under `context.Background()`, a
+`StoreUpdate` that never returns wedges that room's worker at exit where it
+used to be cancelled out of the way. `Shutdown` does not hang on it — every
+wait is bounded by the caller's context — but it now returns `ctx.Err()` in a
+case that previously returned `nil` by discarding your data. If you have a
+`Shutdown` deadline and an adapter that can block indefinitely, you may start
+seeing `context.DeadlineExceeded` where you saw success before. That is the
+honest signal replacing a silent lie.
+
+There is a **second, unrelated cause** of that same error, so do not read it as
+"my adapter is wedged": `Shutdown`'s new wait counts *every* committing
+goroutine, not only the ones performing a write themselves. Code that holds a
+retained `*crdt.Doc` and commits in a tight loop keeps that count above zero for
+as long as it runs, so `Shutdown` burns its whole deadline with nothing stuck
+anywhere. Stop your writers, not just your connections, if you want `Shutdown`
+to return early.
+
+**`Shutdown` now joins the writes it can see.** A transaction committed during
+`Shutdown` may arrive too late for its room's worker, in which case the
+committing goroutine performs the adapter write itself. `Shutdown` waits for
+those to finish (bounded by your ctx) before returning — otherwise the fix
+would only narrow the loss window, since the usual `srv.Shutdown(ctx)` followed
+by returning from `main` would kill the process mid-write.
+
+**The residual, stated plainly: this does not make `Shutdown` lossless, and
+cannot.** A transaction that *begins* committing after `Shutdown` has observed
+its last in-flight write is not covered. The producers are peer read loops and
+any code holding a `*crdt.Doc`; the server has no way to join them, and
+inventing one would risk a `Shutdown` that never returns — a worse failure than
+the one being fixed.
+
+What is guaranteed is narrower, and every one of its qualifiers is real:
+
+> **Stop accepting new WebSocket connections before calling `Shutdown`.** Then,
+> provided `Shutdown` returns `nil`: for every room that was present and had
+> finished loading when `Shutdown` began, any commit whose `Transact` returned
+> before `Shutdown` returned has been handed to the adapter — the write
+> attempt completed and was not abandoned mid-flight. Whether the adapter
+> *accepted* it is a separate question this does not answer: adapter errors
+> and panics are logged, not propagated, so this is not an unconditional
+> durability claim.
+
+The precondition is not decoration. `Shutdown` snapshots the room set once and
+skips any room still mid-load at that instant, and `ServeHTTP` has no shutdown
+gate — so a connection accepted while `Shutdown` runs can create a room, or
+finish loading one, after the snapshot, and `Shutdown` never waits on that
+room's persistence worker. A commit into it can return from `Transact` with the
+update merely buffered, and `Shutdown(ctx)`-then-exit kills the drain. That
+behaviour predates v1.49.0; it is called out here because everything above
+would otherwise read as promising against it.
+
+Nor is "provided `Shutdown` returns `nil`" decoration. Every wait inside
+`Shutdown` is bounded by the caller's `ctx`, not by the work actually
+finishing — a deadline that fires mid-drain returns `ctx.Err()` while a final
+flush or a stranded write may still be in flight, landing or not with no way
+for the caller to tell. And "handed to the adapter" is exactly that, no
+more: an adapter error or a recovered panic while storing a commit is logged
+(see `persistStranded`'s and the persistence worker's own doc comments) and
+the write abandoned right there, never propagated through `Shutdown`'s return
+value. A `nil` `Shutdown` tells you every in-scope commit's write attempt
+completed without being abandoned mid-flight — it cannot tell you the
+adapter accepted any of them. A caller who needs that stronger property has
+to get it from the adapter itself.
+
+**What this costs you.** A straggler write is synchronous for the goroutine
+that committed it and bypasses coalescing, auto-versioning, and compaction. It
+also delays that update's relay fan-out, since the persistence observer runs
+before the relay observers. And it writes for a room the server may already
+consider gone — including, if you retain a `*crdt.Doc` past teardown,
+indefinitely; before #229 those commits were silently dropped instead. Adapters
+whose `Compact` mutates state keyed by room name should serialise by name; see
+`CompactableAdapter`'s godoc and [docs/PERSISTENCE.md](docs/PERSISTENCE.md).
+
+**Tested both directions**, because the failure mode of a bad fix here is a
+hang rather than a loss. Sequenced (not raced) regression tests commit while
+the worker is parked immediately past its final drain and assert the update
+reaches the adapter, with coalescing enabled *and* disabled; a second pair
+parks the adapter inside the stranded write itself and asserts `Shutdown` has
+not returned, then that a wedged one still surfaces as the caller's deadline.
+Against them: `Shutdown` must still return promptly for rooms with no peers at
+all — idle-resident and `Apply`-created — where no producer will ever appear.
+
+### Fixed: `provider/client` follow-ups from the #165 review rounds (#228)
+
+**Who is affected:** anyone using `provider/client` (v1.48.0's embeddable
+sync client). Three independent, previously-deferred fixes, none touching a
+public signature — the most visible one is server-side: every graceful
+`provider/client` disconnect was logging as an abnormal closure (code 1006)
+on any server it talked to, ygo's own included.
+
+**`Client.Close`, called a second time, always returned `nil`.** `closeErr`
+was a variable local to `Close`, re-declared fresh on every call — including
+repeat calls, where `closeOnce.Do` is a no-op that never touches it — so the
+first call's real result (whatever the owned store's `Close` actually
+returned) was silently replaced by a fresh, untouched `nil` on every call
+after the first. It is now cached on the `Client` itself and returned
+consistently, first call or fifth.
+
+**`Client.maybeCompact` could lose a concurrent write count.** It read
+`storeWrites` via `Load` and then reset it unconditionally via `Store(0)`,
+discarding any `Add(1)` from a concurrent `onDocUpdate` — a local edit
+landing in that window, from either the caller's own goroutine or the loop
+goroutine — that happened to arrive between the two calls. It now consumes
+exactly its threshold via `Add(-threshold)`, which cannot lose a concurrent
+increment on either side of it. The impact was compaction cadence drift — a
+few extra updates before the next fold — never lost data.
+
+**`Close`'s teardown never sent a WebSocket close frame.** Tearing down via
+a bare `conn.Close()` tells the peer nothing: from `ReadMessage`'s point of
+view, a deliberate disconnect is indistinguishable from a crash or a severed
+network path, and ygo's own server (like most implementations of the
+ordinary WebSocket close handshake) logs that as an abnormal closure — on
+every ordinary disconnect, not only real failures. `runLoop`'s teardown now
+sends `WriteControl(CloseMessage, CloseNormalClosure)` before `conn.Close()`,
+the same thing a graceful `gorilla/websocket` client is documented to do,
+so the peer's read loop sees a proper close instead of a bare I/O error.
+Two things worth knowing precisely, not generously: that frame goes out on
+**every** exit from `runLoop`, including a rejected-auth or read-error exit,
+always carrying the same `CloseNormalClosure` code — so read it as "this
+client is done writing," not as a claim that the disconnect was clean. And
+the frame's own write is bounded by `closeDrainTimeout` (2s), not the
+10s handshake-path timeout the first version of this fix used by mistake —
+a backpressured-but-alive peer could otherwise have added up to 10 seconds
+to `Close`'s return latency, right where the design intent for this
+teardown path was already 2 seconds.
+
+### Documentation drift, fixed alongside
+
+`docs/ARCHITECTURE.md`'s package dependency graph had not been redrawn since
+v1.19: it showed only `provider/{websocket,http}` and omitted five packages
+shipped since — `persistence/`, `cluster/`, `mobile/`, `provider/webhook`,
+and `provider/client`. Every arrow in the replacement was verified against
+real imports with `go list` across 14 packages, which confirmed one arrow
+most readers would draw wrong: `awareness/` does **not** import `crdt/`.
+
+Three further drifts were found while auditing the rest of that file, and are
+fixed here rather than filed:
+
+- **"Garbage collection" documented an API that does not exist.** It told you
+  to write `doc.GC = true` / `doc.GC = false`. `Doc` has no exported `GC`
+  field — the flag is set at construction, `crdt.New(crdt.WithGC(false))`.
+  Code copied from that section would not have compiled.
+- **The same section described only half the behaviour.** Automatic
+  collection is **suspended for as long as any `UndoManager` is registered**
+  (undoing a deletion re-inserts a copy of the deleted content, so that
+  content has to still be there) — worth knowing, because it means a
+  long-lived undo manager keeps deleted content alive. And `crdt.RunGC` does
+  tombstone reclamation (#166): it replaces deleted content with
+  `ContentDeleted` tombstones and then merges adjacent tombstones from the
+  same client into single nodes. It stays available as the manual entry point
+  when auto-GC is suspended, and it is destructive with respect to
+  `RestoreDocument` — take snapshots first.
+- **"Compatibility testing" described only the Yjs fixture layer**, omitting
+  the randomised layer under `testutil/fuzz/` entirely — including
+  `TestFuzzConvergenceMoves`, the oracle that found the `YArray.Move`
+  divergence fixed in v1.40.0. All four oracles are now listed with what each
+  proves, which require node, and how to replay a failing seed.
+
+Finally, `mobile`'s package doc understated its own bound surface: it named
+only `*Doc` and `*Awareness`, omitting `*SyncClient` and `*Subscription`, and
+said the package never exposes callbacks. It exposes three observer
+*interfaces* (`DocObserver`, `AwarenessObserver`, `SyncStatusObserver`) —
+the only callback form `gomobile bind` supports in that direction. The claim
+now says what it meant (no Go **func values**) and points at the threading
+rules each observer imposes.
+
+## v1.48.0
+
+**Who is affected:** anyone building a Go client — or, via `mobile.SyncClient`,
+a native iOS/Android app — that needs a Yjs document synced to a
+`provider/websocket`-compatible server. Nothing existing changes: this
+release only adds packages.
+
+### Added: `provider/client`, an embeddable offline-first sync client (#165)
+
+Until now, ygo's networked sync story was server-only: `provider/websocket`
+answers peers, but embedding a *client* that dials it meant hand-rolling the
+WebSocket connection, the sync handshake, reconnect-with-backoff, and local
+durability yourself. `provider/client` closes that gap — it was the largest
+remaining hole in the library's own coverage, named in this project's
+competitive review as the one thing a Go consumer still could not do without
+writing the client themselves.
+
+**The offline model, concretely — because "offline-first" gets read as
+vaguer than it is.** There is no offline-op queue anywhere in this package,
+and that's deliberate, not a missing feature. The y-protocol handshake
+already is one: SyncStep1 is a peer's state vector ("here's what I have"),
+SyncStep2 is the answer ("here's what you're missing"). An edit made while
+disconnected just sits in the `*crdt.Doc` — Yjs updates are ordinary
+document state — until the next connection's handshake runs, and that
+handshake doesn't care how long the edit has been waiting. A client that
+reconnects successfully converges with no replay mechanism required.
+
+That leaves exactly one gap the protocol can't cover: the *process* itself
+going away while still offline — killed, reaped, the device sleeps mid-edit.
+Nothing about the sync protocol writes a `*crdt.Doc` to disk, so without a
+local store, a restart during an offline stretch loses every edit made since
+the last successful sync. `provider/client`'s local store
+(`Options.Store`/`StorePath`, a CGo-free SQLite adapter by default) exists
+for exactly that: every update — the caller's own edits **and** everything
+ever received from the server — is persisted as it happens, and hydrated
+back into a fresh `Doc` *before* the app can touch it or a dial is even
+attempted (`client.New` → `client.Connect`). Call `New`, start editing
+immediately, and get back everything from last time even with the server
+unreachable or down — hydration never waits on the network.
+
+**Reconnect and keepalive.** `Connect` never gives up on a connection
+failure (except one case below); it reports it via `OnStatus` and retries
+with jittered exponential backoff (`Options.MaxBackoff`, default 30s), reset
+only when a handshake actually *completes* — not merely when a dial
+succeeds, so a server that accepts and immediately drops a connection
+doesn't turn into a half-second retry storm. A WebSocket ping every
+`Options.PingInterval` (default 30s, matching `provider/websocket`'s own
+default) plus a 2×-interval silence deadline converts a half-open
+connection — the peer vanished without a clean close — into an ordinary
+retryable error instead of a socket that blocks forever.
+
+**Auth, and the one caveat worth reading before you wire it up.**
+`Options.Token` sends ygo's Hocuspocus in-band auth token
+(`provider/websocket`'s `OnTokenAuth` counterpart); a rejection is terminal
+(`ErrAuthRejected`), not retried. But it is **not a confidentiality gate**:
+ygo's own server pushes the room's full SyncStep1/SyncStep2/Awareness state
+before it has read the client's token at all, so `Synced()` can close — with
+real document content already in the `Doc` — on a connection whose token is
+rejected moments later. If withholding content from an unauthenticated
+caller matters, that has to happen at the HTTP boundary
+(`provider/websocket.Server`'s `AuthFunc`/`Authorize`), not at this in-band
+exchange.
+
+**`Stats().Dropped` is durability-based, not connection-based** — this was
+deliberately gotten exact, not just plausible: a document update backed by
+a configured `Store` is never counted, because the store already has it and
+the next hydrate+handshake (this client's own reconnect, or a brand-new
+`Client` after a restart) still delivers it — that's a delay, not a loss.
+A storeless document update, or any awareness (presence) update — Store or
+no Store, since presence isn't document state and the handshake never
+carries it — *is* counted. Alert on `Dropped` going non-zero with a `Store`
+configured exactly as you would `RelayStats.Dropped` server-side.
+
+`Client.Close` mirrors the durability-first / bounded-drain / then-teardown
+discipline `Server.Shutdown` established for #202: store writes are already
+durable by the time `Close` starts (they happen synchronously, on the
+caller's own goroutine, not on a buffered worker), the sync loop is joined,
+observers are unsubscribed, and whatever is still queued outbound is drained
+and counted rather than silently discarded.
+
+See [docs/CLIENT.md](docs/CLIENT.md) for the full design and
+[examples/offline-client](examples/offline-client) for a runnable,
+flag-driven demo.
+
+### Added: `mobile.SyncClient`, the `gomobile` binding (#165)
+
+`mobile/` has shipped a full on-device Yjs editor since v1.34.0 — text,
+array, map mutation, observers, presence — but making it talk to a server
+meant writing the dial/reconnect/persistence logic again on the platform
+side, in Swift or Kotlin, by hand. `SyncClient` wraps `provider/client` in
+the same gomobile-safe surface the rest of `mobile/` uses:
+`NewSyncClient(url, dbPath, token)` returns a client whose `Doc()` is usable
+immediately, and `Connect()` returns right away — the blocking sync loop
+runs on its own goroutine, off the platform UI thread, with progress
+delivered through a `SyncStatusObserver` instead of a return value.
+`SyncedOnce()` gives platform code a poll-friendly boolean where
+`client.Client.Synced()`'s channel can't cross the binding boundary. Every
+behaviour above — the offline model, the auth caveat, `Stats`-style
+accounting, reconnect/backoff — applies unchanged; this is a thin
+translation layer over `provider/client`, not a second implementation. See
+[mobile/README.md](mobile/README.md#self-syncing-syncclient).
+
+No API changes to anything existing. Both additions are new exported
+symbols in new packages, which is why this ships as a MINOR release under
+this project's semver-by-API-surface convention even though nothing already
+shipped changes behaviour.
+
+### Fixed: a disconnect-triggered awareness removal could suppress a rejoining client's presence (#226)
+
+**Who is affected:** anyone running `provider/websocket` with awareness
+enabled — this is a **server-side behaviour change** affecting existing
+deployments, not just new code from this release. Any room where clients
+disconnect and quickly reconnect (a page refresh, a flaky connection, a
+`provider/client` reconnect) was exposed.
+
+**The bug.** When a peer disconnected, `peer.go`'s `encodeAwarenessRemoval`
+synthesised that peer's removal at its current awareness clock **plus
+one**. A client that reconnects and re-announces its presence calls
+`Awareness.Heartbeat`, which *also* bumps by exactly one from that same base
+clock — so a prompt reconnect computed the identical clock as the server's
+removal. `Awareness.ApplyUpdate`'s equal-clock rule always resolves a tie in
+favor of the null (removed) side over an active one, no matter which a
+given peer receives first, so every other peer in the room could end up
+believing the rejoining client had left — even though it was back and
+correctly announcing itself. In the worst case (a half-open connection that
+`AwarenessExpiry` exists to catch), the server could synthesise the removal
+well after the client had already reconnected, at a clock *higher* than the
+rejoin, which no client-side workaround could fully cover.
+
+**The fix.** `encodeAwarenessRemoval` no longer bumps the clock: it encodes
+the removal at exactly the clock the room's shared `Awareness` currently
+holds for that client. The existing equal-clock rule already admits an
+unbumped removal, and leaving it unbumped means any subsequent genuine
+heartbeat from the rejoining client is strictly newer than the removal, so
+the tie class this bug depended on no longer arises. This also brings ygo
+in line with y-protocols' `removeAwarenessStates`, which bumps the clock
+only when the removed client is the awareness instance's own local client —
+never when synthesising a removal on another client's behalf, which is
+exactly this function's case. `provider/client`'s existing double-heartbeat
+margin on reconnect (added for #165) is unaffected and remains in place —
+it now exists purely as defense-in-depth against third-party servers
+(Hocuspocus, y-websocket, or any other implementation of this wire
+protocol) that may still compute removal clocks the old way.
+
+## v1.47.1
+
+**Who is affected:** anyone building nested documents with the prelim
+constructors (`NewMapPrelim`/`NewArrayPrelim`/`NewTextPrelim`, v1.43.0) —
+specifically code that, by bug or by design, hands one detached handle to two
+containers.
+
+**The fix.** A shared type attaches once, but the staging entry points only
+enforced that against *attached* handles and (since v1.46.0) duplicates on
+the *same array*. Staging one handle onto two different containers — two
+detached arrays, a detached array and a detached map, or two keys of one
+detached map — succeeded at both calls, and the mistake only surfaced when
+the second container attached: a panic from inside `flushPrelim` complaining
+that `PushType` requires a detached type, pointing at a function the caller
+may never have used, with no hint which container double-staged the handle.
+
+`PushType`, `InsertType`, and `YMap.Set` now track where a detached handle is
+staged and reject a spoken-for handle **at the call site**, naming the entry
+point you actually called. The claim is released when the handle leaves its
+container — overwriting the staged key, `YMap.Delete`, or a staged
+`YArray.Delete` — so the legitimate "move it" flow (delete there, stage here)
+works, and overwriting a staged key with the same handle remains the
+documented no-op.
+
+No API changes; misuse that previously failed late and confusingly now fails
+immediately and precisely (#222).
+
+## v1.47.0
+
+### Added: `ygo-server` flags for periodic version capture and retention (#167)
+
+**Who is affected:** anyone running the `ygo-server` binary who wants a version
+history without writing one. The library is unchanged; this release only wires
+existing capability to the command line.
+
+**Two new flags.**
+
+```
+-version-interval duration   capture a version of each CHANGED room at most this often
+-keep-snapshots int          retain this many auto-captured versions per room
+```
+
+Both default to off, so a default run behaves exactly as before.
+
+`-version-interval 15m` captures at most one version per room per 15 minutes,
+and only for rooms that actually changed — a quiet room is never re-versioned,
+which is what keeps a history panel usable rather than full of identical
+entries.
+
+`-keep-snapshots 50` bounds the auto-captured versions. Retention is **per
+label**, so it trims only the server's own `auto` versions and cannot evict a
+snapshot your application named deliberately (say `before-migration`). That
+guarantee is v1.45.0's label-scoped retention; without it this flag would have
+been a footgun.
+
+Setting `-keep-snapshots` without `-version-interval` warns at startup:
+retention is applied at the moment a version is captured, so with nothing
+capturing, the bound is never enforced.
+
+**Also:** `-awareness-expiry` and `-max-awareness-clients` were missing from the
+binary's documented flag list and are now included, with a test that keeps the
+list from drifting again.
+
+### Fixed: zero-size origin tokens alias in `WithTrackedOrigins` (#203)
+
+**Who is affected:** anyone using `UndoManager` with `WithTrackedOrigins`,
+and more broadly anyone minting transaction-origin tokens as pointers.
+
+**The fix.** Tracked-origin matching is Go interface equality (`==`), and Go
+satisfies every zero-size allocation from a single address
+(`runtime.zerobase`) — so two origin tokens minted as `new(struct{})` compare
+equal even though the code plainly intends two distinct identities. An
+UndoManager tracking one such token silently captured the other's
+transactions too: user B's edits landing on user A's undo stack, with no
+error anywhere. This is the same aliasing that silently disabled relay
+publishing inside `provider/websocket` for six releases (fixed in v1.42.0);
+this occurrence sat on a public API where the library cannot fix the values
+for you (#203).
+
+**What changes for you.** `WithTrackedOrigins` now panics at construction
+when given a pointer to a zero-size type, naming the offending type and the
+fix. If you hit the panic, change your token type from `struct{}` to
+something with size — the conventional spelling is:
+
+```go
+type originToken struct{ _ byte }
+tok := &originToken{} // every allocation is now a distinct origin
+```
+
+Distinct named zero-size *value* types (`originA{}` vs `originB{}`) remain
+legal and correct — interface equality compares the dynamic type first, so
+they never alias each other. Ordinary comparable values (strings, ints) are
+unaffected. The identity semantics are now documented on
+`WithTrackedOrigins`, `Doc.Transact`, and `Doc.OnUpdate`.
+
+No API surface changes; strictly a misuse guard plus documentation.
+
+## v1.46.0
+
+Two changes. `YArray.InsertType` completes the prelim constructor surface
+from v1.43.0, and `Server.Shutdown` no longer silently discards queued
+outbound relay updates (#202).
+
+### Added
+
+- **`YArray.InsertType(txn, index, type)`** places a detached shared type at
+  any index; `PushType` could attach one only at the end. The gap mattered
+  because the obvious workaround — `PushType` then `Move` — emits
+  `ContentMove`, a ygo wire extension other implementations mis-parse,
+  usually silently (#207), so mid-array placement of a nested type had no
+  safe expression. Attached placement mirrors
+  `Insert`: live-index semantics, splitting a plain-value run when the index
+  falls inside it, and any unresolvable index anchoring at the tail. On a
+  detached array the type splices into the staged content, and plain-value runs
+  split around it when the array attaches. Two conformance fixtures pin the
+  wire shape byte-identical to `yjs@13.6.30` — a nested type inserted between
+  two attached cells, and an interior insert into a detached array's staged
+  run — and a parity suite holds staged boundary behaviour identical to
+  attached for interior, ends, beyond-the-end and negative indices. The
+  rejection message for a shared type passed to `Insert`/`Push` as a plain
+  value now points at `InsertType` first.
+
+### Fixed: shutdown relay-tail loss (#202)
+
+**Who is affected:** every clustered deployment — any server with a
+`cluster.Relay` attached — plus authors of third-party `Relay`
+implementations.
+
+**The fix.** `Server.Shutdown` cancelled the relay context as its second act,
+before closing peer connections and before the persistence drain. Peers kept
+committing for the rest of shutdown — potentially seconds — into per-room
+outbound lanes whose workers had already exited without draining, and nothing
+joined those workers. Two consequences, both fixed (#202):
+
+1. **Silent, uncounted tail loss.** Every update queued in that window was
+   discarded with `RelayStats().Dropped` and `HardDrops` both reading zero,
+   so an operator alerting on those counters concluded nothing was lost. On a
+   hot room — never reloaded from persistence — the peer node never converged
+   on those updates. `Shutdown` now drains each lane while publishing still
+   works and cancels the relay context last; whatever it cannot deliver
+   within your ctx budget is counted in `Dropped`. There is no longer any
+   path where updates vanish while both counters read zero — v1.42.0's
+   "`Dropped`/`HardDrops` should always be zero; alert on their presence"
+   operator model now holds across `Shutdown` too, and the exception
+   documented there is retired.
+
+2. **`Publish` could outlive `Shutdown`.** Nothing joined the lane workers,
+   so a `relay.Publish` call could still be in flight after `Shutdown`
+   returned — unsafe for a relay that frees resources in `Close()`, despite
+   the documented rule that the caller `Close()`s the relay once every
+   attached server is done. `Shutdown` now joins the workers, bounded by its
+   ctx.
+
+**What changes for you.** Give `Shutdown` a real deadline: its ctx is now
+also the delivery budget for the final outbound tail, and a `Shutdown` that
+could not finish within it returns the ctx error with the undelivered backlog
+counted in `Dropped`. `RelayStats.Dropped` is broader — it now also counts
+payloads lost to a failed `relay.Publish` call at any time, not just pre-lane
+discards — so a deployment that graphs it may see non-zero values it
+previously missed; they were always losses, just invisible ones. Inbound
+shutdown ordering is unchanged in effect: `Inject` has always refused with
+`ErrServerShutdown` from the moment `Shutdown` begins, so cancelling the
+relay context later cannot let remote changes mutate rooms.
+
+**For `Relay` implementers:** the `Publish` contract now states explicitly
+that it must return promptly once its ctx is cancelled — `Shutdown` relies on
+this to unwedge a blocked `Publish` after your deadline. Both shipped relays
+already conform.
+
+## v1.45.0
+
+**Who is affected:** anyone running `Server.AutoVersionEvery` together with
+`LegacyAdapter.KeepSnapshots > 0` while also letting users name snapshots — and
+anyone maintaining their own `SnapshotStore` implementation.
+
+**The fix.** Snapshot retention kept the newest `KeepSnapshots` per room without
+regard to how each snapshot was created, so auto-captured versions evicted ones
+a user had deliberately named. A snapshot named `"before-migration"` vanished
+once `KeepSnapshots` newer auto versions existed: at a 15-minute interval with
+keep-50, about half a day of continuous editing, silently and with no way to
+protect it. Auto versions are cheap, numerous and individually disposable, which
+is the whole point of bounding them; a named snapshot is an explicit user act and
+the thing they would most object to losing. Retention is now scoped to the label
+class, so the two kinds bound themselves separately.
+
+**What changes for you.** `KeepSnapshots` becomes a per-label bound rather than a
+per-room one, so a room's total is now `distinct labels × KeepSnapshots` and a
+deployment using varied labels will retain more than before. If you relied on it
+as a hard per-room cap you no longer have one — deliberately, because capping the
+total is what evicts named snapshots. If your application lets end users name
+snapshots, that growth is user-driven: enumerate labels from `ListSnapshots` and
+call the new `TrimSnapshots` per label if you need a ceiling.
+
+**New:** `LegacyAdapter.TrimSnapshots(ctx, room, label) (int, error)` runs the
+same retention on demand. Snapshots written straight through
+`SnapshotStore.SaveSnapshot` were never trimmed — retention only ever ran from
+`SaveVersion`, so with auto-versioning off `KeepSnapshots` did nothing at all —
+and they still are not unless you call this. It returns how many it deleted, and
+attempts every surplus snapshot even when one delete fails rather than stopping
+at the first.
+
+**If you implement `SnapshotStore`:** the conformance suite is stricter, and your
+implementation may newly fail it. That is the intent. It used to pass the literal
+`"room"` everywhere, so nothing checked a name needing escaping on the snapshot
+path — and that path has more name-derived surface than the update path: the
+per-room counter object embeds the room name, and IDs are often recovered by
+parsing them back out of an object name. A room name carrying your delimiter
+therefore corrupts ID handling silently rather than failing, and a wrong ID is
+not cosmetic, since IDs address which state a user restores. This is not
+hypothetical — we hit it downstream while implementing `SnapshotStore` on GCS,
+where an id-parsing scheme that looked correct mapped some ids onto others.
+
+The suite now runs its core round-trip under `"with/slash"`, `"with:colon"`,
+`"with space"`, precomposed *and* decomposed Unicode, and `"../escape"`, and
+checks cross-room isolation for name pairs that collide under naive encoding
+(`a/b` vs `a:b`, `a/b` vs `a%2Fb`, `a b` vs `a+b`, NFC vs NFD). We verified the
+suite against a deliberately-colliding store that rewrites awkward characters in
+its storage key: the previous suite passed it clean, the current one fails it on
+three of the four pairs. The in-tree memory, file, and sqlite backends pass
+unchanged.
+
+## v1.44.0
+
+**Who is affected:** only callers who put non-UTF-8 bytes into a document —
+a Go `string` holding an invalid UTF-8 byte sequence, passed to `YMap.Set`,
+`YArray.Insert`/`Push`, `YText.Insert`/`ApplyDelta`/`InsertEmbed`/`Format`, a
+root-type accessor, an XML node-name/attribute setter, or `WithGUID`. Most
+callers are not doing this — Go string literals and anything read from JSON,
+HTTP bodies, or ordinary text sources are valid UTF-8 already. If you build
+strings from raw byte slices, non-UTF-8-safe truncation, or another encoding
+without converting, you may be affected.
+
+**What changes:** those calls now **panic**, naming the offending input, where
+previously they succeeded and produced an update that encoded without
+complaint but that neither ygo nor Yjs could decode — a room that silently
+stopped converging and a stored update that could never be reloaded. A panic
+on write is a large behavior change but it replaces silent, hard-to-diagnose
+corruption with an immediate, attributable failure at the point the bad
+string was introduced, instead of downstream at decode time (or never, if the
+divergence went unnoticed).
+
+**How to prepare:**
+- **Pre-check** with `utf8.ValidString` (standard library `unicode/utf8`)
+  before passing a string into any of the calls above, if you can't already
+  guarantee the string is valid UTF-8.
+- **Recover**, if you'd rather catch the panic at a call boundary than
+  pre-check every string (e.g., wrapping a batch-import path that processes
+  many documents and should skip/report a bad one rather than crash the
+  whole batch).
+- **Use `Encoder.WriteVarStringE`** if you're working at the encoding layer
+  directly (not through the CRDT mutator API): it returns `ErrInvalidUTF8`
+  instead of panicking, for callers encoding untrusted input themselves.
+
+**The one place ygo repairs instead of rejecting:** the WebSocket provider's
+auth reply path (`encodeAuthMessage` in `provider/websocket/peer.go`) coerces
+an app-supplied diagnostic string — an `OnTokenAuth` hook's error text, or the
+`"read-write"`/`"readonly"` scope label — with `strings.ToValidUTF8` rather
+than panicking. That string runs on a live connection goroutine at a point
+where crashing the goroutine over a malformed error message from the
+application layer would be worse than the alternative: replacing invalid runs
+with U+FFFD and keeping the connection and the diagnostic readable. Nowhere
+else in this change coerces; this is the sole, deliberate exception, guarding
+a live goroutine against an application's own string rather than a wire or
+relay identifier.
+
+**Performance:** encoding is slower, because `Encoder.WriteVarString` now runs
+a `utf8.ValidString` pass over every string on every encode. The committed,
+CI-gating benchmark, `BenchmarkEncodeStateAsUpdateV1`, measured **+7.45%**
+(n=10, quiet machine). This benchmark's result is noticeably sensitive to
+what else is running on the machine at the time — repeated n=10 runs have
+landed anywhere from roughly flat to the high single digits depending on
+background load — so +7.45% should be read as a representative order of
+magnitude rather than a precise constant; treat it as "mid-single-digit to
+high-single-digit percent," not a number good to two decimal places. That
+benchmark is also a worst case rather than a typical one: `buildTextDoc(1000)`
+performs 1000 one-character inserts, each in its own transaction, so the
+encoded document is 1000 items each holding a one-byte string — maximum
+validation call count, with no string length at all to amortize each call's
+fixed overhead over. `BenchmarkEncodeStateAsUpdateV1_Bulk`, also committed,
+encodes the same total byte count built as a single bulk insert instead of
+1000 tiny ones — the shape most real documents actually have — and measured
+**+2.86%** (n=10). Allocations are unchanged in both cases. `ApplyUpdateV1`
+(decode), the heavier path at roughly 115µs, moves only about +1.2%, since
+the decode side already validated UTF-8 before this release. This is not
+rounded down to "negligible": it is a real, measured cost, worst on documents
+built from many tiny string items.
+
+**Why we're paying it:** most of this cost buys defence-in-depth rather than
+closing a real gap. Every string in a document tree already passes either a
+mutator boundary check (the new validation added in this release) or the
+validating decoder (`ReadVarString` has always rejected invalid UTF-8 on the
+read side). The encode-time check added here uniquely covers strings
+assigned directly to exported struct fields that bypass the mutator API. For
+`RelativePosition.Tname` this release adds a targeted check at
+`EncodeRelativePosition`, so a caller building `RelativePosition{Tname: bad}`
+by hand — there is no constructor to intercept it — gets a panic naming the
+field rather than the encoder's generic one. `YXmlElement.NodeName` and
+`ContentAttribute.Name` are the fields left relying on the generic
+`Encoder.WriteVarString` backstop alone: both are exported and directly
+assignable, bypassing `NewYXmlElement`/`NewContentAttribute`. We are
+knowingly paying the encode-time cost so that none of these three paths can
+silently produce an update no decoder will accept.
+
+**This change deliberately reverses a documented decision.** Commit
+`c3ba5ff` (2026-05-19, issue #77) added
+`TestUnit_VarString_AsymmetricUTF8Contract`, codifying "write trusts, read
+validates" — deliberately asymmetric, on the reasoning that adding write-side
+validation would break callers passing pre-encoded data through the varstring
+path. That asymmetry is now reversed: `WriteVarString` validates. The
+reasoning that changed is this — a caller with genuinely pre-encoded binary
+data was never using the varstring wire format correctly in the first place;
+`WriteVarBytes` is the correct call for that, because a varstring is UTF-8 by
+wire definition, not an arbitrary-bytes container. What such a caller
+produces today, by routing binary through `WriteVarString`, is an update that
+no decoder — ygo's own `ReadVarString`, or Yjs's — will accept. Validating on
+write closes a contract that was already broken in practice; it does not
+newly break a working pattern.
+
+### Changed
+
+- **Invalid UTF-8 is now rejected where it enters the document**, across
+  `YMap`, `YArray`, `YText`, the XML types, `RelativePosition`, and
+  `Doc.WithGUID`. See the upgrade impact above. (#209)
+- **Room names must be valid UTF-8.** `internal/roomname.Valid` previously
+  accepted invalid UTF-8, because ranging over a Go string yields
+  `utf8.RuneError` for bad bytes rather than failing outright. Affects both
+  the HTTP and WebSocket providers. (#209)
+
+### Added
+
+- `Encoder.WriteVarStringE` — the non-panicking, error-returning variant of
+  `WriteVarString`, for callers who want to handle invalid UTF-8 rather than
+  have it panic. (#209)
+
+## v1.43.0
+
+ygo could decode and materialise nested Y types but offered no way to construct
+one: `abstractType` is unexported, `YArray.Insert` batches plain values into a
+single `ContentAny` item, and `YMap.Get` returned `(nil, false)` for a key
+holding a nested type despite it being visible through `ToJSON`. This release
+adds the public surface — so a shape like a Jupyter notebook cell, a `Y.Map`
+holding a `Y.Text`, can be built from outside the package — and makes detached
+types behave the way the reference implementation does. No breaking API changes.
+
+### Added
+
+- **Public prelim constructors: `NewMapPrelim`, `NewTextPrelim`,
+  `NewArrayPrelim`, and `YArray.PushType`.** Each returns a detached type that
+  is inert until attached, at which point its content materialises with
+  parent-first clocks — the ordering genuine Yjs produces and can decode.
+  `PushType` gives a nested type its own item rather than batching it into a
+  `ContentAny`, the same reason `YXmlFragment` exposes
+  `InsertElement`/`InsertText`. This generalises to the core types what #147 and
+  #170 established for `YXml`.
+
+- **`YMap` and `YArray` stage their content while detached**, mirroring Yjs's
+  `_prelimContent`. Mutations edit the staged content directly and the net
+  result materialises once, when the container item integrates: a key set twice
+  emits once, a key set then deleted emits not at all, and consecutive pushes
+  coalesce into a single item. A detached build therefore emits the same structs
+  Yjs emits rather than one per call. `YText` is unchanged — Yjs stages
+  `Y.Text` as deferred operations (`_pending`), which the existing model already
+  matches.
+
+- **Detached reads answer from the staged content.** `Len`, `Get`, `Keys`,
+  `Has`, `ToSlice`, `Entries`, `ForEach` and `ToJSON` now report what a detached
+  `YMap` or `YArray` holds, recursively unwrapping staged nested types. This is
+  for the core types what #170 did for detached XML nodes, rather than reversing
+  that convention in a sibling API.
+
+- **Conformance fixtures for prelim construction**
+  (`testutil/gen_fixtures_prelim.js`). Yjs runs a scripted build with a pinned
+  clientID and Go must replay the identical sequence and emit byte-identical V1
+  bytes, in both directions, across eleven shapes — including the multi-call
+  builds that distinguish staged content from replayed calls. Plus a fuzz target
+  over nested prelim shapes.
+
+### Changed
+
+- **Shared types are rejected as plain values.** `YMap.Set` panics on an
+  attached shared type, and `YArray.Insert`/`Push` panic on a shared type among
+  `vals`, pointing at `PushType` instead. Previously these stored the type
+  inside a `ContentAny`, which read back as an empty blob and then panicked the
+  encoder at commit time — inside `Doc.Transact` when an `OnUpdate` hook is
+  registered, which is every websocket deployment. The failure moves from a
+  process-killing panic in the transaction machinery to a rejection at the call
+  site.
+
+### Fixed
+
+- **`YMap.Get` returns nested types.** A key holding a `Y.Text`, `Y.Map` or
+  `Y.Array` read back as `(nil, false)` because `Get` handled only `ContentDoc`
+  and `ContentAny`, even though the type was fully materialised and reachable
+  through `ToJSON`. It now mirrors `YArray.Get`.
+
+- **`YArray.Move` on a detached array no longer emits `ContentMove`.** It
+  reorders the staged content instead, so the attached result carries ordinary
+  content that other implementations decode. Emitting the wire extension here
+  was reachable through the prelim API and diverged silently: verified against
+  pycrdt 0.13.1, the peer accepted the update without error and read the
+  pre-move order while ygo read the moved one (#207).
+
+## v1.42.0
+
+Two contract changes for anyone with custom clustering code — nothing to do
+here if you only use shipped components. **`cluster.Sink.Inject` may now be
+called concurrently for distinct rooms** (same-room calls still stay
+serialised and in publish order) — this is what a custom `Sink` must handle.
+**`cluster.Relay.Publish` may now be called concurrently for distinct rooms,
+and briefly twice for the SAME room** during a room's eviction/reload
+handoff, with no per-room ordering guaranteed at all — this is what a custom
+`Relay` must handle. `*websocket.Server` (the shipped `Sink`), `MemRelay`, and
+`cluster/redis` (the shipped `Relay`s) are already safe for both; a
+third-party `Sink` or `Relay` written against the old single-caller
+assumption must confirm it is safe for concurrent use before upgrading.
+Neither permission is a guarantee every relay exercises: `cluster/redis`
+takes advantage of both, with a dedicated goroutine per room on each side,
+so one slow room's `Inject`/`Publish` call can no longer stall delivery for
+others (#187); `MemRelay`, the in-process reference relay, still delivers
+every room from one goroutine per node and does not (yet) get that isolation
+on either side.
+
+Also fixed, and arguably the more consequential bug: a pre-existing defect,
+shipped since v1.20.0 (the cluster relay's introduction), where `Server.Apply`
+and the relay's echo-guard sentinel could both be satisfied from the same
+address by Go's zero-size-allocation guarantee (`new(struct{})` twice), so the
+two "distinct" origin markers compared equal. Two silent consequences: the
+relay's echo guard mistook every `Apply`-driven write for its own echo and
+dropped it before it ever reached the wire — any deployment calling
+`Server.Apply` on a server with a relay attached has never actually
+replicated those writes to other nodes — and separately, a concurrent
+relay-injected update could bleed into the delta `Apply` returns to its own
+caller. Fixed by giving each sentinel its own named, non-zero-size type.
+
+The rest of the release is the performance/isolation half of the same
+change set (#187): relay delivery — inbound in `cluster/redis`, outbound in
+`provider/websocket` — used one shared queue for the whole node in each
+direction, so one slow room's `Inject`/`Publish` call stalled delivery for
+every other room. Each room now gets its own bounded lane and worker, so
+that specific stall is gone in both directions. A saturated lane coalesces
+its `KindSync` backlog (`crdt.MergeUpdatesV1`) instead of dropping it — a
+saturated awareness slot instead replaces the queued blob with the newest one
+(`AwarenessSuperseded`, not a drop, since awareness is idempotent heartbeat
+state). That coalescing is not free, and not fully isolated either: on both
+sides, once a room's backlog exceeds its cap, the merge runs synchronously,
+on the goroutine that's doing the enqueueing — the Transact commit-path
+goroutine outbound, `cluster/redis`'s single subscriber goroutine inbound.
+Outbound this is a private cost to that one room's commit path (never a
+block, just an occasional bounded merge). Inbound, because the subscriber
+goroutine is shared across every room on the node, a wedged room's merge
+attempt *can* still delay reading (and therefore delivering) other rooms'
+messages for as long as the merge takes — bounded and amortized while merges
+keep succeeding, unbounded while they keep failing (see #184 for the merge
+cost itself). None of this changes what Redis pub/sub itself guarantees:
+still at-most-once by Redis's own definition, with persistence healing a drop
+only on the room's next reload, which a hot room never gets. What actually
+changed is that a full lane can no longer arise from ordinary volume alone,
+so a hard drop now signals a failing merge specifically, not exhausted
+capacity — watch `Relay.Stats()` / `RelayStats()` as the health signal:
+`Coalesced`/`AwarenessSuperseded`/inbound-only `RouterDrops` are routine,
+alert on their rate; `HardDrops`/outbound-only `Dropped` should always be
+zero, alert on presence.
+
+One exception to that "should always be zero" rule: `Shutdown` cancels the
+relay context before closing peer connections and before the persistence
+drain, so peers can keep committing for the rest of shutdown — potentially
+seconds — after outbound relay delivery has already stopped. Whatever is
+still queued in a room's outbound lane at that point, or arrives afterward,
+is discarded on `Shutdown` without incrementing `Dropped` or `HardDrops`, so
+those counters reading zero does not mean nothing was lost across a
+`Shutdown`. This is pre-existing behaviour, not new in this release — the
+single shared outbound worker it replaces discarded the same way — but it is
+newly *mis*-documented if left unstated, since this release is what
+establishes `Dropped`/`HardDrops` as the "always zero, alert on presence"
+signal. A fix (draining the outbound lanes, or reordering `relayCancel`
+relative to connection-close/persistence-drain) is out of scope here — it
+needs its own change, since reordering also delays inbound shutdown.
+
+### Fixed
+
+- **`Server.Apply` writes were silently never relayed to other nodes, since
+  v1.20.0.** `Server.Apply` and `AttachRelay` each minted their origin
+  sentinel with `new(struct{})`; Go's zero-size-allocation guarantee let the
+  runtime satisfy both from the same `runtime.zerobase` address, so the two
+  pointers compared equal even though they were meant to be distinct
+  identities. The relay's echo guard misidentified every `Apply`-driven
+  commit as a self-echo and dropped it before publish; separately, a
+  concurrent relay-injected update could bleed into the delta `Apply` returns
+  to its own caller. Fixed by giving each sentinel its own named, non-zero-
+  size, unexported type.
+- **Head-of-line blocking in relay delivery, both directions**
+  ([#187](https://github.com/reearth/ygo/issues/187)). `cluster/redis`'s
+  subscriber called `Sink.Inject` synchronously in its receive loop, so one
+  slow room's `Inject` call stalled inbound delivery for every room on the
+  node; `provider/websocket` had the same defect outbound, via one shared
+  queue and worker for all rooms. Each room now gets its own bounded lane and
+  worker in both directions, so a slow `Inject`/`Publish` call for one room no
+  longer blocks any other room's delivery. `MemRelay` is not part of this fix
+  — it still delivers every room from a single per-node goroutine.
+- **Relay updates are coalesced instead of dropped under saturation.** A full
+  lane merges its queued `KindSync` backlog via `crdt.MergeUpdatesV1` rather
+  than dropping it (a full awareness slot instead replaces the queued blob,
+  counted as `AwarenessSuperseded`, not a drop). The previous outbound drop
+  was justified in-comment by "peers reconcile via sync step 1/2", which does
+  not hold for a hot room — reconciliation needs a room reload, and a room
+  with a connected client never reloads. Neither direction is merge-free:
+  outbound, the commit path never blocks but does occasionally merge, on the
+  caller's own goroutine; inbound, that same merge runs on `cluster/redis`'s
+  single subscriber goroutine, shared across every room, so a wedged room's
+  merge attempts can delay other rooms too (bounded/amortized while merges
+  succeed, unbounded while they keep failing — see #184 for the merge cost
+  itself). A hard drop remains possible on either side only when the merge
+  keeps failing.
+
+### Changed
+
+- **`cluster.Sink.Inject` may now be called concurrently for distinct rooms.**
+  Calls for the same room remain serialised and in publish order.
+  `*websocket.Server` is already safe; third-party `Sink` implementations must
+  confirm they are before relying on this. `cluster/redis` exercises the new
+  permission; `MemRelay` does not yet.
+- **`cluster.Relay.Publish` may now be called concurrently for distinct
+  rooms, and two concurrent calls for the SAME room are possible.**
+  `provider/websocket` drives `Publish` from one worker goroutine per room
+  (not one per server), so distinct rooms overlap by design; across a room's
+  eviction/reload handoff a predecessor lane's final drain can also briefly
+  overlap with the successor lane's worker publishing for the same room
+  name. Reviewed and accepted as benign — the `Relay` contract imposes no
+  per-room ordering, `KindSync` blobs are commutative/idempotent, and stale
+  awareness is dropped by the awareness clock gate — but a third-party
+  `Relay` built on the old single-caller assumption must confirm it is safe
+  for concurrent use, exactly as a custom `Sink` must. Both shipped relays
+  already are: `MemRelay.Publish` snapshots its node list under its own
+  mutex before sending; `cluster/redis`'s `Publish` takes no lock at all and
+  uses atomics plus channels.
+- `cluster/redis`'s package documentation states the at-most-once delivery
+  reality explicitly, including that persistence heals a dropped update only
+  on room reload and that idle residency (#183) lengthens that window rather
+  than shortening it. It also corrects two overclaims the doc previously
+  made: `Coalesced` non-zero is routine on any busy room (alert on its rate,
+  not its presence — this was already stated correctly in `Stats`' own doc,
+  just not in the package doc), and "one slow room never stalls delivery for
+  another" is now scoped to the delivery work itself rather than the shared
+  enqueue-time merge cost described above.
+- `cluster.Relay`'s `RoomActivated`/`RoomDeactivated` contract now documents
+  that implementers must tolerate a successor room activating a name before
+  the predecessor's deactivate call for that name lands (both shipped relays
+  already do, via reference-counting or no-op).
+
+### Added
+
+- `cluster/redis.Config.RoomQueueSize`, `cluster/redis.Relay.Stats()` (with
+  `Coalesced`/`AwarenessSuperseded`/`HardDrops`/`RouterDrops`), and
+  `websocket.Server.RelayStats()` (with `Coalesced`/`AwarenessSuperseded`/
+  `HardDrops`/`Dropped`). `relayDropped` (now `RelayStats.Dropped`) was
+  previously incremented and read nowhere, making outbound relay loss
+  invisible; `RouterDrops` is new inbound instrumentation with no prior
+  equivalent. Alert on `Coalesced`/`AwarenessSuperseded`/`RouterDrops` by
+  rate (routine); alert on `HardDrops`/`Dropped` by presence (should always
+  be zero). Monotonic for the life of the relay/server, but not guaranteed
+  exact under a couple of documented, benign race windows (never an
+  overcount, never a decrease).
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.42.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+## v1.41.0
+
+Three additions that together let an application build a real, bounded,
+user-facing version history instead of hand-rolling one, plus a published
+benchmark suite. Labelled snapshots can now be enumerated and individually
+deleted, a store can report which rooms it holds, and the websocket server can
+capture versions on its own on a throttled, change-driven cadence. All three are
+optional extension interfaces, so no existing interface gained a method and
+every third-party backend keeps compiling. Everything is off by default. No
+breaking API changes.
+
+### Added
+
+- **`SnapshotStore`: enumerable, individually-deletable labelled snapshots.** The
+  existing name-keyed `CaptureSnapshot`/`RestoreSnapshot` pair could be written
+  and read by exact name but never enumerated, never individually deleted, and
+  carried no metadata, so labelled snapshots were an unbounded, unreclaimable
+  resource that only `Delete(room)` could clear. New interface:
+  `SaveSnapshot`/`ListSnapshots`/`GetSnapshotState`/`DeleteSnapshot`, plus
+  `SnapshotInfo{ID, Label, CreatedAt, Size}` and `SnapshotVersionedPersistence`.
+  Snapshots are ID-keyed with non-unique labels, so repeated saves create distinct
+  versions rather than overwriting. IDs are unique and monotonic within a room and
+  never reused there, but are not globally unique. `ListSnapshots` is newest-first
+  and never reads state blobs. The older name-keyed pair is unchanged and still
+  supported, superseded for new code.
+
+- **`RoomLister`: store-wide room enumeration.** `VersionedPersistence` could only
+  be addressed one room at a time, so store-wide retention, cleanup, migration and
+  reconciliation all needed an external index of room names with no way to detect
+  drift against what was actually persisted. `ListRooms` reports every room
+  holding at least one update or snapshot, so a snapshot-only room stays
+  reclaimable, and returns the original room name rather than a backend's on-disk
+  encoding.
+
+- **Auto-versioning: `VersionableAdapter` + `Server.AutoVersionEvery`.** The
+  server can now drive a version history itself. When the adapter implements
+  `VersionableAdapter` and `AutoVersionEvery > 0`, it captures a labelled version
+  (`AutoVersionLabel`, `"auto"`) at most once per interval per room **and only
+  when the room actually changed**, plus one final version on room unload if it
+  changed after the last one. A quiet room is never versioned. That pairing is the
+  point: versioning per update is what makes a history panel unusable.
+  `persistence.LegacyAdapter` implements it over `SnapshotStore` and gains
+  `KeepSnapshots` to bound retained versions (0 = keep all, mirroring
+  `KeepVersions`, which is the separate update-log axis). A store lacking
+  `SnapshotStore` returns the new `ErrSnapshotsUnsupported` rather than silently
+  discarding versions, so a misconfiguration is visible instead of appearing to
+  work.
+
+### Performance
+
+- **`FilePersistence.ListSnapshots` no longer reads snapshot state blobs.** It
+  read each record in full just to report metadata, making listing O(total
+  snapshot bytes) and contradicting the `SnapshotStore` contract's own promise
+  that listing stays cheap. It now reads only the 12-byte header plus the label
+  and derives `Size` from the directory entry.
+
+### Fixed
+
+- **sqlite `Delete(room)` now also removes labelled snapshots.** The
+  `snapshot_versions` rows for a room survived a room delete, contrary to the
+  documented "removes all data for room" contract. The memory and file backends
+  were already correct. Caught by the new conformance suite.
+
+### Testing
+
+- **Honest performance and scalability benchmark suite**
+  ([#180](https://github.com/reearth/ygo/issues/180)): the full
+  `dmonad/crdt-benchmarks` B1-B4 set plus cluster-relay, persistence and websocket
+  scale benchmarks, a `benchmark` CI workflow, and `BENCHMARKS.md` publishing the
+  results with their caveats rather than only the flattering numbers.
+
+- Two new shared conformance suites, `RunSnapshotStoreConformance` and
+  `RunRoomListerConformance`, run against all three backends so a third-party
+  backend can self-verify the new contracts.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.41.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+## v1.40.0
+
+Two convergence/lifecycle fixes plus new fuzz coverage. `YArray.Move` could
+diverge across peers depending on merge order — a move that integrated
+before its target item silently dropped its target claim; moves now defer
+target arbitration until the target integrates, so all peers converge
+regardless of order. On the websocket server, a room created for a
+connection that fails before any peer registers (connection-limit denial or
+WebSocket upgrade failure) is now reaped instead of leaking the room and its
+persistence/awareness goroutines. No breaking API changes.
+
+### Fixed
+
+- **`YArray.Move` convergence across merge orders**
+  ([#191](https://github.com/reearth/ygo/issues/191)): moves now defer
+  target arbitration until the target item integrates, fixing a case where
+  ascending-ClientID integration order caused peers to diverge.
+- **Orphaned websocket rooms on early connection failure**
+  ([#192](https://github.com/reearth/ygo/issues/192)): rooms are now reaped
+  when a connection fails before any peer registers, instead of leaking the
+  room and its background goroutines.
+
+### Testing
+
+- New Go-internal multi-peer move-convergence fuzzer sweep
+  (`TestFuzzConvergenceMoves`, [#191](https://github.com/reearth/ygo/issues/191)).
+  Moves are a ygo wire extension the yjs reference can't decode, so they're
+  validated by internal convergence rather than the yjs cross-impl oracle.
+- New yjs-interop guard tests for nested `Y.Map` (and `NaN`) values across
+  V1/V2 round-trips ([#194](https://github.com/reearth/ygo/pull/194)),
+  proving ygo preserves nested shared-type entries from genuine yjs bytes.
+
+## v1.39.0
+
+A minor release focused on performance and websocket-server room lifecycle.
+`YText`/`YArray` positional access (`Get`/`Slice`, positional insert/delete,
+`Format`, `ApplyDelta`) now runs through a Yjs-style bidirectional,
+move-aware search-marker cache instead of the old forward-only position
+cache — a purely internal change, no public API surface moved — cutting
+100k-node positional operations by roughly two orders of magnitude. Along
+the way, a real `YText.ApplyDelta` formatting bug was fixed: an `insert` op
+with no attributes of its own no longer bleeds in a preceding retain's
+formatting (Yjs/Quill-aligned); this is a **behaviour change** for code that
+relied on the old bleed-through. On the websocket server, room load
+(`LoadDoc`/decode/`OnLoadDocument`) no longer runs under the global
+room-map lock, so concurrent connects to distinct rooms load in parallel
+instead of serializing; and new `Server.RoomIdleTimeout` /
+`Server.MaxResidentRooms` fields let a room stay warm in memory for a
+bounded time (and bounded count) after its last peer leaves, so a quick
+reconnect reuses the live doc instead of a full reload. No breaking API
+changes; both new fields default to zero, which preserves prior-release
+behaviour exactly.
+
+### Performance
+
+- **O(1) amortized positional access for `YText`/`YArray`**
+  ([#181](https://github.com/reearth/ygo/issues/181)): a Yjs-style
+  bidirectional, move-aware search-marker structure replaces the old
+  forward-only position cache. Internal only — no public API change.
+  Measured on a 100k-node document: random-position insert ~101× faster
+  (632µs → 6.3µs), reverse insert ~916× faster (1.15ms → 1.26µs), random
+  `Get` ~114× faster (481µs → 4.2µs).
+
+### Fixed
+
+- **`YText.ApplyDelta` format-bleed into a following insert**
+  ([#181](https://github.com/reearth/ygo/issues/181)): an `insert` op with
+  no `Attributes` of its own no longer inherits formatting from a preceding
+  `{retain, attributes}` op, matching the Yjs/Quill rule. Behaviour change —
+  see summary above. Also fixed: consecutive attribute-less inserts could
+  integrate out of order.
+- **Room load no longer serializes under the global room-map lock**
+  ([#182](https://github.com/reearth/ygo/issues/182)): loading now runs
+  off-lock behind a per-room `ready` barrier, so concurrent connects to
+  distinct rooms load in parallel; a reentrant load (e.g. cluster relay
+  `Inject`) waits on the same barrier instead of double-loading.
+
+### Added
+
+- **`Server.RoomIdleTimeout` and `Server.MaxResidentRooms`**
+  ([#183](https://github.com/reearth/ygo/issues/183)): keep a room resident
+  and warm for a bounded time after its last peer leaves (durable flush
+  still happens immediately), with an LRU bound on how many idle rooms stay
+  resident at once. Both default to zero, preserving the previous
+  eager-evict behaviour.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.39.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+---
+
+## v1.38.0
+
+A minor, additive release adding two independent features. On the awareness
+layer, a new `OnUpdate` event channel fires on every applied entry (including
+heartbeats) alongside the content-only `OnChange`, plus a `Meta(clientID)`
+accessor — matching Yjs `y-protocols`/yrs semantics. On the websocket provider,
+opt-in Hocuspocus docName framing and an `OnTokenAuth` hook bring in-band token
+authentication for the `@hocuspocus/provider` client ecosystem. No breaking
+API changes, though `OnChange` is tightened (see Changed).
+
+### Added
+
+- **Awareness `OnUpdate` + `Meta(clientID)`**
+  ([#105](https://github.com/reearth/ygo/issues/105)): `OnUpdate` fires on every
+  applied awareness entry including heartbeats, distinct from the content-only
+  `OnChange`. `Meta(clientID)` returns per-client `{Clock, LastUpdated}`,
+  retained for tombstones to match the reference implementations.
+- **Hocuspocus in-band token auth + docName framing**
+  ([#104](https://github.com/reearth/ygo/issues/104)): opt-in
+  `Server.HocuspocusFraming` reads/writes docName-prefixed frames for real
+  `@hocuspocus/provider` interop; `Server.OnTokenAuth` validates the tag-2 Auth
+  token and replies `Authenticated`/`PermissionDenied`, closing denied
+  connections with WebSocket code `4401`. Composes with `AuthFunc`/`Authorize`;
+  it is a handshake reply + optional read-only downgrade, not a
+  document-confidentiality gate (use the HTTP-boundary auth for that).
+
+### Changed
+
+- **`OnChange` no longer fires on content-identical re-emits**
+  ([#105](https://github.com/reearth/ygo/issues/105)): remote heartbeats (via
+  `ApplyUpdate`) and local same-content `SetLocalState` now fire `OnUpdate`
+  only. `Heartbeat()` now fires `OnUpdate` (previously silent). A reactivated
+  client is classified `Updated` rather than `Added`, matching Yjs/yrs.
+
+## v1.37.0
+
+A minor release hardening the websocket server's coalesced persistence path.
+It closes a durability gap where a room could be evicted before its pending
+batch was flushed, and gives adapters an optional way to bound stored-version
+growth. No breaking changes; the default behaviour of servers without a
+`CompactableAdapter` is unchanged.
+
+### Fixed
+
+- **Lost edits on quick refresh with coalesced persistence**
+  ([#175](https://github.com/reearth/ygo/issues/175)): the room-teardown paths
+  (`handleDisconnect`, `CloseRoom`) now flush the pending coalesced batch
+  durably — and await it — while the room is still discoverable, then re-check
+  and evict. A peer that reconnects during the flush reuses the live
+  in-memory document instead of reloading stale state from the backing store.
+
+### Added
+
+- **`CompactableAdapter` and `Server.CompactEvery`**
+  ([#175](https://github.com/reearth/ygo/issues/175)): an optional
+  `PersistenceAdapter` extension the server calls on room unload, and — when
+  `CompactEvery > 0` — after every N persistence flushes, letting an adapter
+  bound stored-version growth. `persistence.LegacyAdapter` implements it via a
+  new `KeepVersions` field, forwarding to the existing
+  `VersionedPersistence.Compact`.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.37.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+---
+
+## v1.36.0
+
+A minor release that changes the default persistence behaviour for the
+websocket server: backing-store writes are now debounce-coalesced (2s window,
+10s max wait) into a single merged `StoreUpdate` per burst, instead of one
+write per committed transaction, cutting persistence latency and version
+churn under load. This only affects servers with a `PersistenceAdapter`
+configured (`NewServerWithPersistence`); plain `NewServer()` is unaffected.
+Set `Server.PersistCoalesceWindow = -1` to opt back into the previous strict
+per-update behaviour.
+
+### Changed
+
+- **Websocket persistence writes are coalesced by default (behaviour
+  change)** ([#175](https://github.com/reearth/ygo/issues/175)): the
+  per-room persistence worker debounces writes and merges each burst into a
+  single `StoreUpdate` call rather than writing once per update
+  (Hocuspocus parity). Only servers with a `PersistenceAdapter` configured
+  are affected.
+
+### Added
+
+- **`Server.PersistCoalesceWindow` and `Server.PersistCoalesceMaxWait`**
+  ([#175](https://github.com/reearth/ygo/issues/175)): tune or disable
+  persistence coalescing. Defaults are 2s and 10s; a negative
+  `PersistCoalesceWindow` (e.g. `-1`) disables coalescing and restores strict
+  per-update writes.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.36.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+---
+
+## v1.35.0
+
+A minor release hardening the websocket broadcast path against slow peers. It
+fixes head-of-line blocking in the writer and adds an opt-in in-place resync
+policy so a transiently-slow peer recovers without reconnect churn. No breaking
+changes; the default behaviour is unchanged.
+
+### Fixed
+
+- **Head-of-line blocking in the websocket broadcast writer**
+  ([#172](https://github.com/reearth/ygo/issues/172)): the per-peer write mutex
+  (`wmu`) was held across the blocking `conn.WriteMessage`, so a single slow or
+  stalled peer could block broadcasts to every other peer for up to
+  `writeTimeout`, and the queue-overflow branch could never fire while a write
+  was in flight. The write path now holds `wmu` only to read the `closed` flag,
+  then writes without it.
+
+### Added
+
+- **`SlowPeerResync` policy for graceful slow-peer recovery**
+  ([#172](https://github.com/reearth/ygo/issues/172)): new
+  `Server.SlowPeerPolicy`. `SlowPeerDisconnect` (default) closes a peer whose
+  broadcast queue overflows; `SlowPeerResync` keeps the connection open, drops
+  the stale delta, and sends a full-state resync once the queue drains, so the
+  peer converges in place without a reconnect.
+
+### Changed
+
+- **Default `PeerWriteQueueSize` bumped 256 → 512**: more slack before a
+  transiently-slow peer overflows (matching the yrs broadcast ring of 512);
+  override via `Server.PeerWriteQueueSize`.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.35.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.
+
+---
+
+## v1.34.0
+
+A minor release bundling a full mobile on-device editor with an awareness
+tombstone-reclamation fix. No breaking changes to the core library.
+
+### Added
+
+- **On-device editing for the mobile bindings**
+  ([#118](https://github.com/reearth/ygo/issues/118)): `mobile.Doc` gains
+  gomobile-safe mutators — `InsertText`, `InsertTextWithAttributes`, `DeleteText`,
+  `FormatText`, `InsertArray`, `DeleteArray`, `SetMap`, `DeleteMapKey` — each
+  validated and transaction-wrapped, returning an error (never panicking) on bad
+  input. A Swift/Kotlin app is now a full editor, not just a viewer.
+
+- **Push change-notifications for the mobile bindings**
+  ([#119](https://github.com/reearth/ygo/issues/119)): `Doc.Observe` delivers the
+  V1 update bytes plus a `local` flag after each committed transaction;
+  `Awareness.Observe` delivers `{added,updated,removed}` client-id sets. Delivery
+  is on a background goroutine; `Subscription.Close()` unsubscribes and all
+  observers detach on `Doc`/`Awareness` `Close`.
+
+- **`Awareness.PurgeTombstones(grace)` reclaims aged removal tombstones**
+  ([#166](https://github.com/reearth/ygo/issues/166)): removal tombstones (kept so
+  a client's clock can still encode removals and reject stale re-adds) were never
+  reclaimed, so a high-churn room's entry count grew without bound against
+  `SetMaxClients` and could eventually refuse new, legitimate clients.
+  `PurgeTombstones(grace)` drops tombstones older than `grace`; `StartAutoExpiry`
+  now runs it each tick as a second stage (`RemoveExpired(timeout)` then
+  `PurgeTombstones(2*timeout)`).
+
+### Changed
+
+- **Idiomatic Yjs JSON from the mobile read accessors**
+  ([#109](https://github.com/reearth/ygo/issues/109)): `Doc.GetTextJSON` now emits
+  idiomatic single-op Yjs delta (`[{"insert":"hi","attributes":{...}}]`) and
+  `Awareness.StatesJSON` emits `{"<clientID>": <state>}` without the internal
+  clock. These reshape two mobile read accessors whose output was pre-stable
+  (`GetTextJSON` was explicitly documented as unstable); no core-library change.
+
+## Install
+
+```
+go get github.com/reearth/ygo@v1.34.0
+```
+
+See [CHANGELOG.md](https://github.com/reearth/ygo/blob/main/CHANGELOG.md) for full details.

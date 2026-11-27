@@ -1,0 +1,489 @@
+.block {
+  display: flex;
+  flex-direction: column;
+}
+
+.addLink {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 4px;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.addLink:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.addLink:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.table {
+  width: 100%;
+  margin: 24px 0 16px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+/* A table that ends its group leaves the 48px between groups as it is; one
+   that ends a part inside a group keeps its 16px before the next row. */
+section > .table:last-child {
+  margin-bottom: 0;
+}
+
+/* The first column, a name, wraps; the columns after it (counts, sizes,
+   statuses, times, a row's menu) keep one line, their heads too: a narrow
+   window gave the name the room and broke "파일" a letter a line (375px in
+   the desktop app, 2026-11-15). The linked workspaces' table, whose widths
+   are Notion's, keeps them (below). */
+.table :is(th, td):not(:first-child) {
+  white-space: nowrap;
+}
+
+.table th {
+  padding: 6px 12px;
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  text-align: start;
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-default);
+  vertical-align: top;
+}
+
+.table td strong {
+  display: block;
+  font-weight: 500;
+}
+
+.table .empty {
+  padding: 12px;
+  border-bottom: 0;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.actions {
+  width: 1%;
+  text-align: end;
+  white-space: nowrap;
+}
+
+.verification {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.table .verification code {
+  flex: 0 1 auto;
+  overflow-wrap: anywhere;
+}
+
+.narrowDialog,
+.dialogWide {
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+section.narrowDialog {
+  width: min(420px, calc(100vw - 32px));
+}
+
+section.dialogWide {
+  width: min(560px, calc(100vw - 32px));
+}
+
+.dialogField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.dialogField input,
+.dialogField textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 7px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.rowButton {
+  align-self: flex-start;
+  width: fit-content;
+  height: 28px;
+  margin: 4px 0 0;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.rowButton:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.rowButton:disabled {
+  color: var(--text-secondary);
+  cursor: default;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: minmax(0, 200px) minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 4px 0 16px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.values dt {
+  color: var(--text-secondary);
+}
+
+.values dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Narrow, each value goes under its name as other name and value rows do
+   (beside a 200px name, a 375px window left an address six letters a line). */
+@container settings (max-width: 600px) {
+  .values {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  .values dt:not(:first-child) {
+    margin-top: 6px;
+  }
+}
+
+.rowStack > [data-activity-retention-kind] + [data-activity-retention-kind] {
+  margin-top: 24px;
+}
+
+.rowValue {
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.lead {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.listGap {
+  margin-top: 12px;
+}
+
+.emptyLine {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* A column of people that grows as they are added keeps one width, so the
+   other rows' controls stay where they were (2026-11-05: giving one role a
+   holder moved every row's "멤버 추가" 100px left). Its names wrap inside. */
+.holdersColumn {
+  width: 300px;
+}
+
+.wrapCell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.holder {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.holder button {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.holder button:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.none {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* An admin role's "멤버 추가", which opens the organization group window's
+   picker: the settings row's button (AppSelect's settingButton), with no
+   chevron since no menu drops from it. */
+.addHolder {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.addHolder:hover:not(:disabled),
+.addHolder:focus-visible {
+  background: var(--bg-hover);
+}
+
+.cellNote {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+.retentionControls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.inlineField {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.inlineField label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.inlineField input {
+  width: 72px;
+  height: 28px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+}
+
+.inlineField input[aria-invalid="true"] {
+  box-shadow: var(--name-field-ring-danger);
+}
+
+.fieldError {
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.inlineField .rowButton {
+  margin: 0;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--text-default);
+  font-size: 13px;
+}
+
+.choices legend {
+  margin-bottom: 4px;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.choices label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.moved {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* New accounts' workspace deleted since: said in red under the linked
+   workspaces' description. */
+.linkedGone {
+  margin: 4px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* What a SAML SSO configuration covers (Notion's 연결된 워크스페이스, seen
+   2026-11-05): 24px under the row before it, dimmed to 0.4 while SAML SSO is
+   off; the name column takes half the table, the other two a quarter each,
+   under a 32px head. */
+.dimmable {
+  margin-top: 24px;
+}
+
+.dimmable[data-dimmed] {
+  opacity: 0.4;
+}
+
+.linkedTable th {
+  line-height: 18px;
+}
+
+.linkedTable th:first-child {
+  width: 51%;
+}
+
+.linkedTable th:nth-child(2),
+.linkedTable th:nth-child(3) {
+  width: 24.5%;
+}
+
+/* Its date wraps in its quarter, not taking the name's room (375px: "Workspa/ce"). */
+.linkedTable td:nth-child(3) {
+  white-space: normal;
+}
+
+.sorted {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* A workspace's name runs as text and its marks follow its last word, on the
+   next line when that one is full (600px: held beside "현재" in a flex row,
+   the name stood two letters a line). */
+.linkedName .tag {
+  display: inline-block;
+  margin-inline-start: 4px;
+  vertical-align: middle;
+}
+
+/* Notion's 현재 mark: 9px words on a filled 4px-round chip. */
+.tag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--text-secondary);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 9px;
+  white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .tag {
+  background: rgb(56, 56, 54);
+}
+
+/* A row with what it holds below it, kept in its own block: it stands 24px
+   after the row before, as rows do (securityRow + securityRow). */
+.rowBlock {
+  margin-top: 24px;
+}
+
+/* The admin token list's switch for tokens that can do nothing more: quiet, under the table. */
+.endedToggle {
+  margin-top: 8px;
+  padding: 2px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.endedToggle:hover {
+  color: var(--text-default);
+}
+
+/* A dialog's folded details: one quiet line that opens to the fields under it. */
+.dialogMore > summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Spaced by margins, not flex: a <details> laid out as flex is not drawn alike in every engine. */
+.dialogMore > :not(summary) {
+  margin-top: 12px;
+}
+
+/* A form whose last line is a shared row (the token window's expiry): its
+   fields' names take the row's size so one window keeps one size for names. */
+.rowSizedFields .dialogField,
+.rowSizedFields .choices legend {
+  color: var(--text-default);
+  font-size: 14px;
+}

@@ -1,0 +1,378 @@
+.wrap {
+  height: calc(var(--app-height, 100vh) - var(--topbar-height));
+  overflow-y: auto;
+}
+
+/* Notion's full-page home (seen 2026-10-31): its column is what its grid
+   leaves — 56px margins and 42px gaps either side, at most 900px — so 799px
+   in 995px beside a scroll bar, 287px in 483px at 768; the greeting 36px
+   under the bar at 30/36 600 in the middle, 40px to the first section and
+   40px between sections (seen 2026-11-11); a section's head is a 16px mark
+   and its name at 12/18 500 in the secondary grey, 8px in, 18px over its
+   cards. */
+.home {
+  width: min(900px, calc(100% - 196px));
+  margin: 0 auto;
+  padding: 36px 0 30vh;
+}
+
+/* No workspace to show: what is wrong and what can be done, where the greeting goes. */
+.noWorkspace {
+  max-width: 480px;
+  margin: 15vh auto 0;
+  text-align: center;
+}
+
+.noWorkspace h2 {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.noWorkspace p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.noWorkspace button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.homeTitle {
+  margin: 0 0 40px;
+  color: var(--text-default);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 36px;
+  letter-spacing: 0;
+  text-align: center;
+}
+/* The greeting and, the first time, the welcome over it (HomeGreeting). */
+.homeTitle {
+  display: grid;
+}
+.homeGreeting,
+.homeWelcome {
+  grid-area: 1 / 1;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+.homeWelcome {
+  opacity: 0;
+  transform: translateY(-12px);
+  pointer-events: none;
+}
+.homeTitle[data-welcome="true"] .homeWelcome {
+  opacity: 1;
+  transform: none;
+}
+.homeTitle[data-welcome="true"] .homeGreeting {
+  opacity: 0;
+}
+/* The greeting comes in once the welcome has gone, the two never over each
+   other (2026-11-07: both showed for a moment). */
+.homeTitle:not([data-welcome="true"]) .homeGreeting {
+  transition-delay: 0.5s;
+}
+
+.homeSection + .homeSection {
+  margin-top: 40px;
+}
+
+/* A widget's card sits 14px under its head (seen 2026-11-11). */
+.homeSection[data-home-widget] .sectionHead {
+  margin-bottom: 14px;
+}
+
+.sectionHead,
+.sectionHeadTip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectionHead {
+  height: 18px;
+  margin: 0 0 18px;
+  padding-inline-start: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* The pages visited as 144px cards 16px apart, "+ 새 페이지" last: a 44px
+   tinted top, the page's 28px mark 30px down, its name at 14/18 500 in two
+   lines at 69px, who edited it last and when at 116px; a faint ring and
+   shadow, rounded 16px. */
+.cards {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  /* Room for the cards' ring and shadow, which the row would clip. */
+  margin: -1px -1px 0;
+  padding: 1px 1px 16px;
+  scrollbar-width: none;
+}
+
+/* The room left under the cards for their shadow is no gap to the next section. */
+.cardRow {
+  position: relative;
+  margin-bottom: -16px;
+}
+.cardRow[data-after] .cards {
+  -webkit-mask-image: linear-gradient(calc(270deg * var(--inline-sign, 1)), transparent 0, #000 96px);
+  mask-image: linear-gradient(calc(270deg * var(--inline-sign, 1)), transparent 0, #000 96px);
+}
+.cardRow[data-before] .cards {
+  -webkit-mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 96px);
+  mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 96px);
+}
+.cardRow[data-before][data-after] .cards {
+  -webkit-mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+  mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 96px, #000 calc(100% - 96px), transparent 100%);
+}
+.cardRowArrow {
+  position: absolute;
+  top: 59px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  opacity: 0;
+}
+.cardRowArrow[data-side="before"] { inset-inline-start: -16px; }
+.cardRowArrow[data-side="after"] { inset-inline-end: -16px; }
+.cardRow:hover .cardRowArrow,
+.cardRowArrow:focus-visible {
+  opacity: 1;
+}
+
+.card {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 144px;
+  height: 144px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--bg-app);
+  box-shadow: rgba(0, 0, 0, 0.02) 0 12px 32px, rgba(0, 0, 0, 0.05) 0 0 0 1px;
+  color: var(--text-default);
+  text-align: start;
+  text-decoration: none;
+}
+
+.card:hover {
+  box-shadow: rgba(0, 0, 0, 0.02) 0 12px 32px, rgba(0, 0, 0, 0.1) 0 0 0 1px;
+}
+
+.card:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.cardBand {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  height: 44px;
+  background: rgba(84, 72, 49, 0.04);
+}
+
+.cardIcon {
+  position: absolute;
+  top: 30px;
+  inset-inline-start: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: var(--icon-tertiary);
+}
+
+/* A page's own glyph on a card is drawn at its share of a 28px icon's
+   20-unit grid, 11.75 of 20 across (16.45px) and so 21.35 high, at the
+   box's start, as Notion's home cards draw it (seen 2026-11-16, Chrome 1440
+   dark: the svg 16.45 by 28 at the card icon box's left edge). */
+.cardIcon > svg[data-leafen-icon-glyph^="page"] {
+  width: calc(28px * 11.75 / 20);
+  margin-inline-end: auto;
+}
+
+.cardTitle {
+  position: absolute;
+  top: 69px;
+  inset-inline-end: 16px;
+  inset-inline-start: 16px;
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cardTitle[data-new] {
+  color: var(--text-tertiary);
+}
+
+.cardFoot {
+  position: absolute;
+  top: 116px;
+  inset-inline-end: 16px;
+  inset-inline-start: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+/* The greeting stands 80px down from the home's top (16 + 64): on a desktop
+   the bar lies over that top, the greeting 36px under it; on a touch screen
+   the bar stands above the home, the greeting a full 80px under it, and a
+   section's name is 14px, as Notion's iPhone and iPad (seen 2026-11-16 in
+   Safari, 402 and 834 wide), still 36px over its cards from the head's top. */
+:global([data-touch="true"]) .home {
+  padding-top: 80px;
+}
+:global([data-touch="true"]) .sectionHead {
+  font-size: 14px;
+}
+
+/* A phone's home runs the screen's width, 20px in, as Notion's phone (seen
+   2026-11-16 in iPhone Safari, 402 wide): the greeting at 24/28.8 600, its
+   words 40px in from the screen's sides, 20px over the first section, and
+   20px between sections. */
+:global([data-phone="true"]) .home {
+  width: auto;
+  padding-inline: 20px;
+}
+:global([data-phone="true"]) .homeTitle {
+  margin-bottom: 20px;
+  padding-inline: 20px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+:global([data-phone="true"]) .homeSection + .homeSection {
+  margin-top: 20px;
+}
+
+.myTasksNote {
+  margin: 6px 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+.myTasksList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.myTask {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto minmax(0, 160px) 92px;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* A row of Home's page lists: the page, then where it sits or who edited it.
+   The page's name has the row first: the note gives way before it and takes
+   no room when it says nothing (2026-11-10: a fixed 120px note column left a
+   name 24px, "T…", in a 194px list). */
+.homeRow {
+  composes: myTask;
+  display: flex;
+}
+
+.homeRow > .myTaskIcon {
+  flex: none;
+  width: 22px;
+}
+
+.homeRow > .myTaskTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.homeRowNote {
+  flex: 0 10 auto;
+  min-width: 0;
+  max-width: 220px;
+  margin-inline-start: auto;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.homeRowNote:empty {
+  display: none;
+}
+
+.myTask:hover,
+.myTask:focus-visible {
+  background: var(--bg-hover);
+}
+
+.myTaskIcon {
+  text-align: center;
+}
+
+.myTaskTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .myTask {
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+  }
+
+  .homeRowNote {
+    max-width: 120px;
+  }
+}
+
+/* A dark theme lifts the card with a faint fill and no shadow, as Notion's (seen 2026-11-05). */
+:global([data-theme="dark"]) .card {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+:global([data-theme="dark"]) .card:hover {
+  box-shadow: rgba(255, 255, 255, 0.094) 0 0 0 1px inset;
+}
+:global([data-theme="dark"]) .cardBand {
+  background: rgba(255, 255, 255, 0.03);
+}

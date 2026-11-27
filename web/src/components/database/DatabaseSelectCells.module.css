@@ -1,0 +1,568 @@
+/* Select cells & chips */
+.selectCell {
+  position: relative;
+  width: 100%;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-height: 34px;
+  align-items: center;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+.chips:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* An option's pill, as Notion's (seen 2026-10-24 at 1280px): 20px, 6px in,
+   14px/400, its words on a line of its height (--chip-height; a card's 18,
+   2026-11-15); a status's is round with its dot 7px in. Never wider than
+   where it sits, its name ends in "…" (chipText), as Notion's everywhere
+   (2026-11-07: 184px in a 200px cell, 296px in a peek's, 216px in a picker). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  min-width: 0;
+  height: var(--chip-height, 20px);
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+}
+.chip[data-status-chip] {
+  padding-block: 0;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+}
+/* "생성" and the new option on one line, the name ending in "…" and the
+   word narrowing before it does, as Notion's (seen 2026-11-07). */
+.selectCreateLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.chipText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: var(--chip-height, 20px);
+}
+/* A value picker over its cell, rounded as one (--picker-radius). */
+.selectMenu {
+  position: absolute;
+  z-index: 51;
+  top: 0;
+  inset-inline-start: 0;
+  width: 240px;
+  padding: 8px;
+  background: var(--bg-elevated);
+  border-radius: var(--picker-radius);
+  box-shadow: var(--shadow-menu);
+}
+/* A picker's field: the chosen values before what's typed, across the top
+   of the picker, as Notion's select, status and person pickers (seen
+   2026-10-08; 2026-11-12 at 1440, both themes; 2026-11-22 the select, multi-select and status cell editors): a 38.5px
+   faint strip rounded 6, what is in it 12px in and 9.25px down, what's typed 6px after the last chip with no room
+   of its own, a 1px borPriTra line along its foot. */
+.selectField {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 38.5px;
+  margin: -8px -8px 6px;
+  padding: 9.25px 12px;
+  border-radius: var(--picker-radius);
+  background: var(--picker-field-bg);
+  cursor: text;
+}
+/* The line lies under the strip and runs straight under its round
+   corners, as Notion's: the picker's own layer, not the strip's. */
+.selectField::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--picker-field-line);
+}
+.selectFieldInput {
+  flex: 1 1 60px;
+  min-width: 60px;
+  height: 20px;
+  padding: 0; border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+/* The field around it reads as the place to type, so the input has no ring of its own. */
+.selectFieldInput:focus-visible { outline: none; }
+/* A chosen option's "×": a 16px cross in gray in a 20px button 2px after
+   its name, the chip ending 2px after it, as Notion's (seen 2026-11-06). */
+.chipRemove {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 2px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+.chip:has(> .chipRemove) {
+  gap: 2px;
+  padding-inline-end: 0;
+}
+.chipRemove:hover,
+.chipRemove:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A status reads with a dot in its color before its name, as Notion's. */
+.chip[data-status-chip]::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+}
+.selectList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+/* A verification's choices show whole, as Notion's. */
+.selectList[data-verification-list] {
+  max-height: none;
+}
+/* A status's picker, as Notion's from a card, a table cell or a list row
+   alike (seen 2026-11-12 at 1440; 2026-11-18: 240×289.2 with three groups
+   of one option): no padding, the field (selectField) a faint strip with
+   its line; each group 4px in, its name 12px/500 in gray in a menu group's head
+   (a select's below) 10px under the field or 22px under the last group's
+   option and 9px over its own, 28px options 1px apart; a faint line 12px in from either side 9px
+   under a group's last option; "속성 편집" a 28px row 9px under the last
+   option with a like line between, the picker ending 4px under it. Its
+   groups and "속성 편집" show whole. */
+.statusPicker { padding: 0; }
+.selectList[data-status-list] {
+  gap: 0;
+  max-height: 320px;
+  padding: 0 4px 4px;
+}
+.statusGroupLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--menu-label-line-height);
+  margin: 10px 0 9px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+.statusGroupLabel:not(:first-child) {
+  margin-top: 22px;
+}
+.statusGroupLabel:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  inset-inline: 8px;
+  top: -13px;
+  height: 1px;
+  background: var(--menu-divider);
+}
+[data-status-list] .selectOpt {
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+[data-status-list] .selectOpt + .selectOpt { margin-top: 1px; }
+[data-status-list] .selectOptMain { height: 28px; padding: 0; }
+[data-status-list] .selectEditDivider { margin: 4px 8px; }
+[data-status-list] .selectCreate {
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.selectOpt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 3px 2px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.selectOptionDragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 30px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+/* A menu row's ⠿ draws no box and keeps its gray under the pointer; the row
+   lights instead (Notion's in every database menu list, seen 2026-11-18). */
+.selectOptionDragHandle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.selectOptionDragHandle:active {
+  cursor: grabbing;
+}
+.optionEditor {
+  position: absolute;
+  z-index: 60;
+  top: calc(100% + 2px);
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 220px;
+  max-height: min(520px, calc(100vh - 24px));
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* A name typed here is Notion's name field (seen 2026-10-17). */
+.optionRename {
+  width: 100%;
+  margin-bottom: 6px;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  outline: none;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.optionRename:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.selectOpt:hover,
+.selectOpt:focus-within,
+.selectOpt[data-active="true"] {
+  background: var(--bg-hover);
+}
+.selectOptMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 2px 5px;
+}
+.check {
+  color: var(--text-secondary);
+}
+.optionColorBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  opacity: 0;
+  pointer-events: none;
+}
+.selectOpt:hover .optionColorBtn,
+.selectOpt:focus-within .optionColorBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+.selectOptMain:focus-visible,
+.optionColorBtn:focus-visible,
+.selectCreate:focus-visible {
+  outline: none;
+}
+.optionColorBtn:hover {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+.optionColorBtn span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
+}
+.selectCreate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: start;
+}
+/* The row the arrows marked is ringed as well, the pointer grounding the one
+   under it apart, as Notion's options (seen 2026-11-14: ↓↓ ringed "다라",
+   the pointer grounded "사아", the next ↓ went on to "마바"). */
+[data-keyed="true"] :is(.selectOpt, .selectCreate)[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.selectCreate:hover,
+.selectCreate:focus-visible,
+.selectCreate[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A select's, a multi-select's or a person's picker, as Notion's (seen
+   2026-11-06 at 1280px; 2026-11-12 at 1440): its list 4px in from the
+   picker and 4px over its foot; "옵션 선택 또는 생성" or "원하는 만큼
+   선택" 12px/500 in gray 12px in, its 14.4px line in a 14.9px head (as high as Notion's hidden
+   12px status mark on its baseline, seen 2026-11-18 in two tabs), 10px under the field and
+   9px over the rows; 28px rows, a select's touching, the 20×24 handle 8px in and
+   the chip 8px after it, a 24px "⋯" at the end; a person's 1px apart (peopleList). */
+.selectPicker,
+.peopleMenu { padding: 0 4px 4px; }
+/* A select's or a status's picker covers its value, its field (selectField)
+   across its whole width, what's typed 6px after the chosen options, as
+   Notion's (seen 2026-11-12 at 1440, dark). */
+.selectPicker .selectField,
+.statusPicker .selectField { margin: 0; }
+.selectPicker .selectField,
+.peopleMenu .selectField { margin: 0 -4px; }
+.selectPicker .propMenuLabel,
+.peopleMenu .propMenuLabel {
+  display: flex;
+  align-items: center;
+  height: var(--menu-label-line-height);
+  margin: 10px 0 9px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: 14.4px;
+}
+.selectPicker .selectList { gap: 0; }
+.selectPicker .selectOpt {
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+.selectPicker .selectOptionDragHandle { width: 20px; height: 24px; }
+.selectPicker .selectOptMain { height: 28px; margin-inline-end: 6px; padding: 0; }
+.selectPicker .selectCreate { min-height: 28px; padding: 0 8px; border-radius: 6px; color: var(--text-default); font-size: 14px; }
+.selectPicker .optionColorBtn { width: 24px; height: 24px; margin-inline-end: -6px; border-radius: 6px; color: var(--icon-secondary); }
+/* The line above a status picker's "속성 편집". */
+.selectEditDivider {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.selectEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* An option's editor, as Notion's (seen 2026-10-05): its name with an "i",
+   its description, "삭제", then each color by name. */
+.optionRenameBox {
+  position: relative;
+  display: flex;
+  margin-bottom: 4px;
+}
+.optionRenameBox .optionRename {
+  padding-inline-end: 28px;
+}
+/* The ⓘ (DescribeButton) at the name field's end, 6 in, as Notion's (2026-11-18). */
+.optionDescribe {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 6px;
+  transform: translateY(-50%);
+}
+.optionDescription {
+  margin-bottom: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 13px;
+  resize: none;
+}
+.optionEditorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.optionEditorRow > span:nth-child(2) {
+  flex: 1 1 auto;
+}
+.optionEditorRow:hover,
+.optionEditorRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* As Notion's (seen 2026-11-06 at 1280px, from the settings' option row and
+   from a cell's "⋯" alike): the name field 12px in, 12px over "삭제"; rows 4px
+   in; a line 8px in from them, 9px under the rows over it, then "색" in
+   12px/500 gray 12px under the line and 10px over the colors, whose 18px
+   swatch sits in a 20px place. */
+.optionEditor[data-option-editor] {
+  gap: 0;
+  padding: 0 4px 4px;
+}
+.optionEditor[data-option-editor] .optionRenameBox { margin: 12px 8px; }
+.optionEditor[data-option-editor] .optionRename { margin-bottom: 0; }
+.optionEditor[data-option-editor] .optionEditorHeading {
+  position: relative;
+  margin-top: 10px;
+  padding: 12px 8px 0;
+  border-top: 0;
+  margin-bottom: 9px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.optionEditor[data-option-editor] .optionEditorHeading::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline-start: 8px;
+  inset-inline-end: 8px;
+  height: 1px;
+  background: var(--border-default);
+}
+.optionEditor[data-option-editor] .optionColorChip { margin: 0 1px; }
+/* Its description a 26px field of 13px words under the name, as wide. */
+.optionEditor[data-option-editor] .optionDescription {
+  margin: 0 8px 12px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring);
+  outline: none;
+  line-height: 20px;
+}
+.optionEditor[data-option-editor] .optionDescription:focus { box-shadow: var(--name-field-ring-focus); }
+/* The group a status option is in, grey before the row's "›". */
+.optionEditorMeta {
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+}
+.optionEditorHeading {
+  margin-top: 4px;
+  padding: 6px 8px 2px;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.optionColors {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.optionColorChip {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
+}
+
+/* An option's chip in a phone's table is 24px of 16px words 8px in, on a 24px
+   line, as Notion's (seen 2026-10-25 at 375px, the line 2026-11-15 at 411). */
+:global([data-phone="true"] [data-table-scroll]) .chip {
+  --chip-height: 24px;
+  padding: 0 8px;
+  font-size: 16px;
+}
+
+/* A touch screen's picker is a sheet (PropertySelectPicker), as Notion's
+   "상태" on an iPad (seen 2026-11-14 at 834): the chosen options 16px in on
+   a 52px group, then the options as 46px rows parted by the sheet's line,
+   each chip 16px in and its "⋯" always there at the row's end. */
+:global([data-select-sheet]) .selectField {
+  min-height: 52px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 0;
+  background: transparent;
+}
+:global([data-select-sheet]) .selectField::before {
+  display: none;
+}
+:global([data-select-sheet]) .selectList {
+  gap: 0;
+  max-height: none;
+  overflow: visible;
+}
+:global([data-select-sheet]) .selectOpt {
+  min-height: 46px;
+  padding-block: 0;
+  padding-inline: 14px 10px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+:global([data-select-sheet]) .selectOpt:last-child {
+  border-bottom: 0;
+}
+:global([data-select-sheet]) :is(.selectOpt:hover, .selectOpt:focus-within, .selectOpt[data-active="true"]) {
+  background: transparent;
+}
+:global([data-select-sheet]) .optionColorBtn {
+  opacity: 1;
+  pointer-events: auto;
+}
+:global([data-select-sheet]) .selectCreate {
+  min-height: 46px;
+  padding-inline: 16px;
+  font-size: 15px;
+}

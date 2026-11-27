@@ -1,0 +1,29 @@
+/* Scrolled so far sideways that its columns pass under the rows' box strip,
+   a table shows every row's box while a head's box is pointed at, the rows'
+   "+ ⋮⋮" staying hidden; before that, only the head's (Notion's, seen
+   2026-11-15 twice in Chrome at 1440: scrolled 250 and 600, every row's box
+   at full strength; scrolled 100 and 190, the first column still clear of
+   the strip, the head's box alone). Frozen columns keep their own margin.
+   The margin takes the state (--row-gutter-band) its controls read: a rule
+   ending in its controls (":not(.rowSelect)") styled the whole table again
+   as the scroll or the pointer flipped either mark (4,006 elements). */
+.tableScroll[data-scrolled-under="true"] > .table[data-head-box-pointed="true"]:not([data-frozen-columns]) .tableRow > .rowGutterCell {
+  opacity: 1;
+}
+.tableScroll[data-scrolled-under="true"] > .table[data-head-box-pointed="true"]:not([data-frozen-columns]) .tableRow:not(:hover, [data-row-selected="true"]) > .rowGutterCell {
+  --row-gutter-band: hidden;
+}
+/* A chosen row away from the pointer shows its box alone, its "+" and handle
+   only under the pointer, as Notion's (seen 2026-11-16 twice, a row chosen by
+   its box and by keys: "+ ⠿" on the pointed row only); the margin takes the
+   state its controls read (DatabaseTableRows .rowGutterCell > *); its box
+   pressed keeps the focus there with them hidden, a key's focus shows one. */
+.tableRow[data-row-selected="true"]:not(:hover, [data-row-dragging="true"]) > .rowGutterCell:not(:hover) {
+  --row-gutter-handles: hidden;
+}
+.rowGutterCell > :not(.rowSelect) {
+  visibility: var(--row-gutter-band, var(--row-gutter-handles, var(--row-gutter-tools)));
+}
+.rowGutterCell > :not(.rowSelect):focus-visible {
+  visibility: var(--row-gutter-band, visible);
+}

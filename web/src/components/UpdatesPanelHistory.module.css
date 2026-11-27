@@ -1,0 +1,185 @@
+/* The version history over the whole window, as Notion's (seen
+   2026-09-30): the versions on the left, the chosen version on the right. */
+.historyWindow {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  background: var(--bg-default);
+  color: var(--text-default);
+  animation: pageHistoryIn 140ms ease-out;
+}
+
+@keyframes pageHistoryIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+:where(.historyWindow button) {
+  min-height: 0;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.historyPreviewPane {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.historyPreviewHeader {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 8px;
+  min-height: 64px;
+  padding-block: 0;
+  padding-inline: 20px 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.historyPreviewTime {
+  flex: 0 1 auto;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyPreviewState {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.historyPreviewError {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--danger);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyPreviewActions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 12px;
+  margin-inline-start: auto;
+}
+
+.historyStartRestore {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.historyStartRestore:hover,
+.historyStartRestore:focus-visible {
+  filter: brightness(1.06);
+  outline: none;
+}
+
+.historyStartRestore:disabled {
+  cursor: default;
+  opacity: 0.4;
+  filter: none;
+}
+
+.historyClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-default);
+}
+
+.historyTimelineToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+}
+
+.historyTimelineToggle:hover,
+.historyTimelineToggle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.historyClose:hover,
+.historyClose:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Nothing chosen under "북마크", as Notion's (seen 2026-10-12): the page's
+   title and a line asking to pick a version in the middle of the preview. */
+.historyPreviewChoose {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 60%;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+}
+
+.historyPreviewChoose strong {
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* A version reads in a column as Notion's preview lays it (measured
+   2026-11-07 at 999 and 1280 wide): up to 900px, at least 20px from the
+   preview's sides, centered, its text 8px in; a full-page database's across
+   the preview, its 32px name 80px down and 104px in. */
+.historyPreviewCanvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 80px 20px 120px;
+  /* A change the foot pill steps to stops clear of it: the pill's 24px from
+     the foot, its 36px and as much again above it (PageHistoryChangeNav.module.css). */
+  scroll-padding-block-end: calc(24px + 36px + 24px);
+  /* A full-page database's body spans it (PageHistoryDatabasePage). */
+  container-type: inline-size;
+}
+
+
+[data-page-history="true"][data-history-timeline="closed"] .historyPreviewPane {
+  grid-column: 1 / -1;
+}

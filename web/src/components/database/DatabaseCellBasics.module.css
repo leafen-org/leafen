@@ -1,0 +1,613 @@
+
+/* ── Cell editors ──────────────────────────────────────────── */
+/* The backdrop under a cell's popover: pressing outside closes it. */
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+.cellInput {
+  width: 100%;
+  height: 100%;
+  min-height: 31px;
+  padding: 4px 6px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-default);
+}
+.rowTextCell.rowTextCell { /* Over .richCellInput's lines: 21px, 6px in, as Notion's page text value at rest (seen 2026-11-16) */
+  display: block;
+  height: auto;
+  min-height: 31px;
+  overflow: hidden;
+  resize: none;
+  padding: 6px 0;
+  line-height: 21px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* A page's text, number, link, email or phone value is written in a box over its line, as Notion's (seen
+   2026-11-14 at 1440 in a page, a center peek and a side peek: 3px into the value's line (its inset, here
+   --row-value-inset) and to its end, from its top, at least 38 high, 8px 9px in, 14/21 text, 6px round, the
+   menus' ground and shadow, over the value's tools). Its line grows with it as it wraps, the lines under it
+   moving down to its foot, 4px into the gap to the next, never covered (Notion's, seen 2026-11-16 in a side
+   peek: three lines, the box 79 high and the next line at its foot). Open still while its ⌘K link box has
+   the focus (RichTextCellToolbar). A phone writes it in its own sheet. */
+.rowPropertyValue > .cellInput:is(:focus, [data-field-held]):not(:global([data-phone="true"]) *) {
+  position: relative;
+  z-index: 4;
+  flex: none;
+  width: calc(100% + var(--row-value-inset, 0px) - 3px);
+  height: auto;
+  min-height: 38px;
+  margin-block-end: -4px;
+  margin-inline-start: calc(3px - var(--row-value-inset, 0px));
+  padding: 8px 9px;
+  line-height: 21px;
+  overflow: visible;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.numberDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 31px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.numberDisplay:hover {
+  background: var(--bg-hover);
+}
+/* A number's digits are all as wide, lining, as Notion's cells (seen 2026-11-06:
+   "lining-nums tabular-nums", ₩123,456,789,012,345,680 wrapping its last 0 at 200px). */
+.numberDisplay,
+.cellInput[data-number] {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.titleCell,
+.titleValue {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+.titleCellIcon,
+.titleValueIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  width: 22px;
+  color: var(--text-secondary);
+  font-size: 17px;
+  line-height: 1;
+}
+.titleCellIcon svg,
+.titleValueIcon svg {
+  flex: 0 0 auto;
+}
+.titleCell .cellInput {
+  min-width: 0;
+  padding-inline-start: 4px;
+}
+/* A phone's table sets its title 3px further from the page's icon (Notion's 9px against the desktop's 6, seen 2026-10-25 at 375px). */
+:global([data-phone="true"]) .titleCell .cellInput { padding-inline-start: 7px; }
+.titleValueText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A URL's, an email's or a phone number's value, as Notion's (seen
+   2026-11-03): the value is the link, inline in the text's color over a 1px
+   faint line at the bottom of its text; the rest of the box edits it. */
+.linkCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+.linkCell .numberDisplay {
+  min-width: 0;
+}
+.linkValue {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.linkText {
+  color: inherit;
+  text-decoration: none;
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+/* A short URL longer than its column is cut at the column's edge with no
+   "…", as Notion's (seen 2026-11-12: a long address in a 200px column). */
+.linkValue[data-url-short] { text-overflow: clip; }
+/* A short URL's path, dimmed after its address (urlDisplay.ts shortUrlParts). */
+.urlPath {
+  color: var(--text-tertiary);
+}
+/* The rest of the box edits it and keeps no room of its own, so the value
+   has the whole line (Notion's, seen 2026-11-07). */
+.linkEdit {
+  flex: 1 1 0;
+  align-self: stretch;
+  min-width: 0;
+  padding: 0;
+  cursor: inherit;
+}
+.linkEdit:focus-visible {
+  outline: none;
+}
+.cellCheck {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+/* In a table's cell its box sits 9px in and 11px down, as Notion's (seen
+   2026-11-07), however tall the row. */
+:global([data-table-cell]) .cellCheck {
+  align-self: flex-start;
+  padding-block: 11px 0;
+  padding-inline: 7px 8px;
+}
+/* A rollup's checkboxes stand in a row 8px apart, the first 8px in and
+   10px down in a table's cell, as Notion's (seen 2026-11-12); a formula's
+   list of them 8px down. */
+.cellCheck[data-rollup-checks],
+.cellCheck[data-formula-checks] {
+  gap: 8px;
+  overflow: hidden;
+}
+:global([data-table-cell]) .cellCheck[data-rollup-checks] {
+  padding-block: 10px 0;
+  padding-inline: 6px 8px;
+}
+:global([data-table-cell]) .cellCheck[data-formula-checks] {
+  padding-block: 8px 0;
+  padding-inline: 6px 8px;
+}
+.cellCheck > input {
+  cursor: pointer;
+}
+.cellCheck > input:disabled {
+  cursor: default;
+}
+/* A value nobody types — a created or edited time, an ID — reads as the
+   other values do, as Notion's (seen 2026-10-25: 14px, the text color, 8px
+   into the cell — the cell's own 2px and 6px here). */
+/* A value the page works out (an ID, when it was made or changed) sits in
+   the same 31px box as an edited one, its line 5px down, so its row stays
+   Notion's 37px (seen 2026-11-02). */
+.cellReadonly {
+  display: block;
+  padding: 5px 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+/* An ID's number is pale, in its cell, on a card and on its page, as
+   Notion's (seen 2026-11-03: rgb 161,158,153). */
+span.uniqueIdValue.uniqueIdValue {
+  color: var(--text-tertiary);
+}
+.placeCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+/* An unverified page's verification is empty, so its cell holds the whole
+   value to press. */
+.verificationCell {
+  min-width: 0;
+  width: 100%;
+}
+/* A verified page's blue seal before its words, as Notion's (seen 2026-11-03). */
+.verifiedBadge {
+  flex: none;
+  margin-inline-end: 4px;
+  color: var(--accent-blue);
+  vertical-align: -3px;
+}
+/* "페이지 인증" over the choices, grey and small; each length with the day it ends under it. */
+.verificationHead {
+  padding: 6px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.verificationChoice {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 40px;
+  text-align: start;
+}
+.verificationChoiceText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.verificationPlain {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  text-align: start;
+}
+.verificationChoice small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+/* A place's name 8px into a table's cell, as the other values' are (the
+   cell's own 2px and 6px here), and where a page's other values start on
+   its property line (rowPropertyValue), as Notion's (seen 2026-11-12). */
+.placeCellButton {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 6px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A button's cell, as Notion's (seen 2026-11-02): its name 14px/500 in a
+   24px button 8px and 6px into the cell, its words 6px in, ringed 1px and
+   rounded 6 on no ground. */
+.databaseButtonCell {
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 12px);
+  height: 24px;
+  margin: 2px 6px;
+  padding: 0 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.databaseButtonCell:hover:not(:disabled),
+.databaseButtonCell:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.databaseButtonCell:disabled {
+  cursor: default;
+}
+.databaseButtonCell span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cellEmpty {
+  display: block;
+  width: 100%;
+  height: 24px;
+}
+
+.cellCheck > input,
+.listCompletion > input,
+.rowSelect,
+.propertyToggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  margin: 0;
+  border: 1.4px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--bg-app);
+  color: #fff;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+/* A checkbox cell's box and a table row's (and its head's) choosing box are
+   16px, as Notion's (seen 2026-11-09 at 1460: the row box 16 wide, 9px off
+   the first column). */
+.cellCheck > input,
+.rowSelect {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+}
+
+.listCompletion > input {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+}
+
+/* Checked, its box takes Notion's tick 1px in from its edge (styles.css
+   --checkbox-tick: 14 in a 16 box, 12 in a 14) — a card's or a group's
+   box (DatabaseBoardCards .cardCheckbox, its blue under this) too. */
+span.cardCheckbox[data-checked="true"],
+.cellCheck > input:checked,
+.listCompletion > input:checked,
+.rowSelect:checked,
+.propertyToggle input[type="checkbox"]:checked {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+}
+
+.rowSelect:indeterminate::after,
+.cellCheck > input:indeterminate::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 3px;
+  inset-inline-start: 3px;
+  top: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.rowSelect:indeterminate,
+.cellCheck > input:indeterminate,
+.listCompletion > input:indeterminate {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+}
+
+/* A list's in-progress dash, 6px by 1.5px in its 14px box (Notion's "내 작업", seen 2026-11-08). */
+.listCompletion > input:indeterminate::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 2.6px;
+  inset-inline-start: 2.6px;
+  top: 4.8px;
+  height: 1.5px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.cellCheck > input:focus-visible,
+.listCompletion > input:focus-visible,
+.rowSelect:focus-visible,
+.propertyToggle input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.propertyToggle input[type="checkbox"]:disabled {
+  opacity: 0.48;
+  cursor: default;
+}
+.listCompletion > input:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* A formula's or rollup's value, in a cell's 14px words as Notion's (seen
+   2026-10-24); a rollup that can't reach its relation says so in grey. */
+.rollupValue {
+  display: block;
+  width: 100%;
+  min-height: 31px;
+  padding: 4px 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 23px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rollupValue[data-rollup-broken],
+.rollupValue[data-rollup-no-access] {
+  color: var(--text-secondary);
+}
+/* A number in a table's cell sits at its end, typed there too: a number's,
+   a formula's or a rollup's; a page's property row keeps it at the start
+   (Notion's, seen 2026-10-24); a timeline's table's too (seen 2026-11-12). */
+:global(:is([data-table-cell], [data-timeline-table-cell])) .numberDisplay[data-number] {
+  justify-content: flex-end;
+  text-align: end;
+}
+:global(:is([data-table-cell], [data-timeline-table-cell])) .cellInput[data-number],
+:global(:is([data-table-cell], [data-timeline-table-cell])) .rollupValue[data-number] {
+  text-align: end;
+}
+/* Shown without editing — a read-only table, a locked row, a layout
+   builder's preview — it stands there too (Notion's builder, seen 2026-11-12). */
+:global([data-table-cell] [data-table-typed-value]:has([data-number-text], [data-number-display])),
+:global([data-table-cell] [data-table-typed-value] > span:has(> [data-number-text], > [data-number-display])) {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+:global([data-timeline-table-cell]:has([data-number-text], [data-number-display])) {
+  text-align: end;
+}
+/* A table column set to wrap text shows its values on several lines, a
+   formula's or rollup's too (Notion's, seen 2026-11-07); a page's URL
+   always does, its full address on as many lines as it takes (Notion's
+   page properties, seen 2026-11-14: pre-wrap, break-word). */
+:global([data-wrap="true"]) .numberDisplay,
+:global([data-wrap="true"]) .titleValueText,
+:global([data-wrap="true"]) .linkValue,
+:global([data-row-property-value]) .linkValue,
+:global([data-wrap="true"]) .rollupValue {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* A formatted title or text value; on a card its links stay text. */
+.richCellText {
+  min-width: 0;
+}
+.richCellText[data-rich-cell-text="static"] a {
+  pointer-events: none;
+}
+.richCellInput {
+  display: block;
+  min-width: 0;
+  line-height: 23px;
+  overflow: hidden;
+  white-space: pre;
+  cursor: text;
+}
+/* A table's title or text shown asleep takes a press itself, on its links
+   too: the press wakes its editor (RichTextCellShown). */
+.richCellInput[data-rich-cell-shown] a {
+  pointer-events: none;
+}
+/* A long title ends in "…" until it is edited, as Notion's; a text's is only cut (seen 2026-11-03).
+   The field carries it to its lines (check-css-pseudo-invalidation.mjs), as the line breaks below. */
+.richCellInput[data-table-title-input]:not(:focus) { --title-cut-end: ellipsis; --title-cut: hidden; }
+.richCellInput[data-table-title-input] > * { text-overflow: var(--title-cut-end, clip); overflow: var(--title-cut, visible); }
+/* A table's value reads on one line, a space for its line breaks, and its row
+   stays one line high, as Notion's (seen 2026-11-04); editing it or wrapping
+   its column shows the lines. */
+.richCellInput [data-cell-line-space] {
+  display: none;
+}
+.richCellInput[data-rich-cell-editor="single"]:not(:focus):not(:global([data-wrap="true"]) *) [data-cell-line-space] {
+  display: inline;
+}
+.richCellInput[data-rich-cell-editor="single"]:not(:focus):not(:global([data-wrap="true"]) *) { --cell-line-break: none; }
+.richCellInput br { display: var(--cell-line-break, revert); }
+.richCellInput[data-rich-cell-editor="multiline"],
+:global([data-wrap="true"]) .richCellInput {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* A page or database named in a value — a text or title being shown or
+   edited, a formula's or a card's — keeps the value's white space, as
+   Notion's: whole on the value's one line where its column doesn't wrap
+   (seen 2026-11-11: "회의 메모 확인 [항목 하나] 다음 주까지 정리" on one cut
+   line at 200px), breaking with the words where it does. The editor's own
+   rule lets a mention wrap in a page's text (white-space: normal). */
+:is(.richCellInput[data-rich-cell-editor], .richCellText) :is(a[data-mention="page"], span[data-mention="page"][href], [data-mention="database"]):not([data-mention-unavailable]) {
+  white-space: inherit;
+}
+/* Wrapped in a table, a value's lines are Notion's 21px apart from 8px
+   down, 6px left under the last. */
+:global([data-table-cell][data-wrap="true"]) .richCellInput,
+:global([data-table-cell][data-wrap="true"]) .numberDisplay,
+:global([data-table-cell][data-wrap="true"]) .rollupValue {
+  align-items: flex-start;
+  padding-top: 8px;
+  padding-bottom: 6px;
+  line-height: 21px;
+}
+/* A title's, a text's or an e-mail's own lines sit 7.5px down with 7.5px
+   under the last, its row's line under that (Notion's, seen 2026-11-16 by its
+   rows' tops: three lines a 79px row, two a title's 58; the 78 read 2026-11-03
+   and 11-14 were its cells' boxes, 2026-11-06's 79 its row). */
+:global([data-table-cell][data-wrap="true"]) .richCellInput {
+  padding-top: 7.5px;
+  padding-bottom: 7.5px;
+}
+/* Over the page's own editor rule (".tiptap" in its surface wraps), a cell
+   keeps its text on one line unless its column wraps, as Notion's does
+   (2026-10-06: a long note made its table row three lines high). */
+.richCellInput[data-rich-cell-editor="single"]:global(.tiptap) {
+  white-space: pre;
+}
+.richCellInput[data-rich-cell-editor="multiline"]:global(.tiptap),
+:global([data-wrap="true"]) .richCellInput:global(.tiptap),
+.richCellInput[data-cell-breaks="true"]:global(.tiptap):focus {
+  white-space: pre-wrap;
+}
+
+/* Words an open thread was left on are marked by CellCommentMarks. */
+
+/* A phone's table cells are 16px, as Notion's at 375px (seen 2026-10-25). */
+:global([data-phone="true"] [data-table-scroll]) .cellInput,
+:global([data-phone="true"] [data-table-scroll]) .numberDisplay {
+  font-size: 16px;
+}
+.verificationNow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  font-size: 14px;
+}
+.verificationRemove {
+  color: var(--menu-danger);
+}
+/* The length it was verified for, ticked at the end of its line. */
+.verificationTick {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--text-default);
+}
+.verificationFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+  padding: 6px 8px 4px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.verificationPick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
+  overflow: hidden;
+}
+.verificationDayInput {
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: inherit;
+  font-size: 14px;
+}
+/* One line, cut with "…", as Notion's cell. */
+.verificationCell > button {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.verificationCell > button svg {
+  margin-inline-end: 4px;
+  vertical-align: -3px;
+}

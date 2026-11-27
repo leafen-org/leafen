@@ -1,0 +1,499 @@
+/* An in-app confirmation, as Notion's: a small card in the middle of the
+   window, the message centered above full-width buttons (seen 2026-10-06;
+   2026-10-17: 324px, round 12px, the question 16px/600, what follows in
+   16px gray, a destructive answer a filled red button over an outlined one). */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* The page shaded as behind Notion's other windows (seen 2026-11-05: a
+     view's delete, rgba(15, 15, 15, 0.8) in dark). */
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  width: min(324px, 100%);
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  border-radius: var(--modal-radius);
+  /* A window's ground and shadow, not a menu's: #202020 and the deeper
+     shadow in dark (seen 2026-10-29, a permanent delete). */
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+/* A mark above the message, grey, 36px unless its card draws it 32, 10px over the question with the card's 8px gap,
+   as Notion's before a variable's formula turns to words (seen 2026-11-21: 324×251, its question 66 down). */
+.icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2px;
+  color: var(--icon-secondary);
+}
+
+.icon svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* The question 8px over the first button; a gray line 6px under it and 14px
+   over the first button with the card's 8px gap, as Notion's confirmations
+   (seen 2026-10-30: 324×144 alone, 324×181 with the line, now a pixel
+   more between the answers — 2026-11-15: a view's delete 324×145; 2026-11-11: its
+   line's box padded 6px above and below, a teamspace's kind change and an
+   emoji's delete alike). */
+.message {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+  /* Wrapped as Notion's, lines kept even and letters as they are (seen 2026-11-21: two 24px lines in 284, normal spacing); an address too long wraps. */
+  overflow-wrap: anywhere; text-wrap: pretty;
+  /* A message may name its details on lines of their own. */
+  white-space: pre-line;
+}
+
+/* Notion's question before a form view is deleted (seen 2026-11-12): 18/27. */
+.dialog[data-headline="true"] .message {
+  font-size: 18px;
+  line-height: 27px;
+}
+
+.detail {
+  display: block;
+  padding-block: 6px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+/* Words the line stresses, as Notion's status default question (seen 2026-11-08: 600). */
+.detail b {
+  font-weight: 600;
+}
+
+/* Notion's warning before a page is copied to another workspace (seen 2026-10-31): 400px, a 32px
+   mark in its redIcoAccPri (#e56458 in both themes, 2026-11-24), the title 17px/600 8px under it,
+   the paragraphs 14px/20px 10px apart in a gray box 26px from the title
+   and the buttons, and "취소" in gray words with no outline. */
+.dialog[data-notes="true"] {
+  width: min(400px, 100%);
+}
+.dialog[data-notes="true"] .icon {
+  margin-bottom: 0;
+  color: var(--danger-fill);
+}
+.dialog[data-notes="true"] .message {
+  margin-bottom: 0;
+  font-size: 17px;
+  line-height: 22px;
+}
+.notes {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.notes p {
+  margin: 0;
+}
+.dialog[data-notes="true"] .action:not([data-danger]) {
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+/* Notion's settings' question before an emoji is deleted (seen 2026-11-02;
+   2026-11-07 its words centered): 406px, its red rgb(229,100,88) on light
+   words. Its gray line, one line in Notion's, is 380px in our wider font:
+   the card grows to keep it on one line. */
+.dialog[data-wide="true"] {
+  width: fit-content;
+  min-width: min(406px, 100%);
+  max-width: 100%;
+}
+/* Each answer the windows' outlined button (DialogButtons.module.css), as
+   Notion's card (seen 2026-11-08, a property's delete: "취소" 32px, 1px
+   rgba(255,255,235,.1) in dark, 14/500). */
+.action {
+  composes: cancel from "./DialogButtons.module.css";
+}
+/* Each answer 8px under what is over it, and two answers a pixel further
+   apart, 9px: Notion's answers stand in a column 1px apart, each 8px down
+   (read 2026-11-15 at 1440 dark, a view's delete 324×145 and a property's
+   406×169 alike: "삭제" 341–373, "취소" 382–414). */
+.action + .action {
+  margin-top: 1px;
+}
+/* An icon in a choice's words, as a database's before its name (Notion's
+   default-template question), stays in their line. */
+.action [data-inline-icon] {
+  display: inline-flex;
+  vertical-align: -3px;
+}
+
+/* Red words on a red outline, tinted under the pointer, as Notion's (seen
+   2026-11-04: a property's and a view's delete; 2026-10-29: "영구 삭제하기"). */
+.action[data-danger] {
+  border-color: var(--danger-outline-border);
+  background: transparent;
+  color: var(--danger-outline-text);
+}
+
+/* Each window that composes the shared button carries its own copy of its
+   hover, so these outrank it rather than rely on which loaded last. */
+.dialog .action[data-danger]:hover,
+.dialog .action[data-danger]:focus-visible {
+  background: var(--danger-outline-hover);
+}
+
+/* Light words on solid red where the asker chose "filled", in both themes as Notion's (redBacAccPri
+   under redTexInvPri, seen 2026-11-08); white words where it chose "filled-white" (its copy warning). */
+.dialog .action:is([data-danger="filled"], [data-danger="filled-white"])[data-danger] { border-color: transparent; background: var(--danger-fill); color: var(--danger-fill-text); }
+.dialog .action[data-danger="filled-white"][data-danger] { color: var(--danger-fill-white-text); }
+
+/* A longer question in a 406px card, its words centered, as Notion's property
+   delete (seen 2026-11-04); with a mark, its developer tools' question before a
+   webhook subscription goes (seen 2026-11-21): the 32px mark, the question
+   17/22, its line 14/20 grey 8 under it and 13 over the action. */
+.dialog:is([data-roomy="true"], [data-primary="true"]) {
+  width: min(406px, 100%);
+}
+.dialog[data-roomy="true"]:has(> .icon) .message { margin-bottom: 0; font-size: 17px; line-height: 22px; }
+.dialog[data-roomy="true"]:has(> .icon) .detail { padding: 8px 0 5px; font-size: 14px; line-height: 20px; }
+/* Its action blue and full, the other answer words alone under it in Notion's gray accent
+   (both themes), as Notion's new form asks (seen 2026-11-02; graTexAccPri read 2026-11-25). */
+.dialog[data-primary="true"] .action[data-lead] {
+  border-color: transparent;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+.dialog[data-primary="true"] .action[data-lead]:hover,
+.dialog[data-primary="true"] .action[data-lead]:focus-visible {
+  background: var(--accent-blue-hover);
+}
+.dialog[data-primary="true"] .action:not([data-lead]) {
+  border-color: transparent;
+  color: var(--text-gray-accent);
+  font-weight: 400;
+}
+/* Its line under the question 14px, 8px over the action (seen 2026-11-02: 406×211). */
+.dialog[data-primary="true"] .detail {
+  padding-top: 12px;
+  padding-bottom: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+/* The new form's own (not a data source's move): its 36px marks 12 over
+   the question 16/22, the line under it 14/20 600 12 under that and 8 over
+   the blue action, the words-only answer 8 under the action pulling the
+   card's foot 12 up, as Notion's (seen 2026-11-15 at 1440 dark: 406×211,
+   marks 20 down, "처음부터 만들기" margin 8 0 -12). */
+.dialog[data-primary="true"]:not([data-move="true"]) .icon {
+  margin-bottom: 4px;
+}
+.dialog[data-primary="true"]:not([data-move="true"]) .message {
+  margin-bottom: 0;
+  line-height: 22px;
+}
+.dialog[data-primary="true"]:not([data-move="true"]) .detail {
+  font-weight: 600;
+}
+.dialog[data-primary="true"]:not([data-move="true"]) .action:not([data-lead]) {
+  margin-bottom: -12px;
+}
+
+/* A confirmation with answers, as Notion's before turning a feature off
+   (seen 2026-10-10): a wider card, a bolder title, the answers as cards
+   with the radio at their end, the chosen one outlined in blue. */
+.dialog[data-choices="true"] {
+  width: min(288px, 100%);
+}
+
+.dialog[data-choices="true"] .message {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.choice[data-chosen="true"] {
+  border-color: var(--accent-blue);
+}
+
+.choice > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.choice strong {
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.choice small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.choice input {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+/* Notion's ask before unlinking a page's sharing (seen 2026-11-06; 2026-11-21: 324×271, two lines of each): a 32px
+   mark 10px over the question with the card's 8px gap, its line 6px under it in 12px/16px gray, and nothing more under it. */
+.dialog[data-compact="true"] .icon { margin-bottom: 2px; }
+.dialog[data-compact="true"] .message { margin-bottom: 0; }
+/* The 32px mark of the cards that draw it so (each one's comment says whose; a discard's, ConfirmActionRequest's). */
+.dialog:is([data-notes="true"], [data-compact="true"], [data-move="true"], [data-large="true"], [data-danger-choices="true"], [data-roomy="true"], [data-discard="true"]) .icon svg {
+  width: 32px;
+  height: 32px;
+}
+/* A discard's bin is 36 on a phone, as Notion's leaving an automation's changes there (seen 2026-10-24). */
+:global([data-phone="true"]) .dialog[data-discard="true"] .icon svg { width: 36px; height: 36px; }
+.dialog[data-compact="true"] .detail {
+  padding-top: 6px;
+  /* 14px over the first button with the card's 8px gap. */
+  padding-bottom: 6px;
+  font-size: 12px;
+  line-height: 16px;
+}
+/* Notion's question before a connection leaves a page (seen 2026-11-21):
+   the question 17/22 600, its line 14/20 grey 8 under it and 8 over the
+   action; under the 32px mark of one that unlinks the page too, 12/16 600. */
+.dialog[data-title-sm="true"] .message {
+  margin-bottom: 0;
+  font-size: 17px;
+  line-height: 22px;
+}
+.dialog[data-title-sm="true"] .detail {
+  padding: 8px 0 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+.dialog[data-title-sm="true"][data-compact="true"] .detail {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* Its action blue and filled over the outlined other (seen 2026-11-06). */
+.dialog[data-accent="true"] .action[data-lead] {
+  border-color: transparent;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+.dialog[data-accent="true"] .action[data-lead]:hover,
+.dialog[data-accent="true"] .action[data-lead]:focus-visible {
+  background: var(--accent-blue-hover);
+}
+
+/* What the action changes, in a lined box 12px wider than the words each
+   side, as Notion's relink (seen 2026-11-06: 308px, round 6, a name and its
+   roles 73px tall). */
+.box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* 15px under the line over it, past its 6px foot and the card's 8px gap, and 19px over the action (seen 2026-11-21). */
+  margin: 1px -12px 11px;
+  padding: 14px 12px 18px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  text-align: start;
+}
+
+/* Notion's question before a page moves here from another relation (seen
+   2026-11-07): 300px, the 32px mark 20 down, the question 17/22 500 10 under
+   it, the detail 14/20 grey 20 under that with its "?", the answers 260×32
+   26 under it and 8 apart, "□ 다시 묻지 않기" 24 under them, and a round "×"
+   10 in from the top right. */
+.dialog[data-move="true"] {
+  width: min(300px, 100%);
+}
+.dialog[data-move="true"] .message {
+  margin-bottom: 0;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 22px;
+}
+.dialog[data-move="true"] .detail {
+  padding: 20px 0 18px;
+  font-size: 14px;
+  line-height: 20px;
+}
+/* Notion's question before a data source moves with its views (seen
+   2026-11-11): a move's card at 380px, the 32px mark 20 down, the question
+   17/22 600 8 under it, its detail 14/20 grey 9 under that, the blue action
+   and the words-only other 340×32 24 under it and 8 apart, 20 at the foot. */
+.dialog[data-move="true"][data-primary="true"] {
+  width: min(380px, 100%);
+}
+.dialog[data-move="true"][data-primary="true"] .icon {
+  margin-bottom: 0;
+}
+.dialog[data-move="true"][data-primary="true"] .message {
+  font-weight: 600;
+}
+.dialog[data-move="true"][data-primary="true"] .detail {
+  padding: 9px 0 16px;
+  font-weight: 400;
+}
+.close {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+.hint {
+  display: inline-flex;
+  vertical-align: -2px;
+  color: var(--icon-secondary);
+  cursor: help;
+}
+.remember {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.remember input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+/* Notion's developer tools' questions (seen 2026-11-21 at 1440 dark, a
+   connection's delete and an API token's refresh; its MCP tokens' the same):
+   440px padded 20, a 32px mark 20 down, the question 17/22 600 8 under it,
+   its line 14/20 grey 8 under that, balanced, and 24 over the filled red
+   action, the other 8 under it on the raised ground, a round 22 "×" 10 in.
+   With answers to choose, 480px and a 24 "×": the mark grey as the icons
+   10 over the question 17/22 500, its line 20 under it, a 12/16 500 grey
+   line 24 under that at the answers' start, the answers 7 under it, 440×78
+   cards 8 apart, round 8, padded 12 14 in a 1px ring (blue when chosen),
+   their name 14/20 500 over a 12/16 500 grey line, the action 21 under them. */
+.dialog[data-large="true"] { width: min(440px, 100%); }
+.dialog[data-large="true"][data-choices="true"] { width: min(480px, 100%); }
+.dialog[data-large="true"] .icon { margin-bottom: 0; }
+.dialog[data-large="true"] .message { margin-bottom: 0; font-size: 17px; line-height: 22px; }
+.dialog[data-large="true"] .detail { padding: 8px 0 16px; font-size: 14px; line-height: 20px; text-wrap: balance; }
+.dialog[data-large="true"] .action + .action { margin-top: 0; }
+.dialog[data-large="true"]:not([data-choices="true"]) .close { width: 22px; height: 22px; }
+.dialog[data-large="true"]:not([data-choices="true"]) .action:not([data-lead]):not(:hover, :focus-visible) { border-color: var(--border-default); background: var(--bg-elevated); }
+.dialog[data-large="true"][data-choices="true"] .icon { margin-bottom: 2px; }
+.dialog[data-large="true"][data-choices="true"] .message { font-weight: 500; }
+.dialog[data-large="true"][data-choices="true"] .detail { padding: 20px 0 0; text-wrap: wrap; }
+.choicesLabel { margin: 16px 0 -1px; color: var(--text-secondary); font-size: 12px; font-weight: 500; line-height: 16px; text-align: start; }
+.dialog[data-large="true"] .choices { gap: 8px; margin-bottom: 13px; }
+.dialog[data-large="true"] .choice { padding: 11px 13px; border-radius: 8px; }
+.dialog[data-large="true"] .choice strong { font-size: 14px; line-height: 20px; }
+.dialog[data-large="true"] .choice small { font-size: 12px; font-weight: 500; line-height: 16px; }
+
+/* Notion's question before a two-way relation goes (seen 2026-11-11):
+   400px padded 20, a 32px bin 20 under its top, the question 17/22 500 with
+   the database's name bold, the answers 360px cards 8px round padded
+   12 6 12 14 in a 1px ring, the chosen one's ring and radio red, the label
+   14/20 500 over a 12/16 grey line, the round "×" 10 in from the top right. */
+.dialog[data-danger-choices="true"] {
+  width: min(400px, 100%);
+}
+.dialog[data-danger-choices="true"] .icon {
+  color: var(--text-default);
+}
+.dialog[data-danger-choices="true"] .message {
+  margin-bottom: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 22px;
+}
+/* Its question breaks where Notion's does: Leafen's Korean letters run
+   about 5% wider than Notion's, so the question has 10px more each side
+   (2026-11-11: the question to delete a database's property, 352px in
+   Notion's 360, 370 in Leafen's letters, which broke it a word early). */
+.dialog[data-danger-choices="true"] .message {
+  margin-inline: -10px;
+}
+.dialog[data-danger-choices="true"] .choices {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.dialog[data-danger-choices="true"] .choice {
+  padding-block: 12px;
+  padding-inline: 14px 6px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+.dialog[data-danger-choices="true"] .choice[data-chosen="true"] {
+  box-shadow: inset 0 0 0 1px var(--danger-fill);
+}
+.dialog[data-danger-choices="true"] .choice strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.dialog[data-danger-choices="true"] .choice small {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.dialog[data-danger-choices="true"] .choice input {
+  margin-inline-end: 8px;
+  accent-color: var(--danger-fill);
+}

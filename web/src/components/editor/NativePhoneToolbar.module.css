@@ -1,0 +1,161 @@
+/* The menus' ground, shadow and ring with 10px corners, the tools parted by
+   the faint line, as Notion's (seen 2026-11-10 in iPhone Safari light and
+   Android Chrome dark, where its bar is rgb(39,40,41)). */
+.toolbar { position: fixed; inset-inline: 12px; z-index: 120; display: flex; height: 42px;
+  border-radius: 10px; background: var(--bg-elevated); box-shadow: var(--shadow-menu); overflow: hidden; }
+/* A touch screen wider than a phone's: as wide as its tools, from 12 in
+   (Notion's iPad, seen 2026-11-13: 720.8 at x 12 at 834 and 1210). */
+.toolbar[data-wide-touch] { inset-inline-end: auto; max-width: calc(100vw - 24px); }
+:global([data-theme="dark"]) .toolbar { background: rgb(39, 40, 41); }
+.tools { display: flex; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.tools::-webkit-scrollbar { display: none; }
+.toolbar button { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center;
+  gap: 3px; min-width: 44px; height: 42px; padding: 0 10px; border-inline-end: 1px solid var(--border-subtle);
+  color: var(--text-default); font-size: 14px; white-space: nowrap; }
+/* A tool with a list ("+", "전환", "색", "더 보기") ends in a 16px gray
+   chevron 3 after its mark, 11.5 from its edge: "전환" is 67 wide, "+" 59,
+   9 in, with its chevron right on its plus, as Notion's (measured 2026-11-13 at
+   3x in iPhone Safari). */
+.toolbar button:has(.arrow) { padding-inline-end: 11.5px; }
+.tools > button[data-phone-tool="add"] { min-width: 59px; justify-content: flex-start; gap: 0; padding-inline-start: 9px; }
+/* A cell of several tools (outdent, indent and the moves; undo and redo)
+   holds them 36 apart, 5.3 in from its edges: 155 wide for four, 83 for
+   two, as Notion's (measured 2026-11-13 at 3x in iPhone Safari). */
+.group { display: flex; flex: 0 0 auto; padding-inline: 5.3px; border-inline-end: 1px solid var(--border-subtle); }
+.toolbar .group button { min-width: 36px; width: 36px; padding: 0; border-inline-end: 0; }
+.arrow { color: var(--icon-tertiary); }
+/* A tool that can't be used there is dimmed to 0.4, as Notion's (seen 2026-11-10 on an iPhone). */
+.toolbar button:disabled { opacity: .4; }
+.toolbar button:hover:not(:disabled), .toolbar button:focus-visible { background: var(--bg-hover); outline: none; }
+.toolbar .keyboard { min-width: 44px; border-inline-end: 0; border-inline-start: 1px solid var(--border-subtle); }
+/* A database name's "@" and keyboard share the "@"'s line, 87 across in all from 12 in, a phone's too (Notion's, seen
+   2026-11-16 in Safari on an 834 iPad and a 402 iPhone). */
+.toolbar[data-phone-tools-field="name"] { inset-inline-end: auto; }
+.toolbar[data-phone-tools-field="name"] .keyboard { margin-inline-start: -1px; border-inline-start: 0; }
+/* A list a line opens over the keyboard takes the tools' place, as Notion's
+   takes its tool bar's (popoverPlacement.ts phoneLineEdges; a phone's "@" and
+   "[[" panel, mentionPhonePanel.ts). Both are drawn in the layers' box at the
+   body's end (lib/overlayRoot.ts), which is asked: a rule on the body itself
+   marked it once the tools showed, and each line made after restyled the
+   whole page (2026-11-14, ToastStack.module.css). */
+:global([data-overlay-root]:has([data-phone-line-list], [data-phone-line-panel])) .toolbar { visibility: hidden; }
+/* So does a page's link bar a long press brought (PhoneLinkPreview), the keyboard staying up; a table cell's strip stays
+   with its own, as the Notion Android app's (seen 2026-11-25 on a Galaxy A90, twice each). */
+:global([data-overlay-root]:has([data-phone-link-preview="page"])) .toolbar[data-native-phone-toolbar] { visibility: hidden; }
+/* Chosen words' tools (PhoneSelectionTools.tsx), as Notion's (measured
+   2026-11-14 at 3x in iPhone Safari): each mark a 15px letter in the icons'
+   ink — B and i 600, i slanted, U underlined, S struck — "코드" in the code
+   face, "링크" over a 1px line, "색" in the words' own color; a mark the
+   words hold blue; the indents 38 wide each with no line between or after
+   them. */
+.toolbar[data-phone-tools-field="words"] button { font-size: 15px; }
+.toolbar button[data-phone-tool="bold"], .toolbar button[data-phone-tool="italic"],
+.toolbar button[data-phone-tool="underline"], .toolbar button[data-phone-tool="strikethrough"],
+.toolbar button[data-phone-tool="code"] { color: var(--icon-primary); }
+.toolbar button[data-phone-tool="bold"], .toolbar button[data-phone-tool="italic"] { font-weight: 600; }
+.toolbar button[data-phone-tool="italic"] { font-style: italic; }
+.toolbar button[data-phone-tool="underline"] { text-decoration: underline; }
+.toolbar button[data-phone-tool="strikethrough"] { text-decoration: line-through; }
+.toolbar button[data-phone-tool="code"] { font-family: var(--font-mono); }
+/* A mark's cell, B to "코드" and √x, is 44 wide whatever its letters
+   (Notion's: "코드" spills into its padding), "링크" and "색" as wide as
+   their words and 10 either side. */
+.toolbar[data-phone-tools-field="words"] button:is([data-phone-tool="bold"], [data-phone-tool="italic"], [data-phone-tool="underline"],
+  [data-phone-tool="strikethrough"], [data-phone-tool="code"], [data-phone-tool="equation"]) { width: 44px; }
+.toolbar button[aria-pressed="true"] { color: var(--accent-blue); }
+.linkWord { border-bottom: 1px solid var(--link-underline); }
+.colorWord { display: inline-flex; align-items: center; height: 18px; border-radius: 2px; }
+.toolbar .group[data-group="chosenNest"] { padding-inline: 0; border-inline-end: 0; }
+.toolbar .group[data-group="chosenNest"] button { width: 38px; min-width: 38px; padding: 0 8px; }
+/* "링크": its field in a white box 16 in, 6 under the sheet's body's top, 8
+   inside it, its words 16px (Notion's, measured 2026-11-14 at 402; the
+   field's 6, 2026-11-25 on a Galaxy A90, the app and Chrome alike). */
+.linkField { --link-frame-above: 6px; display: flex; flex-direction: column; padding-block: var(--link-frame-above) 16px; }
+/* Its field 44 high, as the Notion Android app's (measured 2026-11-25 on a Galaxy A90: 44.1, and its edit's two fields
+   44.2). Its white, as each white box of the sheet's (an edit's fields and "링크 제거", the found pages' card), is cut
+   by a 12-round frame that starts --link-frame-above over it, its foot the frame's: Notion's frame clips a white row
+   standing that far down in it (measured 2026-11-25 on a Galaxy A90 at 411, its Android Chrome page's rules — the
+   search field's row 6 down in a 50 frame, the edit's rows and the card's 1 down in 45s — and the app's pixels, the
+   top corners cut 16 and 3 device pixels into the 12 arc, the feet whole). So the search field's top corners are
+   nearly square, the others' a little flatter than their feet's 12. */
+.linkField > input { height: 44px; padding: 0 8px; border: 0; border-radius: 0; clip-path: inset(calc(-1 * var(--link-frame-above)) 0 0 round 12px);
+  background: var(--bg-elevated); color: var(--text-default); font-size: 16px; outline: none; }
+/* A page link's field showing its page (LinkPageChip), as the Notion Android app's edit (measured 2026-11-25 on a Galaxy
+   A90 at 411, a page chosen there, the app's pixels and its Android Chrome page's rules alike): a white 12-round box 46
+   high from its frame's top, the page's 22 glyph in a 24 box 16 in and its title 16px 4 after it, in the words' ink. */
+.linkField > [data-link-page] { width: 100%; height: 46px; margin: calc(-1 * var(--link-frame-above)) 0 0; padding: 0 16px; border-radius: 12px; background: var(--bg-elevated);
+  box-shadow: none; color: var(--text-default); font-size: 16px; line-height: 24px; }
+.linkField > [data-link-page] > :first-child { width: 24px; height: 24px; }
+/* The pages under it start 16 under the field's frame: "최근 페이지" 15px 500 grey 32 in on the sheet's heading line
+   (--phone-sheet-head-line), 8 over the pages' card, whose first row stands a pixel down in its frame as a group's
+   (Notion's Android Chrome page, 2026-11-25 on a Galaxy A90 at 411: the list from 143 padded 16, the heading 159 to
+   177.17, the card's frame at 185.17 and its first white at 186.17). */
+.linkField > [role="listbox"] { margin: 0; padding: 16px 0 0; }
+.linkField > [role="listbox"] > div:not([data-link-choice]) { padding: 0 16px 8px; color: var(--text-secondary); font-size: 15px; font-weight: 500;
+  line-height: var(--phone-sheet-head-line, 18.17px); }
+/* The pages it lists and the address typed stand in one white 12-round card
+   as wide as the field, with no shadow, as the Notion Android app's
+   (measured 2026-11-25 on a Galaxy A90 at 411, two openings, Notion's own
+   rules read in its Android Chrome page, which draws the same): words typed
+   in the field, or in an edit's "페이지 또는 URL", put the card 17 under the
+   field (its list 16 down, the card's first row 1 in, its frame's arc cutting
+   that row's top corners), as the pages lately visited under their heading;
+   a row 65 high where its place or the address's words stand under its
+   title, 45 for a page at the top, a line between; the card ends 1 short of its last row's foot, so
+   one row shows 64 and three 194. Each row's mark in a 24 box 12 in, 10
+   before the words, which stop 16 short of its end: a page's 22 glyph in the
+   icons' second grey and the address's globe in the words' ink, 9 under the
+   row's top beside a place, else in its middle; the title 17px and the place
+   or the address's words 14px under it, both on 20.4 lines 2 apart, a
+   page's path in the third grey and the address's words in the second. An
+   edit's "링크 제거" is such a row (.linkRow), its bin a 22 glyph in the words'
+   ink (Notion's Android Chrome page and the app's pixels, 2026-11-25 on a
+   Galaxy A90 at 411: the bin's box 12 in, its words at 62, 17px on 20.4). */
+.linkField [data-link-choice], .linkRow { gap: 10px; padding-block: 0; padding-inline: 12px 16px; }
+.linkField [data-link-choice] { --link-row: 45px; min-height: var(--link-row); border-radius: 0;
+  background: var(--bg-elevated); border-bottom: 1px solid var(--border-subtle); font-size: 16px; }
+.linkField [data-link-choice]:has([data-link-part="place"]) { --link-row: 65px; }
+.linkField [data-link-choice] + [data-link-choice] { margin-block-start: 0; }
+.linkField [data-link-choice]:nth-child(1 of [data-link-choice]) { margin-block-start: var(--phone-sheet-group-top, 1px);
+  clip-path: inset(calc(-1 * var(--phone-sheet-group-top, 1px)) 0 0 round 12px 12px 0 0); }
+.linkField [data-link-choice]:last-child { min-height: calc(var(--link-row) - 1px); border-bottom: 0;
+  border-end-start-radius: 12px; border-end-end-radius: 12px; }
+.linkField [data-link-choice] [data-link-part="icon"], .linkRow [data-link-part="icon"] { width: 24px; height: 24px; margin: 0; }
+.linkField [data-link-choice] [data-link-part="icon"] { color: var(--icon-secondary); }
+.linkField [data-link-choice]:has([data-link-part="place"]) [data-link-part="icon"] { align-self: flex-start; margin-block-start: 9px; }
+.linkField [data-link-choice="address"] [data-link-part="icon"], .linkRow [data-link-part="icon"] { color: var(--text-default); }
+.linkField [data-link-choice] [data-link-part="title"], .linkRow [data-link-part="title"] { font-size: 17px; line-height: 20.4px; }
+.linkField [data-link-choice] [data-link-part="place"] { margin-block-start: 2px; font-size: 14px; line-height: 20.4px; }
+.linkField [data-link-choice="address"] [data-link-part="place"] { color: var(--text-secondary); }
+/* A phone's tools: a strip docked on the keyboard, as the Notion Android
+   app's (measured 2026-11-21 on the A90 at 411, 2.625x, light): the screen's
+   width, 44 high with a 1px rgb(236, 235, 234) line on top, on the page's
+   ground, no corners or shadow; its tools 36 cells 3 apart from 10 in,
+   scrolling under the keyboard's cell at the end, which is 44 wide and parted
+   by a 1px rgb(242, 242, 242) line as high as the strip under its top line.
+   Icons 24 in the icons' grey, a tool that can't be used there at .56; a
+   press draws a 48 round shade over its cell, cut by the strip; a mark held
+   draws a 28.5×25.5 tile, 4 round, rgb(232, 232, 231). Dark unmeasured. */
+.toolbar[data-phone-strip] { --strip-line: rgb(236, 235, 234); --strip-cut: rgb(242, 242, 242); --strip-held: rgb(232, 232, 231);
+  --strip-press: rgba(0, 0, 0, 0.12); inset-inline: 0; height: 44px; border-radius: 0; border-top: 1px solid var(--strip-line);
+  background: var(--bg-app); box-shadow: none; }
+:global([data-theme="dark"]) .toolbar[data-phone-strip] { --strip-line: var(--border-default); --strip-cut: var(--border-secondary);
+  --strip-held: var(--bg-active); --strip-press: rgba(255, 255, 255, 0.12); background: var(--bg-app); }
+.toolbar[data-phone-strip] .tools { gap: 3px; padding-inline: 10px 6px; }
+.toolbar[data-phone-strip] button { position: relative; isolation: isolate; width: 36px; min-width: 36px; height: 43px; padding: 0;
+  border-inline-end: 0; color: var(--icon-secondary); }
+.toolbar[data-phone-strip] .tools > button[data-phone-tool="add"] { min-width: 36px; justify-content: center; padding-inline-start: 0; }
+.toolbar[data-phone-strip][data-phone-tools-field] .tools > button { width: 36px; min-width: 36px; }
+.toolbar[data-phone-strip] button:hover:not(:disabled) { background: none; }
+.toolbar[data-phone-strip] button:disabled { opacity: .56; }
+.toolbar[data-phone-strip] button[aria-pressed="true"] { color: var(--icon-secondary); }
+.toolbar[data-phone-strip] button > * { position: relative; z-index: 1; }
+.toolbar[data-phone-strip] button[aria-pressed="true"]::before { content: ""; position: absolute; inset: 8.75px 3.75px; z-index: 0;
+  border-radius: 4px; background: var(--strip-held); }
+.toolbar[data-phone-strip] button:active:not(:disabled)::after { content: ""; position: absolute; inset-block-start: 50%;
+  inset-inline-start: 50%; z-index: 0; width: 48px; height: 48px; margin: -24px; border-radius: 50%; background: var(--strip-press); }
+.toolbar[data-phone-strip] .keyboard { width: 44px; min-width: 44px; border-inline-start: 1px solid var(--strip-cut); }
+/* "Aa" a 20px word; the color's "A" in a 20 box 1px ringed, 3 round, as the app's. */
+.textStyle { font-size: 20px; line-height: 1; }
+.colorMark { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border: 1px solid var(--border-default);
+  border-radius: 3px; font-size: 13px; line-height: 1; }

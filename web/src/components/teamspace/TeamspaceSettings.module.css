@@ -1,0 +1,431 @@
+/* A teamspace's settings, making one and archiving one, as Notion's (seen 2026-10-06). */
+
+/* The dialog's own size; doubled to outrank the shared dialog frame. */
+/* Notion's (read 2026-11-18 from its style at 1440 and 606, two tabs): 630 by
+   640, never nearer than 50 to the window's edges, in its middle — at a 606
+   window 506 wide, not a sheet; a phone's is its sheet (phoneWindowSheet). */
+.settingsDialog.settingsDialog {
+  width: min(630px, calc(100vw - 100px)); height: min(640px, calc(100vh - 100px));
+  margin: 0 auto; border-radius: 12px;
+}
+
+/* In the window's middle, as Notion's (seen 2026-11-05): 480 wide, 20 in, 481 tall. */
+.createDialog.createDialog { width: min(480px, calc(100vw - 32px)); border-radius: 12px; overflow: visible; }
+
+/* Where the window's close sits; its look is TeamspaceDialog.module.css's .close. */
+.closeSlot { position: absolute; top: 10px; inset-inline-end: 10px; z-index: 1; }
+
+/* Its icon 64px at 32 in, the name 24 under it, the member count 4 under that (Notion's, 2026-11-06). */
+.head { position: relative; flex: 0 0 auto; padding: 32px 32px 0; }
+
+.iconSlot { position: relative; display: inline-flex; }
+
+.icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 4px;
+  background: var(--round-close-bg); color: var(--text-secondary); font-size: 36px; line-height: 1;
+}
+
+.icon:not(:disabled):hover, .icon:focus-visible { filter: brightness(0.96); outline: none; }
+
+.icon:disabled { cursor: default; }
+
+.name { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 24px 0 0; color: var(--text-default); font-size: 26px; font-weight: 700; line-height: 32px; }
+
+.name > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.rename { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 5px; color: var(--text-tertiary); }
+
+.rename:hover, .rename:focus-visible { background: var(--bg-hover); color: var(--text-default); outline: none; }
+
+/* The name's field where the name was (NameInPlaceField). */
+.nameInput { margin: 24px 0 0; }
+
+.headLine { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 26px; margin-top: 4px; color: var(--text-secondary); font-size: 14px; }
+
+/* Its tabs 32 under the count, from 36 in, 28 tall and 6 apart; the tab's body from 36 in (Notion's). */
+.tabs { display: flex; flex: 0 0 auto; gap: 6px; padding-block: 32px 10px; padding-inline: 36px 32px; }
+
+.tabs button { height: 28px; padding: 0 10px; border-radius: 6px; color: var(--text-secondary); font-size: 14px; }
+
+.tabs button:hover, .tabs button:focus-visible { background: var(--bg-hover); outline: none; }
+
+.tabs button[aria-current="page"] { background: var(--bg-hover); color: var(--text-default); font-weight: 500; }
+
+.body { flex: 1 1 auto; min-height: 0; padding: 11px 36px 28px; overflow-x: hidden; overflow-y: auto; }
+
+.general, .securityTab { display: flex; flex-direction: column; gap: 22px; }
+
+/* The settings tab's words stand 4 further in than the members' search
+   (Notion's: 40 and 36), the tab keeping the whole width: Notion moves it 4px
+   in and lets it run 4px past the end (seen 2026-11-18 at 1440, two tabs: its
+   box from 445 to 988 under the members' 441 to 984), which the body's hidden
+   sideways overflow keeps from scrolling. */
+.general { margin-inline: 4px -4px; }
+
+.field { display: flex; flex-direction: column; gap: 6px; color: var(--text-secondary); font-size: 12px; }
+
+/* The description field one 20px line 4 in, 30 tall (Notion's, 2026-11-06). */
+.field > textarea, .createName > input {
+  width: 100%; min-height: 30px; padding: 5px 11px; line-height: 20px; border: 0; box-shadow: var(--name-field-ring); border-radius: 6px;
+  background: var(--name-field-bg); color: var(--text-default); font: inherit; font-size: 14px; resize: none; outline: none;
+}
+
+.field > textarea:focus, .createName > input:focus { box-shadow: var(--name-field-ring-focus); }
+
+/* The kind and the roles in Notion's box (seen 2026-11-18 at 1440, dark, in
+   two workspaces): a 1px box rounded 4; the kind a button across the whole
+   box, its 45px row 4px under the top and 8px in, its mark in a 5px margin
+   (13 in) and the words 8 after it (46 in), its ⌄ 12px in a 3px margin (11
+   from the end), so its menu as wide as the box from its start
+   (TeamspaceChoiceMenu wide); a line 15px in from either side under it; the
+   roles 4px under the line, 15px in and 7 from the end, 36 tall, 4px over
+   the foot. */
+.securityBox { display: flex; flex-direction: column; padding-block-end: 4px; border: 1px solid var(--border-default); border-radius: 4px; }
+
+.securityBox .securityButton { gap: 8px; min-height: 45px; margin-block: 4px; padding: 4px 8px; border-bottom: 0; }
+
+.securityBox .securityIcon { margin-inline: 5px; }
+
+.securityBox .securityText span { line-height: 16.8px; }
+
+.securityBox .securityButton > svg:last-child { width: 12px; height: 12px; margin-inline: auto 3px; }
+
+.securityRule { flex: none; height: 1px; margin: 0 15px 4px; background: var(--border-default); }
+
+.securityBox > .roleRow { gap: 15px; min-height: 36px; margin-inline: 15px 7px; }
+
+.securityButton {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 8px 0; border-bottom: 1px solid var(--border-default);
+  color: var(--text-default); text-align: start;
+}
+
+/* The settings box's ⌄ in the icons' tertiary colour, as Notion's (icoTer, seen 2026-11-18 at 1440, light and dark). */
+.securityButton > svg:last-child { flex: 0 0 auto; margin-inline-start: auto; color: var(--icon-tertiary); }
+
+/* The button takes the line its title reads: a pointer or focus state over
+   "span" restyled every span on the page at each pointer move (2026-11-12). */
+button.securityButton:hover, button.securityButton:focus-visible { --security-title-line: underline; }
+
+.securityButton > .securityText > span:first-child { text-decoration: var(--security-title-line, none); }
+
+button.securityButton:focus-visible { outline: none; }
+
+/* A default teamspace's kind that stays, its tip on the whole row. */
+.securityTip { display: block; }
+
+.securityBoxed { min-height: 58px; padding: 8px 12px; border: 1px solid var(--border-default); border-radius: 6px; }
+
+/* Its mark's colour is its picker's (TeamspaceMembers.module.css, data-choice-marks). */
+.securityIcon { display: inline-flex; flex: 0 0 auto; }
+
+.securityText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.securityText span:first-child { font-size: 14px; }
+
+/* What the kind does, in the secondary text colour as the choices under it (TeamspaceMembers.module.css .roleText). */
+.securityText span:last-child { color: var(--text-secondary); font-size: 12px; }
+
+.roleRow { display: flex; align-items: center; gap: 10px; min-height: 38px; color: var(--text-default); font-size: 14px; }
+
+.roleRow > span:nth-child(2) { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* The settings box's row marks, 20px and their words 15 after, as Notion's (seen 2026-11-18 at 1440 and 606, dark, two
+   tabs: marks 16 into the box, words 51): the teamspace's or the workspace's first letter at 0.6875 of the square, as its
+   other teamspace squares (TopBarTeamspace.module.css .crumbGlyph), on the teamspace mark's ground. */
+.roleGlyph {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 3.5px;
+  background: var(--round-close-bg); color: var(--text-secondary); font-size: 13.75px; line-height: 1;
+}
+
+/* The owners' row's mark: the owner's face in a 20px circle, the teamspace's mark on a badge at its lower end (TeamspaceOwnerGlyph). */
+.ownerGlyph { position: relative; display: inline-flex; flex: 0 0 auto; width: 20px; height: 20px; }
+
+.ownerFace {
+  display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--bg-hover); color: var(--text-secondary);
+}
+
+.ownerBadge {
+  position: absolute; inset-inline-start: 11.5px; top: 13.5px; display: inline-flex; width: 11.5px; height: 11.5px; padding: 1.25px;
+  border-radius: 3.5px; background: var(--bg-elevated);
+}
+
+.ownerBadge > span {
+  display: inline-flex; align-items: center; justify-content: center; width: 9px; height: 9px; border-radius: 3.5px; overflow: hidden;
+  background: var(--bg-hover); color: var(--text-secondary); font-size: 6px; line-height: 1;
+}
+
+/* The count's mark of a teamspace one asks to join, 8 after it, as Notion's (TeamspaceSettingsPanel). */
+.headCount { display: inline-flex; align-items: center; gap: 8px; }
+
+.headKind { display: inline-flex; color: var(--text-secondary); }
+
+.roleFixed { flex: 0 0 auto; padding: 0 6px; color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
+
+/* A page role in the settings box's rows, as Notion's (seen 2026-11-18 at 1440 and 606, dark, two tabs): a 28px button
+   8 in either way at the row's end, its 12.5px words in the secondary colour and its 14px ⌄ 4 after them; a role that
+   can't change the same without its ⌄. */
+.boxRole {
+  display: inline-flex; flex: 0 0 auto; align-items: center; gap: 4px; height: 28px; padding: 0 8px; border-radius: 6px;
+  color: var(--text-secondary); font-size: 12.5px; line-height: 15px; white-space: nowrap;
+}
+
+button.boxRole:hover, button.boxRole:focus-visible, button.boxRole[aria-expanded="true"] { background: var(--bg-hover); outline: none; }
+
+button.boxRole:disabled { cursor: default; opacity: 0.55; }
+
+/* A private teamspace's rest of the workspace, as Notion's (seen 2026-11-18 at 1440, dark): a 16px filled lock and its
+   12px words 4 after it in red, at most 170 wide over two lines, 8 from the row's end. */
+.boxPrivate {
+  display: inline-flex; flex: 0 1 auto; align-items: center; gap: 4px; max-width: 170px; padding-inline-end: 8px;
+  color: var(--c-accent-red); font-size: 12px; line-height: 16px;
+}
+
+.boxPrivate > svg { flex: none; }
+
+.manage, .requests { display: flex; flex-direction: column; gap: 14px; }
+
+/* The waiting requests stand over the members as the members tab's parts stand apart (TeamspaceMembers.module.css: 22), so a request's message under its name keeps off the member search. */
+.requests { margin-block-end: 22px; }
+
+.manage h3, .requests h3, .securityTab h3 { margin: 6px 0 0; color: var(--text-default); font-size: 16px; font-weight: 600; }
+
+.securityTab h3 { font-size: 14px; }
+
+/* Its headings named, which ties them to the row after (check-css-sibling-invalidation.mjs). */
+.securityTab h3[data-security-heading] + .securityRow { margin-top: -8px; }
+
+.switchButton { display: inline-flex; flex: 0 0 auto; align-items: center; padding: 4px; border-radius: 6px; }
+
+.switchButton:focus-visible { box-shadow: var(--keyboard-focus-ring); outline: none; }
+
+.switchButton:disabled { cursor: default; opacity: 0.5; }
+
+.manageRow, .securityRow { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+.securityRow { min-height: 56px; border-bottom: 1px solid var(--border-default); }
+
+.manageRow > span:first-child, .securityRow > span:first-child { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.manageRow > span:first-child > strong, .securityRow > span:first-child > strong { color: var(--text-default); font-size: 14px; font-weight: 500; }
+
+.securityRow > span:first-child > strong { font-weight: 400; }
+
+.manageRow > span:first-child > span, .securityRow > span:first-child > span { color: var(--text-tertiary); font-size: 12px; }
+
+/* "팀스페이스 관리" buttons as Notion's (seen 2026-11-11): 28px high, 8px in,
+   0.4 when dim — the row's own buttons, or one its tip wraps (HoverTip). */
+.manageRow > button, .manageRow > span > button { height: 28px; padding: 0 8px; }
+
+.manageRow > button:disabled, .manageRow > span > button:disabled { opacity: 0.4; }
+
+.requestRow { display: flex; align-items: center; gap: 8px; min-height: 40px; }
+
+.requestRow > span { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; color: var(--text-default); font-size: 14px; }
+
+.requestRow > span > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* A request's message under its name, as a workspace membership request's (WorkspaceRequests.module.css). */
+.requestMessage { font-size: 13px; line-height: 18px; white-space: pre-wrap; overflow-wrap: anywhere; quotes: "\201C" "\201D"; }
+
+/* The windows' buttons 12px in on either side around their words, as Notion's
+   (its "팀스페이스 만들기" seen 2026-11-18 at 1440 and on a phone at 411): the
+   words keep their own width, so Leafen's Korean face, a little wider than
+   Notion's (font decision B), makes a button as much wider, never its sides
+   narrower. */
+.primary, .secondary, .dangerButton {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; height: 32px; padding: 0 12px; border-radius: 6px;
+  font-size: 14px; font-weight: 500; white-space: nowrap;
+}
+
+.primary { background: var(--accent-blue); color: var(--accent-blue-text); }
+
+.secondary { border: 1px solid var(--button-outline); color: var(--text-default); }
+
+/* Notion's soft red button (--danger-soft-bg): its fill grows under the pointer and pressed. */
+.dangerButton { background: var(--danger-soft-bg); color: var(--danger-soft-text); transition: background 0.1s ease-in-out; }
+
+.primary:hover, .primary:focus-visible { filter: brightness(0.94); outline: none; }
+
+.secondary:hover, .secondary:focus-visible { filter: brightness(0.96); outline: none; }
+
+.dangerButton:hover, .dangerButton:focus-visible { background: var(--danger-soft-bg-hover); outline: none; }
+
+.dangerButton:active { background: var(--danger-soft-bg-active); }
+
+.dangerButton:disabled { background: var(--danger-soft-bg); }
+
+.secondary:hover { background: var(--bg-hover); }
+
+.primary:disabled, .secondary:disabled, .dangerButton:disabled { cursor: default; opacity: 0.45; filter: none; }
+
+.muted { margin: 4px 0; color: var(--text-tertiary); font-size: 13px; }
+
+.error { margin: 14px 0 0; color: var(--danger); font-size: 13px; }
+
+.create { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+
+.create .primary:disabled { opacity: 0.4; }
+
+button.securityBoxed:hover, button.securityBoxed:focus-visible { --security-title-line: none; }
+
+.create .securityBoxed { gap: 8px; height: 55px; min-height: 55px; padding: 0 8px; }
+
+/* What the box shows and its ⌄, laid as one row only on a phone (below); its
+   kind's mark in the icons' secondary colour (TeamspaceChoiceMenu secondaryMarks). */
+.boxedRow { display: contents; }
+
+.create .boxedRow > svg:last-child { flex: 0 0 auto; width: 12px; height: 12px; margin-inline-start: auto; color: var(--icon-tertiary); }
+
+.create .securityText { gap: 0; }
+
+.create .securityText span:first-child { line-height: 20px; }
+
+.create .securityText span:last-child { line-height: 16.8px; }
+
+/* Notion's label sits 4px over the name and 8px over the others (seen 2026-11-05). */
+.create .field { gap: 8px; }
+
+.create .field:has(> .createName) { gap: 4px; }
+
+.create .field > span { line-height: 16px; }
+
+/* Notion's fields are a light tint with a ring outside their text, so their words start 1px sooner than a border's. */
+.create .createName > input, .create .field > textarea { background: var(--card-field-bg); line-height: 20px; }
+
+.create .createName > input { height: 32px; padding: 6px 10px; }
+
+.createMark svg { width: 32px; height: 32px; }
+
+.create .field > textarea { height: 80px; padding: 4px 10px 16px; }
+
+/* Its mark, title and words 8px apart in the window's 16px gap, the title
+   17px on 22px, the words 14px on 20px and balanced, the fields 26px under
+   them, as Notion's (seen 2026-11-18 at 1416, dark); on a phone their type
+   grows (phoneWindowType.ts) and they stay so apart. */
+.create h2 { margin: -8px 0 0; color: var(--text-default); font-size: 17px; font-weight: 600; line-height: 22px; text-align: center; }
+
+.createMark { display: flex; justify-content: center; color: var(--icon-secondary); }
+
+.createLead { margin: -8px 0 10px; color: var(--text-secondary); font-size: 14px; line-height: 20px; text-align: center; text-wrap: balance; }
+
+.createName { display: flex; align-items: center; gap: 8px; }
+
+.createIcon {
+  display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 4px;
+  background: var(--action-mark-gray-bg); color: var(--text-secondary); font-size: 22px; line-height: 22px;
+}
+
+.createIcon:hover, .createIcon:focus-visible { filter: brightness(0.96); outline: none; }
+
+.createName > input { flex: 1 1 auto; }
+
+.createFoot { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+/* The window drawn as a phone's sheet (phoneWindowSheet.ts), as Notion's on
+   a Galaxy A90 in Chrome at 411 (seen 2026-11-18, light, two tabs at two
+   times): its mark 36px; the kind a phone sheet's row in a square 1px box,
+   4px over and under the row, the row 65px with the rows' line under it, 1px
+   down, its icon 20px 14px in and 11px down from what centres it (a 24px
+   box 12px in, 9px down), its name 17px on 20.4px over its line 14px on
+   20.4px 2px under, its ⌄ 14px 16px from the end. */
+:global([data-phone-window="sheet"]) .createMark svg { width: 36px; height: 36px; }
+
+:global([data-phone-window="sheet"]) .create .securityBoxed { height: auto; min-height: 0; padding: 4px 0; border-radius: 0; }
+
+:global([data-phone-window="sheet"]) .create .boxedRow {
+  display: flex; flex: 1 1 auto; align-items: center; box-sizing: border-box; min-width: 0; height: 65px;
+  margin-block: 1px -1px; border-bottom: 1px solid var(--border-secondary);
+}
+
+:global([data-phone-window="sheet"]) .create .boxedRow > svg:first-child {
+  flex: 0 0 auto; width: 20px; height: 20px; margin-block: 11px 2px; margin-inline: 14px 12px;
+}
+
+:global([data-phone-window="sheet"]) .create .boxedRow > svg:last-child { width: 14px; height: 14px; margin-inline: 0 16px; }
+
+:global([data-phone-window="sheet"]) .create .boxedRow > .securityText { flex: 1 1 auto; gap: 2px; }
+
+:global([data-phone-window="sheet"]) .create .securityText span:first-child { font-size: 17px; line-height: 20.4px; }
+
+:global([data-phone-window="sheet"]) .create .securityText span:last-child { font-size: 14px; line-height: 20.4px; }
+
+/* Made from a group, Notion's window (measured 2026-11-11, dark): 520 wide,
+   its fields 20px apart, "워크스페이스 사용 권한" and "그룹 역할" 12px/500 6px
+   over their boxes; the blue button across it 26px under the last box,
+   "취소" in words 8px under that. */
+.createDialog.createDialog.createFromGroupDialog { width: min(520px, calc(100vw - 32px)); }
+
+.createFromGroup .field + .field { margin-top: 4px; }
+
+.createFromGroup .field:has(> .securityButton) { gap: 6px; }
+
+/* Its words told by the button beside them, not by a :has() on the field (AppShell .main). */
+.createFromGroup .field > span:has(~ .securityButton),
+.createFromGroup .field > .securityButton ~ span { font-weight: 500; }
+
+.createFootStacked { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 10px; }
+
+.createFootStacked > .primary { width: 100%; }
+
+.quietWide { height: 32px; padding: 0 12px; border-radius: 6px; color: var(--text-default); font-size: 14px; font-weight: 400; }
+
+.quietWide:hover, .quietWide:focus-visible { background: var(--bg-hover); outline: none; }
+
+.confirmOverlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; }
+
+/* Behind the archive question the window shades as behind Notion's (seen 2026-11-07). */
+.confirmBackdrop { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--modal-shade); }
+
+/* "이 팀스페이스를 보관하시겠습니까?" as Notion's (seen 2026-11-07, dark): a 432px window
+   20px in, a 32px red mark, the question 8px under it, the line 8px more, the name's
+   box 28px lower, the red button 28px under that and "취소" 8px under it. */
+.confirm {
+  position: relative; display: flex; flex-direction: column; align-items: stretch; width: min(432px, 100%); padding: 20px;
+  border-radius: var(--modal-radius); background: var(--modal-bg); box-shadow: var(--shadow-modal); text-align: center;
+}
+
+.confirm h2 { margin: 8px 0 0; color: var(--text-default); font-size: 17px; font-weight: 600; line-height: 22px; }
+
+.confirm > p { margin: 8px 0 0; color: var(--text-secondary); font-size: 14px; line-height: 20px; text-wrap: balance; }
+
+.confirm input {
+  height: 36px; margin: 28px 2px 0; padding: 1px 11px; border: 0; box-shadow: var(--name-field-ring); border-radius: 6px; background: var(--name-field-bg);
+  color: var(--text-default); font: inherit; font-size: 14px; line-height: 20px; outline: none;
+}
+
+.confirm input:focus { box-shadow: var(--name-field-ring-focus); }
+
+/* A name that isn't the teamspace's turns the box red. */
+.confirm input[aria-invalid="true"] { box-shadow: var(--name-field-ring-danger); }
+
+.confirmMark { display: flex; align-self: center; color: var(--menu-danger); }
+
+.confirm > .confirmError { margin: 4px 2px 0; color: var(--danger); font-size: 12px; line-height: 16px; text-align: start; }
+
+/* White words on the fill, as Notion writes them on this question (seen 2026-11-24). */
+.confirmDanger { height: 32px; margin-top: 28px; padding: 0 12px; border-radius: 6px; background: var(--danger-fill); color: var(--danger-fill-white-text); font-size: 14px; font-weight: 500; }
+
+.confirmCancel { height: 32px; margin-top: 8px; padding: 0 12px; border-radius: 6px; color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+
+.confirmDanger:hover, .confirmDanger:focus-visible { filter: brightness(0.94); outline: none; }
+
+.confirmCancel:hover, .confirmCancel:focus-visible { background: var(--bg-hover); outline: none; }
+
+.confirmDanger:disabled, .confirmCancel:disabled { cursor: default; opacity: 0.5; }
+
+@media (max-width: 640px) {
+  .createDialog.createDialog { width: calc(100vw - 24px); height: auto; margin: 24px auto 0; border-radius: 12px; }
+}
+
+/* On a phone's sheet the settings stand closer to its edges. */
+:global([data-phone-window="sheet"]) .head { padding: 24px 18px 0; }
+
+:global([data-phone-window="sheet"]) .tabs { padding: 18px 18px 8px; }
+
+:global([data-phone-window="sheet"]) .body { padding: 4px 18px 22px; }
+
+:global([data-phone-window="sheet"]) .manageRow { align-items: flex-start; flex-direction: column; gap: 8px; }
+
+/* The privileged step's warning mark, yellow as Notion's (teamspacePrivilegedQuestion). */
+.privilegedMark { color: var(--c-accent-yellow); }

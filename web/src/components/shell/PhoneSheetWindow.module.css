@@ -1,0 +1,86 @@
+/* The window in the middle of a touch screen wider than a phone, as Notion's
+   iPad (seen 2026-11-12 at 1210 landscape and 2026-11-14 at 834 portrait,
+   light and dark): 414 wide in the middle; at most 692 high and never closer
+   than 44 to the page's top and 21 to its foot, standing 10 above the middle
+   where the page is taller (834: 692 high from 183; 1210: 637 high from 44);
+   12 round on the raised surface. The toolbar's filter and sort window
+   (DatabaseTouchMenuWindow) and a sheet opened inside it (sheetWindow.ts)
+   take this place; a menu's placement and a sheet's own rise write no size
+   or place on it. */
+.window {
+  --window-height: min(692px, calc(100% - 65px));
+  position: fixed !important;
+  top: max(44px, calc((100% - var(--window-height)) / 2 - 10px)) !important;
+  bottom: auto !important;
+  inset-inline: 0 !important;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(414px, calc(100% - 32px)) !important;
+  max-width: none !important;
+  height: var(--window-height) !important;
+  max-height: none !important;
+  margin-inline: auto;
+  overflow: hidden !important;
+  padding-bottom: 0;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  outline: none;
+  animation: none;
+}
+
+/* A whole sheet inside it is the window going on in its place, as a filter's
+   value after its property (Notion's iPad, seen 2026-11-15 at 834: the page
+   no darker than under the list), so no second shade; a whole-screen pick is
+   a window over it, the page darker under it. */
+.goesOn {
+  background: transparent !important;
+}
+
+/* Inside it a phone screen's rows are the window's, as Notion's iPad "정렬"
+   rows, its property list and a filter's options (seen 2026-11-15 at 834):
+   the desktop list's 28px rows with a 20px mark 8px before the words, 14px,
+   in no white group; groups parted by a line's room. */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px !important;
+  padding: 4px !important;
+}
+
+.rows :global([data-phone-sheet-group]) {
+  overflow: visible;
+  border-block: 0 !important;
+  border-radius: 0;
+  background: transparent;
+}
+
+.rows :global([data-phone-sheet-group]) button,
+.rows > button {
+  gap: 8px;
+  min-height: 28px !important;
+  padding-block: 0 !important;
+  padding-inline: 8px !important;
+  border: 0 !important;
+  border-radius: 6px;
+  font-size: 14px !important;
+}
+
+.rows :global([data-phone-sheet-group]) button > span:first-child:not(:only-child),
+.rows > button > span:first-child:not(:only-child) {
+  width: 20px;
+  height: 20px;
+}
+
+.rows :global([data-phone-sheet-group]) button > span:first-child:not(:only-child) svg,
+.rows > button > span:first-child:not(:only-child) svg {
+  width: 20px;
+  height: 20px;
+}
+
+.rows :global([data-phone-sheet-group]) button > svg:last-child,
+.rows > button > svg:last-child {
+  width: 16px;
+  height: 16px;
+}

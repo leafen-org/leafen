@@ -1,0 +1,102 @@
+/* The view settings' filter screen, as Notion's (seen 2026-09-30, 290px
+   panel): a row per filter of a 20x24 drag handle with its 16px glyph and
+   the filter's pill 4px past it (seen 2026-11-18 at 1440), then grey 28px
+   action rows with a 20px icon ("필터 추가"). */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 4px;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 6px;
+}
+
+.handle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+
+.handle:disabled {
+  cursor: default;
+}
+
+/* No box under the pointer, as Notion's ⠿ in its database menu lists (seen
+   2026-11-18). */
+.handle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.groupPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.action:hover,
+.action:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.actionIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* In the view settings panel, whose screens sit 8px in from its line, the
+   filters and their action rows reach 4px from it, as Notion's filter
+   screen's (seen 2026-11-18 in Chrome 1440, dpr 1: one block 4px in, its
+   rows and "필터 추가" 8px in from their edges, so the handle and "+" sit 12
+   from the panel's line and a lit row's shade 4 from it at each side). */
+:global([data-view-settings-screen="filter"]) .list {
+  margin-inline: -4px;
+}
+:global([data-view-settings-screen="filter"]) .row,
+:global([data-view-settings-screen="filter"]) .action {
+  padding-inline: 8px;
+}
+
+.advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

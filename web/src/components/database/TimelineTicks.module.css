@@ -1,0 +1,58 @@
+/* Lines down the days at their ticks (TimelineTickLines): 1px in the subtle
+   border colour, rgba(255, 255, 243, 0.082) dark and rgba(42, 28, 0, 0.07)
+   light, from the canvas's top, hidden under the dates, to its foot, under
+   the bars and now's line, as Notion's (seen 2026-11-24 in Chrome at 1440,
+   dpr 2: 251px tall from the heading's top to the area's foot). */
+.lines {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  display: grid;
+  width: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+.lines > span {
+  grid-row: 1;
+  border-inline-start: 1px solid var(--border-subtle);
+}
+/* A time under the hour zooms: the time of day before its hour dimmer, 3px
+   between them, the hour in the secondary text colour, as Notion's (seen
+   2026-11-24 in Chrome at 1440, dpr 2: "오전" #7d7a75 and "9:00" #ada9a3
+   dark, #a19e99 and #7d7a75 light). */
+.hour {
+  color: var(--text-secondary);
+}
+.hour > span {
+  padding-inline-end: 3px;
+  color: var(--text-tertiary);
+}
+/* Now's time over its line under the hour zooms (TimelineNowTime): 12px/500
+   in the red of its line in both themes, on the dates' line as the times
+   beside it, its words centred in its box and 3px after them, as Notion's
+   (seen 2026-11-24 in Chrome at 1440, dpr 2: rgb(229, 100, 88), one
+   definition for light and dark). Words wider than the box run on past its
+   end. */
+.now {
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  height: 32px;
+  padding-top: 6px;
+  color: var(--c-accent-red);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15px;
+  pointer-events: none;
+}
+.now > span {
+  margin-inline: auto;
+  padding-inline-end: 3px;
+  white-space: nowrap;
+}
+/* Level with the times beside it on a phone, as they stand 1px lower there. */
+:global([data-phone="true"]) .now {
+  padding-top: 7px;
+}

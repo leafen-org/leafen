@@ -1,0 +1,3 @@
+package app
+
+const interactiveAutomationExecutionsTable = "leafen_interactive_automation_executions"

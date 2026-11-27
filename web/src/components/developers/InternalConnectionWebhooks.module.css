@@ -1,0 +1,393 @@
+/* A connection's "웹훅" tab, as Notion's (seen 2026-10-31 at 1280): with no
+   subscription a card of the page's width 20px under the tabs (2026-11-21),
+   10px round with a faint line, its middle the 22px gray mark, "웹훅 구독
+   없음" 17px/600 16px under it, a 400px gray line under that and a 32px
+   bordered "+ 구독 생성하기".
+
+   The tab and its windows draw one mark (WebhookIcon, standing for Notion's
+   integrationFill — seen 2026-11-21 in the empty card, 구독 생성하기·편집,
+   구독 인증 and 실패한 이벤트 보기): gray (icon-secondary) over the empty card
+   and the windows that ask something (.dialogMark), in the words' colour
+   over the failed events window, which only tells. */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  padding: 75px 24px; /* 316 high with its line, as Notion's (2026-11-21) */
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  color: var(--icon-secondary);
+  text-align: center;
+}
+
+.empty h2 {
+  margin: 16px 0 8px;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.empty p {
+  max-width: 400px;
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.create {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.create:hover {
+  background: var(--bg-hover);
+}
+
+.warn svg {
+  color: var(--c-orange);
+}
+
+/* The dialog, as Notion's "구독 생성하기": 600px in the middle of the window,
+   24px in (its body keeps a scroll bar's room), the 32px gray mark, the
+   title 17px/600 8px under it, the gray line 8px under that; fields 24px
+   apart — a 12px/500 gray label, 6px, the address in a 32px text field
+   (.textField, 15px words), 6px, a 12px gray help — the full-width blue
+   button 24px under the last, "취소" under it. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px; /* a window taller than the screen stops 40px from its edges and scrolls, as Notion's (643 of 723, 2026-11-21) */
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(600px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  scrollbar-gutter: stable;
+}
+
+.dialogMark {
+  flex: none;
+  align-self: center;
+  margin-bottom: 8px;
+  color: var(--icon-secondary);
+}
+
+.dialogTitle {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+}
+
+.dialogNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin-bottom: 24px;
+}
+
+.label {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* Notion's text field in this tab and its windows, one rule (measured
+   2026-11-21 at 1440, dpr 2, dark): the fields' ground, rounded 6, a 1px
+   faint line around it (Notion's borPriTra, the outlined buttons' line),
+   10px in at the sides and 4px above and below its line — a window's
+   14/20 field 28 high (구독 인증's token), one beside a 24px button 32
+   (구독 인증's address, .withAction), the card's 26px line 34 (its .value);
+   구독 생성하기·편집's address is held at 32 with 15px words (.input). */
+.textField {
+  height: 28px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.textField:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.textField:disabled {
+  color: var(--text-secondary);
+}
+
+.input {
+  composes: textField;
+  height: 32px;
+  font-size: 15px;
+}
+
+.help {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+/* The event tree: 192px high with a faint line, 8px round; its head 40px
+   with the box 16px in, "이벤트(N개 선택됨)" 12px/500 gray 10px after it; a
+   kind's row 28px, 4px in and 1px apart, the box 20px in, the 14px/500 name
+   8px after it, "N개 이벤트" gray at the end before the 24px ⌄; an event's
+   row its box 31px in, the 14px name and a ⓘ after it. */
+.tree {
+  max-height: 192px;
+  overflow-y: auto;
+  padding-bottom: 4px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+}
+
+.treeHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 16px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.check {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+.groupRow,
+.eventRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  margin: 0 4px 1px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.groupRow {
+  padding-block: 0;
+  padding-inline: 16px 6px;
+}
+
+.eventRow {
+  padding-block: 0;
+  padding-inline: 27px 6px;
+  color: var(--text-default);
+}
+
+.groupRow:hover,
+.eventRow:hover {
+  background: var(--bg-hover);
+}
+
+.groupName {
+  color: var(--text-default);
+  font-weight: 500;
+}
+
+.groupCount {
+  overflow: hidden;
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warn {
+  display: inline-flex;
+  margin-inline-start: auto;
+}
+
+.warn + .groupCount {
+  margin-inline-start: 0;
+}
+
+.groupToggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.groupToggle:hover {
+  background: var(--bg-hover);
+}
+
+.eventHelp {
+  display: inline-flex;
+  color: var(--icon-tertiary);
+}
+
+.primary,
+.secondary {
+  flex: none;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.primary {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.primary:disabled {
+  opacity: 0.4;
+}
+
+/* "취소", the windows' outlined button (DialogButtons.module.css). */
+.secondary {
+  composes: cancel from "../DialogButtons.module.css";
+  margin-top: 15px;
+}
+
+.error {
+  margin: -12px 0 12px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* "구독 인증", as Notion's (measured 2026-11-21 at 1440, dpr 2, dark —
+   600×398): the same window 20px in at the sides with no scroll bar's
+   room, its two gray lines as written 10px under the title, its first field 20px under them and the fields 20px apart with no
+   help under them; the address in a dimmed 32px field, its words not, with
+   "토큰 재전송" in blue at its end (24 high, 6px in, 10px from the field's
+   end, 4px after the words); the token in a 28px field; what went wrong 4px
+   under the field it is about, 12/16 in yellow; "구독 인증" 20px under the
+   token, "취소" 10px under it. */
+.verifyDialog {
+  padding: 24px 20px;
+  scrollbar-gutter: auto;
+}
+
+.lines {
+  margin-top: 2px;
+  white-space: pre-line;
+}
+
+.verifyForm {
+  margin-top: 20px;
+}
+
+.tightField {
+  margin-bottom: 20px;
+}
+
+.withAction {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.withAction .textField {
+  height: 32px;
+  padding-inline-end: 90px;
+}
+
+.withAction .textField:disabled {
+  color: var(--text-default);
+}
+
+.closeAfterVerify {
+  margin-top: 10px;
+}
+
+.inlineAction {
+  position: absolute;
+  inset-block: 4px;
+  inset-inline-end: 10px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.inlineAction:hover {
+  background: var(--bg-hover);
+}
+
+.inlineAction:disabled {
+  opacity: 0.4;
+}
+
+.fieldError {
+  margin-top: -2px;
+  color: var(--c-yellow);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* The red mark over a subscription's delete question, as Notion's: its redIcoAccPri, as a token's (McpToken). */
+.deleteMark {
+  color: var(--danger-fill);
+}

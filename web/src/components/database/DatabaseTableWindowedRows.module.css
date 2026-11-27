@@ -1,0 +1,21 @@
+/* A table whose columns run past twice its view (useWindowedTableRows):
+   each wrapped row is as tall as what it holds and its foot's line is drawn
+   over that height's last pixel, as Notion's then are (seen 2026-11-17 at
+   1440, 1300 and 1024: one line 36, 37 with the page's mark, two lines 57,
+   the text 9.5px down as in a narrower table's 37, 38 and 58). Its cells
+   keep their own line's room no more; the line is their inner foot. A touch
+   screen's rows keep what was read there (DatabaseTableRows). */
+[data-columns-windowed="true"]:not(:global(:is([data-touch="true"], [data-phone="true"])) *) .tableRow[data-wraps="true"] > :is(.cell, .trailingGridCell, .rowGutterCell) {
+  min-height: 36px;
+}
+[data-columns-windowed="true"]:not(:global(:is([data-touch="true"], [data-phone="true"])) *) .tableRow[data-wraps="true"] > :is(.cell, .trailingGridCell) {
+  border-bottom-width: 0;
+  box-shadow: inset 0 -1px 0 var(--table-grid-border);
+}
+[data-columns-windowed="true"]:not(:global(:is([data-touch="true"], [data-phone="true"])) *) .tableRow[data-wraps="true"] > .cell[data-title="true"]:has(.titleCellIcon) {
+  min-height: 37px;
+}
+/* A chosen row's tint still stops over its foot's line (DatabaseTableRows). */
+[data-columns-windowed="true"]:not(:global(:is([data-touch="true"], [data-phone="true"])) *) .tableRow[data-wraps="true"][data-row-selected] > .cell::after {
+  inset-block-end: 1px;
+}

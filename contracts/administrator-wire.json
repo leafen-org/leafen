@@ -1,0 +1,1579 @@
+{
+  "schemaVersion": 1,
+  "name": "administrator",
+  "placeSearchOperation": { "method": "POST", "path": "/pages/{pageId}/places/search" },
+  "placeReverseOperation": { "method": "POST", "path": "/pages/{pageId}/places/reverse" },
+  "bounds": [
+    { "goName": "minimumAdministratorPasswordLength", "tsName": "minimumPasswordLength", "value": 8 },
+    { "goName": "maxAdministratorSettingsTextLength", "tsName": "settingsTextLength", "value": 2048 },
+    { "goName": "maxAdministratorSecretLength", "tsName": "secretLength", "value": 4096 },
+    { "goName": "maxAdministratorOIDCScopes", "tsName": "oidcScopes", "value": 16 },
+    { "goName": "maxAdministratorOIDCScopeLength", "tsName": "oidcScopeLength", "value": 256 },
+    { "goName": "administratorBackupRequestIDRunes", "tsName": "backupRequestIdRunes", "value": 255 },
+    { "goName": "administratorBackupMaxAttempts", "tsName": "backupMaxAttempts", "value": 3 },
+    { "goName": "maxScheduledBackupIntervalHours", "tsName": "scheduledBackupIntervalHours", "value": 720 },
+    { "goName": "maxScheduledBackupKeep", "tsName": "scheduledBackupKeep", "value": 365 },
+    { "goName": "maxScheduledBackupFolderLength", "tsName": "scheduledBackupFolderLength", "value": 4096 },
+    { "goName": "minScheduledBackupPasswordLength", "tsName": "scheduledBackupPasswordMinimum", "value": 12 },
+    { "goName": "minRequestLogRetentionDays", "tsName": "requestLogRetentionMinimum", "value": 1 },
+    { "goName": "maxRequestLogRetentionDays", "tsName": "requestLogRetentionMaximum", "value": 90 },
+    { "goName": "maxScheduledBackupPasswordLength", "tsName": "scheduledBackupPasswordMaximum", "value": 1024 },
+    { "goName": "maxScheduledBackupWebDAVURLLength", "tsName": "scheduledBackupWebDAVURLLength", "value": 2048 },
+    { "goName": "maxScheduledBackupWebDAVUsernameLength", "tsName": "scheduledBackupWebDAVUsernameLength", "value": 256 },
+    { "goName": "maxScheduledBackupS3FieldLength", "tsName": "scheduledBackupS3FieldLength", "value": 256 },
+    { "goName": "administratorAccountDirectoryLimit", "tsName": "accountDirectoryLimit", "value": 50 },
+    { "goName": "administratorAccountWorkspacesShown", "tsName": "accountWorkspacesShown", "value": 3 },
+    { "goName": "administratorAuditLimit", "tsName": "auditLimit", "value": 50 },
+    { "goName": "administratorWorkspaceListLimit", "tsName": "workspaceListLimit", "value": 50 },
+    { "goName": "administratorAccountSearchRunes", "tsName": "accountSearchRunes", "value": 200 },
+    { "goName": "administratorAccountRequestIDRunes", "tsName": "accountRequestIdRunes", "value": 255 },
+    { "goName": "administratorAccountCleanupTurnLimit", "tsName": "accountCleanupTurnLimit", "value": 50 },
+    { "goName": "maxAdministratorMapURLLength", "tsName": "mapUrlLength", "value": 512 },
+    { "goName": "maxAdministratorMapAttributionLength", "tsName": "mapAttributionLength", "value": 200 }
+  ],
+  "errors": [
+    { "goName": "errorCodeSetupClosed", "tsName": "setupClosed", "value": "LEAFEN_SETUP_CLOSED" },
+    { "goName": "errorCodeSetupClaimFailed", "tsName": "setupClaimFailed", "value": "LEAFEN_SETUP_CLAIM_FAILED" },
+    { "goName": "errorCodeSetupCodeInvalid", "tsName": "setupCodeInvalid", "value": "LEAFEN_SETUP_CODE_INVALID" },
+    { "goName": "errorCodeSetupCodeRequired", "tsName": "setupCodeRequired", "value": "LEAFEN_SETUP_CODE_REQUIRED" },
+    { "goName": "errorCodeSetupCodeLimited", "tsName": "setupCodeLimited", "value": "LEAFEN_SETUP_CODE_LIMITED" },
+    { "goName": "errorCodeAdministratorNotFound", "tsName": "administratorNotFound", "value": "LEAFEN_ADMINISTRATOR_NOT_FOUND" },
+    { "goName": "errorCodeAdministratorReadFailed", "tsName": "administratorReadFailed", "value": "LEAFEN_ADMINISTRATOR_READ_FAILED" },
+    { "goName": "errorCodeAdministratorAccountExists", "tsName": "administratorAccountExists", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_EXISTS" },
+    { "goName": "errorCodeAdministratorAccountNotFound", "tsName": "administratorAccountNotFound", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_NOT_FOUND" },
+    { "goName": "errorCodeAdministratorAccountCreateFailed", "tsName": "administratorAccountCreateFailed", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_CREATE_FAILED" },
+    { "goName": "errorCodeAdministratorAccountPasswordResetFailed", "tsName": "administratorAccountPasswordResetFailed", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_PASSWORD_RESET_FAILED" },
+    { "goName": "errorCodeAdministratorAccountSelfReset", "tsName": "administratorAccountSelfReset", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_SELF_RESET" },
+    { "goName": "errorCodeAdministratorSettingsInvalid", "tsName": "settingsInvalid", "value": "LEAFEN_ADMINISTRATOR_SETTINGS_INVALID" },
+    { "goName": "errorCodeAdministratorSMTPHostRequired", "tsName": "smtpHostRequired", "value": "LEAFEN_ADMINISTRATOR_SMTP_HOST_REQUIRED" },
+    { "goName": "errorCodeAdministratorSMTPSenderInvalid", "tsName": "smtpSenderInvalid", "value": "LEAFEN_ADMINISTRATOR_SMTP_SENDER_INVALID" },
+    { "goName": "errorCodeAdministratorSMTPPasswordRequired", "tsName": "smtpPasswordRequired", "value": "LEAFEN_ADMINISTRATOR_SMTP_PASSWORD_REQUIRED" },
+    { "goName": "errorCodeAdministratorEmailVerificationNeedsSMTP", "tsName": "emailVerificationNeedsSmtp", "value": "LEAFEN_ADMINISTRATOR_EMAIL_VERIFICATION_NEEDS_SMTP" },
+    { "goName": "errorCodeAdministratorGoogleClientIDRequired", "tsName": "googleClientIdRequired", "value": "LEAFEN_ADMINISTRATOR_GOOGLE_CLIENT_ID_REQUIRED" },
+    { "goName": "errorCodeAdministratorGoogleSecretRequired", "tsName": "googleSecretRequired", "value": "LEAFEN_ADMINISTRATOR_GOOGLE_SECRET_REQUIRED" },
+    { "goName": "errorCodeAdministratorOIDCNameRequired", "tsName": "oidcNameRequired", "value": "LEAFEN_ADMINISTRATOR_OIDC_NAME_REQUIRED" },
+    { "goName": "errorCodeAdministratorOIDCIssuerInvalid", "tsName": "oidcIssuerInvalid", "value": "LEAFEN_ADMINISTRATOR_OIDC_ISSUER_INVALID" },
+    { "goName": "errorCodeAdministratorOIDCClientIDRequired", "tsName": "oidcClientIdRequired", "value": "LEAFEN_ADMINISTRATOR_OIDC_CLIENT_ID_REQUIRED" },
+    { "goName": "errorCodeAdministratorOIDCSecretRequired", "tsName": "oidcSecretRequired", "value": "LEAFEN_ADMINISTRATOR_OIDC_SECRET_REQUIRED" },
+    { "goName": "errorCodeAdministratorOIDCScopesInvalid", "tsName": "oidcScopesInvalid", "value": "LEAFEN_ADMINISTRATOR_OIDC_SCOPES_INVALID" },
+    { "goName": "errorCodeAdministratorSettingsConflict", "tsName": "settingsConflict", "value": "LEAFEN_ADMINISTRATOR_SETTINGS_CONFLICT" },
+    { "goName": "errorCodeAdministratorSettingsSaveFailed", "tsName": "settingsSaveFailed", "value": "LEAFEN_ADMINISTRATOR_SETTINGS_SAVE_FAILED" },
+    { "goName": "errorCodeAdministratorSecretFailed", "tsName": "secretFailed", "value": "LEAFEN_ADMINISTRATOR_SECRET_FAILED" },
+    { "goName": "errorCodeAdministratorBackupCreateFailed", "tsName": "backupCreateFailed", "value": "LEAFEN_ADMINISTRATOR_BACKUP_CREATE_FAILED" },
+    { "goName": "errorCodeAdministratorBackupReadFailed", "tsName": "backupReadFailed", "value": "LEAFEN_ADMINISTRATOR_BACKUP_READ_FAILED" },
+    { "goName": "errorCodeAdministratorBackupNotFound", "tsName": "backupNotFound", "value": "LEAFEN_ADMINISTRATOR_BACKUP_NOT_FOUND" },
+    { "goName": "errorCodeAdministratorBackupIdentityReused", "tsName": "backupIdentityReused", "value": "LEAFEN_ADMINISTRATOR_BACKUP_IDENTITY_REUSED" },
+    { "goName": "errorCodeAdministratorBackupNotReady", "tsName": "backupNotReady", "value": "LEAFEN_ADMINISTRATOR_BACKUP_NOT_READY" },
+    { "goName": "errorCodeAdministratorBackupArtifactInvalid", "tsName": "backupArtifactInvalid", "value": "LEAFEN_ADMINISTRATOR_BACKUP_ARTIFACT_INVALID" },
+    { "goName": "errorCodeAdministratorBackupRetryUnavailable", "tsName": "backupRetryUnavailable", "value": "LEAFEN_ADMINISTRATOR_BACKUP_RETRY_UNAVAILABLE" },
+    { "goName": "errorCodeAdministratorBackupCancelUnavailable", "tsName": "backupCancelUnavailable", "value": "LEAFEN_ADMINISTRATOR_BACKUP_CANCEL_UNAVAILABLE" },
+    { "goName": "errorCodeAdministratorBackupNoSpace", "tsName": "backupNoSpace", "value": "LEAFEN_ADMINISTRATOR_BACKUP_NO_SPACE" },
+    { "goName": "errorCodeAdministratorBackupBusy", "tsName": "backupBusy", "value": "LEAFEN_ADMINISTRATOR_BACKUP_BUSY" },
+    { "goName": "errorCodeScheduledBackupInputInvalid", "tsName": "scheduledBackupInputInvalid", "value": "LEAFEN_SCHEDULED_BACKUP_INPUT_INVALID" },
+    { "goName": "errorCodeScheduledBackupFolderInvalid", "tsName": "scheduledBackupFolderInvalid", "value": "LEAFEN_SCHEDULED_BACKUP_FOLDER_INVALID" },
+    { "goName": "errorCodeScheduledBackupSetByEnvironment", "tsName": "scheduledBackupSetByEnvironment", "value": "LEAFEN_SCHEDULED_BACKUP_SET_BY_ENVIRONMENT" },
+    { "goName": "errorCodeScheduledBackupConflict", "tsName": "scheduledBackupConflict", "value": "LEAFEN_SCHEDULED_BACKUP_CONFLICT" },
+    { "goName": "errorCodeScheduledBackupFolderUnavailable", "tsName": "scheduledBackupFolderUnavailable", "value": "LEAFEN_SCHEDULED_BACKUP_FOLDER_UNAVAILABLE" },
+    { "goName": "errorCodeScheduledBackupNoSpace", "tsName": "scheduledBackupNoSpace", "value": "LEAFEN_SCHEDULED_BACKUP_NO_SPACE" },
+    { "goName": "errorCodeScheduledBackupPlaceMissing", "tsName": "scheduledBackupPlaceMissing", "value": "LEAFEN_SCHEDULED_BACKUP_PLACE_MISSING" },
+    { "goName": "errorCodeScheduledBackupPlaceMoved", "tsName": "scheduledBackupPlaceMoved", "value": "LEAFEN_SCHEDULED_BACKUP_PLACE_MOVED" },
+    { "goName": "errorCodeScheduledBackupPlaceUnreachable", "tsName": "scheduledBackupPlaceUnreachable", "value": "LEAFEN_SCHEDULED_BACKUP_PLACE_UNREACHABLE" },
+    { "goName": "errorCodeScheduledBackupFailed", "tsName": "scheduledBackupFailed", "value": "LEAFEN_SCHEDULED_BACKUP_FAILED" },
+    { "goName": "errorCodeScheduledBackupBusy", "tsName": "scheduledBackupBusy", "value": "LEAFEN_SCHEDULED_BACKUP_BUSY" },
+    { "goName": "errorCodeScheduledBackupSnapshotUnavailable", "tsName": "scheduledBackupSnapshotUnavailable", "value": "LEAFEN_SCHEDULED_BACKUP_SNAPSHOT_UNAVAILABLE" },
+    { "goName": "errorCodeScheduledBackupRestorePending", "tsName": "scheduledBackupRestorePending", "value": "LEAFEN_SCHEDULED_BACKUP_RESTORE_PENDING" },
+    { "goName": "errorCodeScheduledBackupRestoreFailed", "tsName": "scheduledBackupRestoreFailed", "value": "LEAFEN_SCHEDULED_BACKUP_RESTORE_FAILED" },
+    { "goName": "errorCodeScheduledBackupUndoUnavailable", "tsName": "scheduledBackupUndoUnavailable", "value": "LEAFEN_SCHEDULED_BACKUP_UNDO_UNAVAILABLE" },
+    { "goName": "errorCodeDataBeforeSchemaBaseline", "tsName": "dataBeforeSchemaBaseline", "value": "LEAFEN_DATA_BEFORE_SCHEMA_BASELINE" },
+    { "goName": "errorCodeDataFromNewerLeafen", "tsName": "dataFromNewerLeafen", "value": "LEAFEN_DATA_FROM_NEWER_LEAFEN" },
+    { "goName": "errorCodeReplicaOwnedElsewhere", "tsName": "replicaOwnedElsewhere", "value": "LEAFEN_REPLICA_OWNED_ELSEWHERE" },
+    { "goName": "errorCodeReplicaUnavailable", "tsName": "replicaUnavailable", "value": "LEAFEN_REPLICA_UNAVAILABLE" },
+    { "goName": "errorCodeServerMoved", "tsName": "serverMoved", "value": "LEAFEN_SERVER_MOVED" },
+    { "goName": "errorCodeServerPaused", "tsName": "serverPaused", "value": "LEAFEN_SERVER_PAUSED" },
+    { "goName": "errorCodeStandbyCodeInvalid", "tsName": "standbyCodeInvalid", "value": "LEAFEN_STANDBY_CODE_INVALID" },
+    { "goName": "errorCodeStandbyNotFresh", "tsName": "standbyNotFresh", "value": "LEAFEN_STANDBY_NOT_FRESH" },
+    { "goName": "errorCodeStandbyVersionOlder", "tsName": "standbyVersionOlder", "value": "LEAFEN_STANDBY_VERSION_OLDER" },
+    { "goName": "errorCodeStandbyPlaceSlow", "tsName": "standbyPlaceSlow", "value": "LEAFEN_STANDBY_PLACE_SLOW" },
+    { "goName": "errorCodeServerMoveCodeInvalid", "tsName": "serverMoveCodeInvalid", "value": "LEAFEN_SERVER_MOVE_CODE_INVALID" },
+    { "goName": "errorCodeServerMoveNotEmpty", "tsName": "serverMoveNotEmpty", "value": "LEAFEN_SERVER_MOVE_NOT_EMPTY" },
+    { "goName": "errorCodeServerMoveVersionOlder", "tsName": "serverMoveVersionOlder", "value": "LEAFEN_SERVER_MOVE_VERSION_OLDER" },
+    { "goName": "errorCodeServerMoveUnreachable", "tsName": "serverMoveUnreachable", "value": "LEAFEN_SERVER_MOVE_UNREACHABLE" },
+    { "goName": "errorCodeServerMoveBusy", "tsName": "serverMoveBusy", "value": "LEAFEN_SERVER_MOVE_BUSY" },
+    { "goName": "errorCodeServerMoveFailed", "tsName": "serverMoveFailed", "value": "LEAFEN_SERVER_MOVE_FAILED" },
+    { "goName": "errorCodeServerMoveIncomplete", "tsName": "serverMoveIncomplete", "value": "LEAFEN_SERVER_MOVE_INCOMPLETE" },
+    { "goName": "errorCodeServerMoveSameServer", "tsName": "serverMoveSameServer", "value": "LEAFEN_SERVER_MOVE_SAME_SERVER" },
+    { "goName": "errorCodeBackupProtectionRequired", "tsName": "backupProtectionRequired", "value": "LEAFEN_BACKUP_PROTECTION_REQUIRED" },
+    { "goName": "errorCodeScheduledBackupPlaceForeign", "tsName": "scheduledBackupPlaceForeign", "value": "LEAFEN_SCHEDULED_BACKUP_PLACE_FOREIGN" },
+    { "goName": "errorCodeScheduledBackupPlaceOpened", "tsName": "scheduledBackupPlaceOpened", "value": "LEAFEN_SCHEDULED_BACKUP_PLACE_OPENED" },
+    { "goName": "errorCodeBackupProtectionLast", "tsName": "backupProtectionLast", "value": "LEAFEN_BACKUP_PROTECTION_LAST" },
+    { "goName": "errorCodeBackupPasswordWeak", "tsName": "backupPasswordWeak", "value": "LEAFEN_BACKUP_PASSWORD_WEAK" },
+    { "goName": "errorCodeBackupOpenerWrong", "tsName": "backupOpenerWrong", "value": "LEAFEN_BACKUP_OPENER_WRONG" },
+    { "goName": "errorCodeScheduledBackupWebDAVInvalid", "tsName": "scheduledBackupWebDAVInvalid", "value": "LEAFEN_SCHEDULED_BACKUP_WEBDAV_INVALID" },
+    { "goName": "errorCodeScheduledBackupWebDAVUnauthorized", "tsName": "scheduledBackupWebDAVUnauthorized", "value": "LEAFEN_SCHEDULED_BACKUP_WEBDAV_UNAUTHORIZED" },
+    { "goName": "errorCodeScheduledBackupS3Invalid", "tsName": "scheduledBackupS3Invalid", "value": "LEAFEN_SCHEDULED_BACKUP_S3_INVALID" },
+    { "goName": "errorCodeScheduledBackupS3Unauthorized", "tsName": "scheduledBackupS3Unauthorized", "value": "LEAFEN_SCHEDULED_BACKUP_S3_UNAUTHORIZED" },
+    { "goName": "errorCodeScheduledBackupS3KeysMissing", "tsName": "scheduledBackupS3KeysMissing", "value": "LEAFEN_SCHEDULED_BACKUP_S3_KEYS_MISSING" },
+    { "goName": "errorCodeScheduledBackupWebDAVCredentialsMissing", "tsName": "scheduledBackupWebDAVCredentialsMissing", "value": "LEAFEN_SCHEDULED_BACKUP_WEBDAV_CREDENTIALS_MISSING" },
+    { "goName": "errorCodeAdministratorReportReadFailed", "tsName": "reportReadFailed", "value": "LEAFEN_ADMINISTRATOR_REPORT_READ_FAILED" },
+    { "goName": "errorCodeAdministratorReportConflict", "tsName": "reportConflict", "value": "LEAFEN_ADMINISTRATOR_REPORT_CONFLICT" },
+    { "goName": "errorCodeAdministratorReportIdentityReused", "tsName": "reportIdentityReused", "value": "LEAFEN_ADMINISTRATOR_REPORT_IDENTITY_REUSED" },
+    { "goName": "errorCodeAdministratorAccountRevisionConflict", "tsName": "administratorAccountRevisionConflict", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_REVISION_CONFLICT" },
+    { "goName": "errorCodeAdministratorAccountIdentityReused", "tsName": "administratorAccountIdentityReused", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_IDENTITY_REUSED" },
+    { "goName": "errorCodeAdministratorAccountDisabled", "tsName": "administratorAccountDisabled", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_DISABLED" },
+    { "goName": "errorCodeAdministratorAccountSelfMutation", "tsName": "administratorAccountSelfMutation", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_SELF_MUTATION" },
+    { "goName": "errorCodeAdministratorAccountOwnershipRequired", "tsName": "administratorAccountOwnershipRequired", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_OWNERSHIP_REQUIRED" },
+    { "goName": "errorCodeAdministratorAccountTransferInvalid", "tsName": "administratorAccountTransferInvalid", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_TRANSFER_INVALID" },
+    { "goName": "errorCodeAdministratorAccountCleanupFailed", "tsName": "administratorAccountCleanupFailed", "value": "LEAFEN_ADMINISTRATOR_ACCOUNT_CLEANUP_FAILED" },
+    { "goName": "errorCodePlaceSearchInvalid", "tsName": "placeSearchInvalid", "value": "LEAFEN_PLACE_SEARCH_INVALID" },
+    { "goName": "errorCodePlaceSearchUnavailable", "tsName": "placeSearchUnavailable", "value": "LEAFEN_PLACE_SEARCH_UNAVAILABLE" },
+    { "goName": "errorCodePlaceSearchRateLimited", "tsName": "placeSearchRateLimited", "value": "LEAFEN_PLACE_SEARCH_RATE_LIMITED" },
+    { "goName": "errorCodePlaceSearchFailed", "tsName": "placeSearchFailed", "value": "LEAFEN_PLACE_SEARCH_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "AdministratorRequestLogSuccessful",
+      "tsValuesName": "administratorRequestLogSuccessfulModes",
+      "values": [
+        { "goName": "requestLogSuccessfulSample", "tsName": "sample", "value": "sample" },
+        { "goName": "requestLogSuccessfulAll", "tsName": "all", "value": "all" },
+        { "goName": "requestLogSuccessfulNone", "tsName": "none", "value": "none" }
+      ]
+    },
+    {
+      "tsName": "AdministratorNetworkProxyMode",
+      "tsValuesName": "administratorNetworkProxyModes",
+      "values": [
+        { "goName": "networkProxySystem", "tsName": "system", "value": "system" },
+        { "goName": "networkProxyManual", "tsName": "manual", "value": "manual" }
+      ]
+    },
+    {
+      "tsName": "AdministratorNetworkProxySource",
+      "tsValuesName": "administratorNetworkProxySources",
+      "values": [
+        { "goName": "networkProxySourceNone", "tsName": "none", "value": "" },
+        { "goName": "networkProxySourceLeafen", "tsName": "leafen", "value": "leafen" },
+        { "goName": "networkProxySourceEnvironment", "tsName": "environment", "value": "environment" },
+        { "goName": "networkProxySourceSystem", "tsName": "system", "value": "system" }
+      ]
+    },
+    {
+      "tsName": "AdministratorRole",
+      "tsValuesName": "administratorRoles",
+      "values": [
+        { "goName": "administratorRole", "tsName": "administrator", "value": "administrator" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountJoinKind",
+      "tsValuesName": "administratorAccountJoinKinds",
+      "values": [
+        { "goName": "accountJoinWorkspaceEmail", "tsName": "workspaceEmail", "value": "workspace_email" },
+        { "goName": "accountJoinPageEmail", "tsName": "pageEmail", "value": "page_email" },
+        { "goName": "accountJoinWorkspaceName", "tsName": "workspaceName", "value": "workspace_name" },
+        { "goName": "accountJoinWorkspaceLink", "tsName": "workspaceLink", "value": "workspace_link" },
+        { "goName": "accountJoinTeamspaceLink", "tsName": "teamspaceLink", "value": "teamspace_link" },
+        { "goName": "accountJoinAllowedDomain", "tsName": "allowedDomain", "value": "allowed_domain" },
+        { "goName": "accountJoinPageLink", "tsName": "pageLink", "value": "page_link" }
+      ]
+    },
+    {
+      "tsName": "AdministratorSMTPTLSMode",
+      "tsValuesName": "administratorSMTPTLSModes",
+      "values": [
+        { "goName": "administratorSMTPTLSNone", "tsName": "none", "value": "none" },
+        { "goName": "administratorSMTPTLSStartTLS", "tsName": "starttls", "value": "starttls" },
+        { "goName": "administratorSMTPTLSTLS", "tsName": "tls", "value": "tls" }
+      ]
+    },
+    {
+      "tsName": "AdministratorScheduledBackupTarget",
+      "tsValuesName": "administratorScheduledBackupTargets",
+      "values": [
+        { "goName": "scheduledBackupTargetFolder", "tsName": "folder", "value": "folder" },
+        { "goName": "scheduledBackupTargetWebDAV", "tsName": "webdav", "value": "webdav" },
+        { "goName": "scheduledBackupTargetS3", "tsName": "s3", "value": "s3" }
+      ]
+    },
+    {
+      "tsName": "AdministratorReplicationState",
+      "tsValuesName": "administratorReplicationStates",
+      "values": [
+        { "goName": "replicationStateOff", "tsName": "off", "value": "off" },
+        { "goName": "replicationStateStarting", "tsName": "starting", "value": "starting" },
+        { "goName": "replicationStateRunning", "tsName": "running", "value": "running" },
+        { "goName": "replicationStateFailing", "tsName": "failing", "value": "failing" },
+        { "goName": "replicationStateMoved", "tsName": "moved", "value": "moved" }
+      ]
+    },
+    {
+      "tsName": "AdministratorReplicaOwner",
+      "tsValuesName": "administratorReplicaOwners",
+      "values": [
+        { "goName": "replicaOwnerNone", "tsName": "none", "value": "none" },
+        { "goName": "replicaOwnerThis", "tsName": "this", "value": "this" },
+        { "goName": "replicaOwnerOther", "tsName": "other", "value": "other" }
+      ]
+    },
+    {
+      "tsName": "AdministratorStandbyRole",
+      "tsValuesName": "administratorStandbyRoles",
+      "values": [
+        { "goName": "standbyRoleNone", "tsName": "none", "value": "none" },
+        { "goName": "standbyRolePrimary", "tsName": "primary", "value": "primary" },
+        { "goName": "standbyRoleStandby", "tsName": "standby", "value": "standby" }
+      ]
+    },
+    {
+      "tsName": "AdministratorStandbyDirect",
+      "tsValuesName": "administratorStandbyDirects",
+      "values": [
+        { "goName": "replicaDirectReached", "tsName": "reached", "value": "reached" },
+        { "goName": "replicaDirectUnreachable", "tsName": "unreachable", "value": "unreachable" },
+        { "goName": "replicaDirectNone", "tsName": "none", "value": "none" }
+      ]
+    },
+    {
+      "tsName": "AdministratorServerMoveInState",
+      "tsValuesName": "administratorServerMoveInStates",
+      "values": [
+        { "goName": "serverMoveInNone", "tsName": "none", "value": "none" },
+        { "goName": "serverMoveInWaiting", "tsName": "waiting", "value": "waiting" },
+        { "goName": "serverMoveInReceiving", "tsName": "receiving", "value": "receiving" },
+        { "goName": "serverMoveInRestoring", "tsName": "restoring", "value": "restoring" },
+        { "goName": "serverMoveInMoved", "tsName": "moved", "value": "moved" }
+      ]
+    },
+    {
+      "tsName": "AdministratorServerMoveOutState",
+      "tsValuesName": "administratorServerMoveOutStates",
+      "values": [
+        { "goName": "serverMoveOutNone", "tsName": "none", "value": "none" },
+        { "goName": "serverMoveOutCopying", "tsName": "copying", "value": "copying" },
+        { "goName": "serverMoveOutFinishing", "tsName": "finishing", "value": "finishing" },
+        { "goName": "serverMoveOutMoved", "tsName": "moved", "value": "moved" },
+        { "goName": "serverMoveOutFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "AdministratorSignupPolicy",
+      "tsValuesName": "administratorSignupPolicies",
+      "values": [
+        { "goName": "administratorSignupPolicyPublic", "tsName": "public", "value": "public" },
+        { "goName": "administratorSignupPolicyClosed", "tsName": "closed", "value": "closed" }
+      ]
+    },
+    {
+      "tsName": "AdministratorMemberAddPolicy",
+      "tsValuesName": "administratorMemberAddPolicies",
+      "values": [
+        { "goName": "administratorMemberAddPolicyEnabled", "tsName": "enabled", "value": "enabled" },
+        { "goName": "administratorMemberAddPolicyDisabled", "tsName": "disabled", "value": "disabled" }
+      ]
+    },
+    {
+      "tsName": "AdministratorBackupStatus",
+      "tsValuesName": "administratorBackupStatuses",
+      "values": [
+        { "goName": "administratorBackupStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "administratorBackupStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "administratorBackupStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "administratorBackupStatusFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "administratorBackupStatusCanceled", "tsName": "canceled", "value": "canceled" }
+      ]
+    },
+    {
+      "tsName": "AdministratorBackupPhase",
+      "tsValuesName": "administratorBackupPhases",
+      "values": [
+        { "goName": "administratorBackupPhaseSnapshot", "tsName": "snapshot", "value": "snapshot" },
+        { "goName": "administratorBackupPhasePublish", "tsName": "publish", "value": "publish" },
+        { "goName": "administratorBackupPhaseCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "AdministratorBackupProgressKind",
+      "tsValuesName": "administratorBackupProgressKinds",
+      "values": [
+        { "goName": "backupProgressKindBackup", "tsName": "backup", "value": "backup" },
+        { "goName": "backupProgressKindRestore", "tsName": "restore", "value": "restore" },
+        { "goName": "backupProgressKindFile", "tsName": "file", "value": "file" }
+      ]
+    },
+    {
+      "tsName": "AdministratorBackupProgressStep",
+      "tsValuesName": "administratorBackupProgressSteps",
+      "values": [
+        { "goName": "backupProgressStepDatabase", "tsName": "database", "value": "database" },
+        { "goName": "backupProgressStepFiles", "tsName": "files", "value": "files" },
+        { "goName": "backupProgressStepFinishing", "tsName": "finishing", "value": "finishing" },
+        { "goName": "backupProgressStepDone", "tsName": "done", "value": "done" },
+        { "goName": "backupProgressStepArchive", "tsName": "archive", "value": "archive" },
+        { "goName": "backupProgressStepWrite", "tsName": "write", "value": "write" },
+        { "goName": "backupProgressStepCheck", "tsName": "check", "value": "check" },
+        { "goName": "backupProgressStepKeep", "tsName": "keep", "value": "keep" }
+      ]
+    },
+    {
+      "tsName": "AdministratorSMTPTestOutcome",
+      "tsValuesName": "administratorSMTPTestOutcomes",
+      "values": [
+        { "goName": "administratorSMTPTestAccepted", "tsName": "accepted", "value": "accepted" },
+        { "goName": "administratorSMTPTestUncertain", "tsName": "uncertain", "value": "uncertain" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAuditKind",
+      "tsValuesName": "administratorAuditKinds",
+      "values": [
+        { "goName": "administratorAuditKindAccount", "tsName": "account", "value": "account" },
+        { "goName": "administratorAuditKindSettings", "tsName": "settings", "value": "settings" },
+        { "goName": "administratorAuditKindSignIn", "tsName": "signIn", "value": "sign_in" }
+      ]
+    },
+    {
+      "tsName": "AdministratorWorkspaceContentAction",
+      "tsValuesName": "administratorWorkspaceContentActions",
+      "values": [
+        { "goName": "administratorContentBrowsePages", "tsName": "browsePages", "value": "browse_pages" },
+        { "goName": "administratorContentOpenPage", "tsName": "openPage", "value": "open_page" },
+        { "goName": "administratorContentBrowseFiles", "tsName": "browseFiles", "value": "browse_files" },
+        { "goName": "administratorContentDownloadFile", "tsName": "downloadFile", "value": "download_file" },
+        { "goName": "administratorContentDisablePublic", "tsName": "disablePublic", "value": "disable_public" },
+        { "goName": "administratorContentTrashPage", "tsName": "trashPage", "value": "trash_page" },
+        { "goName": "administratorContentDeletePage", "tsName": "deletePage", "value": "delete_page" },
+        { "goName": "administratorContentDeleteFile", "tsName": "deleteFile", "value": "delete_file" },
+        { "goName": "administratorContentTakeOverPage", "tsName": "takeOverPage", "value": "take_over_page" }
+      ]
+    },
+    {
+      "tsName": "AdministratorWorkspacePagePlace",
+      "tsValuesName": "administratorWorkspacePagePlaces",
+      "values": [
+        { "goName": "administratorPagePlaceTeamspace", "tsName": "teamspace", "value": "teamspace" },
+        { "goName": "administratorPagePlacePrivate", "tsName": "private", "value": "private" },
+        { "goName": "administratorPagePlaceWorkspace", "tsName": "workspace", "value": "workspace" }
+      ]
+    },
+    {
+      "tsName": "AdministratorWorkspacePublicKind",
+      "tsValuesName": "administratorWorkspacePublicKinds",
+      "values": [
+        { "goName": "administratorPublicSite", "tsName": "site", "value": "site" },
+        { "goName": "administratorPublicForm", "tsName": "form", "value": "form" },
+        { "goName": "administratorPublicLink", "tsName": "link", "value": "link" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountStatus",
+      "tsValuesName": "administratorAccountStatuses",
+      "values": [
+        { "goName": "administratorAccountStatusActive", "tsName": "active", "value": "active" },
+        { "goName": "administratorAccountStatusDisabled", "tsName": "disabled", "value": "disabled" },
+        { "goName": "administratorAccountStatusDeleting", "tsName": "deleting", "value": "deleting" },
+        { "goName": "administratorAccountStatusDeleted", "tsName": "deleted", "value": "deleted" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountWorkspaceRole",
+      "tsValuesName": "administratorAccountWorkspaceRoles",
+      "values": [
+        { "goName": "administratorAccountWorkspaceOwner", "tsName": "owner", "value": "owner" },
+        { "goName": "administratorAccountWorkspaceMember", "tsName": "member", "value": "member" },
+        { "goName": "administratorAccountWorkspaceRestricted", "tsName": "restricted", "value": "restricted" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountResourceType",
+      "tsValuesName": "administratorAccountResourceTypes",
+      "values": [
+        { "goName": "administratorAccountResourceWorkspace", "tsName": "workspace", "value": "workspace" },
+        { "goName": "administratorAccountResourceOrganization", "tsName": "organization", "value": "organization" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountTransferStatus",
+      "tsValuesName": "administratorAccountTransferStatuses",
+      "values": [
+        { "goName": "administratorAccountTransferUnassigned", "tsName": "unassigned", "value": "unassigned" },
+        { "goName": "administratorAccountTransferAssigned", "tsName": "assigned", "value": "assigned" },
+        { "goName": "administratorAccountTransferCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountCleanupStatus",
+      "tsValuesName": "administratorAccountCleanupStatuses",
+      "values": [
+        { "goName": "administratorAccountCleanupPending", "tsName": "pending", "value": "pending" },
+        { "goName": "administratorAccountCleanupWaiting", "tsName": "waiting", "value": "waiting" },
+        { "goName": "administratorAccountCleanupCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "administratorAccountCleanupFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "AdministratorAccountCleanupPhase",
+      "tsValuesName": "administratorAccountCleanupPhases",
+      "values": [
+        { "goName": "administratorAccountCleanupPhaseInventory", "tsName": "inventory", "value": "inventory" },
+        { "goName": "administratorAccountCleanupPhaseAssignments", "tsName": "assignments", "value": "assignments" },
+        { "goName": "administratorAccountCleanupPhaseWorkspaces", "tsName": "workspaces", "value": "workspaces" },
+        { "goName": "administratorAccountCleanupPhaseOrganization", "tsName": "organization", "value": "organization" },
+        { "goName": "administratorAccountCleanupPhaseAccount", "tsName": "account", "value": "account" },
+        { "goName": "administratorAccountCleanupPhaseCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "administratorSetupStatus",
+      "tsName": "AdministratorSetupStatus",
+      "fields": [
+        { "goName": "Configured", "jsonName": "configured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CodeRequired", "jsonName": "codeRequired", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true },
+        { "goName": "BackupsOff", "jsonName": "backupsOff", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true },
+        { "goName": "ContainerFolder", "jsonName": "containerFolder", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "HomeAddress", "jsonName": "homeAddress", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorSetupInput",
+      "tsName": "AdministratorSetupInput",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PasswordConfirm", "jsonName": "passwordConfirm", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SetupCode", "jsonName": "setupCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorSessionUser",
+      "tsName": "AdministratorSessionUser",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "AdministratorRole" }
+      ]
+    },
+    {
+      "goName": "administratorSession",
+      "tsName": "AdministratorSession",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "User", "jsonName": "user", "goType": "administratorSessionUser", "tsType": "AdministratorSessionUser" },
+        { "goName": "FirstPage", "jsonName": "firstPage", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorAccountInput",
+      "tsName": "AdministratorAccountInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorAccountPasswordInput",
+      "tsName": "AdministratorAccountPasswordInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Password", "jsonName": "password", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorManagedAccount",
+      "tsName": "AdministratorManagedAccount",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "AdministratorAccountStatus" },
+        { "goName": "Verified", "jsonName": "verified", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Administrator", "jsonName": "administrator", "goType": "bool", "tsType": "boolean" },
+        { "goName": "OrganizationSuspended", "jsonName": "organizationSuspended", "goType": "bool", "tsType": "boolean" },
+        { "goName": "WorkspaceCount", "jsonName": "workspaceCount", "goType": "int64", "tsType": "number" },
+        { "goName": "OrganizationCount", "jsonName": "organizationCount", "goType": "int64", "tsType": "number" },
+        { "goName": "OwnedWorkspaceCount", "jsonName": "ownedWorkspaceCount", "goType": "int64", "tsType": "number" },
+        { "goName": "OwnedOrganizationCount", "jsonName": "ownedOrganizationCount", "goType": "int64", "tsType": "number" },
+        { "goName": "JoinedWorkspaces", "jsonName": "joinedWorkspaces", "goType": "[]administratorAccountJoinedWorkspace", "tsType": "AdministratorAccountJoinedWorkspace[]" },
+        { "goName": "JoinedWorkspaceCount", "jsonName": "joinedWorkspaceCount", "goType": "int64", "tsType": "number" },
+        { "goName": "GuestWorkspaces", "jsonName": "guestWorkspaces", "goType": "[]administratorAccountGuestWorkspace", "tsType": "AdministratorAccountGuestWorkspace[]" },
+        { "goName": "GuestWorkspaceCount", "jsonName": "guestWorkspaceCount", "goType": "int64", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CleanupJobID", "jsonName": "cleanupJobId", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorAccountJoinedWorkspace",
+      "tsName": "AdministratorAccountJoinedWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "AdministratorAccountWorkspaceRole" }
+      ]
+    },
+    {
+      "goName": "administratorAccountGuestWorkspace",
+      "tsName": "AdministratorAccountGuestWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "PageCount", "jsonName": "pageCount", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorAccountMutation",
+      "tsName": "AdministratorAccountMutation",
+      "fields": [
+        { "goName": "Account", "jsonName": "account", "goType": "administratorManagedAccount", "tsType": "AdministratorManagedAccount" },
+        { "goName": "TemporaryPassword", "jsonName": "temporaryPassword", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorAccountDirectory",
+      "tsName": "AdministratorAccountDirectory",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorManagedAccount", "tsType": "AdministratorManagedAccount[]" },
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "int64", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorAccountJoin",
+      "tsName": "AdministratorAccountJoin",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "AdministratorAccountJoinKind" },
+        { "goName": "WorkspaceName", "jsonName": "workspaceName", "goType": "string", "tsType": "string" },
+        { "goName": "InviterName", "jsonName": "inviterName", "goType": "string", "tsType": "string" },
+        { "goName": "JoinedAt", "jsonName": "joinedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorAccountDevice",
+      "tsName": "AdministratorAccountDevice",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "string", "tsType": "string" },
+        { "goName": "UserAgent", "jsonName": "userAgent", "goType": "string", "tsType": "string" },
+        { "goName": "IP", "jsonName": "ip", "goType": "string", "tsType": "string" },
+        { "goName": "SecondFactor", "jsonName": "secondFactor", "goType": "string", "tsType": "string" },
+        { "goName": "Registered", "jsonName": "registered", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorAccountDevices",
+      "tsName": "AdministratorAccountDevices",
+      "fields": [
+        { "goName": "Join", "jsonName": "join", "goType": "*administratorAccountJoin", "tsType": "AdministratorAccountJoin | null" },
+        { "goName": "Devices", "jsonName": "devices", "goType": "[]administratorAccountDevice", "tsType": "AdministratorAccountDevice[]" }
+      ]
+    },
+    {
+      "goName": "administratorSMTPTestInput",
+      "tsName": "AdministratorSMTPTestInput",
+      "fields": [
+        { "goName": "Recipient", "jsonName": "recipient", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorSMTPTestResult",
+      "tsName": "AdministratorSMTPTestResult",
+      "fields": [
+        { "goName": "Outcome", "jsonName": "outcome", "goType": "string", "tsType": "AdministratorSMTPTestOutcome" },
+        { "goName": "Recipient", "jsonName": "recipient", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorServerWorkspace",
+      "tsName": "AdministratorServerWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Domain", "jsonName": "domain", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerID", "jsonName": "ownerId", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerName", "jsonName": "ownerName", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerEmail", "jsonName": "ownerEmail", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int64", "tsType": "number" },
+        { "goName": "PageCount", "jsonName": "pageCount", "goType": "int64", "tsType": "number" },
+        { "goName": "FileCount", "jsonName": "fileCount", "goType": "int64", "tsType": "number" },
+        { "goName": "StorageBytes", "jsonName": "storageBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorServerWorkspaceList",
+      "tsName": "AdministratorServerWorkspaceList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorServerWorkspace", "tsType": "AdministratorServerWorkspace[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorAuditEvent",
+      "tsName": "AdministratorAuditEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "AdministratorAuditKind" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "ActorName", "jsonName": "actorName", "goType": "string", "tsType": "string" },
+        { "goName": "ActorEmail", "jsonName": "actorEmail", "goType": "string", "tsType": "string" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetName", "jsonName": "targetName", "goType": "string", "tsType": "string" },
+        { "goName": "TargetEmail", "jsonName": "targetEmail", "goType": "string", "tsType": "string" },
+        { "goName": "FromValue", "jsonName": "fromValue", "goType": "string", "tsType": "string" },
+        { "goName": "ToValue", "jsonName": "toValue", "goType": "string", "tsType": "string" },
+        { "goName": "Method", "jsonName": "method", "goType": "string", "tsType": "string" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "string" },
+        { "goName": "Outcome", "jsonName": "outcome", "goType": "string", "tsType": "string" },
+        { "goName": "ReasonCode", "jsonName": "reasonCode", "goType": "string", "tsType": "string" },
+        { "goName": "ReasonStatus", "jsonName": "reasonStatus", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "IP", "jsonName": "ip", "goType": "string", "tsType": "string" },
+        { "goName": "UserAgent", "jsonName": "userAgent", "goType": "string", "tsType": "string" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorAuditLog",
+      "tsName": "AdministratorAuditLog",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorAuditEvent", "tsType": "AdministratorAuditEvent[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspacePage",
+      "tsName": "AdministratorWorkspacePage",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "Place", "jsonName": "place", "goType": "string", "tsType": "AdministratorWorkspacePagePlace" },
+        { "goName": "PlaceName", "jsonName": "placeName", "goType": "string", "tsType": "string" },
+        { "goName": "IsRow", "jsonName": "isRow", "goType": "bool", "tsType": "boolean" },
+        { "goName": "HasChildren", "jsonName": "hasChildren", "goType": "bool", "tsType": "boolean" },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean" },
+        { "goName": "IsPublic", "jsonName": "isPublic", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TakeOver", "jsonName": "takeOver", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorWorkspacePageList",
+      "tsName": "AdministratorWorkspacePageList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorWorkspacePage", "tsType": "AdministratorWorkspacePage[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspacePageContent",
+      "tsName": "AdministratorWorkspacePageContent",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "administratorWorkspacePage", "tsType": "AdministratorWorkspacePage" },
+        { "goName": "Markdown", "jsonName": "markdown", "goType": "string", "tsType": "string" },
+        { "goName": "Truncated", "jsonName": "truncated", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceFile",
+      "tsName": "AdministratorWorkspaceFile",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "CreatedByID", "jsonName": "createdById", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedByName", "jsonName": "createdByName", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitleSpans", "jsonName": "pageTitleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "Referenced", "jsonName": "referenced", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Held", "jsonName": "held", "goType": "bool", "tsType": "boolean" },
+        { "goName": "HistoryOnly", "jsonName": "historyOnly", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceFileList",
+      "tsName": "AdministratorWorkspaceFileList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorWorkspaceFile", "tsType": "AdministratorWorkspaceFile[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceStoragePerson",
+      "tsName": "AdministratorWorkspaceStoragePerson",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "FileCount", "jsonName": "fileCount", "goType": "int64", "tsType": "number" },
+        { "goName": "StorageBytes", "jsonName": "storageBytes", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceStorageList",
+      "tsName": "AdministratorWorkspaceStorageList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorWorkspaceStoragePerson", "tsType": "AdministratorWorkspaceStoragePerson[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspacePublicItem",
+      "tsName": "AdministratorWorkspacePublicItem",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "AdministratorWorkspacePublicKind" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "Path", "jsonName": "path", "goType": "string", "tsType": "string" },
+        { "goName": "PublishedByName", "jsonName": "publishedByName", "goType": "string", "tsType": "string" },
+        { "goName": "PublishedAt", "jsonName": "publishedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspacePublicList",
+      "tsName": "AdministratorWorkspacePublicList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorWorkspacePublicItem", "tsType": "AdministratorWorkspacePublicItem[]" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceContentEvent",
+      "tsName": "AdministratorWorkspaceContentEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "AdministratorWorkspaceContentAction" },
+        { "goName": "ActorID", "jsonName": "actorId", "goType": "string", "tsType": "string" },
+        { "goName": "ActorName", "jsonName": "actorName", "goType": "string", "tsType": "string" },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "string" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetTitle", "jsonName": "targetTitle", "goType": "string", "tsType": "string" },
+        { "goName": "OccurredAt", "jsonName": "occurredAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceContentLog",
+      "tsName": "AdministratorWorkspaceContentLog",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]administratorWorkspaceContentEvent", "tsType": "AdministratorWorkspaceContentEvent[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "administratorWorkspaceActionResult",
+      "tsName": "AdministratorWorkspaceActionResult",
+      "fields": [
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorAccountStateInput",
+      "tsName": "AdministratorAccountStateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "AdministratorAccountStatus" }
+      ]
+    },
+    {
+      "goName": "administratorAccountMutationInput",
+      "tsName": "AdministratorAccountMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorAccountRoleInput",
+      "tsName": "AdministratorAccountRoleInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Administrator", "jsonName": "administrator", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorAccountTransferSelection",
+      "tsName": "AdministratorAccountTransferSelection",
+      "fields": [
+        { "goName": "ResourceType", "jsonName": "resourceType", "goType": "string", "tsType": "AdministratorAccountResourceType" },
+        { "goName": "ResourceID", "jsonName": "resourceId", "goType": "string", "tsType": "string" },
+        { "goName": "SuccessorUserID", "jsonName": "successorUserId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorAccountCleanupStartInput",
+      "tsName": "AdministratorAccountCleanupStartInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorAccountCleanupAssignmentInput",
+      "tsName": "AdministratorAccountCleanupAssignmentInput",
+      "fields": [
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Assignments", "jsonName": "assignments", "goType": "[]administratorAccountTransferSelection", "tsType": "AdministratorAccountTransferSelection[]" }
+      ]
+    },
+    {
+      "goName": "administratorAccountCleanupCommitInput",
+      "tsName": "AdministratorAccountCleanupCommitInput",
+      "fields": [
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorAccountTransferAssignment",
+      "tsName": "AdministratorAccountTransferAssignment",
+      "fields": [
+        { "goName": "ResourceType", "jsonName": "resourceType", "goType": "string", "tsType": "AdministratorAccountResourceType" },
+        { "goName": "ResourceID", "jsonName": "resourceId", "goType": "string", "tsType": "string" },
+        { "goName": "ResourceName", "jsonName": "resourceName", "goType": "string", "tsType": "string" },
+        { "goName": "SuccessorUserID", "jsonName": "successorUserId", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "AdministratorAccountTransferStatus" }
+      ]
+    },
+    {
+      "goName": "administratorAccountCleanup",
+      "tsName": "AdministratorAccountCleanup",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetUserID", "jsonName": "targetUserId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "AdministratorAccountCleanupStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "AdministratorAccountCleanupPhase" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ProcessedItems", "jsonName": "processedItems", "goType": "int", "tsType": "number" },
+        { "goName": "TotalItems", "jsonName": "totalItems", "goType": "int", "tsType": "number" },
+        { "goName": "UnassignedCount", "jsonName": "unassignedCount", "goType": "int", "tsType": "number" },
+        { "goName": "Assignments", "jsonName": "assignments", "goType": "[]administratorAccountTransferAssignment", "tsType": "AdministratorAccountTransferAssignment[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorSMTPSettings",
+      "tsName": "AdministratorSMTPSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Host", "jsonName": "host", "goType": "string", "tsType": "string" },
+        { "goName": "Port", "jsonName": "port", "goType": "int", "tsType": "number" },
+        { "goName": "Username", "jsonName": "username", "goType": "string", "tsType": "string" },
+        { "goName": "PasswordConfigured", "jsonName": "passwordConfigured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TLSMode", "jsonName": "tlsMode", "goType": "string", "tsType": "AdministratorSMTPTLSMode" },
+        { "goName": "SenderName", "jsonName": "senderName", "goType": "string", "tsType": "string" },
+        { "goName": "SenderAddress", "jsonName": "senderAddress", "goType": "string", "tsType": "string" },
+        { "goName": "RequireEmailVerification", "jsonName": "requireEmailVerification", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorGoogleSettings",
+      "tsName": "AdministratorGoogleSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "SecretConfigured", "jsonName": "secretConfigured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RedirectURI", "jsonName": "redirectUri", "goType": "string", "tsType": "string" },
+        { "goName": "RegisteredRedirectURI", "jsonName": "registeredRedirectUri", "goType": "string", "tsType": "string" },
+        { "goName": "RedirectAdded", "jsonName": "redirectAdded", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorOIDCSettings",
+      "tsName": "AdministratorOIDCSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Issuer", "jsonName": "issuer", "goType": "string", "tsType": "string" },
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "SecretConfigured", "jsonName": "secretConfigured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Scopes", "jsonName": "scopes", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "RedirectURI", "jsonName": "redirectUri", "goType": "string", "tsType": "string" },
+        { "goName": "RegisteredRedirectURI", "jsonName": "registeredRedirectUri", "goType": "string", "tsType": "string" },
+        { "goName": "RedirectAdded", "jsonName": "redirectAdded", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorProviders",
+      "tsName": "AdministratorProviders",
+      "fields": [
+        { "goName": "Google", "jsonName": "google", "goType": "administratorGoogleSettings", "tsType": "AdministratorGoogleSettings" },
+        { "goName": "OIDC", "jsonName": "oidc", "goType": "administratorOIDCSettings", "tsType": "AdministratorOIDCSettings" }
+      ]
+    },
+    {
+      "goName": "administratorPlaceSearchSettings",
+      "tsName": "AdministratorPlaceSearchSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EffectiveEnabled", "jsonName": "effectiveEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Provider", "jsonName": "provider", "goType": "string", "tsType": "string" },
+        { "goName": "Configured", "jsonName": "configured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EnvironmentConfigured", "jsonName": "environmentConfigured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EnvironmentDisabled", "jsonName": "environmentDisabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorPlaceSearchSettingsInput",
+      "tsName": "AdministratorPlaceSearchSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Provider", "jsonName": "provider", "goType": "string", "tsType": "string" },
+        { "goName": "Endpoint", "jsonName": "endpoint", "goType": "string", "tsType": "string" },
+        { "goName": "APIKey", "jsonName": "apiKey", "goType": "string", "tsType": "string" },
+        { "goName": "APIKeyID", "jsonName": "apiKeyId", "goType": "string", "tsType": "string" },
+        { "goName": "ClearConfig", "jsonName": "clearConfig", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "placeSearchItem",
+      "tsName": "PlaceSearchItem",
+      "fields": [
+        { "goName": "Lat", "jsonName": "lat", "goType": "float64", "tsType": "number" },
+        { "goName": "Lon", "jsonName": "lon", "goType": "float64", "tsType": "number" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Address", "jsonName": "address", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "placeReverseInput",
+      "tsName": "PlaceReverseInput",
+      "fields": [
+        { "goName": "Lat", "jsonName": "lat", "goType": "float64", "tsType": "number" },
+        { "goName": "Lon", "jsonName": "lon", "goType": "float64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "placeReverseResponse",
+      "tsName": "PlaceReverseResponse",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Address", "jsonName": "address", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "placeSearchInput",
+      "tsName": "PlaceSearchInput",
+      "fields": [
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "placeSearchResponse",
+      "tsName": "PlaceSearchResponse",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]placeSearchItem", "tsType": "PlaceSearchItem[]" },
+        { "goName": "Attribution", "jsonName": "attribution", "goType": "string", "tsType": "string" },
+        { "goName": "AttributionURL", "jsonName": "attributionUrl", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorMapSettings",
+      "tsName": "AdministratorMapSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TileURL", "jsonName": "tileUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Attribution", "jsonName": "attribution", "goType": "string", "tsType": "string" },
+        { "goName": "AttributionURL", "jsonName": "attributionUrl", "goType": "string", "tsType": "string" },
+        { "goName": "EnvironmentDisabled", "jsonName": "environmentDisabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorUpdateSettings",
+      "tsName": "AdministratorUpdateSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EnvironmentDisabled", "jsonName": "environmentDisabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CurrentVersion", "jsonName": "currentVersion", "goType": "string", "tsType": "string" },
+        { "goName": "LatestVersion", "jsonName": "latestVersion", "goType": "string", "tsType": "string" },
+        { "goName": "Newer", "jsonName": "newer", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Security", "jsonName": "security", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NotesURL", "jsonName": "notesUrl", "goType": "string", "tsType": "string" },
+        { "goName": "UpgradeURL", "jsonName": "upgradeUrl", "goType": "string", "tsType": "string" },
+        { "goName": "UpgradeRuns", "jsonName": "upgradeRuns", "goType": "string", "tsType": "\"container\" | \"app\" | \"server\" | \"phone\"" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "\"bundled\" | \"fetched\"" },
+        { "goName": "CheckedAt", "jsonName": "checkedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CheckFailed", "jsonName": "checkFailed", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorSettingsResponse",
+      "tsName": "AdministratorSettings",
+      "fields": [
+        { "goName": "Version", "jsonName": "version", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "SignupPolicy", "jsonName": "signupPolicy", "goType": "string", "tsType": "AdministratorSignupPolicy" },
+        { "goName": "SignupContact", "jsonName": "signupContact", "goType": "string", "tsType": "string" },
+        { "goName": "MemberAddPolicy", "jsonName": "memberAddPolicy", "goType": "string", "tsType": "AdministratorMemberAddPolicy" },
+        { "goName": "SMTP", "jsonName": "smtp", "goType": "administratorSMTPSettings", "tsType": "AdministratorSMTPSettings" },
+        { "goName": "Providers", "jsonName": "providers", "goType": "administratorProviders", "tsType": "AdministratorProviders" },
+        { "goName": "Map", "jsonName": "map", "goType": "administratorMapSettings", "tsType": "AdministratorMapSettings" },
+        { "goName": "PlaceSearch", "jsonName": "placeSearch", "goType": "administratorPlaceSearchSettings", "tsType": "AdministratorPlaceSearchSettings" },
+        { "goName": "Updates", "jsonName": "updates", "goType": "administratorUpdateSettings", "tsType": "AdministratorUpdateSettings" },
+        { "goName": "SwitcherLists", "jsonName": "switcherLists", "goType": "administratorSwitcherListSettings", "tsType": "AdministratorSwitcherListSettings" },
+        { "goName": "ReadLog", "jsonName": "readLog", "goType": "administratorReadLogSettings", "tsType": "AdministratorReadLogSettings" },
+        { "goName": "ServerID", "jsonName": "serverId", "goType": "string", "tsType": "string" },
+        { "goName": "ServerName", "jsonName": "serverName", "goType": "string", "tsType": "string" },
+        { "goName": "ServerAlias", "jsonName": "serverAlias", "goType": "string", "tsType": "string" },
+        { "goName": "UnenforcedOrganizationPolicies", "jsonName": "unenforcedOrganizationPolicies", "goType": "[]administratorUnenforcedPolicy", "tsType": "AdministratorUnenforcedPolicy[]" }
+      ]
+    },
+    {
+      "goName": "administratorUnenforcedPolicy",
+      "tsName": "AdministratorUnenforcedPolicy",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorSMTPSettingsInput",
+      "tsName": "AdministratorSMTPSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Host", "jsonName": "host", "goType": "string", "tsType": "string" },
+        { "goName": "Port", "jsonName": "port", "goType": "int", "tsType": "number" },
+        { "goName": "Username", "jsonName": "username", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ClearPassword", "jsonName": "clearPassword", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TLSMode", "jsonName": "tlsMode", "goType": "string", "tsType": "AdministratorSMTPTLSMode" },
+        { "goName": "SenderName", "jsonName": "senderName", "goType": "string", "tsType": "string" },
+        { "goName": "SenderAddress", "jsonName": "senderAddress", "goType": "string", "tsType": "string" },
+        { "goName": "RequireEmailVerification", "jsonName": "requireEmailVerification", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorGoogleSettingsInput",
+      "tsName": "AdministratorGoogleSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "ClientSecret", "jsonName": "clientSecret", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ClearSecret", "jsonName": "clearSecret", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorOIDCSettingsInput",
+      "tsName": "AdministratorOIDCSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Issuer", "jsonName": "issuer", "goType": "string", "tsType": "string" },
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "ClientSecret", "jsonName": "clientSecret", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ClearSecret", "jsonName": "clearSecret", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Scopes", "jsonName": "scopes", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "administratorProvidersInput",
+      "tsName": "AdministratorProvidersInput",
+      "fields": [
+        { "goName": "Google", "jsonName": "google", "goType": "administratorGoogleSettingsInput", "tsType": "AdministratorGoogleSettingsInput" },
+        { "goName": "OIDC", "jsonName": "oidc", "goType": "administratorOIDCSettingsInput", "tsType": "AdministratorOIDCSettingsInput" }
+      ]
+    },
+    {
+      "goName": "administratorRequestLog",
+      "tsName": "AdministratorRequestLog",
+      "fields": [
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number" },
+        { "goName": "Successful", "jsonName": "successful", "goType": "string", "tsType": "AdministratorRequestLogSuccessful" },
+        { "goName": "Entries", "jsonName": "entries", "goType": "int64", "tsType": "number" },
+        { "goName": "MaxEntries", "jsonName": "maxEntries", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorRequestLogInput",
+      "tsName": "AdministratorRequestLogInput",
+      "fields": [
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number" },
+        { "goName": "Successful", "jsonName": "successful", "goType": "string", "tsType": "AdministratorRequestLogSuccessful" }
+      ]
+    },
+    {
+      "goName": "administratorNetworkProxy",
+      "tsName": "AdministratorNetworkProxy",
+      "fields": [
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "AdministratorNetworkProxyMode" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "NoProxy", "jsonName": "noProxy", "goType": "string", "tsType": "string" },
+        { "goName": "Username", "jsonName": "username", "goType": "string", "tsType": "string" },
+        { "goName": "PasswordSet", "jsonName": "passwordSet", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "AdministratorNetworkProxySource" },
+        { "goName": "HTTP", "jsonName": "http", "goType": "string", "tsType": "string" },
+        { "goName": "HTTPS", "jsonName": "https", "goType": "string", "tsType": "string" },
+        { "goName": "AutoConfig", "jsonName": "autoConfig", "goType": "string", "tsType": "string" },
+        { "goName": "AutoDiscover", "jsonName": "autoDiscover", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Unfollowed", "jsonName": "unfollowed", "goType": "string", "tsType": "string" },
+        { "goName": "ManagedByApp", "jsonName": "managedByApp", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorNetworkProxyInput",
+      "tsName": "AdministratorNetworkProxyInput",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "AdministratorNetworkProxyMode" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "NoProxy", "jsonName": "noProxy", "goType": "string", "tsType": "string" },
+        { "goName": "Username", "jsonName": "username", "goType": "string", "tsType": "string" },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ClearPassword", "jsonName": "clearPassword", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorMapSettingsInput",
+      "tsName": "AdministratorMapSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TileURL", "jsonName": "tileUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Attribution", "jsonName": "attribution", "goType": "string", "tsType": "string" },
+        { "goName": "AttributionURL", "jsonName": "attributionUrl", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorUpdateSettingsInput",
+      "tsName": "AdministratorUpdateSettingsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorSwitcherListSettings",
+      "tsName": "AdministratorSwitcherListSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorReadLogSettings",
+      "tsName": "AdministratorReadLogSettings",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorSettingsInput",
+      "tsName": "AdministratorSettingsInput",
+      "fields": [
+        { "goName": "Version", "jsonName": "version", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "SignupPolicy", "jsonName": "signupPolicy", "goType": "string", "tsType": "AdministratorSignupPolicy" },
+        { "goName": "SignupContact", "jsonName": "signupContact", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "ServerName", "jsonName": "serverName", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "MemberAddPolicy", "jsonName": "memberAddPolicy", "goType": "string", "tsType": "AdministratorMemberAddPolicy" },
+        { "goName": "SMTP", "jsonName": "smtp", "goType": "administratorSMTPSettingsInput", "tsType": "AdministratorSMTPSettingsInput" },
+        { "goName": "Providers", "jsonName": "providers", "goType": "administratorProvidersInput", "tsType": "AdministratorProvidersInput" },
+        { "goName": "Map", "jsonName": "map", "goType": "*administratorMapSettingsInput", "tsType": "AdministratorMapSettingsInput", "optional": true },
+        { "goName": "PlaceSearch", "jsonName": "placeSearch", "goType": "*administratorPlaceSearchSettingsInput", "tsType": "AdministratorPlaceSearchSettingsInput", "optional": true },
+        { "goName": "Updates", "jsonName": "updates", "goType": "*administratorUpdateSettingsInput", "tsType": "AdministratorUpdateSettingsInput", "optional": true },
+        { "goName": "SwitcherLists", "jsonName": "switcherLists", "goType": "*administratorSwitcherListSettings", "tsType": "AdministratorSwitcherListSettings", "optional": true },
+        { "goName": "ReadLog", "jsonName": "readLog", "goType": "*administratorReadLogSettings", "tsType": "AdministratorReadLogSettings", "optional": true }
+      ]
+    },
+    {
+      "goName": "administratorInstanceReportInput",
+      "tsName": "AdministratorInstanceReportInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorInstanceReportCounts",
+      "tsName": "AdministratorInstanceReportCounts",
+      "fields": [
+        { "goName": "Users", "jsonName": "users", "goType": "int64", "tsType": "number" },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "int64", "tsType": "number" },
+        { "goName": "Sessions", "jsonName": "sessions", "goType": "int64", "tsType": "number" },
+        { "goName": "Files", "jsonName": "files", "goType": "int64", "tsType": "number" },
+        { "goName": "StorageBytes", "jsonName": "storageBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "AuthActivity", "jsonName": "authActivity", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorInstanceReport",
+      "tsName": "AdministratorInstanceReport",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "int64", "tsType": "number" },
+        { "goName": "Counts", "jsonName": "counts", "goType": "administratorInstanceReportCounts", "tsType": "AdministratorInstanceReportCounts" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorInstanceReportResult",
+      "tsName": "AdministratorInstanceReportResult",
+      "fields": [
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Report", "jsonName": "report", "goType": "administratorInstanceReport", "tsType": "AdministratorInstanceReport" }
+      ]
+    },
+    {
+      "goName": "administratorInstanceReportCurrentResult",
+      "tsName": "AdministratorInstanceReportCurrentResult",
+      "fields": [
+        { "goName": "Report", "jsonName": "report", "goType": "*administratorInstanceReport", "tsType": "AdministratorInstanceReport | null" }
+      ]
+    },
+    {
+      "goName": "administratorBackupInput",
+      "tsName": "AdministratorBackupInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorBackupJob",
+      "tsName": "AdministratorBackupJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "AdministratorBackupStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "AdministratorBackupPhase" },
+        { "goName": "ArtifactBytes", "jsonName": "artifactBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ArtifactSHA256", "jsonName": "artifactSha256", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorReason", "jsonName": "errorReason", "goType": "string", "tsType": "string" },
+        { "goName": "CanRetry", "jsonName": "canRetry", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanCancel", "jsonName": "canCancel", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "*administratorBackupProgress", "tsType": "AdministratorBackupProgress | null" }
+      ]
+    },
+    {
+      "goName": "administratorBackupProgress",
+      "tsName": "AdministratorBackupProgress",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "AdministratorBackupProgressKind" },
+        { "goName": "Step", "jsonName": "step", "goType": "string", "tsType": "AdministratorBackupProgressStep" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "string", "tsType": "string" },
+        { "goName": "FinishedAt", "jsonName": "finishedAt", "goType": "string", "tsType": "string" },
+        { "goName": "BytesDone", "jsonName": "bytesDone", "goType": "int64", "tsType": "number" },
+        { "goName": "BytesTotal", "jsonName": "bytesTotal", "goType": "int64", "tsType": "number" },
+        { "goName": "BytesSent", "jsonName": "bytesSent", "goType": "int64", "tsType": "number" },
+        { "goName": "FilesDone", "jsonName": "filesDone", "goType": "int", "tsType": "number" },
+        { "goName": "FilesTotal", "jsonName": "filesTotal", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorReason", "jsonName": "errorReason", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorCause", "jsonName": "errorCause", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FilesSkipped", "jsonName": "filesSkipped", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorBackupJobResult",
+      "tsName": "AdministratorBackupJobResult",
+      "fields": [
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Job", "jsonName": "job", "goType": "administratorBackupJob", "tsType": "AdministratorBackupJob" }
+      ]
+    },
+    {
+      "goName": "administratorBackupCurrentResult",
+      "tsName": "AdministratorBackupCurrentResult",
+      "fields": [
+        { "goName": "Job", "jsonName": "job", "goType": "*administratorBackupJob", "tsType": "AdministratorBackupJob | null" },
+        { "goName": "Finished", "jsonName": "finished", "goType": "*administratorBackupJob", "tsType": "AdministratorBackupJob | null" },
+        { "goName": "RestoreRuns", "jsonName": "restoreRuns", "goType": "string", "tsType": "\"container\" | \"app\" | \"server\" | \"phone\"" },
+        { "goName": "RestoreProgram", "jsonName": "restoreProgram", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackup",
+      "tsName": "AdministratorScheduledBackup",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Target", "jsonName": "target", "goType": "string", "tsType": "AdministratorScheduledBackupTarget" },
+        { "goName": "Folder", "jsonName": "folder", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVURL", "jsonName": "webdavUrl", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVUsername", "jsonName": "webdavUsername", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVPasswordSet", "jsonName": "webdavPasswordSet", "goType": "bool", "tsType": "boolean" },
+        { "goName": "S3Endpoint", "jsonName": "s3Endpoint", "goType": "string", "tsType": "string" },
+        { "goName": "S3Region", "jsonName": "s3Region", "goType": "string", "tsType": "string" },
+        { "goName": "S3Bucket", "jsonName": "s3Bucket", "goType": "string", "tsType": "string" },
+        { "goName": "S3Prefix", "jsonName": "s3Prefix", "goType": "string", "tsType": "string" },
+        { "goName": "S3AccessKey", "jsonName": "s3AccessKey", "goType": "string", "tsType": "string" },
+        { "goName": "S3SecretSet", "jsonName": "s3SecretSet", "goType": "bool", "tsType": "boolean" },
+        { "goName": "S3PathStyle", "jsonName": "s3PathStyle", "goType": "bool", "tsType": "boolean" },
+        { "goName": "IntervalHours", "jsonName": "intervalHours", "goType": "int", "tsType": "number" },
+        { "goName": "Keep", "jsonName": "keep", "goType": "int", "tsType": "number" },
+        { "goName": "SetByEnvironment", "jsonName": "setByEnvironment", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PasswordSet", "jsonName": "passwordSet", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Running", "jsonName": "running", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "*administratorBackupProgress", "tsType": "AdministratorBackupProgress | null" },
+        { "goName": "LastRun", "jsonName": "lastRun", "goType": "*administratorBackupProgress", "tsType": "AdministratorBackupProgress | null" },
+        { "goName": "LastRestore", "jsonName": "lastRestore", "goType": "*administratorBackupProgress", "tsType": "AdministratorBackupProgress | null" },
+        { "goName": "NextRunAt", "jsonName": "nextRunAt", "goType": "string", "tsType": "string" },
+        { "goName": "LastFinishedAt", "jsonName": "lastFinishedAt", "goType": "string", "tsType": "string" },
+        { "goName": "LastSuccessAt", "jsonName": "lastSuccessAt", "goType": "string", "tsType": "string" },
+        { "goName": "LastErrorCode", "jsonName": "lastErrorCode", "goType": "string", "tsType": "string" },
+        { "goName": "FailureCount", "jsonName": "failureCount", "goType": "int", "tsType": "number" },
+        { "goName": "LastSnapshot", "jsonName": "lastSnapshot", "goType": "string", "tsType": "string" },
+        { "goName": "LastSnapshotSHA256", "jsonName": "lastSnapshotSha256", "goType": "string", "tsType": "string" },
+        { "goName": "LastAddedBytes", "jsonName": "lastAddedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Snapshots", "jsonName": "snapshots", "goType": "int", "tsType": "number" },
+        { "goName": "ContainerFolder", "jsonName": "containerFolder", "goType": "string", "tsType": "string" },
+        { "goName": "RestorePending", "jsonName": "restorePending", "goType": "string", "tsType": "string" },
+        { "goName": "RestorePendingSnapshot", "jsonName": "restorePendingSnapshot", "goType": "string", "tsType": "string" },
+        { "goName": "RestoreRestart", "jsonName": "restoreRestart", "goType": "string", "tsType": "string" },
+        { "goName": "RestoredAt", "jsonName": "restoredAt", "goType": "string", "tsType": "string" },
+        { "goName": "RestoredSnapshot", "jsonName": "restoredSnapshot", "goType": "string", "tsType": "string" },
+        { "goName": "RestoreUndoUntil", "jsonName": "restoreUndoUntil", "goType": "string", "tsType": "string" },
+        { "goName": "RestoreFailed", "jsonName": "restoreFailed", "goType": "string", "tsType": "string" },
+        { "goName": "RestoreFailedAt", "jsonName": "restoreFailedAt", "goType": "string", "tsType": "string" },
+        { "goName": "RestoreFailedSnapshot", "jsonName": "restoreFailedSnapshot", "goType": "string", "tsType": "string" },
+        { "goName": "TurnOnSuggested", "jsonName": "turnOnSuggested", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Replication", "jsonName": "replication", "goType": "administratorReplication", "tsType": "AdministratorReplication" },
+        { "goName": "Standby", "jsonName": "standby", "goType": "administratorStandby", "tsType": "AdministratorStandby" },
+        { "goName": "Protection", "jsonName": "protection", "goType": "administratorBackupProtection", "tsType": "AdministratorBackupProtection" }
+      ]
+    },
+    {
+      "goName": "administratorBackupProtection",
+      "tsName": "AdministratorBackupProtection",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Password", "jsonName": "password", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Required", "jsonName": "required", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Opened", "jsonName": "opened", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorBackupPasswordInput",
+      "tsName": "AdministratorBackupPasswordInput",
+      "fields": [
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorBackupOpenInput",
+      "tsName": "AdministratorBackupOpenInput",
+      "fields": [
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorBackupRecoveryCode",
+      "tsName": "AdministratorBackupRecoveryCode",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "Schedule", "jsonName": "schedule", "goType": "administratorScheduledBackup", "tsType": "AdministratorScheduledBackup" }
+      ]
+    },
+    {
+      "goName": "administratorStandby",
+      "tsName": "AdministratorStandby",
+      "fields": [
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "AdministratorStandbyRole" },
+        { "goName": "PeerOrigin", "jsonName": "peerOrigin", "goType": "string", "tsType": "string" },
+        { "goName": "PeerVersion", "jsonName": "peerVersion", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "PeerSilentSeconds", "jsonName": "peerSilentSeconds", "goType": "int", "tsType": "number" },
+        { "goName": "Followed", "jsonName": "followed", "goType": "int64", "tsType": "number" },
+        { "goName": "FollowedAt", "jsonName": "followedAt", "goType": "string", "tsType": "string" },
+        { "goName": "AutoTakeover", "jsonName": "autoTakeover", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TakingOver", "jsonName": "takingOver", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Paused", "jsonName": "paused", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "TookOverAt", "jsonName": "tookOverAt", "goType": "string", "tsType": "string" },
+        { "goName": "TookOverFrom", "jsonName": "tookOverFrom", "goType": "string", "tsType": "string" },
+        { "goName": "DirectCheck", "jsonName": "directCheck", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorStandbyCode",
+      "tsName": "AdministratorStandbyCode",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorStandbyJoinInput",
+      "tsName": "AdministratorStandbyJoinInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorReplication",
+      "tsName": "AdministratorReplication",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "SetByEnvironment", "jsonName": "setByEnvironment", "goType": "bool", "tsType": "boolean" },
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "AdministratorReplicationState" },
+        { "goName": "LastSyncAt", "jsonName": "lastSyncAt", "goType": "string", "tsType": "string" },
+        { "goName": "BehindSeconds", "jsonName": "behindSeconds", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "MovedTo", "jsonName": "movedTo", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorReplicationInput",
+      "tsName": "AdministratorReplicationInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorReplica",
+      "tsName": "AdministratorReplica",
+      "fields": [
+        { "goName": "Present", "jsonName": "present", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Owner", "jsonName": "owner", "goType": "string", "tsType": "AdministratorReplicaOwner" },
+        { "goName": "OwnerOrigin", "jsonName": "ownerOrigin", "goType": "string", "tsType": "string" },
+        { "goName": "LastChangeAt", "jsonName": "lastChangeAt", "goType": "string", "tsType": "string" },
+        { "goName": "Sealed", "jsonName": "sealed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Readable", "jsonName": "readable", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorReplicaResult",
+      "tsName": "AdministratorReplicaResult",
+      "fields": [
+        { "goName": "Replica", "jsonName": "replica", "goType": "administratorReplica", "tsType": "AdministratorReplica" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackupSnapshot",
+      "tsName": "AdministratorScheduledBackupSnapshot",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "Bytes", "jsonName": "bytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Files", "jsonName": "files", "goType": "int", "tsType": "number" },
+        { "goName": "Sealed", "jsonName": "sealed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Readable", "jsonName": "readable", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackupSnapshotList",
+      "tsName": "AdministratorScheduledBackupSnapshotList",
+      "fields": [
+        { "goName": "Snapshots", "jsonName": "snapshots", "goType": "[]administratorScheduledBackupSnapshot", "tsType": "AdministratorScheduledBackupSnapshot[]" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackupRestoreInput",
+      "tsName": "AdministratorScheduledBackupRestoreInput",
+      "fields": [
+        { "goName": "Snapshot", "jsonName": "snapshot", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackupInput",
+      "tsName": "AdministratorScheduledBackupInput",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Target", "jsonName": "target", "goType": "string", "tsType": "AdministratorScheduledBackupTarget" },
+        { "goName": "Folder", "jsonName": "folder", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVURL", "jsonName": "webdavUrl", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVUsername", "jsonName": "webdavUsername", "goType": "string", "tsType": "string" },
+        { "goName": "WebDAVPassword", "jsonName": "webdavPassword", "goType": "string", "tsType": "string" },
+        { "goName": "ClearWebDAVPassword", "jsonName": "clearWebdavPassword", "goType": "bool", "tsType": "boolean" },
+        { "goName": "S3Endpoint", "jsonName": "s3Endpoint", "goType": "string", "tsType": "string" },
+        { "goName": "S3Region", "jsonName": "s3Region", "goType": "string", "tsType": "string" },
+        { "goName": "S3Bucket", "jsonName": "s3Bucket", "goType": "string", "tsType": "string" },
+        { "goName": "S3Prefix", "jsonName": "s3Prefix", "goType": "string", "tsType": "string" },
+        { "goName": "S3AccessKey", "jsonName": "s3AccessKey", "goType": "string", "tsType": "string" },
+        { "goName": "S3SecretKey", "jsonName": "s3SecretKey", "goType": "string", "tsType": "string" },
+        { "goName": "ClearS3Secret", "jsonName": "clearS3Secret", "goType": "bool", "tsType": "boolean" },
+        { "goName": "S3PathStyle", "jsonName": "s3PathStyle", "goType": "bool", "tsType": "boolean" },
+        { "goName": "IntervalHours", "jsonName": "intervalHours", "goType": "int", "tsType": "number" },
+        { "goName": "Keep", "jsonName": "keep", "goType": "int", "tsType": "number" },
+        { "goName": "Password", "jsonName": "password", "goType": "string", "tsType": "string" },
+        { "goName": "ClearPassword", "jsonName": "clearPassword", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorScheduledBackupResult",
+      "tsName": "AdministratorScheduledBackupResult",
+      "fields": [
+        { "goName": "Schedule", "jsonName": "schedule", "goType": "administratorScheduledBackup", "tsType": "AdministratorScheduledBackup" },
+        { "goName": "BackupStarted", "jsonName": "backupStarted", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AlreadyRunning", "jsonName": "alreadyRunning", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "administratorServerMoveCounts",
+      "tsName": "AdministratorServerMoveCounts",
+      "fields": [
+        { "goName": "People", "jsonName": "people", "goType": "int", "tsType": "number" },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "int", "tsType": "number" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Files", "jsonName": "files", "goType": "int", "tsType": "number" },
+        { "goName": "Edits", "jsonName": "edits", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "administratorServerMoveIn",
+      "tsName": "AdministratorServerMoveIn",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "AdministratorServerMoveInState" },
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string" },
+        { "goName": "From", "jsonName": "from", "goType": "string", "tsType": "string" },
+        { "goName": "MovedAt", "jsonName": "movedAt", "goType": "string", "tsType": "string" },
+        { "goName": "Expected", "jsonName": "expected", "goType": "administratorServerMoveCounts", "tsType": "AdministratorServerMoveCounts" },
+        { "goName": "Actual", "jsonName": "actual", "goType": "administratorServerMoveCounts", "tsType": "AdministratorServerMoveCounts" },
+        { "goName": "Restart", "jsonName": "restart", "goType": "string", "tsType": "string" },
+        { "goName": "People", "jsonName": "people", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorServerMoveOut",
+      "tsName": "AdministratorServerMoveOut",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "AdministratorServerMoveOutState" },
+        { "goName": "To", "jsonName": "to", "goType": "string", "tsType": "string" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "string", "tsType": "string" },
+        { "goName": "Counts", "jsonName": "counts", "goType": "administratorServerMoveCounts", "tsType": "AdministratorServerMoveCounts" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "Release", "jsonName": "release", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "administratorServerMoveOutInput",
+      "tsName": "AdministratorServerMoveOutInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

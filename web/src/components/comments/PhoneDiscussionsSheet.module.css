@@ -1,0 +1,52 @@
+/* A phone's "모든 토론" list (PageDiscussionsPopover), as Notion's (seen
+   2026-11-25 on a Galaxy A90 at 411, dpr 2.625: in its app twice, a line
+   every 52px, and in Chrome's computed values). Each discussion is a 52px
+   slot — the pressed part, 8px round, 10px out from the rows' 20px start —
+   whose 45px row stands over its line with a 1px margin on top and -1px
+   under, so 4.5px down the slot and 2.5px clear of its foot. The list begins
+   at its first slot's top, 3px over the sheet head's 44px foot (Notion's
+   head is 41px high under its 44px title), the body's 16px top padding taken
+   back. */
+.list {
+  display: flex;
+  flex-direction: column;
+  margin-block: calc(-16px - 3px) 0;
+  margin-inline: 4px;
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 52px;
+  margin-inline: -10px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+.slotRow {
+  margin-block: 1px -1px;
+}
+
+/* "신규" over the unread discussions and "이전" over the rest
+   (sectionedDiscussions), as Notion's: the sheet's group heading — 15px/500
+   grey on its 18.17px line (--phone-sheet-head-line,
+   PhoneSheetRowParts.module.css) — at the rows' own start, 20px in; the first
+   14px under the list's top, each 8px over its first slot, and the sections
+   10px apart. */
+.sectionHead {
+  margin-block: 10px 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: var(--phone-sheet-head-line, 18.17px);
+}
+
+.sectionHead:first-child {
+  margin-block-start: 14px;
+}

@@ -1,0 +1,309 @@
+/* Chart view (database "chart" layout) UI.
+   Owned by ChartView only; database.module.css is owned elsewhere.
+   Text and lines follow the global color tokens; the bars take Notion's
+   chart tones (chartViewPalette.ts), and the pale fill of a group without
+   a value is redefined for the dark theme at the end. */
+
+.wrap {
+  --chart-empty-fill: rgb(241, 241, 239);
+  --chart-default-fill: rgb(227, 226, 224);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 4px 0 12px;
+}
+
+.canvasWrap {
+  position: relative;
+  width: 100%;
+  overflow-x: auto;
+}
+/* A database block's own chart ends with its picture, the next line or the
+   page's end right under it, as Notion's (seen 2026-11-08 at 1303px, in a
+   page's text and on a database's page). */
+:global([data-inline-database-wrapper] > section > [data-view-type="chart"]) .wrap {
+  padding-bottom: 0;
+}
+/* A chart view's picture is as wide as the view, where its toolbar ends, and
+   starts 8 under its tabs' row, a horizontal bar chart's right under it, as
+   Notion's (seen 2026-11-08 at 1440px: 692 in a page's text, 962 on a
+   database's page; 12 under the tab buttons, the horizontal bar chart's 4). */
+:global([data-view-type="chart"]) > * > :is(.canvasWrap, .numberChart),
+:global([data-view-type="chart"]) .wrap > :is(.canvasWrap, .numberChart) {
+  margin-top: 4px;
+}
+
+:global([data-view-type="chart"]) .wrap[data-chart-type="horizontal_bar"] > .canvasWrap {
+  margin-top: -4px;
+}
+
+.canvas {
+  display: block;
+  max-width: 100%;
+}
+
+/* Dotted, as Notion's (seen 2026-10-10: 1px dashes 3px apart); the zero
+   line stays solid. */
+.gridline {
+  stroke: var(--border-default);
+  stroke-width: 1;
+  stroke-dasharray: 1 3;
+}
+
+.axisLine {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.tickText {
+  fill: var(--text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.axisText {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* A person's face under the X axis: a 20 circle on the element background
+   in a 1 border, its letter 10 in the secondary letters' color (Notion's,
+   seen 2026-11-12: rgb(32, 32, 32), rgb(56, 56, 54), rgb(173, 169, 163)
+   on the dark page). */
+.face {
+  fill: var(--bg-element);
+  stroke: var(--border-default);
+  stroke-width: 1px;
+}
+
+.faceLetter {
+  fill: var(--avatar-letter-fg);
+  font-size: 10px;
+}
+
+/* The hovered group's slot, a pale band from the plot's top to its foot,
+   as Notion's (seen 2026-11-11: rgba(255,255,255,0.055) on the dark page,
+   its hover color). */
+.band {
+  fill: var(--bg-hover);
+}
+
+/* Along time the hovered group is marked by a line 1 wide through its middle, in the same color (Notion's, seen 2026-11-12). */
+.crosshair {
+  stroke: var(--bg-hover);
+  stroke-width: 1;
+}
+
+/* Where a group is hovered and, where its rows open, clicked: its whole slot. */
+.hit {
+  fill: transparent;
+}
+
+.hit[data-opens] {
+  cursor: pointer;
+}
+
+/* A line's hovered point, 6px with a 1px rim in the page's color (Notion's, seen 2026-11-11). */
+.hoverPoint {
+  stroke: var(--bg-app);
+  stroke-width: 1;
+}
+
+/* A chart's tip (ChartTip.tsx), as Notion's (seen 2026-11-11): bacEle raised in shaOutSm (2026-11-24 twice). */
+.tip {
+  position: absolute;
+  z-index: 1;
+  border-radius: 8px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-outline-small);
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.tipBody {
+  padding: 10px 12px;
+}
+
+.tipBodyTitled {
+  padding: 12px;
+}
+
+.tipTitle {
+  padding-bottom: 7px;
+  color: var(--text-default);
+  line-height: 14px;
+}
+
+.tipRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  line-height: 18px;
+}
+
+.tipName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+.tipSwatch {
+  width: 8px;
+  height: 8px;
+  margin: 0 3px;
+  border-radius: 1px;
+}
+
+.tipValue {
+  color: var(--text-tertiary);
+}
+
+.tipRule {
+  margin: 0 12px;
+  border: 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.tipHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  color: var(--text-tertiary);
+  line-height: 16px;
+}
+
+/* A line 1.25 wide, as Notion's (seen 2026-11-08); a legend's line mark draws the same. */
+.line {
+  fill: none;
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+/* A line's points are kept for their names on hover but not drawn, as
+   Notion's line shows none (seen 2026-11-06). */
+.point {
+  fill-opacity: 0;
+  stroke: none;
+}
+
+/* A line's only point, 6px with a rim in the page's color (Notion's, seen 2026-11-06). */
+.isolatedPoint {
+  stroke: var(--bg-app);
+  stroke-width: 1.25;
+}
+
+/* "데이터 없음" or "축 범위로 인해 데이터 없음" over a chart with nothing to
+   draw, 14px in the secondary text color on the page's (Notion's, seen
+   2026-10-11 and 2026-11-12). */
+.noData {
+  fill: var(--text-secondary);
+  font-size: 14px;
+}
+
+.noDataBack {
+  fill: var(--bg-app);
+}
+
+/* A donut's total and its label, sized by the chart's height
+   (ChartViewRenderers), as Notion's (seen 2026-11-08). */
+.donutTotal {
+  fill: var(--text-default);
+  font-weight: 600;
+}
+
+.donutTotalLabel {
+  fill: var(--text-secondary);
+}
+
+.dataLabel {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+/* A number chart's title 4 over its value, each on one line, cut with "…"
+   32 in from the box's sides, both 600 (Notion's, seen 2026-11-08); their
+   sizes follow the chart's height (ChartViewRenderers). */
+.numberChart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.numberTitle,
+.numberValue {
+  box-sizing: border-box;
+  max-width: 100%;
+  padding-inline: 32px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.numberTitle {
+  margin-bottom: 4px;
+  color: var(--text-default);
+  line-height: 1.5;
+}
+
+.numberValue {
+  line-height: 1.1;
+}
+
+/* A line's fading area, a stacked group's legend, the axes' names, a
+   reference line's label, a donut's labels and the caption, as Notion's
+   chart draws them (seen 2026-10-05). */
+.lineArea {
+  stroke: none;
+}
+
+.legendText {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+.donutLabel {
+  fill: var(--text-secondary);
+  font-size: 11.5px;
+}
+
+.donutLeader {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
+.axisName {
+  fill: var(--text-default);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.referenceLabel {
+  fill: var(--text-secondary);
+  font-size: 12px;
+}
+
+.caption {
+  fill: var(--text-secondary);
+  font-size: 12.5px;
+}
+
+:global([data-theme="dark"]) .wrap {
+  --chart-empty-fill: rgba(255, 255, 255, 0.1);
+  --chart-default-fill: rgb(227, 226, 224);
+}
+
+/* The page's color between a donut's slices, a line 1 wide across the ring, as Notion's (seen 2026-11-08). */
+.donutGap {
+  stroke: var(--bg-app);
+  stroke-width: 1;
+}
+
+.slice[data-opens] {
+  cursor: pointer;
+}

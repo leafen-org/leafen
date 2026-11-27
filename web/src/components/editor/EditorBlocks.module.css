@@ -1,0 +1,342 @@
+
+/* ── Block row + left gutter ───────────────────────────────── */
+/* A block sits 6px from its neighbours above and below, as Notion's
+   (seen 2026-10-29: a paragraph's 28px line in a 40px block): 5px here over
+   the 1px each line keeps. Blocks of one run (blockRun.ts: list items of any
+   kind; page blocks, links to pages, full-page databases and lines that are
+   only a link; buttons) running on keep only that 1px between them, so a run
+   spaces as one block (Notion: 30px apart, the run 6px from what is around
+   it; two lines that are only a mention 35px each, seen 2026-11-11). */
+/* A block's box is its parent's text box, and its own text box is 6px inside
+   it each side; a top block's box, or a column's own block's, reaches 6px past
+   the text column each side, as Notion's (measured 2026-11-04 at each depth:
+   534.5..1254.5, then 566.5..1248.5, then 598.5..1242.5). */
+.blockGroup {
+  position: relative;
+  margin-inline-start: -6px;
+  padding-inline: 6px;
+  padding-block: 5px;
+}
+.blockGroup[data-depth="0"], .column .blockGroup {
+  margin-inline-end: -6px;
+}
+/* A top block keeps to the page's column of blocks, which can be narrower
+   than its column of text (PageView .doc --page-block-max), as Notion's
+   (seen 2026-11-12); one that may be wide keeps the whole column, as a
+   table, a database, a picture, a video, audio, a file and a PDF do there. */
+.blockGroup[data-depth="0"]:not([data-block-type="table"], [data-block-type="inline_database"], [data-block-type="child_database"],
+  [data-block-type="image"], [data-block-type="video"], [data-block-type="audio"], [data-block-type="file"], [data-block-type="pdf"]) {
+  max-width: var(--page-block-max, none);
+}
+/* Nothing in a top block reads the page's column, which changes with the
+   page's width: it stops there, so a side peek narrowing the page works out
+   again only the boxes down to its top blocks, not every element of their
+   tables (pageColumn.module.css; seen 2026-11-12: some 100ms a time for a
+   page holding a table of 120 rows). */
+.blockGroup[data-depth="0"] > * {
+  --page-block-max: initial;
+  --doc-start: initial;
+}
+/* But for a picture's, a video's, a PDF's and an embed's, whose box may reach
+   the page (EditorMediaBlocks, BlockCornerHandles frameShareStyle). */
+.blockGroup[data-depth="0"]:not([data-block-type="image"], [data-block-type="video"], [data-block-type="pdf"], [data-block-type="embed"]) > * {
+  --page-room: initial;
+}
+/* An embed and a column list keep to it in the middle of the column, as
+   Notion's (seen 2026-11-12 at 1440 beside discussions: a 400px embed at
+   482.5, the middle of a column from 322.5 to 1042.5, by blocks to 955.5;
+   a column-wide embed and two columns from 366 to 999). */
+.blockGroup[data-depth="0"]:is([data-block-type="embed"], [data-block-type="column_list"]) {
+  margin-inline-start: calc((100% - min(100% + 12px, var(--page-block-max, 100% + 12px))) / 2);
+}
+.column .blockGroup .blockGroup {
+  margin-inline-end: 0;
+}
+/* Where a block runs on from the one above or into the one below, its view's
+   box says (nativeTiptapBlockRuns.ts): no rule reads a neighbour. */
+:global(.react-renderer[data-run-above]) > * > .blockGroup[data-run] {
+  padding-top: 0;
+}
+:global(.react-renderer[data-run-below]) > * > .blockGroup[data-run] {
+  padding-bottom: 0;
+}
+/* An empty toggle's hint ends its block 6px over the next toggle of a run. */
+:global(.react-renderer[data-run-below])
+  > * > .blockGroup[data-block-type="toggle"] > .blockRow > .blockBody > .toggleEmptyHint {
+  margin-bottom: 6px;
+}
+/* A run block's own first and last children of a run carry its run on
+   (Notion: 30px apart there too; a mention's line under a list item 31 and
+   29, as a list item there) — its own children, not ones under a block of
+   another kind inside it. */
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):first-child > * > .blockGroup[data-run] {
+  padding-top: 0;
+}
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):last-child > * > .blockGroup[data-run] {
+  padding-bottom: 0;
+}
+/* Under a line, children that don't carry a run on start 1px up into it and
+   end 1px further down, as Notion's: its line is 29 there and 1 under them
+   (measured 2026-11-04). */
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):first-child > * > .blockGroup:not([data-run]),
+.blockGroup[data-block-type="paragraph"]:not([data-run]) > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):first-child > * > .blockGroup {
+  margin-top: -1px;
+}
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):last-child > * > .blockGroup:not([data-run]),
+.blockGroup[data-block-type="paragraph"]:not([data-run]) > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):last-child > * > .blockGroup {
+  margin-bottom: 1px;
+}
+/* A synced block is no line: its own blocks stand at its top and foot under
+   a line too, as Notion's (measured 2026-11-08: its text 0px into it in a
+   toggle as on the page); the synced block itself moves as a child does. */
+.syncedContent > [data-node-view-content] > * > :global(.react-renderer) > .children > * > * > :global(.react-renderer):first-child > * > .blockGroup {
+  margin-top: 0;
+}
+.syncedContent > [data-node-view-content] > * > :global(.react-renderer) > .children > * > * > :global(.react-renderer):last-child > * > .blockGroup {
+  margin-bottom: 0;
+}
+.blockGroup[data-block-type="inline_database"] {
+  padding-block: 0;
+}
+.blockGroup[data-block-type="inline_database"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-start: -58px;
+  z-index: 0;
+  width: 88px;
+  height: 56px;
+}
+.blockGroup[data-block-type="embed"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-start: -58px;
+  z-index: 0;
+  width: 88px;
+  height: 100%;
+  min-height: 56px;
+}
+/* A block's children sit where Notion's do (measured 2026-10-31): 30px in
+   under a paragraph, 32px under a list item, to-do, toggle or toggle heading
+   (a toggle heading 1's at 440 as a toggle's, 2026-11-07), and under a
+   quote at its text; each block sets its own, so a child keeps its parent's. */
+.blockGroup {
+  --children-indent: 24px;
+}
+.blockGroup[data-block-type="paragraph"] {
+  --children-indent: 28px;
+}
+.blockGroup:is([data-block-type="bulleted_list_item"], [data-block-type="numbered_list_item"], [data-block-type="to_do"], [data-block-type="toggle"],
+  [data-block-type="toggle_heading_1"], [data-block-type="toggle_heading_2"], [data-block-type="toggle_heading_3"], [data-block-type="toggle_heading_4"]) {
+  --children-indent: 30px;
+}
+.blockGroup[data-block-type="quote"] {
+  --children-indent: 23px;
+}
+/* A quote's line runs down its text and its children, 8px in from the
+   block's top and bottom, where its own line stood, as Notion's (measured
+   2026-11-06: 24px beside one line, 64 with a line inside, 104 with two). */
+.blockGroup[data-block-type="quote"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 8px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--text-default);
+  pointer-events: none;
+}
+.blockGroup[data-block-type="quote"] .quote {
+  border-inline-start-color: transparent;
+}
+/* The line stands where the quote's text starts, as Notion's (seen
+   2026-11-09 in Hebrew: an English quote's line on its left): on the page's
+   far side when the text reads the other way from the app (<html dir>; its
+   text's way, `data-reads`, NativeTiptapTextView). Not :dir(): the build
+   rewrites it to the document's language. */
+:root:not([dir="rtl"]) .blockGroup[data-block-type="quote"]:has(> .blockRow [data-reads="rtl"])::before,
+:root[dir="rtl"] .blockGroup[data-block-type="quote"]:has(> .blockRow [data-reads="ltr"])::before {
+  inset-inline-start: auto;
+  inset-inline-end: 8px;
+}
+/* Its text keeps no room under it: those 3px go under the block, after the
+   lines inside it, which stand right under its text, as Notion's (measured
+   2026-11-06: a line inside 24px under the text's top, the block's foot 8px
+   under the last line; one line alone is 40px either way). */
+.blockGroup[data-block-type="quote"] {
+  padding-bottom: 8px;
+}
+.blockGroup[data-block-type="quote"] .quote .editable {
+  padding-bottom: 0;
+}
+/* A quote with no words of its own that holds blocks only holds them, as
+   Notion's (seen 2026-11-11: a typed head in a quote's line moves its words
+   into a block in it; such a quote draws no line of its own: 56px around one
+   line, 96 around two, the first line's letters 19px under its top). */
+.blockGroup[data-block-type="quote"]:has(> .blockRow > .blockBody > * > * > :global(.node-nativeText + .node-nativeChildren)):has(
+  > .blockRow > .blockBody > * > * > :global(.node-nativeText) [data-native-text][data-empty="true"]) {
+  padding-top: 11px;
+  padding-bottom: 5px;
+}
+.blockGroup[data-block-type="quote"] > .blockRow > .blockBody > * > * > :global(.node-nativeText):has([data-native-text][data-empty="true"]):has(
+  + :global(.node-nativeChildren)) {
+  display: none;
+}
+/* A synced block's blocks sit where they would without it, as Notion's. */
+.blockGroup[data-block-type="synced_block"] {
+  --children-indent: -2px;
+  padding-block: 0;
+}
+.children {
+  margin-inline-start: var(--children-indent);
+  padding-inline-start: 2px;
+}
+/* A block reading the other way from the frame, set to or by its words,
+   indents its children from its own start: a right-to-left one's from the
+   right, as Notion's (seen 2026-10-02 and 2026-11-11), a left-to-right one's
+   from the left in a right-to-left frame; each child still finds its own
+   direction (BlockFrame.tsx childrenDirection). */
+:root:not([dir="rtl"]) .children[data-direction="rtl"],
+:root[dir="rtl"] .children[data-direction="ltr"] {
+  margin-inline-end: var(--children-indent);
+  margin-inline-start: 0;
+  padding-inline-end: 2px;
+  padding-inline-start: 0;
+}
+/* Its blocks' boxes reach their 6px (.blockGroup) past it on that side too,
+   so they stand where they would in a frame reading their way: an English
+   list item's child at 143..819 under 111..825 in a right-to-left frame, as
+   Notion's in Hebrew (seen 2026-11-11). */
+:is(:root:not([dir="rtl"]) .children[data-direction="rtl"], :root[dir="rtl"] .children[data-direction="ltr"])
+  > * > * > :global(.react-renderer) > * > .blockGroup {
+  margin-inline-end: -6px;
+  margin-inline-start: 0;
+}
+.blockRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+}
+/* A row holding an open picker, menu or card rises over the rows after it,
+   which the picker hangs over: any open dialog, menu or list inside it, as
+   a database's toolbar menus (2026-10-13: they went under the next block),
+   or what marks itself as hanging out of its block. A database's row looks
+   into itself only while a window, menu or tip is open on the page
+   (overlayLayer's body[data-layer-open]; its own that open in it, as the
+   template chooser, are such layers): looked into at every change in it,
+   the browser went through its whole table again — some 12,000 elements
+   for a table of 30 rows by 40 properties, 6.5 ms a focus move (2026-11-15).
+   So does a row a database stands in (a toggle's, a column group's, a
+   callout's: databaseBlockRowMarks' data-holds-database), where each row
+   put in the table had the browser look through it all again; what opens
+   in its other blocks is such a layer too, or opens outside the row (the
+   person card and the date editor, on the page's body). The mark names
+   the rows it gates (body[data-layer-open] .blockRow), never every element
+   (body[data-layer-open] *): with `*` the browser worked out every element
+   of the page again at each first layer opened and last closed, the
+   closing icon picker's 7,300 among them, 100 ms of the icon's pick at CPU
+   ×2 (2026-11-18). */
+.blockRow:not([data-type="inline_database"], [data-holds-database]):has(.pageLinkPicker, .pastedUrlMenu, .inlinePersonMenu, .syncedPlacesMenu,
+  [data-date-mention-editor], [role="dialog"], [role="menu"], [role="listbox"], [data-block-overlay]),
+.blockRow:is([data-type="inline_database"], [data-holds-database]):where(body[data-layer-open] .blockRow):has(.pageLinkPicker, .pastedUrlMenu,
+  .inlinePersonMenu, .syncedPlacesMenu, [data-date-mention-editor], [role="dialog"], [role="menu"], [role="listbox"], [data-block-overlay]) {
+  z-index: 50;
+}
+/* A top block is laid out and painted on its own, so a block coming or going
+   above it moves it as one box: the browser went through every element under
+   every block after it to paint that frame (2026-11-14, an Enter on a
+   1,031-block page of pictures at CPU ×2: 23.5 ms before painting, 5.8 so).
+   It stands over the blocks before it as its row did (z-index 1). One that
+   holds what is placed on the screen itself rather than in it — an open
+   picker, menu, card or tip, a database's menus — is left as it was, as such
+   a box would place them in itself, and its row rises as above. A
+   database's own block, which always holds its view or its one line, and a
+   block a database stands in, are left as they are without being looked
+   into (above). */
+.blockGroup[data-depth="0"]:not([data-block-type="inline_database"], [data-holds-database]):not(:has(.pageLinkPicker, .pastedUrlMenu, .inlinePersonMenu, .syncedPlacesMenu,
+  [data-date-mention-editor], [role="dialog"], [role="menu"], [role="listbox"], [role="tooltip"], [data-block-overlay],
+  [data-inline-database-wrapper], [data-database-view])) {
+  contain: layout style;
+  z-index: 1;
+}
+.editor:not(:global([data-phone="true"]) *) > .blockGroup[data-depth="0"] > .blockRow {
+  margin-inline-start: 0;
+  margin-inline-end: 6px;
+}
+.children:not(:global([data-phone="true"]) *) > .blockGroup > .blockRow {
+  margin-inline-start: 32px;
+  margin-inline-end: 6px;
+}
+:is(:root:not([dir="rtl"]) .children[data-direction="rtl"], :root[dir="rtl"] .children[data-direction="ltr"]):not(:global([data-phone="true"]) *) > .blockGroup > .blockRow {
+  margin-inline-start: 6px;
+  margin-inline-end: 32px;
+}
+.blockRow:focus {
+  outline: none;
+}
+/* A file's row is its own 40px block and the next block touches it, as
+   Notion's (seen 2026-11-07: rows 40px apart, the next line's text 14px under
+   the file's name; 2026-11-01 it stood in a 44px frame). */
+.blockGroup[data-block-type="divider"] {
+  padding-block: 0;
+}
+/* A block's "+" and ⋮⋮ buttons; where they stand is EditorBlockHandles'. */
+.gutterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  /* Notion's block handles are its faint icon color (icoTer, seen 2026-10-11). */
+  color: var(--icon-tertiary);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+}
+.gutterBtn[aria-haspopup="menu"] {
+  width: 18px;
+}
+.gutterBtn svg {
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+.gutterBtn:hover,
+.gutterBtn:focus-visible,
+.gutterBtn[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.gutterBtn[draggable="true"] {
+  cursor: grab;
+}
+.gutterBtn[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* A text block's direction wraps it without a box of its own. */
+.textDirection {
+  display: contents;
+}
+
+/* A copy on its way, chosen, where it will stand (Notion's, seen 2026-11-05). */
+.copyIndicator {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  margin-inline: -6px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  color: var(--text-secondary);
+  font-size: 14px;
+  user-select: none;
+}

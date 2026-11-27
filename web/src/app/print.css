@@ -1,0 +1,59 @@
+/* ============================================================
+   Printing a page — the one place it is set.
+   A page on paper is the page alone, as Notion's print is (seen 2026-11-12
+   in its Mac app): its cover, icon, title, properties and blocks in the
+   page's own column, without the window's frame around it (the sidebar, the
+   top bar, the bands and panels beside the page, the floating outline,
+   notices), and in the light theme (lib/theme.ts). It runs on over as many
+   sheets as it takes rather than the one screen the window shows. The Mac
+   app's File › Print and the browser's print both draw this.
+   ============================================================ */
+@media print {
+  [data-sidebar-slot],
+  [data-mobile-sidebar-slot],
+  [data-mobile-sidebar-scrim],
+  [data-app-band],
+  [data-app-main] > header,
+  [data-app-main][data-page-scroll-host="true"] > :not([data-page-scroll]),
+  [data-row-peek-panel][data-mode="side"],
+  [data-row-peek-top],
+  [data-floating-page-outline],
+  [data-toast-stack] {
+    display: none !important;
+  }
+
+  /* Nothing scrolls on paper: the window, the page area and the page's own
+     scroll grow to the page's length. */
+  html,
+  body,
+  #root,
+  #root > div,
+  [data-app-main],
+  [data-page-scroll] {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* The paper's width is the page's: the frame spans the window's (100vw),
+     which WebKit keeps on paper, so the column sat off to the right and ran
+     past the sheet's edge. What the frame took from the page area (a band
+     above, a docked inbox, a side peek or panel beside) is the paper's again. */
+  #root > div {
+    width: auto !important;
+  }
+  [data-app-main] {
+    display: block !important;
+  }
+  [data-app-main],
+  [data-page-scroll] {
+    margin: 0 !important;
+  }
+
+  /* The room the window leaves under a page to scroll its end up is not the
+     page's, so no blank sheet follows it. */
+  [data-page-search-root] {
+    padding-block-end: 0 !important;
+  }
+}

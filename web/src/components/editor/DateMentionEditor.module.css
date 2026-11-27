@@ -1,0 +1,76 @@
+/* A date mention's editor, laid out as Notion's date editor (seen
+   2026-10-05): 248px wide for its month and wider for a longer line, as
+   the date window's (CellMenuPortal widestLine), its fields and calendar
+   12px in, its rows 4px in. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+.panel {
+  position: fixed;
+  z-index: 71;
+  width: min-content;
+  min-width: 248px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 12px 12px 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* The start and end, each a day and, with a time, its time in one box; two
+   days without a time stand side by side. */
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.inputs[data-range="true"]:not([data-timed="true"]) {
+  flex-direction: row;
+}
+/* The date fields as a database date cell's: 28px, a faint line on a faint
+   ground, focused or not, no blue ring (Notion's mention date window, seen
+   2026-11-06: 224×28, rgba(255,255,235,.1) on rgba(252,252,252,.03) in dark).
+   28px is its least height too, so a stacked pair's flex basis can't shrink it. */
+.inputRow {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 28px;
+  min-height: 28px;
+  padding-inline: 7px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--card-field-bg);
+}
+/* A range's end being set is ringed, as the date editor's (Notion's, seen 2026-11-08). */
+.inputRow[data-active="true"] {
+  border-color: var(--accent-blue);
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+.field {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.inputRow input {
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 14px;
+}
+.inputRow input:focus {
+  box-shadow: none;
+}

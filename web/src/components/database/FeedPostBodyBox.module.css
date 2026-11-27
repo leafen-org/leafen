@@ -1,0 +1,49 @@
+/* What holds a feed post's body box and the fade over its end (FeedPostBodyBox). */
+.frame {
+  position: relative;
+}
+
+/* The whole body shown, "더 보기" pressed. */
+.frame > [data-whole="true"] {
+  max-height: none;
+}
+
+/* A body taller than its box fades into the post's ground over its last
+   28px, 30px high, the box's width (Notion's feed, seen 2026-11-17 at 1440
+   and 1024). The box stands 2px before the title's edge (FeedPost .body). */
+.fade {
+  position: absolute;
+  z-index: 1;
+  inset-inline: -2px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 30px;
+  margin-block-start: -28px;
+  background: linear-gradient(to bottom, transparent 0, var(--feed-post-ground, var(--bg-app)) 30px);
+}
+
+/* "↓ 더 보기": Notion's dark button, #2c2c2b with #f0efed in either theme
+   (its --c-bacAccPri, as EmbedInteractOverlay's), 12px words on a 1.4 line,
+   4px in above and below, 8px before and 10px after, a 12px arrow 5px
+   before the words, 4px up into the fade (70×25 at 1440 and 1024). */
+.more {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-block-start: -4px;
+  padding-block: 4px;
+  padding-inline: 8px 10px;
+  border-radius: 6px;
+  background: #2c2c2b;
+  color: #f0efed;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: rgb(0 0 0 / 8%) 0 4px 12px -2px, rgb(255 255 255 / 5%) 0 0 0 1px inset;
+  cursor: pointer;
+}
+
+.more:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}

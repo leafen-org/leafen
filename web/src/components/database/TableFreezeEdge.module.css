@@ -1,0 +1,54 @@
+/* Notion's frozen-column edge (seen 2026-11-03): an 8px strip 3px before the
+   edge line, grabbed anywhere; pointed at, it fades in (0.2s) a 2px line
+   (palGra200) and a 4×28 blue grip, rounded 4px, centred on the pointer. */
+.holder {
+  --freeze-edge-line: rgba(81, 73, 60, 0.32);
+  position: relative;
+  z-index: 6;
+  width: 0;
+  height: 0;
+}
+/* Notion's dark line was not seen; the theme's strong border stands in. */
+:global([data-theme="dark"]) .holder {
+  --freeze-edge-line: var(--border-strong);
+}
+.edge {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.edge[data-shown="true"] {
+  opacity: 1;
+}
+.strip {
+  position: absolute;
+  top: 0;
+  inset-inline-start: -3px;
+  width: 8px;
+  height: 100%;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+.edge[data-dragging="true"] .strip {
+  cursor: grabbing;
+}
+.line {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 2px;
+  width: 2px;
+  height: 100%;
+  background: var(--freeze-edge-line);
+}
+.grip {
+  position: absolute;
+  inset-inline-start: 1px;
+  width: 4px;
+  height: 28px;
+  border-radius: 4px;
+  background: var(--accent-blue);
+}

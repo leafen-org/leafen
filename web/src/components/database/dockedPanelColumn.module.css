@@ -1,0 +1,26 @@
+/* A panel hung on a database's own page (useDockedPanelTop): its 290px
+   column inside its 1px line ends where the page's column does, scrolling
+   there with its scrollbar at the column's edge, and its ground runs on past
+   it to the window's edge, as Notion's view settings (seen 2026-11-06: the
+   scrollbar at 1161, not at the window's edge). Three classes, to win over a
+   panel's own place whatever the order the sheets load in — its docked rule
+   is a class and an attribute (2026-11-07: the start panel's "right: 0" won
+   a tie and its ground strip covered its last 96px). */
+/* The gap is the panel's own and its page's (useDockedPanelTop), not
+   inherited: written on the page's root, a panel opening restyled the
+   whole page. */
+@property --dock-gap { syntax: "*"; inherits: false; }
+.column.column.column {
+  inset-inline-end: var(--dock-gap, 0px);
+  width: min(291px, 100vw);
+}
+.column.column.column::after {
+  --dock-gap: inherit;
+  position: fixed;
+  top: inherit;
+  inset-inline-end: 0;
+  bottom: 0;
+  width: var(--dock-gap, 0px);
+  background: var(--bg-app);
+  content: "";
+}

@@ -1,0 +1,613 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.backdrop.backdrop {
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+}
+/* A menu's rows are regular weight wherever it opens, as Notion's — a
+   sidebar row's menu opens inside the sidebar, whose names are 500. */
+.menu {
+  position: absolute;
+  z-index: 51;
+  top: 26px;
+  inset-inline-end: 4px;
+  min-width: 200px;
+  font-weight: 400;
+  max-height: calc(100vh - 2 * var(--popover-edge));
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A sidebar page's own menu is 265px wide, as Notion's (seen 2026-10-01). */
+.menu[data-row-menu-variant="sidebar"] {
+  width: 265px;
+}
+/* The menu's own rows and bare buttons start without a fill; a part held in
+   the menu (a submenu row, an app's button, the edit request) keeps its own
+   look (2026-10-17: ".menu button" painted over theirs). */
+:where(.menu) :where(button, [data-native-menu-item]):not([class]) {
+  background: transparent;
+}
+/* Hung from a bar's "…" on the page's body (RowMenu places it). */
+.hangingMenu {
+  position: fixed;
+}
+.contextMenu {
+  position: fixed;
+  top: max(8px, var(--menu-y));
+  inset-inline-end: auto;
+  inset-inline-start: max(8px, var(--menu-x));
+  width: max-content;
+  max-width: min(280px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: min(620px, calc(100vh - 2 * var(--popover-edge)));
+}
+.actionSearch {
+  width: calc(100% - 8px);
+  height: 32px;
+  margin: 4px;
+  padding: 0 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 5px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+}
+.actionSearch:focus {
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  font-size: var(--menu-row-font-size);
+  color: var(--text-default);
+  text-align: start;
+  line-height: var(--menu-row-line-height);
+  background: transparent;
+}
+/* Rows 1px apart, the rows beside a menu too (Notion's, seen 2026-10-27; beside a page's "⋯" 2026-11-21, every list 29 apart). */
+:is(.item, .submenuItem) + :is(.item, .submenuItem) { margin-top: var(--menu-row-space); }
+.item > span:not(.itemHint):not(.menuSwitch):not(.itemValue):not([data-font-sample]) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.itemBadge {
+  display: inline-block;
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 18px;
+  vertical-align: 1px;
+}
+.itemHint {
+  flex: 0 0 auto;
+  margin-inline-start: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+.menuDisclosure {
+  flex: 0 0 auto;
+  color: var(--icon-secondary) !important;
+  transition: transform 120ms ease;
+}
+.menuDisclosure[data-open="true"] {
+  transform: rotate(90deg);
+}
+.item:hover,
+.item:focus,
+.item:focus-visible {
+  background: var(--bg-hover);
+}
+.item:focus {
+  outline: none;
+}
+/* A line's mark is icoPri, a little softer than its name, as Notion's menus (seen 2026-10-11). */
+.item svg {
+  color: var(--icon-primary);
+  flex: 0 0 auto;
+}
+/* A row that can't be chosen fades whole in its own colours, as Notion's (0.4, seen 2026-11-16 at 1440 twice: a locked database's
+   page's "레이아웃 사용자 지정", its view settings' "그룹화"). */
+.item:is(:disabled, [aria-disabled="true"]) { cursor: default; opacity: 0.4; }
+.fontOption:is(:disabled, [aria-disabled="true"]) {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.55;
+}
+.item:disabled:hover,
+.item:disabled:focus,
+.item:disabled:focus-visible,
+.fontOption:disabled:hover,
+.fontOption:disabled:focus,
+.fontOption:disabled:focus-visible,
+.item[aria-disabled="true"]:hover,
+.item[aria-disabled="true"]:focus,
+.fontOption[aria-disabled="true"]:hover,
+.fontOption[aria-disabled="true"]:focus {
+  background: transparent;
+  border-color: var(--border-default);
+}
+.compactSubmenu {
+  display: grid;
+  gap: 1px;
+  padding-block: 0 4px;
+  padding-inline: 32px 4px;
+}
+.subItem {
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: start;
+}
+.subItem:hover,
+.subItem:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.moveConfirmText {
+  margin: 4px 8px 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.moveConfirmList {
+  margin: 0 8px 4px;
+  padding-inline-start: 16px;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.divider {
+  flex: none;
+  border: 0;
+  height: 1px;
+  background: var(--menu-divider);
+  margin: var(--menu-divider-margin);
+}
+/* A group's name, as Notion's menus draw it (the menu tokens) wherever its rows stand — a menu, a search of it, a list beside
+   it, the font tiles: its first row 8 under it and the 1 between rows, in a list laid out in rows or a column alike (seen
+   2026-11-18; beside a page's "⋯" 2026-11-21 at 1440, dpr 1: "활성화된 연결" 10, its first connection 34.4). */
+.sectionLabel {
+  margin: var(--menu-label-margin);
+  margin-block-end: calc(8px + var(--menu-row-space));
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.fontPicker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 2px 4px 6px;
+}
+.fontOption {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 58px;
+  gap: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.2;
+}
+.fontOption:hover,
+.fontOption:focus,
+.fontOption:focus-visible,
+.fontOption[data-active="true"] {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+  color: var(--text-default);
+  outline: none;
+}
+.fontSample {
+  color: var(--text-default);
+  font-size: 20px;
+  line-height: 1;
+}
+.fontOption[data-font="serif"] .fontSample {
+  font-family: var(--font-serif);
+}
+.fontOption[data-font="mono"] .fontSample {
+  font-family: var(--font-mono);
+}
+.menuSwitch {
+  margin-inline-start: auto;
+}
+.moveSearch {
+  width: calc(100% - 8px);
+  height: 28px;
+  margin: 2px 4px 4px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 5px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+}
+
+/* The foot of a sidebar row's menu: who edited it last and when, in grey
+   12px lines, as Notion's (seen 2026-10-03). */
+.menuFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 8px 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Who edited last, with their face 4px before the name, in a page's own
+   menu foot (seen 2026-10-19; the gap 2026-11-13, as the block menu's). With
+   it, Notion's page and sidebar row menus (seen 2026-11-13) put the foot's
+   first line 12px under the line above it and its last 12px over the
+   menu's end, the face 4px under "최종 편집 일시" and the lines after it 2px
+   apart; the name grey as the lines, "최종 편집 일시" 500. */
+.menuFootPerson {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.menuFootLabel {
+  font-weight: 500;
+}
+.menuFoot:has(.menuFootPerson) {
+  padding-block: 8px;
+}
+.menuFootPerson ~ * {
+  margin-block-start: -2px;
+}
+
+/* The face and, for an edit through a connection, its 12px mark in a 16px
+   ring of the menu's color, 4px over the face (Notion's, seen 2026-11-09). */
+.menuFootFaces {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.menuFootViaMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-inline-start: -4px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+}
+
+/* A page's own "…" menu, as Notion's (seen 2026-10-07): 256px, a search
+   field on top, the fonts as tiles, then 28px rows — the mark 8px in, the
+   name at 36px, a shortcut or the value now in gray at the right. A row's
+   menu in its view is 265px with the same rows (seen 2026-10-11). */
+.menu[data-row-menu-variant="page"] {
+  width: 256px;
+  border-radius: 10px;
+}
+.menu[data-row-menu-variant="row"] {
+  width: 265px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  border-radius: 10px;
+}
+.menu[data-row-menu-variant="page"] .item,
+.submenu .item,
+.menu[data-row-menu-variant="row"] .item {
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 20px;
+}
+/* "페이지" over a row's lines: 12px, 18px under the search, 10px over the first line. */
+.menu[data-row-menu-variant="row"] .sectionLabel {
+  margin: 0;
+  padding: 6px 8px 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+}
+.menu[data-row-menu-variant="page"] .itemHint,
+.menu[data-row-menu-variant="row"] .itemHint,
+.submenu .itemHint,
+.submenu .submenuItem > span.itemHint {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.menu[data-row-menu-variant="page"] .fontPicker,
+.submenu .fontPicker {
+  gap: 0;
+  padding: 0 8px;
+}
+/* A named group after another stands under a line 9 under that group (Notion's group 4 and 5 of the next one's 6, the line
+   in its last px), its name 12 under the line (that 6 and the name's own): the fonts and "테마", a search's lists (seen
+   2026-11-21 at 1440, dpr 1, "글꼴"·"보"). Right under the search, its name is 18 under the field: the search's 12 (Notion's 8
+   and its group's 4) and the name's own 6. */
+.submenu .fontPicker + section::before {
+  content: "";
+  display: block;
+  height: 1px;
+  margin: 9px 8px 12px;
+  background: var(--menu-divider);
+}
+.divider:has(+ section > .sectionLabel:first-child) { margin-block: 9px 12px; }
+.menu[data-row-menu-variant="page"] section > .sectionLabel:first-child { margin-block-start: 18px; }
+.menu[data-row-menu-variant="page"] .divider + section > .sectionLabel:first-child { margin-block-start: 6px; }
+/* The page menu's tiles (seen 2026-10-17): no frame, the chosen one on a soft fill with its "Ag" in blue, names in 12px
+   gray; three 92s side by side, 61 high: 10 6 6 in, the "Ag" 25 high drawn 2 up and the name 4 under it at the foot
+   (Notion's, seen 2026-11-21 at 1440, dpr 1). */
+.menu[data-row-menu-variant="page"] .fontOption,
+.submenu .fontOption {
+  justify-content: flex-end;
+  gap: 4px;
+  min-height: 0;
+  padding: 10px 6px 6px;
+  border: 0;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.menu[data-row-menu-variant="page"] .fontOption:hover,
+.menu[data-row-menu-variant="page"] .fontOption:focus,
+.menu[data-row-menu-variant="page"] .fontOption[data-focused="true"],
+.menu[data-row-menu-variant="page"] .fontOption[data-active="true"],
+.submenu .fontOption:hover,
+.submenu .fontOption:focus,
+.submenu .fontOption[data-focused="true"],
+.submenu .fontOption[data-active="true"] {
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+.menu[data-row-menu-variant="page"] .fontSample,
+.submenu .fontSample {
+  position: relative;
+  inset-block-start: -2px;
+  height: 25px;
+  font-size: 24px;
+}
+.menu[data-row-menu-variant="page"] .fontOption[data-active="true"] .fontSample,
+.submenu .fontOption[data-active="true"] .fontSample {
+  color: var(--accent-blue);
+}
+/* "글꼴 스타일" over the tiles, across them, at their 8 in. */
+.fontPicker > header {
+  grid-column: 1 / -1;
+  padding-inline: 0;
+}
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.menuEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+.actionSearch {
+  display: flex;
+  align-items: center;
+  /* Fills the menu between its margins, also beside a scrollbar. */
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 8px 8px 12px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  --menu-search-rest-ring: var(--name-field-ring); box-shadow: var(--menu-search-rest-ring);
+}
+.actionSearch:focus-within {
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+/* The page menu's search leads with a 16px magnifier 6px in, its words 6px
+   on, as Notion's (seen 2026-11-01); the other menus' searches have none. */
+.actionSearch > svg {
+  flex: 0 0 16px;
+  margin-inline-end: 6px;
+  color: var(--icon-secondary);
+}
+.actionSearch > input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+/* The value a row shows before its "›" (RowMenuValue.module.css). */
+.itemValue { composes: value from "./RowMenuValue.module.css"; }
+.itemChevron {
+  flex: 0 0 auto;
+  color: var(--icon-secondary) !important;
+}
+/* The "›" 13 after the value: the row's 8 and 5 more (Notion's, read 2026-11-18 in two tabs). */
+.itemValue + .itemChevron {
+  margin-inline-start: 5px;
+}
+/* "휴지통으로 이동" — and any menu row that removes or loses something — reads
+   as the other rows and turns red under the pointer. */
+/* The line takes the color its mark reads: a pointer or focus state over
+   "svg" restyled every icon on the page at each pointer move (2026-11-12). */
+.dangerOnHover:hover,
+.dangerOnHover:focus-visible,
+.dangerOnHover[data-focused="true"] {
+  --danger-mark: var(--menu-danger);
+  color: var(--menu-danger);
+}
+.dangerOnHover svg {
+  color: var(--danger-mark, var(--icon-primary));
+}
+
+/* The rows beside the page menu, which keep their keys and pointer to it. */
+.submenuHost {
+  display: contents;
+}
+/* Rows beside the page menu: "테마와 레이아웃" (300px), "더 보기" (280px),
+   "알림 받기" (300px), "인라인 댓글" (240px) and "연결" (350px). */
+.submenu {
+  display: flex;
+  flex-direction: column;
+  max-height: min(70vh, calc(100vh - 2 * var(--popover-edge)));
+  overflow: hidden;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* More to scroll to fades out at that edge (styles.css [data-edge-fade]),
+   the box and its shadow staying whole, as Notion's (seen 2026-11-03). */
+.submenuList {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px;
+}
+.submenuItem {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+.submenuItem > span:not(.submenuGlyph) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A choice with what it means under it, as Notion's "모든 업데이트". */
+.submenuItem > .submenuChoice {
+  display: grid;
+  gap: 1px;
+  white-space: normal;
+}
+.submenuChoice small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.submenuItem:hover, .submenu[data-opening-lit] .submenuItem:focus,
+.submenuItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.submenuItem:disabled {
+  color: var(--text-tertiary);
+}
+.submenuGlyph {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+.submenuSearch {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin: 8px; /* "연결 검색" 12 in from its box, as Notion's (RowMenuConnections.module.css) */
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  --menu-search-rest-ring: var(--name-field-ring); box-shadow: var(--menu-search-rest-ring);
+}
+.submenuSearch:focus-within {
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+.submenuSearch input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.submenuNote {
+  margin: 4px 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* A phone's database row menu: at the screen's bottom, full width, its top
+   corners 12px round and its rows 45px and 16px, as Notion's phone sheets
+   (seen 2026-10-27); a phone has no search in it. */
+.menu.contextMenu[data-phone-menu="true"] {
+  inset: auto 0 0 0;
+  width: auto;
+  max-width: none;
+  max-height: 70vh;
+  padding: 8px 8px 24px;
+  border-radius: 12px 12px 0 0;
+}
+
+.backdrop[data-phone-menu="true"] {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.menu.contextMenu[data-phone-menu="true"] .item {
+  min-height: 45px;
+  font-size: 16px;
+}
+
+.menu.contextMenu[data-phone-menu="true"] .actionSearch {
+  display: none;
+}

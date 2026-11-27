@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "name": "enterprise-mcp-governance",
+  "operations": [
+    { "goName": "mcpGovernanceReadPolicy", "tsName": "readPolicy", "method": "GET", "path": "/organizations/{organizationId}/mcp-governance/workspaces/{workspaceId}" },
+    { "goName": "mcpGovernanceUpdatePolicy", "tsName": "updatePolicy", "method": "PUT", "path": "/organizations/{organizationId}/mcp-governance/workspaces/{workspaceId}" },
+    { "goName": "mcpGovernanceApproveClient", "tsName": "approveClient", "method": "POST", "path": "/organizations/{organizationId}/mcp-governance/workspaces/{workspaceId}/clients" },
+    { "goName": "mcpGovernanceRenameClient", "tsName": "renameClient", "method": "PATCH", "path": "/organizations/{organizationId}/mcp-governance/workspaces/{workspaceId}/clients/{clientId}" },
+    { "goName": "mcpGovernanceRemoveClient", "tsName": "removeClient", "method": "DELETE", "path": "/organizations/{organizationId}/mcp-governance/workspaces/{workspaceId}/clients/{clientId}" }
+  ],
+  "bounds": [
+    { "goName": "mcpGovernanceMaxBodyBytes", "tsName": "bodyBytes", "value": 65536 },
+    { "goName": "mcpGovernanceMaxClientIDRunes", "tsName": "clientIdRunes", "value": 255 },
+    { "goName": "mcpGovernanceMaxClientNameRunes", "tsName": "clientNameRunes", "value": 255 }
+  ],
+  "constants": [
+    { "goName": "mcpGovernanceManualClientID", "tsName": "manualClientId", "value": "manual-token" }
+  ],
+  "errors": [
+    { "goName": "errorCodeMCPGovernanceInvalid", "tsName": "invalid", "value": "LEAFEN_MCP_GOVERNANCE_INVALID" },
+    { "goName": "errorCodeMCPClientNotApproved", "tsName": "clientNotApproved", "value": "LEAFEN_MCP_CLIENT_NOT_APPROVED" },
+    { "goName": "errorCodeMCPGovernanceUnavailable", "tsName": "unavailable", "value": "LEAFEN_MCP_GOVERNANCE_UNAVAILABLE" }
+  ],
+  "records": [
+    {
+      "goName": "mcpGovernancePolicyInput",
+      "tsName": "MCPGovernancePolicyInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "mcpGovernanceApprovedClientInput",
+      "tsName": "MCPGovernanceApprovedClientInput",
+      "fields": [
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "mcpGovernanceRenameClientInput",
+      "tsName": "MCPGovernanceRenameClientInput",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "mcpGovernanceApprovedClientResponse",
+      "tsName": "MCPGovernanceApprovedClient",
+      "fields": [
+        { "goName": "ClientID", "jsonName": "clientId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "mcpGovernancePolicyResponse",
+      "tsName": "MCPGovernancePolicy",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ApprovedClients", "jsonName": "approvedClients", "goType": "[]mcpGovernanceApprovedClientResponse", "tsType": "MCPGovernanceApprovedClient[]" }
+      ]
+    }
+  ]
+}

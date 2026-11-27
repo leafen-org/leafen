@@ -1,0 +1,456 @@
+.sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* Notion's sidebar (seen 2026-10-11): page names texAccPri, their icons
+     the gray icon color, section names faint text. */
+  --sidebar-row-text: var(--text-accent-secondary);
+  --sidebar-row-icon: var(--icon-secondary);
+  --sidebar-section-text: var(--text-tertiary);
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  flex: 0 0 var(--sidebar-width);
+  height: var(--app-height, 100vh);
+  background: var(--bg-sidebar);
+  /* Its edge is a line drawn inside, not a border, as Notion's (seen
+     2026-11-01: inset -1px borSec at 560–1392px): the rows and the foot's
+     buttons keep the full width. */
+  box-shadow: inset calc(-1px * var(--inline-sign, 1)) 0 0 var(--border-secondary);
+  font-size: 14px;
+  overflow: hidden;
+  user-select: none;
+  opacity: 1;
+  /* Must stay transform-free while expanded: any transform would become the
+     containing block for the fixed workspace-menu backdrop, shrinking it to
+     the sidebar box so outside clicks no longer dismiss the menu. */
+  transform: none;
+  transition:
+    opacity 170ms ease,
+    box-shadow 170ms ease,
+    transform 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+.sidebar[data-collapsed="true"] {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  flex-basis: var(--sidebar-width);
+  opacity: 0;
+  transform: translateX(calc((20px - var(--sidebar-width)) * var(--inline-sign, 1)));
+  box-shadow: none;
+  pointer-events: none;
+}
+.sidebar[data-resizing="true"] {
+  transition: none;
+}
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  inset-inline-end: -3px;
+  bottom: 0;
+  z-index: 5;
+  width: 6px;
+  cursor: col-resize;
+}
+.resizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-end: 2px;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background 0.12s;
+}
+.resizeHandle:hover::after,
+.resizeHandle:active::after,
+.resizeHandle:focus-visible::after {
+  background: var(--accent-blue);
+}
+/* Clipped, not a scroll box, so focusing the handle never scrolls the rows
+   sideways (2026-11-01: they stayed 3px left); the handle hangs 11px past
+   the edge and 1px in, as Notion's 12px one (seen 2026-11-01). A browser
+   without clip keeps the handle inside the hidden box. */
+@supports (overflow: clip) {
+  .sidebar {
+    overflow-x: visible;
+    overflow-y: clip;
+  }
+  .resizeHandle {
+    inset-inline-end: -11px;
+    width: 12px;
+  }
+  /* Its line at the edge marks the focus; Notion's has no ring. */
+  .resizeHandle:focus-visible {
+    outline: none;
+  }
+  .resizeHandle::after {
+    inset-inline-end: auto;
+    inset-inline-start: 0;
+  }
+}
+
+/* ── Header / workspace switcher ───────────────────────────── */
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 45px;
+  padding-block: 0;
+  padding-inline: 8px 6px;
+  gap: 2px;
+}
+.workspaceBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  color: var(--text-default);
+  text-align: start;
+}
+.workspaceBtn:hover,
+.workspaceBtn:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The workspace's mark, as Notion's (seen 2026-10-07): its first letter in a
+   20px box on a workspace's letter ground (seen 2026-11-16, bacTerTra). */
+.wsIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 3.5px;
+  background: var(--letter-icon-bg);
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1;
+  overflow: hidden;
+}
+/* An icon of its own stands in a 22px box without the tint, as Notion's
+   (seen 2026-11-11): an emoji 15.4px, a built-in icon or a picture 21px. */
+.wsIcon[data-workspace-icon]:not([data-workspace-icon="letter"]) {
+  width: 22px;
+  height: 22px;
+  margin: -1px;
+  background: none;
+  font-size: 15.4px;
+}
+.wsName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The account line under the name shows on a phone only (SidebarPhone). */
+.wsNameStack {
+  display: contents;
+}
+.wsAccount {
+  display: none;
+}
+/* No connection: Notion's struck-out cloud after the workspace's name (seen
+   2026-11-14, 1440 dark and iPhone light): a 20px icon in the secondary icon
+   color in a 24px box. */
+.wsOffline {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--icon-secondary);
+}
+.wsChevron {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.workspaceBtn:hover .wsChevron,
+.workspaceBtn:focus-visible .wsChevron,
+.workspaceBtn[aria-expanded="true"] .wsChevron {
+  opacity: 1;
+}
+:global([data-touch="true"]) .wsChevron {
+  opacity: 1;
+}
+
+/* ── Top actions ───────────────────────────────────────────── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px 8px;
+}
+.homeLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Placeholder that holds the tree's flex slot while the inline inbox lazy-loads. */
+.inboxLoading {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+@keyframes import-progress-pulse {
+  0%, 100% { opacity: 0.42; transform: scale(0.82); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Scroll area / sections ────────────────────────────────── */
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 4px 8px 12px;
+  overflow-y: auto;
+}
+/* A section's heading and rows stack 1px apart, as Notion's (seen 2026-10-30:
+   30px rows every 31px), and sections 16px apart (seen 2026-11-12, every
+   section of a member's and a guest's list). */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 16px;
+}
+/* The list's first heading is 6px under its top, as Notion's (seen
+   2026-11-12: a member's at 132 under a list from 126, a guest's at 88
+   under one from 82). A phone's drawer keeps its own (SidebarPhone). */
+.scroll > :where(.section:first-child) {
+  margin-top: 2px;
+}
+.sectionLabel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: space-between;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--sidebar-section-text);
+}
+.sectionLabel:hover,
+.sectionLabel[data-keys-within] {
+  background: var(--bg-hover);
+}
+/* Under the pointer a section's name lightens on a band rounded as a page
+   row's; its chevron keeps its gray (Notion's, seen 2026-11-07 dark: #bcbab6
+   over #7d7a75, 6px). */
+.sectionLabel:hover .sectionTitle,
+.sectionLabel[data-keys-within] .sectionTitle {
+  color: var(--text-accent-secondary);
+}
+/* The chevron 4px after the name, as Notion's section head (seen 2026-11-14). */
+.sectionToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: calc(100% - 70px);
+  height: 28px;
+  padding: 0;
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+}
+.sectionToggle:hover,
+.sectionToggle:focus-visible {
+  background: transparent;
+  outline: none;
+}
+/* It shows and turns at once, as Notion's by a section's name (seen 2026-11-14). */
+.sectionChevron {
+  flex: 0 0 auto;
+  color: currentColor;
+  opacity: 0;
+}
+.sectionLabel:hover .sectionChevron,
+.sectionLabel[data-keys-within] .sectionChevron,
+.sectionToggle:focus-visible .sectionChevron {
+  opacity: 1;
+}
+/* A touch screen shows none, as Notion's iPad and phone drawer have no
+   chevron by a section's name (seen 2026-11-13 in iPad Safari at 834 and
+   iPhone Safari at 402): the name still folds its section. */
+.sectionToggle[aria-expanded="true"] .sectionChevron {
+  transform: rotate(90deg);
+}
+.sectionToggle[aria-expanded="false"] .sectionChevron {
+  transform: rotate(0deg);
+}
+.privateSectionToggle[aria-expanded="true"] .sectionChevron {
+  transform: rotate(0deg);
+}
+.privateSectionToggle[aria-expanded="false"] .sectionChevron {
+  transform: rotate(calc(-90deg * var(--inline-sign, 1)));
+}
+.sectionTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.teamspaceList {
+  display: flex;
+  flex-direction: column;
+}
+/* A teamspace stands 1px under the one before, as a row does; an open one
+   with another after it keeps 14px under its last row, so each teamspace's
+   rows read as one block, as Notion's (seen 2026-11-13: 14px under an open
+   teamspace, 1px under a folded one and under the last). */
+.teamspaceEntry {
+  min-width: 0;
+  margin-bottom: 1px;
+}
+.teamspaceEntry[data-sidebar-teamspace-gap="true"] {
+  margin-bottom: 14px;
+}
+/* The row folds from anywhere before its "+" and "…", as Notion's whole row does. */
+.teamspaceToggle {
+  flex: 1 1 auto;
+  gap: 9px;
+  max-width: calc(100% - 50px);
+}
+.teamspaceLeading {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+/* A teamspace's arrow turns as a page row's (.disclosure). */
+.teamspaceChevron {
+  position: absolute;
+  inset: 4px;
+  transition: transform 200ms ease-out;
+}
+/* The row's own arrow, over its icon, as a page row's disclosure. */
+.teamspaceDisclosure {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 4px;
+  color: inherit;
+  transition: background 20ms ease-in;
+}
+.teamspaceDisclosure:hover,
+.teamspaceDisclosure:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+.sectionLabel:hover .teamspaceIcon,
+.sectionLabel[data-keys-within] .teamspaceIcon {
+  opacity: 0;
+}
+.teamspaceIcon { composes: glyph from "../teamspace/TeamspaceGlyph.module.css"; }
+/* A teamspace's row reads as a page row, as Notion's: the same size, a little heavier,
+   9px after its glyph (name at 45, 2026-11-16); its pages sit one step in under it. */
+.teamspaceName {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--sidebar-row-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.teamspaceEntry > [role="tree"] {
+  padding-inline-start: 8px;
+}
+/* Its first page 1px under its name, as rows stand. */
+.teamspaceEntry > [role="tree"]:not(:empty) {
+  margin-top: 1px;
+}
+/* "+ 새로 추가" as Notion's (seen 2026-10-31): the plus at 19px, the words at 46px, 14px/400. */
+.teamspaceEntry > .teamspaceAddRow {
+  height: 30px;
+  padding-inline-start: 19px;
+  font-size: 14px;
+  font-weight: 400;
+}
+/* "하위 페이지 없음" as Notion's (measured 2026-11-17 at 1416): 30px, 3px under the head, 14px in the third color 8+29px in. */
+.teamspaceEmpty {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-block-start: 3px;
+  padding-inline-start: 37px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* The teamspaces' "··· 모두 보기" is every section's (.showAll, 30px and
+   14px), 1px past the last teamspace's own margin: 2px under its last row
+   here and 12+1 on wide touch, as Notion's (seen 2026-11-17 with six
+   teamspaces joined, at 1440 and on the iPad at 834: the same row as the
+   recent and private ones). */
+.teamspaceBrowseButton {
+  margin-top: 1px;
+}
+.sectionActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.sectionLabel:hover .sectionActions,
+.sectionLabel[data-keys-within] .sectionActions,
+.sectionActions[data-open="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* The sidebar's buttons take the page's 30px rows and padding (styles.css);
+   a 20px action keeps its own, or its icon shrinks to nothing. */
+.sectionAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  transition: opacity 0.12s, background 0.12s;
+}
+.sectionAction:hover,
+.sectionAction:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.sectionAdd:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.sectionLabel:hover .sectionAdd:disabled,
+.sectionAdd:disabled:focus-visible {
+  pointer-events: none;
+}
+.sectionAdd:disabled:hover {
+  background: transparent;
+}
+
+/* ── Tree rows ─────────────────────────────────────────────── */

@@ -1,0 +1,291 @@
+/* "⌄ 속성 N개 더 보기" starts its line under the property names, a 34 tall
+   14px tertiary button (6 in, rounded 6), as Notion's (seen 2026-11-05). */
+.rowHiddenPropertiesLine {
+  grid-column: 1 / -1;
+}
+.rowHiddenProperties {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  min-height: 34px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.rowHiddenPropertiesIcon {
+  flex: 0 0 auto;
+}
+.rowHiddenProperties:hover,
+.rowHiddenProperties:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+.rowPeekEditor {
+  padding-top: 2px;
+  border-top: 1px solid var(--border-default);
+}
+
+:global([data-phone="true"]) .rowPeek {
+  inset-inline-start: 0;
+  width: 100vw;
+  min-width: 0;
+}
+/* A phone's row page over the whole screen is laid on the page, which
+   doesn't scroll on a phone, rather than fixed to the screen: Safari takes a
+   box fixed over the screen for its bars, where Notion's keep the soft
+   ground (seen 2026-11-12 at 402pt: 249,248,247 over and under its row
+   page; phoneBarGround.ts). A peek over the page is laid so as it opens. */
+:global([data-phone="true"]) .rowPeek[data-mode="full"] {
+  position: absolute;
+}
+:global([data-phone="true"]) .rowPeekResizeHandle {
+  display: none;
+}
+:global([data-phone="true"]) .rowPeekDoc {
+  padding: 0 28px 48px;
+}
+:global([data-phone="true"]) .rowPeek[data-mode="center"] .rowPeekDoc {
+  padding-inline-end: 28px;
+  padding-inline-start: 28px;
+}
+/* A phone's row page head stands where a page's does, its options 16px under
+   the bar with an icon or without (PageHeader.module.css), so the page under
+   the bar has no top room of its own (Notion's, seen 2026-11-14 at 402pt:
+   "커버 추가" 44 to 100, the icon at 100, the title at 186); so does a wider
+   touch screen's row page opened whole (an iPad's at 834: the options at 60,
+   the title at 100, or the icon at 100 and the title at 186). */
+:global([data-phone="true"]) .rowPeekDoc[data-has-cover="false"],
+:global([data-touch="true"]) .rowPeek[data-mode="full"] .rowPeekDoc[data-has-cover="false"] {
+  padding-top: 0;
+}
+/* A wider touch screen's row page opened whole keeps a page's column there
+   (PageView .doc: 900, its words 6px further in than a computer's where the
+   window is wider), as Notion's iPad (seen 2026-11-14 at 1210: the title's
+   words at 259, the options at 250, the properties at 253; at 834 104, 95
+   and 98). */
+:global([data-touch="true"]) .rowPeek[data-mode="full"]:not([data-phone="true"]) .rowPeekDoc {
+  max-width: 900px;
+}
+/* A touch screen's row title is 28px, as a page's there (PageHeader.module.css),
+   the head's own 8px under it (Notion's iPad, seen 2026-11-14 at 834 and
+   1210: 28px on 33.6 lines, the properties 8 under the title with an icon
+   or without, their first name's words 15 under it). */
+:global([data-touch="true"]) .rowPeek .rowPeekDoc .rowPeekTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+}
+/* A touch screen's row page opened whole has a page's foot (PageView .doc),
+   as Notion's, whose row page and page share one (seen 2026-11-14: 400 on a
+   Galaxy A90, 300 on an iPhone, 380 on an iPad), its body also ending 15vh
+   under its last block. A phone's body is at least calc(100lvh - 132px), so
+   it always has room to scroll and a new row's head scrolls away under the
+   bar with the caret in its title (useRowPageHeadAwayOnPhone), as Notion's
+   (seen at 402×714: a new row's button row 4–60 under the 44 bar, scrolled
+   40, the title at 60; 622 of body, 113 of it the 15vh). */
+:global([data-touch="true"]) .rowPeek[data-mode="full"]:not([data-phone="true"]) .rowPeekDoc {
+  padding-bottom: 380px;
+}
+:global([data-phone="true"]) .rowPeek[data-mode="full"] .rowPeekDoc {
+  padding-bottom: 400px;
+}
+:global([data-phone="true"][data-apple-touch]) .rowPeek[data-mode="full"] .rowPeekDoc {
+  padding-bottom: 300px;
+}
+:global([data-touch="true"]) .rowPeek[data-mode="full"] .rowPeekEditor {
+  padding-bottom: 15lvh;
+}
+:global([data-phone="true"]) .rowPeek[data-mode="full"] .rowPeekEditor {
+  min-height: calc(100lvh - 132px);
+}
+:global([data-phone="true"]) .rowPeekTop {
+  padding-inline-start: 10px;
+}
+/* Its row's name ends where a page's does on a phone's bar: the room of
+   Notion's hidden 30px sync mark and the name's 8px before the first icon
+   (TopBarPeople.module.css), less this bar's 10px gap, the piece's 6px and
+   the 7px the share's 40px box starts before its icon. */
+:global([data-phone="true"]) .rowPeekActions {
+  padding-inline-start: calc(30px + 8px - 7px - 10px - 6px);
+}
+/* A phone's row page bar has the page bar's hairline under it in place of
+   the line in its foot (Notion's, seen 2026-11-12 at 402pt: one screen pixel
+   of #f0efed right under its 44pt, as over a page). */
+:global([data-phone="true"]) .rowPeekTop {
+  position: relative;
+  z-index: 1;
+  box-shadow: none;
+}
+:global([data-phone="true"]) .rowPeekTop::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  border-top: 0.5px solid var(--border-secondary);
+  pointer-events: none;
+}
+:global([data-phone="true"]) :where(.rowPeekActions) button span {
+  display: none;
+}
+/* A row open as a page gives up its right side to its docked updates and
+   analytics, as a page does, and a side peek opened over the panel takes that
+   room instead (PageView.module.css .scroll[data-side-panel], usePeekRoom). */
+.rowPeekScroll[data-side-panel="true"]:not(:global(:where([data-phone="true"], [data-side-row-peek-room="true"])) .rowPeekScroll) {
+  margin-inline-end: var(--page-side-panel-width);
+}
+/* So do the bands over a template's page, its "템플릿 편집 중" and a trashed
+   one's: they keep to the page beside the panel, as Notion's template page
+   (seen 2026-11-17, 1440). */
+.templateEditorBanner:has(~ .rowPeekScroll[data-side-panel="true"]):not(:global(:where([data-phone="true"], [data-side-row-peek-room="true"])) .templateEditorBanner),
+:global([data-row-trash-banner]):has(~ .rowPeekScroll[data-side-panel="true"]):not(:global(:where([data-phone="true"], [data-side-row-peek-room="true"]) [data-row-trash-banner])) {
+  margin-inline-end: var(--page-side-panel-width);
+}
+:global([data-phone="true"]) .rowProperty {
+  grid-template-columns: 1fr;
+  gap: 1px;
+  padding: 6px 0;
+}
+:global([data-phone="true"]) .rowPropertyName {
+  padding: 0;
+}
+:global([data-phone="true"]) .templateEditorBanner {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+}
+:global([data-phone="true"]) .templateBannerRepeat {
+  margin-inline-start: 16px;
+}
+
+/* A plain value (a number, a date, a formula's or rollup's) in a page's
+   property list reads in the page's 14px dark words, not a card's grey. */
+span.rowPropertyFieldValue {
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* A page's related pages stand one to a line within the value: a long name
+   ends in "…" 12px before the value's end, the line still reaching it
+   (Notion's, seen 2026-11-14 at 1440 in a side peek: the line 966 to 1349,
+   the name 998 to 1337). A wrapping column would take its widest page's
+   width and run past the value. */
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) {
+  flex-wrap: nowrap;
+}
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChip {
+  min-width: 0;
+}
+/* An empty one keeps the 34px line, its "+" beside the blank rather than
+   under it (Notion's "비어 있음" line, seen 2026-11-14). */
+.rowPropertyValue .relationChips[data-empty]:not([data-relation-section], [data-rollup-pages]) {
+  flex-direction: row;
+}
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChipLink {
+  min-width: 0;
+  margin-inline-end: 8px;
+}
+/* Its files run on side by side, 8px apart and 6px between lines, a file's
+   name at most 200px wide with its "…", and no "+" taking room after them —
+   pressing the value opens its files (Notion's, seen 2026-11-14: a broken
+   picture 16px and a PDF's 200px pill on one 24px line). */
+.rowPropertyValue .filesChips {
+  gap: 6px 8px;
+}
+.rowPropertyValue .filesChips .fileChip {
+  max-width: 200px;
+}
+.rowPropertyValue .filesChips:not([data-empty]) > .propertyCellEditTrigger {
+  display: none;
+}
+/* "외 N개 항목" under a row page's first five related pages: a 32px line from
+   the pages' lines' start, its 14px words in the secondary gray 8px in, lit
+   under the pointer (Notion's, seen 2026-11-14). */
+.relationMoreLine {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  margin-inline-start: -6px;
+  padding-inline: 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+}
+.relationMoreLine:is(:hover, :focus-visible) {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A pinned property's value under its name (RowPagePinnedProperties), as
+   Notion's (seen 2026-11-14 at 1440 and 1024, page and peeks): whatever its
+   type, its box spans its column, at least 30 tall, its content 6 in — on
+   its name's line — and in the box's middle; a text keeps one line, ending
+   in "…" where its column stops. */
+.rowPinnedValue .cellInput,
+.rowPinnedValue .numberDisplay,
+.rowPinnedValue .dateButton,
+.rowPinnedValue .personChips,
+.rowPinnedValue .peopleReadonly,
+.rowPinnedValue .filesChips,
+.rowPinnedValue .relationChips,
+.rowPinnedValue .chips,
+.rowPinnedValue .cellReadonly,
+.rowPinnedValue .rollupValue,
+.rowPinnedValue .cellCheck,
+.rowPinnedValue .placeCellButton {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  padding-block: 0;
+  padding-inline: 6px;
+}
+.rowPinnedValue .cellInput.rowTextCell {
+  display: block;
+  padding-block: calc((30px - 21px) / 2);
+  line-height: 21px;
+}
+.rowPinnedValue .cellInput.rowTextCell,
+.rowPinnedValue .cellInput.rowTextCell > * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A pinned value of several options or pages shows its first and "+ N" for
+   the rest — "+", a thin space, the count — 4 after it in the secondary text
+   color, its column as wide as those and its 12 (Notion's, seen 2026-11-14
+   at 1440 on a page and in the layout builder: "디자인 + 2" in an 83-wide
+   column, "둘째 행 + 1"). The ones after the first still count, unseen. */
+.rowPinnedValue :is(.chips, .relationChips),
+.rowPinnedValue [data-row-property-typed-value]:has(> .chip) {
+  column-gap: 4px;
+  counter-reset: pinned-more -1;
+}
+.rowPinnedValue [data-row-property-typed-value]:has(> .chip) {
+  display: flex;
+  align-items: center;
+}
+.rowPinnedValue :is(.chip, [data-row-relation-chip]) {
+  counter-increment: pinned-more;
+}
+.rowPinnedValue :is(.chip, [data-row-relation-chip]) ~ :is(.chip, [data-row-relation-chip]) {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+.rowPinnedValue :is(.chips, .relationChips):has(> .valueMark > * + *)::after,
+.rowPinnedValue .relationChips:has(> [data-row-relation-chip] ~ [data-row-relation-chip])::after,
+.rowPinnedValue [data-row-property-typed-value]:has(> .chip ~ .chip)::after {
+  content: "+\2009" counter(pinned-more);
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 16.8px;
+  white-space: nowrap;
+}

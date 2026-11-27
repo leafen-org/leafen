@@ -1,0 +1,234 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(460px, calc(100vw - 32px));
+  margin: 72px auto 0;
+  /* A short window keeps its buttons in reach: the window stops 16px above
+     the foot and its body scrolls (2026-11-07: at 546 high "만들기" fell out). */
+  max-height: calc(100dvh - 88px);
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 54px;
+  padding-block: 0;
+  padding-inline: 20px 14px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius);
+  color: var(--icon-secondary);
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 20px 20px;
+}
+
+.message {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.nameInput {
+  height: 34px;
+  padding: 1px 11px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.nameInput:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: var(--bg-default);
+  text-align: start;
+}
+
+.option:hover,
+.option:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.option[data-active="true"] {
+  border-color: var(--accent-blue);
+  background: var(--bg-hover);
+}
+
+.optionTitle {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.optionBody {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* "취소" in the windows' outlined look (DialogButtons.module.css), not the
+   filled grey of a row's "참여"; the restore question shares it. */
+.cancel {
+  composes: cancel from "./DialogButtons.module.css";
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* The workspaces open to the person's email domain, offered before making
+   one, as Notion's "워크스페이스 생성 또는 참여". */
+.joinList {
+  display: grid;
+  gap: 6px;
+  margin: 0 0 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.joinRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+}
+
+.joinText {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.joinText strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.joinText span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}

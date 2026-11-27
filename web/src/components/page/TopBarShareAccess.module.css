@@ -1,0 +1,702 @@
+/* The share tab, as Notion's (seen 2026-10-06): an invite field with its
+   button, the people and teamspace with access, general access, and a foot
+   with "고급" and "링크 복사". Typing in the field turns the tab into the
+   invite step. Sizes as Notion's (seen 2026-10-28): the field 16px in. */
+
+.inviteRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+  padding: 0 8px 9px;
+}
+
+.inviteBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  min-height: 32px;
+  padding-block: 4px;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: var(--name-field-ring);
+}
+
+/* The chips and the field, wrapping 2px apart; the role keeps the top right
+   (Notion's, seen 2026-11-12: a 344×54 box, 4px in, its chip line then the
+   field's 20px line). */
+.inviteEntries { display: flex; flex: 1 1 auto; flex-wrap: wrap; align-items: center; gap: 2px 4px; min-width: 0; min-height: 24px; }
+.inviteBox[data-has-chips="true"] { padding-inline-start: 4px; }
+
+.inviteBox:focus-within:not([data-quiet="true"]) {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.inviteBox[data-disabled="true"] {
+  background: var(--bg-hover);
+}
+
+.chips { display: contents; }
+
+/* A chosen invitee (InviteChip): Notion's translucent grey (dark
+   rgba(255,255,243,.082)), a guest-to-be in the guest colour; its × a 16px
+   thin cross in the secondary icon colour, 2px after the words (Notion's
+   chip holds its mark and words 4px apart, then the × 2px on, seen 2026-11-16). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  height: 24px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.chip[data-guest="true"] { background: var(--c-bg-yellow); }
+:global([data-theme="dark"]) .chip[data-guest="true"] { color: rgb(249, 243, 220); }
+.chipGlobe { flex: none; color: var(--c-accent-yellow); }
+
+.chipLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.chip button {
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 16px; height: 16px; margin-inline-start: -2px; border-radius: 3px; color: var(--icon-secondary);
+}
+
+.chip button:hover,
+.chip button:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+
+.inviteEntries > input {
+  flex: 1 1 120px;
+  min-width: 80px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.inviteRole {
+  margin-inline-start: auto;
+}
+
+.inviteSubmit {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.inviteSubmit:hover,
+.inviteSubmit:focus-visible {
+  filter: brightness(0.94);
+  outline: none;
+}
+
+.inviteSubmit:disabled {
+  opacity: 0.45;
+  cursor: default;
+  filter: none;
+}
+
+/* The invite step's head, as Notion's: a 40px strip across the window with
+   a line under it, "‹" 12px in and its title 6px after ("고급"'s 8px in). */
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  margin: -6px -8px 16px;
+  padding: 0 12px;
+  box-shadow: inset 0 -1px 0 var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.stepHeader button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  /* Notion's "‹": a 20px chevron in its icons' second grey (seen 2026-11-14). */
+  color: var(--icon-secondary);
+}
+
+.stepHeader button:hover,
+.stepHeader button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.inviteInvalid {
+  margin: -5px 0 6px;
+  padding: 0 12px;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+.sectionLabel {
+  padding: 8px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* A person to invite or already invited is a person's row as Notion's (seen
+   2026-11-14): its face 32px and 10px before the name, 8px around, so the
+   row is 48px with the name and address under it. */
+.candidate {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.candidate[data-active="true"],
+.candidate:hover {
+  background: var(--bg-hover);
+}
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  color: #fff;
+}
+
+.check[data-checked="true"] {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+}
+
+.candidateRole {
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.you {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.teamspaceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--teamspace-letter-bg);
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* "일반 사용 권한" (not a menu group's head) 12px/500 on a 16px line, 13 under the people and 5 over its 48px
+   row, 16px in (Notion's, 2026-11-18): a 32px tile with an 18px mark, the choice 4px after it. */
+.generalLabel {
+  padding: 13px 8px 5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.generalRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  padding: 8px;
+}
+
+.generalIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+}
+
+.generalIcon > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.generalButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+  max-width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* Its 16px "⌄" in the icons' fainter colour, as Notion's (seen 2026-11-07). */
+.generalButton > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.generalButton span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.generalButton:hover,
+.generalButton:focus-visible,
+.generalButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.generalButton:disabled {
+  cursor: default;
+}
+
+.generalButton:disabled:hover {
+  background: transparent;
+}
+
+/* The foot across the window under a line, 12px in: "고급" and a framed
+   "링크 복사", both 32px. */
+.foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px -8px 0;
+  padding: 12px 12px 6px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Notion's card under the foot (seen 2026-11-05): words to read, not to press, and × to put it away. */
+.agentCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 6px 4px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--c-bg-blue);
+  color: var(--c-blue);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.agentCard button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  /* Notion's blue icon colour, lighter than the words in the dark (seen 2026-11-07), a Word file's mark's. */
+  color: var(--file-kind-word);
+}
+
+.agentCard button:hover {
+  background: var(--bg-hover);
+}
+
+/* A phone's, under "링크 복사" as wide as it, 20px below: 44px, its words
+   16px 12px in, past the side safe areas (Notion's phone, 2026-11-12). */
+.agentCard[data-phone="true"] {
+  margin: 20px 0 0; padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.footButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.footButton > svg {
+  color: var(--icon-secondary);
+}
+
+.footButton:hover,
+.footButton:focus-visible,
+.footButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.copyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Its link mark fainter than its words, as Notion's (seen 2026-11-07). */
+.copyButton > svg { flex: none; color: var(--icon-secondary); }
+
+.copyButton:hover,
+.copyButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The phone sheet's foot: "고급", then Notion's full-width blue "링크 복사"
+   (350×48, round 12; seen 2026-10-27). */
+:global([data-share-phone-sheet]) .foot {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  border-top: 0;
+}
+
+:global([data-share-phone-sheet]) .copyButton {
+  justify-content: center;
+  height: 48px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* The web link's role menu (the roles, "링크 만료 시점" with its value and a
+   list beside it, then "제거") is a role menu (below) whose own root holds the
+   rows; "링크 만료 시점" shows when the link stops in the 14px secondary
+   colour, as Notion's (seen 2026-11-05). */
+.roleMenu.roleMenu[role="menu"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* Its words, the value and the "⌄" stand 6px apart, over "제거"'s 4px (below), as Notion's styles (read 2026-11-18 in two tabs, 1440 and 768: a 6px gap on the row and on its value with the 16px "⌄"). */
+.roleMenu.roleMenu .roleRemove.webRoleExpiry {
+  gap: 6px;
+}
+
+/* One line, as Notion's: a whole date pushes the label to "링크...". */
+.webRoleExpiry > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webRoleExpiry > small {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Notion's (seen 2026-11-07): the value's 16px "⌄" fainter than its words,
+   "날짜 선택"'s "›" as the menu's other marks. */
+.webRoleExpiry > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The chevron after the date, told by its place, not `small + svg`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13). */
+:where(.webRoleExpiry) > svg:nth-child(2 of small, svg) {
+  color: var(--icon-tertiary);
+}
+
+/* Its expiry list, 271px over the menu from the row's right end; the
+   calendar "날짜 선택" opens beside it (TopBarShareWebExpiry.module.css). */
+.roleMenu.roleMenu.webExpiryMenu {
+  width: 271px;
+}
+
+/* What a web link lets anyone see, under its row: 12px tertiary words beside an ⓘ. */
+.webNote {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 2px 0 0;
+  padding-inline-start: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.webNote > svg {
+  flex: none;
+  margin-top: 0;
+}
+
+/* A role menu, as Notion's (seen 2026-10-28): 264px on its shadow's ring
+   alone, 14px roles over 12px secondary lines 3px under, a 16px ✓ 8px from
+   the right, and "제거" past a line 8px in from either side. Doubled over the
+   share menus' own border (TopBarPeople.module.css). */
+.roleMenu.roleMenu {
+  width: 264px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  border: 0;
+}
+
+/* Doubled: the share menus' own rule (TopBarPeople.module.css) fixes items
+   at 28px with the same weight, and stylesheet order let it win, so a role's
+   description ran into the next role. */
+.roleMenu.roleMenu [data-native-menu-item] {
+  gap: 8px;
+  height: auto;
+  min-height: 28px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 14px;
+  line-height: 16.8px;
+}
+
+/* A described role is at least 45px with its words in the middle, as
+   Notion's (seen 2026-10-30). */
+.roleMenu.roleMenu [data-native-menu-item]:has(.roleText > span + span) {
+  min-height: 45px;
+}
+
+.roleCheck { flex: none; margin-inline-start: auto; color: var(--text-default); }
+
+/* A described role's ✓ stands on its name's line, 3px down, as Notion's
+   (seen 2026-11-14: align-self flex-start, margin-top 3px); a role of one
+   line keeps it in the middle. */
+.roleMenu.roleMenu [data-native-menu-item]:has(> .roleText > span + span) > .roleCheck { align-self: flex-start; margin-top: 3px; }
+
+.roleText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.roleText span:last-child:not(:first-child) {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+  white-space: normal;
+}
+
+.roleMenu.roleMenu .roleRemove {
+  position: relative;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.roleRemove::before {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  height: 1px;
+  background: var(--menu-divider);
+  content: "";
+}
+
+/* "제거" (a person's, an inherited group's, the web link's) and its bin turn
+   the menus' danger red under the pointer or the keys, as Notion's (seen
+   2026-11-15); at rest it reads as the other rows. The expiry rows share
+   the line over them, not the red. */
+.roleRemove:not(.webRoleExpiry):hover:not([aria-disabled="true"], :disabled),
+.roleRemove:not(.webRoleExpiry)[data-focused="true"] {
+  color: var(--menu-danger);
+}
+
+.generalMenu {
+  min-width: 240px;
+  max-width: min(360px, calc(100vw - 2 * var(--popover-edge)));
+}
+
+/* Doubled over the share menus' fixed 28px rows: a long workspace name
+   wraps in a narrow window, and its second line ran into the next item. The
+   ✓ stays 8px past the words in a menu as narrow as its two rows (seen
+   2026-11-08). */
+.generalMenu.generalMenu [data-native-menu-item] {
+  column-gap: 8px;
+  height: auto;
+  min-height: 30px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.generalItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.generalItem > svg,
+.generalItemMark {
+  flex: none;
+}
+
+/* Its 20px marks, as Notion's (seen 2026-11-07): the lock as the words, the
+   globe fainter, the workspace's initial on a rounded tint. */
+.generalItemMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 3.5px;
+  background: var(--round-close-bg);
+  color: var(--text-secondary);
+  font-size: 13.75px;
+  line-height: 1;
+}
+
+.generalItemGlobe {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The invite's message: a shaded area under a line across the window, with
+   no ring when it has the caret, as Notion's (seen 2026-11-11: 18px in from
+   each side; dark rgb(32,32,32) under rgba(255,255,243,.082), a faint shadow
+   up over the list). */
+.inviteMessage { display: block; box-sizing: border-box; width: calc(100% + 16px); min-height: 100px; margin: 12px -8px 0; padding: 18px; border: 0; border-top: 1px solid var(--border-subtle); border-radius: 0; background: var(--bg-soft); box-shadow: 0 -4px 4px rgba(0, 0, 0, .03); color: var(--text-default); font: inherit; font-size: 14px; line-height: 21px; resize: none; }
+.inviteMessage:focus, .inviteMessage:focus-visible { outline: none; }
+
+.inviteBox[data-has-chips="true"] .inviteEntries > input { flex-basis: 100%; min-width: 60px; height: 20px; padding-inline-start: 2px; }
+
+/* Someone who may only read or comment: what they may do, and asking for more,
+   as Notion's (seen 2026-11-04). */
+.readStrip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* A phone's sheet keeps its people's 20px in. */
+:global([data-share-phone-sheet]) .readStrip {
+  margin: 0 20px 8px;
+}
+
+.readStripRequest {
+  flex: 0 0 auto;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.readStripRequest:disabled {
+  color: var(--text-tertiary);
+}
+
+.generalPlain {
+  overflow: hidden;
+  padding: 0 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The invite link under an address no account has yet. */
+.inviteLinkCopy {
+  color: var(--accent-blue);
+  font-size: inherit;
+}
+
+.inviteLinkCopy:hover,
+.inviteLinkCopy:focus-visible {
+  outline: none;
+  text-decoration: underline;
+}
+
+.publishNeedsAccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 72px 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.publishNeedsAccess svg {
+  margin-bottom: 12px;
+  color: var(--icon-secondary);
+}
+
+.publishNeedsAccess p {
+  margin: 0;
+}
+
+.publishNeedsAccess p:first-of-type {
+  color: var(--text-default);
+}
+
+.roleToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}

@@ -1,0 +1,899 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Tải địa chỉ email của tài khoản",
+        "deniedEffect": "Không tải được địa chỉ email; các địa chỉ đã lưu không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận địa chỉ email hiện tại.",
+        "stateCheckAction": "Kết nối lại và làm mới danh sách email trước khi thực hiện thay đổi."
+      },
+      "update": {
+        "operation": "Quản lý địa chỉ email của tài khoản",
+        "deniedEffect": "Yêu cầu email không được chấp nhận; các địa chỉ đã lưu không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận yêu cầu email đã hoàn tất hay chưa.",
+        "stateCheckAction": "Làm mới danh sách email và kiểm tra thư xác minh trước khi thử lại."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Tải cài đặt thông báo",
+        "deniedEffect": "Không tải được cài đặt thông báo của bạn và cài đặt đã lưu không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận bạn nhận được những thông báo nào.",
+        "stateCheckAction": "Đóng rồi mở lại cài đặt để tải cài đặt thông báo của bạn trước khi thay đổi."
+      },
+      "update": {
+        "operation": "Thay đổi cài đặt thông báo",
+        "deniedEffect": "Cài đặt thông báo của bạn không thay đổi và cài đặt trước đó được giữ nguyên.",
+        "uncertainEffect": "Leafen không thể xác nhận cài đặt thông báo của bạn có thay đổi hay không.",
+        "stateCheckAction": "Đóng rồi mở lại cài đặt để kiểm tra cài đặt thông báo của bạn trước khi thay đổi lần nữa."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Tải hồ sơ tài khoản",
+        "deniedEffect": "Không tải được tên và ảnh của bạn và hồ sơ đã lưu không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận tên và ảnh hiện tại của bạn.",
+        "stateCheckAction": "Đóng rồi mở lại cài đặt để tải hồ sơ của bạn trước khi thay đổi."
+      },
+      "update": {
+        "operation": "Lưu hồ sơ tài khoản",
+        "deniedEffect": "Hồ sơ của bạn không được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu hồ sơ tài khoản đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại hồ sơ tài khoản và lịch sử kiểm toán trước khi thử lại."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Thay đổi xác minh 2 bước",
+        "deniedEffect": "Thay đổi xác minh 2 bước theo yêu cầu không được chấp nhận; cài đặt trước đó vẫn có hiệu lực.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái xác minh 2 bước hiện tại.",
+        "stateCheckAction": "Tải lại bảo mật tài khoản trước khi thử một thay đổi xác minh 2 bước khác."
+      },
+      "password": {
+        "operation": "Đổi mật khẩu tài khoản",
+        "deniedEffect": "Mật khẩu không được thay đổi và các phiên hiện tại vẫn còn hiệu lực.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu mật khẩu đã được thay đổi và các phiên khác đã bị kết thúc hay chưa.",
+        "stateCheckAction": "Tải lại bảo mật tài khoản và đăng nhập lại nếu phiên hiện tại không còn hoạt động."
+      },
+      "read": {
+        "operation": "Tải bảo mật tài khoản",
+        "deniedEffect": "Không tải được cài đặt bảo mật và các phiên; trạng thái tài khoản đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái xác minh 2 bước và trạng thái phiên hiện tại.",
+        "stateCheckAction": "Tải lại bảo mật tài khoản trước khi thực hiện thay đổi."
+      },
+      "recovery": {
+        "operation": "Thay thế mã khôi phục",
+        "deniedEffect": "Mã khôi phục thay thế không được chấp nhận; các mã chưa dùng trước đó vẫn hoạt động.",
+        "uncertainEffect": "Leafen không thể xác nhận mã khôi phục nào đang hoạt động.",
+        "stateCheckAction": "Tải lại bảo mật tài khoản trước khi quyết định có thay thế mã lần nữa hay không."
+      },
+      "sessionRevoke": {
+        "operation": "Thu hồi phiên tài khoản",
+        "deniedEffect": "Phiên đã chọn chưa được xác nhận thu hồi; các phiên khác không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu phiên đã chọn đã bị thu hồi hay chưa.",
+        "stateCheckAction": "Tải lại danh sách phiên trước khi quyết định có thử lại hay không."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Hủy sao lưu máy chủ",
+        "deniedEffect": "Bản sao lưu chưa được xác nhận hủy.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu bản sao lưu đã bị hủy hay chưa.",
+        "stateCheckAction": "Kiểm tra trạng thái bản sao lưu hiện tại trước khi hủy lại."
+      },
+      "create": {
+        "operation": "Tạo sao lưu máy chủ",
+        "deniedEffect": "Bản sao lưu mới chưa được xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu yêu cầu sao lưu đã được chấp nhận hay chưa.",
+        "stateCheckAction": "Hãy kiểm tra bản sao lưu hiện tại trước khi gửi yêu cầu khác."
+      },
+      "download": {
+        "operation": "Tải xuống bản sao lưu máy chủ",
+        "deniedEffect": "Không có tệp sao lưu đã xác minh nào được tải xuống.",
+        "uncertainEffect": "Leafen không thể xác minh hoặc truyền tệp sao lưu.",
+        "stateCheckAction": "Hãy kiểm tra trạng thái sao lưu đã hoàn tất trước khi tải xuống lần nữa."
+      },
+      "retry": {
+        "operation": "Thử lại bản sao lưu máy chủ",
+        "deniedEffect": "Bản sao lưu bị lỗi chưa được khởi động lại.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu bản sao lưu đã khởi động lại hay chưa.",
+        "stateCheckAction": "Hãy kiểm tra trạng thái sao lưu hiện tại trước khi thử lại lần nữa."
+      },
+      "status": {
+        "operation": "Tải trạng thái sao lưu máy chủ",
+        "deniedEffect": "Trạng thái sao lưu chưa được tải; không có trạng thái sao lưu nào bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái sao lưu hiện tại.",
+        "stateCheckAction": "Hãy tải lại trạng thái sao lưu trước khi thực hiện thao tác khác."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Tải báo cáo máy chủ",
+        "deniedEffect": "Báo cáo chưa được tải; không có trạng thái báo cáo nào bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận ảnh chụp nhanh báo cáo hiện tại.",
+        "stateCheckAction": "Hãy tải lại báo cáo hiện tại trước khi làm mới báo cáo."
+      },
+      "refresh": {
+        "operation": "Làm mới báo cáo máy chủ",
+        "deniedEffect": "Ảnh chụp nhanh báo cáo mới chưa được xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu ảnh chụp nhanh báo cáo đã thay đổi hay chưa.",
+        "stateCheckAction": "Hãy tải báo cáo hiện tại trước khi làm mới lần nữa."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Tải lịch sao lưu",
+        "deniedEffect": "Lịch sao lưu chưa được tải; không có cài đặt nào bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận lịch sao lưu hiện tại.",
+        "stateCheckAction": "Hãy tải lại lịch sao lưu trước khi thay đổi."
+      },
+      "restore": {
+        "operation": "Khôi phục máy chủ từ bản sao lưu",
+        "deniedEffect": "Dữ liệu của máy chủ chưa được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình khôi phục đã được thiết lập hay chưa.",
+        "stateCheckAction": "Hãy tải lại cài đặt sao lưu để xem có quá trình khôi phục nào đang chờ trước khi thử lại."
+      },
+      "save": {
+        "operation": "Lưu lịch sao lưu",
+        "deniedEffect": "Lịch sao lưu không được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu lịch sao lưu đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại lịch sao lưu để xem cài đặt đang áp dụng trước khi lưu lại."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Tải cài đặt nhật ký yêu cầu",
+        "deniedEffect": "Không tải được cài đặt nhật ký yêu cầu; không có cài đặt nào bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận cài đặt nhật ký yêu cầu hiện tại.",
+        "stateCheckAction": "Tải lại cài đặt nhật ký yêu cầu trước khi thay đổi."
+      },
+      "save": {
+        "operation": "Lưu cài đặt nhật ký yêu cầu",
+        "deniedEffect": "Cài đặt nhật ký yêu cầu không được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu cài đặt nhật ký yêu cầu đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại cài đặt nhật ký yêu cầu để xem cài đặt đang áp dụng trước khi lưu lại."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Tải proxy mạng",
+        "deniedEffect": "Không tải được proxy mạng; không có cài đặt nào bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận proxy mạng hiện tại.",
+        "stateCheckAction": "Tải lại proxy mạng trước khi thay đổi."
+      },
+      "save": {
+        "operation": "Lưu proxy mạng",
+        "deniedEffect": "Proxy mạng không được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu proxy mạng đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại proxy mạng để xem proxy đang áp dụng trước khi lưu lại."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Tải cài đặt máy chủ",
+        "deniedEffect": "Không tải được cài đặt và cài đặt đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận cài đặt máy chủ hiện tại.",
+        "stateCheckAction": "Tải lại cài đặt trước khi thay đổi."
+      },
+      "save": {
+        "operation": "Lưu cài đặt máy chủ",
+        "deniedEffect": "Cài đặt mới không được chấp nhận; cài đặt đã lưu trước đó vẫn được áp dụng.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu cài đặt mới đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại cài đặt và so sánh các giá trị hiện tại trước khi thử lại."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Kiểm tra trạng thái đăng nhập",
+        "deniedEffect": "Không có phiên đăng nhập nào được thiết lập và dữ liệu tài khoản không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái đăng nhập hiện tại.",
+        "stateCheckAction": "Tải lại trang, sau đó đăng nhập lại."
+      },
+      "deviceCode": {
+        "operation": "Đăng nhập thiết bị này",
+        "deniedEffect": "Bạn chưa đăng nhập và dữ liệu tài khoản không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận thiết bị này đã đăng nhập hay chưa.",
+        "stateCheckAction": "Đăng nhập lại bằng mã mới."
+      },
+      "emailVerification": {
+        "operation": "Xác minh địa chỉ email",
+        "deniedEffect": "Địa chỉ email chưa được xác minh và tài khoản chưa được đăng nhập.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình xác minh email đã hoàn tất hay chưa.",
+        "stateCheckAction": "Hãy thử đăng nhập; nếu không được, hãy mở lại liên kết trong email."
+      },
+      "mfa": {
+        "operation": "Hoàn tất xác minh 2 bước",
+        "deniedEffect": "Bạn chưa đăng nhập và thử thách MFA vẫn chưa hoàn tất.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu xác minh 2 bước đã hoàn tất hay chưa.",
+        "stateCheckAction": "Bắt đầu đăng nhập lại từ đầu."
+      },
+      "passwordResetConfirm": {
+        "operation": "Đổi mật khẩu",
+        "deniedEffect": "Mật khẩu chưa được thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu mật khẩu đã được thay đổi hay chưa.",
+        "stateCheckAction": "Hãy thử đăng nhập bằng mật khẩu mới; nếu không được, hãy yêu cầu liên kết đặt lại mới."
+      },
+      "passwordResetRequest": {
+        "operation": "Yêu cầu đặt lại mật khẩu",
+        "deniedEffect": "Không có tin nhắn đặt lại mật khẩu nào được chấp nhận để gửi đi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu yêu cầu đặt lại đã được chấp nhận hay chưa.",
+        "stateCheckAction": "Hãy chờ email trước khi gửi yêu cầu khác."
+      },
+      "providerExchange": {
+        "operation": "Đăng nhập bằng tài khoản bên ngoài",
+        "deniedEffect": "Bạn chưa đăng nhập và dữ liệu tài khoản không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận kết quả đăng nhập bên ngoài.",
+        "stateCheckAction": "Đăng nhập lại theo cách tương tự."
+      },
+      "serverSetup": {
+        "operation": "Thiết lập máy chủ Leafen",
+        "deniedEffect": "Tài khoản quản trị viên chưa được tạo.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình thiết lập máy chủ đã hoàn tất hay chưa.",
+        "stateCheckAction": "Tải lại trang và kiểm tra trạng thái thiết lập trước khi thử lại."
+      },
+      "signIn": {
+        "operation": "Đăng nhập",
+        "deniedEffect": "Bạn chưa đăng nhập và dữ liệu tài khoản không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận đăng nhập đã hoàn tất hay chưa.",
+        "stateCheckAction": "Làm mới trang và đăng nhập lại."
+      },
+      "signUp": {
+        "operation": "Tạo tài khoản",
+        "deniedEffect": "Tài khoản mới chưa được tạo.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tài khoản đã được tạo hay chưa.",
+        "stateCheckAction": "Hãy thử đăng nhập; nếu không được, hãy đăng ký lại."
+      },
+      "passkey": {
+        "operation": "Đăng nhập bằng mã khóa",
+        "deniedEffect": "Đăng nhập không được chấp nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu đăng nhập đã hoàn tất hay chưa.",
+        "stateCheckAction": "Đăng nhập lại bằng mã khóa của bạn."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Tải nội dung trang",
+        "deniedEffect": "Nội dung trang không được tải và nội dung đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận nội dung trang hiện tại.",
+        "stateCheckAction": "Tải lại trang trước khi chỉnh sửa."
+      },
+      "update": {
+        "operation": "Lưu nội dung trang",
+        "deniedEffect": "Thay đổi không được chấp nhận; nội dung mới nhất trên máy chủ vẫn được giữ nguyên.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu nội dung đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại nội dung mới nhất và so sánh trước khi thử lại."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Lưu tự động hóa cơ sở dữ liệu",
+        "deniedEffect": "Tự động hóa không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu thay đổi tự động hóa cơ sở dữ liệu đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại tự động hóa trước khi thử lại."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Lưu chính sách DLP",
+        "deniedEffect": "Chính sách DLP mới chưa được lưu; chính sách trước đó vẫn có hiệu lực.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu chính sách DLP đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại chính sách DLP và lịch sử kiểm toán của tổ chức trước khi thử lại."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Xác minh miền SAML",
+        "deniedEffect": "Tên miền vẫn đang chờ xác minh; cấu hình SAML, lịch sử kiểm toán và các phiên đăng nhập không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái xác minh miền SAML hiện tại.",
+        "stateCheckAction": "Tải lại trạng thái miền SAML trước khi thử lại."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Xóa tệp",
+        "deniedEffect": "Tệp không bị xóa và không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tệp đã bị xóa hay chưa.",
+        "stateCheckAction": "Tải lại tệp và các tham chiếu của tệp trước khi quyết định có thử lại hay không."
+      },
+      "upload": {
+        "operation": "Tải tệp lên",
+        "deniedEffect": "Tệp mới chưa được lưu; các tệp hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tệp đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại danh sách tệp trước khi quyết định có thử lại hay không."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Áp dụng ánh xạ người",
+        "deniedEffect": "Các ánh xạ mới không được chấp nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận những ánh xạ nào đã được áp dụng.",
+        "stateCheckAction": "Tải lại kết quả ánh xạ trước khi áp dụng lại."
+      },
+      "refresh": {
+        "operation": "Làm mới ánh xạ người",
+        "deniedEffect": "Các ánh xạ mới nhất chưa được tải; các ánh xạ đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái ánh xạ hiện tại.",
+        "stateCheckAction": "Tải lại bảng ánh xạ trước khi tiếp tục."
+      },
+      "scan": {
+        "operation": "Quét người đã nhập",
+        "deniedEffect": "Người đã nhập không được liệt kê và các ánh xạ hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận danh sách người đã nhập hiện tại.",
+        "stateCheckAction": "Tải lại bảng ánh xạ trước khi thay đổi."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Thực thi tự động hóa nút",
+        "deniedEffect": "Các hành động của nút không được thực thi và nội dung trang không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tự động hóa của nút đã được thực thi hay chưa.",
+        "stateCheckAction": "Tải lại nội dung bị ảnh hưởng và trạng thái thực thi trước khi thử lại."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Sao chép token API tổ chức",
+        "deniedEffect": "Token chưa được xác nhận trong khay nhớ tạm; bản thân token không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu việc ghi vào khay nhớ tạm đã hoàn tất hay chưa.",
+        "stateCheckAction": "Kiểm tra khay nhớ tạm trước khi sao chép token lần nữa."
+      },
+      "create": {
+        "operation": "Tạo token API tổ chức",
+        "deniedEffect": "Token mới chưa được xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu token đã được tạo hay chưa.",
+        "stateCheckAction": "Tải lại danh sách token trước khi tạo token khác."
+      },
+      "list": {
+        "operation": "Tải token API của tổ chức",
+        "deniedEffect": "Token chưa được tải và token hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận danh sách token hiện tại.",
+        "stateCheckAction": "Tải lại danh sách token trước khi thực hiện thay đổi."
+      },
+      "revoke": {
+        "operation": "Thu hồi token API của tổ chức",
+        "deniedEffect": "Việc thu hồi token chưa được xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu token đã bị thu hồi hay chưa.",
+        "stateCheckAction": "Tải lại danh sách token trước khi thử thu hồi lần nữa."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Tải trang không gian làm việc",
+        "deniedEffect": "Các trang chưa được tải và dữ liệu không gian làm việc đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận các trang hiện tại trong không gian làm việc.",
+        "stateCheckAction": "Tải lại không gian làm việc trước khi chỉnh sửa."
+      },
+      "create": {
+        "operation": "Tạo trang",
+        "deniedEffect": "Trang mới chưa được tạo và các trang hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu trang đã được tạo hay chưa.",
+        "stateCheckAction": "Tải lại danh sách trang và kiểm tra trang mới trước khi thử lại."
+      },
+      "title": {
+        "update": {
+          "operation": "Lưu tiêu đề trang",
+          "deniedEffect": "Thay đổi tiêu đề không được chấp nhận; tiêu đề đã lưu vẫn được áp dụng.",
+          "uncertainEffect": "Leafen không thể xác nhận liệu thay đổi đã được lưu hay chưa.",
+          "stateCheckAction": "Tải lại trang và kiểm tra tiêu đề hiện tại."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Tải phân tích trang",
+        "deniedEffect": "Dữ liệu phân tích chưa được tải và dữ liệu trang không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận dữ liệu phân tích hiện tại.",
+        "stateCheckAction": "Tải lại dữ liệu phân tích trước khi đưa ra kết luận."
+      },
+      "policyUpdate": {
+        "operation": "Lưu chính sách phân tích",
+        "deniedEffect": "Chính sách phân tích mới không được chấp nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu chính sách đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại chính sách và so sánh trước khi thử lại."
+      },
+      "preferencesRead": {
+        "operation": "Tải tùy chọn phân tích",
+        "deniedEffect": "Tùy chọn phân tích chưa được tải và cài đặt đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận tùy chọn phân tích hiện tại.",
+        "stateCheckAction": "Tải lại tùy chọn trước khi chỉnh sửa."
+      },
+      "preferencesUpdate": {
+        "operation": "Lưu tùy chọn phân tích",
+        "deniedEffect": "Tùy chọn mới không được chấp nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tùy chọn đã được lưu hay chưa.",
+        "stateCheckAction": "Tải lại tùy chọn và so sánh trước khi thử lại."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Lưu an toàn thay đổi ngoại tuyến",
+        "deniedEffect": "Thay đổi không được lưu trên thiết bị này.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu thay đổi đã được lưu trên thiết bị này hay trên máy chủ.",
+        "stateCheckAction": "Sao chép nội dung đã chỉnh sửa, sau đó tải lại và so sánh trạng thái đã lưu."
+      },
+      "legacy": {
+        "operation": "Di chuyển thay đổi ngoại tuyến",
+        "deniedEffect": "Các thay đổi ngoại tuyến cũ vẫn ở nơi chúng được lưu trữ và chưa được gửi.",
+        "uncertainEffect": "Leafen không thể xác nhận những thay đổi ngoại tuyến cũ nào đã được di chuyển.",
+        "stateCheckAction": "Giữ tab này mở và tải lại trước khi chỉnh sửa lại."
+      },
+      "refresh": {
+        "operation": "Tải lại thay đổi đã khôi phục",
+        "deniedEffect": "Các thay đổi đã khôi phục không được hiển thị và dữ liệu đã lưu không bị thay thế.",
+        "uncertainEffect": "Leafen không thể xác nhận trang hiện tại sau khi khôi phục.",
+        "stateCheckAction": "Tải lại trang trước khi thực hiện chỉnh sửa khác."
+      },
+      "replay": {
+        "operation": "Gửi thay đổi ngoại tuyến",
+        "deniedEffect": "Thay đổi trong hàng đợi vẫn đang chờ và chưa được máy chủ xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận thay đổi nào trong hàng đợi đã đến máy chủ.",
+        "stateCheckAction": "Giữ tab này mở, kết nối lại và tải lại trước khi chỉnh sửa lại."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Tìm kiếm trang web công khai",
+        "deniedEffect": "Kết quả tìm kiếm không được tải và nội dung đã đăng không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận kết quả tìm kiếm hiện tại.",
+        "stateCheckAction": "Kiểm tra trạng thái trang web trước khi tìm kiếm lại."
+      },
+      "sharedPage": {
+        "operation": "Tải trang được chia sẻ",
+        "deniedEffect": "Trang được chia sẻ không được tải và nội dung đã đăng không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trang được chia sẻ hiện tại.",
+        "stateCheckAction": "Kiểm tra liên kết chia sẻ trước khi thử lại."
+      },
+      "site": {
+        "operation": "Tải trang web công khai",
+        "deniedEffect": "Không tải được trang web công khai và nội dung đã đăng không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trang web công khai hiện tại.",
+        "stateCheckAction": "Hãy kiểm tra địa chỉ trang web trước khi thử lại."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Khôi phục đăng nhập biểu mẫu",
+        "deniedEffect": "Không mở được biểu mẫu thành viên và không có phản hồi nào được gửi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái đăng nhập hiện tại của biểu mẫu này.",
+        "stateCheckAction": "Tải lại biểu mẫu và đăng nhập lại."
+      },
+      "configurationWrite": {
+        "operation": "Lưu cài đặt biểu mẫu",
+        "deniedEffect": "Không xác nhận được rằng cài đặt biểu mẫu đã được lưu.",
+        "uncertainEffect": "Leafen không thể xác nhận cấu hình biểu mẫu hiện tại.",
+        "stateCheckAction": "Hãy tải lại cài đặt biểu mẫu trước khi lưu lại."
+      },
+      "definitionRead": {
+        "operation": "Tải biểu mẫu",
+        "deniedEffect": "Không tải được biểu mẫu và không có phản hồi nào được gửi.",
+        "uncertainEffect": "Leafen không thể xác nhận định nghĩa biểu mẫu hiện tại.",
+        "stateCheckAction": "Hãy tải lại biểu mẫu trước khi nhập phản hồi."
+      },
+      "optionsRead": {
+        "operation": "Tải lựa chọn biểu mẫu",
+        "deniedEffect": "Không tải được các lựa chọn đã yêu cầu và phản hồi nháp chưa được gửi.",
+        "uncertainEffect": "Leafen không thể xác nhận các lựa chọn hiện tại.",
+        "stateCheckAction": "Hãy tải lại các lựa chọn trước khi gửi biểu mẫu."
+      },
+      "responseSubmit": {
+        "operation": "Gửi phản hồi biểu mẫu",
+        "deniedEffect": "Phản hồi không được chấp nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu phản hồi đã được chấp nhận hay chưa.",
+        "stateCheckAction": "Hãy kiểm tra kết quả biểu mẫu trước khi gửi lại phản hồi."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Tải cấu hình thời gian chạy",
+        "deniedEffect": "Không tải được cấu hình thời gian chạy; cài đặt máy chủ đã lưu không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận cấu hình thời gian chạy hiện tại nên các giá trị dự phòng an toàn đang được áp dụng.",
+        "stateCheckAction": "Hãy tải lại trang để đọc cấu hình máy chủ hiện tại."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Đồng bộ thay đổi đang chờ xử lý",
+        "deniedEffect": "Các thay đổi đang chờ xử lý vẫn nằm trong hàng đợi và chưa được máy chủ xác nhận.",
+        "uncertainEffect": "Leafen không thể xác nhận những thay đổi đang chờ xử lý nào đã đến được máy chủ.",
+        "stateCheckAction": "Hãy giữ tab này mở, kết nối lại và kiểm tra trạng thái đã lưu trước khi thử lại."
+      },
+      "pendingRead": {
+        "operation": "Kiểm tra thay đổi đang chờ",
+        "deniedEffect": "Không tải được số lượng thay đổi đang chờ; các thay đổi trong hàng đợi chưa bị hủy.",
+        "uncertainEffect": "Leafen không thể xác nhận còn bao nhiêu thay đổi vẫn đang chờ.",
+        "stateCheckAction": "Giữ tab này mở và kiểm tra lại trạng thái đồng bộ hóa."
+      },
+      "retry": {
+        "operation": "Thử lại đồng bộ hóa",
+        "deniedEffect": "Đồng bộ hóa chưa được xác nhận; thay đổi đang chờ vẫn nằm trong hàng đợi.",
+        "uncertainEffect": "Leafen không thể xác nhận kết quả đồng bộ hóa mới nhất.",
+        "stateCheckAction": "Kiểm tra trạng thái đã lưu và kết nối trước khi thử lại."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Tạo không gian làm việc",
+        "deniedEffect": "Không gian làm việc mới chưa được tạo và dữ liệu hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu không gian làm việc đã được tạo hay chưa.",
+        "stateCheckAction": "Hãy tải lại danh sách không gian làm việc và kiểm tra không gian làm việc mới trước khi thử lại."
+      },
+      "delete": {
+        "operation": "Xóa vĩnh viễn không gian làm việc",
+        "deniedEffect": "Thao tác xóa chưa được chấp nhận; không gian làm việc và dữ liệu hiện có không bị thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu không gian làm việc đã bị xóa hay chưa.",
+        "stateCheckAction": "Hãy tải lại danh sách không gian làm việc trước khi thử lại."
+      },
+      "member": {
+        "add": {
+          "operation": "Thêm thành viên không gian làm việc",
+          "deniedEffect": "Thành viên chưa được thêm và không có thay đổi nào.",
+          "uncertainEffect": "Leafen không thể xác nhận liệu thành viên không gian làm việc đã được thêm hay chưa.",
+          "stateCheckAction": "Hãy tải lại danh sách thành viên, hoạt động và lịch sử kiểm toán trước khi thử lại."
+        },
+        "revoke": {
+          "operation": "Xóa thành viên không gian làm việc",
+          "deniedEffect": "Thành viên chưa được xóa và không có thay đổi nào.",
+          "uncertainEffect": "Leafen không thể xác nhận liệu thành viên không gian làm việc đã bị xóa hay chưa.",
+          "stateCheckAction": "Hãy tải lại danh sách thành viên, hoạt động và lịch sử kiểm toán trước khi thử lại."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Lưu cài đặt không gian làm việc",
+          "deniedEffect": "Thay đổi cài đặt chưa được lưu; cài đặt trước đó vẫn được áp dụng.",
+          "uncertainEffect": "Leafen không thể xác nhận liệu cài đặt không gian làm việc đã được lưu hay chưa.",
+          "stateCheckAction": "Hãy tải lại cài đặt không gian làm việc, hoạt động và lịch sử kiểm toán trước khi thử lại."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Hủy xuất không gian làm việc",
+        "deniedEffect": "Quá trình xuất chưa bị hủy và có thể vẫn đang chạy.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình xuất đã bị hủy hay chưa.",
+        "stateCheckAction": "Hãy làm mới trạng thái xuất trước khi hủy lại."
+      },
+      "download": {
+        "operation": "Tải xuống bản xuất không gian làm việc",
+        "deniedEffect": "Tệp lưu trữ chưa được tải xuống; bản xuất trên máy chủ không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình tải xuống tệp lưu trữ đã hoàn tất hay chưa.",
+        "stateCheckAction": "Kiểm tra danh sách tải xuống trước khi tải xuống lại."
+      },
+      "job": {
+        "operation": "Xuất không gian làm việc",
+        "deniedEffect": "Tệp lưu trữ chưa được tạo; không gian làm việc nguồn không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận có tệp lưu trữ dùng được cho tác vụ này.",
+        "stateCheckAction": "Bắt đầu một bản xuất thay thế từ không gian làm việc hiện tại."
+      },
+      "poll": {
+        "operation": "Chờ xuất không gian làm việc",
+        "deniedEffect": "Không tải được trạng thái xuất mới nhất; tác vụ xuất không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái xuất hiện tại.",
+        "stateCheckAction": "Làm mới trạng thái xuất trước khi thực hiện hành động khác."
+      },
+      "retry": {
+        "operation": "Thử xuất lại không gian làm việc",
+        "deniedEffect": "Yêu cầu thử lại không được chấp nhận; tác vụ xuất hiện có không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu yêu cầu thử lại đã được chấp nhận hay chưa.",
+        "stateCheckAction": "Làm mới trạng thái xuất trước khi thử lại lần nữa."
+      },
+      "start": {
+        "operation": "Bắt đầu xuất không gian làm việc",
+        "deniedEffect": "Tác vụ xuất mới không được chấp nhận; không gian làm việc không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu tác vụ xuất đã được chấp nhận hay chưa.",
+        "stateCheckAction": "Làm mới trạng thái xuất mới nhất trước khi bắt đầu nhiệm vụ khác."
+      },
+      "status": {
+        "operation": "Tải trạng thái xuất không gian làm việc",
+        "deniedEffect": "Không tải được trạng thái xuất mới nhất; tác vụ xuất không thay đổi.",
+        "uncertainEffect": "Leafen không thể xác nhận trạng thái xuất hiện tại.",
+        "stateCheckAction": "Tải lại hộp thoại xuất trước khi thực hiện hành động khác."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Hủy nhập",
+        "deniedEffect": "Thao tác nhập chưa bị hủy và có thể vẫn đang chạy.",
+        "uncertainEffect": "Leafen không thể xác nhận liệu quá trình nhập đã bị hủy hay chưa.",
+        "stateCheckAction": "Làm mới trạng thái nhập trước khi hủy lại."
+      },
+      "job": {
+        "operation": "Nhập tệp",
+        "deniedEffect": "Không có trang nào được tạo; nội dung nhập một phần đã bị xóa.",
+        "uncertainEffect": "Không thể xác nhận một trang có thể sử dụng cho lần nhập này.",
+        "stateCheckAction": "Giữ lại mã tham chiếu chẩn đoán và bắt đầu nhập mới từ tệp nguồn."
+      },
+      "start": {
+        "operation": "Bắt đầu nhập",
+        "deniedEffect": "Lần nhập mới đã không được chấp nhận và không có trang nào được tạo.",
+        "uncertainEffect": "Không thể xác nhận liệu lần nhập có được chấp nhận hay không.",
+        "stateCheckAction": "Hãy thử lại với nguyên tệp đó, không thay đổi tệp, để Leafen có thể kết nối lại với cùng yêu cầu."
+      },
+      "status": {
+        "operation": "Tải trạng thái nhập",
+        "deniedEffect": "Không tải được trạng thái nhập mới nhất; tác vụ nhập không thay đổi.",
+        "uncertainEffect": "Không thể xác nhận trạng thái nhập hiện tại.",
+        "stateCheckAction": "Mở lại hộp thoại nhập để kết nối lại với tác vụ đã lưu trước khi thực hiện thao tác khác."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Tải mã khóa tài khoản",
+        "deniedEffect": "Không tải được danh sách mã khóa; các mã khóa đã lưu không thay đổi.",
+        "uncertainEffect": "Không thể xác nhận danh sách mã khóa hiện tại.",
+        "stateCheckAction": "Kết nối lại và làm mới danh sách mã khóa trước khi thực hiện thay đổi."
+      },
+      "update": {
+        "operation": "Quản lý mã khóa tài khoản",
+        "deniedEffect": "Máy chủ không thay đổi các mã khóa đã lưu.",
+        "uncertainEffect": "Không thể xác nhận liệu thay đổi mã khóa đã hoàn tất hay chưa.",
+        "stateCheckAction": "Làm mới danh sách mã khóa trước khi thử lại. Nếu một khóa mới đã được tạo nhưng chưa được lưu tại đây, hãy kiểm tra trình quản lý khóa trên thiết bị của bạn."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Mật khẩu hiện tại không đúng.",
+    "currentPasswordNext": "Nếu bạn quên mật khẩu, hãy đăng xuất và đặt lại từ trang đăng nhập.",
+    "code": "Mã không đúng hoặc đã được sử dụng.",
+    "codeNext": "Nhập mã mà ứng dụng xác thực của bạn đang hiển thị.",
+    "recoveryCode": "Mã khôi phục không đúng hoặc đã được sử dụng.",
+    "recoveryCodeNext": "Nhập mã khôi phục mà bạn chưa sử dụng.",
+    "accountDeactivated": "Tài khoản này đã bị quản trị viên máy chủ vô hiệu hóa.",
+    "accountDeactivatedNext": "Hãy yêu cầu quản trị viên bật lại tài khoản này.",
+    "organizationSSO": "Tổ chức này chỉ cho phép đăng nhập thông qua đăng nhập một lần (SSO).",
+    "organizationSSONext": "Hãy đăng nhập bằng tài khoản công ty của bạn.",
+    "organizationPasswordTwoStep": "Tổ chức của bạn yêu cầu đăng nhập bằng mật khẩu và xác minh 2 bước, không phải mã thiết bị.",
+    "organizationPasswordTwoStepNext": "Đăng nhập bằng email và mật khẩu của bạn; nếu chưa có, hãy hỏi quản trị viên để nhận mật khẩu dùng một lần.",
+    "deviceCode": "Mã không đúng, đã được sử dụng, đã hết hạn hoặc cửa sổ hiển thị mã đã bị đóng.",
+    "deviceCodeNext": "Lấy mã mới và nhập lại.",
+    "setupCode": "Mã thiết lập không chính xác.",
+    "setupCodeNext": "Mở lại liên kết thiết lập mà máy chủ đã in ra, hoặc nhập mã đã dùng khi khởi động máy chủ.",
+    "setupCodeMissing": "Nhập mã thiết lập.",
+    "setupCodeMissingNext": "Mở liên kết thiết lập mà máy chủ đã in ra thì ô này được điền sẵn; mã mà máy chủ được khởi động cùng cũng dùng được.",
+    "sessionCapacity": "Tài khoản này đã đạt giới hạn thiết bị.",
+    "sessionCapacityNext": "Đăng xuất khỏi thiết bị bạn không còn dùng trong Cài đặt → Tài khoản → Thiết bị, rồi thử lại.",
+    "signInEnded": "Yêu cầu đăng nhập này đã kết thúc: đã hết thời gian chờ hoặc mã đã bị nhập sai quá nhiều lần.",
+    "signInEndedNext": "Đăng nhập lại bằng email và mật khẩu của bạn.",
+    "emailNotVerified": "Email của tài khoản này chưa được xác nhận.",
+    "emailNotVerifiedNext": "Mở liên kết trong email bạn nhận được khi đăng ký, rồi đăng nhập.",
+    "registrationFailed": "Không thể tạo tài khoản.",
+    "registrationFailedNext": "Vui lòng thử lại sau giây lát. Nếu vẫn tiếp diễn, hãy báo cho quản trị viên máy chủ này."
+  },
+  "labels": {
+    "reference": "Tài liệu tham chiếu"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Tổ chức này không tạo tài khoản mới khi đăng nhập bằng tài khoản công ty.",
+    "samlAccountCreationOffNext": "Hãy yêu cầu quản trị viên tổ chức của bạn mời bạn.",
+    "samlRetryAfterInvite": "Đăng nhập lại sau khi bạn được mời.",
+    "samlIdentityDenied": "Email này không thể dùng đăng nhập công ty của tổ chức này.",
+    "samlIdentityDeniedNext": "Hãy yêu cầu quản trị viên tổ chức của bạn kiểm tra tên miền email và tư cách thành viên của bạn.",
+    "samlRetryAfterAdministrator": "Đăng nhập lại sau khi quản trị viên đã kiểm tra.",
+    "samlResponseInvalid": "Không thể xác minh phản hồi đăng nhập của công ty.",
+    "samlResponseInvalidNext": "Hãy bắt đầu đăng nhập lại. Nếu vẫn tiếp diễn, hãy đề nghị quản trị viên tổ chức của bạn kiểm tra cài đặt SAML.",
+    "accountAlreadyExistsForEmailAddress": "Đã có tài khoản cho địa chỉ email này.",
+    "accountEmailCouldNotAdmittedFor": "Không thể gửi email của tài khoản.",
+    "administratorSettingsDoNotMeetServer": "Cài đặt của quản trị viên không đáp ứng yêu cầu của máy chủ.",
+    "administratorSettingsNotAvailableCurrentAccount": "Cài đặt quản trị viên không khả dụng với tài khoản hiện tại.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Một quản trị viên khác đã hoàn tất thiết lập máy chủ.",
+    "anotherServerOperationTemporarilyLockedAccount": "Một thao tác khác trên máy chủ đã tạm thời khóa kho lưu trữ của tài khoản.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Một thao tác khác trên máy chủ đã tạm thời khóa cơ sở dữ liệu, nên không thể tiếp tục xuất.",
+    "anotherServerOperationTemporarilyLockedDlp": "Một thao tác khác trên máy chủ đã tạm thời khóa kho lưu trữ chính sách DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "Một thao tác khác trên máy chủ đã tạm thời khóa kho lưu trữ tệp.",
+    "anotherServerOperationTemporarilyLockedPage": "Một thao tác khác trên máy chủ đã tạm thời khóa kho lưu trữ nội dung trang.",
+    "anotherServerOperationTemporarilyLockedProduct": "Một thao tác khác trên máy chủ đã tạm thời khóa kho lưu trữ sản phẩm.",
+    "askOrganizationAdministratorToAllow": "Yêu cầu quản trị viên tổ chức hoặc chủ sở hữu không gian nhóm cho phép.",
+    "askServerAdministratorCheckEmailDelivery": "Yêu cầu quản trị viên máy chủ kiểm tra trạng thái gửi email, sau đó thử lại.",
+    "backupArtifactNotCompleteYet": "Tệp sao lưu vẫn chưa hoàn tất.",
+    "backupStateNoLongerPermitsControl": "Trạng thái hiện tại của bản sao lưu không còn cho phép hành động đó.",
+    "causeCouldNotDetermined": "Không thể xác định nguyên nhân.",
+    "changeSaveReceiptAndSynchronizationState": "Thay đổi chưa được lưu và nội dung trang vẫn giữ nguyên.",
+    "checkCurrentBackupBeforeRetrying": "Kiểm tra bản sao lưu hiện tại trước khi thử lại.",
+    "checkCurrentJobStateBeforeDeciding": "Kiểm tra trạng thái tác vụ hiện tại trước khi quyết định có thử lại hay không.",
+    "checkCurrentListBeforeTryingDifferent": "Kiểm tra danh sách hiện tại trước khi thử một mục khác.",
+    "checkCurrentServerSettingsBeforeTrying": "Kiểm tra cài đặt máy chủ hiện tại trước khi thử lại.",
+    "checkCurrentServerSetupStateBefore": "Kiểm tra trạng thái thiết lập máy chủ hiện tại trước khi thử lại.",
+    "checkCurrentStateAndUseNew": "Kiểm tra trạng thái hiện tại và chỉ tạo bản sao lưu mới nếu bạn cần.",
+    "checkEmailAndPassword": "Kiểm tra email và mật khẩu.",
+    "checkServerSecretStorageThenSave": "Kiểm tra kho lưu trữ khóa bí mật trên máy chủ, sau đó lưu lại các cài đặt đó.",
+    "checkServerStateThenLoadSettings": "Kiểm tra trạng thái máy chủ, sau đó tải lại cài đặt.",
+    "createNewBackupAndInspectServer": "Tạo bản sao lưu mới và kiểm tra kho lưu trữ của máy chủ nếu lỗi lặp lại.",
+    "currentAccountNotAuthorizedForOperation": "Tài khoản hiện tại không được ủy quyền cho thao tác này.",
+    "currentStateMustCheckedBeforeRetry": "Phải kiểm tra trạng thái hiện tại trước khi có thể coi việc thử lại là an toàn.",
+    "currentStateMustCheckedBeforeRetrying": "Phải kiểm tra trạng thái hiện tại trước khi thử lại.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Dịch vụ xác minh DNS tạm thời không khả dụng.",
+    "doNotAssumeUnchangedRetrySafe": "Đừng cho rằng thử lại là an toàn cho đến khi lưu trữ trên máy chủ được khắc phục.",
+    "doNotKeepRetryingIdentifierNew": "Đừng tiếp tục thử lại yêu cầu này; hãy tải lại trước, sau đó một lần thử mới sẽ an toàn.",
+    "doNotResumeFailedJobStart": "Không tiếp tục nhiệm vụ đã thất bại; thay vào đó, hãy bắt đầu một lần xuất mới.",
+    "doNotRetryBeforeLoadingLatest": "Không thử lại trước khi tải cài đặt máy chủ mới nhất.",
+    "doNotRetryDirectRequestUnchanged": "Đừng thử lại bản tải lên này như hiện tại; hãy dùng phương thức tải lên có thể tiếp tục.",
+    "doNotRetryDirectRequestUnchanged2": "Đừng thử lại bản tải lên này như hiện tại; hãy dùng phương thức tải lên tệp lưu trữ có thể tiếp tục.",
+    "doNotRetrySetupRequestSign": "Không thử lại yêu cầu thiết lập này; hãy đăng nhập bằng tài khoản quản trị viên hiện có.",
+    "doNotReuseInvalidArtifactCreate": "Đừng dùng lại tệp sao lưu không hợp lệ; hãy tạo bản sao lưu mới.",
+    "doNotReuseLinkNewAction": "Không dùng lại liên kết này; một hành động mới sẽ an toàn.",
+    "emailOrPasswordDidNotMatch": "Email hoặc mật khẩu không khớp.",
+    "externalSignInProviderCouldNot": "Nhà cung cấp đăng nhập bên ngoài không thể hoàn tất yêu cầu.",
+    "fileLargerThanOneDirectUpload": "Tệp này quá lớn đối với một lần tải lên trực tiếp.",
+    "formStorageTemporarilyLockedByAnother": "Kho lưu trữ biểu mẫu tạm thời bị khóa bởi một thao tác máy chủ khác.",
+    "leafenArchiveLargerThanOneDirect": "Tệp lưu trữ Leafen này quá lớn đối với một lần nhập trực tiếp.",
+    "leafenDidNotReceiveServerResponse": "Leafen không nhận được phản hồi từ máy chủ.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen đang khôi phục trạng thái mức sử dụng dung lượng lưu trữ của tổ chức.",
+    "leafenServiceCouldNotCompleteOperation": "Dịch vụ Leafen không thể hoàn tất thao tác.",
+    "isolatedRecordNotAppliedYourRequested": "Bản ghi chưa hoàn chỉnh đã được tách riêng, thay đổi của bạn không được lưu và nội dung trang không thay đổi.",
+    "jobCannotRetriedStartReplacementExport": "Không thể thử lại tác vụ này; hãy bắt đầu một lần xuất thay thế.",
+    "jobSArchiveNotPublishedAnd": "Tệp lưu trữ của tác vụ này không được tạo và không gian làm việc nguồn không thay đổi.",
+    "keepDiagnosticReferenceAndAskServer": "Hãy giữ lại mã tham chiếu chẩn đoán và yêu cầu quản trị viên máy chủ khắc phục kho lưu trữ của máy chủ.",
+    "lastConfirmedSavedStateRestoredSo": "Trạng thái đã lưu được xác nhận gần nhất đã được khôi phục, nên có thể thử lại an toàn cùng thay đổi đó.",
+    "loadCurrentReportAndUseNew": "Tải báo cáo hiện tại, sau đó làm mới lại.",
+    "loadCurrentReportBeforeRefreshingAgain": "Tải báo cáo hiện tại trước khi làm mới lại.",
+    "loadCurrentReportBeforeTryingAgain": "Tải báo cáo hiện tại trước khi thử lại.",
+    "newerOrIncompatibleStatePreventedOperation": "Một trạng thái mới hơn hoặc không tương thích đã ngăn thao tác này.",
+    "noNewArchivePublishedAndSource": "Không có tệp lưu trữ mới nào được tạo, và không gian làm việc nguồn cùng các tệp lưu trữ trước đó không thay đổi.",
+    "noNewSignInSessionCreated": "Không có phiên đăng nhập mới nào được tạo và các phiên hiện có không bị thay đổi.",
+    "notKnownWhetherRetryingSafeUntil": "Chưa thể biết việc thử lại có an toàn hay không cho đến khi kiểm tra trạng thái hiện tại.",
+    "organizationStorageAuthorityInconsistent": "Bản ghi mức sử dụng dung lượng lưu trữ của tổ chức không nhất quán.",
+    "organizationDlpBlocksOperation": "Chính sách phòng chống mất dữ liệu của tổ chức bạn không cho phép thao tác này.",
+    "takeOutTermOrAskAboutDlp": "Hãy xóa mọi thuật ngữ nhạy cảm rồi thử lại, hoặc hỏi quản trị viên tổ chức nếu bạn không chắc.",
+    "organizationSettingsDoNotAllowOperation": "Cài đặt của tổ chức hoặc không gian nhóm của bạn không cho phép thao tác này.",
+    "organizationStorageLimitWouldExceeded": "Giới hạn dung lượng lưu trữ của tổ chức sẽ bị vượt quá.",
+    "serverDiskAlmostFull": "Ổ đĩa của máy chủ gần như đã đầy.",
+    "askServerAdministratorToFreeSpace": "Hãy yêu cầu quản trị viên máy chủ giải phóng dung lượng; mọi thứ sẽ hoạt động lại khi có đủ chỗ.",
+    "safeRetryOnceServerHasRoom": "Bạn có thể yên tâm thử lại thao tác tương tự khi máy chủ có đủ dung lượng.",
+    "readDoesNotChangeSavedData": "Thao tác đọc này không thay đổi dữ liệu đã lưu, nên có thể thử lại an toàn.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Tải lại bản sao lưu hiện tại trước khi chọn thao tác khác.",
+    "reloadCurrentBackupStateBeforeContinuing": "Tải lại trạng thái sao lưu hiện tại trước khi tiếp tục.",
+    "reloadCurrentStateBeforeDecidingWhether": "Tải lại trạng thái hiện tại trước khi quyết định có thử lại hay không.",
+    "reloadSignInPageAndStart": "Làm mới trang đăng nhập và đăng nhập lại.",
+    "removeUnneededFilesOrAskOrganization": "Xóa các tệp không cần thiết hoặc yêu cầu quản trị viên thanh toán của tổ chức tăng giới hạn.",
+    "reportChangedAfterScreenLoaded": "Báo cáo đã thay đổi sau khi màn hình này được tải.",
+    "requestIdentifierBelongsDifferentOperation": "Yêu cầu này đã được sử dụng cho một thao tác khác.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Yêu cầu này đã được sử dụng cho một lần làm mới báo cáo khác.",
+    "requestedItemNoLongerExistsOr": "Mục được yêu cầu không còn tồn tại hoặc không hiển thị với tài khoản này.",
+    "retryExportAfterOtherServerOperation": "Thử xuất lại sau khi thao tác máy chủ khác hoàn tất.",
+    "retryExportJobAfterServerStorage": "Thử lại tác vụ xuất này sau khi kho lưu trữ của máy chủ được khôi phục.",
+    "retryOnlyAfterAccountOrPermission": "Chỉ thử lại sau khi tài khoản hoặc quyền thay đổi.",
+    "retryOnlyAfterOrganizationSettingChanges": "Chỉ thử lại sau khi cài đặt đó thay đổi.",
+    "retrySameContentChangeAfterOther": "Thử lại thay đổi nội dung đó sau khi thao tác máy chủ khác hoàn tất.",
+    "retrySameContentChangeAfterServer": "Thử lại thay đổi nội dung đó sau khi dung lượng lưu trữ của máy chủ được khôi phục.",
+    "retrySameContentChangeNow": "Thử lại thay đổi nội dung đó ngay bây giờ.",
+    "changeTooLargeForOneChange": "Nội dung này quá lớn để thay đổi cùng một lúc. Mỗi thay đổi chứa tối đa 64 MB, bao gồm cả văn bản.",
+    "pageKeepsWhatItHadBefore": "Trang vẫn giữ nguyên như trước.",
+    "makeTheChangeInParts": "Hãy thực hiện từng phần: trước tiên xóa từng phần các thành phần nội dung bên trong một khối đóng/mở hoặc mục lớn, sau đó dán văn bản dài theo từng phần.",
+    "sameSizeIsRefusedAgain": "Cùng kích thước đó sẽ bị từ chối lần nữa; sau khi tách nhỏ, có thể thử lại an toàn.",
+    "linkCannotBeKeptHere": "Thay đổi này liên kết một trang hoặc thành phần nội dung không thể liên kết tại đây.",
+    "chooseAnotherPageOrRefresh": "Chọn một trang khác hoặc làm mới trang rồi thử lại.",
+    "sameLinkIsRefusedAgain": "Liên kết lại cùng một mục sẽ bị từ chối lần nữa.",
+    "retrySameDomainVerificationAfterDns": "Thử lại xác minh tên miền đó sau khi dịch vụ xác minh DNS được khôi phục.",
+    "retrySameFileOperationAfterOther": "Thử lại thao tác tệp đó sau khi thao tác máy chủ khác hoàn tất.",
+    "retrySameFileOperationAfterServer": "Thử lại thao tác tệp đó sau khi dung lượng lưu trữ của máy chủ được khôi phục.",
+    "retrySameFormOperationAfterOther": "Thử lại thao tác biểu mẫu đó sau khi thao tác máy chủ khác hoàn tất.",
+    "retrySameFormOperationAfterServer": "Thử lại thao tác biểu mẫu đó sau khi dung lượng lưu trữ của máy chủ được khôi phục.",
+    "retrySameOperationAfterOtherServer": "Thử lại thao tác đó sau khi thao tác máy chủ khác hoàn tất.",
+    "retrySameOperationAfterServerStorage": "Thử lại thao tác đó sau khi dung lượng lưu trữ của máy chủ được khôi phục.",
+    "returnSignInWithExistingAccount": "Quay lại đăng nhập bằng tài khoản hiện có.",
+    "reviewAndCorrectEnteredServerSettings": "Xem lại và sửa các cài đặt máy chủ đã nhập.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Xem lại các giá trị đã nhập và sửa những thông tin được tô sáng.",
+    "safeRetryAfterEmailDeliveryRestored": "Có thể thử lại an toàn sau khi việc gửi email được khôi phục.",
+    "safeRetryAfterServerResourceChecks": "Có thể thử lại an toàn sau khi việc kiểm tra tài nguyên máy chủ được khôi phục.",
+    "safeRetryAfterTemporaryLockClears": "Bạn có thể thử lại một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetryRead": "Bạn có thể thử lại thao tác đọc này một cách an toàn.",
+    "safeRetrySameAuthenticationOperationAfter": "Bạn có thể thử lại cùng một thao tác xác thực một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameContentChangeAfter": "Bạn có thể thử lại cùng một thay đổi nội dung một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetrySameContentChangeAfter2": "Bạn có thể thử lại cùng một thay đổi nội dung một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameDlpPolicySave": "Bạn có thể thử lại cùng một thao tác lưu chính sách DLP một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameDlpPolicySave2": "Bạn có thể thử lại cùng một thao tác lưu chính sách DLP một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetrySameDomainVerificationAfter": "Bạn có thể thử lại cùng một thao tác xác minh tên miền một cách an toàn sau khi dịch vụ được khôi phục.",
+    "safeRetrySameFileOperationAfter": "Bạn có thể thử lại cùng một thao tác tệp một cách an toàn sau khi dung lượng lưu trữ trở lại khả dụng.",
+    "safeRetrySameFileOperationAfter2": "Bạn có thể thử lại cùng một thao tác tệp một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameFileOperationAfter3": "Bạn có thể thử lại cùng một thao tác tệp một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetrySameFormOperationAfter": "Bạn có thể thử lại cùng một thao tác biểu mẫu một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameFormOperationAfter2": "Bạn có thể thử lại cùng một thao tác biểu mẫu một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetrySameOperationAfterStorage": "Bạn có thể thử lại cùng một thao tác một cách an toàn sau khi dung lượng lưu trữ được khôi phục.",
+    "safeRetrySameOperationAfterTemporary": "Bạn có thể thử lại cùng một thao tác một cách an toàn sau khi khóa tạm thời được gỡ bỏ.",
+    "safeRetrySameSettingsAfterSecret": "Bạn có thể thử lại cùng một cài đặt một cách an toàn sau khi kho lưu trữ bí mật được khôi phục.",
+    "safeRetrySameSettingsSaveAfter": "Bạn có thể thử lại cùng một thao tác lưu cài đặt một cách an toàn sau khi sửa các giá trị không hợp lệ.",
+    "safeRetryWithSameJobIdentifier": "Bạn có thể thử lại cùng một công việc một cách an toàn.",
+    "safeRetryWithSameJobIdentity": "Bạn có thể thử lại cùng một công việc một cách an toàn.",
+    "safeSignInInsteadCreatingAnother": "Bạn có thể yên tâm đăng nhập thay vì tạo tài khoản khác.",
+    "safeStartNewProviderSignIn": "Bạn có thể yên tâm bắt đầu đăng nhập qua nhà cung cấp mới sau này.",
+    "safeTryAgainAfterCorrectingDetails": "Bạn có thể thử lại một cách an toàn sau khi sửa thông tin.",
+    "safeTryAgainAfterCorrectingInput": "Bạn có thể thử lại một cách an toàn sau khi sửa dữ liệu đầu vào.",
+    "safeTryAgainAfterWait": "Bạn có thể thử lại một cách an toàn sau khi hết thời gian chờ.",
+    "serverTakesNoChangesNow": "Máy chủ này không thể kết nối tới vị trí sao lưu nên hiện không nhận thay đổi.",
+    "serverDataMovedElsewhere": "Dữ liệu của máy chủ này đã được chuyển sang máy chủ khác.",
+    "doItOnNewServer": "Hãy thực hiện thao tác này trên máy chủ mới.",
+    "serverDataMovedNoRetry": "Thử lại ở đây sẽ không lưu được.",
+    "sameRequestIdentityCanRetriedSafely": "Có thể thử lại cùng một yêu cầu một cách an toàn sau khi chờ một lát.",
+    "saveSameDlpPolicyAgainAfter": "Hãy lưu lại cùng một chính sách DLP sau khi dung lượng lưu trữ của máy chủ được khôi phục.",
+    "saveSameDlpPolicyAgainAfter2": "Lưu lại cùng chính sách DLP sau khi thao tác máy chủ khác hoàn tất.",
+    "serverAccountStorageTemporarilyUnavailable": "Dung lượng lưu trữ tài khoản trên máy chủ tạm thời không khả dụng.",
+    "serverCannotCurrentlyConfirmResourceState": "Máy chủ hiện không thể xác nhận trạng thái tài nguyên của mình.",
+    "serverCouldNotCompleteAdministratorSettings": "Máy chủ không thể hoàn tất việc lưu cài đặt quản trị viên.",
+    "serverCouldNotCompleteAdministratorSetup": "Máy chủ không thể hoàn tất yêu cầu thiết lập quản trị viên.",
+    "serverCouldNotCompleteBackupLifecycle": "Máy chủ không thể hoàn tất bản sao lưu.",
+    "serverCouldNotLoadBackupState": "Máy chủ không thể tải trạng thái sao lưu đó.",
+    "serverCouldNotProtectAdministratorSecret": "Máy chủ không thể bảo vệ các giá trị bí mật của quản trị viên.",
+    "serverCouldNotReadAdministratorState": "Máy chủ không thể đọc trạng thái quản trị viên.",
+    "serverCouldNotReadOneExact": "Máy chủ không thể đọc ảnh chụp nhanh báo cáo nhất quán.",
+    "serverDetectedAndIsolatedIncompleteContent": "Máy chủ đã phát hiện một bản ghi nội dung chưa hoàn chỉnh và tách riêng bản ghi đó.",
+    "serverFileStorageTemporarilyUnavailable": "Dung lượng lưu trữ tệp trên máy chủ tạm thời không khả dụng.",
+    "serverFormStorageTemporarilyUnavailable": "Dung lượng lưu trữ biểu mẫu trên máy chủ tạm thời không khả dụng.",
+    "serverPageContentStorageTemporarilyUnavailable": "Dung lượng lưu trữ nội dung trang trên máy chủ tạm thời không khả dụng.",
+    "serverSettingsChangedAfterScreenLoaded": "Cài đặt máy chủ đã thay đổi sau khi màn hình này được tải.",
+    "serverStorageTemporarilyUnavailable": "Dung lượng lưu trữ trên máy chủ tạm thời không khả dụng.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Dung lượng lưu trữ trên máy chủ tạm thời không khả dụng nên không thể tạo kho lưu trữ.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Dung lượng lưu trữ trên máy chủ tạm thời không khả dụng nên không thể lưu chính sách DLP.",
+    "signInAttemptIdentifierAlreadyBelongs": "Lần đăng nhập này đã được sử dụng với thông tin khác.",
+    "signInOrAccountActionLink": "Liên kết đăng nhập hoặc hành động đối với tài khoản không còn hợp lệ.",
+    "signInWithAuthorizedAccountOr": "Đăng nhập bằng tài khoản được cấp quyền hoặc yêu cầu quản trị viên cấp quyền truy cập.",
+    "signInWithExistingAdministratorAccount": "Đăng nhập bằng tài khoản quản trị viên hiện có.",
+    "signInWithServerAdministratorAccount": "Đăng nhập bằng tài khoản quản trị viên máy chủ hoặc yêu cầu quản trị viên khác cấp quyền truy cập.",
+    "startAccountActionAgainGetNew": "Bắt đầu lại hành động tài khoản để nhận liên kết mới.",
+    "startReplacementExportFromLatestWorkspace": "Bắt đầu bản xuất thay thế từ không gian làm việc mới nhất.",
+    "storedBackupDidNotMatchVerified": "Bản sao lưu đã lưu không khớp với tệp đã xác minh.",
+    "submittedInformationDidNotMeetOperation": "Thông tin đã gửi không đáp ứng yêu cầu của thao tác.",
+    "tooManyRequestsLimited": "Đã có quá nhiều yêu cầu nên thao tác này bị giới hạn.",
+    "tooManyRequestsMadeSoOperation": "Đã có quá nhiều yêu cầu nên thao tác này tạm thời bị giới hạn.",
+    "tryAgainAfterServerStorageRecovers": "Hãy thử lại sau khi dung lượng lưu trữ trên máy chủ được khôi phục.",
+    "tryAgainInHours_other": "Vui lòng thử lại sau khoảng {{count}} giờ.",
+    "tryAgainInMinutes_other": "Vui lòng thử lại sau khoảng {{count}} phút.",
+    "tryAgainInSeconds_other": "Vui lòng thử lại sau khoảng {{count}} giây.",
+    "useAnotherSignInMethodOr": "Sử dụng phương thức đăng nhập khác hoặc thử lại nhà cung cấp này sau.",
+    "useResumableArchiveUploadSoProgress": "Dùng tính năng tải lên tệp lưu trữ có thể tiếp tục để tiến trình có thể tiếp tục từ trạng thái đã lưu.",
+    "useResumableUploadSoProgressCan": "Dùng tính năng tải lên có thể tiếp tục để tiến trình có thể tiếp tục từ trạng thái đã lưu.",
+    "waitForCompletionThenRetryDownload": "Chờ đến khi hoàn tất rồi thử lại tải xuống.",
+    "waitForOtherServerOperationFinish": "Chờ thao tác khác trên máy chủ hoàn tất rồi thử lại.",
+    "waitForStorageReconciliationAdvanceThen": "Chờ một lát để lưu trữ cập nhật kịp, rồi thử lại thao tác đó.",
+    "waitMomentBeforeTryingAgain": "Chờ một lát rồi thử lại.",
+    "workspaceChangedWhileExportRunning": "Không gian làm việc đã thay đổi trong khi quá trình xuất đang diễn ra.",
+    "youNotSignedInAndNo": "Bạn chưa đăng nhập và không có dữ liệu tài khoản nào bị thay đổi.",
+    "pageIsLocked": "Trang đang bị khóa nên không thể thực hiện thay đổi.",
+    "unlockPageThenTryAgain": "Mở khóa trang cho riêng bạn hoặc cho mọi người từ menu trang, rồi thử lại.",
+    "safeToRetryAfterUnlocking": "Bạn có thể thử lại an toàn sau khi mở khóa trang.",
+    "databaseIsLocked": "Cơ sở dữ liệu đã bị khóa nên không thể thay đổi thuộc tính và chế độ xem.",
+    "unlockDatabaseThenTryAgain": "Mở khóa cơ sở dữ liệu cho riêng bạn hoặc cho mọi người từ nút Đã khóa, sau đó thử lại.",
+    "databaseEditorsCanUnlock": "Chỉ người có thể chỉnh sửa cơ sở dữ liệu mới mở khóa được.",
+    "safeToRetryAfterDatabaseUnlocked": "Bạn có thể yên tâm thử lại sau khi cơ sở dữ liệu được mở khóa.",
+    "rowMoveNeedsFullAccess": "Để di chuyển nó sang trang khác, bạn cần quyền truy cập đầy đủ vào nó và quyền chỉnh sửa vào nơi chuyển đến.",
+    "askFullAccessHolderToMoveIt": "Nhờ người có quyền truy cập đầy đủ di chuyển nó, hoặc chọn một nơi bạn có thể chỉnh sửa.",
+    "rowMoveRefusedUntilAccess": "Việc di chuyển sẽ bị từ chối lần nữa cho đến khi bạn có quyền truy cập đó.",
+    "otherWorkspaceCantMoveOrLink": "Không thể di chuyển hoặc liên kết nội dung giữa các không gian làm việc.",
+    "makeItAnewInThatWorkspace": "Hãy tạo nội dung đó trong không gian làm việc đó rồi sao chép nội dung sang. Bạn có thể di chuyển hoặc sao chép toàn bộ trang sang đó từ Di chuyển đến bằng cách chọn không gian làm việc.",
+    "otherWorkspaceRefusedAgain": "Nếu thử lại, yêu cầu vẫn bị từ chối vì cùng một lý do.",
+    "signInEndedForThisBrowser": "Phiên đăng nhập của trình duyệt này đã hết hạn hoặc đã bị kết thúc.",
+    "signInEndedForThisApp": "Phiên đăng nhập của ứng dụng này đã hết hạn hoặc đã bị kết thúc.",
+    "signInAgainToContinue": "Đăng nhập lại để tiếp tục.",
+    "retryAfterSigningInAgain": "Thử lại sau khi đăng nhập lại.",
+    "serverRestoredSinceDeviceCopies": "Dữ liệu của máy chủ này đã thay đổi và bản sao trên thiết bị này vẫn là bản trước đó.",
+    "changeKeptOnThisDeviceOnly": "Thay đổi không được lưu trên máy chủ mà chỉ có trên thiết bị này.",
+    "takeServerContentAnew": "Chọn “Tải lại từ máy chủ” để lấy nội dung hiện tại của máy chủ.",
+    "retryAfterTakingContentAnew": "Thử lại sau khi tải lại từ máy chủ.",
+    "propertyUsedByViewOrDependency": "Không thể thay đổi thuộc tính này lúc này: đây là thuộc tính tiêu đề hoặc thuộc tính nằm trong Thuộc tính đã xóa.",
+    "changeWhatUsesPropertyFirst": "Tải lại trang để xem thuộc tính như hiện tại.",
+    "retryAfterChangingWhatUsesProperty": "Hãy khôi phục thuộc tính đã xóa trước khi thay đổi.",
+    "workspaceAlreadyHasContentForArchive": "Không gian làm việc này đã có nội dung nên không thể đưa bản lưu trữ Leafen vào.",
+    "makeNewWorkspaceToImportArchive": "Tạo không gian làm việc mới và nhập tệp lưu trữ này ở đó.",
+    "retryInNewWorkspace": "Bạn có thể nhập lại trong một không gian làm việc mới.",
+    "importFileDoesNotFitFormat": "Tệp không đúng định dạng mà Leafen đọc được nên không có nội dung nào được nhập.",
+    "exportFileAgainToImport": "Xuất lại tệp từ nơi đã tạo tệp, sau đó nhập tệp đó.",
+    "sameFileRefusedAgain": "Nhập lại cùng một tệp sẽ không được.",
+    "pageBusyWithAnotherChange": "Trang này đang bận xử lý một thay đổi khác nên tạm thời không thể chỉnh sửa.",
+    "tryAgainOnceThatChangeIsDone": "Hãy thử lại sau khi thay đổi đó hoàn tất.",
+    "importPageInTrash": "Trang đích để nhập đang ở trong Thùng rác nên chưa có gì được nhập.",
+    "restorePageThenImportAgain": "Khôi phục trang từ Thùng rác rồi nhập lại.",
+    "importPageDeletedForGood": "Trang đích để nhập đã bị xóa vĩnh viễn nên chưa có gì được nhập.",
+    "ownerBringsDeletedPageBack": "Trong vòng 30 ngày, chủ sở hữu không gian làm việc có thể khôi phục trang trong Bảo mật → Lưu giữ dữ liệu; sau đó khôi phục trang từ Thùng rác và nhập lại.",
+    "importAgainOnceRestored": "Thử lại cũng không nhập được cho đến khi trang được khôi phục.",
+    "pageInTrashCantChange": "Không thể thay đổi trang đang ở trong Thùng rác cho đến khi trang được khôi phục.",
+    "restorePageThenTryAgain": "Khôi phục trang từ Thùng rác rồi thử lại.",
+    "tryAgainOnceRestored": "Thử lại cũng không được cho đến khi trang được khôi phục.",
+    "optionNameHasComma": "Tên tùy chọn không được chứa dấu phẩy (,).",
+    "takeCommaOutOrSplitOption": "Hãy bỏ dấu phẩy hoặc tách thành hai tùy chọn.",
+    "optionRefusedUntilRenamed": "Thử lại sau khi đổi tên.",
+    "optionNameTaken": "Thuộc tính này đã có tùy chọn mang tên đó.",
+    "useAnotherOptionName": "Hãy dùng tên khác hoặc chọn tùy chọn đã có sẵn.",
+    "optionsInUseLeftOut": "Thay đổi này bỏ qua các tùy chọn mà các trang đang sử dụng.",
+    "keepOptionsOrDeleteOneByOne": "Hãy giữ các tùy chọn đó hoặc xóa từng tùy chọn một trong menu của tùy chọn đó.",
+    "optionsRefusedUntilKeptOrDeleted": "Nếu thử lại y nguyên, yêu cầu vẫn bị từ chối vì cùng một lý do."
+  }
+}

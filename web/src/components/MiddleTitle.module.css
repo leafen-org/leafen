@@ -1,0 +1,51 @@
+/* A searched title (MiddleTitle): its start gives way, its end keeps up to
+   half the line, each cut with "…" (Notion's, seen 2026-11-12). Spaces where
+   the two meet stay, as in the title written whole. It takes its whole line,
+   so the end's half is the line's: sized to its words, a title that fits had
+   its end held to half of itself and cut ("w667 결…" for "w667 결과 4"). */
+.title {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+/* The title's words once, whole: what a screen reader and the row's name
+   read. Unseen over the drawn pieces, so a press on the words lands on it as
+   it did on them; the mark after the words stays above it. */
+.whole {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  white-space: pre;
+  opacity: 0;
+}
+.start,
+.end {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre;
+}
+/* The drawn pieces' words come from their attributes (hidden from a screen
+   reader), so the row's words are the title once. */
+.start::before,
+.end::before {
+  content: attr(data-words);
+}
+.start {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.end {
+  flex: none;
+  max-width: 50%;
+}
+/* What follows the words (a verified page's mark), right after them. */
+.after {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: 5px;
+}

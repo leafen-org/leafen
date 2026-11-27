@@ -1,0 +1,159 @@
+/* A card's "페이지 콘텐츠" draws its page's first block as the page does at a
+   12px size, as Notion's (seen 2026-11-17 in a gallery's medium cards at
+   1440, a block of each kind): inside the preview's 8px, a paragraph's words
+   8px further in and down on an 18px line; a heading 32, 28 or 24px down at
+   22.5, 18 or 15px on a 1.3 line; a list item's, a to-do's and a toggle's
+   words 38px in, after their 24px mark 8px in (a dot of 18px, a number
+   centred, a 16px box or caret 12px in, 9px down); a quote's 25px in after
+   its 3px bar, with nothing over it. */
+.paragraph,
+.heading1,
+.heading2,
+.heading3,
+.bullet,
+.numbered,
+.toggle,
+.todo,
+.quote {
+  margin: 0;
+}
+
+.paragraph {
+  padding: 8px;
+}
+
+.heading1,
+.heading2,
+.heading3 {
+  padding: 32px 8px 8px;
+  font-size: 22.5px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.heading2 {
+  padding-top: 28px;
+  font-size: 18px;
+}
+
+.heading3 {
+  padding-top: 24px;
+  font-size: 15px;
+}
+
+.bullet,
+.numbered,
+.toggle,
+.todo {
+  position: relative;
+  padding-block: 8px 9px;
+  padding-inline: 38px 6px;
+}
+
+/* A toggle keeps 6px under its 28px row as a paragraph does; a list's 1. */
+.toggle {
+  padding-bottom: 14px;
+}
+
+.bullet::before {
+  content: "•";
+  position: absolute;
+  top: 9px;
+  inset-inline-start: 8px;
+  width: 24px;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.marker {
+  position: absolute;
+  top: 9px;
+  inset-inline-start: 8px;
+  width: 24px;
+  text-align: center;
+}
+
+.toggle > .marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inset-inline-start: 12px;
+  width: 16px;
+  height: 16px;
+}
+
+/* A shut toggle's caret points the way the text runs. */
+.toggle > .marker > svg {
+  transform: scaleX(var(--inline-sign, 1));
+}
+
+.todo > input {
+  position: absolute;
+  top: 9px;
+  inset-inline-start: 12px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.todo[data-checked] span {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+.quote {
+  padding-block: 0;
+  padding-inline: 22px;
+  border-inline-start: 3px solid currentColor;
+}
+
+/* A callout's box stands at the preview's own 8px, not 8 more
+   (FeedPostCallout); the element outranks its box's margin. */
+div.callout {
+  margin: 0;
+}
+
+.pageLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  color: var(--text-default);
+  text-align: start;
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 3px;
+}
+
+/* A toggle heading's shut caret, 9.6px in a 24px box 8px in and centred on
+   its line, its words 34px in (Notion's board card, seen 2026-11-17). */
+:is(.heading1, .heading2, .heading3):has(> .headingCaret) {
+  position: relative;
+  padding-inline-start: 34px;
+}
+
+.headingCaret {
+  position: absolute;
+  top: calc(32px + (22.5px * 1.3 - 24px) / 2);
+  inset-inline-start: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.heading2 > .headingCaret {
+  top: calc(28px + (18px * 1.3 - 24px) / 2);
+}
+
+.heading3 > .headingCaret {
+  top: calc(24px + (15px * 1.3 - 24px) / 2);
+}
+
+.headingCaret > svg {
+  width: 9.6px;
+  height: 9.6px;
+  transform: scaleX(var(--inline-sign, 1));
+}

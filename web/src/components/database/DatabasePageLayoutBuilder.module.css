@@ -1,0 +1,510 @@
+/* The page layout builder, as Notion's "레이아웃 사용자 지정" (seen
+   2026-10-12): the window over the app, a bar with the database's name, the
+   previewed page and 취소 / 모든 페이지에 적용 ⌄ 16 in from each edge (2026-11-18), the
+   previewed page in a framed canvas with its modules, and 페이지 설정 on the right. */
+.builder {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  grid-template-rows: 60px minmax(0, 1fr);
+  background: var(--bg-sidebar);
+  color: var(--text-default);
+}
+
+.bar {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.barTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Notion's (seen 2026-11-07): the source's name 16/24 500 after a 20px
+   mark 4px before it; under it "미리보기: …" 12px 500, 3px by 6px, 6px to its
+   chevron, 20px tall. */
+.barName {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 360px;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.previewPicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: 500;
+}
+
+.previewPicker:hover,
+.previewPicker:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.barActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* "✕ 취소" and "✓ 모든 페이지에 적용 ⌄" as Notion's (2026-11-18, 1440): ✕ its 9.66 glyph's box, 12 in, 8 before its word; ✓ 8 in, 6 before; ⌄ 24 wide, its 16px mark 4 in and 2 down, as the toolbar's (SplitChevronDown). */
+.cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.cancel:hover,
+.cancel:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.apply {
+  display: inline-flex;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--c-accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.apply button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.apply) button:not(button:first-of-type) {
+  width: 24px;
+  padding: 0;
+  justify-content: center;
+  box-shadow: inset calc(1px * var(--inline-sign, 1)) 0 0 0 var(--block-divider); /* inside, as Notion's (2026-11-18) */
+}
+
+.apply button:hover,
+.apply button:focus-visible {
+  background: rgba(0, 0, 0, 0.12);
+  outline: none;
+}
+
+.apply button:disabled { opacity: 0.6; cursor: default; }
+
+/* The previewed page, as Notion's builder frames it at 1280px (seen
+   2026-10-25): from 24px in to the settings, its top rounded 12 in a 3px
+   light blue ring; the page's cards 28px down, up to 720px wide and 40px in from their
+   column, a 381px panel beside them with a 1px blue line (narrower: layoutBuilderNarrow.css). The
+   frame runs to the window's foot and its page and panel scroll each on its
+   own, the page's scroll bar at its column's end by the panel's line (seen
+   2026-11-12 at 1440: the page 24..769, its cards 64..714, the line at 769). */
+.canvas {
+  overflow: auto;
+  padding-block: 0;
+  padding-inline: 24px 0;
+}
+
+.frame {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
+  border-radius: 12px 12px 0 0;
+  background: var(--bg-default);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 22%, transparent), 0 9px 12px rgba(15, 15, 15, 0.1);
+}
+
+.frame[data-panel="true"] {
+  grid-template-columns: minmax(0, 1fr) 381px;
+}
+
+.pageColumn { overflow-y: auto; }
+
+.pageColumn > .modules {
+  width: min(720px, calc(100% - 80px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+}
+
+.panelToggle {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.panelToggle:hover,
+.panelToggle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  overflow-y: auto;
+  padding: 28px 24px 20px;
+  border-inline-start: 1px solid color-mix(in srgb, var(--accent-blue) 30%, transparent);
+}
+
+.panel > * { flex: none; }
+
+.panel > .panelToggle {
+  inset-inline-end: auto;
+  inset-inline-start: 4px;
+}
+
+.addToPanel {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  margin-top: 12px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Its plus 12.8px across, the words 8px on, as Notion's desktop builder. */
+.frame .addToPanel > svg {
+  margin: 0 -1.6px;
+}
+
+/* The frame's module cards, their heads, the "⠿" and the drop line: DatabasePageLayoutModules.module.css. A panel
+   row's "⠿" is grey; its drop line marks its own rows only (2026-11-13: a bare attribute rule drew it on every
+   dragged-over row of the app, the sidebar's too). */
+.listRow .dragHandle { color: var(--icon-tertiary); }
+.listRow[data-drop="before"] { box-shadow: inset 0 2px 0 var(--accent-blue); }
+.listRow[data-drop="after"] { box-shadow: inset 0 -2px 0 var(--accent-blue); }
+
+.side {
+  overflow: auto;
+  padding: 12px 24px 24px;
+}
+
+.sideTitle {
+  margin: 4px 0 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sideLabel {
+  margin: 14px 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.sideNote {
+  margin: -4px 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.structures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.structure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.structure > span:last-child {
+  line-height: 14px;
+}
+
+/* The page's settings at 1280px, as Notion's (seen 2026-10-25): "페이지 설정"
+   16px/500 and "구조" 52.5px apart, the tiles 22px under it; "옵션" 54.5px
+   under the tiles' names and its rows' words 26.5px on, at the column's edge. */
+.pageSide > .sideTitle {
+  margin: 0 0 33px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.pageSide > .sideLabel {
+  margin: 0 0 5px;
+  font-weight: 500;
+}
+
+.pageSide > .structures + .sideLabel {
+  margin: 38px 0 4px;
+}
+
+/* The page settings' rows light 8px past the column, their words at its
+   edge (Notion's, seen 2026-11-14 at 1440: words at 1174, the lit row
+   1166..1424, the switch ending at 1416). */
+.pageSide .optionRow {
+  width: calc(100% + 16px);
+  margin: 0 -8px;
+}
+
+/* A structure's tile, as Notion's (seen 2026-10-25): 80px, round 6, a faint
+   1.5px ring, its picture at the top; the one chosen in a 2.5px blue ring. */
+.structure > span:first-child {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--bg-default);
+  box-shadow: inset 0 0 0 1.5px var(--border-default);
+  color: var(--icon-tertiary);
+}
+
+.structure > span:first-child > svg {
+  flex: none;
+}
+
+.structure[aria-pressed="true"] > span:first-child {
+  box-shadow: 0 0 0 0.75px var(--accent-blue), inset 0 0 0 1.75px var(--accent-blue);
+}
+
+.structure[aria-pressed="true"] {
+  color: var(--text-default);
+  font-weight: 600;
+}
+
+/* An option's row lights 8px past its words and its switch, round 6, as
+   Notion's builder rows (seen 2026-11-14: the page settings' and the title
+   card popover's "속성 라벨", whose words stand under "옵션"). */
+.optionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: start;
+}
+
+.optionRow:hover,
+.optionRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* An option's name with its ⓘ 4 after it, the ⓘ in the icons' grey, as
+   Notion's page settings (seen 2026-11-14 at 1440: "전체 너비" 1174..1226.2,
+   its 16px ⓘ at 1230.2, level with the words). */
+.optionName {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.optionTip {
+  display: inline-flex;
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.optionValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-secondary);
+}
+
+.search {
+  width: 100%;
+  height: 28px;
+  margin-bottom: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.listRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.listRow:hover {
+  background: var(--bg-hover);
+}
+
+.listRow > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listRow > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.listRow button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.listRow button:hover,
+.listRow button:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.listRow[data-section="true"] > span {
+  color: var(--text-secondary);
+}
+
+.listRow input {
+  flex: 1;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 4px;
+  box-shadow: var(--name-field-ring-focus);
+  font-size: 14px;
+}
+
+.textButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.textButton:hover,
+.textButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.sideHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4px 0 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.sideHead button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.sideHead button:hover {
+  background: var(--bg-hover);
+}
+
+.divider {
+  margin: 8px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+@media (max-width: 699px) {
+  .builder {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 54px minmax(0, 1fr) auto;
+  }
+  .side {
+    max-height: 40vh;
+    border-top: 1px solid var(--border-default);
+  }
+}
+
+/* The "콘텐츠" module's body, the page's own read only, as Notion's builder draws it (seen 2026-11-12 at 1440: its first words 62.5
+   under the card's top and 20 in, 38 over its foot), never shorter than its "비어 있음" (2026-11-25: one line, empty too, a 136 card as
+   "비어 있음", two empty lines 160); a press chooses the card. The page's foot, room to click under its last line, isn't drawn. */
+.frame .contentPreview { min-height: 80px; padding: 9.5px 6px 15.5px; pointer-events: none; }
+.frame .contentPreview > * { padding-bottom: 0; }
+.frame .contentPreview [data-editor-tail] { display: none; }
+
+/* A row's page icon in the preview picker: its glyph or emoji 18px in a
+   20px place before its name, as Notion's (seen 2026-11-14). */
+.previewIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+  font-size: 18px;
+  line-height: 1;
+}

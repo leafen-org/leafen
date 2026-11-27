@@ -1,0 +1,127 @@
+/* "N개 보기" rows, as Notion's (seen 2026-10-24 at 375px): the view's 20px
+   icon 14px in, its name 17px at 46px, a grey 16px "⋯" at the end; the one
+   shown is the same row. 45px with the line under them, the last 44 without
+   it, as the sheets' other rows (PhoneSheet.module.css; Notion's, seen
+   2026-11-14 at 402pt: rows at 88, 133, 178). */
+.viewRow {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 45px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.viewRow:last-child {
+  min-height: 44px;
+  border-bottom: 0;
+}
+
+.viewPick {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 44px;
+  padding-block: 0;
+  padding-inline: calc(14px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.viewIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-primary);
+}
+
+.viewIcon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.viewName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The shown view's tick, in the words' colour (PhoneSheetRowParts.module.css), Notion's ✓ drawn in an 18px box as its phone
+   sheets draw it (checkmarkSmall, 11.2pt across, seen 2026-11-15 at 402pt),
+   its middle 45px in from the row's end and the "⋯"'s 20px in, as Notion's
+   (seen 2026-11-14 at 402pt in a database's "N개 보기" and the library's,
+   in a row ending at 386; its box 332–350); alone, it takes the "⋯"'s place. */
+.viewTick {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: -4px;
+  pointer-events: none;
+}
+
+.viewTick[data-alone] {
+  margin-inline-end: 11px;
+}
+
+.viewMore {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.newViewIcon {
+  color: var(--accent-blue);
+}
+
+/* The tab display's tick in the words' ink, in the middle of its row (Notion's
+   phone, seen 2026-11-15 at 402pt: 18px at 352–370, 101 in a row at 88). */
+.displayTick {
+  display: block;
+  color: var(--text-default);
+}
+
+/* "나에게만 적용됨" under the tab display's choices, 16px under them and
+   where their words start, 15px/500 in the second grey (Notion's phone,
+   seen 2026-11-15 at 402pt). */
+.displayNote {
+  margin: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 16.5px;
+}
+
+/* "새 보기 추가" from "N개 보기" (PhoneAddViewSheet's whole screen): flat rows
+   45 apart, each 44 over its own faint line, the last one's too, the
+   layout's 20px mark 20 in and its 16px name 14 past the mark (Notion's,
+   seen 2026-11-18 in iPhone 17 Safari at 402: rows from 73, mark x20, name
+   x54, the line rgba(255,255,243,0.082) on dark). Drawn over the whole
+   screen's rows and group (PhoneSheet.module.css), hence the repeated class. */
+.addViewScreen.addViewScreen.addViewScreen [data-phone-sheet-group] {
+  border-bottom: 0;
+}
+.addViewScreen.addViewScreen.addViewScreen [data-phone-add-view-type] {
+  min-height: 45px;
+  border-bottom-color: var(--border-subtle);
+}
+.addViewScreen [data-phone-add-view-type] > span:first-child,
+.addViewScreen [data-phone-add-view-type] > span:first-child > svg {
+  width: 20px;
+  height: 20px;
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "name": "database-mutation",
+  "operations": [
+    { "name": "start", "goName": "databaseMutationStart", "tsName": "start", "method": "POST", "path": "/pages/{pageId}/database-mutations" },
+    { "name": "read", "goName": "databaseMutationRead", "tsName": "read", "method": "GET", "path": "/pages/{pageId}/database-mutations/{jobId}" }
+  ],
+  "bounds": {
+    "requestIdRunes": 255,
+    "itemsPerTurn": 64,
+    "jobsPerBurst": 4
+  },
+  "errors": {
+    "invalid": "LEAFEN_DATABASE_MUTATION_INVALID",
+    "notFound": "LEAFEN_DATABASE_MUTATION_NOT_FOUND",
+    "conflict": "LEAFEN_DATABASE_MUTATION_CONFLICT",
+    "requestIdReused": "LEAFEN_DATABASE_MUTATION_REQUEST_ID_REUSED",
+    "databaseBusy": "LEAFEN_DATABASE_MUTATION_DATABASE_BUSY",
+    "storageUnavailable": "LEAFEN_DATABASE_MUTATION_STORAGE_UNAVAILABLE",
+    "unavailable": "LEAFEN_DATABASE_MUTATION_UNAVAILABLE",
+    "lifecycleRequired": "LEAFEN_DATABASE_MUTATION_LIFECYCLE_REQUIRED"
+  },
+  "targetKinds": ["source", "property", "row"],
+  "statuses": ["pending", "completed"],
+  "phases": [
+    "sourceCells", "sourceFiles", "sourceRows", "sourceViews", "sourceProperties", "sourceFinal",
+    "propertyCells", "propertyFiles", "propertyFinal",
+    "rowIncoming", "rowCells", "rowFiles", "rowFinal", "completed"
+  ],
+  "records": [
+    {
+      "goName": "databaseMutationInput",
+      "tsName": "DatabaseMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "DatabaseMutationTargetKind" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "databaseMutationProgress",
+      "tsName": "DatabaseMutationProgress",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Processed", "jsonName": "processed", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "databaseMutationResponse",
+      "tsName": "DatabaseMutationResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "DatabaseMutationTargetKind" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "DatabaseMutationStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "DatabaseMutationPhase" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "databaseMutationProgress", "tsType": "DatabaseMutationProgress" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "*graphMutationReceipt", "tsType": "GraphMutationReceipt | null" }
+      ]
+    }
+  ]
+}

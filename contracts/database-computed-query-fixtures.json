@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "name": "database-computed-query",
+  "sourceProperties": [
+    { "id": "title", "type": "title", "name": "Name", "position": "p01", "config": {} },
+    { "id": "amount", "type": "number", "name": "Amount", "position": "p02", "config": {} },
+    { "id": "base", "type": "formula", "name": "Base", "position": "p03", "config": { "formula": "prop(\"Amount\") * 2" } },
+    { "id": "derived", "type": "formula", "name": "Derived", "position": "p04", "config": { "formula": "prop(\"Base\") + 1" } },
+    { "id": "cycle-a", "type": "formula", "name": "Cycle A", "position": "p05", "config": { "formula": "prop(\"Cycle B\") + 1" } },
+    { "id": "cycle-b", "type": "formula", "name": "Cycle B", "position": "p06", "config": { "formula": "prop(\"Cycle A\") + 1" } },
+    { "id": "list-total", "type": "formula", "name": "List total", "position": "p07", "config": { "formula": "[1, 2, 3].map(current * 2).sum()" } },
+    { "id": "related", "type": "relation", "name": "Related", "position": "p08", "config": { "relationDatabaseId": "$data_source" } },
+    { "id": "bulk-related", "type": "relation", "name": "Bulk related", "position": "p09", "config": { "relationDatabaseId": "$data_source" } },
+    { "id": "related-count", "type": "rollup", "name": "Related count", "position": "p10", "config": { "rollupRelationPropertyId": "bulk-related", "rollupTargetPropertyId": "target-amount", "rollupFunction": "count" } },
+    { "id": "related-sum", "type": "rollup", "name": "Related sum", "position": "p11", "config": { "rollupRelationPropertyId": "bulk-related", "rollupTargetPropertyId": "target-amount", "rollupFunction": "sum" } },
+    { "id": "related-formula", "type": "rollup", "name": "Related formula", "position": "p12", "config": { "rollupRelationPropertyId": "related", "rollupTargetPropertyId": "target-derived", "rollupFunction": "show_original" } }
+  ],
+  "targetProperties": [
+    { "id": "target-title", "type": "title", "name": "Target", "position": "t01", "config": {} },
+    { "id": "target-amount", "type": "number", "name": "Target amount", "position": "t02", "config": {} },
+    { "id": "target-derived", "type": "formula", "name": "Target derived", "position": "t03", "config": { "formula": "prop(\"Target amount\") + 1" } }
+  ],
+  "controls": {
+    "missingTargetId": "missing-target",
+    "missingTargetsExcluded": true
+  },
+  "expected": {
+    "base": 14,
+    "derived": 15,
+    "cycle-a": "",
+    "cycle-b": "",
+    "list-total": 12,
+    "related-count": 205,
+    "related-sum": 21115,
+    "related-formula": "2, 3"
+  }
+}

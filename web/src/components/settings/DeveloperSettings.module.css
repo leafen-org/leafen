@@ -1,0 +1,557 @@
+/* The settings' "개발자" item: the token list, and the new token window
+   (Notion's is 466px wide, seen 2026-10-02). */
+
+.tokens {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tokens th {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.tokens td {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+/* A cell holding a list, such as a managed user's workspaces, wraps
+   inside the table rather than running past it. */
+.tokens td.wraps {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.tokens tr[data-status="expired"] td,
+.tokens tr[data-status="revoked"] td {
+  color: var(--text-tertiary);
+}
+
+.name {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions {
+  text-align: end;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.actions) > button:not(button:first-of-type) {
+  margin-inline-start: 4px;
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.note {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* In the window's middle, as Notion's (seen 2026-11-03). */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: flex;
+  align-items: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  width: min(466px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.dialogHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dialogClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+.dialogClose:hover,
+.dialogClose:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.dialogTitle {
+  margin: 0 0 6px;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Taller than the window, a window keeps its title (and the line under it)
+   and scrolls what is below, its buttons too, as Notion's new connection
+   window (seen 2026-11-13: 35px left above and below, the part under the
+   title scrolling, 2px kept around it for the fields' focus rings). */
+.dialog:has(> .dialogBody) {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 70px);
+}
+.dialog > .dialogBody {
+  min-height: 0;
+  margin: -2px;
+  padding: 2px;
+  overflow-y: auto;
+}
+.dialogLead {
+  flex-shrink: 0;
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.dialogNote,
+.fieldNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fieldLabel {
+  padding: 0;
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.field > input[type="text"] {
+  height: 32px;
+  padding: 1px 11px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.capability {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+}
+
+.capability > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.capability > span > span {
+  color: var(--text-secondary);
+}
+
+.secret {
+  display: block;
+  padding: 10px;
+  overflow-wrap: anywhere;
+  border-radius: var(--radius);
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 13px;
+  user-select: all;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.dialogActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.primary,
+.secondary,
+.danger {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.primary {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-weight: 600;
+}
+
+.primary:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.secondary {
+  color: var(--text-secondary);
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.danger {
+  color: var(--danger-outline-text); /* An answer that lets something go, as a confirmation's outlined one. */
+}
+
+.danger:hover,
+.danger:focus-visible {
+  background: var(--danger-outline-hover);
+  outline: none;
+}
+
+/* A settings window's foot, as Notion's (seen 2026-11-08: "사용자 지정 MCP
+   서버" and "새 개인 액세스 토큰"): its buttons 32px at 14/500, "취소" the
+   windows' outlined one. */
+.dialogActions > .primary,
+.dialogActions > .secondary,
+.dialogActions > .danger {
+  height: 32px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cancel {
+  composes: cancel from "../DialogButtons.module.css";
+}
+
+.danger:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+  .tokens th:nth-child(3),
+  .tokens td:nth-child(3),
+  .tokens th:nth-child(5),
+  .tokens td:nth-child(5) {
+    display: none;
+  }
+}
+
+.webhookTypes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 8px 0 0;
+  padding: 0;
+  border: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.webhookTypes legend {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.webhookTypes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.webhookDeliveries {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+}
+
+.webhookDeliveries li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-top: 1px solid var(--border-default);
+  color: var(--text-secondary);
+}
+
+.webhookDeliveries li[data-state="failed"] span {
+  color: var(--danger);
+}
+
+.webhookDeliveries time {
+  margin-inline-start: auto;
+}
+
+.tokens td.webhookActionsCell {
+  white-space: normal;
+}
+
+.webhookActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.tokens td.webhookAddress {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.field > [data-app-select] {
+  --select-height: 32px;
+}
+/* "토큰은 여기에서 관리하세요": underlined in the description's color, as Notion's. */
+.link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* "인증 방법": each answer a card with its radio and a grey line under its
+   name, the chosen one with a blue edge, as Notion's (seen 2026-10-30). */
+.methodChoice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border-secondary);
+  cursor: pointer;
+}
+
+.methodChoice[data-checked="true"] {
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+
+.methodChoice input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: var(--accent-blue);
+}
+
+.methodChoice span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.methodChoice strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.methodChoice small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* The new token window, as Notion's (seen 2026-11-13 at 1440): 480 wide and
+   20 in; its 17/22 title 4 over its 14/20 grey line, 26 over the fields 16
+   apart; a name of 14/20/500 6 over its 28 box with a faint ring; 만료일 over
+   its 12/16 grey date at the start of a row whose end is the lifetime's
+   "1년 ⌄" (28 high, 8 in, its 180 list 8 under it at its end); 기능 8 over
+   its line and 16 over its rows (a 16 box 2 down, 8 before its 14/20/500 name
+   over a 12/16 grey line); the button 26 under them at the end. */
+.tokenDialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: 20px;
+}
+.tokenDialog .dialogTitle {
+  margin: 0 0 4px;
+  font-size: 17px;
+  line-height: 22px;
+}
+.tokenDialog form > .dialogNote:first-child {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.tokenDialog .fieldLabel {
+  font-size: 14px;
+  line-height: 20px;
+}
+.tokenDialog .fieldNote {
+  font-size: 12px;
+  line-height: 16px;
+}
+.tokenDialog .field > input[type="text"] {
+  height: 28px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--button-outline);
+  background: var(--card-field-bg);
+  line-height: 20px;
+}
+.tokenDialog .field > input[type="text"]:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.expiryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.expiryText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.expiryChoice {
+  flex: none;
+}
+.expiryChoice button[data-notion-select-button] {
+  padding: 0 8px;
+  column-gap: 6px;
+}
+.tokenDialog fieldset.field {
+  gap: 8px;
+}
+.tokenDialog legend.fieldLabel + .fieldNote {
+  margin-top: 8px;
+}
+.tokenDialog .capability {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.tokenDialog .capability > input {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 2px 0 0;
+}
+.tokenDialog .capability strong {
+  font-weight: 500;
+}
+.tokenDialog .capability > span > span {
+  font-size: 12px;
+  line-height: 16px;
+}
+.tokenDialog form > .dialogActions {
+  margin-top: 10px;
+}
+
+/* The form to add a webhook, under the list's button, as a settings field:
+   name above a 400×34 box (the window's "리펜 고유 화면" field). */
+.webhookForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.webhookField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.webhookField input {
+  box-sizing: border-box;
+  width: 400px;
+  max-width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.webhookField p {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.webhookForm .webhookTypes {
+  margin: 0;
+}
+
+.webhookForm .webhookTypes legend {
+  padding: 0;
+}
+
+.webhookFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

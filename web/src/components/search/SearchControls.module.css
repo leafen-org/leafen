@@ -1,0 +1,186 @@
+/* The results' sort beside "검색 결과(N개)", as Notion's (seen 2026-11-14,
+   dark 1440): its words and 14px ⌄ 2px apart, no room around them and no
+   ground under them, hovered or open, its right edge the label row's. */
+.sort {
+  position: relative;
+  margin-inline: auto 0;
+}
+/* Its menu hangs below it: the label's ellipsis clipping is not this span's. */
+span.sort.sort {
+  overflow: visible;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+
+.sortButton:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+  outline: none;
+}
+
+/* The element in the selector outranks SearchFilterMenu.module.css .filterMenu on the same element
+   whatever order the stylesheets load in. As Notion's (seen 2026-11-14, dark 1440): 4px under
+   the button (placed by SearchSortMenu) from its start, 180px, its rows' words 14px. */
+div.sortMenu {
+  position: fixed;
+  z-index: 120;
+  width: 180px;
+  gap: 1px;
+  padding: 4px;
+}
+
+.sortItem.sortItem {
+  font-size: 14px;
+}
+
+/* The foot: "⌘↵ 새 탭에서 열기" and "검색 설정", as Notion's (seen
+   2026-11-14): 41px with its line, 16px and 12px in, 1px under the results
+   and the preview, which end at its line. */
+.footer {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 41px;
+  margin-top: 1px;
+  padding-block: 8px;
+  padding-inline: 16px 12px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* Notion's hints stand 20px apart (its source, read 2026-11-13). */
+.footerHints {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.footerHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.footerHint kbd {
+  font-family: var(--font-ui);
+  font-size: 11px;
+}
+
+.footerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+}
+
+.footerButton:hover,
+.footerButton:focus-visible,
+.footerButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.settingsMenu {
+  position: absolute;
+  inset-inline-end: 8px;
+  bottom: calc(100% + 4px);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.settingsItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 13px;
+  text-align: start;
+}
+
+.settingsItem:hover,
+.settingsItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* No result: a word that some may be in deleted pages, and their search. */
+/* Nothing found, 12px under the middle of the results at 14px, as Notion's
+   (seen 2026-10-31): the title on a 20px line, the note on 16.8px ones, the
+   link on a 25px one. */
+.noResults {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 40px 16px 16px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 16.8px;
+  text-align: center;
+}
+
+.noResults strong {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.noResults .trashLink {
+  color: var(--accent-blue);
+  font-size: 14px;
+  line-height: 25px;
+}
+
+.noResults .trashLink:hover,
+.noResults .trashLink:focus-visible {
+  outline: none;
+  text-decoration: underline;
+}
+
+/* "+ 필터": the filters not on the row yet, as Notion's (seen 2026-11-14):
+   5px in before its "+", 9px after its name, round 12, 6px between them.
+   The element in the selector outranks SearchDialog.module.css .filterOption
+   on the same element whatever order the stylesheets load in. */
+button.addFilter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-inline: 5px 9px;
+  border-color: transparent;
+  border-radius: 12px;
+  color: var(--text-tertiary);
+}
+
+:global([data-phone="true"]) .footerHints {
+  display: none;
+}
+

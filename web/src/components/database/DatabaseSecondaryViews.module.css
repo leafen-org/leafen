@@ -1,0 +1,588 @@
+
+/* ── Feed and map views ────────────────────────────────────── */
+/* Posts 24px apart, "+ 새 페이지" 16px after the last (Notion's, seen 2026-10-20). */
+.feedView {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px 0 28px;
+}
+.feedView > .feedNew {
+  margin-top: -8px;
+}
+/* Alone, with no posts yet, 30px under the view's head, as Notion's (seen
+   2026-11-13 at 1440: a feed just made, its bar 99.5 under the line before,
+   30 under its title's 40px row; 4 here before). */
+.feedView > .feedNew:first-child {
+  margin-top: 18px;
+}
+/* A database block's own feed ends at its "+ 새 페이지", the block keeping
+   Notion's room under it (EditorDatabaseBlocks). */
+:global([data-inline-database-wrapper] > section > [data-view-type="feed"]) .feedView {
+  padding-bottom: 0;
+}
+/* "+ 새 페이지" after the posts: a 38px bar ringed like a card, its words
+   centered and faint, as Notion's feed (seen 2026-10-11). */
+.feedNew {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.feedNew:hover,
+.feedNew:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A post's properties as Notion's feed shows them (seen 2026-10-17): their
+   values alone on a line under the title, 14px, each in a 30px box 4px in,
+   6px apart, the first value's text under the title's. */
+.feedItemProperties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-block: -6px 0;
+  margin-inline: -6px 0;
+  padding: 0 2px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.feedItemProperties > span {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 30px;
+  padding: 0 4px;
+  border-radius: 5px;
+}
+/* A value reads as page text here, not a card's small gray field. */
+.feedItemProperties .cardField {
+  color: var(--text-default);
+  font-size: 14px;
+}
+.mapView {
+  padding: 12px 4px 28px;
+}
+
+/* ── List view ─────────────────────────────────────────────── */
+/* As Notion's (seen 2026-10-11): rows 30px a 32px apart with no lines, the
+   row's own part rounded and shaded under the pointer; with sub-items on,
+   each row keeps 28px for its toggle (24px, 4px in). An icon sits in a 22px
+   box 4px in, the title 5px after it. A row with a status checkbox ("내 작업",
+   seen 2026-11-08 at 1303px) has it in a 30px cell 4px in, its 14px box 12px
+   in, then the icon at 34px; the values after the title end at the row's
+   end. */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+/* Its rows 4px under the views' line and over its end (seen 2026-11-01 at 1280px: the first row's 30px at 171.4, under 166.4). */
+.list:not([data-grouped="true"]) {
+  padding: 4px 0;
+}
+/* A row shown only for a sub-item or parent the filter keeps fades, as Notion's (seen 2026-10-11). */
+.listTreeRow[data-subitem-context="true"] > * {
+  opacity: 0.5;
+}
+.listTreeRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 32px;
+  padding: 1px 0;
+}
+/* A row's "+" and handle, out at its left under the pointer (Notion's, seen 2026-11-05). */
+/* A list row's "+" (24px) and "⋮⋮" (18px), as a table row's, ending 2px
+   before the row, as Notion's (seen 2026-11-08). */
+.listRowTools {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: -44px;
+  display: inline-flex;
+  align-items: center;
+  transform: translateY(-50%);
+  color: var(--text-tertiary);
+  opacity: 0;
+}
+.listTreeRow:hover > .listRowTools,
+.listRowTools:focus-within {
+  opacity: 1;
+}
+.listRowTools > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.listRowTools > [data-row-menu-handle] {
+  width: 18px;
+  cursor: grab;
+}
+.listRowTools > *:hover {
+  background: var(--bg-hover);
+}
+/* A row or card dragged stays as it was where it was, the browser carrying
+   its faint picture; where it would land shows a 4px line in the faint blue
+   of Notion's (seen 2026-11-15 in Chrome at 1440: a list's 962x4 from the
+   row above's end, rgba(35,131,226,.43); a gallery's 4px as tall as the
+   cards, straight, in the middle of the 16px gap between them). */
+.listTreeRow[data-drop-side]::before {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
+  z-index: 1;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  content: "";
+  pointer-events: none;
+}
+.listTreeRow[data-drop-side="before"]::before {
+  top: -1px;
+}
+.listTreeRow[data-drop-side="after"]::before {
+  bottom: -3px;
+}
+/* A card's own clip (its rounded corners, content-visibility) cuts what it
+   holds, so the line is its border image, drawn outside it into the gap. */
+.galleryCard[data-drop-side] {
+  border: 0 solid transparent;
+  border-image-source: linear-gradient(rgba(35, 131, 226, 0.43), rgba(35, 131, 226, 0.43));
+  border-image-slice: 1;
+}
+.galleryCard[data-drop-side="before"]:dir(ltr),
+.galleryCard[data-drop-side="after"]:dir(rtl) {
+  border-image-width: 0 0 0 4px;
+  border-image-outset: 0 0 0 10px;
+}
+.galleryCard[data-drop-side="after"]:dir(ltr),
+.galleryCard[data-drop-side="before"]:dir(rtl) {
+  border-image-width: 0 4px 0 0;
+  border-image-outset: 0 10px 0 0;
+}
+.listTreeRow > .subitemToggle {
+  height: 24px;
+  margin-inline-start: 4px;
+}
+.listTreeRow:hover > .listRow,
+.listTreeRow:focus-within > .listRow {
+  background: var(--bg-hover);
+}
+.listTreeRow .subitemParentIndicator,
+.listTreeRow .subitemCount {
+  order: 0;
+}
+/* A row without sub-items shows its toggle under the pointer (Notion's list, seen 2026-10-11),
+   and on a touch screen always, faint (as the table's, DatabaseTableSelection.module.css). */
+.listTreeRow:hover button.subitemToggle,
+.listTreeRow:focus-within button.subitemToggle {
+  visibility: visible;
+}
+:global([data-touch="true"]) .listTreeRow button.subitemToggle {
+  visibility: visible;
+}
+:global([data-touch="true"]) .listTreeRow button.subitemToggle:not([data-visible="true"]) {
+  color: var(--icon-tertiary);
+}
+/* "New sub-item" after an open row's sub-items, its plus where their icons are. */
+.listSubitemAdd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding-inline-end: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.listSubitemAdd:hover,
+.listSubitemAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.listRow {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 30px;
+  position: relative;
+  padding-block: 0;
+  padding-inline: 4px 0;
+  border-radius: 6px;
+  cursor: pointer; overflow: hidden;
+}
+.listRow:focus-visible {
+  outline: none;
+}
+.listIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--icon-secondary);
+  flex: 0 0 auto;
+}
+.listCompletion {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  flex: 0 0 30px;
+  margin-inline-start: 4px;
+  position: relative; z-index: 1; cursor: pointer;
+}
+/* The row's band and its rings take in the checkbox before it, as Notion's "내 작업" (seen 2026-11-09). */
+.listCompletion + .listRow { margin-inline-start: -34px; padding-inline-start: 34px; }
+.listCompletion[data-readonly="true"] {
+  cursor: default;
+}
+/* Icon and title keep 120px, the values cut at the row's end (Notion's "내 작업" by a side peek, seen 2026-11-15). */
+.listIcon + .listTitle { min-width: 93px; }
+.listTitle {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+  flex: 0 1 auto; min-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A title longer than its row ends in "…" (Notion's list, seen 2026-11-12 on
+   a phone and 2026-11-15 at 1440): its words are the box that is cut, the
+   title being a row of its words, count and tools. */
+.listTitle [data-search-text],
+.listTitle [data-archived-row-title] {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.listAddDate {
+  display: inline-flex;
+  flex: none;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.listAddDate > * {
+  width: auto;
+}
+.listAddDate [data-date-empty-label] {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-tertiary);
+}
+.listMeta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  margin-inline-start: auto;
+  overflow: hidden;
+}
+/* What the view lists before its title goes before it, each value at its
+   own width and the icon 10px after the last, as Notion's (seen 2026-11-12):
+   the row's own 5px gap is not added after them. */
+.listLead {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-inline-end: -5px;
+}
+/* Each value in a cell of its own, 8px in on each side and never cut short:
+   its words 14px, its pills 13px on an 18px line (--chip-height) (Notion's list
+   and "내 작업", seen 2026-11-08 at 1303px: a date "02/19/2025" whole). */
+.listField {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 21px;
+}
+.listField:empty {
+  display: none;
+}
+.listField .cardField {
+  width: auto;
+  font-size: inherit;
+}
+.listField .chip {
+  --chip-height: 18px;
+  font-size: 13px;
+}
+.listField .chip:not([data-status-chip]) {
+  padding: 0 8px;
+}
+/* A list row's status pill sits 2px further in on each side than a table's
+   or a card's, as Notion's (seen 2026-11-12: 9px before its dot, 11px after
+   its name). */
+.listField .chip[data-status-chip] {
+  padding-inline: 9px 11px;
+  border-radius: 9px;
+}
+/* "+ 새 페이지": its plus 7px in, its words where the titles are. */
+.listNew {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 7px 8px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* "+ 새 페이지" with what sits beside it, a relation tab's "↗ 기존 항목 연결" (Notion's, seen 2026-11-12). */
+.listNewRow {
+  display: flex;
+  align-items: center;
+}
+.listNew:hover,
+.listNew:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* ── Gallery view ──────────────────────────────────────────── */
+/* A grouped gallery, as Notion's (seen 2026-10-25 at 1280px and 375px): each
+   group under a table's 48px head, its cards 1px under it and its own
+   "+ 새 페이지" card after them; the next group 20px on; "+ 신규 그룹" last.
+   The first head right under the views' line, as a grouped list's (seen
+   2026-11-12 at 1440: its name at 180.4 in a page, the cards at 215.4). */
+.galleryGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+  padding: 0 0 24px;
+}
+.galleryGroup {
+  min-width: 0;
+}
+.galleryGroupHead {
+  padding-top: 0;
+}
+/* The cards' columns as Notion's (seen 2026-11-01 at 1280 and 1440, every
+   preview alike): as many as fit at 180px small, 260px medium and 320px
+   large, 16px apart, 16px under the bar and 4px over what follows. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 16px;
+  padding: 16px 0 4px;
+}
+.gallery[data-size="small"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+}
+.gallery[data-size="large"] {
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+}
+.galleryGroupGrid {
+  padding: 1px 0 0;
+}
+/* A card in no colour: the grey ring over the plain ground, a white wash in
+   dark (Notion's, seen 2026-11-05: 305 wide, rgba(255,255,255,.055); its
+   ring rgba(255,255,243,.082), 2026-11-12; app/optionColors.css). */
+.galleryCard {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--c-card-bg-plain);
+  box-shadow: var(--board-card-shadow), 0 0 0 1px var(--c-card-ring-gray);
+  cursor: pointer;
+  /* Native render virtualization, as .tableRow's: auto keeps each card's real size once drawn. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 180px;
+}
+/* One new to a gallery already drawn paints in its first frame (lib/arrivingWhole.ts). */
+.galleryCard[data-arriving] {
+  content-visibility: visible;
+}
+/* The keys' focus draws the pointer's ground and no ring, as Notion's card (seen 2026-11-24 in two tabs: its link focused by Escape after its right press's menu, :focus-visible, no ring). */
+.galleryCard:hover,
+.galleryCard:focus-visible {
+  background: var(--c-card-hover-plain);
+  box-shadow: var(--board-card-shadow), 0 0 0 1px var(--c-card-ring-gray);
+  outline: none;
+}
+/* In dark the whole card, its preview too, lightens to one ground under the pointer, as
+   Notion's (seen 2026-11-07: rgb(47, 47, 47) from the .055 wash, also the dark hover wash). */
+:global([data-theme="dark"]) .galleryCard:not([data-conditional-color]):is(:hover, :focus-visible) {
+  background: rgb(47, 47, 47);
+}
+:global([data-theme="dark"]) :is(.galleryCard:hover, .galleryCard:focus-visible):not([data-conditional-color]) .galleryCover:not([data-has-image="true"]) {
+  background-color: transparent;
+}
+/* A preview, the cover or the page's content, 16:9 of its size's narrowest
+   card (180, 260 or 320) however wide the card is drawn, as Notion's first
+   draws it (seen 2026-11-07: 101.25, 146.25 and 180 tall in cards 182, 380
+   and 380 wide); once the size is changed or the window resized, 16:9 of
+   the first card's width (useGalleryCoverHeight). */
+.galleryCover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--gallery-cover-height, 146.25px);
+  background: var(--c-bg-gray);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.gallery[data-size="small"] .galleryCover {
+  height: var(--gallery-cover-height, 101.25px);
+}
+.gallery[data-size="large"] .galleryCover {
+  height: var(--gallery-cover-height, 180px);
+}
+.galleryCover[data-fit-image="true"] {
+  background-size: contain;
+}
+/* A card its conditional color paints shows the color through its preview,
+   under Notion's faint veil (rgba(66, 35, 3, 0.03), seen 2026-10-24). */
+.galleryCard[data-conditional-color] .galleryCover {
+  background-color: var(--bg-block-empty);
+}
+
+.galleryCover[data-has-image="true"] {
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+.galleryIcon {
+  font-size: 40px;
+  line-height: 1;
+}
+/* A card's title line as Notion's (seen 2026-11-01, 2026-11-03): 8px and
+   10px in, 40px with the page's 18px mark in a 24px box 8px from the card's
+   edge and the title 15px/500 4px after it, 38.5px with no mark (a 22.5px
+   line); its properties 6px under it, each on its own 28px line (2026-11-05). */
+.galleryBody {
+  padding: 8px 10px;
+}
+.galleryTitle {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22.5px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+/* Its comment count, as Notion's gallery card (seen 2026-11-07): the 20px
+   count 16px under the title's line or 8px under the values', the card
+   ending 8px under it. */
+.galleryComments.galleryComments {
+  height: 20px;
+  margin-top: 16px;
+}
+.galleryMeta + .galleryComments.galleryComments {
+  margin-top: 8px;
+}
+.galleryTitle:has(+ .galleryMeta) {
+  margin-bottom: 6px;
+}
+/* Its name being typed, the line is the mark's 24px box with the name
+   centred in it, so its slots start 1.5px lower (Notion's, seen 2026-11-06:
+   a 38px line, the name 0.75px down). */
+.galleryTitle:has([data-row-title-editor]) {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+}
+.galleryTitle [data-card-title-icon] {
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 4px;
+  margin-inline-start: -3px;
+  vertical-align: top;
+}
+/* Its name being typed, the empty page's 18px icon 11px in and the name 7px
+   past it (Notion's gallery, seen 2026-11-06: icon at 11, field at 36). */
+.galleryEditingIcon {
+  display: inline-flex;
+  flex: none;
+  margin: 0 1px;
+  color: var(--icon-secondary);
+}
+.galleryMeta {
+  display: flex;
+  flex-direction: column;
+  margin: 0 -5px;
+}
+.galleryCard[data-wrap="true"] .cardField {
+  white-space: pre-wrap;
+}
+/* "+ 새 페이지" starts the row after the cards, one card wide and 40px tall,
+   ringed like a card with its words faint, as Notion's gallery (seen 2026-10-11). */
+/* "+ 새 페이지" takes the next card's place in the grid and its height, as
+   Notion's (seen 2026-10-25 at 1280px: 385.5×184.8 beside the cards); on a
+   phone a 52px line of 17px words under them. */
+.galleryNew {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  color: var(--icon-tertiary);
+  font-size: 15px;
+}
+:global([data-phone="true"]) .galleryNew {
+  min-height: 52px;
+  font-size: 17px;
+}
+.galleryNewCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.galleryNewCell > .galleryNew {
+  align-self: stretch;
+}
+.galleryNew:hover,
+.galleryNew:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Compact gallery cards keep their title on one line and pack properties. */
+.galleryMeta .chip {
+  --chip-height: 18px;
+  font-size: 12px;
+}
+.gallery[data-card-layout="compact"] .galleryMeta {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 0 -4px;
+}
+/* "속성 줄바꿈": a post's property values over lines (off by default, seen 2026-10-05). */
+.feedItemProperties[data-wrap="true"] > span,
+.feedItemProperties[data-wrap="true"] > span * {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* A list row's title being typed reads as the title it will be, a caret and no box (Notion's, seen 2026-11-05). */
+.listTitle [data-row-title-editor],
+.listTitle [data-row-title-editor]:focus {
+  outline: none;
+}

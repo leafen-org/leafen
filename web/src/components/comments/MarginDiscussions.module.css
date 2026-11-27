@@ -1,0 +1,321 @@
+/* The page's discussions beside its text, as Notion's (marginDiscussionLayout.ts):
+   a 308px column 32px right of the text's 720px column — 6px outside its
+   blocks — each card at its block. */
+.column {
+  position: absolute;
+  top: 0;
+  inset-inline-start: calc(100% - var(--content-pad) + 38px);
+  width: 308px;
+}
+/* A full-width page's stands 48px from the page's edge, a scrollbar's in
+   from it when one stands (PageView .doc; Notion's, seen 2026-11-12: 1084 by
+   a page to 1440, 1069 with a scrollbar). */
+:global([data-full-width="true"]) > .column {
+  inset-inline-start: calc(100% - 356px);
+}
+.card {
+  position: absolute;
+  inset-inline-start: 0;
+  width: 100%;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-app);
+}
+/* A resting card's line is faint in the dark, as Notion's .082 (seen 2026-11-12). */
+:global([data-theme="dark"]) .card:not([data-open]) {
+  border-color: var(--border-subtle);
+}
+/* A resting card steps 5px toward the text under the pointer, while the
+   value words it is on are pressed (Notion's, seen 2026-11-12), or while the
+   pointer is over the words it is on (seen 2026-11-16). */
+.card:not([data-open]):hover,
+.card[data-pressed]:not([data-open]),
+.card[data-pointed]:not([data-open]) {
+  inset-inline-start: -5px;
+}
+/* A new comment's card is raised even while it rests; open, its line is a
+   ring outside it, so its words stand 1px further in at rest, as Notion's
+   (seen 2026-11-12: 308×39 open, 308×41 resting). */
+.card[data-margin-draft] {
+  background: var(--bg-elevated);
+}
+.card[data-margin-draft][data-open="true"] {
+  border-width: 0;
+  box-shadow: 0 0 0 1px var(--border-subtle), 0 8px 12px -1px rgba(25, 25, 25, 0.027), 0 2px 6px -1px rgba(25, 25, 25, 0.027);
+}
+:global([data-theme="dark"]) .card[data-margin-draft][data-open="true"] {
+  box-shadow: var(--shadow-raised);
+}
+/* The open card steps 20px toward the text, as Notion's (seen 2026-10-29):
+   raised, with a lighter shadow than a menu's. */
+.card[data-open="true"] {
+  inset-inline-start: -20px;
+  z-index: 2;
+  border-color: var(--border-subtle);
+  background: var(--bg-elevated);
+  box-shadow: 0 8px 12px -1px rgba(25, 25, 25, 0.027), 0 2px 6px -1px rgba(25, 25, 25, 0.027);
+}
+:global([data-theme="dark"]) .card[data-open="true"] {
+  border-color: var(--border-default);
+  box-shadow: 0 4px 12px -2px rgba(25, 25, 25, 0.08);
+}
+/* An open card's comment buttons stand 4px over the comment's face and end
+   where its words may, 12px in from the card's side, as Notion's margin card
+   (seen 2026-11-16 at 1440, dark: 76x28 at 1273.5..1349.5 by a card to 1363,
+   5.5 over the name; a reply's 52x28 at the same end, 4 over its face). */
+.card[data-open] {
+  --comment-pill-top: -4px;
+  --comment-pill-right: 0px;
+}
+.card[data-open] > article > [data-comment-hover-actions] {
+  --comment-pill-top: 8px;
+  --comment-pill-right: 12px;
+}
+/* Spaced as Notion's closed cards: 13px in, a 24px avatar, the text under
+   the name, 16px between comments — 74 high for one, 138 with a reply,
+   166 with "답글 N개 더 보기" between (seen 2026-11-12 at 1440). Its
+   comments' buttons stand 4px over each face and end where the words may
+   (MarginRestingEntry). */
+.collapsed {
+  --comment-pill-top: -4px;
+  --comment-pill-right: 0px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--text-default);
+  text-align: start;
+  cursor: pointer;
+}
+/* The card's own button lies under its comments, the whole card wide. */
+.restOpen {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+}
+.restOpen:focus-visible {
+  outline: none;
+}
+.collapsed:hover,
+.collapsed[data-keys-within],
+.card[data-pointed] > .collapsed {
+  background: var(--bg-hover);
+}
+/* A touch screen keeps a resting card's buttons hidden; pressed, the card opens. */
+:global([data-touch="true"]) .collapsed > .entry > [data-comment-hover-actions] {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Notion's resting card under the pointer in the dark: rgb(32, 32, 32) (seen
+   2026-11-12), and with the pointer over its words (seen 2026-11-16). */
+:global([data-theme="dark"]) .collapsed:hover,
+:global([data-theme="dark"]) .collapsed[data-keys-within],
+:global([data-theme="dark"]) .card[data-pointed] > .collapsed {
+  background: var(--bg-element);
+}
+.entry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+/* Its faces joined by a 1.5px line down their column, from 6px under one
+   to 6px over the next, through "답글 N개 더 보기" and a "New" line
+   (CommentNewLine "card"), as Notion's closed card (seen 2026-11-12,
+   2026-11-25) and its open one (CommentsPanel .replies). */
+.entry:has(+ .entry, + .more, + [data-comment-new-line])::after {
+  position: absolute;
+  top: 30px;
+  bottom: -10px;
+  inset-inline-start: 11.25px;
+  width: 1.5px;
+  border-radius: 2px;
+  background: var(--border-secondary);
+  content: "";
+}
+.entry:has(+ .more)::after {
+  bottom: -38px;
+}
+/* A comment's reactions under its words, beside the card's avatar as they
+   are: 8px under them with the entry's 4px gap (MarginRestingEntry). */
+.entry > .restReactions {
+  margin-top: 4px;
+  margin-inline-start: 32px;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 14px;
+}
+.avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.author {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.time {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.textIndent {
+  display: block;
+  padding-inline-start: 32px;
+}
+/* A comment's words, as Notion's closed card (seen 2026-11-22 twice at 1440
+   dpr 1): its line breaks and spaces kept, wrapped within words where they
+   must, six 20px lines at most — 44 high for two lines with the 4px over
+   them — in a box as wide as its longest line (MarginRestingEntry). */
+.wordsBox {
+  position: relative;
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+.text {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: break-spaces;
+  word-break: break-word;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+}
+/* Words past the sixth line end it with "… 더 보기" at the box's end, the
+   line's end gone under it over the button's width and fading in over as
+   much again before it, the lines above whole (Notion's mask, seen
+   2026-11-22 twice: none while the words fit). */
+.wordsBox[data-clamped] > .text {
+  mask-image: linear-gradient(to top, transparent 21px, #000 21px),
+    linear-gradient(to left, transparent var(--more-width, 4em), #000 calc(2 * var(--more-width, 4em)));
+}
+.wordsBox[data-clamped]:dir(rtl) > .text {
+  mask-image: linear-gradient(to top, transparent 21px, #000 21px),
+    linear-gradient(to right, transparent var(--more-width, 4em), #000 calc(2 * var(--more-width, 4em)));
+}
+/* A suggestion's summary shows its first line, as Notion's closed card: 2px
+   under the name where a comment's words stand 4px under it, in an 18.56px
+   box at the card's 1.5 lines, the rest cut off with no "…" and the line's
+   end fading out under "… 더 보기" — gone over the button's width, fading in
+   over as much again before it (Notion's inline max-height and mask, seen
+   2026-11-22 twice at 1440 dpr 1; one line high with its other parts under it
+   hidden, seen 2026-11-15 twice and 2026-11-22 on a replacement's and a new
+   line's two parts). MarginRestingEntry keeps the button's width. */
+.textIndent:has(> .text[data-suggestion-summary]) {
+  position: relative;
+  margin-block-start: -2px;
+}
+.text[data-suggestion-summary] {
+  display: block;
+  max-height: 18.56px;
+  line-height: 1.5;
+  -webkit-line-clamp: none;
+  mask-image: linear-gradient(to left, transparent var(--more-width, 4em),
+    #000 calc(2 * var(--more-width, 4em)));
+}
+.textIndent:dir(rtl) > .text[data-suggestion-summary] {
+  mask-image: linear-gradient(to right, transparent var(--more-width, 4em),
+    #000 calc(2 * var(--more-width, 4em)));
+}
+/* Its "… 더 보기" at the line's end, 14px in weight 500, faint, its 1.5 line
+   standing 1.5px past the box's foot (Notion's, seen 2026-11-15 twice: 55.5
+   wide at the 250px line's end, on a one-line and a two-line suggestion
+   alike; its foot seen 2026-11-22 twice). */
+.suggestionMore,
+.commentMore {
+  position: absolute;
+  bottom: 0;
+  inset-inline-end: 0;
+  margin-block-end: -1.5px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+/* A comment's is in the words' own weight (Notion's, seen 2026-11-22 twice:
+   55.05 wide, where a suggestion's 500 is 55.52). */
+.commentMore {
+  font-weight: 400;
+}
+/* A 28px line 8px into the gaps around it, faint (Notion's, seen
+   2026-11-12): a box from the faces' column to 16px inside the card, its
+   words 8px in — in line with the comments' words — filled faintly with 6px
+   corners under the pointer (Notion's, seen 2026-11-16 at 1440 dark: 254×28
+   at 1106.5–1360.5 by a card at 1069.5–1377.5 and faces at 1082.5, words in
+   line with the comments', rgba(252, 252, 252, 0.03) on hover, 0.1s). */
+.more {
+  --fold-hover: rgba(66, 35, 3, 0.03);
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin-block: -8px;
+  margin-inline: 24px 4px;
+  padding: 0;
+  padding-inline-start: 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  text-align: start;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 20px;
+  transition: background 100ms ease-in-out;
+}
+:global([data-theme="dark"]) .more {
+  --fold-hover: rgba(252, 252, 252, 0.03);
+}
+.more:hover {
+  background: var(--fold-hover);
+}
+
+/* A new comment's field beside its block: one line of 39px, its words 12px
+   in, the send button 8px from the end, no line under it (Notion's, seen
+   2026-11-04, 2026-11-12). */
+.draft [data-comments-composer] {
+  display: block;
+  padding-block: 7px 5px;
+  padding-inline: 12px 8px;
+  border-bottom: 0;
+}
+/* A reaction's chips in the column (MarginReactionEntry): 12px under the top
+   a card would take, the cards' 10px under them; its smiley and check show
+   while the pointer is over them, as Notion's (seen 2026-11-22). */
+.reactionEntry {
+  position: absolute;
+  inset-inline-start: 0;
+  padding-top: 12px;
+}
+.column .reactionEntry .reactionRow {
+  margin: 0;
+}
+.column .reactionEntry:not(:hover, :focus-within, [data-picking]) {
+  --reaction-entry-tools: hidden;
+}
+.column .reactionEntry .reactionRow > button:not([data-reaction-emoji]) {
+  visibility: var(--reaction-entry-tools, inherit);
+}

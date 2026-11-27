@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "name": "structure",
+  "operations": [
+    { "goName": "rowSendTargets", "tsName": "sendTargets", "method": "GET", "path": "/database-rows/{rowId}/send-targets" },
+    { "goName": "rowSend", "tsName": "send", "method": "POST", "path": "/database-rows/{rowId}/send" }
+  ],
+  "errors": [
+    { "goName": "errorCodeRowSendInvalid", "tsName": "invalid", "value": "LEAFEN_ROW_SEND_INVALID" },
+    { "goName": "errorCodeRowSendNotFound", "tsName": "notFound", "value": "LEAFEN_ROW_SEND_NOT_FOUND" },
+    { "goName": "errorCodeRowSendUnseen", "tsName": "unseen", "value": "LEAFEN_ROW_SEND_UNSEEN" },
+    { "goName": "errorCodeRowSendFailed", "tsName": "failed", "value": "LEAFEN_ROW_SEND_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "rowSendPropertyWire",
+      "tsName": "RowSendProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "rowSendTargetWire",
+      "tsName": "RowSendTarget",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "CanSee", "jsonName": "canSee", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "rowSendTargetsResponse",
+      "tsName": "RowSendTargets",
+      "fields": [
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]rowSendPropertyWire", "tsType": "RowSendProperty[]" },
+        { "goName": "Targets", "jsonName": "targets", "goType": "[]rowSendTargetWire", "tsType": "RowSendTarget[]" },
+        { "goName": "CanShare", "jsonName": "canShare", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "rowSendRequest",
+      "tsName": "RowSendRequest",
+      "fields": [
+        { "goName": "To", "jsonName": "to", "goType": "string", "tsType": "string" },
+        { "goName": "Property", "jsonName": "property", "goType": "string", "tsType": "string", "optional":  true},
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string" },
+        { "goName": "ConfirmTaskIn", "jsonName": "confirmTaskIn", "goType": "string", "tsType": "string", "optional":  true}
+      ]
+    },
+    {
+      "goName": "rowSendResponse",
+      "tsName": "RowSent",
+      "fields": [
+        { "goName": "Notified", "jsonName": "notified", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Shared", "jsonName": "shared", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TaskID", "jsonName": "taskId", "goType": "string", "tsType": "string", "optional":  true}
+      ]
+    }
+  ]
+}

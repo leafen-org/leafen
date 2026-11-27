@@ -1,0 +1,708 @@
+.panel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  color: var(--text-default);
+}
+
+/* A setting's head, as Notion's every screen's (seen 2026-11-03, 11-18): "←"
+   24×22 at 10 and 14 from the panel's corner (4 into panelContent's 8, less 2),
+   8 before the 14px/600 title, 42 in; the round × keeps 30 at the end. */
+.header {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  padding-block: 4px 6px;
+  padding-inline: 4px 30px;
+}
+
+.header strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  margin-block: 0;
+  margin-inline: -2px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.header button:hover,
+.header button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* A setting's rows, as Notion's (seen 2026-11-03, 11-18): 16 in from the
+   panel's edges (8 into panelContent's 8), 8 apart, 12px words 2 further in.
+   It brings no foot: the panel's 8 is Notion's under a button and under the
+   sub-items' rows (seen 2026-11-22 at 1440×722 dark, dpr 1). */
+.body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+  padding-block: 4px 0;
+  padding-inline: 8px;
+}
+
+.body > p {
+  margin-block: 0;
+  margin-inline: 2px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* What a board's picture lists, 9 under it and 16 over the button. */
+.body > p.pictureNote {
+  margin: 1px 0 8px;
+}
+
+.subitemsPicture {
+  display: flex;
+  flex-direction: column;
+  padding: 9px 0;
+  border: 1px solid var(--border-secondary);
+  border-radius: 4px;
+  background: var(--bg-elevated);
+}
+
+.subitemsPicture > div:not(.subitemsPictureCard) {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin: 0 8px;
+  padding: 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.subitemsPicture > div[data-faded] {
+  opacity: 0.5;
+}
+
+.subitemsPicture > div[data-slot] {
+  visibility: hidden;
+}
+
+/* A merged list's rows have no toggle, so they are 22 high. */
+.subitemsPicture[data-flat] > div:not(.subitemsPictureCard) {
+  height: 22px;
+}
+
+/* A flattened row's sub-item count or parent, 8 after its name: a 16px
+   arrow 4 before the words. */
+.subitemsPictureMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: 8px;
+}
+
+.subitemsPictureMeta svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.subitemsPictureToggle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.subitemsPictureToggle[data-sub] {
+  margin-inline-start: 12px;
+}
+
+/* The picture's caret stands by its 12px names: 9.6px (Notion, seen 2026-11-14). */
+.subitemsPictureToggle svg {
+  font-size: 12px;
+}
+
+.subitemsPictureToggle[data-open] svg {
+  transform: rotate(90deg);
+}
+
+.subitemsPictureIcon {
+  margin-inline-end: 5px;
+}
+
+/* The filter's pill over the rows: 22 high, 8 in, blue on blue. */
+.subitemsPicturePill {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  margin-block: 1px 5px;
+  margin-inline: 8px 0;
+  padding: 0 8px;
+  border-radius: 32px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* A board's card: 16 in from the box, 8 in itself, rows of 22. */
+.subitemsPictureCard {
+  margin: 8px 16px;
+  padding: 8px 2px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 4px;
+}
+
+.subitemsPictureCard > div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  margin: 0 8px;
+  padding: 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.subitemsPictureCard > div:nth-child(2) {
+  gap: 6px;
+}
+
+.subitemsPictureCard > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.subitemsPictureCard svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.subitemsPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 7px;
+  background: var(--bg-secondary);
+}
+
+.subitemsPreview > div {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: center;
+  min-height: 23px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.subitemsPreview > div:not(:first-child) {
+  padding-inline-start: 18px;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  width: 100%;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.primaryAction {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+.primaryAction:hover:not(:disabled),
+.primaryAction:focus-visible:not(:disabled) {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+.secondaryAction {
+  justify-content: space-between;
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.secondaryAction:hover:not(:disabled),
+.secondaryAction:focus-visible:not(:disabled) {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.primaryAction:disabled,
+.secondaryAction:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.selectField {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--text-default);
+  font-size: 12px;
+}
+
+/* Dependencies as Notion's screen (seen 2026-10-10): a picture of the
+   shifting, the three ways as outlined cards, the chosen one in blue,
+   switches, rows naming the dates, and turning off as a plain row. */
+.fieldTitle {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.shiftChoices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-inline-start: 4px;
+}
+
+/* Each way's line outside it, 1px in the secondary border colour and the
+   chosen one's 2px blue, its words on 1.5 of their size, 8 over and under
+   and 10 in, the others in the second gray, as Notion's (seen 2026-11-18,
+   desktop 12px in 34, the A90's 14px in 37). */
+.shiftChoice {
+  min-height: 34px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--border-subtle);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: start;
+}
+
+.shiftChoice:hover:not(:disabled),
+.shiftChoice:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.shiftChoice:not([aria-checked="true"]) {
+  color: var(--text-accent-secondary);
+}
+
+.shiftChoice[aria-checked="true"] {
+  box-shadow: 0 0 0 2px var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.settingRows {
+  display: flex;
+  flex-direction: column;
+  margin: -4px -6px;
+}
+
+/* The dependencies screen and the advanced settings, as Notion's (seen
+   2026-11-04; 2026-11-18 at 1440): the line and each name 2 further in than
+   the rows, the name on a 14.4 line 14.5 under the line, the picture 258×112
+   9.5 under the name and 2 further in (Notion's name row 15.41 high, 8 and 1
+   over it), and 8 over the three ways, each 34 high and 4 further in, 8 apart.
+   A row with a switch or a value is 4 from the panel's edge and 8 in itself. */
+.dependencyBody > .fieldTitle {
+  margin-block: 6.5px 0;
+  margin-inline: 2px 0;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+
+/* The column's width (258 at 1440, 243 by a scroll bar, as Notion's seen 2026-11-22 at 643 high, dpr 1). */
+.dependencyBody > .shiftPicture {
+  margin-block: 1.5px 0;
+  margin-inline: 2px -2px;
+}
+
+.wideRows {
+  margin: 5px -12px 0;
+}
+
+.dependencyBody > .wideRows {
+  margin-top: -7px;
+}
+
+.switchRow {
+  display: flex;
+  min-width: 0;
+  min-height: 28px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 -12px;
+  padding: 0 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.settingRows + .switchRow {
+  margin-top: -8px;
+}
+
+.switchRow > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* With its line under its name ("주말 피하기") it is Notion's described row, on the desktop as on a phone (seen
+   2026-11-18 at 1440): the name and its line on 1.2 of the name's size (16.8px), 2 apart, 4 over and under. */
+.switchRow > span:has(small) { --switch-line: 16.8px; gap: 2px; padding-block: 4px; }
+
+.switchRow strong {
+  display: flex;
+  align-items: center;
+  font-weight: 400;
+  line-height: var(--switch-line, 17px);
+}
+
+.switchRow small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: var(--switch-line, 16px);
+}
+
+.switchRowIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  margin-inline-end: 8px;
+  color: var(--icon-secondary);
+}
+
+/* Dependencies' line 12 in from the panel's edges and their rows 4 (Notion's, seen 2026-11-22 at 1440, dpr 1, two DBs). */
+.dependencyBody > .divider { margin-block: -4px; margin-inline: -4px; }
+.dependencyBody > .turnOffRow { margin-inline: -12px; }
+
+/* A screen Notion ends 4 under its last row or button — dependencies on, either
+   advanced setting, sprints' setup in place — takes 4 from the panel's 8 (and a setting
+   row's own 1 under it) (seen 2026-11-22 at 1440×722 dark, dpr 1: 500 → 504). */
+.tightFoot { margin-bottom: -4px; }
+.tightFoot:where(:has(> .settingRows:last-child)) { margin-bottom: -5px; }
+
+/* An advanced setting's picture is 2 further in than its rows and 16 short of
+   the panel's end, 256 wide (Notion's, seen 2026-11-22 at 1440, dpr 1). */
+.advancedBody > .subitemsPicture,
+.advancedBody > .pairPicture {
+  margin-block: 0;
+  margin-inline: 2px 0;
+}
+
+/* The line and the rows under a setting's options, as Notion's sub-items' (seen 2026-11-03, 11-22): 8 in from the
+   panel's edges, the line 22 under the options and 10 over the rows, 28 high, their 20px icon 8 in, 14px words 8 after. */
+.divider {
+  margin-block: 14px 2px;
+  margin-inline: -8px;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.turnOffRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  margin-block: 0;
+  margin-inline: -8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* Rows 1 apart (Notion's sub-items and dependencies, seen 2026-11-22 at 1440, dpr 1). */
+.turnOffRow + .turnOffRow {
+  margin-top: -7px;
+}
+
+.turnOffRow:hover:not(:disabled),
+.turnOffRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A view's sub-item options, as Notion's (seen 2026-11-11): 24 in from the
+   panel and 21 under its head, each 12px/500 name 16 over its picture (the
+   display's 1 lower and 2 further in), a picture 11 over its choice or 9 over
+   the line saying what it shows, that line 12 over the filter's choice (19
+   over the display's), and a choice 33 over the next name. */
+.subitemViewOptions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 17px;
+  padding: 0 8px;
+}
+
+.subitemViewOptions > .fieldTitle {
+  margin-bottom: 16px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.subitemViewOptions > .fieldTitle + [data-display],
+.subitemViewOptions > .fieldTitle + [data-card],
+.subitemViewOptions > .fieldTitle + [data-cards] {
+  margin-top: 1px;
+}
+
+/* The pictures named by their own classes: aria-hidden ties nothing (check-css-sibling-invalidation.mjs). */
+.subitemViewOptions > :is(.subitemsPicture, .subitemsPreview) + [data-notion-select] {
+  margin-top: 11px;
+}
+
+.subitemViewOptions > p[data-scope-help] + [data-notion-select] {
+  margin-top: 12px;
+}
+
+.subitemViewOptions > p[data-display-help] + [data-notion-select] {
+  margin-top: 19px;
+}
+
+.subitemViewOptions > [data-notion-select] + .fieldTitle {
+  margin-top: 33px;
+}
+
+.subitemViewOptions > .subitemsPicture[data-display] {
+  margin-inline-start: 2px;
+}
+
+.subitemViewOptions > p {
+  margin: 9px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.subitemsPreview[data-mode="flattened"] > div:not(:first-child),
+.subitemsPreview[data-mode="disabled"] > div:not(:first-child) {
+  padding-inline-start: 0;
+}
+
+/* A board's, gallery's or calendar's merged or disabled picture (Notion's,
+   seen 2026-10-11): a card for each row. */
+.subitemsPreview[data-cards] {
+  gap: 6px;
+  padding: 12px 16px;
+}
+
+.subitemsPreview[data-cards] > div {
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  background: var(--bg-app);
+}
+
+/* Its › in the faint icon colour, Notion's rgb(125,122,117) in dark (seen 2026-11-22). */
+.rowChevron { margin-inline-start: auto; color: var(--icon-tertiary); }
+
+/* The bound pair's picture: a row, the one after it, the arrow between, named
+   by the two sides, as Notion's "고급 설정" draws it (seen 2026-10-11), in its 112 box (2026-11-22). */
+.pairPicture {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  align-content: center;
+  gap: 12px 16px;
+  min-height: 112px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.pairPicture > [data-part="row"] {
+  height: 20px;
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  background: var(--bg-app);
+}
+
+.pairPicture > [data-part="name"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pairPicture > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #e3a33b;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+@media (max-width: 420px) {
+  .body {
+    gap: 9px;
+  }
+
+  .selectField {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 5px;
+  }
+}
+
+/* A phone's settings sheet, as Notion's sub-items and dependencies (seen 2026-10-23 at 375px): 14px gray words 14px in
+   (Notion's end 12 short of the sheet's padding; the bundled font runs ~3% wider, font decision B, so they run on into
+   it, A90 411 2026-11-18, rather than break a line Notion keeps whole — as the import cards' words do),
+   a white picture 4px round, the blue 32px button 12px in, 14px/500. A field's name ("날짜 자동 이동") is a sheet's group
+   heading on the shared line, 8 over its picture; the dependency picture and the ways are the desktop's (the picture 10
+   in, the ways 14px, 37 high, 8 apart, 12 in); a switch's row is white and 12px round with its 17px name and 51px switch,
+   one that says more ("주말 피하기") a sheet's described row (A90 411, 2026-11-18). */
+:global([data-phone-settings]) .body { gap: 16px; padding: 0; }
+:global([data-phone-settings]) .body > p {
+  margin-block: 0;
+  margin-inline: 14px 0;
+  font-size: 14px;
+  line-height: 21px;
+}
+:global([data-phone-settings]) .subitemsPicture,
+:global([data-phone-settings]) .subitemsPreview {
+  gap: 4px;
+  padding-block: 12px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 4px;
+  background: var(--bg-app);
+}
+:global([data-phone-settings]) .subitemsPicture > div:not(.subitemsPictureCard),
+:global([data-phone-settings]) .subitemsPreview > div {
+  height: auto;
+  margin: 0;
+  min-height: 21px;
+  font-size: 14px;
+  font-weight: 500;
+}
+:global([data-phone-settings]) .primaryAction {
+  width: auto;
+  min-height: 32px;
+  margin: 0 12px;
+  font-size: 14px;
+}
+:global([data-phone-settings]) .fieldTitle {
+  margin: 0 16px -8px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: var(--phone-sheet-head-line, 18.17px);
+}
+:global([data-phone-settings]) .shiftPicture {
+  width: auto;
+  margin: 0 10px;
+}
+:global([data-phone-settings]) .shiftChoices {
+  gap: 8px;
+  margin: 0 12px;
+}
+:global([data-phone-settings]) .shiftChoice {
+  font-size: 14px;
+}
+:global([data-phone-settings]) .switchRow {
+  min-height: 45px;
+  gap: 0;
+  margin: 0;
+  padding-block: 2px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+/* A switch that says more is a sheet's described row (PhoneSheetRowParts .rowText): its white 64 high a pixel under its
+   place, cut there by the 12 frame a sheet's group's is (PhoneSheet.module.css .group), the name and its line on 20.4px
+   lines 2 apart, the line in the second gray, as Notion's "주말 피하기" (A90 411, 2026-11-18: the row 65
+   with its cut-off line, the button 16 under it). */
+:global([data-phone-settings]) .switchRow:has(small) {
+  min-height: 64px; margin-top: var(--phone-sheet-group-top, 1px); padding-block: 0; border-radius: 0 0 12px 12px;
+  clip-path: inset(calc(-1 * var(--phone-sheet-group-top, 1px)) 0 0 round 12px 12px 0 0);
+}
+:global([data-phone-settings]) .switchRow > span {
+  gap: 2px;
+  padding-block: 0;
+  line-height: 1.2em;
+}
+:global([data-phone-settings]) .switchRow strong {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: inherit;
+}
+:global([data-phone-settings]) .switchRow small {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: inherit;
+}
+:global([data-phone-settings]) .tightFoot {
+  margin-bottom: 0;
+}
+:global([data-phone-settings]) .advancedBody > .subitemsPicture,
+:global([data-phone-settings]) .advancedBody > .pairPicture {
+  margin: 0;
+}
+:global([data-phone-settings]) .pairPicture {
+  min-height: 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--bg-hover);
+}
+:global([data-phone-settings]) .settingRows {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+:global([data-phone-settings]) .turnOffRow {
+  gap: 11px;
+  min-height: 45px;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+:global([data-phone-settings]) .turnOffRow > svg:first-child {
+  width: 22px;
+  height: 22px;
+}
+:global([data-phone-settings]) .divider {
+  display: none;
+}

@@ -1,0 +1,138 @@
+/* An automation's database picker ("데이터 소스 선택 ⌄") and its open target
+   picker, as Notion's database picker (seen 2026-11-15 at 1440, dark): 280
+   wide; its 28px search 16px under its top and 12px in from each side (3px
+   6px in, round 6, the menu's field ground), the list 4px in under it with
+   1px between its rows; a group's name as a menu's label (12px/500 grey, 6px
+   under what is above it, 8px over its first row); a choice 4px 8px in, its
+   20px mark 8px in and its words at 36px, a two-line one 45 high with its name
+   (14px) and place (12px grey) each on a 16.8 line, 2px apart, in its middle;
+   a one-line one a menu row. The open target picker is drawn the same. */
+.targetMenu {
+  display: grid;
+  gap: 1px;
+  border-radius: var(--radius-menu);
+  padding: 16px 4px 4px;
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  box-shadow: var(--shadow-menu);
+}
+
+.targetSearch {
+  height: 28px;
+  min-height: 0;
+  margin: 0 8px 11px;
+  border: 0;
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: var(--menu-field-bg);
+  --menu-search-rest-ring: var(--menu-field-ring);
+  box-shadow: var(--menu-search-rest-ring);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.targetSearch:focus {
+  outline: none;
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+
+.targetSection {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+
+.targetMenu > [role="listbox"] {
+  display: grid;
+  gap: 1px;
+}
+
+.targetOption,
+.targetMore {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  border: 0;
+  border-radius: var(--menu-row-radius);
+  padding: var(--menu-row-padding);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+
+.targetOption:has(.targetPath) {
+  align-items: flex-start;
+  min-height: 45px;
+}
+
+.targetOption:hover,
+.targetOption[aria-selected="true"],
+.targetMore:hover {
+  background: var(--bg-hover);
+}
+
+/* The mark in a 20px box, 5px under a two-line one's top, as Notion's. */
+.targetMark {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+}
+
+.targetOption:has(.targetPath) > .targetMark {
+  margin-top: 1px;
+}
+
+.targetOption > :has(> .targetTitle) {
+  display: grid;
+  gap: 2px;
+  align-self: center;
+  min-width: 0;
+}
+
+.targetOption:has(.targetPath) .targetTitle,
+.targetPath {
+  line-height: 16.8px;
+}
+
+.targetTitle,
+.targetPath {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.targetPath {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.targetEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* On a phone the page holding a source is in the third grey under its name, rgb(161,158,153) on light, as Notion's
+   (seen 2026-11-16 on an A90 at 411). */
+.phonePath {
+  color: var(--text-tertiary);
+}

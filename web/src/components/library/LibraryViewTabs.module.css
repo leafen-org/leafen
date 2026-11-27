@@ -1,0 +1,248 @@
+/* The view tabs, as Notion's (seen 2026-10-07): 32px pills on a 40px row,
+   each its 20px mark and its name at 14px, the open one gray. */
+.tabRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 40px;
+  margin: 8px 8px 0;
+}
+
+/* Narrow, the row runs on past the page's side to 16px from its edge, its
+   settings 24px in, as Notion's (LibraryViewTabs.tsx, NARROW_ROW); a touch
+   screen's keeps to the page's side, its views one pill when two tabs no
+   longer fit, as Notion's iPad (seen 2026-11-14 in Safari at 834 beside
+   the sidebar: "▦ 즐겨찾기 ⌄" at 404, 설정 698–730 in a page ending at 834). */
+.tabRow[data-narrow="true"] {
+  margin-inline-end: calc(24px - var(--library-side, 96px));
+}
+
+:global([data-touch="true"]) .tabRow[data-narrow="true"] {
+  margin-inline-end: 8px;
+}
+
+/* A phone's row starts its pill 8px in from the page's side and ends its
+   tools at the side, where the head's "새 페이지" ends, as Notion's phone
+   (seen 2026-11-12 in iPhone Safari at 402: the pill at 32, the tools ending
+   at 378 with the button; the side 24, LibraryView.module.css). */
+:global([data-phone="true"]) .tabRow {
+  margin-inline: 8px 0;
+}
+
+/* Hidden copies of every tab, measured for how many fit. */
+.tabMeasure {
+  position: absolute;
+  display: flex;
+  gap: 1px;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.tab,
+.moreViewsButton,
+.viewPill {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tab:hover,
+.tab:focus-visible,
+.moreViewsButton:hover,
+.moreViewsButton:focus-visible,
+.moreViewsButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.moreViewsButton {
+  padding: 0 10px;
+  font-weight: 400;
+}
+
+/* With room for fewer than two tabs, the open view as one pill with ⌄. */
+.viewPill {
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.viewPill:hover,
+.viewPill:focus-visible,
+.viewPill[aria-expanded="true"] {
+  background: var(--bg-selected);
+  outline: none;
+}
+
+.viewPill > svg:last-child {
+  margin-inline-start: -2px;
+  color: var(--icon-secondary);
+}
+
+.moreViews {
+  position: relative;
+}
+
+/* The list of views: 290px at the button's right edge, its search field,
+   then 28px rows of a handle, the view's mark and name, and "…". */
+.viewList {
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* Notion's field has no magnifier, and a blue ring while typed in. */
+.viewSearch {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin: 8px 12px 12px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.viewSearch:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.viewSearch input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.viewRows {
+  display: flex;
+  flex-direction: column;
+}
+
+.viewRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 6px 16px;
+  border-radius: 6px;
+}
+
+.viewRow:hover,
+.viewRow[data-keys-within],
+.viewRow[data-current="true"] {
+  background: var(--bg-hover);
+}
+
+.viewHandle,
+.viewMore {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.viewHandle {
+  cursor: grab;
+}
+
+.viewHandle:hover,
+.viewHandle:focus-visible,
+.viewMore:hover,
+.viewMore:focus-visible,
+.viewMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.viewOption {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 28px;
+  padding: 0 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.viewOption:focus-visible {
+  outline: none;
+}
+
+.viewName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A view's "…": its settings and its section in the sidebar, under the button. */
+.viewOptions {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.viewOptionsItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.viewOptionsItem:hover,
+.viewOptionsItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

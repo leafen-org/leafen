@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "name": "page-analytics",
+  "bounds": [
+    { "goName": "maxPageAnalyticsBatchObservations", "tsName": "batchObservations", "value": 64 },
+    { "goName": "maxPageAnalyticsIdentityCharacters", "tsName": "identityCharacters", "value": 160 },
+    { "goName": "maxPageAnalyticsSiteSlugCharacters", "tsName": "siteSlugCharacters", "value": 60 },
+    { "goName": "defaultPageAnalyticsReadDays", "tsName": "defaultReadDays", "value": 28 },
+    { "goName": "maxPageAnalyticsReadDays", "tsName": "maxReadDays", "value": 365 },
+    { "goName": "maxPageAnalyticsRecentViewers", "tsName": "recentViewers", "value": 100 },
+    { "goName": "maxPageAnalyticsRecentEditors", "tsName": "recentEditors", "value": 10 },
+    { "goName": "pageAnalyticsAnonymousTokenTTLMilliseconds", "tsName": "anonymousTokenTtlMs", "value": 86400000 }
+  ],
+  "errors": [
+    { "goName": "errorCodePageAnalyticsInvalid", "tsName": "invalid", "value": "LEAFEN_PAGE_ANALYTICS_INVALID" },
+    { "goName": "errorCodePageAnalyticsBatchLimitExceeded", "tsName": "batchLimitExceeded", "value": "LEAFEN_PAGE_ANALYTICS_BATCH_LIMIT_EXCEEDED" },
+    { "goName": "errorCodePageAnalyticsBatchIdentityReused", "tsName": "batchIdentityReused", "value": "LEAFEN_PAGE_ANALYTICS_BATCH_IDENTITY_REUSED" },
+    { "goName": "errorCodePageAnalyticsNotFound", "tsName": "notFound", "value": "LEAFEN_PAGE_ANALYTICS_NOT_FOUND" },
+    { "goName": "errorCodePageAnalyticsForbidden", "tsName": "forbidden", "value": "LEAFEN_PAGE_ANALYTICS_FORBIDDEN" },
+    { "goName": "errorCodePageAnalyticsOrganizationDecides", "tsName": "organizationDecides", "value": "LEAFEN_PAGE_ANALYTICS_ORGANIZATION_DECIDES" },
+    { "goName": "errorCodePageAnalyticsStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_PAGE_ANALYTICS_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodePageAnalyticsDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_PAGE_ANALYTICS_DATABASE_BUSY" },
+    { "goName": "errorCodePageAnalyticsRetentionStorageUnavailable", "tsName": "retentionStorageUnavailable", "value": "LEAFEN_PAGE_ANALYTICS_RETENTION_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodePageAnalyticsRetentionDatabaseBusy", "tsName": "retentionDatabaseBusy", "value": "LEAFEN_PAGE_ANALYTICS_RETENTION_DATABASE_BUSY" },
+    { "goName": "errorCodePageAnalyticsFailed", "tsName": "failed", "value": "LEAFEN_PAGE_ANALYTICS_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "PageAnalyticsAction",
+      "tsValuesName": "pageAnalyticsActions",
+      "values": [
+        { "goName": "pageAnalyticsActionRecord", "tsName": "record", "value": "record" },
+        { "goName": "pageAnalyticsActionRecordPublic", "tsName": "recordPublic", "value": "recordPublic" },
+        { "goName": "pageAnalyticsActionRecordPublicSite", "tsName": "recordPublicSite", "value": "recordPublicSite" },
+        { "goName": "pageAnalyticsActionGet", "tsName": "get", "value": "get" },
+        { "goName": "pageAnalyticsActionGetRowViews", "tsName": "getRowViews", "value": "getRowViews" },
+        { "goName": "pageAnalyticsActionGetPreferences", "tsName": "getPreferences", "value": "getPreferences" },
+        { "goName": "pageAnalyticsActionUpdatePreferences", "tsName": "updatePreferences", "value": "updatePreferences" },
+        { "goName": "pageAnalyticsActionUpdatePolicy", "tsName": "updatePolicy", "value": "updatePolicy" },
+        { "goName": "pageAnalyticsActionGetViewHistory", "tsName": "getViewHistory", "value": "getViewHistory" },
+        { "goName": "pageAnalyticsActionUpdateViewHistory", "tsName": "updateViewHistory", "value": "updateViewHistory" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "pageAnalyticsActionEnvelope",
+      "tsName": "PageAnalyticsActionEnvelope",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "PageAnalyticsAction" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsObservation",
+      "tsName": "PageAnalyticsObservation",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsMemberRecordRequest",
+      "tsName": "PageAnalyticsMemberRecordRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"record\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "BatchID", "jsonName": "batchId", "goType": "string", "tsType": "string" },
+        { "goName": "Observations", "jsonName": "observations", "goType": "[]pageAnalyticsObservation", "tsType": "PageAnalyticsObservation[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsPublicRecordRequest",
+      "tsName": "PageAnalyticsPublicRecordRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"recordPublic\"" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "AnonymousToken", "jsonName": "anonymousToken", "goType": "string", "tsType": "string" },
+        { "goName": "BatchID", "jsonName": "batchId", "goType": "string", "tsType": "string" },
+        { "goName": "Observations", "jsonName": "observations", "goType": "[]pageAnalyticsObservation", "tsType": "PageAnalyticsObservation[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsPublicSiteRecordRequest",
+      "tsName": "PageAnalyticsPublicSiteRecordRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"recordPublicSite\"" },
+        { "goName": "SiteSlug", "jsonName": "siteSlug", "goType": "string", "tsType": "string" },
+        { "goName": "AnonymousToken", "jsonName": "anonymousToken", "goType": "string", "tsType": "string" },
+        { "goName": "BatchID", "jsonName": "batchId", "goType": "string", "tsType": "string" },
+        { "goName": "Observations", "jsonName": "observations", "goType": "[]pageAnalyticsObservation", "tsType": "PageAnalyticsObservation[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsRecordResponse",
+      "tsName": "PageAnalyticsRecordResult",
+      "fields": [
+        { "goName": "Accepted", "jsonName": "accepted", "goType": "int", "tsType": "number" },
+        { "goName": "BatchID", "jsonName": "batchId", "goType": "string", "tsType": "string" },
+        { "goName": "DailyUpdated", "jsonName": "dailyUpdated", "goType": "int", "tsType": "number" },
+        { "goName": "RecentUpdated", "jsonName": "recentUpdated", "goType": "int", "tsType": "number" },
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UniqueAdded", "jsonName": "uniqueAdded", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsReadRequest",
+      "tsName": "PageAnalyticsReadRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"get\"" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RangeDays", "jsonName": "rangeDays", "goType": "*int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsRowViewsRequest",
+      "tsName": "PageAnalyticsRowViewsRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"getRowViews\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "RowIDs", "jsonName": "rowIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsRowViews",
+      "tsName": "PageAnalyticsRowViews",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "TotalViews", "jsonName": "totalViews", "goType": "int", "tsType": "number" },
+        { "goName": "UniqueViews", "jsonName": "uniqueViews", "goType": "int", "tsType": "number" },
+        { "goName": "RecentViewers", "jsonName": "recentViewers", "goType": "[]pageAnalyticsRecentViewer", "tsType": "PageAnalyticsRecentViewer[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsRowViewsResponse",
+      "tsName": "PageAnalyticsRowViewsResult",
+      "fields": [
+        { "goName": "Rows", "jsonName": "rows", "goType": "[]pageAnalyticsRowViews", "tsType": "PageAnalyticsRowViews[]" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsRecentViewer",
+      "tsName": "PageAnalyticsRecentViewer",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "*string", "tsType": "string | null" },
+        { "goName": "LastViewedAt", "jsonName": "lastViewedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsDay",
+      "tsName": "PageAnalyticsDay",
+      "fields": [
+        { "goName": "Day", "jsonName": "day", "goType": "string", "tsType": "string" },
+        { "goName": "TotalViews", "jsonName": "totalViews", "goType": "int", "tsType": "number" },
+        { "goName": "UniqueViews", "jsonName": "uniqueViews", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsEditor",
+      "tsName": "PageAnalyticsEditor",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "*string", "tsType": "string | null" },
+        { "goName": "At", "jsonName": "at", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsReadResponse",
+      "tsName": "PageAnalyticsReadResult",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RangeDays", "jsonName": "rangeDays", "goType": "int", "tsType": "number" },
+        { "goName": "Today", "jsonName": "today", "goType": "string", "tsType": "string" },
+        { "goName": "TotalViews", "jsonName": "totalViews", "goType": "int", "tsType": "number" },
+        { "goName": "UniqueViews", "jsonName": "uniqueViews", "goType": "int", "tsType": "number" },
+        { "goName": "UniqueMemberViews", "jsonName": "uniqueMemberViews", "goType": "int", "tsType": "number" },
+        { "goName": "UniqueAnonymousViews", "jsonName": "uniqueAnonymousViews", "goType": "int", "tsType": "number" },
+        { "goName": "RecentViewers", "jsonName": "recentViewers", "goType": "[]pageAnalyticsRecentViewer", "tsType": "PageAnalyticsRecentViewer[]" },
+        { "goName": "RecentHasMore", "jsonName": "recentHasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Days", "jsonName": "days", "goType": "[]pageAnalyticsDay", "tsType": "PageAnalyticsDay[]" },
+        { "goName": "Creator", "jsonName": "creator", "goType": "*pageAnalyticsEditor", "tsType": "PageAnalyticsEditor | null" },
+        { "goName": "RecentEditors", "jsonName": "recentEditors", "goType": "[]pageAnalyticsEditor", "tsType": "PageAnalyticsEditor[]" },
+        { "goName": "ViewersHidden", "jsonName": "viewersHidden", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number", "zeroMeans": "0 keeps the views and edits counted here with no limit by age." }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsPreferencesRequest",
+      "tsName": "PageAnalyticsPreferencesRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"getPreferences\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsPreferencesResponse",
+      "tsName": "PageAnalyticsPreferences",
+      "fields": [
+        { "goName": "AnalyticsEnabled", "jsonName": "analyticsEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AnonymousTrackingEnabled", "jsonName": "anonymousTrackingEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "IdentifiedHistoryEnabled", "jsonName": "identifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PageIdentifiedHistoryEnabled", "jsonName": "pageIdentifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManagePolicy", "jsonName": "canManagePolicy", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewDisplay", "jsonName": "viewDisplay", "goType": "string", "tsType": "\"person\" | \"shown\" | \"hidden\"" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsUpdatePreferencesRequest",
+      "tsName": "PageAnalyticsUpdatePreferencesRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"updatePreferences\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IdentifiedHistoryEnabled", "jsonName": "identifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PageIdentifiedHistoryEnabled", "jsonName": "pageIdentifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsUpdatePreferencesResponse",
+      "tsName": "PageAnalyticsUpdatePreferencesResult",
+      "fields": [
+        { "goName": "IdentifiedHistoryEnabled", "jsonName": "identifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PageIdentifiedHistoryEnabled", "jsonName": "pageIdentifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsViewHistoryRequest",
+      "tsName": "PageAnalyticsViewHistoryRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"getViewHistory\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsUpdateViewHistoryRequest",
+      "tsName": "PageAnalyticsUpdateViewHistoryRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"updateViewHistory\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "IdentifiedHistoryEnabled", "jsonName": "identifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsViewHistoryResponse",
+      "tsName": "PageAnalyticsViewHistory",
+      "fields": [
+        { "goName": "IdentifiedHistoryEnabled", "jsonName": "identifiedHistoryEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewDisplay", "jsonName": "viewDisplay", "goType": "string", "tsType": "\"person\" | \"shown\" | \"hidden\"" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsUpdatePolicyRequest",
+      "tsName": "PageAnalyticsUpdatePolicyRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"updatePolicy\"" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "AnalyticsEnabled", "jsonName": "analyticsEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AnonymousTrackingEnabled", "jsonName": "anonymousTrackingEnabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageAnalyticsUpdatePolicyResponse",
+      "tsName": "PageAnalyticsUpdatePolicyResult",
+      "fields": [
+        { "goName": "AnalyticsEnabled", "jsonName": "analyticsEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AnonymousTrackingEnabled", "jsonName": "anonymousTrackingEnabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ],
+  "unions": [
+    {
+      "tsName": "PageAnalyticsTransportRequest",
+      "members": [
+        "PageAnalyticsMemberRecordRequest",
+        "PageAnalyticsPublicRecordRequest",
+        "PageAnalyticsPublicSiteRecordRequest"
+      ]
+    },
+    {
+      "tsName": "PageAnalyticsRequest",
+      "members": [
+        "PageAnalyticsMemberRecordRequest",
+        "PageAnalyticsPublicRecordRequest",
+        "PageAnalyticsPublicSiteRecordRequest",
+        "PageAnalyticsReadRequest",
+        "PageAnalyticsPreferencesRequest",
+        "PageAnalyticsUpdatePreferencesRequest",
+        "PageAnalyticsUpdatePolicyRequest"
+      ]
+    }
+  ]
+}

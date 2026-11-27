@@ -1,0 +1,578 @@
+.adminConsole {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.nav {
+  min-width: 0;
+  padding: 12px 8px;
+  background: var(--bg-sidebar);
+  border-inline-end: 1px solid var(--border-default);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+}
+
+.navGroup {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin-top: 10px;
+}
+
+.navGroupLabel {
+  padding: 7px 8px 3px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: start;
+  text-decoration: none;
+}
+
+.navItem[data-active="true"],
+.navItem:hover,
+.navItem:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+}
+
+.navItem:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.navItem svg {
+  color: var(--icon-secondary);
+  flex: 0 0 auto;
+}
+
+.panel {
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding-block: 0;
+  padding-inline: 22px 18px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.adminConsole .header {
+  height: 70px;
+  padding-inline-end: 24px;
+  padding-inline-start: 26px;
+}
+
+/* The server's pages in 설정's own measure: flush with the page's title, groups
+   48px apart, each group's heading over a faint line (2026-11-05: 26px in, with
+   a gap of their own under the title, they stood apart from the rest). */
+.adminConsole .section {
+  max-width: none;
+  padding: 0;
+  border-bottom: 0;
+}
+
+.adminConsole .section + .section {
+  margin-top: 48px;
+}
+
+.adminConsole .sectionTitle,
+.adminConsole .sectionHeader {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.adminConsole .sectionTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.adminConsole .sectionHeader .sectionTitle {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.adminConsole .emailProviderBlock + .emailProviderBlock,
+.adminConsole .settingRows + .emailProviderBlock,
+.adminConsole .emailProviderBlock + .settingRows {
+  margin-top: 24px;
+}
+
+.adminConsole .emailProviderMeta,
+.adminConsole .organizationMeta {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.adminConsole .organizationSubhead {
+  margin-bottom: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.adminConsole .organizationSubhead strong {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* A group's rows, 24px apart as 설정's are, also when they come in two runs. */
+.adminConsole .settingRows + .settingRows,
+.adminConsole .settingRows + .tunnelActions {
+  margin-top: 24px;
+}
+
+/* A group's rows, 24px apart as 설정's are. */
+.settingRows {
+  display: grid;
+  min-width: 0;
+}
+
+/* :first-child, not `* + *`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+.settingRows > :where(:not(:first-child)) {
+  margin-top: 24px;
+}
+
+/* A row's value at its end, as 설정's plain values. */
+.settingValue {
+  flex: 0 0 auto;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* A quiet line under a group's rows: when something was counted, why it waits. */
+.settingNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* A failure says so in red, also as a row's line (a row's own lines are grey). */
+.adminConsole .errorText.errorText {
+  color: var(--danger);
+}
+
+/* A list's tools in one row: what narrows it on the left, its button at the end. */
+.listTools {
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+/* A group's one line on what it does, over its rows. */
+.lead {
+  margin-bottom: 16px;
+}
+
+/* What a row's result says, and its button, at the row's end. */
+.settingEnd {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-width: 0;
+}
+
+.settingEnd p {
+  flex: 1 1 auto;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.section {
+  padding: 22px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.sectionTitle {
+  margin-bottom: 14px;
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+}
+
+.organizationMeta {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.organizationSubhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.organizationSubhead strong {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sectionActions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.secondaryButton {
+  composes: line from "../ButtonLine.module.css";
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--button-outline);
+  border-radius: var(--radius);
+  background: var(--bg-app);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.secondaryButton:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.secondaryButton:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.72;
+}
+
+.primaryButton {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  background: #1f76c9;
+  outline: none;
+}
+
+.primaryButton:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.primaryButton:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+/* A block is one settings item, no box or line around it (2026-11-05: the
+   server's pages stood apart from the rest of 설정): its words, its fields or
+   buttons and a note under them stand 12px apart, as Notion's settings item
+   holds its parts (seen 2026-11-20: 워크스페이스 이름's and 허용된 도메인's
+   description 12 over the box, 페이지 조회's row 12 over 자세히 알아보기); a
+   part in it keeps no room of its own under it (2026-11-20: 예비 서버's and
+   옮기기's note stood 28 under the code). */
+.emailProviderBlock {
+  display: grid;
+  gap: var(--settings-item-gap);
+  min-width: 0;
+}
+
+.emailProviderBlock > .tunnelFields {
+  margin-bottom: 0;
+}
+
+.emailProviderMeta {
+  margin: -6px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.emailProviderFieldHint {
+  color: var(--text-tertiary, var(--text-secondary));
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* A sign-in provider's redirect address to register with it, with a copy;
+   a long address wraps rather than widening the block. */
+.providerRedirect {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.providerRedirectHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.providerRedirectHead strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.providerRedirectUri {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+/* After an address change: what the provider still has, and the answer. */
+.providerReturnMoved {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-app);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.providerReturnMoved p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.providerReturnMoved > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.providerReturnMoved small {
+  color: var(--danger);
+}
+
+.toggleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.toggleRow label,
+.clearSecret {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.clearSecret {
+  align-self: end;
+  min-height: 34px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.saveBar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  min-height: 52px;
+  margin-top: 24px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border-subtle);
+  /* Solid: what it passes over doesn't read through it. */
+  background: var(--bg-app);
+}
+
+/* A long message wraps; the save button keeps its width (2026-10-16: an
+   error pressed it to one letter). */
+.saveBar button {
+  flex: none;
+  white-space: nowrap;
+}
+
+.saveBar span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: end;
+}
+
+.loading {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  background: var(--bg-app);
+}
+
+@container settings (max-width: 600px) {
+  .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  .sectionActions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-inline-start: auto;
+  }
+
+  .adminConsole .header {
+    padding-inline-end: 16px;
+    padding-inline-start: 16px;
+  }
+
+  .saveBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saveBar span {
+    text-align: start;
+  }
+}
+
+:global([data-touch="true"]) .navItem,
+:global([data-touch="true"]) .secondaryButton,
+:global([data-touch="true"]) .primaryButton {
+  min-height: 44px;
+}
+
+.updateMarker {
+  width: 7px;
+  height: 7px;
+  margin-inline-start: auto;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}
+
+.tunnelFields {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.tunnelFields label {
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.tunnelActions,
+.tunnelAddress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  font-size: 13px;
+}
+
+.tunnelAddress code {
+  overflow-wrap: anywhere;
+}
+
+.errorText {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* A backup recovery code, shown once to copy, print or write down. */
+.recoveryCode {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 17px;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+

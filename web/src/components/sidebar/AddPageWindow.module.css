@@ -1,0 +1,375 @@
+/* The add window, as Notion's (seen 2026-10-07 at 751 and 1280px): at most
+   1000 × 650 in the window's middle, and 40px short of the window's top and
+   bottom when that is less (seen 2026-11-16: 643 at a 723px window, 343 at
+   423, 650 at 844, the new database window and a page's database chooser
+   alike), 12px corners; "×" 24px in, "추가 대상"
+   and the place beside it, a 296px field in the middle 16px down; below,
+   a 576px column 84px down. Its colours are Notion's in each theme: opaque,
+   over a shade of the page behind (dark seen 2026-10-07). */
+
+.overlay {
+  --add-shade: var(--modal-shade);
+  --add-ground: rgb(249, 248, 247);
+  --add-shadow: var(--shadow-modal);
+  --add-field: rgba(249, 249, 248, 0.8);
+  --add-hover: var(--bg-hover);
+  --add-close: rgba(0, 0, 0, 0.05);
+  --add-close-hover: rgba(0, 0, 0, 0.1);
+  --add-close-glyph: var(--text-tertiary);
+  --add-picked: rgb(255, 255, 255);
+  --add-picked-ring: inset 0 0 0 1px rgba(35, 131, 226, 0.35), 0 0 0 1px rgba(35, 131, 226, 0.12);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:global([data-theme="dark"]) .overlay {
+  --add-ground: rgb(32, 32, 32);
+  --add-field: rgba(32, 32, 32, 0.8);
+  --add-hover: rgba(255, 255, 255, 0.055);
+  --add-close: rgba(255, 255, 255, 0.016);
+  --add-close-hover: rgba(255, 255, 255, 0.055);
+  --add-close-glyph: rgb(173, 169, 163);
+  --add-picked: rgb(32, 32, 32);
+  --add-picked-ring: inset 0 0 0 0.75px rgb(53, 95, 139), 0 0 0 0.75px rgb(53, 95, 139);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--add-shade);
+  cursor: default;
+}
+
+.window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(1000px, calc(100vw - 80px));
+  height: min(650px, calc(100vh - 80px));
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--add-ground);
+  box-shadow: var(--add-shadow);
+}
+
+/* The head as Notion's, three columns 24 apart and 24 in: "×", "추가 대상"
+   and the place in at least 190px, the field up to 296 in the middle, the
+   rest shared evenly (minmax(190px, 1fr) minmax(0, 296px) minmax(0, 1fr),
+   read 2026-11-17 in Chrome at 606: 190, 240 and 0, the place cut short).
+   A narrow window or a phone's sheet shrinks the field and the place rather
+   than running the head past its edge (2026-11-17, Galaxy A90 at 411: a
+   296 field at 274.5 ran 147 past the sheet). */
+.head {
+  display: grid;
+  flex: 0 0 68px;
+  grid-template-columns: minmax(190px, 1fr) minmax(0, 296px) minmax(0, 1fr);
+  column-gap: 24px;
+  align-items: start;
+  box-sizing: border-box;
+  padding: 16px 24px 0;
+}
+
+.headStart {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  height: 36px;
+}
+
+.headEnd {
+  min-width: 0;
+}
+
+.close {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 14px;
+  border-radius: 50%;
+  background: var(--add-close);
+  color: var(--add-close-glyph);
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--add-close-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.placeLabel {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* The place is 102px in a 751px window and 160px from 810px, as Notion's,
+   and shorter where its column is (Notion's shrinks, 101.9 at 606). */
+.place {
+  display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+  max-width: clamp(100px, calc(100vw - 650px), 160px);
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.place:hover,
+.place:focus-visible,
+.place[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.place > svg:last-child {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+.placeGlyph {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.placeName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--add-field);
+  box-shadow: var(--name-field-ring);
+}
+
+.search:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 0 24px;
+}
+
+.cards,
+.options {
+  width: min(576px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* "빈 페이지" and "빈 데이터베이스": 81px cards, two to a row, the mark above the name. */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cards[data-single="true"] {
+  grid-template-columns: 1fr;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  height: 81px;
+  padding-block: 17px 16px;
+  padding-inline: 19px 18px;
+  border-radius: 12px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+
+.card > svg {
+  color: var(--text-secondary);
+}
+
+.card:hover,
+.card:focus-visible {
+  background: var(--add-hover);
+  outline: none;
+}
+
+/* "추가 옵션": 44px rows 8px apart, the picked one white with a blue ring and ↵. */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.optionsHead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding-block: 0;
+  padding-inline: 22px 30px;
+  border-radius: 12px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+
+.option > svg:first-child {
+  color: var(--text-secondary);
+}
+
+.option[data-picked="true"] {
+  background: var(--add-picked);
+  box-shadow: var(--add-picked-ring);
+}
+
+/* The row under the pointer, not picked: its hover ground alone, the pick
+   staying where the arrows left it until the pointer moves into another row
+   (Notion's, seen 2026-11-14). */
+.option:hover:not([data-picked="true"]) {
+  background: var(--add-hover);
+}
+
+.option:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.optionLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.optionEnter {
+  color: var(--text-tertiary);
+}
+
+.failed {
+  width: min(576px, calc(100% - 48px));
+  margin: 12px auto 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+/* The place chooser: 252px, a search field and 28px rows. */
+.chooser {
+  display: flex;
+  flex-direction: column;
+  width: 252px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.chooserSearch {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin: 4px 4px 8px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.chooserSearch:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.chooserSearch input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.chooserItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.chooserItem > svg:last-child:not(:first-child) {
+  margin-inline-start: auto;
+}
+
+.chooserItem:hover,
+.chooserItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

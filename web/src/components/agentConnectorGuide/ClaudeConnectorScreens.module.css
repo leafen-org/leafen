@@ -1,0 +1,325 @@
+/* Claude's screens in the connector guide (claudeConnectorScreens.tsx), at the
+ * guide frame's scale. Colors are Claude's own (claude.ai seen 2026-11-08:
+ * dark page #191919, sidebar #1f1f1f, dialog #303030, text at 93% and 57%
+ * white, inputs at 5% white, radius 8 and 12; light from the same page's
+ * light tokens) and follow the app's theme. Times in the animations match
+ * the cursor paths in the screens. */
+
+.claude {
+  --cl-bg: #ffffff;
+  --cl-side: #f9f9f9;
+  --cl-text: rgba(0, 0, 0, 0.9);
+  --cl-muted: rgba(0, 0, 0, 0.55);
+  --cl-faint: rgba(0, 0, 0, 0.35);
+  --cl-line: rgba(0, 0, 0, 0.08);
+  --cl-pill: rgba(0, 0, 0, 0.06);
+  --cl-field: rgba(0, 0, 0, 0.04);
+  --cl-dialog: #ffffff;
+  --cl-primary-bg: #1f1f1f;
+  --cl-primary-text: #ffffff;
+  --cl-backdrop: rgba(0, 0, 0, 0.2);
+  --cl-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  --cl-focus: #2c84db;
+  --cl-badge: rgba(26, 95, 180, 0.1);
+  --cl-badge-text: #1a5fb4;
+  --rec-text: var(--cl-text);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--cl-bg);
+  color: var(--cl-text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:global(:root[data-theme="dark"]) .claude {
+  --cl-bg: #191919;
+  --cl-side: #1f1f1f;
+  --cl-text: rgba(255, 255, 255, 0.93);
+  --cl-muted: rgba(255, 255, 255, 0.57);
+  --cl-faint: rgba(255, 255, 255, 0.35);
+  --cl-line: rgba(255, 255, 255, 0.08);
+  --cl-pill: rgba(255, 255, 255, 0.12);
+  --cl-field: rgba(255, 255, 255, 0.05);
+  --cl-dialog: #303030;
+  --cl-primary-bg: #f2f2f2;
+  --cl-primary-text: #191919;
+  --cl-backdrop: rgba(0, 0, 0, 0.45);
+  --cl-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --cl-focus: #3b8de6;
+  --cl-badge: rgba(106, 171, 241, 0.16);
+  --cl-badge-text: #6aabf1;
+}
+
+.app {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- sidebar ---- */
+
+.side {
+  display: flex;
+  flex: 0 0 112px;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 6px;
+  border-inline-end: 1px solid var(--cl-line);
+  background: var(--cl-side);
+  font-size: 10px;
+}
+
+.logo {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 2px 6px 8px;
+  font-family: ui-serif, Georgia, serif;
+  font-size: 13px;
+}
+
+.sideItem {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.sideItem[data-on] {
+  background: var(--cl-pill);
+}
+
+/* ---- the Customize page ---- */
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 16px;
+}
+
+.title {
+  font-family: ui-serif, Georgia, serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 10px;
+}
+
+.tabs,
+.segment {
+  display: flex;
+  gap: 2px;
+}
+
+.segment {
+  padding: 1px;
+  border-radius: 6px;
+  background: var(--cl-field);
+}
+
+.tabs > span,
+.segment > span {
+  position: relative;
+  padding: 3px 7px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.tabStill,
+.tabOn {
+  background: var(--cl-pill);
+}
+
+.tabOn {
+  animation: clPillOn 0.12s linear 1450ms both;
+}
+
+.tabOff {
+  animation: clPillOff 0.12s linear 1450ms both;
+}
+
+.add {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-inline-start: auto;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--cl-primary-bg);
+  color: var(--cl-primary-text);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 4;
+  padding: 4px;
+  border: 1px solid var(--cl-line);
+  border-radius: 8px;
+  background: var(--cl-dialog);
+  box-shadow: var(--cl-shadow);
+  color: var(--cl-text);
+  font-weight: 400;
+  animation: clAppear 0.15s ease-out 2350ms both;
+}
+
+.menuItem {
+  position: relative;
+  display: block;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: var(--cl-pill);
+}
+
+.table {
+  display: grid;
+  font-size: 10px;
+}
+
+.tableLate {
+  animation: clAppear 0.15s linear 1450ms both;
+}
+
+.head,
+.listRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 64px;
+  align-items: center;
+  border-bottom: 1px solid var(--cl-line);
+}
+
+.head {
+  height: 20px;
+  color: var(--cl-muted);
+  font-size: 9.5px;
+}
+
+.listRow {
+  height: 30px;
+}
+
+.rowName {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.rowIcon {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--cl-line);
+  border-radius: 4px;
+}
+
+.connect {
+  position: relative;
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--cl-pill);
+}
+
+.muted {
+  color: var(--cl-muted);
+}
+
+.toast {
+  position: absolute;
+  bottom: 14px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--cl-primary-bg);
+  box-shadow: var(--cl-shadow);
+  color: var(--cl-primary-text);
+  font-size: 10px;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: clAppear 0.2s ease-out 300ms both;
+}
+
+@keyframes clAppear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes clPillOn {
+  from {
+    background: transparent;
+  }
+}
+
+@keyframes clPillOff {
+  from {
+    background: var(--cl-pill);
+  }
+}
+
+/* A narrow frame (a phone): the sidebar keeps its icons, the list its name
+ * and status. */
+@container (max-width: 460px) {
+  .side {
+    flex-basis: 32px;
+    padding: 8px 4px;
+  }
+
+  .logo,
+  .sideItem {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .logo > span,
+  .sideItem > span:not([class]) {
+    display: none;
+  }
+
+  .main {
+    padding: 12px 10px;
+  }
+
+  .wideOnly {
+    display: none;
+  }
+
+  .head,
+  .listRow {
+    grid-template-columns: minmax(0, 1fr) 56px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabOn,
+  .tabOff,
+  .menu,
+  .tableLate,
+  .toast {
+    animation: none;
+  }
+}

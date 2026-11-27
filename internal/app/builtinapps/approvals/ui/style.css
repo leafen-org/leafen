@@ -1,0 +1,75 @@
+/* The Approvals app's screen and block, in Leafen's light and dark look. */
+:root {
+  color-scheme: light dark;
+  --text: #37352f;
+  --muted: rgba(55, 53, 47, 0.65);
+  --faint: rgba(55, 53, 47, 0.45);
+  --line: rgba(55, 53, 47, 0.12);
+  --hover: rgba(55, 53, 47, 0.06);
+  --bg: #ffffff;
+  --accent: #2383e2;
+  --gray: rgba(227, 226, 224, 0.8);
+  --yellow: rgba(253, 236, 200, 0.9);
+  --green: rgba(219, 237, 219, 0.9);
+  --red: rgba(255, 226, 221, 0.9);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+:root[data-theme="dark"] {
+  --text: rgba(255, 255, 255, 0.85);
+  --muted: rgba(255, 255, 255, 0.55);
+  --faint: rgba(255, 255, 255, 0.4);
+  --line: rgba(255, 255, 255, 0.11);
+  --hover: rgba(255, 255, 255, 0.06);
+  --bg: #191919;
+  --gray: rgba(90, 90, 90, 0.6);
+  --yellow: rgba(137, 99, 42, 0.6);
+  --green: rgba(43, 89, 63, 0.7);
+  --red: rgba(110, 54, 48, 0.7);
+}
+* { box-sizing: border-box; }
+html { scrollbar-gutter: stable; }
+body { margin: 0; background: var(--bg); color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+main { max-width: 880px; margin: 0 auto; padding: 28px 24px 48px; }
+h1 { margin: 0 0 4px; font-size: 26px; font-weight: 700; }
+.lead { margin: 0 0 20px; color: var(--muted); }
+.counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 20px; }
+.count { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
+.count b { display: block; font-size: 22px; }
+.count span { color: var(--muted); font-size: 12px; }
+nav { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+nav button { padding: 6px 10px; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--muted); font: inherit; cursor: pointer; }
+nav button[aria-current="page"] { border-bottom-color: var(--text); color: var(--text); font-weight: 600; }
+.empty { padding: 24px 0; color: var(--faint); }
+.item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.item header { display: flex; align-items: center; gap: 8px; }
+.item h2 { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font-size: 15px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.meta { color: var(--muted); font-size: 13px; }
+.reason { margin: 6px 0 0; white-space: pre-wrap; }
+.chip { flex: none; padding: 0 6px; border-radius: 3px; font-size: 12px; line-height: 20px; }
+.chip[data-status="초안"] { background: var(--gray); }
+.chip[data-status="대기"] { background: var(--yellow); }
+.chip[data-status="승인"] { background: var(--green); }
+.chip[data-status="반려"] { background: var(--red); }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+button.primary, button.secondary, a.link { height: 30px; padding: 0 12px; border-radius: 6px; font: inherit; cursor: pointer; }
+button.primary { border: 0; background: var(--accent); color: #fff; }
+button.secondary { border: 1px solid var(--line); background: none; color: var(--text); }
+button:disabled { opacity: 0.5; cursor: default; }
+a.link { display: inline-flex; align-items: center; height: auto; padding: 0; color: var(--accent); text-decoration: none; }
+input, select, textarea { width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; }
+textarea { min-height: 84px; resize: vertical; }
+.note { flex: 1 1 200px; min-width: 0; }
+form { display: grid; gap: 12px; max-width: 560px; }
+label { display: grid; gap: 4px; color: var(--muted); font-size: 13px; }
+.error { color: #d44c47; font-size: 13px; }
+.status { color: var(--muted); font-size: 13px; }
+@media (max-width: 599px) {
+  main { padding: 20px 16px 40px; }
+  h1 { font-size: 22px; }
+  .counts { gap: 6px; }
+  .count { padding: 8px; }
+  .count b { font-size: 18px; }
+}
+/* The block: a line of counts and a link into the app. */
+body.block main { max-width: none; padding: 12px 14px; }
+body.block .counts { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 8px; }

@@ -1,0 +1,134 @@
+/* A formula as the editor writes it: the text being typed with its tokens
+   coloured, and a result in debug mode, in Notion's 12px monospace face
+   (seen 2026-09-30). */
+
+/* The formula's text is typed in an editable line whose tokens are
+   coloured and whose properties are chips. */
+/* Its ground is a menu's own element ground, white in light and #202020 in
+   dark (Notion's, seen 2026-11-07). */
+.editorWrap {
+  position: relative;
+  display: flex;
+  margin: 0 12px 12px;
+  border-radius: 6px;
+  background: var(--bg-element);
+}
+
+.editor {
+  flex: 1;
+  min-width: 0;
+  min-height: 96px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  caret-color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: normal;
+  tab-size: 4;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  outline: none;
+  cursor: text;
+}
+
+/* "사용자의 수식" on the caret's line, in the interface's 14px face (Notion's, seen 2026-11-10). */
+.editor[data-empty="true"]::before {
+  float: inline-start;
+  height: 0;
+  color: var(--text-tertiary);
+  content: attr(data-placeholder);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.editor:focus {
+  border-color: var(--focus); box-shadow: var(--name-field-ring-focus-out);
+}
+
+/* A property, as Notion's editor shows it (seen 2026-09-30, dark
+   2026-11-08): inline on its line, 2px 4px in, rounded 4, an automation
+   chip's ground (a tint in light, the field's own #202020 in dark), its
+   type's 12px icon in icoSec 6px before its name. */
+.chip {
+  display: inline;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--automation-chip-bg);
+  color: var(--text-default);
+  white-space: nowrap;
+  cursor: default;
+}
+
+.chip svg {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-inline-end: 6px;
+  vertical-align: -1px;
+  color: var(--icon-secondary);
+}
+
+/* Its tokens take a code block's colours (codeTheme.css, by their Prism
+   names — formulaTokenTheme.ts), as Notion's (seen 2026-11-14). */
+
+/* A result in debug mode, as Notion's (seen 2026-11-12, dark): 12px on
+   18px lines in the value's colour; its note of type 8px on 12px lines, 4px
+   after the value and centred on it; a list's "[" 2px before its first item,
+   each "," right after its item and 2px before the next, "]" 2px after the
+   last and its note 4px after that; true or false a 16px checkbox. */
+.debugValue {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.debugNote {
+  margin-inline-start: 4px;
+  font-size: 8px;
+  line-height: 12px;
+}
+
+.debugPunctuation {
+  color: var(--text-secondary);
+}
+
+.debugOpen,
+.debugSeparator {
+  margin-inline-end: 2px;
+}
+
+.debugClose {
+  margin-inline-start: 2px;
+}
+
+.debugCheck {
+  inline-size: 16px;
+  block-size: 16px;
+  margin: 0;
+  accent-color: var(--accent-blue);
+}
+
+/* Where a problem is, under a red wave, as Notion's (seen 2026-11-03); a
+   warning's wave is amber (debug mode's, seen 2026-11-12), red where a
+   problem is there too, whichever starts first (seen 2026-11-14: "a" -
+   abs(foo) all red, abs(foo) amber but foo). Marks over the same letters
+   are one span with both names. */
+.editor [data-formula-problem],
+.editor [data-formula-warning] {
+  text-decoration: underline wavy rgb(255, 0, 0);
+  text-decoration-skip-ink: none;
+}
+
+.editor [data-formula-warning]:not([data-formula-problem]) {
+  text-decoration-color: rgb(255, 193, 7);
+}

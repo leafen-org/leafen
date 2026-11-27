@@ -1,0 +1,309 @@
+{
+  "schemaVersion": 1,
+  "name": "teamspace",
+  "operations": [
+    { "goName": "teamspaceSnapshot", "tsName": "readTeamspaceSnapshot", "method": "GET", "path": "/workspaces/{workspaceId}/teamspaces" },
+    { "goName": "teamspaceManagement", "tsName": "readTeamspaceManagement", "method": "GET", "path": "/workspaces/{workspaceId}/teamspaces/{teamspaceId}" },
+    { "goName": "teamspaceMutation", "tsName": "mutateTeamspace", "method": "POST", "path": "/workspaces/{workspaceId}/teamspace-mutations" }
+  ],
+  "bounds": [
+    { "goName": "maxTeamspaceNameRunes", "tsName": "nameRunes", "value": 80 },
+    { "goName": "maxTeamspaceDescriptionRunes", "tsName": "descriptionRunes", "value": 500 },
+    { "goName": "maxTeamspaceJoinMessageRunes", "tsName": "joinMessageRunes", "value": 1000 },
+    { "goName": "maxTeamspaceMutationRequestIDRunes", "tsName": "mutationRequestIdRunes", "value": 255 },
+    { "goName": "teamspaceCollectionWindow", "tsName": "collectionWindow", "value": 100 },
+    { "goName": "teamspaceManagementWindow", "tsName": "managementWindow", "value": 100 },
+    { "goName": "maxTeamspaceCursorBytes", "tsName": "cursorBytes", "value": 2048 },
+    { "goName": "teamspaceMutationMaxBodyBytes", "tsName": "mutationBodyBytes", "value": 32768 },
+    { "goName": "maxDefaultTeamspaces", "tsName": "defaultTeamspaces", "value": 1000 }
+  ],
+  "errors": [
+    { "goName": "errorCodeTeamspaceInvalid", "tsName": "invalid", "value": "LEAFEN_TEAMSPACE_INVALID" },
+    { "goName": "errorCodeTeamspaceNotFound", "tsName": "notFound", "value": "LEAFEN_TEAMSPACE_NOT_FOUND" },
+    { "goName": "errorCodeTeamspaceDenied", "tsName": "denied", "value": "LEAFEN_TEAMSPACE_DENIED" },
+    { "goName": "errorCodeTeamspaceConflict", "tsName": "conflict", "value": "LEAFEN_TEAMSPACE_CONFLICT" },
+    { "goName": "errorCodeTeamspaceRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_TEAMSPACE_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeTeamspaceStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_TEAMSPACE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeTeamspaceDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_TEAMSPACE_DATABASE_BUSY" },
+    { "goName": "errorCodeTeamspacePrivateDefault", "tsName": "privateDefault", "value": "LEAFEN_TEAMSPACE_PRIVATE_DEFAULT" },
+    { "goName": "errorCodeTeamspaceDefaultMember", "tsName": "defaultMember", "value": "LEAFEN_TEAMSPACE_DEFAULT_MEMBER" },
+    { "goName": "errorCodeTeamspaceLastOwner", "tsName": "lastOwner", "value": "LEAFEN_TEAMSPACE_LAST_OWNER" },
+    { "goName": "errorCodeTeamspaceDefaultRequired", "tsName": "defaultRequired", "value": "LEAFEN_TEAMSPACE_DEFAULT_REQUIRED" }
+  ],
+  "enums": [
+    {
+      "tsName": "TeamspaceAccess",
+      "tsValuesName": "teamspaceAccessValues",
+      "values": [
+        { "goName": "teamspaceAccessOpen", "tsName": "open", "value": "open" },
+        { "goName": "teamspaceAccessClosed", "tsName": "closed", "value": "closed" },
+        { "goName": "teamspaceAccessPrivate", "tsName": "private", "value": "private" }
+      ]
+    },
+    {
+      "tsName": "TeamspaceMemberRole",
+      "tsValuesName": "teamspaceMemberRoleValues",
+      "values": [
+        { "goName": "teamspaceMemberRoleOwner", "tsName": "owner", "value": "owner" },
+        { "goName": "teamspaceMemberRoleMember", "tsName": "member", "value": "member" }
+      ]
+    },
+    {
+      "tsName": "TeamspacePageRole",
+      "tsValuesName": "teamspacePageRoleValues",
+      "values": [
+        { "goName": "teamspacePageRoleView", "tsName": "view", "value": "view" },
+        { "goName": "teamspacePageRoleComment", "tsName": "comment", "value": "comment" },
+        { "goName": "teamspacePageRoleEdit", "tsName": "edit", "value": "edit" },
+        { "goName": "teamspacePageRoleFullAccess", "tsName": "fullAccess", "value": "full_access" },
+        { "goName": "teamspacePageRoleNone", "tsName": "none", "value": "none" }
+      ]
+    },
+    {
+      "tsName": "TeamspaceMutationAction",
+      "tsValuesName": "teamspaceMutationActions",
+      "values": [
+        { "goName": "teamspaceActionCreate", "tsName": "create", "value": "create" },
+        { "goName": "teamspaceActionUpdate", "tsName": "update", "value": "update" },
+        { "goName": "teamspaceActionJoin", "tsName": "join", "value": "join" },
+        { "goName": "teamspaceActionRequest", "tsName": "request", "value": "request" },
+        { "goName": "teamspaceActionRespond", "tsName": "respond", "value": "respond" },
+        { "goName": "teamspaceActionAddMember", "tsName": "addMember", "value": "add_member" },
+        { "goName": "teamspaceActionUpdateMember", "tsName": "updateMember", "value": "update_member" },
+        { "goName": "teamspaceActionRemoveMember", "tsName": "removeMember", "value": "remove_member" },
+        { "goName": "teamspaceActionLeave", "tsName": "leave", "value": "leave" },
+        { "goName": "teamspaceActionUpdateSettings", "tsName": "updateSettings", "value": "update_settings" },
+        { "goName": "teamspaceActionSetDefault", "tsName": "setDefault", "value": "set_default" },
+        { "goName": "teamspaceActionSetDefaults", "tsName": "setDefaults", "value": "set_defaults" },
+        { "goName": "teamspaceActionArchive", "tsName": "archive", "value": "archive" },
+        { "goName": "teamspaceActionRestore", "tsName": "restore", "value": "restore" },
+        { "goName": "teamspaceActionDelete", "tsName": "delete", "value": "delete" }
+      ]
+    },
+    {
+      "tsName": "TeamspaceJoinRequestStatus",
+      "tsValuesName": "teamspaceJoinRequestStatuses",
+      "values": [
+        { "goName": "teamspaceRequestPending", "tsName": "pending", "value": "pending" },
+        { "goName": "teamspaceRequestApproved", "tsName": "approved", "value": "approved" },
+        { "goName": "teamspaceRequestDenied", "tsName": "denied", "value": "denied" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "teamspaceWireRecord",
+      "tsName": "Teamspace",
+      "fields": [
+        { "goName": "SchemaVersion", "jsonName": "schemaVersion", "goType": "int", "tsType": "number" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "Access", "jsonName": "access", "goType": "string", "tsType": "TeamspaceAccess" },
+        { "goName": "MemberPageRole", "jsonName": "memberPageRole", "goType": "string", "tsType": "TeamspacePageRole" },
+        { "goName": "OpenPageRole", "jsonName": "openPageRole", "goType": "string", "tsType": "TeamspacePageRole" },
+        { "goName": "MembersCanInvite", "jsonName": "membersCanInvite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "MembersCanEditSidebar", "jsonName": "membersCanEditSidebar", "goType": "bool", "tsType": "boolean" },
+        { "goName": "DisablePublishing", "jsonName": "disablePublishing", "goType": "bool", "tsType": "boolean" },
+        { "goName": "DisableGuests", "jsonName": "disableGuests", "goType": "bool", "tsType": "boolean" },
+        { "goName": "DisableExport", "jsonName": "disableExport", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ArchivedAt", "jsonName": "archivedAt", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedBy", "jsonName": "updatedBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "teamspaceSettingsWire",
+      "tsName": "TeamspaceSettings",
+      "fields": [
+        { "goName": "SchemaVersion", "jsonName": "schemaVersion", "goType": "int", "tsType": "number" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "DefaultTeamspaceIDs", "jsonName": "defaultTeamspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "OwnersOnlyCreate", "jsonName": "ownersOnlyCreate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "UpdatedBy", "jsonName": "updatedBy", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "teamspaceSummaryWire",
+      "tsName": "TeamspaceSummary",
+      "fields": [
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerLabels", "jsonName": "ownerLabels", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "OwnerUserIDs", "jsonName": "ownerUserIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "OwnerCount", "jsonName": "ownerCount", "goType": "int", "tsType": "number" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number" },
+        { "goName": "AnsweringOwnerCount", "jsonName": "answeringOwnerCount", "goType": "int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspaceMemberWire",
+      "tsName": "TeamspaceMember",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "\"user\" | \"group\"" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceMemberID", "jsonName": "workspaceMemberId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "TeamspaceMemberRole" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "teamspaceJoinRequestWire",
+      "tsName": "TeamspaceJoinRequest",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceMemberID", "jsonName": "workspaceMemberId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "TeamspaceJoinRequestStatus" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "DecidedBy", "jsonName": "decidedBy", "goType": "string", "tsType": "string" },
+        { "goName": "DecidedAt", "jsonName": "decidedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspacePrincipalOption",
+      "tsName": "TeamspacePrincipalOption",
+      "fields": [
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "\"user\" | \"group\"" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "WorkspaceOwner", "jsonName": "workspaceOwner", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspaceAccessDecisionWire",
+      "tsName": "TeamspaceAccessDecision",
+      "fields": [
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "MembershipRole", "jsonName": "membershipRole", "goType": "string", "tsType": "TeamspaceMemberRole", "optional": true },
+        { "goName": "MembershipSource", "jsonName": "membershipSource", "goType": "string", "tsType": "\"explicit\" | \"group\" | \"default\"", "optional": true },
+        { "goName": "MembershipGroups", "jsonName": "membershipGroups", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "PageRole", "jsonName": "pageRole", "goType": "string", "tsType": "TeamspacePageRole", "optional": true },
+        { "goName": "Joined", "jsonName": "joined", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Visible", "jsonName": "visible", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanJoin", "jsonName": "canJoin", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RequestPending", "jsonName": "requestPending", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanRequest", "jsonName": "canRequest", "goType": "bool", "tsType": "boolean" },
+        { "goName": "MembersLocked", "jsonName": "membersLocked", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspaceArchivedPlaceWire",
+      "tsName": "TeamspaceArchivedPlace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "Access", "jsonName": "access", "goType": "string", "tsType": "TeamspaceAccess" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "CanRestore", "jsonName": "canRestore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true },
+        { "goName": "Joined", "jsonName": "joined", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspaceSnapshotResponse",
+      "tsName": "TeamspaceSnapshotResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotRevision", "jsonName": "snapshotRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Teamspaces", "jsonName": "teamspaces", "goType": "[]teamspaceWireRecord", "tsType": "Teamspace[]" },
+        { "goName": "Decisions", "jsonName": "decisions", "goType": "[]teamspaceAccessDecisionWire", "tsType": "TeamspaceAccessDecision[]" },
+        { "goName": "Summaries", "jsonName": "summaries", "goType": "[]teamspaceSummaryWire", "tsType": "TeamspaceSummary[]" },
+        { "goName": "Settings", "jsonName": "settings", "goType": "teamspaceSettingsWire", "tsType": "TeamspaceSettings" },
+        { "goName": "ArchivedPlaces", "jsonName": "archivedPlaces", "goType": "[]teamspaceArchivedPlaceWire", "tsType": "TeamspaceArchivedPlace[]", "optional": true },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "teamspaceManagementResponse",
+      "tsName": "TeamspaceManagementResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotRevision", "jsonName": "snapshotRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Teamspace", "jsonName": "teamspace", "goType": "teamspaceWireRecord", "tsType": "Teamspace" },
+        { "goName": "Decision", "jsonName": "decision", "goType": "teamspaceAccessDecisionWire", "tsType": "TeamspaceAccessDecision" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]teamspaceMemberWire", "tsType": "TeamspaceMember[]" },
+        { "goName": "Requests", "jsonName": "requests", "goType": "[]teamspaceJoinRequestWire", "tsType": "TeamspaceJoinRequest[]" },
+        { "goName": "PrincipalOptions", "jsonName": "principalOptions", "goType": "[]teamspacePrincipalOption", "tsType": "TeamspacePrincipalOption[]" },
+        { "goName": "NextMemberCursor", "jsonName": "nextMemberCursor", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "NextRequestCursor", "jsonName": "nextRequestCursor", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "NextPrincipalCursor", "jsonName": "nextPrincipalCursor", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "MembersHaveMore", "jsonName": "membersHaveMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RequestsHaveMore", "jsonName": "requestsHaveMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PrincipalOptionsHaveMore", "jsonName": "principalOptionsHaveMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "teamspaceMutationInput",
+      "tsName": "TeamspaceMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "TeamspaceMutationAction" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Access", "jsonName": "access", "goType": "string", "tsType": "TeamspaceAccess", "optional": true },
+        { "goName": "MemberPageRole", "jsonName": "memberPageRole", "goType": "string", "tsType": "TeamspacePageRole", "optional": true },
+        { "goName": "OpenPageRole", "jsonName": "openPageRole", "goType": "string", "tsType": "TeamspacePageRole", "optional": true },
+        { "goName": "MembersCanInvite", "jsonName": "membersCanInvite", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "MembersCanEditSidebar", "jsonName": "membersCanEditSidebar", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "DisablePublishing", "jsonName": "disablePublishing", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "DisableGuests", "jsonName": "disableGuests", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "DisableExport", "jsonName": "disableExport", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "OwnersOnlyCreate", "jsonName": "ownersOnlyCreate", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "DefaultTeamspaceID", "jsonName": "defaultTeamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DefaultTeamspaceIDs", "jsonName": "defaultTeamspaceIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "ReplacementDefaultTeamspaceID", "jsonName": "replacementDefaultTeamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "\"user\" | \"group\"", "optional": true },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "MemberRole", "jsonName": "memberRole", "goType": "string", "tsType": "TeamspaceMemberRole", "optional": true },
+        { "goName": "JoinRequestID", "jsonName": "joinRequestId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "JoinResponse", "jsonName": "joinResponse", "goType": "string", "tsType": "\"approved\" | \"denied\"", "optional": true },
+        { "goName": "JoinMessage", "jsonName": "joinMessage", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "InviteToken", "jsonName": "inviteToken", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "teamspaceMutationResponse",
+      "tsName": "TeamspaceMutationResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "TeamspaceMutationAction" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "PermissionCursor", "jsonName": "permissionCursor", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PublicationPending", "jsonName": "publicationPending", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Teamspace", "jsonName": "teamspace", "goType": "*teamspaceWireRecord", "tsType": "Teamspace", "optional": true },
+        { "goName": "Settings", "jsonName": "settings", "goType": "*teamspaceSettingsWire", "tsType": "TeamspaceSettings", "optional": true },
+        { "goName": "Member", "jsonName": "member", "goType": "*teamspaceMemberWire", "tsType": "TeamspaceMember", "optional": true },
+        { "goName": "JoinRequest", "jsonName": "joinRequest", "goType": "*teamspaceJoinRequestWire", "tsType": "TeamspaceJoinRequest", "optional": true }
+      ]
+    }
+  ]
+}

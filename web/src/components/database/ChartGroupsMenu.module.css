@@ -1,0 +1,96 @@
+/* "그룹" under a chart axis's sorts, as Notion's (seen 2026-10-05): a 12px
+   gray name with a blue "모두 숨기기", then 28px rows with a handle, the
+   group's chip or name and an eye. A row stays clear under the pointer, as
+   the view settings' group lists (Notion's, seen 2026-11-18 at 1440: the
+   242x28 row transparent). The name's row is a menu label 24 high for its
+   button — under a line 9 below the last sort, 12 under the line, the first
+   group 9 under it — and "모두 숨기기" a 24 high button, its words 6 in,
+   ending at the eyes' end (read 2026-11-18: five sorts and four groups in a
+   250 by 319 menu). */
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 24px;
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+
+.all {
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--accent-blue);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.all:hover {
+  background: var(--bg-hover);
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.group[data-hidden="true"] .name {
+  color: var(--text-tertiary);
+}
+
+/* Its ⠿ an 18x24 box 8px in with the 16px glyph, the name 6px past it
+   (Notion's, seen 2026-11-18 at 1440: box +8, name +32). */
+.handle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 24px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chip {
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* The eye is the menu row's 24px small button, round 6, 8px from the row's
+   end (DatabaseMenuRowTool; Notion's chart group eye, seen 2026-11-18 at
+   1440). */
+.eye {
+  composes: tool from "./DatabaseMenuRowTool.module.css";
+  color: var(--text-secondary);
+}
+
+.eye:focus-visible {
+  outline: none;
+}

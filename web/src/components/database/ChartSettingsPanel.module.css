@@ -1,0 +1,122 @@
+/* A chart view's own settings in its view's panel, as Notion's (read
+   2026-11-18 in Chrome at 1440 from the panel's own boxes, the same for
+   bars, lines, a donut and a number): each group — the chart's type, an
+   axis, the data, the style — keeps 4 over and under its rows, which stand
+   1 apart, so a group's name is 14 under the row over it and its first row
+   9 under the name. The type's group starts with a line 9 under "레이아웃"
+   and 8 in from the rows' sides, its name 12 under the line, then five type
+   buttons 40 high with a 22px mark, 8 apart and 8 in, the chosen one rimmed
+   2 inside in blue (its picture blue too, seen 2026-11-18), 4 over what
+   follows: the next group, or a number's title switch 4 further down with
+   its field. The last group ends at its last row, the panel's
+   own line coming 8 under it (DatabaseViewSettingsPanel.module.css). */
+.settings {
+  display: flex;
+  flex-direction: column;
+}
+
+.group,
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.group {
+  padding-block: 4px;
+}
+
+.group:first-child {
+  padding-block-start: 0;
+}
+
+.group:last-child {
+  padding-block-end: 0;
+}
+
+.title {
+  margin-block-start: 4px;
+}
+
+.types {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  padding: 0 8px 4px;
+}
+
+/* A mark turned on its side: the sort of the categories and of a donut's
+   slices, the range of values that run across (Notion's, seen 2026-11-18:
+   its sort's two arrows a quarter turn back, its range's a quarter turn on). */
+.sideways {
+  transform: rotate(-90deg);
+}
+
+.type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border: 1px solid var(--choice-tile-edge);
+  border-radius: 8px;
+  color: var(--text-secondary);
+}
+
+.type:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.type[aria-checked="true"] {
+  border-color: var(--choice-tile-chosen-edge);
+  box-shadow: inset 0 0 0 1px var(--choice-tile-chosen-edge);
+  color: var(--accent-blue);
+}
+
+.format {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* In a phone's settings sheet, as Notion's (seen 2026-11-18 on the A90 at
+   411 wide, light): the groups' rows stand together, the sheet's lines
+   between them (ChartPanelMenus.module.css); the five types sit in a white
+   12-round box 12 in and 12 apart, 50 high and 8 round, rimmed 1.5 inside
+   in the border's gray with a 26px mark in the secondary icon color, the
+   chosen one rimmed 2 in blue; a number's title switch and its field follow
+   4 under the box, the three one group, square where they meet. */
+:global([data-phone-settings]) .group,
+:global([data-phone-settings]) .title {
+  gap: 0;
+  padding-block: 0;
+}
+
+:global([data-phone-settings]) .types {
+  gap: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+
+:global([data-phone-settings]) .types:has(+ .title) {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+:global([data-phone-settings]) .type {
+  height: 50px;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1.5px var(--choice-tile-edge);
+  color: var(--icon-secondary);
+}
+
+:global([data-phone-settings]) .type[aria-checked="true"] {
+  box-shadow: inset 0 0 0 2px var(--choice-tile-chosen-edge);
+  color: var(--accent-blue);
+}
+
+:global([data-phone-settings]) .type svg {
+  width: 26px;
+  height: 26px;
+}

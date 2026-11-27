@@ -1,0 +1,134 @@
+/* A pill's editor, as Notion's (seen 2026-10-01): the property's name in
+   faint 12px, its operator with a ˅, and "⋯" at the end; the value under
+   them. */
+.editorHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 0 2px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* The name takes what the condition leaves, cut short with "…" only then
+   (Notion's, seen 2026-11-12: "소속 프로젝트 값을 포함하지 않는 데이터 ⌄ ⋯"
+   whole at 260, a long name "소속 프로젝…" before the whole condition). */
+.editorName {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editorOperator {
+  flex: 0 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.editorOperator.editorCondition { flex: none; }
+/* Its ⌄ 12px, 4px after the words and 2px from the button's end, in the
+   faint icon colour (Notion's, seen 2026-11-12 at 1440: every pill's). */
+.editorOperatorButton {
+  grid-template-columns: minmax(0, auto) 12px;
+  gap: 4px;
+  width: auto;
+  height: 22px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.editorOperatorButton > svg {
+  width: 12px;
+  height: 12px;
+  color: var(--icon-tertiary);
+}
+.editorOperatorButton:hover,
+.editorOperatorButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.editorMoreWrap {
+  position: relative;
+  margin-inline-start: auto;
+}
+/* "⋯" has its top on the words' top, 8px under the window's top, as Notion's
+   (seen 2026-11-15 in Chrome at 1440: name, condition and "⋯" all at 219.4
+   under a window at 211.4). Its wrap is a 23px line every editor's head and
+   what follows are laid out by, so the button is moved down in it rather
+   than the line changed. */
+.editorMore {
+  position: relative;
+  inset-block-start: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+.editorMore:hover,
+.editorMore:focus-visible,
+.editorMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+/* "⋯"'s menu, as Notion's (seen 2026-11-15 in Chrome at 1440): 240 wide,
+   its 28px rows 4px in and 1px apart, 65 tall for two. */
+.editorMenu {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.editorValue {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.editorValue > :last-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.editorSign {
+  flex: none;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* A checkbox's states, as Notion's (seen 2026-11-12): 28px rows a pixel
+   apart, the first lit as they open, the chosen one's 16px tick 8px from
+   its end, and "지우기" under a line 12px in, 4px from each. */
+.editorChoices {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.editorChoice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.editorChoice:hover,
+.editorChoice:focus-visible,
+.editorChoice[data-focused="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.editorChoicesRule {
+  height: 1px;
+  margin: 3px 8px;
+  background: var(--menu-divider);
+}

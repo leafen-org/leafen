@@ -1,0 +1,223 @@
+/* ── Block body and marks ──────────────────────────────────── */
+/* A block's body: what a drag or a file drop marks on it, its comment
+   marks at its end, and its colours. Someone else on the page shows as their
+   face beside the line they are on (PagePresenceFaces), nothing in the body. An empty picture's file
+   drop is looked for in every row but a database's, which has none, and one
+   a database stands in (databaseBlockRowMarks): the look went through the
+   whole table at every change in it (2026-11-15). It follows
+   EditorBlockSelection in the editor's sheet (scripts/generate-editor-styles.mjs). */
+.blockGroup[data-comment-flash="true"] > .blockRow > .blockBody {
+  border-radius: 4px;
+  background: rgba(251, 243, 219, 0.82);
+  box-shadow: inset 0 0 0 1px rgba(203, 145, 47, 0.3);
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+.blockRow[data-dragging="true"] {
+  opacity: 0.45;
+}
+.blockRow[data-drop="before"]::before,
+.blockRow[data-drop="after"]::after,
+.blockRow[data-file-drop="before"]::before,
+.blockRow[data-file-drop="after"]::after,
+.blockRow[data-file-drop="replace"]::after,
+.blockRow:not([data-type="inline_database"], [data-holds-database]):has(.mediaEmpty[data-file-drop="true"])::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  z-index: 2;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+.blockRow[data-drop="before"]::before,
+.blockRow[data-file-drop="before"]::before {
+  top: -1px;
+}
+.blockRow[data-drop="after"]::after,
+.blockRow[data-file-drop="after"]::after,
+.blockRow[data-file-drop="replace"]::after,
+.blockRow:not([data-type="inline_database"], [data-holds-database]):has(.mediaEmpty[data-file-drop="true"])::after {
+  bottom: -1px;
+}
+.blockRow[data-drop="inside"] .blockBody {
+  border-radius: 4px;
+  background: rgba(35, 131, 226, 0.08);
+}
+.blockBody {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* Notion's block marks (2026-11-06, DOM): 40×24 just past its top block's
+   box, whichever block they mark (placeBlockMarks), no fill, a 16px icon in
+   the secondary color and the count 12/600 in the tertiary one, 6px apart. */
+.blockMarks {
+  position: absolute;
+  top: var(--block-marks-top, 2px);
+  inset-inline-start: calc(100% + var(--block-marks-past, 0px));
+  display: flex;
+  gap: 4px;
+}
+.blockCommentPill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.blockMarkCount {
+  color: var(--text-tertiary);
+}
+/* On a phone they stand at the text column's end instead, the words making
+   room beside them, an 18px icon and the count at 15px, as Notion's (seen
+   2026-11-10 in iPhone Safari 402: "💬 1" 43×24 ending at the column's right
+   edge, the words ending 6px before it). */
+:global([data-phone="true"]) .blockMarks {
+  position: static;
+  flex: none;
+  margin-top: 2px;
+  margin-inline-start: 6px;
+}
+:global([data-phone="true"]) .blockCommentPill {
+  font-size: 15px;
+}
+:global([data-phone="true"]) .blockCommentPill > svg {
+  width: 18px;
+  height: 18px;
+}
+/* A picture's own "💬 N" among its tools stands for the row's; only a picture's
+   row looks for it, and not one a database stands in (a ":has()" on every row
+   read a database's whole table at each row it put in or took out,
+   EditorBlockHandles). */
+.blockRow[data-type="image"]:where(:not([data-holds-database])):has(> .blockBody [data-image-tools="image"] [data-count]) > .blockMarks > [data-block-comment-count] {
+  display: none;
+}
+.blockCommentPill:hover,
+.blockCommentPill:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* With its card open the mark keeps a ground; a new comment being written
+   there adds an 8px yellow dot on the icon's corner, ringed in the page's
+   colour (Notion's, seen 2026-11-06). */
+.blockCommentPill[data-open="true"] {
+  background: var(--border-subtle);
+}
+.blockMarkDraft {
+  position: absolute;
+  top: 4px;
+  inset-inline-start: 16px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-app);
+  border-radius: 50%;
+  background: rgb(216, 163, 47);
+}
+/* An open discussion here unread to the reader: the same dot, red (Notion's
+   rgb(229, 100, 88), seen 2026-11-06). */
+.blockMarkUnread {
+  position: absolute;
+  top: 4px;
+  inset-inline-start: 16px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-app);
+  border-radius: 50%;
+  background: var(--unread-mark);
+}
+/* A block's color, as Notion's (seen 2026-10-14): a text color is the
+   block's text, its children's and its list marker's or toggle caret's
+   (--block-color, which a child's own color replaces); a background fills
+   the block with its children. */
+.blockBody[data-block-color="gray"] {
+  --block-color: var(--c-gray);
+  color: var(--c-gray);
+}
+.blockBody[data-block-color="brown"] {
+  --block-color: var(--c-brown);
+  color: var(--c-brown);
+}
+.blockBody[data-block-color="orange"] {
+  --block-color: var(--c-orange);
+  color: var(--c-orange);
+}
+.blockBody[data-block-color="yellow"] {
+  --block-color: var(--c-yellow);
+  color: var(--c-yellow);
+}
+.blockBody[data-block-color="green"] {
+  --block-color: var(--c-green);
+  color: var(--c-green);
+}
+.blockBody[data-block-color="blue"] {
+  --block-color: var(--c-blue);
+  color: var(--c-blue);
+}
+.blockBody[data-block-color="purple"] {
+  --block-color: var(--c-purple);
+  color: var(--c-purple);
+}
+.blockBody[data-block-color="pink"] {
+  --block-color: var(--c-pink);
+  color: var(--c-pink);
+}
+.blockBody[data-block-color="red"] {
+  --block-color: var(--c-red);
+  color: var(--c-red);
+}
+/* A background is also the ground a table in the block covers what scrolls
+   under its kept parts with (DatabaseTableChrome --table-surface). */
+.blockBody[data-block-color$="_background"] {
+  border-radius: 3px;
+}
+.blockBody[data-block-color="gray_background"] {
+  --table-surface: var(--c-bg-gray);
+  background: var(--c-bg-gray);
+}
+.blockBody[data-block-color="brown_background"] {
+  --table-surface: var(--c-bg-brown);
+  background: var(--c-bg-brown);
+}
+.blockBody[data-block-color="orange_background"] {
+  --table-surface: var(--c-bg-orange);
+  background: var(--c-bg-orange);
+}
+.blockBody[data-block-color="yellow_background"] {
+  --table-surface: var(--c-bg-yellow);
+  background: var(--c-bg-yellow);
+}
+.blockBody[data-block-color="green_background"] {
+  --table-surface: var(--c-bg-green);
+  background: var(--c-bg-green);
+}
+.blockBody[data-block-color="blue_background"] {
+  --table-surface: var(--c-bg-blue);
+  background: var(--c-bg-blue);
+}
+.blockBody[data-block-color="purple_background"] {
+  --table-surface: var(--c-bg-purple);
+  background: var(--c-bg-purple);
+}
+.blockBody[data-block-color="pink_background"] {
+  --table-surface: var(--c-bg-pink);
+  background: var(--c-bg-pink);
+}
+.blockBody[data-block-color="red_background"] {
+  --table-surface: var(--c-bg-red);
+  background: var(--c-bg-red);
+}

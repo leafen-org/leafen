@@ -1,0 +1,292 @@
+/* A version history's bookmarks, as Notion's (seen 2026-10-01). */
+
+/* A list entry holds its row and, over the row's right end, its action,
+   shown while the entry is hovered, chosen or focused: a 20px button, its
+   14px mark in the icons' secondary color, as Notion's (measured
+   2026-11-15). */
+.bookmarkItem {
+  position: relative;
+}
+.rowAction {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+.bookmarkItem:hover .rowAction,
+.bookmarkItem:focus-within .rowAction,
+.bookmarkItem:has([data-selected="true"]) .rowAction,
+.rowAction[aria-expanded="true"] {
+  opacity: 1;
+}
+.rowAction:hover,
+.rowAction:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+/* An entry's "버전의 모든 변경 사항 보기" is round and outlined in the
+   buttons' faint line over nothing, with the bookmark 4px to its left. */
+.rowAction[data-shape="round"] {
+  border: 1px solid var(--button-outline);
+  border-radius: 999px;
+}
+.rowAction[data-beside="true"] {
+  inset-inline-end: 36px;
+}
+
+/* The bookmark's row: its red bookmark and name over the time to the second. */
+.bookmarkRow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-height: 64px;
+  padding-block: 12px;
+  padding-inline: 12px 40px;
+  border-radius: 6px;
+  text-align: start;
+}
+.bookmarkRow:focus-visible,
+.bookmarkRow[data-selected="true"] {
+  background: var(--bg-hover);
+}
+.bookmarkName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+/* Notion's bookmark is its redIcoSec, a paler red on dark (rgb(208, 152, 141), seen 2026-11-06). */
+.bookmarkGlyph {
+  display: flex;
+  flex: 0 0 auto;
+  color: var(--red-icon-secondary);
+}
+/* A bookmarked version's mark: the bookmark filled, in the actions' grey. */
+.rowAction[data-bookmarked="true"] svg path {
+  fill: currentColor;
+}
+.rowAction[data-bookmarked="true"]:hover {
+  background: none;
+}
+.bookmarkGlyph svg path {
+  fill: currentColor;
+}
+.bookmarkLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bookmarkTime {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Its options: rename and delete, 200px, 4px under the button and ending
+   where it ends, as Notion's (measured 2026-11-08); its lines 1px apart,
+   each mark in a 20px place 8px in, rename's the 16px small pencil
+   (measured 2026-11-15). */
+.optionsMenu {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 3;
+  top: 36px;
+  inset-inline-end: 12px;
+  width: 200px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.optionsItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.optionsGlyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.optionsItem:hover,
+.optionsItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The dialogs sit over the whole history, its list too, shaded as behind
+   Notion's (measured 2026-11-08). */
+.scrim {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--modal-shade);
+}
+/* Notion's bookmark name dialog (measured 2026-11-07): 480 wide, 20 inside,
+   a 32px grey bookmark, 6 to the 22px title on 26px lines, 2 to its words
+   13px on 18, 16 to a 28px field 10 inside on the field fill with a 1px
+   line, and 16 to its 32px buttons, cancel in grey. */
+.nameDialog {
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 32px));
+  padding: 20px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+.nameMark {
+  display: flex;
+  color: var(--text-secondary);
+}
+.nameMark svg {
+  width: 32px;
+  height: 32px;
+}
+.nameTitle {
+  margin: 6px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 26px;
+}
+.nameBody {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+.nameInput {
+  height: 28px;
+  margin-top: 16px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.nameFailure,
+.nameWaiting {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+}
+.nameFailure {
+  color: var(--danger);
+}
+.nameWaiting {
+  color: var(--text-secondary);
+}
+.nameInput:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+.nameActions,
+.deleteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+.primary,
+.quiet,
+.secondary,
+.danger {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.primary {
+  background: rgb(39, 131, 222);
+  color: #fff;
+}
+.quiet {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.quiet:hover {
+  background: var(--bg-hover);
+}
+/* Notion's bookmark delete (measured 2026-11-06): 260 wide, 16 inside, a
+   32px grey trash, then the title and its words to the left, 13px on 18px
+   lines, and the two 110px buttons under them. */
+.deleteDialog {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  width: 260px;
+  padding: 16px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+  text-align: start;
+}
+.deleteMark {
+  display: flex;
+  color: var(--text-secondary);
+}
+.deleteMark svg {
+  width: 32px;
+  height: 32px;
+}
+.deleteTitle {
+  margin: 6px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.deleteBody {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+.deleteActions {
+  justify-content: flex-start;
+  margin-top: 16px;
+}
+.secondary,
+.danger {
+  width: 110px;
+}
+.secondary {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+.danger {
+  background: var(--danger-fill);
+  color: var(--danger-fill-text);
+}

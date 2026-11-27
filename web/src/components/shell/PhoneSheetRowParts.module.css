@@ -1,0 +1,293 @@
+/* A phone sheet row's parts beside its line (PhoneSheet.tsx): the tick
+   box, the value and "›" at its end, a second line under its label, a
+   group's note and heading, a section, and a short list's search field. */
+
+/* A row that ticks, as Notion's discussion filter (seen 2026-10-27): a 14px
+   box, 3px round, 20px in, blue with a white tick when on and a faint edge
+   when off, the label 12px after it; an icon after it is grey, the label 16px
+   past that; a choice under another ("읽지 않음" under "미해결") 8px in. */
+.rowCheck {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  margin-block: 0;
+  margin-inline: 7px 1px;
+  border: 1px solid rgba(27, 21, 0, 0.19);
+  border-radius: 3px;
+  color: #fff;
+}
+
+:global([data-theme="dark"]) .rowCheck {
+  border-color: rgba(255, 252, 235, 0.306);
+}
+
+.rowCheck[data-on] {
+  border-color: transparent;
+  background: var(--accent-blue);
+}
+
+.rowCheck > svg {
+  width: 12px;
+  height: 12px;
+}
+
+.rowCheck[data-on="mixed"]::after {
+  width: 8px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+  content: "";
+}
+
+/* A sheet's line of text in a group of its own, as Notion's templates'. */
+.groupNote {
+  margin: 0;
+  padding-block: 12px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* A row's value, at most clamp(100px, 40vw, 150px) wide and cut short with
+   "…", 5px before its "›", as Notion's phone sheets' (seen 2026-11-15 on the
+   A90 at 411: a property named at length in "설정" › "그룹화" and in
+   "그룹화" › "그룹화 기준" 150px, 6px before its "›" there; "작업" ›
+   "알림 받기"'s "멘션" 5px before it). */
+.rowValue {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: clamp(100px, 40vw, 150px);
+  overflow: hidden;
+  color: var(--text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowValue:has(+ .rowMore) {
+  margin-inline-end: -6px;
+}
+
+/* A switch or a ✓ at a row's end stands in the row's middle, as Notion's
+   (seen 2026-11-16 on the A90 at 411: "페이지 잠금" and "페이지 댓글", their
+   31px track centred on the row; 2026-11-18 on the A90 in two tabs: the 18px
+   ✓ of a grouping's "정렬", a status option's "그룹화" and "다음과 같이 표시"
+   13 down its 45px row), not on the value's line of words, 3px higher. */
+.rowValue > :is([data-switch-mark], svg[data-leafen-icon-glyph="check"]) {
+  display: block;
+}
+
+/* So do a phone's database settings rows' values before their "›", which
+   draw their own rows (DatabaseViewSettingsItem: "그룹화"; DatabaseLayout's
+   layoutChoiceValue: "그룹화 기준", "하위 그룹화 기준"). */
+:global([data-phone-settings] [data-sheet-value]) {
+  min-width: 0;
+  max-width: clamp(100px, 40vw, 150px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global([data-phone-settings] [data-sheet-value] + svg) {
+  width: 18px;
+  height: 18px;
+}
+
+:global([data-phone-settings] > button > [data-sheet-value] + svg) {
+  margin-inline-start: -5px;
+}
+
+/* A chosen ✓ in a phone sheet or its short list is in the words' colour,
+   rgb(44,44,43), in dark rgb(240,239,237), as Notion's in "N개 보기", "다음과
+   같이 표시", "일반 사용 권한", "사용 권한 변경" and "역할 선택" (seen
+   2026-11-15 at 402) — whichever screen draws it, at the 18px a sheet draws
+   it (PhoneSheetRow); a ticking box's smaller tick keeps its own. */
+:global(:is([data-phone-sheet], [data-phone-sheet-menu])) svg[data-leafen-icon-glyph="check"][data-leafen-icon-size="page"] {
+  color: var(--text-default);
+}
+
+/* Beside a label that says more under it, the value — a chosen row's ✓ —
+   keeps to the label's line, 3px under the top of the row's words, as
+   Notion's "사용 권한 변경" and "역할 선택" (seen 2026-11-15 at 402: the ✓
+   15px under the row's top, its words 12). */
+.rowText + .rowValue {
+  display: flex;
+  align-self: flex-start;
+  margin-top: 15px;
+}
+
+/* "›", drawn at 18px, in the icons' second grey, as Notion's "작업" sheets on
+   both phones (seen 2026-11-11: rgb(142,139,134), in dark rgb(173,169,163));
+   a database's settings and filters (PhoneSheet's tone) in their third grey,
+   rgb(173,169,163), in dark rgb(125,122,117) (seen 2026-11-11 at 402pt). */
+.rowMore {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+:global([data-tone="settings"]) .rowMore {
+  color: var(--icon-tertiary);
+}
+
+/* A label with a line under it, as Notion's described sheet rows (seen
+   2026-11-15 on the A90 at 411 and in iPhone Safari at 402, "사용 권한 변경",
+   and on the A90 in "고급 필터"): the label on 1.2 of its size (20.4px at
+   17px), the line under it 14px on that same height, 2px below. A row that
+   picks a role keeps 12px over and under its words: 12 + 20.4 + 2 + 20.4 +
+   12 and its line, 67.56 at 411 (Notion's, seen again 2026-11-18). */
+.rowText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 64px;
+  padding: 12px 0;
+  line-height: 1.2em;
+}
+
+.rowDescription {
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* In a sheet, a row led by a mark that says more ("필터 그룹 추가", a source
+   with its place, "새 보기 · 표, 차트, 폼 등") is 65 with its line, its words
+   in the middle and its mark on the label's line, 10 down, as Notion's (seen
+   2026-11-15 and 2026-11-18 on the A90 at 411: rows 65, the label 10.72
+   down, the 22px mark 10); one without a mark (a role's "전체 허용") keeps
+   12 over and under its words. A group's last row keeps its words' 64. */
+:global([data-phone-sheet] [data-described="true"][data-marked="true"]) {
+  min-height: 65px;
+}
+
+:global([data-phone-sheet] [data-described="true"][data-marked="true"]) > span[aria-hidden="true"]:first-child {
+  margin-top: 10px;
+}
+
+:global([data-phone-sheet] [data-described="true"][data-marked="true"]) > .rowText {
+  align-self: stretch;
+  justify-content: center;
+  padding: 0;
+}
+
+/* A menu whose rows take their height from their words (PhoneSheetGroup `fit`), as Notion's "사용 권한 변경"
+   (seen 2026-11-18 on the A90 at 411: its rows padding 12px 0 and margin 1px 0 -1px with a line under each):
+   12px over and under the words' 20.4px line, and its line — 45.16 there, a bin's row 46.76 — the last one's
+   line falling outside the group; "작업", the agent choice and the pickers keep 45. A row that says more keeps
+   its words' own 12 (.rowText). */
+:global([data-phone-sheet-group][data-rows="fit"] > button:not([data-described="true"])) {
+  min-height: 0;
+  padding-block: 12px;
+}
+
+:global([data-phone-sheet]:not([data-phone-sheet="screen"], [data-plain="true"], [data-sheet-window]) [data-phone-sheet-group][data-rows="fit"] > button:last-child) {
+  min-height: 0;
+  margin-bottom: -1px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+/* A view in a source's list draws its mark at its own 20px, 2px into a 26px
+   box a pixel past the row's own, its name at 64, as Notion's "← 새 보기"
+   (seen 2026-11-18 on the A90 at 411: the mark x30, the name x64). */
+:global([data-own-mark="true"]) > span[aria-hidden="true"] {
+  box-sizing: border-box;
+  justify-content: flex-start;
+  width: 26px;
+  margin-inline: -1px;
+  padding-inline-start: 2px;
+}
+
+/* The label keeps to its line in the words' column, which may be taller. */
+.rowText > span:first-child {
+  flex: none;
+}
+
+
+/* A group under its grey heading ("필터 1"), 8px over it. */
+.section {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* A group's heading, 15px/500 grey, as tall as Notion's: its words on a
+   16.5px line beside a hidden 16.5px loading mark, which stands the line
+   18.17 high on a Galaxy A90's Chrome and 17.8 in iPhone Safari (seen
+   2026-11-18 at 411 over "기존 데이터 소스", "데이터 소스 설정", "현재 사용
+   권한" and "사용자 사용 권한"; 2026-11-11 at 402 over "데이터 소스 설정") —
+   every sheet's group heading takes its height from here. Its group's rows
+   stand 1px down in it (--phone-sheet-group-top: PhoneSheet.module.css
+   .group, and the groups a screen lays itself). */
+:global([data-phone-sheet]) {
+  --phone-sheet-head-line: 18.17px;
+  --phone-sheet-group-top: 1px;
+}
+
+:global([data-phone-sheet][data-apple="true"]) {
+  --phone-sheet-head-line: 17.8px;
+}
+
+.groupLabel {
+  margin: 0;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: var(--phone-sheet-head-line, 18.17px);
+}
+
+/* Its search (PhoneSheetSearch), its words and their clear button in one
+   45px row. */
+.menuSearchRow {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+}
+.menuSearchRow > input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Its search, as "속성 검색", 45px. */
+.menuSearch {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+
+/* A search's "결과 없음" (PhoneSheetNoResults): its group's one row, 44px,
+   its gray words 16px in (Notion's, seen 2026-11-13 at 402pt). */
+.noResults {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 17px;
+}

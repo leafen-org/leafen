@@ -1,0 +1,38 @@
+/* What a tap leaves on a touch screen: the grey cell it keeps on a few
+   controls, as Notion's — a tapped control stays hovered on iOS until the
+   next tap lands elsewhere, and Notion paints its hover there on some
+   controls and not on others (measured 2026-11-17 in iPhone Safari 402 and
+   iPad Safari 834, after each tap: a cell on a sidebar row's "⋯", a page
+   bar's share and comments and an open to-do's box, kept while the sheet
+   they open is up and after it is pulled down; none on a row's or a
+   toggle's ▶, the page bar's ☰ and "⋯", the workspace's name or the
+   sidebar's search). Every other :hover rule waits for a pointer that
+   hovers (postcss.config.mjs); these are written under the touch screen's
+   own query (screenKind.ts's TOUCH_SCREEN_QUERY), which the build leaves
+   where it is, and change a colour only — iOS holds a first tap back only
+   when its hover shows or hides something. */
+@media (hover: none) and (pointer: coarse) {
+  [data-tree-more]:hover,
+  [data-topbar-share-action]:hover,
+  [data-topbar-comment-action]:hover {
+    background: var(--bg-hover);
+  }
+  [data-type="to_do"] input[type="checkbox"]:not(:checked):hover {
+    background: var(--bg-check-hover);
+  }
+}
+
+/* A tap paints no browser highlight over what it pressed: on a touch screen
+   a control shows its own hover and pressed look alone, as Notion's mobile
+   rule (".notion-mobile *", read 2026-11-21 in its styles on a desktop's and
+   a Galaxy A90's Chrome) — Android's Chrome drew its blue over tapped rows
+   and switches — and text written in takes none anywhere, as Notion's
+   ("[contenteditable]"). The colour is inherited, so the root holds it. */
+@media (hover: none) and (pointer: coarse) {
+  :root {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+[contenteditable] {
+  -webkit-tap-highlight-color: transparent;
+}

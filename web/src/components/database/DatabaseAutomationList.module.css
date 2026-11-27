@@ -1,0 +1,392 @@
+/* A database's automations on a desktop, as Notion's (seen 2026-10-25 at
+   1280px): a 290px panel at the right where the view settings open; a 42px
+   head (14/16/6/12 in) with "←" 24×22, "자동화" 14/600 and a round 20px "×";
+   a 266×28 search; 266px white cards 12px apart, 16/16/13 in, rounded 10;
+   a blue 258×28 "+ 새 자동화" in a 20px band. */
+.panel {
+  position: fixed;
+  z-index: 1001;
+  top: var(--page-panel-top, var(--topbar-height));
+  inset-inline-end: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  /* 290px inside its 1px line, as Notion's 12px + 266px card + 12px, in
+     the view settings' column (dockedPanelColumn.module.css). */
+  width: min(291px, 100vw);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-inline-start: 1px solid var(--border-default);
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+
+/* An inline database's, as Notion's (seen 2026-11-15 at 1440): a 290px
+   popover where its view settings open, rounded 10 with a menu's shadow, as
+   tall as its cards, the page beside it unchanged (automationListPopover);
+   on a menu's ground, #252525 in dark. */
+.panel.popover {
+  inset-inline-end: auto;
+  bottom: auto;
+  width: min(290px, 100vw);
+  border: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* As beside the view settings, only a feed's column narrows beside it. */
+:global(html[data-database-automations-open] [data-page-scroll][data-page-scroll-feed="true"]) {
+  padding-inline-end: min(calc(291px + var(--dock-gap, 0px)), 100vw);
+}
+
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding-block: 14px 6px;
+  padding-inline: 12px 16px;
+}
+
+.back {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  margin-inline-start: -2px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.back:hover {
+  background: var(--bg-hover);
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  /* Notion's round close in either theme (seen 2026-11-15 dark: rgba(255, 255, 235, 0.1), under the
+     pointer 0.153). */
+  background: var(--round-close-bg);
+  color: var(--icon-secondary);
+}
+
+.close:hover {
+  background: rgba(42, 28, 0, 0.12);
+}
+
+:global(:root[data-theme="dark"]) .close:hover {
+  background: rgba(255, 255, 235, 0.153);
+}
+
+.search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 28px;
+  margin: 8px 12px 0;
+  box-sizing: border-box;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.search:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+/* The first card 24px under the search, as Notion's (its help card's place, left out). */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 12px 12px;
+}
+
+.note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* Raised a step from the list's ground, as Notion's (seen 2026-11-15 dark:
+   #202020 in the panel and the popover alike, unchanged under the pointer). */
+.card {
+  position: relative;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-element);
+}
+
+.open {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 16px 16px 13px;
+  border-radius: 10px;
+  color: inherit;
+  text-align: start;
+}
+
+.marks {
+  margin-bottom: 11px;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "⏸ 중단됨" after its name: its 12px mark 3px before 10/500 words, 13px a line, grey on a 4px-round tint 2px 4px
+   in — 49 by 17, as Notion's chip of either kind (seen 2026-11-15 twice at 1440 dark: 48.95 by 17). */
+.status {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  /* Notion's grey mark ground, rgba(255, 255, 235, 0.1) in dark; its grey the same in both themes (seen 2026-11-15). */
+  background: var(--action-mark-gray-bg);
+  color: rgb(142, 139, 134);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 13px;
+}
+
+.status svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* "⚠ 유효하지 않음" red on red (Notion's as the page opens, seen 2026-11-11 for
+   an automation on a deleted property; grey only until the page is read again
+   right after the property goes): its accent red, rgb(229, 100, 88) light and dark. */
+.status[data-invalid] {
+  background: var(--action-mark-red-bg);
+  color: var(--danger);
+}
+
+.summary {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* Why it stopped, Leafen's own, under its sentence. */
+.reason {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* "⋯" 9px in from the card's top right (8px inside its line), on hover, while
+   its menu is open or when Tab reaches it. */
+.dots {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  display: inline-flex;
+  opacity: 0;
+  pointer-events: none;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  /* On the page's own ground in a thin line, as Notion's (seen 2026-11-15 dark: #191919 in
+     rgba(255, 255, 243, 0.082)); under the pointer that ground tinted as a hovered row. */
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--icon-secondary);
+}
+
+.card:hover .dots,
+.card[data-menu-open] .dots,
+.dots:focus-visible,
+/* A touch screen shows it on every card, no pointer bringing it (Notion's iPad, seen 2026-11-13). */
+:global([data-touch="true"]) .dots {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dots:hover {
+  background: linear-gradient(var(--bg-hover), var(--bg-hover)), var(--bg-app);
+}
+
+.newArea {
+  flex: none;
+  padding: 20px 16px;
+}
+
+.newButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: rgb(39, 131, 222);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.newButton:hover:not(:disabled) {
+  background: rgb(31, 117, 201);
+}
+
+.newButton:disabled {
+  opacity: 0.5;
+}
+
+.error {
+  margin: 0 16px 16px;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* A card's "⋯" menu, 180px under its button: 28px rows 4px in, a line 12px in from its sides after "사용 중". */
+.menu {
+  position: fixed;
+  overflow: hidden;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.menuList {
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem[data-focused="true"],
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+
+.menuItem[data-menu-rule] {
+  position: relative;
+  margin-top: 8px;
+}
+
+.menuItem[data-menu-rule]::before {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  border-top: 1px solid var(--border-default);
+  content: "";
+}
+
+/* Each row's mark in its words' colour, as Notion's (seen 2026-11-11: "편집",
+   "복제", "삭제" rgb(240, 239, 237) dark). */
+.menuIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: inherit;
+}
+
+.menuText {
+  flex: 1;
+  min-width: 0;
+}
+
+/* A card's name and sentence in a dark tip at its left, as Notion's: 12px, 5px 8px in, rounded 6, at most 300 wide (seen 2026-11-15),
+   with every dark tip's shadow (--shadow-tip, seen 2026-11-21 at 1440, dpr 1, dark). */
+.tip {
+  position: fixed;
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgb(44, 44, 43);
+  box-shadow: var(--shadow-tip);
+  color: rgb(240, 239, 237);
+  font-size: 12px;
+  line-height: 16.8px;
+  pointer-events: none;
+  overflow-wrap: anywhere;
+}
+
+.tip small {
+  color: rgb(173, 169, 163);
+  font-size: 12px;
+}

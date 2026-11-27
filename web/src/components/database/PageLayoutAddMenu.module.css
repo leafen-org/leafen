@@ -1,0 +1,358 @@
+/* "페이지에 추가" over the layout builder, as Notion's 290px menu. */
+.menu {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  width: min(290px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.head {
+  padding: 4px 8px 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+.search {
+  height: 28px;
+  margin: 0 2px 4px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+/* Notion's new property (seen 2026-10-25, 2026-11-06 at 1280px): rows 4px in,
+   28px, 8px padded, 1px apart; the name a 28px field beside the type's 28px
+   tile, 8px apart, 8px from the top; "유형" a 28px line of 12px grey with its
+   20px 🔍, 10px under the name and 4px over the types; the types' 20px icons
+   dark. */
+.newProperty { padding: 8px 4px 4px; }
+/* It holds the keys the search hands to its list with no ring, as Notion's
+   hold them on the page (seen 2026-11-21). */
+.newProperty:focus { outline: none; }
+.newProperty .typeHead { margin-top: 10px; }
+.newProperty .typeHead + .typeRows > .typeRow:first-child,
+.newProperty .typeSearch + .typeRows > .typeRow:first-child { margin-top: 4px; }
+.newProperty .typeRow + .typeRow { margin-top: 1px; }
+.nameRow, .typeHead, .typeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 0 8px;
+}
+.nameType {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  /* Its mark in the icon palette's gray, as the column menu's head (seen
+     2026-11-17 at 1440 in two tabs: a database page's "속성 추가" tile,
+     its text mark "description_gray.svg" rgb(211, 211, 211) dark). */
+  color: var(--icon-c-gray);
+}
+button.nameType { padding: 0; border: 0; background: none; cursor: pointer; }
+button.nameType:hover, button.nameType:focus-visible { background: var(--bg-hover); outline: none; }
+.nameField, .typeSearch {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.nameField:focus, .typeSearch:focus { box-shadow: var(--name-field-ring-focus); }
+/* Its types start 8px under it, and with none found the window ends there
+   (Notion's, seen 2026-11-21 at 1440: 8 to the first row, 7 to the foot). */
+.typeSearch { flex: none; margin: 5px 8px 4px; }
+.typeHead {
+  gap: 4px;
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.typeHeadPhone { display: inline-flex; align-items: center; gap: 4px; }
+.typeRow {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.typeRow > svg { flex: none; color: var(--icon-primary); }
+/* A type's "ⓘ" (PropertyTypeInfo) on the row under the pointer only, not one
+   the keys marked (Notion's, seen 2026-11-21 at 1440 in both test accounts). */
+.typeRow:hover > [data-property-type-info] { display: inline-flex; }
+/* The types, one list for the pointer, laid out as if not there. */
+.typeRows { display: contents; }
+/* The pointer grounds the type under it apart from the one the arrows
+   marked, as Notion's (seen 2026-11-14). */
+.typeRow:hover, .typeRow[data-active="true"], .typeRow:focus-visible { background: var(--bg-hover); outline: none; }
+.label {
+  padding: 8px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.row, .more {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.row:hover, .row:focus-visible, .more:hover, .more:focus-visible { background: var(--bg-hover); outline: none; }
+.more { color: var(--text-secondary); }
+.icon { display: inline-flex; flex: none; color: var(--text-secondary); }
+.text { display: flex; flex-direction: column; min-width: 0; line-height: 1.3; }
+/* Its own name line; a place under it (PlaceLine) cuts its own pieces short. */
+.text > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.text small { color: var(--text-tertiary); font-size: 12px; }
+/* The database's own source's "ⓘ" at the row's end. */
+.ownSource { display: inline-flex; flex: none; margin-inline-start: auto; color: var(--icon-secondary); }
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.empty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* A type the data source can't take more of, at 40%, as Notion's dimmed "ID". */
+.typeRow[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* The "+" beside the tabs, as Notion's (seen 2026-11-12 at 1440): 270 wide,
+   4px in; "관계 대상" 12px grey 10px from its top in a menu group's head (seen
+   2026-11-18), the relations' 28px rows 9px under it, then a line 4px under
+   them and "기존 데이터 소스 연결하기" 4px under it, 4px over the foot. */
+.tabMenu {
+  width: min(270px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 4px;
+}
+.tabMenu .label {
+  padding: 6px 8px 9px;
+  line-height: var(--menu-label-line-height);
+}
+/* "기존 데이터 소스 연결하기" from the "+", as Notion's (seen 2026-11-12 at
+   1440): the search 28 tall, 12 in and 12 down, the menu's tint in a ring;
+   "기존 데이터 소스" 18 under it and 8 over the sources; each 45 tall, 4 in
+   and 1 apart, its 20 cylinder 5 down, its name and under it, 2 apart, where
+   it sits in 12px grey, each line 16.8; this database's "ⓘ" 8 from the end. */
+.sourceMenu { padding: 0 4px 4px; }
+.sourceMenu .search {
+  flex: none;
+  margin: 12px 8px 0;
+  padding: 3px 6px;
+  border: 0;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring);
+  line-height: 20px;
+  outline: none;
+}
+.sourceMenu .search:focus { box-shadow: var(--name-field-ring-focus); }
+.sourceMenu .label { margin: 18px 0 8px; padding: 0 8px; line-height: var(--menu-label-line-height); }
+.sourceMenu .more { flex: none; margin-top: 1px; }
+/* A source (DataSourceListRow), a pixel under the one before. */
+.sourceRow { margin-top: 1px; }
+.divider {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+
+/* "패널에 추가" and "페이지에 추가" on a desktop, as Notion's (seen 2026-11-12
+   at 1440): 290 wide; its name 12px grey 12px down and 16 in; the search 28
+   tall 12px under it and 12 in, the page's color in a blue ring, its 12px 🔍 6
+   in and the words 6 after; each group 8px in, its name 12px grey 6px down, 6
+   in and 8px over its rows; a property's row 46 tall and a new type's 44, each
+   1px under what is over it, round 6, a 32px tile 6px in and the words 8px
+   after it; "더 보기" 28 tall, 12px grey 14 in. Up to 70% of the window high. */
+.propertyMenu { padding: 0; }
+.propertyMenu .head {
+  padding: 12px 16px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.searchBox {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  margin: 12px 12px 0;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--bg-default);
+  box-shadow: var(--name-field-ring);
+  color: var(--icon-secondary);
+}
+.searchBox:focus-within { box-shadow: var(--name-field-ring-focus); }
+.searchBox > input {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.group { display: flex; flex-direction: column; padding: 8px; }
+/* The groups, one list for the pointer, laid out as if not there. */
+.groups { display: contents; }
+.searchBox + .groups > .group:first-child { margin-top: 12px; }
+.propertyMenu .label { margin: 6px 0 8px; padding: 0; padding-inline-start: 6px; line-height: var(--menu-label-line-height); }
+.propertyMenu .row, .propertyMenu .more { flex: none; margin-top: 1px; }
+.tileRow { min-height: 44px; padding: 6px; }
+.tileRow .text { line-height: 16.8px; }
+.tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: var(--layout-tile-bg);
+  box-shadow: inset 0 0 0 1px var(--layout-tile-ring);
+  color: var(--icon-primary);
+}
+.propertyMenu .more { min-height: 28px; padding: 0 14px; font-size: 12px; line-height: 16.8px; }
+/* The pointer grounds the row under it apart from the one the arrows
+   marked, as Notion's "패널에 추가" (seen 2026-11-14). */
+.propertyMenu .row:hover, .propertyMenu .more:hover,
+.propertyMenu [data-active="true"] { background: var(--bg-hover); }
+.propertyMenu > .empty { margin: 8px; }
+
+/* A chosen source's "보기 옵션", as Notion's (seen 2026-11-12 at 1440): 290
+   wide, 12 down; the name a 28 field 12 in; 12 under it the rows, 4 in, 28
+   tall and 1 apart, the source's 20 ⊞ and grey name before a 16 "›", the
+   switch 12 from the end; 8 under them the 28 blue button 12 in, 12 over the
+   foot. On, a line 4 under the switch's row and the fixed two-way row 4
+   under it; the related name's 12px grey 11 under that, 16 in, its field 13
+   under it and 16 in, the button 16 under the field. */
+.menu:has(> .tabOptions) { padding: 0; }
+.tabOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 12px 4px;
+}
+.tabOptionsName {
+  flex: none;
+  box-sizing: border-box;
+  height: 28px;
+  margin: 0 8px 11px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.tabOptionsName:focus { box-shadow: var(--name-field-ring-focus); }
+.tabOptions > .row { flex: none; height: 28px; padding-block: 0; }
+.tabOptions > .row .text { flex: 1 1 auto; }
+.tabOptionsSource {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--text-tertiary);
+}
+.tabOptionsSource > svg { flex: none; color: var(--icon-secondary); }
+.tabOptionsSource > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The faint icon colour, as Notion's › there (seen 2026-11-17: icoTer). */
+.tabOptionsChevron { flex: none; margin-inline-start: -2px; color: var(--icon-tertiary); }
+.tabOptionsSwitch { flex: none; margin-inline-start: auto; }
+.tabOptions > .divider { margin: 3px 8px; }
+.tabOptionsFixed { cursor: default; }
+.tabOptionsFixed:hover { background: none; }
+.tabOptionsFixed .tabOptionsSwitch { opacity: 0.5; }
+.tabOptionsIcon { flex: none; color: var(--icon-primary); }
+/* As wide as its words and ⓘ, which its tip is centred under (SettingInfoTip). */
+.tabOptionsLabel {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--text-default);
+}
+.tabOptionsLabel svg { color: var(--icon-secondary); }
+.tabOptionsRelated {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: 10px;
+  padding-inline: 12px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.tabOptionsRelated > .tabOptionsName { margin: 0; }
+.tabOptionsAdd {
+  flex: none;
+  height: 28px;
+  margin: 7px 8px 0;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tabOptionsRelated + .tabOptionsAdd { margin-top: 15px; }
+.tabOptionsAdd:hover:not(:disabled), .tabOptionsAdd:focus-visible:not(:disabled) { background: var(--accent-blue-hover); outline: none; }
+.tabOptionsAdd:disabled { opacity: 0.45; cursor: default; }

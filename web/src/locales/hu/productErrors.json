@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Fiók e-mail-címeinek betöltése",
+        "deniedEffect": "Az e-mail-címek nem töltődtek be; a mentett címek nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi e-mail-címeket.",
+        "stateCheckAction": "Csatlakozzon újra, és frissítse az e-mail-listát, mielőtt módosítana."
+      },
+      "update": {
+        "operation": "Fiók e-mail-címeinek kezelése",
+        "deniedEffect": "Az e-mail-kérés nem lett elfogadva; a mentett címek nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az e-mail-kérés befejeződött-e.",
+        "stateCheckAction": "Frissítse az e-mail-listát, és ellenőrizze a visszaigazoló üzenetet, mielőtt újra próbálkozik."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Értesítési beállítások betöltése",
+        "deniedEffect": "Az értesítési beállítások nem töltődtek be, a mentett beállítások nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, milyen értesítéseket kap.",
+        "stateCheckAction": "Zárja be és nyissa meg újra a beállításokat, hogy betöltődjenek az értesítési beállítások, mielőtt módosítja őket."
+      },
+      "update": {
+        "operation": "Értesítési beállítások módosítása",
+        "deniedEffect": "Az értesítési beállítások nem változtak, a korábbi beállítások megmaradnak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy megváltoztak-e az értesítési beállítások.",
+        "stateCheckAction": "Zárja be és nyissa meg újra a beállításokat, hogy ellenőrizze az értesítési beállításokat, mielőtt újra módosítja őket."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Fiókprofil betöltése",
+        "deniedEffect": "A neve és a fényképe nem töltődött be, és a mentett profil nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi nevét és fényképét.",
+        "stateCheckAction": "Zárja be és nyissa meg újra a beállításokat, hogy betöltődjön a profilja, mielőtt módosítja."
+      },
+      "update": {
+        "operation": "Fiókprofil mentése",
+        "deniedEffect": "A profilja nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a fiókprofilt elmentették-e.",
+        "stateCheckAction": "A fiókprofil és az auditelőzmények újratöltése után próbálja újra."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Kétlépéses ellenőrzés módosítása",
+        "deniedEffect": "A kért kétlépéses ellenőrzési módosítást nem fogadták el; a korábbi beállítás továbbra is érvényben van.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a kétlépéses ellenőrzés jelenlegi állapotát.",
+        "stateCheckAction": "Mielőtt újabb kétlépéses ellenőrzési módosítást próbálna, töltse újra a fiókbiztonságot."
+      },
+      "password": {
+        "operation": "Fiókjelszó módosítása",
+        "deniedEffect": "A jelszó nem változott, és a jelenlegi munkamenetek továbbra is érvényesek.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a jelszó megváltozott-e, és hogy a többi munkamenet lezárult-e.",
+        "stateCheckAction": "Töltse újra a fiókbiztonságot, és ha a jelenlegi munkamenet már nem működik, jelentkezzen be újra."
+      },
+      "read": {
+        "operation": "Fiókbiztonság betöltése",
+        "deniedEffect": "A biztonsági beállítások és a munkamenetek nem töltődtek be; a mentett fiókállapot nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a kétlépéses ellenőrzés és a munkamenetek jelenlegi állapotát.",
+        "stateCheckAction": "Módosítás előtt töltse újra a fiókbiztonságot."
+      },
+      "recovery": {
+        "operation": "Helyreállítási kódok cseréje",
+        "deniedEffect": "A helyettesítő helyreállítási kódokat nem fogadták el; a korábban még nem használt kódok továbbra is működnek.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, mely helyreállítási kódok aktívak.",
+        "stateCheckAction": "Mielőtt eldöntené, hogy ismét kicseréli-e a kódokat, töltse újra a fiókbiztonságot."
+      },
+      "sessionRevoke": {
+        "operation": "Fiókmunkamenet visszavonása",
+        "deniedEffect": "A kiválasztott munkamenet visszavonása nem lett megerősítve; a többi munkamenet nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a kiválasztott munkamenetet visszavonták-e.",
+        "stateCheckAction": "Mielőtt eldöntené, hogy újrapróbálja-e, töltse újra a munkamenetek listáját."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Szerverbiztonsági mentés megszakítása",
+        "deniedEffect": "A biztonsági mentés megszakítása nem lett megerősítve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a biztonsági mentést megszakították-e.",
+        "stateCheckAction": "Ismételt megszakítás előtt ellenőrizze a biztonsági mentés jelenlegi állapotát."
+      },
+      "create": {
+        "operation": "Szerverbiztonsági mentés létrehozása",
+        "deniedEffect": "Az új biztonsági mentés létrehozása nem lett megerősítve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a biztonsági mentési kérést elfogadták-e.",
+        "stateCheckAction": "Mielőtt újabb kérést küldene, ellenőrizze a jelenlegi biztonsági mentést."
+      },
+      "download": {
+        "operation": "Szervermentés letöltése",
+        "deniedEffect": "Nem töltődött le ellenőrzött biztonsági mentési fájl.",
+        "uncertainEffect": "A Leafen nem tudta ellenőrizni vagy továbbítani a biztonsági mentési fájlt.",
+        "stateCheckAction": "Újabb letöltés előtt ellenőrizze a befejezett biztonsági mentés állapotát."
+      },
+      "retry": {
+        "operation": "Szervermentés újrapróbálása",
+        "deniedEffect": "A sikertelen biztonsági mentés nem indult újra.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a biztonsági mentés újraindult-e.",
+        "stateCheckAction": "Mielőtt újra próbálkozik, ellenőrizze a biztonsági mentés jelenlegi állapotát."
+      },
+      "status": {
+        "operation": "Szervermentés állapotának betöltése",
+        "deniedEffect": "A biztonsági mentés állapota nem töltődött be; a mentés állapota nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a biztonsági mentés jelenlegi állapotát.",
+        "stateCheckAction": "Mielőtt más műveletet végezne, töltse be újra a biztonsági mentés állapotát."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Szerverjelentés betöltése",
+        "deniedEffect": "A jelentés nem töltődött be; a jelentés állapota nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelentés jelenlegi pillanatképét.",
+        "stateCheckAction": "A jelentés frissítése előtt töltse be újra a jelenlegi jelentést."
+      },
+      "refresh": {
+        "operation": "Szerverjelentés frissítése",
+        "deniedEffect": "Egy új jelentéspillanatkép nem lett megerősítve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a jelentés pillanatképe megváltozott-e.",
+        "stateCheckAction": "Újabb frissítés előtt töltse be a jelenlegi jelentést."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "A biztonsági mentés ütemezésének betöltése",
+        "deniedEffect": "A biztonsági mentés ütemezése nem töltődött be; semmilyen beállítás nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a biztonsági mentés jelenlegi ütemezését.",
+        "stateCheckAction": "Mielőtt módosítja a biztonsági mentés ütemezését, töltse be újra."
+      },
+      "restore": {
+        "operation": "A szerver visszaállítása biztonsági mentésből",
+        "deniedEffect": "A szerver adatai nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a visszaállítás be lett-e állítva.",
+        "stateCheckAction": "Töltse be újra a biztonsági mentés beállításait, hogy megállapítsa, várakozik-e egy visszaállítás, mielőtt újra próbálkozik."
+      },
+      "save": {
+        "operation": "A biztonsági mentés ütemezésének mentése",
+        "deniedEffect": "A biztonsági mentés ütemezése nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a biztonsági mentés ütemezése elmentésre került-e.",
+        "stateCheckAction": "A mentés megismétlése előtt töltse újra a biztonsági mentés ütemezését, hogy lássa az érvényben lévő beállításokat."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Kérésnapló beállításainak betöltése",
+        "deniedEffect": "A kérésnapló beállításai nem töltődtek be; egyetlen beállítás sem módosult.",
+        "uncertainEffect": "A Leafen nem tudta ellenőrizni a jelenlegi kérésnapló-beállításokat.",
+        "stateCheckAction": "Módosítás előtt töltse újra a kérésnapló beállításait."
+      },
+      "save": {
+        "operation": "Kérésnapló beállításainak mentése",
+        "deniedEffect": "A kérésnapló beállításai nem módosultak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a kérésnapló beállításai elmentésre kerültek-e.",
+        "stateCheckAction": "A mentés megismétlése előtt töltse újra a kérésnapló beállításait, hogy lássa az érvényben lévőket."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Hálózati proxy betöltése",
+        "deniedEffect": "A hálózati proxy nem töltődött be; egyetlen beállítás sem módosult.",
+        "uncertainEffect": "A Leafen nem tudta ellenőrizni a jelenlegi hálózati proxyt.",
+        "stateCheckAction": "A módosítás előtt töltse újra a hálózati proxyt."
+      },
+      "save": {
+        "operation": "Hálózati proxy mentése",
+        "deniedEffect": "A hálózati proxy nem módosult.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a hálózati proxy elmentésre került-e.",
+        "stateCheckAction": "A mentés megismétlése előtt töltse újra a hálózati proxyt, hogy lássa az érvényben lévőt."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Szerverbeállítások betöltése",
+        "deniedEffect": "A beállítások nem töltődtek be, és a mentett beállítások nem módosultak.",
+        "uncertainEffect": "A Leafen nem tudta ellenőrizni a jelenlegi szerverbeállításokat.",
+        "stateCheckAction": "Módosítás előtt töltse újra a beállításokat."
+      },
+      "save": {
+        "operation": "Szerverbeállítások mentése",
+        "deniedEffect": "Az új beállítások nem lettek elfogadva; a korábban mentett beállítások továbbra is érvényben maradnak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az új beállítások elmentésre kerültek-e.",
+        "stateCheckAction": "Töltse újra a beállításokat, és hasonlítsa össze a jelenlegi értékeket, mielőtt újra próbálkozik."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Bejelentkezési állapot ellenőrzése",
+        "deniedEffect": "Nem jött létre bejelentkezési munkamenet, és a fiókadatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi bejelentkezési állapotot.",
+        "stateCheckAction": "Töltse újra az oldalt, majd jelentkezzen be újra."
+      },
+      "deviceCode": {
+        "operation": "Bejelentkezés ezen az eszközön",
+        "deniedEffect": "Nem történt bejelentkezés, és a fiókadatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy bejelentkezett-e ez az eszköz.",
+        "stateCheckAction": "Jelentkezzen be újra egy új kóddal."
+      },
+      "emailVerification": {
+        "operation": "E-mail-cím megerősítése",
+        "deniedEffect": "Az e-mail-cím nem lett megerősítve, és nem történt bejelentkezés a fiókba.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e az e-mail-cím megerősítése.",
+        "stateCheckAction": "Próbáljon meg bejelentkezni; ha nem sikerül, nyissa meg újra az e-mailben kapott linket."
+      },
+      "mfa": {
+        "operation": "Kétlépéses ellenőrzés befejezése",
+        "deniedEffect": "Nem történt bejelentkezés, és az MFA-kihívás befejezetlen maradt.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e a kétlépéses ellenőrzés.",
+        "stateCheckAction": "Kezdje újra a bejelentkezést."
+      },
+      "passwordResetConfirm": {
+        "operation": "Jelszó módosítása",
+        "deniedEffect": "A jelszó nem módosult.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy megváltozott-e a jelszó.",
+        "stateCheckAction": "Próbáljon meg bejelentkezni az új jelszóval; ha nem sikerül, kérjen új visszaállítási linket."
+      },
+      "passwordResetRequest": {
+        "operation": "Jelszó-visszaállítás kérése",
+        "deniedEffect": "Nem sikerült kézbesítésre elfogadni jelszó-visszaállítási üzenetet.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy elfogadták-e a visszaállítási kérelmet.",
+        "stateCheckAction": "Várjon az e-mailre, mielőtt újabb kérést küld."
+      },
+      "providerExchange": {
+        "operation": "Bejelentkezés külső fiókkal",
+        "deniedEffect": "Nem történt bejelentkezés, és a fiókadatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a külső bejelentkezés eredményét.",
+        "stateCheckAction": "Jelentkezzen be újra ugyanúgy."
+      },
+      "serverSetup": {
+        "operation": "A Leafen szerver beállítása",
+        "deniedEffect": "Az adminisztrátori fiók nem jött létre.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e a szerver beállítása.",
+        "stateCheckAction": "Töltse újra az oldalt, és a következő próbálkozás előtt ellenőrizze a beállítás állapotát."
+      },
+      "signIn": {
+        "operation": "Bejelentkezés",
+        "deniedEffect": "Nem történt bejelentkezés, és a fiókadatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e a bejelentkezés.",
+        "stateCheckAction": "Frissítse az oldalt, majd jelentkezzen be újra."
+      },
+      "signUp": {
+        "operation": "Fiók létrehozása",
+        "deniedEffect": "Az új fiók nem jött létre.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a fiók létrejött-e.",
+        "stateCheckAction": "Próbáljon bejelentkezni; ha nem sikerül, regisztráljon újra."
+      },
+      "passkey": {
+        "operation": "Bejelentkezés passkey használatával",
+        "deniedEffect": "A bejelentkezést nem fogadták el.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e a bejelentkezés.",
+        "stateCheckAction": "Jelentkezzen be újra passkey használatával."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Oldaltartalom betöltése",
+        "deniedEffect": "Az oldal tartalma nem töltődött be, és a mentett tartalom nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az oldal jelenlegi tartalmát.",
+        "stateCheckAction": "Szerkesztés előtt töltse újra az oldalt."
+      },
+      "update": {
+        "operation": "Oldaltartalom mentése",
+        "deniedEffect": "A módosítást nem fogadták el; a kiszolgálón lévő legfrissebb tartalom marad érvényben.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a tartalom mentésre került-e.",
+        "stateCheckAction": "Töltse újra a legfrissebb tartalmat, és hasonlítsa össze, mielőtt újra próbálkozik."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Adatbázis-automatizálás mentése",
+        "deniedEffect": "Az automatizálás nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az adatbázis-automatizálás módosítása mentésre került-e.",
+        "stateCheckAction": "Töltse újra az automatizálást, mielőtt újra próbálkozik."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "DLP-szabályzat mentése",
+        "deniedEffect": "Az új DLP-szabályzat nem került mentésre; az előző szabályzat marad érvényben.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a DLP-szabályzat mentésre került-e.",
+        "stateCheckAction": "Töltse újra a DLP-szabályzatot és a szervezet auditelőzményeit, mielőtt újra próbálkozik."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "SAML-domain ellenőrzése",
+        "deniedEffect": "A tartomány ellenőrzése továbbra is függőben van; a SAML-konfiguráció, az auditnapló és a bejelentkezési munkamenetek nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a SAML-domain ellenőrzésének jelenlegi állapotát.",
+        "stateCheckAction": "Töltse újra a SAML-domain állapotát, mielőtt újra próbálkozik."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Fájl törlése",
+        "deniedEffect": "A fájl nem lett törölve, és nem módosult.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a fájl törlődött-e.",
+        "stateCheckAction": "Az újrapróbálkozás eldöntése előtt töltse be újra a fájlt és annak hivatkozásait."
+      },
+      "upload": {
+        "operation": "Fájl feltöltése",
+        "deniedEffect": "Az új fájl nem lett elmentve; a meglévő fájlok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy sikerült-e elmenteni a fájlt.",
+        "stateCheckAction": "Az újrapróbálkozás eldöntése előtt töltse be újra a fájllistát."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Személy-hozzárendelések alkalmazása",
+        "deniedEffect": "Az új hozzárendelések nem lettek elfogadva.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy mely hozzárendelések lettek alkalmazva.",
+        "stateCheckAction": "Az ismételt alkalmazás előtt töltse be újra a hozzárendelési eredményeket."
+      },
+      "refresh": {
+        "operation": "Személy-hozzárendelések frissítése",
+        "deniedEffect": "A legújabb hozzárendelések nem töltődtek be; a mentett hozzárendelések nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a hozzárendelések aktuális állapotát.",
+        "stateCheckAction": "A folytatás előtt töltse be újra a hozzárendelési panelt."
+      },
+      "scan": {
+        "operation": "Importált személyek átvizsgálása",
+        "deniedEffect": "Az importált személyek nem lettek listázva, a meglévő hozzárendelések nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az importált személyek aktuális listáját.",
+        "stateCheckAction": "A módosítások elvégzése előtt töltse be újra a hozzárendelési panelt."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Gombautomatizálás végrehajtása",
+        "deniedEffect": "A gomb műveletei nem futottak le, és az oldal tartalma nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a gombautomatizálás lefutott-e.",
+        "stateCheckAction": "Újrapróbálkozás előtt töltse be újra az érintett tartalmat és a végrehajtási állapotot."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Szervezeti API-token másolása",
+        "deniedEffect": "A token meglétét nem sikerült megerősíteni a vágólapon; maga a token nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a vágólapra írás befejeződött-e.",
+        "stateCheckAction": "A token újbóli másolása előtt ellenőrizze a vágólapot."
+      },
+      "create": {
+        "operation": "Szervezeti API-token létrehozása",
+        "deniedEffect": "Az új token létrejötte nem igazolódott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy létrejött-e a token.",
+        "stateCheckAction": "Mielőtt újabb tokent hoz létre, töltse újra a tokenlistát."
+      },
+      "list": {
+        "operation": "Szervezeti API-tokenek betöltése",
+        "deniedEffect": "A tokenek nem lettek betöltve, a meglévő tokenek pedig nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi tokenlistát.",
+        "stateCheckAction": "Módosítások előtt töltse újra a tokenlistát."
+      },
+      "revoke": {
+        "operation": "Szervezeti API-token visszavonása",
+        "deniedEffect": "A token visszavonása nem lett megerősítve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy visszavonták-e a tokent.",
+        "stateCheckAction": "Mielőtt újra visszavonást kísérel meg, töltse újra a tokenlistát."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Munkaterületi oldalak betöltése",
+        "deniedEffect": "Az oldalak nem lettek betöltve, és a mentett munkaterületi adatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a munkaterület jelenlegi oldalait.",
+        "stateCheckAction": "Szerkesztés előtt töltse újra a munkaterületet."
+      },
+      "create": {
+        "operation": "Oldal létrehozása",
+        "deniedEffect": "Nem jött létre új oldal, és a meglévő oldalak nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy létrejött-e az oldal.",
+        "stateCheckAction": "Mielőtt újra próbálja, töltse újra az oldalak listáját, és ellenőrizze, hogy megjelent-e az új oldal."
+      },
+      "title": {
+        "update": {
+          "operation": "Oldalcím mentése",
+          "deniedEffect": "A cím módosítása nem lett elfogadva; a mentett cím továbbra is érvényben marad.",
+          "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy mentésre került-e a módosítás.",
+          "stateCheckAction": "Töltse újra az oldalt, és ellenőrizze a jelenlegi címet."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Oldalanalitika betöltése",
+        "deniedEffect": "Az analitika nem lett betöltve, és az oldal adatai nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi analitikát.",
+        "stateCheckAction": "Mielőtt következtetéseket von le, töltse újra az analitikát."
+      },
+      "policyUpdate": {
+        "operation": "Analitikai szabályzat mentése",
+        "deniedEffect": "Az új analitikai szabályzat nem lett elfogadva.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a szabályzat mentésre került-e.",
+        "stateCheckAction": "Mielőtt újra próbálja, töltse újra a szabályzatot, és hasonlítsa össze a korábbival."
+      },
+      "preferencesRead": {
+        "operation": "Analitikai beállítások betöltése",
+        "deniedEffect": "Az analitikai beállítások nem töltődtek be, és a mentett beállítások nem módosultak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi analitikai beállításokat.",
+        "stateCheckAction": "Szerkesztés előtt töltse be újra a beállításokat."
+      },
+      "preferencesUpdate": {
+        "operation": "Analitikai beállítások mentése",
+        "deniedEffect": "Az új analitikai beállítások nem lettek elfogadva.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az analitikai beállítások mentésre kerültek-e.",
+        "stateCheckAction": "Újrapróbálkozás előtt töltse be újra a beállításokat, és hasonlítsa össze őket."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Offline módosítás biztonságos mentése",
+        "deniedEffect": "A módosítás nem lett elmentve ezen az eszközön.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a módosítás el lett-e mentve ezen az eszközön vagy a szerveren.",
+        "stateCheckAction": "Másolja ki a szerkesztett tartalmat, majd töltse be újra, és hasonlítsa össze a mentett állapotot."
+      },
+      "legacy": {
+        "operation": "Offline módosítások áttelepítése",
+        "deniedEffect": "A korábbi offline módosítások az eredeti tárolási helyükön maradtak, és nem lettek elküldve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy mely korábbi offline módosítások lettek áttelepítve.",
+        "stateCheckAction": "Tartsa nyitva ezt a lapot, és a következő szerkesztés előtt töltse be újra."
+      },
+      "refresh": {
+        "operation": "Helyreállított módosítások újratöltése",
+        "deniedEffect": "A helyreállított módosítások nem jelentek meg, és a mentett adatok nem lettek lecserélve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az oldal aktuális állapotát a helyreállítás után.",
+        "stateCheckAction": "A következő szerkesztés előtt töltse be újra az oldalt."
+      },
+      "replay": {
+        "operation": "Offline módosítások elküldése",
+        "deniedEffect": "A sorban álló módosítás továbbra is függőben van, és a szerver nem erősítette meg.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy mely sorban álló módosítások jutottak el a szerverre.",
+        "stateCheckAction": "Tartsa nyitva ezt a lapot, kapcsolódjon újra, és a következő szerkesztés előtt töltse be újra az oldalt."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Nyilvános webhely keresése",
+        "deniedEffect": "A keresési eredmények nem töltődtek be, és a közzétett tartalom nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi keresési eredményeket.",
+        "stateCheckAction": "Új keresés előtt ellenőrizze a webhely állapotát."
+      },
+      "sharedPage": {
+        "operation": "Megosztott oldal betöltése",
+        "deniedEffect": "A megosztott oldal nem töltődött be, és a közzétett tartalom nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi megosztott oldalt.",
+        "stateCheckAction": "Újrapróbálkozás előtt ellenőrizze a megosztási hivatkozást."
+      },
+      "site": {
+        "operation": "Nyilvános webhely betöltése",
+        "deniedEffect": "A nyilvános webhely nem töltődött be, és a közzétett tartalom nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi nyilvános webhelyet.",
+        "stateCheckAction": "Újrapróbálkozás előtt ellenőrizze a webhely címét."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Űrlap-bejelentkezés helyreállítása",
+        "deniedEffect": "A tagoknak szóló űrlap nem nyílt meg, és válasz sem lett beküldve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az űrlap jelenlegi bejelentkezési állapotát.",
+        "stateCheckAction": "Töltse újra az űrlapot, majd jelentkezzen be újra."
+      },
+      "configurationWrite": {
+        "operation": "Űrlapbeállítások mentése",
+        "deniedEffect": "Nem erősíthető meg, hogy az űrlapbeállítások mentésre kerültek.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az űrlap jelenlegi konfigurációját.",
+        "stateCheckAction": "Az újbóli mentés előtt töltse újra az űrlapbeállításokat."
+      },
+      "definitionRead": {
+        "operation": "Űrlap betöltése",
+        "deniedEffect": "Az űrlap nem töltődött be, és válasz sem lett beküldve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az űrlap jelenlegi definícióját.",
+        "stateCheckAction": "Válasz megadása előtt töltse újra az űrlapot."
+      },
+      "optionsRead": {
+        "operation": "Űrlap lehetőségeinek betöltése",
+        "deniedEffect": "A kért választási lehetőségek nem töltődtek be, és a piszkozatválasz nem lett beküldve.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi választási lehetőségeket.",
+        "stateCheckAction": "Az űrlap beküldése előtt töltse újra a választási lehetőségeket."
+      },
+      "responseSubmit": {
+        "operation": "Űrlapválasz beküldése",
+        "deniedEffect": "A válasz nem lett elfogadva.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a választ elfogadták-e.",
+        "stateCheckAction": "A válasz újbóli beküldése előtt ellenőrizze az űrlap eredményét."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Futásidejű konfiguráció betöltése",
+        "deniedEffect": "A futásidejű konfiguráció nem töltődött be; a mentett kiszolgálóbeállítások nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi futásidejű konfigurációt, ezért biztonságos tartalék értékek vannak érvényben.",
+        "stateCheckAction": "A jelenlegi kiszolgálókonfiguráció beolvasásához töltse újra az oldalt."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Függő módosítások szinkronizálása",
+        "deniedEffect": "A függő módosítások továbbra is a sorban maradtak, és a szerver nem erősítette meg őket.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, mely függő módosítások érték el a szervert.",
+        "stateCheckAction": "Tartsa nyitva ezt a lapot, csatlakozzon újra, és ellenőrizze a mentett állapotot, mielőtt újra próbálkozna."
+      },
+      "pendingRead": {
+        "operation": "Függő módosítások ellenőrzése",
+        "deniedEffect": "A függő módosítások száma nem töltődött be; a sorban lévő módosításokat nem vetették el.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hány módosítás van még függőben.",
+        "stateCheckAction": "Tartsa nyitva ezt a lapot, és ellenőrizze újra a szinkronizálási állapotot."
+      },
+      "retry": {
+        "operation": "Szinkronizálás újrapróbálása",
+        "deniedEffect": "A szinkronizálást nem erősítették meg; a függő módosítások továbbra is a sorban maradtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a legutóbbi szinkronizálás eredményét.",
+        "stateCheckAction": "Újrapróbálkozás előtt ellenőrizze a mentett állapotot és a kapcsolatot."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Munkaterület létrehozása",
+        "deniedEffect": "Új munkaterület nem jött létre, és a meglévő adatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy sikerült-e létrehozni a munkaterületet.",
+        "stateCheckAction": "Töltse újra a munkaterületek listáját, és ellenőrizze, megjelent-e az új munkaterület, mielőtt újra próbálkozna."
+      },
+      "delete": {
+        "operation": "Munkaterület végleges törlése",
+        "deniedEffect": "A törlést nem fogadták el; a munkaterület és a meglévő adatok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy sikerült-e törölni a munkaterületet.",
+        "stateCheckAction": "Töltse újra a munkaterületek listáját, mielőtt újra próbálkozna."
+      },
+      "member": {
+        "add": {
+          "operation": "Munkaterületi tag hozzáadása",
+          "deniedEffect": "A tagot nem adták hozzá, és semmi sem változott.",
+          "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy sikerült-e hozzáadni a munkaterületi tagot.",
+          "stateCheckAction": "Töltse újra a tagokat, a tevékenységet és az auditelőzményeket, mielőtt újra próbálkozna."
+        },
+        "revoke": {
+          "operation": "Munkaterületi tag eltávolítása",
+          "deniedEffect": "A tagot nem távolították el, és semmi sem változott.",
+          "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy sikerült-e eltávolítani a munkaterületi tagot.",
+          "stateCheckAction": "Töltse újra a tagokat, a tevékenységet és az auditelőzményeket, mielőtt újra próbálkozna."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Munkaterületi beállítások mentése",
+          "deniedEffect": "A beállítások módosítását nem mentették el; a korábbi beállítások érvényben maradnak.",
+          "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy a munkaterület beállításai el lettek-e mentve.",
+          "stateCheckAction": "Az újbóli próbálkozás előtt töltse újra a munkaterület beállításait, a tevékenységet és az auditnaplót."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Munkaterület-exportálás megszakítása",
+        "deniedEffect": "Az exportálás nem lett megszakítva, és elképzelhető, hogy továbbra is fut.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az exportálás meg lett-e szakítva.",
+        "stateCheckAction": "Az újbóli megszakítás előtt frissítse az exportálás állapotát."
+      },
+      "download": {
+        "operation": "Munkaterület-exportálás letöltése",
+        "deniedEffect": "Az archívum nem lett letöltve; a szerveroldali exportálás nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy az archívum letöltése befejeződött-e.",
+        "stateCheckAction": "Az újbóli letöltés előtt ellenőrizze a letöltések listáját."
+      },
+      "job": {
+        "operation": "Munkaterület exportálása",
+        "deniedEffect": "Az archívum nem jött létre; a forrás munkaterület nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy ehhez a feladathoz tartozik-e használható archívum.",
+        "stateCheckAction": "Indítson helyettesítő exportálást a jelenlegi munkaterületről."
+      },
+      "poll": {
+        "operation": "Munkaterület-exportálás megvárása",
+        "deniedEffect": "A legutóbbi exportálási állapot nem lett betöltve; az exportálási feladat nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az exportálás jelenlegi állapotát.",
+        "stateCheckAction": "Mielőtt másik műveletet hajt végre, frissítse az exportálás állapotát."
+      },
+      "retry": {
+        "operation": "Munkaterület-exportálás újrapróbálása",
+        "deniedEffect": "Az újrapróbálás nem lett elfogadva; a meglévő exportálási feladat nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy elfogadták-e az újrapróbálást.",
+        "stateCheckAction": "Mielőtt újra próbálkozik, frissítse az exportálás állapotát."
+      },
+      "start": {
+        "operation": "Munkaterület-exportálás indítása",
+        "deniedEffect": "Az új exportálási feladat nem lett elfogadva; a munkaterület nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy elfogadtak-e egy exportálási feladatot.",
+        "stateCheckAction": "Mielőtt új feladatot indít, frissítse a legutóbbi exportálási állapotot."
+      },
+      "status": {
+        "operation": "Munkaterület-exportálás állapotának betöltése",
+        "deniedEffect": "A legutóbbi exportálási állapot nem lett betöltve; az exportálási feladat nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni az exportálás jelenlegi állapotát.",
+        "stateCheckAction": "Mielőtt másik műveletet hajt végre, töltse újra be az exportálási párbeszédablakot."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Importálás megszakítása",
+        "deniedEffect": "Az importálás nem lett megszakítva, és továbbra is futhat.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy megszakadt-e az importálás.",
+        "stateCheckAction": "Az ismételt megszakítás előtt frissítse az importálás állapotát."
+      },
+      "job": {
+        "operation": "Fájl importálása",
+        "deniedEffect": "Nem jött létre oldal; a részben importált tartalom eltávolításra került.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy van-e használható oldal ehhez az importáláshoz.",
+        "stateCheckAction": "Őrizze meg a diagnosztikai hivatkozást, és indítson új importálást a forrásfájlból."
+      },
+      "start": {
+        "operation": "Importálás indítása",
+        "deniedEffect": "Az új importálást nem fogadta el a rendszer, és oldal sem jött létre.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy elfogadták-e az importálást.",
+        "stateCheckAction": "Próbálja újra ugyanazt a fájlt változtatás nélkül, hogy a Leafen újra csatlakozhasson ugyanahhoz a kéréshez."
+      },
+      "status": {
+        "operation": "Importálási állapot betöltése",
+        "deniedEffect": "A legfrissebb importálási állapot nem töltődött be; az importálási feladat nem változott.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi importálási állapotot.",
+        "stateCheckAction": "Nyissa meg újra az importálási párbeszédablakot, hogy újra csatlakozhasson a mentett feladathoz, mielőtt más műveletet hajt végre."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Fiók jelkulcsainak betöltése",
+        "deniedEffect": "A jelkulcsok listája nem töltődött be; a mentett kulcsok nem változtak.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni a jelenlegi jelkulcslistát.",
+        "stateCheckAction": "Csatlakozzon újra, és frissítse a jelkulcsok listáját, mielőtt módosít."
+      },
+      "update": {
+        "operation": "Fiók jelkulcsainak kezelése",
+        "deniedEffect": "A kiszolgáló nem változtatta meg a mentett jelkulcsokat.",
+        "uncertainEffect": "A Leafen nem tudta megerősíteni, hogy befejeződött-e a jelkulcs módosítása.",
+        "stateCheckAction": "Frissítse a jelkulcsok listáját, mielőtt újra próbálja. Ha új kulcs jött létre, de itt nem mentődött el, ellenőrizze az eszköze kulcskezelőjét."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "A jelenlegi jelszó helytelen.",
+    "currentPasswordNext": "Ha elfelejtette, jelentkezzen ki, és állítsa vissza a jelszavát a bejelentkezési oldalon.",
+    "code": "A kód hibás, vagy már felhasználták.",
+    "codeNext": "Adja meg a hitelesítő alkalmazásban most megjelenő kódot.",
+    "recoveryCode": "A helyreállítási kód hibás, vagy már felhasználták.",
+    "recoveryCodeNext": "Adjon meg egy még nem használt helyreállítási kódot.",
+    "accountDeactivated": "Ezt a fiókot a szerver rendszergazdája letiltotta.",
+    "accountDeactivatedNext": "Kérje meg a rendszergazdát, hogy engedélyezze újra.",
+    "organizationSSO": "Ennél a szervezetnél csak egyszeri bejelentkezéssel (SSO) lehet bejelentkezni.",
+    "organizationSSONext": "Ehelyett jelentkezzen be a vállalati fiókjával.",
+    "organizationPasswordTwoStep": "A szervezeténél jelszóval és kétlépcsős ellenőrzéssel kell bejelentkezni, nem eszközkóddal.",
+    "organizationPasswordTwoStepNext": "Jelentkezzen be az e-mail-címével és jelszavával; ha nincs jelszava, kérjen egyszeri jelszót a rendszergazdától.",
+    "deviceCode": "A kód hibás, már felhasználták, lejárt, vagy bezárták a kódot mutató ablakot.",
+    "deviceCodeNext": "Kérjen új kódot, és adja meg újra.",
+    "setupCode": "A beállítási kód helytelen.",
+    "setupCodeNext": "Nyissa meg újra a szerver által kiírt beállítási hivatkozást, vagy írja be a szerver indításakor megadott kódot.",
+    "setupCodeMissing": "Adja meg a beállítási kódot.",
+    "setupCodeMissingNext": "A szerver által kiírt beállítási hivatkozás megnyitásával kitöltődik; a szerver indításakor megadott kód is működik.",
+    "sessionCapacity": "Ez a fiók elérte az eszközök maximális számát.",
+    "sessionCapacityNext": "Jelentkezzen ki egy már nem használt eszközről a Beállítások → Fiók → Eszközök menüben, majd próbálja újra.",
+    "signInEnded": "Ez a bejelentkezési kérés véget ért: lejárt az idő, vagy a kód túl sokszor volt hibás.",
+    "signInEndedNext": "Jelentkezzen be újra az e-mail-címével és jelszavával.",
+    "emailNotVerified": "A fiók e-mail-címe még nincs megerősítve.",
+    "emailNotVerifiedNext": "Nyissa meg a regisztrációkor kapott e-mailben lévő linket, majd jelentkezzen be.",
+    "registrationFailed": "Nem sikerült létrehozni a fiókot.",
+    "registrationFailedNext": "Próbálja újra egy pillanat múlva. Ha továbbra sem sikerül, értesítse a szerver rendszergazdáját."
+  },
+  "labels": {
+    "reference": "Referencia"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Ez a szervezet nem hoz létre új fiókokat a vállalati bejelentkezés során.",
+    "samlAccountCreationOffNext": "Kérje meg a szervezete rendszergazdáját, hogy küldjön meghívót.",
+    "samlRetryAfterInvite": "Miután megkapta a meghívást, jelentkezzen be újra.",
+    "samlIdentityDenied": "Ez az e-mail-cím nem használhatja a szervezet vállalati bejelentkezését.",
+    "samlIdentityDeniedNext": "Kérje meg a szervezete rendszergazdáját, hogy ellenőrizze az e-mail-domainet és a tagságát.",
+    "samlRetryAfterAdministrator": "Jelentkezzen be újra, miután a rendszergazda ellenőrizte.",
+    "samlResponseInvalid": "Nem sikerült ellenőrizni a vállalati bejelentkezés válaszát.",
+    "samlResponseInvalidNext": "Kezdje újra a bejelentkezést. Ha továbbra is előfordul, kérje meg a szervezet rendszergazdáját, hogy ellenőrizze a SAML-beállításokat.",
+    "accountAlreadyExistsForEmailAddress": "Ehhez az e-mail-címhez már tartozik fiók.",
+    "accountEmailCouldNotAdmittedFor": "Nem sikerült elküldeni a fiókhoz tartozó e-mailt.",
+    "administratorSettingsDoNotMeetServer": "A rendszergazdai beállítások nem felelnek meg a szerver követelményeinek.",
+    "administratorSettingsNotAvailableCurrentAccount": "A rendszergazdai beállítások a jelenlegi fiók számára nem érhetők el.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Egy másik rendszergazda már befejezte a kiszolgáló beállítását.",
+    "anotherServerOperationTemporarilyLockedAccount": "Egy másik kiszolgálóművelet ideiglenesen zárolta a fiók tárhelyét.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Egy másik kiszolgálóművelet ideiglenesen zárolta az adatbázist, ezért az exportálás nem folytatódhatott.",
+    "anotherServerOperationTemporarilyLockedDlp": "Egy másik kiszolgálóművelet ideiglenesen zárolta a DLP-szabályzatok tárolóját.",
+    "anotherServerOperationTemporarilyLockedFile": "Egy másik kiszolgálóművelet ideiglenesen zárolta a fájltárhelyet.",
+    "anotherServerOperationTemporarilyLockedPage": "Egy másik kiszolgálóművelet ideiglenesen zárolta az oldaltartalom tárolóját.",
+    "anotherServerOperationTemporarilyLockedProduct": "Egy másik kiszolgálóművelet ideiglenesen zárolta a terméktárhelyet.",
+    "askOrganizationAdministratorToAllow": "Kérje meg a szervezet egyik rendszergazdáját vagy a csapattér tulajdonosát, hogy engedélyezze.",
+    "askServerAdministratorCheckEmailDelivery": "Kérje meg a kiszolgáló rendszergazdáját, hogy ellenőrizze az e-mail-kézbesítést, majd próbálja újra.",
+    "backupArtifactNotCompleteYet": "A biztonsági mentés fájlja még nem teljes.",
+    "backupStateNoLongerPermitsControl": "A biztonsági mentés jelenlegi állapota már nem teszi lehetővé ezt a műveletet.",
+    "causeCouldNotDetermined": "Az ok nem állapítható meg.",
+    "changeSaveReceiptAndSynchronizationState": "A módosítás nem lett mentve, és az oldal tartalma nem változott.",
+    "checkCurrentBackupBeforeRetrying": "Újrapróbálkozás előtt ellenőrizze a jelenlegi biztonsági mentést.",
+    "checkCurrentJobStateBeforeDeciding": "Az újrapróbálkozás eldöntése előtt ellenőrizze a feladat jelenlegi állapotát.",
+    "checkCurrentListBeforeTryingDifferent": "Másik elem kipróbálása előtt ellenőrizze a jelenlegi listát.",
+    "checkCurrentServerSettingsBeforeTrying": "Újrapróbálkozás előtt ellenőrizze a jelenlegi kiszolgálóbeállításokat.",
+    "checkCurrentServerSetupStateBefore": "Újrapróbálkozás előtt ellenőrizze a kiszolgáló beállításának jelenlegi állapotát.",
+    "checkCurrentStateAndUseNew": "Ellenőrizze a jelenlegi állapotot, és csak akkor indítson új biztonsági mentést, ha szüksége van rá.",
+    "checkEmailAndPassword": "Ellenőrizze az e-mail-címet és a jelszót.",
+    "checkServerSecretStorageThenSave": "Ellenőrizze a kiszolgáló titkos tárolóját, majd mentse újra ugyanazokat a beállításokat.",
+    "checkServerStateThenLoadSettings": "Ellenőrizze a kiszolgáló állapotát, majd töltse be újra a beállításokat.",
+    "createNewBackupAndInspectServer": "Hozzon létre új biztonsági mentést, és ha a hiba megismétlődik, vizsgálja meg a kiszolgáló tárhelyét.",
+    "currentAccountNotAuthorizedForOperation": "A jelenlegi fiók nem jogosult erre a műveletre.",
+    "currentStateMustCheckedBeforeRetry": "A jelenlegi állapotot ellenőrizni kell ahhoz, hogy az újrapróbálkozás biztonságosnak tekinthető legyen.",
+    "currentStateMustCheckedBeforeRetrying": "Újrapróbálkozás előtt ellenőrizni kell a jelenlegi állapotot.",
+    "dnsVerificationServiceTemporarilyUnavailable": "A DNS-ellenőrzési szolgáltatás átmenetileg nem érhető el.",
+    "doNotAssumeUnchangedRetrySafe": "Ne feltételezze, hogy az újrapróbálkozás biztonságos, amíg a kiszolgáló tárhelyét helyre nem állítják.",
+    "doNotKeepRetryingIdentifierNew": "Ne próbálkozzon tovább ezzel a kéréssel; először töltse újra, utána egy új próbálkozás biztonságos.",
+    "doNotResumeFailedJobStart": "A sikertelen feladatot ne folytassa; indítson helyette új exportálást.",
+    "doNotRetryBeforeLoadingLatest": "A legújabb kiszolgálóbeállítások betöltése előtt ne próbálkozzon újra.",
+    "doNotRetryDirectRequestUnchanged": "Ne próbálja újra ezt a feltöltést változatlanul; használjon folytatható feltöltést.",
+    "doNotRetryDirectRequestUnchanged2": "Ne próbálja újra ezt a feltöltést változatlanul; használjon folytatható archívumfeltöltést.",
+    "doNotRetrySetupRequestSign": "Ne próbálja újra ezt a beállítási kérést; jelentkezzen be a meglévő rendszergazdai fiókkal.",
+    "doNotReuseInvalidArtifactCreate": "Ne használja újra az érvénytelen biztonsági mentési fájlt; készítsen új biztonsági mentést.",
+    "doNotReuseLinkNewAction": "Ne használja újra ezt a hivatkozást; biztonságos új műveletet indítani.",
+    "emailOrPasswordDidNotMatch": "Az e-mail-cím vagy a jelszó nem egyezik.",
+    "externalSignInProviderCouldNot": "A külső bejelentkezési szolgáltató nem tudta teljesíteni a kérést.",
+    "fileLargerThanOneDirectUpload": "Ez a fájl túl nagy egyetlen közvetlen feltöltéshez.",
+    "formStorageTemporarilyLockedByAnother": "Az űrlaptárolót egy másik kiszolgálóművelet ideiglenesen zárolta.",
+    "leafenArchiveLargerThanOneDirect": "Ez a Leafen-archívum túl nagy egyetlen közvetlen importáláshoz.",
+    "leafenDidNotReceiveServerResponse": "A Leafen nem kapott választ a kiszolgálótól.",
+    "leafenRebuildingOrganizationStorageUsageState": "A Leafen újraépíti a szervezet tárhelyhasználati állapotát.",
+    "leafenServiceCouldNotCompleteOperation": "A Leafen szolgáltatás nem tudta befejezni a műveletet.",
+    "isolatedRecordNotAppliedYourRequested": "A hiányos rekordot félretettük, az Ön módosítása nem lett mentve, és az oldal tartalma változatlan.",
+    "jobCannotRetriedStartReplacementExport": "Ezt a feladatot nem lehet újrapróbálni; indítson helyette új exportálást.",
+    "jobSArchiveNotPublishedAnd": "A feladat archívuma nem jött létre, és a forrás-munkaterület nem változott.",
+    "keepDiagnosticReferenceAndAskServer": "Őrizze meg a diagnosztikai hivatkozást, és kérje meg a kiszolgáló rendszergazdáját a kiszolgáló tárhelyének helyreállítására.",
+    "lastConfirmedSavedStateRestoredSo": "A legutóbb megerősített mentett állapot visszaállt, ezért biztonságos ugyanazt a módosítást újra próbálni.",
+    "loadCurrentReportAndUseNew": "Töltse be a jelenlegi jelentést, majd frissítsen újra.",
+    "loadCurrentReportBeforeRefreshingAgain": "Újabb frissítés előtt töltse be a jelenlegi jelentést.",
+    "loadCurrentReportBeforeTryingAgain": "Töltse be a jelenlegi jelentést, mielőtt újra próbálkozna.",
+    "newerOrIncompatibleStatePreventedOperation": "Egy újabb vagy inkompatibilis állapot akadályozta meg ezt a műveletet.",
+    "noNewArchivePublishedAndSource": "Nem készült új archívum, és a forrás-munkaterület, valamint a korábbi archívumok változatlanok maradtak.",
+    "noNewSignInSessionCreated": "Nem jött létre új bejelentkezési munkamenet, és a meglévő munkamenetek nem változtak.",
+    "notKnownWhetherRetryingSafeUntil": "A jelenlegi állapot ellenőrzéséig nem tudható, hogy biztonságos-e az újrapróbálkozás.",
+    "organizationStorageAuthorityInconsistent": "A szervezet tárhelyhasználati nyilvántartása ellentmondásos.",
+    "organizationDlpBlocksOperation": "A szervezete adatvesztés-megelőzési szabályzata blokkolja ezt.",
+    "takeOutTermOrAskAboutDlp": "Távolítson el minden érzékeny kifejezést, és próbálja újra, vagy kérdezze meg a szervezet rendszergazdáját, ha nem biztos benne.",
+    "organizationSettingsDoNotAllowOperation": "A szervezet vagy a csapattér beállításai nem engedélyezik ezt.",
+    "organizationStorageLimitWouldExceeded": "Ez meghaladná a szervezet tárhelykorlátját.",
+    "serverDiskAlmostFull": "A kiszolgáló lemeze majdnem tele van.",
+    "askServerAdministratorToFreeSpace": "Kérje meg a kiszolgáló rendszergazdáját, hogy szabadítson fel helyet; amint lesz hely, újra működik.",
+    "safeRetryOnceServerHasRoom": "Biztonságos ugyanazt újra megpróbálni, amint a kiszolgálón ismét lesz hely.",
+    "readDoesNotChangeSavedData": "Ez az olvasás nem módosítja a mentett adatokat, így biztonságosan újrapróbálható.",
+    "reloadCurrentBackupBeforeChoosingAnother": "A másik művelet kiválasztása előtt töltse újra a jelenlegi biztonsági mentést.",
+    "reloadCurrentBackupStateBeforeContinuing": "A folytatás előtt töltse újra a jelenlegi biztonsági mentés állapotát.",
+    "reloadCurrentStateBeforeDecidingWhether": "Mielőtt eldönti, hogy újrapróbálja-e, töltse újra a jelenlegi állapotot.",
+    "reloadSignInPageAndStart": "Frissítse a bejelentkezési oldalt, majd jelentkezzen be újra.",
+    "removeUnneededFilesOrAskOrganization": "Törölje a felesleges fájlokat, vagy kérje meg a szervezet számlázási adminisztrátorát a korlát emelésére.",
+    "reportChangedAfterScreenLoaded": "A jelentés megváltozott a képernyő betöltése után.",
+    "requestIdentifierBelongsDifferentOperation": "Ezt a kérést már felhasználták egy másik művelethez.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Ezt a kérést már felhasználták egy másik jelentésfrissítéshez.",
+    "requestedItemNoLongerExistsOr": "A kért elem már nem létezik, vagy nem látható ezzel a fiókkal.",
+    "retryExportAfterOtherServerOperation": "A másik kiszolgálóművelet befejezése után próbálja újra ezt az exportálást.",
+    "retryExportJobAfterServerStorage": "A kiszolgáló tárhelyének helyreállása után próbálja újra ezt az exportálási feladatot.",
+    "retryOnlyAfterAccountOrPermission": "Csak a fiók vagy az engedélyek módosítása után próbálja újra.",
+    "retryOnlyAfterOrganizationSettingChanges": "Csak a beállítás módosítása után próbálja újra.",
+    "retrySameContentChangeAfterOther": "A másik kiszolgálóművelet befejezése után próbálja újra ugyanazt a tartalommódosítást.",
+    "retrySameContentChangeAfterServer": "A kiszolgáló tárhelyének helyreállása után próbálja újra ugyanazt a tartalommódosítást.",
+    "retrySameContentChangeNow": "Most próbálja újra ugyanazt a tartalommódosítást.",
+    "changeTooLargeForOneChange": "Ez túl nagy ahhoz, hogy egyszerre módosítsa. Egy módosítás legfeljebb 64 MB lehet, a benne lévő szöveggel együtt.",
+    "pageKeepsWhatItHadBefore": "Az oldal a módosítás előtti állapotában marad.",
+    "makeTheChangeInParts": "Végezze el részekben: először részletekben törölje a nagy kapcsoló vagy szakasz belsejében lévő blokkokat, és a hosszú szöveget is részekben illessze be.",
+    "sameSizeIsRefusedAgain": "Ugyanazzal a mérettel ismét elutasításra kerül; felosztás után biztonságosan újrapróbálható.",
+    "linkCannotBeKeptHere": "Ez a módosítás olyan oldalt vagy blokkot kapcsol össze, amely ezen a helyen nem kapcsolható össze.",
+    "chooseAnotherPageOrRefresh": "Válasszon másik oldalt, vagy frissítse az oldalt, és próbálja újra.",
+    "sameLinkIsRefusedAgain": "Ugyanannak az elemnek az ismételt összekapcsolása ismét elutasításra kerül.",
+    "retrySameDomainVerificationAfterDns": "A DNS-ellenőrzési szolgáltatás helyreállása után próbálja újra ugyanazt a tartományellenőrzést.",
+    "retrySameFileOperationAfterOther": "A másik kiszolgálóművelet befejezése után próbálja újra ugyanazt a fájlműveletet.",
+    "retrySameFileOperationAfterServer": "A kiszolgáló tárhelyének helyreállása után próbálja újra ugyanazt a fájlműveletet.",
+    "retrySameFormOperationAfterOther": "A másik kiszolgálóművelet befejezése után próbálja újra ugyanazt az űrlapműveletet.",
+    "retrySameFormOperationAfterServer": "Próbálja újra ugyanazt az űrlapműveletet, miután a kiszolgálói tároló helyreállt.",
+    "retrySameOperationAfterOtherServer": "Próbálja újra ugyanazt a műveletet, miután a másik kiszolgálói művelet befejeződött.",
+    "retrySameOperationAfterServerStorage": "Próbálja újra ugyanazt a műveletet, miután a kiszolgálói tároló helyreállt.",
+    "returnSignInWithExistingAccount": "Térjen vissza, és jelentkezzen be a meglévő fiókkal.",
+    "reviewAndCorrectEnteredServerSettings": "Tekintse át és javítsa a megadott kiszolgálóbeállításokat.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Tekintse át a megadott értékeket, és javítsa a kiemelt adatokat.",
+    "safeRetryAfterEmailDeliveryRestored": "Biztonságosan újrapróbálhatja, miután az e-mail-kézbesítés helyreállt.",
+    "safeRetryAfterServerResourceChecks": "Biztonságosan újrapróbálhatja, miután a kiszolgálói erőforrás-ellenőrzések helyreálltak.",
+    "safeRetryAfterTemporaryLockClears": "Biztonságosan újrapróbálhatja, miután az ideiglenes zárolás megszűnt.",
+    "safeRetryRead": "Biztonságosan újrapróbálhatja ezt az olvasási műveletet.",
+    "safeRetrySameAuthenticationOperationAfter": "Biztonságosan újrapróbálhatja ugyanazt a hitelesítési műveletet, miután a tároló helyreállt.",
+    "safeRetrySameContentChangeAfter": "Biztonságosan újrapróbálhatja ugyanazt a tartalommódosítást, miután az ideiglenes zárolás megszűnt.",
+    "safeRetrySameContentChangeAfter2": "Biztonságosan újrapróbálhatja ugyanazt a tartalommódosítást, miután a tároló helyreállt.",
+    "safeRetrySameDlpPolicySave": "Biztonságosan újrapróbálhatja ugyanazt a DLP-szabályzat-mentést, miután a tároló helyreállt.",
+    "safeRetrySameDlpPolicySave2": "Biztonságosan újrapróbálhatja ugyanazt a DLP-szabályzat-mentést, miután az ideiglenes zárolás megszűnt.",
+    "safeRetrySameDomainVerificationAfter": "Biztonságosan újrapróbálhatja ugyanazt a tartományellenőrzést, miután a szolgáltatás helyreállt.",
+    "safeRetrySameFileOperationAfter": "Biztonságosan újrapróbálhatja ugyanazt a fájlműveletet, miután a tároló elérhetővé válik.",
+    "safeRetrySameFileOperationAfter2": "Biztonságosan újrapróbálhatja ugyanazt a fájlműveletet, miután a tároló helyreállt.",
+    "safeRetrySameFileOperationAfter3": "Biztonságosan újrapróbálhatja ugyanazt a fájlműveletet, miután az ideiglenes zárolás megszűnt.",
+    "safeRetrySameFormOperationAfter": "Biztonságosan újrapróbálhatja ugyanazt az űrlapműveletet, miután a tároló helyreállt.",
+    "safeRetrySameFormOperationAfter2": "Biztonságosan újrapróbálhatja ugyanazt az űrlapműveletet, miután az ideiglenes zárolás megszűnt.",
+    "safeRetrySameOperationAfterStorage": "Biztonságosan újrapróbálhatja ugyanazt a műveletet, miután a tároló helyreállt.",
+    "safeRetrySameOperationAfterTemporary": "Biztonságosan újrapróbálhatja ugyanazt a műveletet, miután az ideiglenes zárolás megszűnt.",
+    "safeRetrySameSettingsAfterSecret": "Biztonságosan újrapróbálhatja ugyanazokat a beállításokat, miután a titkos tároló helyreállt.",
+    "safeRetrySameSettingsSaveAfter": "Biztonságosan újrapróbálhatja ugyanazt a beállításmentést, miután kijavította az érvénytelen értékeket.",
+    "safeRetryWithSameJobIdentifier": "Biztonságosan újrapróbálhatja ugyanazt a feladatot.",
+    "safeRetryWithSameJobIdentity": "Biztonságosan újrapróbálhatja ugyanazt a feladatot.",
+    "safeSignInInsteadCreatingAnother": "Nyugodtan jelentkezhet be ahelyett, hogy új fiókot hozna létre.",
+    "safeStartNewProviderSignIn": "Később nyugodtan indíthat új bejelentkezést a szolgáltatónál.",
+    "safeTryAgainAfterCorrectingDetails": "Biztonságosan újrapróbálhatja, miután kijavította az adatokat.",
+    "safeTryAgainAfterCorrectingInput": "A bemenet kijavítása után nyugodtan próbálja újra.",
+    "safeTryAgainAfterWait": "A várakozás után nyugodtan próbálja újra.",
+    "serverTakesNoChangesNow": "Ez a szerver nem éri el a biztonsági mentés helyét, ezért jelenleg nem fogad módosításokat.",
+    "serverDataMovedElsewhere": "A szerver adatai átkerültek egy másik szerverre.",
+    "doItOnNewServer": "Végezze el az új szerveren.",
+    "serverDataMovedNoRetry": "Itt hiába próbálja újra, nem menthető el.",
+    "sameRequestIdentityCanRetriedSafely": "Ugyanaz a kérés rövid várakozás után biztonságosan újrapróbálható.",
+    "saveSameDlpPolicyAgainAfter": "A szerver tárhelyének helyreállása után mentse el újra ugyanazt a DLP-szabályzatot.",
+    "saveSameDlpPolicyAgainAfter2": "A másik szerverművelet befejeződése után mentse el újra ugyanazt a DLP-szabályzatot.",
+    "serverAccountStorageTemporarilyUnavailable": "A szerver fióktárhelye átmenetileg nem érhető el.",
+    "serverCannotCurrentlyConfirmResourceState": "A szerver jelenleg nem tudja megerősíteni az erőforrás állapotát.",
+    "serverCouldNotCompleteAdministratorSettings": "A szerver nem tudta befejezni a rendszergazdai beállítások mentését.",
+    "serverCouldNotCompleteAdministratorSetup": "A szerver nem tudta befejezni a rendszergazdai beállítási kérést.",
+    "serverCouldNotCompleteBackupLifecycle": "A szerver nem tudta befejezni a biztonsági mentést.",
+    "serverCouldNotLoadBackupState": "A szerver nem tudta betölteni azt a biztonsági mentési állapotot.",
+    "serverCouldNotProtectAdministratorSecret": "A szerver nem tudta megvédeni a rendszergazdai titkos értékeket.",
+    "serverCouldNotReadAdministratorState": "A szerver nem tudta beolvasni a rendszergazdai állapotot.",
+    "serverCouldNotReadOneExact": "A szerver nem tudott beolvasni egy konzisztens jelentéspillanatképet.",
+    "serverDetectedAndIsolatedIncompleteContent": "A szerver egy hiányos tartalomrekordot észlelt, és elkülönítette.",
+    "serverFileStorageTemporarilyUnavailable": "A szerver fájltárhelye átmenetileg nem érhető el.",
+    "serverFormStorageTemporarilyUnavailable": "A szerver űrlaptárhelye átmenetileg nem érhető el.",
+    "serverPageContentStorageTemporarilyUnavailable": "A szerver oldaltartalom-tárhelye átmenetileg nem érhető el.",
+    "serverSettingsChangedAfterScreenLoaded": "A szerver beállításai megváltoztak, miután ez a képernyő betöltődött.",
+    "serverStorageTemporarilyUnavailable": "A szerver tárhelye átmenetileg nem érhető el.",
+    "serverStorageTemporarilyUnavailableSoArchive": "A szerver tárhelye átmenetileg nem volt elérhető, ezért nem sikerült létrehozni az archívumot.",
+    "serverStorageTemporarilyUnavailableSoDlp": "A szerver tárhelye átmenetileg nem érhető el, ezért nem sikerült elmenteni a DLP-szabályzatot.",
+    "signInAttemptIdentifierAlreadyBelongs": "Ezt a bejelentkezési kísérletet már más adatokkal használták.",
+    "signInOrAccountActionLink": "A bejelentkezési vagy fiókműveleti hivatkozás már nem érvényes.",
+    "signInWithAuthorizedAccountOr": "Jelentkezzen be jogosult fiókkal, vagy kérjen hozzáférést egy rendszergazdától.",
+    "signInWithExistingAdministratorAccount": "Jelentkezzen be a meglévő rendszergazdai fiókkal.",
+    "signInWithServerAdministratorAccount": "Jelentkezzen be kiszolgáló-rendszergazdai fiókkal, vagy kérjen hozzáférést egy másik rendszergazdától.",
+    "startAccountActionAgainGetNew": "Indítsa újra a fiókműveletet, hogy új hivatkozást kapjon.",
+    "startReplacementExportFromLatestWorkspace": "Indítson helyettesítő exportálást a legutóbbi munkaterületről.",
+    "storedBackupDidNotMatchVerified": "A tárolt biztonsági mentés nem egyezett az ellenőrzött fájllal.",
+    "submittedInformationDidNotMeetOperation": "A beküldött adatok nem feleltek meg a művelet követelményeinek.",
+    "tooManyRequestsLimited": "Túl sok kérés érkezett, ezért ez a művelet korlátozott.",
+    "tooManyRequestsMadeSoOperation": "Túl sok kérés érkezett, ezért ez a művelet átmenetileg korlátozott.",
+    "tryAgainAfterServerStorageRecovers": "A kiszolgáló tárhelyének helyreállása után próbálja újra.",
+    "tryAgainInHours_one": "Próbálja újra körülbelül egy óra múlva.",
+    "tryAgainInHours_other": "Próbálja újra körülbelül {{count}} óra múlva.",
+    "tryAgainInMinutes_one": "Próbálja újra körülbelül egy perc múlva.",
+    "tryAgainInMinutes_other": "Próbálja újra körülbelül {{count}} perc múlva.",
+    "tryAgainInSeconds_one": "Próbálja újra körülbelül {{count}} másodperc múlva.",
+    "tryAgainInSeconds_other": "Próbálja újra körülbelül {{count}} másodperc múlva.",
+    "useAnotherSignInMethodOr": "Használjon más bejelentkezési módot, vagy próbálkozzon később ezzel a szolgáltatóval.",
+    "useResumableArchiveUploadSoProgress": "Használjon folytatható archívumfeltöltést, hogy a folyamat a mentett állapotból folytatódhasson.",
+    "useResumableUploadSoProgressCan": "Használjon folytatható feltöltést, hogy a folyamat a mentett állapotból folytatódhasson.",
+    "waitForCompletionThenRetryDownload": "Várja meg a befejezést, majd próbálja újra a letöltést.",
+    "waitForOtherServerOperationFinish": "Várja meg a másik kiszolgálóművelet befejezését, majd próbálja újra.",
+    "waitForStorageReconciliationAdvanceThen": "Várjon egy pillanatot, amíg a tárhely utoléri a változásokat, majd próbálja újra ugyanazt a műveletet.",
+    "waitMomentBeforeTryingAgain": "Várjon egy pillanatot, mielőtt újra próbálja.",
+    "workspaceChangedWhileExportRunning": "A munkaterület megváltozott az exportálás futása közben.",
+    "youNotSignedInAndNo": "Nem jelentkezett be, és a fiókadatok nem változtak.",
+    "pageIsLocked": "Az oldal le van zárva, ezért nem lehet módosítani.",
+    "unlockPageThenTryAgain": "Oldja fel az oldalt magának vagy mindenkinek az oldalmenüből, majd próbálja újra.",
+    "safeToRetryAfterUnlocking": "Biztonságos újra próbálni az oldal feloldása után.",
+    "databaseIsLocked": "Az adatbázis le van zárva, ezért a tulajdonságai és nézetei nem módosíthatók.",
+    "unlockDatabaseThenTryAgain": "Oldja fel az adatbázis zárolását saját maga vagy mindenki számára a „Zárolt” gombbal, majd próbálja újra.",
+    "databaseEditorsCanUnlock": "Csak az tudja feloldani az adatbázis zárolását, aki szerkesztheti az adatbázist.",
+    "safeToRetryAfterDatabaseUnlocked": "Az adatbázis zárolásának feloldása után nyugodtan próbálja újra.",
+    "rowMoveNeedsFullAccess": "A másik oldalra való áthelyezéshez teljes hozzáférés kell hozzá, és szerkesztési hozzáférés ahhoz a helyhez, ahová kerül.",
+    "askFullAccessHolderToMoveIt": "Kérjen meg valakit teljes hozzáféréssel, hogy helyezze át, vagy válasszon egy helyet, amelyet szerkeszthet.",
+    "rowMoveRefusedUntilAccess": "Az áthelyezés ismét elutasításra kerül, amíg nem rendelkezik ezzel a hozzáféréssel.",
+    "otherWorkspaceCantMoveOrLink": "A munkaterületek között nem lehet áthelyezni vagy összekapcsolni elemeket.",
+    "makeItAnewInThatWorkspace": "Hozza létre abban a munkaterületben, és másolja át a tartalmát. Teljes oldalt az Áthelyezés ide menüből lehet áthelyezni vagy másolni oda a munkaterület kiválasztásával.",
+    "otherWorkspaceRefusedAgain": "Az újrapróbálkozást ugyanezen ok miatt elutasítja.",
+    "signInEndedForThisBrowser": "A böngésző bejelentkezése lejárt vagy megszűnt.",
+    "signInEndedForThisApp": "Az alkalmazás bejelentkezése lejárt vagy megszűnt.",
+    "signInAgainToContinue": "A folytatáshoz jelentkezzen be újra.",
+    "retryAfterSigningInAgain": "Jelentkezzen be újra, majd próbálja újra.",
+    "serverRestoredSinceDeviceCopies": "A szerver adatai megváltoztak, az eszköz másolatai viszont a változás előttiek.",
+    "changeKeptOnThisDeviceOnly": "A módosítás nem lett elmentve a szerveren, csak ezen az eszközön található.",
+    "takeServerContentAnew": "Válassza az „Újratöltés a szerverről” lehetőséget, hogy megkapja a szerver jelenlegi tartalmát.",
+    "retryAfterTakingContentAnew": "A szerverről való újratöltés után próbálja újra.",
+    "propertyUsedByViewOrDependency": "Ez a tulajdonság most nem módosítható: ez a cím tulajdonság, vagy a Törölt tulajdonságok között van.",
+    "changeWhatUsesPropertyFirst": "Töltse újra az oldalt, hogy a tulajdonságot a jelenlegi állapotában lássa.",
+    "retryAfterChangingWhatUsesProperty": "Először állítson vissza egy törölt tulajdonságot, hogy módosíthassa.",
+    "workspaceAlreadyHasContentForArchive": "Ennek a munkaterületnek már van tartalma, ezért egy Leafen-archívum nem importálható bele.",
+    "makeNewWorkspaceToImportArchive": "Hozzon létre egy új munkaterületet, és importálja oda ezt az archívumot.",
+    "retryInNewWorkspace": "Egy új munkaterületen újra importálhatja.",
+    "importFileDoesNotFitFormat": "A fájl nem felel meg a Leafen által olvasott formátumnak, ezért semmi sem lett importálva.",
+    "exportFileAgainToImport": "Exportálja újra a fájlt onnan, ahol készült, majd importálja azt.",
+    "sameFileRefusedAgain": "Ugyanazon fájl ismételt importálása nem fog működni.",
+    "pageBusyWithAnotherChange": "Ezen az oldalon más módosítás folyamatban van, ezért egy pillanatig nem szerkeszthető.",
+    "tryAgainOnceThatChangeIsDone": "Próbálja újra, amikor ez a módosítás befejeződött.",
+    "importPageInTrash": "A céloldal a kukában van, ezért semmi sem lett importálva.",
+    "restorePageThenImportAgain": "Állítsa vissza az oldalt a kukából, majd importáljon újra.",
+    "importPageDeletedForGood": "A céloldal véglegesen törölve lett, ezért semmi sem lett importálva.",
+    "ownerBringsDeletedPageBack": "30 napon belül a munkaterület tulajdonosa visszaállíthatja a Biztonság → Adatmegőrzés alatt; utána állítsa vissza a kukából, és importáljon újra.",
+    "importAgainOnceRestored": "Újrapróbálkozással sem importálható, amíg az oldal nincs visszaállítva.",
+    "pageInTrashCantChange": "A kukában lévő oldal nem módosítható, amíg vissza nem állítja.",
+    "restorePageThenTryAgain": "Állítsa vissza az oldalt a kukából, majd próbálja újra.",
+    "tryAgainOnceRestored": "Az újrapróbálkozás nem fog működni, amíg az oldal nincs visszaállítva.",
+    "optionNameHasComma": "Egy opció neve nem tartalmazhat vesszőt (,).",
+    "takeCommaOutOrSplitOption": "Vegye ki a vesszőt, vagy alakítsa két opcióvá.",
+    "optionRefusedUntilRenamed": "A név módosítása után próbálja újra.",
+    "optionNameTaken": "Ennek a tulajdonságnak már van ilyen nevű opciója.",
+    "useAnotherOptionName": "Használjon más nevet, vagy válassza a már meglévő opciót.",
+    "optionsInUseLeftOut": "Ez a módosítás kizárja az oldalak által használt opciókat.",
+    "keepOptionsOrDeleteOneByOne": "Tartsa meg ezeket az opciókat, vagy törölje őket egyenként az egyes opciók menüjéből.",
+    "optionsRefusedUntilKeptOrDeleted": "Ha változtatás nélkül próbálja újra, a rendszer ugyanezen ok miatt elutasítja."
+  }
+}

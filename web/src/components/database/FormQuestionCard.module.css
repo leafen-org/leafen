@@ -1,0 +1,294 @@
+/* A form's questions in the builder (FormQuestionCard, FormQuestionOptions):
+   their cards, with the name, its required mark, the description, the
+   answer's field, the choices and a file question's bar, and the "질문 옵션"
+   menu a card opens — its rows, switches and the menus they open. The
+   builder round them, its add-question menu and the menus' shared head and
+   divider are FormView.module.css's. */
+
+/* A question as Notion's builder draws it (seen 2026-11-02): 600 wide, its
+   title 22px down and 12px in at 24px/700 on a 30px line, its answer a
+   576×38 field 18px under the title (a date's 10px), 12px above the card's
+   end — 120 tall, a date's 112 — and its "⋯" 10px down and in. Its edge is
+   a faint blue ring inside, 1.25px inside and out under the pointer
+   (Notion's bluTexTer, seen 2026-11-12). */
+.questionCard {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 22px 12px 12px;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 0 var(--blue-text-tertiary), inset 0 0 0 0.5px var(--blue-text-tertiary);
+  transition: box-shadow 0.3s;
+}
+
+.questionCard:hover,
+.questionCard:focus-within,
+.questionCard[data-menu-open="true"] {
+  box-shadow: 0 0 0 1.25px var(--blue-text-tertiary), inset 0 0 0 1.25px var(--blue-text-tertiary);
+}
+
+.questionTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  margin-bottom: 2px;
+}
+/* The name and its "*" with 10px either side, all of it taking a press to the name (Notion's, seen 2026-11-12). */
+.questionTitleField { display: inline-flex; align-items: center; min-width: 0; max-width: 100%; padding-inline: 10px; cursor: text; }
+.questionTitle {
+  flex: 0 1 auto;
+  min-width: 1ch;
+  max-width: 100%;
+  field-sizing: content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+  outline: none;
+}
+
+/* A required question's "*" is grey in the builder, as the respondent's
+   before "보내기", right after the name (Notion's, seen 2026-11-04:
+   rgb(161,158,153); 2026-11-08, "이름*" with no room between). */
+.questionRequired { color: var(--text-tertiary); font-size: 24px; font-weight: 400; line-height: 30px; }
+
+.questionMenuButton {
+  position: absolute;
+  top: 9px;
+  inset-inline-end: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+
+.questionCard:hover .questionMenuButton,
+.questionCard:focus-within .questionMenuButton,
+.questionCard[data-menu-open="true"] .questionMenuButton { opacity: 1; background: color-mix(in srgb, var(--accent-blue) 14%, transparent); color: var(--text-default); }
+
+.questionMenuButton:hover,
+.questionMenuButton[aria-expanded="true"] { background: var(--bg-hover); }
+
+/* A question's description in the secondary color, 16px on 24 with 4 above
+   and below, 10 under the question, as Notion's builder and its respondents'
+   page (seen 2026-11-08; FormSurface.module.css .questionDescription). */
+.questionDescription {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  field-sizing: content;
+  outline: none;
+  resize: none;
+}
+
+.questionAnswer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 38px;
+  margin-top: 8px;
+  padding: 0 10px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--border-secondary);
+  color: var(--text-disabled);
+  font-size: 16px;
+}
+.questionAnswer[data-kind="date"] {
+  margin-top: 0;
+}
+.questionAnswer[data-long] { align-items: flex-start; min-height: 86px; }
+/* A checkbox question's bar: no ring, its box 10px in and its label 12px
+   after it, the label's 26px line 5px from the bar's top and foot, as
+   Notion's builder (seen 2026-11-17: a 576×36 bar, the box 18px). */
+.questionAnswer[data-kind="checkbox"] {
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 36px;
+  padding-block: 5px;
+  box-shadow: none;
+}
+.questionCheckbox {
+  box-sizing: border-box;
+  flex: 0 0 18px;
+  height: 18px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 4px;
+}
+.questionCheckboxLabel {
+  flex: 1;
+  min-width: 0;
+  padding: 1px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  field-sizing: content;
+  outline: none;
+  resize: none;
+}
+.questionCheckboxLabel::placeholder { color: var(--text-disabled); }
+/* A date's and a place's ⌃⌄ 6px from the field's end. */
+.questionAnswer > svg {
+  flex: none;
+  margin-inline-end: -4px;
+  color: var(--icon-secondary);
+}
+
+/* A dropdown question's "아래 옵션이 드롭다운에 표시됩니다." above its options, as Notion's builder (seen 2026-10-21). */
+.questionDropdownHint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-tertiary);
+}
+.questionChoices { display: flex; flex-direction: column; }
+/* "(응답자는 최대 1개 선택 가능)" 16px in the tertiary color, 10 under the
+   question or 4 under its description, 12 over the options (Notion's, seen 2026-11-08). */
+.questionSelectionHint { margin: 0 0 4px; padding-inline-start: 10px; color: var(--text-tertiary); font-size: 16px; line-height: 24px; }
+.questionDescription + .questionSelectionHint { margin-top: -4px; }
+.questionChoice { display: flex; align-items: center; gap: 12px; min-height: 32px; margin: 0 -8px; padding-block: 0; padding-inline: 20px 12px; border-radius: 6px; font-size: 16px; }
+.questionChoiceMark { flex: 0 0 16px; width: 16px; height: 16px; border: 1px solid var(--border-default); border-radius: 50%; }
+.questionChoiceMark[data-multiple="true"] { border-radius: 4px; }
+/* An option the builder edits: a 32px row, its name to type over, and a way
+   to remove it on pointing, as Notion's. */
+.questionChoice[data-editable]:hover,
+.questionChoice[data-editable]:focus-within { background: var(--bg-hover); }
+.questionChoiceName {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+}
+.questionChoiceName:focus { outline: none; }
+.questionChoiceRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+.questionChoice:hover .questionChoiceRemove,
+.questionChoice:focus-within .questionChoiceRemove { opacity: 1; }
+.questionChoiceRemove:hover { background: var(--bg-hover); color: var(--text-default); }
+.questionAddOption {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  margin-block: 4px 0;
+  margin-inline: 10px 0;
+  padding-block: 0;
+  padding-inline: 2px 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.questionAddOption:hover { background: var(--bg-hover); color: var(--text-default); }
+
+.questionMenu,
+.questionMoveMenu {
+  position: fixed;
+  /* Over a peek (51) and the sidebar's own layers, as the database menus. */
+  z-index: 53;
+  display: flex;
+  flex-direction: column;
+  min-width: 290px;
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A row of "질문 옵션": 29 apart, its mark 20 wide and 8 in, as Notion's (seen 2026-11-05). */
+.questionOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 29px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.questionOption > svg:first-child { flex: none; width: 20px; height: 20px; color: var(--icon-primary, var(--text-default)); }
+.questionOption > .questionOptionName { flex: 1; min-width: 0; }
+.questionOption > :last-child:not(.questionOptionName):not(svg:first-child) { flex: none; }
+
+.questionOption:hover:not(:disabled) { background: var(--bg-hover); }
+/* A row's chosen way on its right, grey, with the way it opens. */
+.questionOptionValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-secondary);
+}
+/* The ways "다음으로 옵션 표시" opens, set in under it with a ✓ on the chosen one. */
+.questionSubOption { padding-inline-start: 32px; }
+.questionMoveMenu { z-index: 54; }
+.questionOption:disabled { color: var(--text-tertiary); cursor: default; }
+.questionOption input { width: 64px; height: 24px; }
+
+.questionFact {
+  display: flex;
+  gap: 8px;
+  min-height: 29px;
+  align-items: center;
+  padding: 0 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.questionFact > svg { flex: none; width: 20px; height: 20px; }
+.questionFact > .questionOptionName { flex: 1; min-width: 0; }
+.questionFact > .questionOptionValue { flex: none; }
+
+/* A file question's bar in the builder: the respondent's button (FormSurface.module.css .fileUpload) and limits in a bar
+   10 under the title, 8 in and 12 round on no ground, as Notion's builder (seen 2026-11-24 in two tabs; its respondent's bar is grey). */
+.questionFiles {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.2;
+}
+.questionFilesButton { composes: fileUpload from "../forms/FormSurface.module.css"; }
+
+.questionMostCustom { box-sizing: border-box; width: calc(100% - 8px); height: 28px; margin: 4px; padding: 0 8px; border: 1px solid var(--border-strong); border-radius: 6px; background: transparent; color: var(--text-default); font: inherit; font-size: 14px; outline: none; }
+.questionMostCustom:focus { border-color: var(--focus); box-shadow: var(--name-field-ring-focus-out); }

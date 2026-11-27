@@ -1,0 +1,294 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+}
+.picker {
+  position: absolute;
+  z-index: 61;
+  top: 82px;
+  inset-inline-start: 0;
+  width: min(408px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: calc(100vh - 2 * var(--popover-edge));
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+/* Short of room, the emoji list is what gives, the tabs, filter and group
+   bar staying whole, as Notion's (seen 2026-11-06: a callout's picker 356px
+   high under its handle, its grid's twelfth column still shown). */
+.picker,
+.picker > :global(.react-aria-Tabs),
+.picker :global(.react-aria-TabPanel),
+.picker :global(.react-aria-TabPanel) > div {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.picker > :global(.react-aria-Tabs),
+.picker :global(.react-aria-TabPanel) {
+  flex: 1 1 auto;
+}
+.picker[data-placement="inline"] {
+  top: 34px;
+  inset-inline-start: 0;
+}
+.picker[data-placement="anchored"] {
+  top: 0;
+  inset-inline-start: 0;
+}
+/* The tab row, as Notion's (seen 2026-10-07): text tabs on the left, the
+   chosen one darker over a 2px line, "제거" at the right, a hairline at
+   the foot of its 40px (2026-11-01). */
+.head {
+  display: flex;
+  align-items: center;
+  margin: -8px -8px 8px;
+  padding: 6px 8px;
+  box-shadow: inset 0 -1px 0 var(--border-secondary);
+}
+.tabs {
+  display: flex;
+}
+/* Each tab and "제거" its words on a 16.8px line in the middle of its 28px,
+   6px round, as Notion's at a desk, on an iPad's card and on a phone's (seen
+   2026-11-17 in Chrome at 1440, iPad Safari at 834 and Android Chrome at
+   411: inline-flex, centered, 14px on 16.8, 0 8px in, the words 5.6 under
+   the tab's top), the cover picker's tabs alike (PageCover .coverTab). */
+.tab,
+.headRemove {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 28px;
+  min-height: 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  line-height: 16.8px;
+  /* Notion's "제거" keeps one gray in light and dark (seen 2026-10-27). */
+  color: #8e8b86;
+  font-size: 14px;
+  font-weight: 400;
+}
+/* Over the page header's button reset. */
+.head .headRemove {
+  margin-inline-start: auto;
+  padding: 0 8px;
+}
+.tab:hover,
+.tab:focus-visible,
+.headRemove:hover,
+.headRemove:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.tab[aria-selected="true"] {
+  color: var(--text-default);
+}
+.tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 8px;
+  /* On the row's foot, 6px under the tab; a phone card's row says how far (TouchPickerCard). */
+  bottom: calc(-1 * var(--tab-line-drop, 6px));
+  inset-inline-start: 8px;
+  height: 2px;
+  background: var(--text-default);
+}
+.remove {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.remove:hover,
+.remove:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* "제거" stays grey under the pointer, its ground alone lit, as Notion's (seen 2026-11-24). */
+.remove {
+  color: var(--icon-secondary);
+}
+/* The Icons tab's one list, as Notion's (measured 2026-11-16 at 1440, a
+   408x390 picker; again 2026-11-17, the page's and a property's): from 90,
+   14 under the 28px filter row, down to the picker's foot, 300px, the
+   recent icons' group and the icons' group scrolling in it with their
+   names. It runs across the whole window, so a scroll bar that takes room
+   sits at the window's edge and the twelfth icon stays whole (this Mac's
+   15px bar: 393 inside it, cells from 16 to 400, the last icon 372–392). */
+.iconList {
+  flex: 0 1 auto;
+  min-height: 0;
+  height: 300px;
+  margin: 0 -8px -8px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  outline: none;
+}
+/* A short picker's (a property's, a sub-page's from its block menu) is 356px
+   on this tab too, its list 266 (Notion's, seen 2026-11-17 at 1440). */
+[data-icon-picker-short="true"] .iconList {
+  height: 266px;
+}
+/* A group 4px in from the list, its cells 12 more: the first 16 in. */
+.iconGroup {
+  padding: 4px;
+}
+/* A group's name 12px/500 in a menu group's head, 8 in, 6 under the group's top
+   and 9 over its first row (Notion's "최근 항목" and "아이콘"). */
+.sectionLabel {
+  margin: 6px 0 9px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+/* Twelve 32px cells a row, as the emoji tab and Notion's icon tab (seen 2026-11-06). */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 32px);
+  padding-inline-start: 12px;
+}
+/* Narrower than 408px (a phone's picker) as many whole columns as fit, as the
+   emoji tab, never a sideways scroll to a twelfth (2026-11-06, a 402px iPhone). */
+@media (max-width: 431px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, 32px);
+  }
+}
+/* A filter that matches none: "결과 없음" 12px at the list's top, 14 in (Notion's, 2026-11-16). */
+.iconNoMatches {
+  padding: 12.6px 14px 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+/* The room of the rows still to come, across the grid (PageIconPickerPanels.tsx). */
+.gridRest {
+  grid-column: 1 / -1;
+}
+/* A 32px cell, its 24px icon in the middle (Notion's, measured 2026-11-16). */
+.emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0;
+  border-radius: 4px;
+}
+.emoji:hover,
+.emoji:focus-visible,
+.emoji[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The icon the arrows moved to is ringed as well; the one the pointer
+   first rests on after them stays plain until the pointer moves into
+   another and takes the highlight (pointerHover), as Notion's grid (seen
+   2026-11-14). */
+[data-keyed="true"] .emoji[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+[data-keyed="true"] .emoji:not([data-active="true"]):hover {
+  background: transparent;
+}
+/* The "업로드" tab, as Notion's (measured 2026-11-01): 16px in from the
+   picker's sides, 12 under the tab row; the hint centred 10 under the
+   upload plate, "워크스페이스 이모지 라이브러리에 추가" 12 under the preview. */
+.uploadPanel {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 8px 4px;
+}
+.uploadHint {
+  margin-top: 10px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+.libraryCheck {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+.libraryCheck input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+/* A page icon's card on a touch screen (TouchPickerCard): its head across
+   the card's top, the tab row under it. */
+.picker[data-touch-card="true"] {
+  padding-top: 0;
+}
+.picker[data-touch-card="true"] > [data-touch-picker-head] {
+  margin-inline: -8px;
+}
+/* Its tab row is the card's band (TouchPickerCard's tabRow), the filter's
+   row flush under it on an iPad and its band 1px under it on a phone
+   (Notion's iPad at 834 and iPhone at 402, seen 2026-11-17). */
+.picker[data-touch-card="true"] .head {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.picker[data-touch-card="true"] .grid {
+  flex: 1 1 auto;
+  max-height: none;
+}
+/* On an iPad (a touch screen wider than a phone) the Icons tab's list runs
+   down to the card's foot, its icons 32px in 44px cells, as many a row as
+   fit from 9 in past the group's 4, its name and rows as the desk's, as
+   Notion's iPad (seen 2026-11-17 in Safari at 834, light, two tabs: a 414
+   list from 309.1 to the card's foot at 874.9, 565.8 high; nine cells a row
+   from 223, 13 in, 44 apart, the ninth ending at 619 in the group's 620;
+   rows 44 apart from 342.8; each icon 32px in its cell's middle, the cell
+   8px round where the emoji tab's are 4). The card is 414 wide on every
+   iPad (TouchPickerCard), so nine at either side. */
+body:not([data-phone="true"]) .picker[data-touch-card="true"] .iconList {
+  flex: 1 1 auto;
+  height: auto;
+}
+body:not([data-phone="true"]) .picker[data-touch-card="true"] .grid {
+  grid-template-columns: repeat(auto-fill, 44px);
+  padding-inline-start: 9px;
+}
+body:not([data-phone="true"]) .picker[data-touch-card="true"] .emoji {
+  height: 44px;
+  border-radius: 8px;
+}
+body:not([data-phone="true"]) .picker[data-touch-card="true"] .emoji svg {
+  width: 32px;
+  height: 32px;
+}
+/* On a phone the Icons tab's list is a phone picker's (PhonePickerList.module.css)
+   from 9 under the filter's band, as Notion's iPhone and Android (seen
+   2026-11-17 at 411 and 402): each group's name 28 under the group before,
+   its icons, 32px, on white under a hairline with no room over or under
+   them, the list running past the card's foot with no bar. */
+[data-phone="true"] .picker[data-touch-card="true"] .iconList {
+  margin-top: 0;
+}
+[data-phone="true"] .picker[data-touch-card="true"] .sectionLabel {
+  padding-top: 28px;
+}
+[data-phone="true"] .picker[data-touch-card="true"] .grid {
+  padding-block: 0;
+  box-shadow: 0 -1px 0 var(--border-subtle);
+}

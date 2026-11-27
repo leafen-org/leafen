@@ -1,0 +1,465 @@
+/* Notion's settings "Sidebar" (seen 2026-10-11): "Tab presets" with "New tab"
+   at its right over a 1px line; the presets in a column, each a 52px row
+   (icon, 14px/500 name over a 12px "Created by"), the chosen one shaded,
+   with "Default ▾" in blue and "⋯"; beside it a shaded panel with the
+   preset's name in a field and what its tab holds, 14px rows. */
+/* A preset's own icon in Notion's gray icon color in the list, head and preview (2026-11-18: #d3d3d3, #55534e light). */
+.section {
+  --preset-icon: var(--icon-c-gray);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.newTab {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.newTab:hover:not(:disabled) { background: var(--bg-hover); }
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* The presets beside a 280px editor 16px away, as Notion's (seen 2026-11-18 at 1440, dpr 1: 625 + 16 + 280 in the
+   panel's whole width, 481 at 1280, 268 at 1024; one column 16px apart at 960 and 768). */
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 280px);
+  gap: 16px;
+  align-items: start;
+}
+
+@container settings (max-width: 640px) {
+  .body { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The list as Notion's (seen 2026-11-18 in Chrome at 1440, dpr 1, computed): its parts 2px apart; a group's name a 24px
+   line 10px in, 2px under it ("기본 탭" at 247, its first preset at 275), the next group 12px and 2px further down; its
+   "none yet" 8px in, 4px over and under; each preset a 52px row 4px in (8px at its end), round 8px, its parts 8px apart:
+   the 44px button with its 22px icon 6px in and the name 8px on (412 in a list from 372), then "기본 ▾" and "⋯". */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin-block-start: 12px;
+  padding-block: 2px;
+  padding-inline: 10px 0;
+  color: var(--text-tertiary); /* Notion's, 2026-11-18: #7d7a75 dark, #a19e99 light */
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.group:first-child {
+  height: 26px;
+  margin-block-start: 0;
+  padding-block-start: 0;
+}
+
+.empty {
+  margin-block-end: 2px;
+  padding: 4px 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 52px;
+  padding-block: 4px;
+  padding-inline: 4px 8px;
+  border-radius: 8px;
+}
+
+.row:hover,
+.row[data-chosen="true"] { background: var(--bg-hover); }
+
+.rowMain {
+  display: flex;
+  flex: 1 1 auto;
+  align-self: stretch;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--preset-icon);
+  text-align: start;
+}
+
+.rowText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.rowText > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.rowMeta {
+  padding-inline-end: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.menuWrap { position: relative; display: inline-flex; }
+
+/* "기본 ▾" in Notion's blue badge, "선택 항목 ▾" in its gray one (seen 2026-11-18, computed: 24px high, 6px in, 14px
+   500 words and its 16px chevron 6px apart; bluBacSecTra with bluTexAccPri, graBacSecTra with graTexAccPri). */
+.role {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.role:disabled { cursor: default; }
+
+.role[data-sidebar-preset-role="optional"] {
+  background: var(--action-mark-gray-bg);
+  color: var(--text-gray-accent);
+}
+
+.rowIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+/* ⚠ on a preset, or an item of it, naming a page not every member opens. */
+.warn {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  color: var(--c-accent-yellow);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.more:hover:not(:disabled) { background: var(--bg-hover); }
+
+.popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-start: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: 0 12px 32px rgba(15, 15, 15, 0.12), 0 0 0 1px var(--border-subtle);
+}
+
+.popover[data-align="end"] { inset-inline-end: 0; inset-inline-start: auto; }
+
+.choice,
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.choice:hover,
+.item:hover:not(:disabled) { background: var(--bg-hover); }
+
+.item > svg { flex: 0 0 auto; color: var(--icon-secondary); }
+
+.item:disabled { color: var(--text-tertiary); }
+.item[data-danger]:hover:not(:disabled) { color: var(--menu-danger); }
+
+.choiceText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.choiceText) > span:not(span:first-of-type) {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* As tall as Notion's, whatever it holds (seen 2026-11-18 in Chrome at 1440, dpr 1, computed: min(560px, 100vh - 220px),
+   no lower than 480px): its list scrolls inside it (.panelBody) and "미리보기" stays at its foot (.previewToggle), as the
+   sidebar's customize list and its "완료" (SidebarCustomizeList). */
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: min(560px, calc(100vh - 220px));
+  min-height: 480px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-secondary, var(--bg-hover));
+}
+
+/* Its head as Notion's (seen 2026-11-18 at 1440, dpr 1, computed, its own presets and a new one): 8px in from the top
+   and sides, the icon button, the name and its ↩ or 복제 28px each 8px apart, the icon's 22px box set on a 14px/1.2
+   line that adds its text's descent under it (Notion's line 28.8, so the head 36.8). */
+.panelHead {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 0;
+}
+
+.panelIconLine {
+  display: block;
+  flex: none;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.panelIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--preset-icon);
+  vertical-align: baseline;
+}
+
+/* A box with nothing in its flow, so its foot is the button's baseline, as Notion's icon span: the glyph centred in it. */
+.panelIconBox {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.panelIconBox > * {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+}
+
+/* Notion's field, read-only or not: its faint ground and inset line, the words 6px in. */
+.name {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.headAction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.headAction:hover:not(:disabled) { background: var(--bg-hover); }
+
+/* The note that a preset can't be edited, under the head, as Notion's: 12px on 16px lines, 6px over, 4px under, 12px in. */
+.locked {
+  flex: none;
+  padding: 6px 12px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* What the preset holds, as Notion's: 30px rows 1px apart, an icon in a 22px box 4px in, the name 8px on. */
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.itemIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+}
+
+.itemRow > span:last-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-accent-secondary); /* the sidebar's page names', as Notion's (2026-11-18: #bcbab6, #5f5e59 light) */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Across the list, 6px from the rows either side (5px and the list's 1px), as Notion's. */
+.divider {
+  flex: none;
+  height: 1px;
+  margin-block: 5px;
+  background: var(--menu-divider);
+}
+
+/* "변경 사항 저장하기" beside "새 사전 설정" while changes wait, as Notion's (2026-11-06). */
+.headActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.save:disabled { cursor: default; opacity: 0.4; }
+
+/* A preset changed or deleted and not yet saved. */
+.unsaved {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-inline-start: 6px;
+  border-radius: 50%;
+  background: var(--unsaved-dot);
+  vertical-align: middle;
+}
+
+/* Greyed as Notion's, its dot still bright. */
+.row[data-deleted="true"] .rowMain,
+.row[data-deleted="true"] .rowText,
+.row[data-deleted="true"] .rowMeta { color: var(--text-tertiary); }
+
+.row[data-deleted="true"] .role { opacity: 0.45; }
+
+/* The editor's body takes the panel's height, "미리보기" stays at its bottom. */
+/* The list starts 12px under the head and keeps 8px from the panel's sides, as Notion's (seen 2026-11-18 at 1440, dpr 1:
+   "새 페이지" or "단축키 추가" at 322.8 or 296.8 in a panel from 247); an editable one is the sidebar's customize list,
+   here without its own 4px over it and with its line under the shortcuts 6px from either row, as Notion's editor. */
+.panelBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 8px 0;
+}
+
+.panelBody > [data-sidebar-customize] { padding-block-start: 0; }
+.panelBody [data-sidebar-customize-shortcuts-divider] { margin-block: 5px; }
+
+.shortcutsBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+/* "미리보기" across the panel's foot, "미리보기 종료" in blue while it shows (Notion, 2026-11-09): 8px in from the panel's
+   inside edges, under its list's scroll (Notion's 44px foot, its button 262px wide, seen 2026-11-18 at 1440). */
+.previewToggle {
+  flex: none;
+  height: 28px;
+  margin: 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.previewToggle:hover { background: var(--bg-hover); }
+
+/* "미리보기 종료" in Notion's blue badge colors, half again as strong under the pointer (seen 2026-11-18). */
+.previewToggle[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+}
+
+.previewToggle[aria-pressed="true"]:hover { background: var(--action-mark-blue-bg-hover); }

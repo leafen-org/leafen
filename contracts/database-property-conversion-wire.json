@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "name": "database-property-conversion",
+  "operations": [
+    {
+      "goName": "databasePropertyConversionRead",
+      "tsName": "read",
+      "method": "GET",
+      "path": "/pages/{pageId}/database-properties/{propertyId}/conversion"
+    },
+    {
+      "goName": "databasePropertyConversionRestore",
+      "tsName": "restore",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-properties/{propertyId}/conversion/restore"
+    }
+  ],
+  "bounds": [
+    { "goName": "databasePropertyConversionMaxBodyBytes", "tsName": "maxBodyBytes", "value": 1024 }
+  ],
+  "errors": [
+    { "goName": "errorCodeDatabasePropertyConversionInvalid", "tsName": "invalid", "value": "LEAFEN_DATABASE_PROPERTY_CONVERSION_INVALID" },
+    { "goName": "errorCodeDatabasePropertyConversionNotFound", "tsName": "notFound", "value": "LEAFEN_DATABASE_PROPERTY_CONVERSION_NOT_FOUND" },
+    { "goName": "errorCodeDatabasePropertyConversionPending", "tsName": "pending", "value": "LEAFEN_DATABASE_PROPERTY_CONVERSION_PENDING" }
+  ],
+  "records": [
+    {
+      "goName": "databasePropertyConversionWire",
+      "tsName": "DatabasePropertyConversion",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "FromType", "jsonName": "fromType", "goType": "string", "tsType": "string" },
+        { "goName": "ToType", "jsonName": "toType", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"completed\"" },
+        { "goName": "Processed", "jsonName": "processed", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "*int64", "tsType": "number | null" }
+      ]
+    },
+    {
+      "goName": "databasePropertyConversionResponse",
+      "tsName": "DatabasePropertyConversionResponse",
+      "fields": [
+        { "goName": "Conversion", "jsonName": "conversion", "goType": "*databasePropertyConversionWire", "tsType": "DatabasePropertyConversion | null" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+/* The import windows' pickers over their window — "위치 가져오기"'s places a new
+   database or page can go, the databases a CSV's rows can join
+   (CsvImportPlacePicker) and a CSV column's types (CsvImportColumnsStep): one
+   row look for all. Each is drawn on the page's top layer, placed on the
+   screen against what opened it, and its rows' scroll stops at their ends
+   rather than moving the window or the settings under it (2026-11-08: on a
+   phone the settings behind scrolled on past the list's end). */
+.popover {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.popoverList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* The databases, as long as their rows up to Notion's 300px (seen 2026-11-08). */
+.databaseList {
+  max-height: 300px;
+}
+
+.popoverGroup {
+  margin: 8px 12px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+/* "위치 가져오기"'s groups, as Notion's (seen 2026-11-15, 1440 dark): a
+   group's name 14px under the row before it and 8px over its first row,
+   10px under the search field's space when it leads the list. */
+[data-csv-location-picker] .popoverGroup {
+  margin: 14px 12px 8px;
+  line-height: var(--menu-label-line-height);
+}
+
+[data-csv-location-picker] .popoverGroup:first-child {
+  margin-top: 6px;
+}
+
+/* The place chosen now: a 16px check at the row's end in the words' color,
+   the row itself unlit (Notion's "위치 가져오기", seen 2026-11-15). */
+.chosen {
+  flex: none;
+  color: var(--text-default);
+}
+
+.popoverItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 8px);
+  min-height: 28px;
+  margin: 0 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.popoverItem:hover,
+.popoverItem[data-active="true"] {
+  background: var(--bg-hover);
+}
+/* The place the arrows moved to is ringed as well, the pointer grounding the
+   one under it apart, as Notion's "위치 가져오기" list (seen 2026-11-14); its
+   database list lights the row alone. */
+[data-csv-location-picker] [data-keyed="true"] .popoverItem[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.popoverItem:disabled {
+  color: var(--text-disabled);
+  cursor: default;
+}
+
+.popoverItem > span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* A row's emoji takes a line icon's 20px, centered, so every row's words
+   start at one place, beside it, as Notion's place picker (seen 2026-11-07). */
+.popoverItem > span[aria-hidden="true"] {
+  flex: none;
+  align-items: center;
+  width: 20px;
+}
+
+/* A teamspace's mark in the list, the sidebar's at a page glyph's 18px, as
+   Notion's (seen 2026-11-19 at 1440, dark): centered where a row's icon
+   stands, its letter at 0.6875 of it and 400, round 3.5px. */
+[data-csv-location-picker] .popoverItem > .teamspaceMark {
+  width: 18px;
+  height: 18px;
+  margin-inline: 1px;
+  border-radius: 3.5px;
+  font-size: calc(18px * 0.6875);
+  font-weight: 400;
+}
+
+/* "+ 새 팀스페이스"'s plus: 16px in the icons' 20px square, centered, in the
+   icons' gray (Notion's, seen 2026-11-19: x+10 in its row, rgb(173,169,163)
+   dark). */
+.newMark {
+  justify-content: center;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+/* A page's or database's icon in a 20px square, centered (PageIconGlyph). */
+.glyph {
+  justify-content: center;
+  height: 20px;
+}
+
+/* A row's line icon — the lock, a page's or a database's own while it has
+   none — in the icons' gray, not the words' color, as Notion's "위치 가져오기"
+   and "데이터베이스 선택" draw them (seen 2026-11-19 in two Chrome tabs, dark:
+   173,169,163) and as the move list does (MoveToDialog .icon); an icon of a
+   color of its own keeps it. */
+[data-csv-location-picker] .popoverItem > svg:first-child,
+[data-csv-database-picker] .popoverItem > svg:first-child,
+[data-csv-location-picker] .glyph {
+  color: var(--icon-secondary);
+}
+
+/* "위치 가져오기"'s places are a page picker's rows, as Notion's (seen
+   2026-11-19 at dpr 2 in two tabs, as its move and "/페이지 링크" pickers):
+   1px apart, the words 14px and the place 12px, each a 16.8px line, 2px
+   apart; alone, one line in a 28px row (title 5.6 down, an 18px page
+   glyph 5 down); with its place, a 45px row (title 4.7 down, place 23.5)
+   and the icon at the top, 1px down (`data-placed`). */
+[data-csv-location-picker] .popoverItem {
+  line-height: 16.8px;
+}
+
+[data-csv-location-picker] .popoverItem + .popoverItem {
+  margin-top: 1px;
+}
+
+[data-csv-location-picker] .popoverItem > span:not([aria-hidden]) {
+  gap: 2px;
+}
+
+[data-csv-location-picker] .popoverItem small {
+  line-height: 16.8px;
+}
+
+[data-csv-location-picker] .popoverItem[data-placed] {
+  min-height: 45px;
+}
+
+[data-csv-location-picker] .popoverItem[data-placed] > .glyph {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+
+.popoverItem > span > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.popoverItem small {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.popoverEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* The pickers' search field, as Notion's menus draw it (a CSV column's type
+   menus seen 2026-11-13, "위치 가져오기" and "데이터베이스 선택" seen
+   2026-11-15, 1440 dark): 28px high and 12px in, round 6px, its words 6px
+   in, the menu's field ground and, while it has the keys, the blue ring; 8px
+   from the menu's top ("위치 가져오기" 12px) and the rows 12px under it.
+   A type menu's rows are 1px apart; "기존 속성" 6px under the field's space
+   and 8px over the first row; a line 4px from the rows around it, 8px in
+   from their sides, over "Add new property". A new database's eleven types
+   make it 370px high. */
+.search {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 28px;
+  margin: 4px 12px 12px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  --menu-search-rest-ring: var(--menu-field-ring);
+  box-shadow: var(--menu-search-rest-ring);
+  cursor: text;
+}
+
+[data-csv-location-picker] .search {
+  margin-top: 8px;
+}
+
+.search:focus-within {
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+
+.search > input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.typeMenu > .popoverGroup {
+  margin: 6px 12px 8px;
+  line-height: var(--menu-label-line-height);
+}
+
+.typeMenu .popoverItem + .popoverItem {
+  margin-top: var(--menu-row-space);
+}
+
+.typeLine {
+  flex: none;
+  height: 1px;
+  margin: 4px 12px;
+  background: var(--menu-divider);
+}
+
+/* The title property's name and its tag: 11px, weight 500, in the gray
+   accent on the pale ground Notion's dark draws rgba(255, 255, 235, 0.1),
+   2px 4px in, round 4px, 6px after the name. */
+.popoverItem > .typeName {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.popoverItem > .typeName > .typeTag {
+  flex: none;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--button-outline);
+  color: var(--text-gray-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.3;
+}

@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Lataa käyttäjätilin sähköpostiosoitteet",
+        "deniedEffect": "Sähköpostiosoitteita ei ladattu; tallennettuja osoitteita ei muutettu.",
+        "uncertainEffect": "Nykyisiä sähköpostiosoitteita ei voitu vahvistaa.",
+        "stateCheckAction": "Yhdistä uudelleen ja päivitä sähköpostiluettelo ennen muutoksen tekemistä."
+      },
+      "update": {
+        "operation": "Hallitse käyttäjätilin sähköpostiosoitteita",
+        "deniedEffect": "Sähköpostipyyntöä ei hyväksytty; tallennettuja osoitteita ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko sähköpostipyyntö loppuun.",
+        "stateCheckAction": "Päivitä sähköpostilista ja tarkista vahvistusviesti ennen kuin yrität uudelleen."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Lataa ilmoitusasetukset",
+        "deniedEffect": "Ilmoitusasetuksiasi ei voitu ladata, eikä tallennettuja asetuksiasi muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitä ilmoituksia saat.",
+        "stateCheckAction": "Sulje ja avaa asetukset uudelleen, jotta ilmoitusasetuksesi latautuvat ennen niiden muuttamista."
+      },
+      "update": {
+        "operation": "Muuta ilmoitusasetuksia",
+        "deniedEffect": "Ilmoitusasetuksiasi ei muutettu, ja aiemmat asetuksesi säilytetään.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, muuttuivatko ilmoitusasetuksesi.",
+        "stateCheckAction": "Sulje ja avaa asetukset uudelleen ja tarkista ilmoitusasetuksesi ennen kuin muutat niitä uudelleen."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Lataa käyttäjätilin profiili",
+        "deniedEffect": "Nimeäsi ja kuvaasi ei voitu ladata, eikä tallennettua profiiliasi muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä nimeäsi ja kuvaasi.",
+        "stateCheckAction": "Sulje ja avaa asetukset uudelleen, jotta profiilisi latautuu ennen sen muuttamista."
+      },
+      "update": {
+        "operation": "Tallenna käyttäjätilin profiili",
+        "deniedEffect": "Profiiliasi ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko käyttäjätilin profiili.",
+        "stateCheckAction": "Lataa käyttäjätilin profiili ja tarkastushistoria uudelleen ennen kuin yrität uudelleen."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Muuta 2-vaiheista vahvistusta",
+        "deniedEffect": "Pyydettyä 2-vaiheisen vahvistuksen muutosta ei hyväksytty; aiempi asetus on edelleen voimassa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa 2-vaiheisen vahvistuksen nykyistä tilaa.",
+        "stateCheckAction": "Lataa käyttäjätilin turvallisuusasetukset uudelleen ennen kuin yrität toista 2-vaiheisen vahvistuksen muutosta."
+      },
+      "password": {
+        "operation": "Vaihda käyttäjätilin salasana",
+        "deniedEffect": "Salasanaa ei vaihdettu, ja nykyiset istunnot pysyvät voimassa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, vaihdettiinko salasana ja päätettiinkö muut istunnot.",
+        "stateCheckAction": "Lataa käyttäjätilin suojaus uudelleen ja kirjaudu sisään uudelleen, jos nykyinen istunto ei enää toimi."
+      },
+      "read": {
+        "operation": "Lataa käyttäjätilin turvallisuusasetukset",
+        "deniedEffect": "Turva-asetuksia ja istuntoja ei ladattu; tallennettua käyttäjätilin tilaa ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa 2-vaiheisen vahvistuksen ja istuntojen nykyistä tilaa.",
+        "stateCheckAction": "Lataa käyttäjätilin turvallisuusasetukset uudelleen ennen muutoksen tekemistä."
+      },
+      "recovery": {
+        "operation": "Korvaa palautuskoodit",
+        "deniedEffect": "Uusia palautuskoodeja ei hyväksytty; aiemmat käyttämättömät koodit toimivat edelleen.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitkä palautuskoodit ovat voimassa.",
+        "stateCheckAction": "Lataa käyttäjätilin turvallisuusasetukset uudelleen ennen kuin päätät, korvaatko koodit uudelleen."
+      },
+      "sessionRevoke": {
+        "operation": "Peruuta käyttäjätilin istunto",
+        "deniedEffect": "Valitun istunnon peruutusta ei vahvistettu; muita istuntoja ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, peruutettiinko valittu istunto.",
+        "stateCheckAction": "Lataa istuntoluettelo uudelleen ennen kuin päätät, yritätkö uudelleen."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Peruuta palvelimen varmuuskopio",
+        "deniedEffect": "Varmuuskopion peruutusta ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, peruutettiinko varmuuskopio.",
+        "stateCheckAction": "Tarkista varmuuskopion nykyinen tila ennen kuin peruutat uudelleen."
+      },
+      "create": {
+        "operation": "Luo palvelimen varmuuskopio",
+        "deniedEffect": "Uuden varmuuskopion luontia ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, hyväksyttiinkö varmuuskopiopyyntö.",
+        "stateCheckAction": "Tarkista nykyinen varmuuskopio ennen kuin lähetät uuden pyynnön."
+      },
+      "download": {
+        "operation": "Lataa palvelimen varmuuskopio",
+        "deniedEffect": "Vahvistettua varmuuskopiotiedostoa ei ladattu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa varmuuskopiotiedostoa tai suoratoistaa sitä.",
+        "stateCheckAction": "Tarkista valmiin varmuuskopion tila ennen kuin lataat uudelleen."
+      },
+      "retry": {
+        "operation": "Yritä palvelimen varmuuskopiota uudelleen",
+        "deniedEffect": "Epäonnistunutta varmuuskopiota ei käynnistetty uudelleen.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, käynnistettiinkö varmuuskopio uudelleen.",
+        "stateCheckAction": "Tarkista varmuuskopion nykyinen tila ennen kuin yrität uudelleen."
+      },
+      "status": {
+        "operation": "Lataa palvelimen varmuuskopion tila",
+        "deniedEffect": "Varmuuskopion tilaa ei ladattu; tallennettu tila pysyi ennallaan.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa varmuuskopion nykyistä tilaa.",
+        "stateCheckAction": "Lataa varmuuskopion tila uudelleen ennen kuin teet muita toimia."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Lataa palvelimen raportti",
+        "deniedEffect": "Raporttia ei ladattu; raportin tila pysyi ennallaan.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä raportin tilannekuvaa.",
+        "stateCheckAction": "Lataa nykyinen raportti uudelleen ennen sen päivittämistä."
+      },
+      "refresh": {
+        "operation": "Päivitä palvelinraportti",
+        "deniedEffect": "Uutta raportin tilannekuvaa ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, muuttuiko raportin tilannekuva.",
+        "stateCheckAction": "Lataa nykyinen raportti ennen kuin päivität uudelleen."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Lataa varmuuskopioinnin aikataulu",
+        "deniedEffect": "Varmuuskopioinnin aikataulua ei ladattu; asetuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä varmuuskopioinnin aikataulua.",
+        "stateCheckAction": "Lataa varmuuskopioinnin aikataulu uudelleen ennen sen muuttamista."
+      },
+      "restore": {
+        "operation": "Palauta palvelin varmuuskopiosta",
+        "deniedEffect": "Palvelimen tietoja ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, oliko palautus määritetty.",
+        "stateCheckAction": "Lataa varmuuskopiointiasetukset uudelleen ja tarkista, odottaako palautus, ennen kuin yrität uudelleen."
+      },
+      "save": {
+        "operation": "Tallenna varmuuskopioinnin aikataulu",
+        "deniedEffect": "Varmuuskopioinnin aikataulua ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko varmuuskopioinnin aikataulu.",
+        "stateCheckAction": "Lataa varmuuskopioinnin aikataulu uudelleen ja tarkista voimassa olevat asetukset ennen kuin tallennat uudelleen."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Lataa pyyntölokin asetukset",
+        "deniedEffect": "Pyyntölokin asetuksia ei ladattu; asetuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyisiä pyyntölokin asetuksia.",
+        "stateCheckAction": "Lataa pyyntölokin asetukset uudelleen ennen niiden muuttamista."
+      },
+      "save": {
+        "operation": "Tallenna pyyntölokin asetukset",
+        "deniedEffect": "Pyyntölokin asetuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko pyyntölokin asetukset.",
+        "stateCheckAction": "Lataa pyyntölokin asetukset uudelleen ja tarkista voimassa olevat asetukset ennen kuin tallennat uudelleen."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Lataa verkon välityspalvelin",
+        "deniedEffect": "Verkon välityspalvelinta ei ladattu; asetuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä verkon välityspalvelinta.",
+        "stateCheckAction": "Lataa verkon välityspalvelin uudelleen ennen sen muuttamista."
+      },
+      "save": {
+        "operation": "Tallenna verkon välityspalvelin",
+        "deniedEffect": "Verkon välityspalvelinta ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko verkon välityspalvelin.",
+        "stateCheckAction": "Lataa verkon välityspalvelin uudelleen ja tarkista nykyinen ennen kuin tallennat uudelleen."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Lataa palvelinasetukset",
+        "deniedEffect": "Asetuksia ei ladattu eikä tallennettuja asetuksia muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa palvelimen nykyisiä asetuksia.",
+        "stateCheckAction": "Lataa asetukset uudelleen ennen muutosten tekemistä."
+      },
+      "save": {
+        "operation": "Tallenna palvelinasetukset",
+        "deniedEffect": "Uusia asetuksia ei otettu käyttöön; aiemmin tallennetut asetukset ovat edelleen voimassa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko uudet asetukset.",
+        "stateCheckAction": "Lataa asetukset uudelleen ja vertaa nykyisiä arvoja ennen kuin yrität uudelleen."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Tarkista kirjautumistila",
+        "deniedEffect": "Kirjautumisistuntoa ei luotu, eikä käyttäjätilin tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä kirjautumistilaa.",
+        "stateCheckAction": "Lataa sivu uudelleen ja kirjaudu sitten sisään uudelleen."
+      },
+      "deviceCode": {
+        "operation": "Kirjaudu tälle laitteelle",
+        "deniedEffect": "Et kirjautunut sisään, eikä käyttäjätilin tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, kirjauduttiinko tälle laitteelle.",
+        "stateCheckAction": "Kirjaudu sisään uudelleen uudella koodilla."
+      },
+      "emailVerification": {
+        "operation": "Vahvista sähköpostiosoite",
+        "deniedEffect": "Sähköpostiosoitetta ei vahvistettu, eikä käyttäjätilille kirjauduttu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko sähköpostiosoitteen vahvistus loppuun.",
+        "stateCheckAction": "Yritä kirjautua sisään; jos se ei toimi, avaa sähköpostin linkki uudelleen."
+      },
+      "mfa": {
+        "operation": "Suorita 2-vaiheinen vahvistus",
+        "deniedEffect": "Et kirjautunut sisään, ja MFA-haaste on edelleen suorittamatta.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko 2-vaiheinen vahvistus loppuun.",
+        "stateCheckAction": "Aloita kirjautuminen uudelleen."
+      },
+      "passwordResetConfirm": {
+        "operation": "Vaihda salasanaa",
+        "deniedEffect": "Salasanaa ei vaihdettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, vaihdettiinko salasana.",
+        "stateCheckAction": "Yritä kirjautua sisään uudella salasanalla; jos se ei toimi, hanki uusi nollauslinkki."
+      },
+      "passwordResetRequest": {
+        "operation": "Pyydä salasanan nollausta",
+        "deniedEffect": "Yhtään salasanan nollausviestiä ei hyväksytty toimitettavaksi.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, hyväksyttiinkö nollauspyyntö.",
+        "stateCheckAction": "Odota sähköpostia ennen kuin teet uuden pyynnön."
+      },
+      "providerExchange": {
+        "operation": "Kirjaudu sisään ulkoisella käyttäjätilillä",
+        "deniedEffect": "Et kirjautunut sisään, eikä käyttäjätilin tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa ulkoisen kirjautumisen tulosta.",
+        "stateCheckAction": "Kirjaudu sisään uudelleen samalla tavalla."
+      },
+      "serverSetup": {
+        "operation": "Määritä Leafen-palvelin",
+        "deniedEffect": "Ylläpitäjän käyttäjätiliä ei luotu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, saatiinko palvelimen määrittäminen valmiiksi.",
+        "stateCheckAction": "Lataa sivu uudelleen ja tarkista määrityksen tila ennen kuin yrität uudelleen."
+      },
+      "signIn": {
+        "operation": "Kirjaudu sisään",
+        "deniedEffect": "Et kirjautunut sisään, eikä käyttäjätilin tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko kirjautuminen loppuun.",
+        "stateCheckAction": "Päivitä sivu ja kirjaudu uudelleen sisään."
+      },
+      "signUp": {
+        "operation": "Luo käyttäjätili",
+        "deniedEffect": "Uutta käyttäjätiliä ei luotu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, luotiinko käyttäjätili.",
+        "stateCheckAction": "Yritä kirjautua sisään; jos se ei onnistu, rekisteröidy uudelleen."
+      },
+      "passkey": {
+        "operation": "Kirjaudu sisään tunnusluvulla",
+        "deniedEffect": "Kirjautumista ei hyväksytty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko kirjautuminen loppuun.",
+        "stateCheckAction": "Kirjaudu uudelleen sisään tunnusluvullasi."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Lataa sivun sisältö",
+        "deniedEffect": "Sivun sisältöä ei ladattu, eikä tallennettua sisältöä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa sivun nykyistä sisältöä.",
+        "stateCheckAction": "Lataa sivu uudelleen ennen muokkaamista."
+      },
+      "update": {
+        "operation": "Tallenna sivun sisältö",
+        "deniedEffect": "Muutosta ei hyväksytty. Palvelimen uusin sisältö on edelleen voimassa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko sisältö.",
+        "stateCheckAction": "Lataa uusin sisältö uudelleen ja vertaa sitä ennen kuin yrität uudelleen."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Tallenna tietokanta-automaatio",
+        "deniedEffect": "Automaatiota ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko tietokanta-automaation muutos.",
+        "stateCheckAction": "Lataa automaatio uudelleen ennen kuin yrität uudelleen."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Tallenna DLP-käytäntö",
+        "deniedEffect": "Uutta DLP-käytäntöä ei tallennettu; edellinen käytäntö on edelleen voimassa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko DLP-käytäntö.",
+        "stateCheckAction": "Lataa DLP-käytäntö ja organisaation auditointihistoria uudelleen ennen kuin yrität uudelleen."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Vahvista SAML-domain",
+        "deniedEffect": "Verkkotunnus odottaa edelleen vahvistusta; SAML-määritystä, valvontahistoriaa ja kirjautumisistuntoja ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa SAML-domainin vahvistuksen nykyistä tilaa.",
+        "stateCheckAction": "Lataa SAML-domainin tila uudelleen ennen kuin yrität uudelleen."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Poista tiedosto",
+        "deniedEffect": "Tiedostoa ei poistettu eikä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, poistettiinko tiedosto.",
+        "stateCheckAction": "Lataa tiedosto ja sen viittaukset uudelleen ennen kuin päätät, yritätkö uudelleen."
+      },
+      "upload": {
+        "operation": "Lähetä tiedosto",
+        "deniedEffect": "Uutta tiedostoa ei tallennettu; olemassa olevia tiedostoja ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko tiedosto.",
+        "stateCheckAction": "Lataa tiedostoluettelo uudelleen ennen kuin päätät, yritätkö uudelleen."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Käytä henkilökohdistuksia",
+        "deniedEffect": "Uusia kohdistuksia ei hyväksytty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitkä kohdistukset otettiin käyttöön.",
+        "stateCheckAction": "Lataa kohdistustulokset uudelleen ennen kuin käytät niitä uudelleen."
+      },
+      "refresh": {
+        "operation": "Päivitä henkilökohdistukset",
+        "deniedEffect": "Uusimpia kohdistuksia ei ladattu; tallennettuja kohdistuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa kohdistusten nykyistä tilaa.",
+        "stateCheckAction": "Lataa kohdistuspaneeli uudelleen ennen kuin jatkat."
+      },
+      "scan": {
+        "operation": "Skannaa tuodut henkilöt",
+        "deniedEffect": "Tuotuja henkilöitä ei lueteltu, eikä olemassa olevia kohdistuksia muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä tuotujen henkilöiden luetteloa.",
+        "stateCheckAction": "Lataa kohdistuspaneeli uudelleen ennen muutosten tekemistä."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Suorita painikeautomaatio",
+        "deniedEffect": "Painikkeen toiminnot eivät suorituneet, eikä sivun sisältöä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko painikeautomaatio.",
+        "stateCheckAction": "Lataa kyseinen sisältö ja suorituksen tila uudelleen ennen uutta yritystä."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopioi organisaation API-valtuus",
+        "deniedEffect": "Valtuutta ei vahvistettu leikepöydällä; itse valtuus ei muuttunut.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, suoritettiinko leikepöydälle kirjoittaminen loppuun.",
+        "stateCheckAction": "Tarkista leikepöytä ennen kuin kopioit valtuuden uudelleen."
+      },
+      "create": {
+        "operation": "Luo organisaation API-valtuus",
+        "deniedEffect": "Uuden valtuuden luontia ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, luotiinko valtuus.",
+        "stateCheckAction": "Lataa valtuusluettelo uudelleen ennen kuin luot uuden valtuuden."
+      },
+      "list": {
+        "operation": "Lataa organisaation API-valtuudet",
+        "deniedEffect": "Valtuuksia ei ladattu, eikä olemassa olevia valtuuksia muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä valtuusluetteloa.",
+        "stateCheckAction": "Lataa valtuusluettelo uudelleen ennen muutosten tekemistä."
+      },
+      "revoke": {
+        "operation": "Peruuta organisaation API-valtuus",
+        "deniedEffect": "Valtuuden peruutusta ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, peruutettiinko valtuus.",
+        "stateCheckAction": "Lataa valtuusluettelo uudelleen ennen uutta peruutusyritystä."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Lataa työtilan sivut",
+        "deniedEffect": "Sivuja ei ladattu, eikä tallennettuja työtilan tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyisiä työtilan sivuja.",
+        "stateCheckAction": "Lataa työtila uudelleen ennen kuin muokkaat."
+      },
+      "create": {
+        "operation": "Luo sivu",
+        "deniedEffect": "Uutta sivua ei luotu, eikä olemassa olevia sivuja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, luotiinko sivu.",
+        "stateCheckAction": "Lataa sivuluettelo uudelleen ja tarkista, onko uusi sivu luettelossa, ennen kuin yrität uudelleen."
+      },
+      "title": {
+        "update": {
+          "operation": "Tallenna sivun otsikko",
+          "deniedEffect": "Otsikon muutosta ei hyväksytty; tallennettu otsikko pysyy voimassa.",
+          "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko muutos.",
+          "stateCheckAction": "Lataa sivu uudelleen ja tarkista nykyinen otsikko."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Lataa sivuanalytiikka",
+        "deniedEffect": "Analytiikkaa ei ladattu, eikä sivun tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä analytiikkaa.",
+        "stateCheckAction": "Lataa analytiikka uudelleen ennen johtopäätösten tekemistä."
+      },
+      "policyUpdate": {
+        "operation": "Tallenna analytiikkakäytäntö",
+        "deniedEffect": "Uutta analytiikkakäytäntöä ei hyväksytty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko käytäntö.",
+        "stateCheckAction": "Lataa käytäntö uudelleen ja vertaa sitä ennen kuin yrität uudelleen."
+      },
+      "preferencesRead": {
+        "operation": "Lataa analytiikka-asetukset",
+        "deniedEffect": "Analytiikka-asetuksia ei ladattu, eikä tallennettuja asetuksia muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyisiä analytiikka-asetuksia.",
+        "stateCheckAction": "Lataa asetukset uudelleen ennen niiden muokkaamista."
+      },
+      "preferencesUpdate": {
+        "operation": "Tallenna analytiikka-asetukset",
+        "deniedEffect": "Uusia asetuksia ei hyväksytty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko asetukset.",
+        "stateCheckAction": "Lataa asetukset uudelleen ja vertaa niitä ennen kuin yrität uudelleen."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Tallenna offline-muutos turvallisesti",
+        "deniedEffect": "Muutosta ei tallennettu tälle laitteelle.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko muutos tälle laitteelle vai palvelimelle.",
+        "stateCheckAction": "Kopioi muokattu sisältö, lataa sitten sivu uudelleen ja vertaa tallennettua tilaa."
+      },
+      "legacy": {
+        "operation": "Siirrä offline-muutokset",
+        "deniedEffect": "Vanhemmat offline-muutokset pysyvät tallennuspaikassaan, eikä niitä lähetetty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitkä vanhemmat offline-muutokset siirrettiin.",
+        "stateCheckAction": "Pidä tämä välilehti auki ja lataa uudelleen ennen kuin muokkaat taas."
+      },
+      "refresh": {
+        "operation": "Lataa palautetut muutokset uudelleen",
+        "deniedEffect": "Palautettuja muutoksia ei näytetty, eikä tallennettuja tietoja korvattu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä sivua palautuksen jälkeen.",
+        "stateCheckAction": "Lataa sivu uudelleen ennen kuin muokkaat uudelleen."
+      },
+      "replay": {
+        "operation": "Lähetä offline-muutokset",
+        "deniedEffect": "Jonossa oleva muutos jää odottamaan, eikä palvelin vahvistanut sitä.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitkä jonossa olevat muutokset saavuttivat palvelimen.",
+        "stateCheckAction": "Pidä tämä välilehti avoinna, yhdistä uudelleen ja lataa sivu ennen kuin muokkaat uudelleen."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Hae julkista sivustoa",
+        "deniedEffect": "Hakutuloksia ei ladattu, eikä julkaistua sisältöä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyisiä hakutuloksia.",
+        "stateCheckAction": "Tarkista sivuston tila ennen kuin haet uudelleen."
+      },
+      "sharedPage": {
+        "operation": "Lataa jaettu sivu",
+        "deniedEffect": "Jaettua sivua ei ladattu, eikä julkaistua sisältöä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä jaettua sivua.",
+        "stateCheckAction": "Tarkista jakolinkki ennen kuin yrität uudelleen."
+      },
+      "site": {
+        "operation": "Lataa julkinen sivusto",
+        "deniedEffect": "Julkista sivustoa ei ladattu, eikä julkaistua sisältöä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä julkista sivustoa.",
+        "stateCheckAction": "Tarkista sivuston osoite ennen kuin yrität uudelleen."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Palauta lomakkeen kirjautuminen",
+        "deniedEffect": "Jäsenen lomaketta ei avattu, eikä vastausta lähetetty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa tämän lomakkeen nykyistä kirjautumistilaa.",
+        "stateCheckAction": "Lataa lomake uudelleen ja kirjaudu uudelleen sisään."
+      },
+      "configurationWrite": {
+        "operation": "Tallenna lomakkeen asetukset",
+        "deniedEffect": "Lomakkeen asetusten tallennusta ei vahvistettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa lomakkeen nykyistä määritystä.",
+        "stateCheckAction": "Lataa lomakkeen asetukset uudelleen ennen kuin tallennat uudelleen."
+      },
+      "definitionRead": {
+        "operation": "Lataa lomake",
+        "deniedEffect": "Lomaketta ei ladattu, eikä vastausta lähetetty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa lomakkeen nykyistä määritelmää.",
+        "stateCheckAction": "Lataa lomake uudelleen ennen kuin annat vastauksen."
+      },
+      "optionsRead": {
+        "operation": "Lataa lomakkeen valinnat",
+        "deniedEffect": "Pyydettyjä valintoja ei ladattu, eikä vastausluonnosta lähetetty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyisiä valintoja.",
+        "stateCheckAction": "Lataa valinnat uudelleen ennen lomakkeen lähettämistä."
+      },
+      "responseSubmit": {
+        "operation": "Lähetä lomakevastaus",
+        "deniedEffect": "Vastausta ei hyväksytty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, hyväksyttiinkö vastaus.",
+        "stateCheckAction": "Tarkista lomakkeen tulos ennen vastauksen lähettämistä uudelleen."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Lataa suoritusaikamääritys",
+        "deniedEffect": "Suoritusaikamääritystä ei ladattu; tallennettuja palvelinasetuksia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä suoritusaikamääritystä, joten turvalliset vara-arvot ovat käytössä.",
+        "stateCheckAction": "Lataa sivu uudelleen, jotta voit lukea nykyisen palvelinmäärityksen."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Synkronoi odottavat muutokset",
+        "deniedEffect": "Odottavat muutokset ovat edelleen jonossa, eikä palvelin ole vahvistanut niitä.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, mitkä odottavat muutokset saavuttivat palvelimen.",
+        "stateCheckAction": "Pidä tämä välilehti auki, yhdistä uudelleen ja tarkista tallennettu tila ennen uutta yritystä."
+      },
+      "pendingRead": {
+        "operation": "Tarkista odottavat muutokset",
+        "deniedEffect": "Odottavien muutosten määrää ei ladattu; jonossa olevia muutoksia ei hylätty.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, kuinka monta muutosta on vielä odottamassa.",
+        "stateCheckAction": "Pidä tämä välilehti auki ja tarkista synkronointitila uudelleen."
+      },
+      "retry": {
+        "operation": "Synkronoi uudelleen",
+        "deniedEffect": "Synkronointia ei vahvistettu; odottavat muutokset ovat edelleen jonossa.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa viimeisintä synkronointitulosta.",
+        "stateCheckAction": "Tarkista tallennettu tila ja yhteys ennen uutta yritystä."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Luo työtila",
+        "deniedEffect": "Uutta työtilaa ei luotu, eikä olemassa olevia tietoja muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, luotiinko työtila.",
+        "stateCheckAction": "Lataa työtilaluettelo uudelleen ja tarkista, onko uusi työtila siinä, ennen kuin yrität uudelleen."
+      },
+      "delete": {
+        "operation": "Poista työtila pysyvästi.",
+        "deniedEffect": "Poistoa ei hyväksytty; työtilaa ja olemassa olevia tietoja ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, poistettiinko työtila.",
+        "stateCheckAction": "Lataa työtilaluettelo uudelleen ennen kuin yrität uudelleen."
+      },
+      "member": {
+        "add": {
+          "operation": "Lisää työtilan jäsen",
+          "deniedEffect": "Jäsentä ei lisätty, eikä mitään muutettu.",
+          "uncertainEffect": "Leafen ei voinut vahvistaa, lisättiinkö työtilan jäsen.",
+          "stateCheckAction": "Lataa jäsenet, toiminta ja valvontahistoria uudelleen ennen kuin yrität uudelleen."
+        },
+        "revoke": {
+          "operation": "Poista työtilan jäsen",
+          "deniedEffect": "Jäsentä ei poistettu, eikä mitään muutettu.",
+          "uncertainEffect": "Leafen ei voinut vahvistaa, poistettiinko työtilan jäsen.",
+          "stateCheckAction": "Lataa jäsenet, toiminta ja valvontahistoria uudelleen ennen kuin yrität uudelleen."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Tallenna työtilan asetukset",
+          "deniedEffect": "Asetusmuutosta ei tallennettu, ja aiemmat asetukset ovat edelleen voimassa.",
+          "uncertainEffect": "Leafen ei voinut vahvistaa, tallennettiinko työtilan asetukset.",
+          "stateCheckAction": "Lataa työtilan asetukset, toiminta ja valvontahistoria uudelleen ennen kuin yrität uudelleen."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Peruuta työtilan vienti",
+        "deniedEffect": "Vientiä ei peruttu, ja se voi olla edelleen käynnissä.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, peruttiinko työtilan vienti.",
+        "stateCheckAction": "Päivitä viennin tila ennen kuin peruutat uudelleen."
+      },
+      "download": {
+        "operation": "Lataa työtilan vienti",
+        "deniedEffect": "Arkistoa ei ladattu, eikä palvelimen vientiä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, saatiinko arkiston lataus valmiiksi.",
+        "stateCheckAction": "Tarkista latausluettelo ennen kuin lataat uudelleen."
+      },
+      "job": {
+        "operation": "Vie työtila",
+        "deniedEffect": "Arkistoa ei luotu, eikä lähdetyötilaa muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, onko tähän työhön käyttökelpoista arkistoa.",
+        "stateCheckAction": "Käynnistä korvaava vienti nykyisestä työtilasta."
+      },
+      "poll": {
+        "operation": "Odota työtilan vientiä",
+        "deniedEffect": "Uusinta viennin tilaa ei ladattu, eikä vientityötä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa viennin nykyistä tilaa.",
+        "stateCheckAction": "Päivitä viennin tila ennen kuin teet toisen toiminnon."
+      },
+      "retry": {
+        "operation": "Yritä työtilan vientiä uudelleen",
+        "deniedEffect": "Uudelleenyritystä ei hyväksytty, eikä olemassa olevaa vientityötä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, hyväksyttiinkö uudelleenyritys.",
+        "stateCheckAction": "Päivitä viennin tila ennen kuin yrität uudelleen."
+      },
+      "start": {
+        "operation": "Aloita työtilan vienti",
+        "deniedEffect": "Uutta vientityötä ei otettu vastaan, eikä työtilaa muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, otettiinko vientityö vastaan.",
+        "stateCheckAction": "Päivitä uusin vientitila ennen uuden työn aloittamista."
+      },
+      "status": {
+        "operation": "Lataa työtilan vientitila",
+        "deniedEffect": "Uusinta vientitilaa ei ladattu, eikä vientityötä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä vientitilaa.",
+        "stateCheckAction": "Lataa vientivalintaikkuna uudelleen ennen seuraavaa toimintoa."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Peruuta tuonti",
+        "deniedEffect": "Tuontia ei peruttu, ja se voi olla yhä käynnissä.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, peruttiinko tuonti.",
+        "stateCheckAction": "Päivitä tuonnin tila ennen kuin peruutat uudelleen."
+      },
+      "job": {
+        "operation": "Tuo tiedosto",
+        "deniedEffect": "Sivua ei luotu; osittain tuotu sisältö poistettiin.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, onko tälle tuonnille käyttökelpoista sivua.",
+        "stateCheckAction": "Säilytä diagnostiikkaviite ja aloita uusi tuonti lähdetiedostosta."
+      },
+      "start": {
+        "operation": "Aloita tuonti",
+        "deniedEffect": "Uutta tuontia ei otettu vastaan, eikä sivua luotu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, otettiinko tuonti vastaan.",
+        "stateCheckAction": "Yritä samaa tiedostoa uudelleen muuttamatta sitä, jotta Leafen voi yhdistää uudelleen samaan pyyntöön."
+      },
+      "status": {
+        "operation": "Lataa tuonnin tila",
+        "deniedEffect": "Uusinta tuontitilaa ei ladattu, eikä tuontityötä muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä tuontitilaa.",
+        "stateCheckAction": "Avaa tuontivalintaikkuna uudelleen ja yhdistä uudelleen tallennettuun työhön ennen seuraavaa toimintoa."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Lataa käyttäjätilin pääsyavaimet",
+        "deniedEffect": "Pääsyavainluetteloa ei ladattu; tallennettuja pääsyavaimia ei muutettu.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa nykyistä pääsyavainluetteloa.",
+        "stateCheckAction": "Yhdistä uudelleen ja päivitä pääsyavainluettelo ennen muutoksen tekemistä."
+      },
+      "update": {
+        "operation": "Hallitse käyttäjätilin pääsyavaimia",
+        "deniedEffect": "Palvelin ei muuttanut tallennettuja pääsyavaimia.",
+        "uncertainEffect": "Leafen ei voinut vahvistaa, valmistuiko pääsyavaimen muutos.",
+        "stateCheckAction": "Päivitä pääsyavainten luettelo ennen kuin yrität uudelleen. Jos uusi avain luotiin mutta sitä ei tallennettu tänne, tarkista laitteesi avaintenhallinta."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Nykyinen salasana on virheellinen.",
+    "currentPasswordNext": "Jos unohdit salasanan, kirjaudu ulos ja nollaa se kirjautumissivulta.",
+    "code": "Koodi on väärä tai se on jo käytetty.",
+    "codeNext": "Syötä koodi, jonka todennussovellus näyttää nyt.",
+    "recoveryCode": "Palautuskoodi on väärä tai se on jo käytetty.",
+    "recoveryCodeNext": "Syötä palautuskoodi, jota et ole vielä käyttänyt.",
+    "accountDeactivated": "Palvelimen ylläpitäjä on poistanut tämän käyttäjätilin käytöstä.",
+    "accountDeactivatedNext": "Pyydä ylläpitäjää ottamaan se uudelleen käyttöön.",
+    "organizationSSO": "Tämä organisaatio sallii kirjautumisen vain kertakirjautumisella (SSO).",
+    "organizationSSONext": "Kirjaudu sen sijaan sisään yrityksesi käyttäjätilillä.",
+    "organizationPasswordTwoStep": "Organisaatiosi vaatii kirjautumisen salasanalla ja 2-vaiheisella vahvistuksella, ei laitekoodilla.",
+    "organizationPasswordTwoStepNext": "Kirjaudu sisään sähköpostiosoitteellasi ja salasanallasi; jos sinulla ei ole salasanaa, pyydä ylläpitäjältä kertakäyttöinen salasana.",
+    "deviceCode": "Koodi on väärä, jo käytetty tai vanhentunut, tai sen näyttänyt ikkuna suljettiin.",
+    "deviceCodeNext": "Hanki uusi koodi ja syötä se uudelleen.",
+    "setupCode": "Määrityskoodi on virheellinen.",
+    "setupCodeNext": "Avaa uudelleen palvelimen tulostama määrityslinkki tai syötä koodi, jolla palvelin käynnistettiin.",
+    "setupCodeMissing": "Syötä määrityskoodi.",
+    "setupCodeMissingNext": "Palvelimen tulostaman määrityslinkin avaaminen täyttää sen; myös koodi, jolla palvelin käynnistettiin, toimii.",
+    "sessionCapacity": "Tämä käyttäjätili on saavuttanut laiterajansa.",
+    "sessionCapacityNext": "Kirjaudu ulos laitteesta, jota et enää käytä, kohdassa Asetukset → Käyttäjätili → Laitteet ja yritä sitten uudelleen.",
+    "signInEnded": "Tämä kirjautumispyyntö on päättynyt: se aikakatkaistiin tai koodi annettiin väärin liian monta kertaa.",
+    "signInEndedNext": "Kirjaudu uudelleen sisään sähköpostiosoitteellasi ja salasanallasi.",
+    "emailNotVerified": "Tämän käyttäjätilin sähköpostiosoitetta ei ole vielä vahvistettu.",
+    "emailNotVerifiedNext": "Avaa linkki rekisteröityessäsi saamastasi sähköpostiviestistä ja kirjaudu sitten sisään.",
+    "registrationFailed": "Käyttäjätiliä ei voitu luoda.",
+    "registrationFailedNext": "Yritä hetken kuluttua uudelleen. Jos ongelma jatkuu, ilmoita siitä tämän palvelimen ylläpitäjälle."
+  },
+  "labels": {
+    "reference": "Viite"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Tämä organisaatio ei luo uusia käyttäjätilejä yrityksen kirjautumisen yhteydessä.",
+    "samlAccountCreationOffNext": "Pyydä organisaatiosi ylläpitäjää kutsumaan sinut.",
+    "samlRetryAfterInvite": "Kirjaudu uudelleen sisään, kun sinut on kutsuttu.",
+    "samlIdentityDenied": "Tällä sähköpostiosoitteella ei voi käyttää tämän organisaation yrityskirjautumista.",
+    "samlIdentityDeniedNext": "Pyydä organisaatiosi ylläpitäjää tarkistamaan sähköpostidomain ja jäsenyytesi.",
+    "samlRetryAfterAdministrator": "Kirjaudu uudelleen sisään, kun ylläpitäjä on tarkistanut asian.",
+    "samlResponseInvalid": "Yrityksen kirjautumisvastauksen vahvistaminen epäonnistui.",
+    "samlResponseInvalidNext": "Aloita kirjautuminen uudelleen. Jos ongelma jatkuu, pyydä organisaatiosi ylläpitäjää tarkistamaan SAML-asetukset.",
+    "accountAlreadyExistsForEmailAddress": "Tälle sähköpostiosoitteelle on jo olemassa käyttäjätili.",
+    "accountEmailCouldNotAdmittedFor": "Käyttäjätilin sähköpostia ei voitu lähettää.",
+    "administratorSettingsDoNotMeetServer": "Ylläpitäjän asetukset eivät täytä palvelimen vaatimuksia.",
+    "administratorSettingsNotAvailableCurrentAccount": "Ylläpitäjän asetukset eivät ole käytettävissä nykyisellä käyttäjätilillä.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Toinen ylläpitäjä on jo suorittanut palvelimen määrityksen.",
+    "anotherServerOperationTemporarilyLockedAccount": "Toinen palvelinoperaatio lukitsi tilapäisesti käyttäjätilin tallennustilan.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Toinen palvelinoperaatio lukitsi tietokannan tilapäisesti, joten vienti ei voinut jatkua.",
+    "anotherServerOperationTemporarilyLockedDlp": "Toinen palvelinoperaatio lukitsi tilapäisesti DLP-käytännön tallennustilan.",
+    "anotherServerOperationTemporarilyLockedFile": "Toinen palvelinoperaatio lukitsi tilapäisesti tiedostojen tallennustilan.",
+    "anotherServerOperationTemporarilyLockedPage": "Toinen palvelinoperaatio lukitsi tilapäisesti sivun sisällön tallennustilan.",
+    "anotherServerOperationTemporarilyLockedProduct": "Toinen palvelinoperaatio lukitsi tilapäisesti tuotteen tallennustilan.",
+    "askOrganizationAdministratorToAllow": "Pyydä organisaation ylläpitäjää tai tiimitilan omistajaa sallimaan se.",
+    "askServerAdministratorCheckEmailDelivery": "Pyydä palvelimen ylläpitäjää tarkistamaan sähköpostin toimitus ja yritä sitten uudelleen.",
+    "backupArtifactNotCompleteYet": "Varmuuskopiotiedosto ei ole vielä valmis.",
+    "backupStateNoLongerPermitsControl": "Varmuuskopion nykyinen tila ei enää salli kyseistä toimintoa.",
+    "causeCouldNotDetermined": "Syytä ei voitu määrittää.",
+    "changeSaveReceiptAndSynchronizationState": "Muutosta ei tallennettu, eikä sivun sisältö muuttunut.",
+    "checkCurrentBackupBeforeRetrying": "Tarkista nykyinen varmuuskopio ennen kuin yrität uudelleen.",
+    "checkCurrentJobStateBeforeDeciding": "Tarkista työn nykyinen tila ennen kuin päätät, yritätkö uudelleen.",
+    "checkCurrentListBeforeTryingDifferent": "Tarkista nykyinen luettelo ennen kuin yrität toista kohdetta.",
+    "checkCurrentServerSettingsBeforeTrying": "Tarkista palvelimen nykyiset asetukset ennen kuin yrität uudelleen.",
+    "checkCurrentServerSetupStateBefore": "Tarkista palvelimen määrityksen nykyinen tila ennen kuin yrität uudelleen.",
+    "checkCurrentStateAndUseNew": "Tarkista nykyinen tila ja aloita uusi varmuuskopio vain, jos tarvitset sellaisen.",
+    "checkEmailAndPassword": "Tarkista sähköposti ja salasana.",
+    "checkServerSecretStorageThenSave": "Tarkista palvelimen salaisten tietojen tallennustila ja tallenna sitten samat asetukset uudelleen.",
+    "checkServerStateThenLoadSettings": "Tarkista palvelimen tila ja lataa sitten asetukset uudelleen.",
+    "createNewBackupAndInspectServer": "Luo uusi varmuuskopio ja tarkista palvelimen tallennustila, jos virhe toistuu.",
+    "currentAccountNotAuthorizedForOperation": "Nykyisellä käyttäjätilillä ei ole oikeuksia tähän toimintoon.",
+    "currentStateMustCheckedBeforeRetry": "Nykyinen tila on tarkistettava ennen kuin uudelleenyritystä voidaan pitää turvallisena.",
+    "currentStateMustCheckedBeforeRetrying": "Nykyinen tila on tarkistettava ennen uudelleen yrittämistä.",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS-vahvistuspalvelu on tilapäisesti poissa käytöstä.",
+    "doNotAssumeUnchangedRetrySafe": "Älä oleta uudelleen yrittämisen olevan turvallista ennen kuin palvelimen tallennustila on korjattu.",
+    "doNotKeepRetryingIdentifierNew": "Älä jatka tämän pyynnön uudelleen yrittämistä; lataa ensin uudelleen, minkä jälkeen uusi yritys on turvallinen.",
+    "doNotResumeFailedJobStart": "Älä jatka epäonnistunutta työtä; aloita sen sijaan uusi vienti.",
+    "doNotRetryBeforeLoadingLatest": "Älä yritä uudelleen ennen kuin olet ladannut uusimmat palvelinasetukset.",
+    "doNotRetryDirectRequestUnchanged": "Älä yritä tätä lähetystä uudelleen sellaisenaan; käytä jatkettavaa lähetystä.",
+    "doNotRetryDirectRequestUnchanged2": "Älä yritä tätä lähetystä uudelleen sellaisenaan; käytä jatkettavaa arkistolähetystä.",
+    "doNotRetrySetupRequestSign": "Älä yritä tätä määrityspyyntöä uudelleen; kirjaudu sisään olemassa olevalla ylläpitäjän käyttäjätilillä.",
+    "doNotReuseInvalidArtifactCreate": "Älä käytä virheellistä varmuuskopiotiedostoa uudelleen; luo uusi varmuuskopio.",
+    "doNotReuseLinkNewAction": "Älä käytä tätä linkkiä uudelleen; uusi toiminto on turvallinen.",
+    "emailOrPasswordDidNotMatch": "Sähköpostiosoite tai salasana ei täsmää.",
+    "externalSignInProviderCouldNot": "Ulkoinen kirjautumispalveluntarjoaja ei voinut viimeistellä pyyntöä.",
+    "fileLargerThanOneDirectUpload": "Tämä tiedosto on liian suuri yhteen suoraan lähetykseen.",
+    "formStorageTemporarilyLockedByAnother": "Lomakkeen tallennustila lukittiin tilapäisesti toisen palvelinoperaation vuoksi.",
+    "leafenArchiveLargerThanOneDirect": "Tämä Leafen-arkisto on liian suuri yhteen suoraan tuontiin.",
+    "leafenDidNotReceiveServerResponse": "Leafen ei saanut palvelimelta vastausta.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen rakentaa uudelleen organisaation tallennustilan käytön tilaa.",
+    "leafenServiceCouldNotCompleteOperation": "Leafen-palvelu ei voinut suorittaa toimintoa loppuun.",
+    "isolatedRecordNotAppliedYourRequested": "Keskeneräinen tietue jätettiin sivuun, muutostasi ei tallennettu ja sivun sisältö on ennallaan.",
+    "jobCannotRetriedStartReplacementExport": "Tätä työtä ei voi yrittää uudelleen; aloita korvaava vienti.",
+    "jobSArchiveNotPublishedAnd": "Tämän työn arkistoa ei luotu, eikä lähdetyötilaa muutettu.",
+    "keepDiagnosticReferenceAndAskServer": "Säilytä diagnostiikkaviite ja pyydä palvelimen ylläpitäjää korjaamaan palvelimen tallennustila.",
+    "lastConfirmedSavedStateRestoredSo": "Viimeksi vahvistettu tallennettu tila palautettiin, joten sama muutos on turvallista yrittää uudelleen.",
+    "loadCurrentReportAndUseNew": "Lataa nykyinen raportti ja päivitä sen jälkeen uudelleen.",
+    "loadCurrentReportBeforeRefreshingAgain": "Lataa nykyinen raportti ennen kuin päivität uudelleen.",
+    "loadCurrentReportBeforeTryingAgain": "Lataa nykyinen raportti ennen kuin yrität uudelleen.",
+    "newerOrIncompatibleStatePreventedOperation": "Uudempi tai yhteensopimaton tila esti tämän toiminnon.",
+    "noNewArchivePublishedAndSource": "Uutta arkistoa ei luotu, eikä lähdetyötila tai aiemmat arkistot muuttuneet.",
+    "noNewSignInSessionCreated": "Uutta kirjautumisistuntoa ei luotu eikä olemassa olevia istuntoja muutettu.",
+    "notKnownWhetherRetryingSafeUntil": "Ei tiedetä, onko uudelleen yrittäminen turvallista, ennen kuin nykytila on tarkistettu.",
+    "organizationStorageAuthorityInconsistent": "Organisaation tallennustilan käytön tietue on ristiriitainen.",
+    "organizationDlpBlocksOperation": "Organisaatiosi tietojen katoamisen estokäytäntö estää tämän.",
+    "takeOutTermOrAskAboutDlp": "Poista mahdollinen arkaluonteinen termi ja yritä uudelleen tai kysy organisaation ylläpitäjältä, jos et ole varma.",
+    "organizationSettingsDoNotAllowOperation": "Organisaatiosi tai tiimitilasi asetukset eivät salli tätä.",
+    "organizationStorageLimitWouldExceeded": "Organisaation tallennustilan raja ylittyisi.",
+    "serverDiskAlmostFull": "Palvelimen levy on lähes täynnä.",
+    "askServerAdministratorToFreeSpace": "Pyydä palvelimen ylläpitäjää vapauttamaan levytilaa; se toimii taas, kun tilaa on.",
+    "safeRetryOnceServerHasRoom": "Sama asia voidaan yrittää turvallisesti uudelleen, kun palvelimella on tilaa.",
+    "readDoesNotChangeSavedData": "Tämä luku ei muuta tallennettuja tietoja, joten uudelleen yrittäminen on turvallista.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Lataa nykyinen varmuuskopio uudelleen ennen kuin valitset toisen toiminnon.",
+    "reloadCurrentBackupStateBeforeContinuing": "Lataa nykyinen varmuuskopion tila uudelleen ennen jatkamista.",
+    "reloadCurrentStateBeforeDecidingWhether": "Lataa nykytila uudelleen ennen kuin päätät, yritätkö uudelleen.",
+    "reloadSignInPageAndStart": "Päivitä kirjautumissivu ja kirjaudu uudelleen sisään.",
+    "removeUnneededFilesOrAskOrganization": "Poista tarpeettomat tiedostot tai pyydä organisaation laskutuksen ylläpitäjää nostamaan rajaa.",
+    "reportChangedAfterScreenLoaded": "Raportti muuttui tämän näytön lataamisen jälkeen.",
+    "requestIdentifierBelongsDifferentOperation": "Tämä pyyntö on jo käytetty toiseen toimintoon.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Tämä pyyntö on jo käytetty toisen raportin päivitykseen.",
+    "requestedItemNoLongerExistsOr": "Pyydettyä kohdetta ei ole enää olemassa, tai se ei ole näkyvissä tälle käyttäjätilille.",
+    "retryExportAfterOtherServerOperation": "Yritä tätä vientiä uudelleen, kun toinen palvelintoiminto on päättynyt.",
+    "retryExportJobAfterServerStorage": "Yritä tätä vientitehtävää uudelleen, kun palvelimen tallennustila on palautunut.",
+    "retryOnlyAfterAccountOrPermission": "Yritä uudelleen vasta, kun käyttäjätili tai käyttöoikeus on muuttunut.",
+    "retryOnlyAfterOrganizationSettingChanges": "Yritä uudelleen vasta, kun kyseinen asetus on muuttunut.",
+    "retrySameContentChangeAfterOther": "Yritä samaa sisältömuutosta uudelleen, kun toinen palvelintoiminto on päättynyt.",
+    "retrySameContentChangeAfterServer": "Yritä samaa sisältömuutosta uudelleen, kun palvelimen tallennustila on palautunut.",
+    "retrySameContentChangeNow": "Yritä samaa sisältömuutosta uudelleen nyt.",
+    "changeTooLargeForOneChange": "Tämä on liian suuri muutettavaksi kerralla. Yhteen muutokseen mahtuu enintään 64 Mt, teksti mukaan lukien.",
+    "pageKeepsWhatItHadBefore": "Sivu on ennallaan.",
+    "makeTheChangeInParts": "Tee muutos osissa: poista ensin suuren avattavan lohkon tai osion sisällä olevat lohkot osissa ja liitä pitkä teksti osissa.",
+    "sameSizeIsRefusedAgain": "Sama koko hylätään jälleen; kun se on jaettu, uudelleen yrittäminen on turvallista.",
+    "linkCannotBeKeptHere": "Tämä muutos linkittää sivun tai lohkon, jota ei voi linkittää tähän.",
+    "chooseAnotherPageOrRefresh": "Valitse toinen sivu tai päivitä sivu ja yritä uudelleen.",
+    "sameLinkIsRefusedAgain": "Saman kohteen linkittäminen uudelleen hylätään jälleen.",
+    "retrySameDomainVerificationAfterDns": "Yritä samaa domainin vahvistusta uudelleen, kun DNS-vahvistuspalvelu on palautunut.",
+    "retrySameFileOperationAfterOther": "Yritä samaa tiedostotoimintoa uudelleen, kun toinen palvelinoperaatio on päättynyt.",
+    "retrySameFileOperationAfterServer": "Yritä samaa tiedostotoimintoa uudelleen, kun palvelimen tallennustila on palautunut.",
+    "retrySameFormOperationAfterOther": "Yritä samaa lomaketoimintoa uudelleen, kun toinen palvelinoperaatio on päättynyt.",
+    "retrySameFormOperationAfterServer": "Yritä samaa lomaketoimintoa uudelleen, kun palvelimen tallennustila on palautunut.",
+    "retrySameOperationAfterOtherServer": "Yritä samaa toimintoa uudelleen, kun toinen palvelinoperaatio on päättynyt.",
+    "retrySameOperationAfterServerStorage": "Yritä samaa toimintoa uudelleen, kun palvelimen tallennustila on palautunut.",
+    "returnSignInWithExistingAccount": "Palaa kirjautumaan olemassa olevalla käyttäjätilillä.",
+    "reviewAndCorrectEnteredServerSettings": "Tarkista ja korjaa syötetyt palvelinasetukset.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Tarkista syötetyt arvot ja korjaa korostetut tiedot.",
+    "safeRetryAfterEmailDeliveryRestored": "Voit yrittää uudelleen turvallisesti, kun sähköpostin toimitus on palautunut.",
+    "safeRetryAfterServerResourceChecks": "Voit yrittää uudelleen turvallisesti, kun palvelimen resurssien tarkistukset ovat palautuneet.",
+    "safeRetryAfterTemporaryLockClears": "Voit yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetryRead": "Tämän lukutoiminnon voi yrittää uudelleen turvallisesti.",
+    "safeRetrySameAuthenticationOperationAfter": "Saman todennustoiminnon voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameContentChangeAfter": "Saman sisältömuutoksen voi yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetrySameContentChangeAfter2": "Saman sisältömuutoksen voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameDlpPolicySave": "Saman DLP-käytännön tallennuksen voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameDlpPolicySave2": "Saman DLP-käytännön tallennuksen voi yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetrySameDomainVerificationAfter": "Saman domainin vahvistuksen voi yrittää uudelleen turvallisesti, kun palvelu on palautunut.",
+    "safeRetrySameFileOperationAfter": "Saman tiedostotoiminnon voi yrittää uudelleen turvallisesti, kun tallennustila on jälleen käytettävissä.",
+    "safeRetrySameFileOperationAfter2": "Saman tiedostotoiminnon voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameFileOperationAfter3": "Saman tiedostotoiminnon voi yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetrySameFormOperationAfter": "Saman lomaketoiminnon voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameFormOperationAfter2": "Saman lomaketoiminnon voi yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetrySameOperationAfterStorage": "Saman toiminnon voi yrittää uudelleen turvallisesti, kun tallennustila on palautunut.",
+    "safeRetrySameOperationAfterTemporary": "Saman toiminnon voi yrittää uudelleen turvallisesti, kun väliaikainen lukitus on poistunut.",
+    "safeRetrySameSettingsAfterSecret": "Samat asetukset voi yrittää uudelleen turvallisesti, kun salaisten tietojen tallennustila on palautunut.",
+    "safeRetrySameSettingsSaveAfter": "Kun virheelliset arvot on korjattu, samat asetukset voi tallentaa uudelleen turvallisesti.",
+    "safeRetryWithSameJobIdentifier": "Samaa työtä voi yrittää uudelleen turvallisesti.",
+    "safeRetryWithSameJobIdentity": "Samaa työtä voi yrittää uudelleen turvallisesti.",
+    "safeSignInInsteadCreatingAnother": "On turvallista kirjautua sisään sen sijaan, että loisit uuden käyttäjätilin.",
+    "safeStartNewProviderSignIn": "Voit huoletta aloittaa uuden palveluntarjoajan kirjautumisen myöhemmin.",
+    "safeTryAgainAfterCorrectingDetails": "Voit yrittää uudelleen turvallisesti, kun olet korjannut tiedot.",
+    "safeTryAgainAfterCorrectingInput": "Voit yrittää uudelleen turvallisesti, kun olet korjannut syötteen.",
+    "safeTryAgainAfterWait": "Voit yrittää uudelleen turvallisesti odotuksen jälkeen.",
+    "serverTakesNoChangesNow": "Tämä palvelin ei saa yhteyttä varmuuskopiosijaintiinsa, joten se ei ota muutoksia vastaan juuri nyt.",
+    "serverDataMovedElsewhere": "Tämän palvelimen tiedot siirrettiin toiselle palvelimelle.",
+    "doItOnNewServer": "Tee se uudella palvelimella.",
+    "serverDataMovedNoRetry": "Täällä uudelleen yrittäminen ei tallenna sitä.",
+    "sameRequestIdentityCanRetriedSafely": "Saman pyynnön voi yrittää uudelleen turvallisesti lyhyen odotuksen jälkeen.",
+    "saveSameDlpPolicyAgainAfter": "Tallenna sama DLP-käytäntö uudelleen, kun palvelimen tallennustila palautuu.",
+    "saveSameDlpPolicyAgainAfter2": "Tallenna sama DLP-käytäntö uudelleen, kun toinen palvelinoperaatio on päättynyt.",
+    "serverAccountStorageTemporarilyUnavailable": "Palvelimen käyttäjätilin tallennustila on tilapäisesti pois käytöstä.",
+    "serverCannotCurrentlyConfirmResourceState": "Palvelin ei voi tällä hetkellä vahvistaa resurssinsa tilaa.",
+    "serverCouldNotCompleteAdministratorSettings": "Palvelin ei voinut viimeistellä ylläpitäjän asetusten tallennusta.",
+    "serverCouldNotCompleteAdministratorSetup": "Palvelin ei voinut viimeistellä ylläpitäjän määrityspyyntöä.",
+    "serverCouldNotCompleteBackupLifecycle": "Palvelin ei saanut varmuuskopiota valmiiksi.",
+    "serverCouldNotLoadBackupState": "Palvelin ei voinut ladata kyseistä varmuuskopion tilaa.",
+    "serverCouldNotProtectAdministratorSecret": "Palvelin ei voinut suojata ylläpitäjän salaisia arvoja.",
+    "serverCouldNotReadAdministratorState": "Palvelin ei voinut lukea ylläpitäjän tilaa.",
+    "serverCouldNotReadOneExact": "Palvelin ei voinut lukea yhtenäistä raportin tilannekuvaa.",
+    "serverDetectedAndIsolatedIncompleteContent": "Palvelin havaitsi keskeneräisen sisältötietueen ja siirsi sen sivuun.",
+    "serverFileStorageTemporarilyUnavailable": "Palvelimen tiedostotallennustila on tilapäisesti pois käytöstä.",
+    "serverFormStorageTemporarilyUnavailable": "Palvelimen lomaketallennustila on tilapäisesti pois käytöstä.",
+    "serverPageContentStorageTemporarilyUnavailable": "Palvelimen sivun sisällön tallennustila on tilapäisesti pois käytöstä.",
+    "serverSettingsChangedAfterScreenLoaded": "Palvelimen asetukset muuttuivat tämän näytön lataamisen jälkeen.",
+    "serverStorageTemporarilyUnavailable": "Palvelimen tallennustila on tilapäisesti pois käytöstä.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Palvelimen tallennustila oli tilapäisesti pois käytöstä, joten arkistoa ei voitu luoda.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Palvelimen tallennustila on tilapäisesti pois käytöstä, joten DLP-käytäntöä ei voitu tallentaa.",
+    "signInAttemptIdentifierAlreadyBelongs": "Tätä kirjautumisyritystä on jo käytetty eri tiedoilla.",
+    "signInOrAccountActionLink": "Kirjautumis- tai käyttäjätilin toimintolinkki ei ole enää voimassa.",
+    "signInWithAuthorizedAccountOr": "Kirjaudu sisään valtuutetulla käyttäjätilillä tai pyydä ylläpitäjältä käyttöoikeutta.",
+    "signInWithExistingAdministratorAccount": "Kirjaudu sisään olemassa olevalla ylläpitäjätilillä.",
+    "signInWithServerAdministratorAccount": "Kirjaudu sisään palvelimen ylläpitäjän tilillä tai pyydä toiselta ylläpitäjältä käyttöoikeutta.",
+    "startAccountActionAgainGetNew": "Aloita käyttäjätilitoiminto uudelleen, niin saat uuden linkin.",
+    "startReplacementExportFromLatestWorkspace": "Aloita korvaava vienti viimeisimmästä työtilasta.",
+    "storedBackupDidNotMatchVerified": "Tallennettu varmuuskopio ei vastannut vahvistettua tiedostoa.",
+    "submittedInformationDidNotMeetOperation": "Lähetetyt tiedot eivät täyttäneet toiminnon vaatimuksia.",
+    "tooManyRequestsLimited": "Pyyntöjä tehtiin liian monta, joten tämä toiminto on rajoitettu.",
+    "tooManyRequestsMadeSoOperation": "Pyyntöjä on tehty liian monta, joten tämä toiminto on tilapäisesti rajoitettu.",
+    "tryAgainAfterServerStorageRecovers": "Yritä uudelleen, kun palvelimen tallennustila on palautunut.",
+    "tryAgainInHours_one": "Yritä uudelleen noin tunnin kuluttua.",
+    "tryAgainInHours_other": "Yritä uudelleen noin {{count}} tunnin kuluttua.",
+    "tryAgainInMinutes_one": "Yritä uudelleen noin minuutin kuluttua.",
+    "tryAgainInMinutes_other": "Yritä uudelleen noin {{count}} minuutin kuluttua.",
+    "tryAgainInSeconds_one": "Yritä uudelleen noin {{count}} sekunnin kuluttua.",
+    "tryAgainInSeconds_other": "Yritä uudelleen noin {{count}} sekunnin kuluttua.",
+    "useAnotherSignInMethodOr": "Käytä toista sisäänkirjautumistapaa tai yritä tätä palveluntarjoajaa myöhemmin.",
+    "useResumableArchiveUploadSoProgress": "Käytä jatkettavaa arkistolähetystä, jotta edistyminen voi jatkua tallennetusta tilasta.",
+    "useResumableUploadSoProgressCan": "Käytä jatkettavaa lähetystä, jotta edistyminen voi jatkua tallennetusta tilasta.",
+    "waitForCompletionThenRetryDownload": "Odota valmistumista ja yritä sitten latausta uudelleen.",
+    "waitForOtherServerOperationFinish": "Odota, että toinen palvelimen toiminto päättyy, ja yritä sitten uudelleen.",
+    "waitForStorageReconciliationAdvanceThen": "Odota hetki, että tallennustila ehtii ajan tasalle, ja yritä sitten samaa toimintoa uudelleen.",
+    "waitMomentBeforeTryingAgain": "Odota hetki ennen kuin yrität uudelleen.",
+    "workspaceChangedWhileExportRunning": "Työtila muuttui viennin ollessa käynnissä.",
+    "youNotSignedInAndNo": "Et ollut kirjautuneena, eikä käyttäjätilin tietoja muutettu.",
+    "pageIsLocked": "Sivu on lukittu, joten muutoksia ei voi tehdä.",
+    "unlockPageThenTryAgain": "Avaa sivun lukitus itsellesi tai kaikille sivun valikosta ja yritä sitten uudelleen.",
+    "safeToRetryAfterUnlocking": "Voit yrittää uudelleen turvallisesti, kun sivun lukitus on avattu.",
+    "databaseIsLocked": "Tietokanta on lukittu, joten sen ominaisuuksia ja näkymiä ei voi muuttaa.",
+    "unlockDatabaseThenTryAgain": "Avaa tietokannan lukitus itsellesi tai kaikille sen Lukittu-painikkeesta ja yritä sitten uudelleen.",
+    "databaseEditorsCanUnlock": "Vain henkilö, joka voi muokata tietokantaa, voi avata sen lukituksen.",
+    "safeToRetryAfterDatabaseUnlocked": "Voit yrittää turvallisesti uudelleen, kun tietokannan lukitus on avattu.",
+    "rowMoveNeedsFullAccess": "Jotta voit siirtää sen toiselle sivulle, tarvitset siihen täydet käyttöoikeudet ja muokkausoikeuden kohteeseen.",
+    "askFullAccessHolderToMoveIt": "Pyydä jotakuta, jolla on täydet käyttöoikeudet, siirtämään se tai valitse paikka, jota voit muokata.",
+    "rowMoveRefusedUntilAccess": "Sen siirtäminen hylätään uudelleen, kunnes sinulla on kyseinen käyttöoikeus.",
+    "otherWorkspaceCantMoveOrLink": "Kohteita ei voi siirtää tai linkittää työtilojen välillä.",
+    "makeItAnewInThatWorkspace": "Luo se kyseiseen työtilaan ja kopioi sen sisältö sinne. Kokonainen sivu siirretään tai kopioidaan sinne Siirrä kohteeseen -toiminnolla valitsemalla työtila.",
+    "otherWorkspaceRefusedAgain": "Uusi yritys hylätään samasta syystä.",
+    "signInEndedForThisBrowser": "Tämän selaimen kirjautuminen vanhentui tai päättyi.",
+    "signInEndedForThisApp": "Tämän sovelluksen kirjautuminen vanhentui tai päättyi.",
+    "signInAgainToContinue": "Kirjaudu uudelleen sisään jatkaaksesi.",
+    "retryAfterSigningInAgain": "Yritä uudelleen, kun olet kirjautunut uudelleen sisään.",
+    "serverRestoredSinceDeviceCopies": "Tämän palvelimen tiedot ovat muuttuneet, ja tämän laitteen kopiot ovat muutosta edeltäneitä.",
+    "changeKeptOnThisDeviceOnly": "Muutosta ei tallennettu palvelimelle; se on vain tällä laitteella.",
+    "takeServerContentAnew": "Valitse ”Lataa uudelleen palvelimelta”, niin saat palvelimen nykyisen sisällön.",
+    "retryAfterTakingContentAnew": "Yritä uudelleen, kun olet ladannut palvelimelta uudelleen.",
+    "propertyUsedByViewOrDependency": "Tätä ominaisuutta ei voi muuttaa nyt: se on otsikko-ominaisuus tai se on kohdassa Poistetut ominaisuudet.",
+    "changeWhatUsesPropertyFirst": "Lataa sivu uudelleen, niin näet ominaisuuden sellaisena kuin se on nyt.",
+    "retryAfterChangingWhatUsesProperty": "Palauta poistettu ominaisuus ensin, jotta voit muuttaa sitä.",
+    "workspaceAlreadyHasContentForArchive": "Tässä työtilassa on jo sisältöä, joten Leafen-arkistoa ei voi tuoda siihen.",
+    "makeNewWorkspaceToImportArchive": "Luo uusi työtila ja tuo tämä arkisto sinne.",
+    "retryInNewWorkspace": "Voit tuoda sen uudelleen uudessa työtilassa.",
+    "importFileDoesNotFitFormat": "Tiedosto ei vastaa muotoa, jota Leafen lukee, joten mitään ei tuotu.",
+    "exportFileAgainToImport": "Vie tiedosto uudelleen paikasta, jossa se luotiin, ja tuo sitten kyseinen tiedosto.",
+    "sameFileRefusedAgain": "Saman tiedoston tuominen uudelleen ei onnistu.",
+    "pageBusyWithAnotherChange": "Sivulla on käynnissä toinen muutos, joten sitä ei voi muokata hetkeen.",
+    "tryAgainOnceThatChangeIsDone": "Yritä uudelleen, kun kyseinen muutos on valmis.",
+    "importPageInTrash": "Sivu, johon tämä tuodaan, on roskakorissa, joten mitään ei tuotu.",
+    "restorePageThenImportAgain": "Palauta sivu roskakorista ja tuo sitten uudelleen.",
+    "importPageDeletedForGood": "Sivu, johon tämä tuodaan, poistettiin pysyvästi, joten mitään ei tuotu.",
+    "ownerBringsDeletedPageBack": "30 päivän kuluessa työtilan omistaja voi palauttaa sen kohdasta Turvallisuus → Tietojen säilytys; palauta sen jälkeen sivu roskakorista ja tuo uudelleen.",
+    "importAgainOnceRestored": "Uudelleen yrittäminen ei tuo sitä, ennen kuin sivu on palautettu.",
+    "pageInTrashCantChange": "Roskakorissa olevaa sivua ei voi muuttaa, ennen kuin se palautetaan.",
+    "restorePageThenTryAgain": "Palauta sivu roskakorista ja yritä uudelleen.",
+    "tryAgainOnceRestored": "Uudelleen yrittäminen ei onnistu, ennen kuin sivu on palautettu.",
+    "optionNameHasComma": "Vaihtoehdon nimessä ei voi olla pilkkua (,).",
+    "takeCommaOutOrSplitOption": "Poista pilkku tai tee siitä kaksi vaihtoehtoa.",
+    "optionRefusedUntilRenamed": "Yritä uudelleen, kun nimi on vaihdettu.",
+    "optionNameTaken": "Tällä ominaisuudella on jo samanniminen vaihtoehto.",
+    "useAnotherOptionName": "Käytä toista nimeä tai valitse jo olemassa oleva vaihtoehto.",
+    "optionsInUseLeftOut": "Tämä muutos jättää pois vaihtoehtoja, joita sivut käyttävät.",
+    "keepOptionsOrDeleteOneByOne": "Säilytä ne vaihtoehdot tai poista ne yksi kerrallaan kunkin vaihtoehdon valikosta.",
+    "optionsRefusedUntilKeptOrDeleted": "Uusi yritys sellaisenaan hylätään samasta syystä."
+  }
+}

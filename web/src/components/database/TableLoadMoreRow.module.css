@@ -1,0 +1,66 @@
+/* An inline table's "더 불러오기" line, as Notion's (seen 2026-10-01): a
+   37px row with a line under it, an arrow and the words in faint text 8px
+   in, then a 24px "⋯" for how many rows it first shows. */
+.rail {
+  display: flex;
+  align-items: center;
+  width: calc(100% - var(--table-gutter-width, 0px));
+  margin-inline-start: var(--table-gutter-width, 0px);
+  height: 37px;
+  border-bottom: 1px solid var(--table-grid-border);
+  cursor: pointer;
+}
+.rail:hover {
+  background: var(--bg-hover);
+}
+.sticky {
+  position: sticky;
+  inset-inline-start: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline-start: 8px;
+}
+.loadMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  cursor: pointer;
+}
+.loadMore:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+  border-radius: 4px;
+}
+.loadMore:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+/* On a phone the line is a row's 45px (DatabaseTableRows), as Notion's
+   (seen 2026-11-15 in iPhone Safari at 402): its 18px arrow 8px in and 8
+   before 16px words on a 20px line, in the line's middle. */
+:global([data-phone="true"]) .rail {
+  height: 45px;
+}
+/* There it is as wide as a row, whose 8px lead before the columns it takes
+   past the row's end, as it starts at the columns (Notion's, read 2026-11-15
+   on a Galaxy A90 at 411: rows 24 to 576, the line 32 to 584; on an iPhone at
+   402 the same 1152 line over five columns). */
+:global([data-phone="true"]) .rail {
+  width: calc(100% - var(--table-gutter-width, 0px) + 8px);
+}
+:global([data-phone="true"]) .loadMore {
+  height: auto;
+  font-size: 16px;
+  line-height: 20px;
+}
+:global([data-phone="true"]) .loadMore svg {
+  width: 18px;
+  height: 18px;
+}

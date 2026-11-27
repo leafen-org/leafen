@@ -1,0 +1,597 @@
+
+/* People cells */
+.peopleCell {
+  position: relative;
+  width: 100%;
+}
+.personChips,
+.peopleReadonly {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 31px;
+  padding: 3px 6px;
+}
+.personChips {
+  cursor: pointer;
+}
+.personChips:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.propertyCellEditTrigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  opacity: var(--cell-edit-trigger-shown, 0);
+}
+/* The chips take the state their edit button reads: a pointer or focus
+   state over ".propertyCellEditTrigger" restyled every such button in every
+   table at each pointer move across a page (2026-11-12). */
+.personChips:hover,
+.personChips:focus-within,
+.filesChips:hover,
+.filesChips:focus-within,
+.relationChips:hover,
+.relationChips:focus-within {
+  --cell-edit-trigger-shown: 1;
+}
+.propertyCellEditTrigger:focus-visible {
+  opacity: 1;
+}
+/* An empty cell shows nothing, even under the pointer, as Notion's (seen
+   2026-10-01), nor does a select's, which is pressed anywhere to change
+   (seen 2026-10-06); the trigger still shows when it takes focus. */
+[data-empty="true"] > .propertyCellEditTrigger:not(:focus-visible) {
+  opacity: 0;
+}
+.propertyCellEditTrigger:hover,
+.propertyCellEditTrigger:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* A page's pinned property keeps no room for it, as Notion's draws none
+   (seen 2026-11-06): the value is pressed anywhere to change, and the
+   trigger stays for the keyboard over the value's end. */
+:global([data-row-pinned-property]) .propertyCellEditTrigger {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
+  transform: translateY(-50%);
+}
+.personChips > .cellEmpty,
+.filesChips > .cellEmpty,
+.relationChips > .cellEmpty,
+.chips > .cellEmpty {
+  flex: 1 1 auto;
+  width: auto;
+}
+/* A person as a value, as Notion's (seen 2026-10-24 at 1280px): no chip,
+   their 20px avatar and 6px after it the name, 14px. */
+.personChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 20px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1;
+}
+.personChip > span:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* On a board's or gallery's card an 18px face and on a calendar's a 16px
+   one, each with the card's 12px name 6px after it on an 18px line, the
+   card's line 28 high (Notion's, seen 2026-11-12). */
+.personChip:is([data-person-look="card"], [data-person-look="calendar"]) {
+  height: 18px;
+  font-size: inherit;
+  line-height: 18px;
+  vertical-align: top;
+}
+/* A list's row and a timeline's bar show the faces alone, each 5px over the
+   one before (Notion's, seen 2026-11-12: 20px faces 15px apart). */
+.personFaces {
+  display: inline-flex;
+  align-items: center;
+}
+.personFaces > .personChip + .personChip {
+  margin-inline-start: -5px;
+}
+.personAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #d9730d;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+}
+/* A person picker: its frame (padding, field, label) is a select picker's
+   (DatabaseSelectCells .peopleMenu). */
+.peopleMenu {
+  position: absolute;
+  z-index: 53;
+  top: 0;
+  inset-inline-start: 0;
+  width: 240px;
+  border-radius: var(--picker-radius);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* A board's "새 그룹" search, as Notion's (seen 2026-11-12 at 1440, dark): a
+   28px box 12px in from the picker's sides and 8px down, 3px 6px inside,
+   rounded 6, ringed blue while typed in; the people 12px under it. */
+.peopleSearchBox { padding: 8px 8px 4px; }
+.peopleSearch {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--menu-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.peopleSearch:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+.peopleSearchBox + .peopleList { margin-top: 8px; }
+/* The people 1px apart, each a 28px row: its face 8px in and 4px down, its
+   name 8px after it on a 20px line, as Notion's (seen 2026-11-12 at 1440,
+   dark). With no line over them they start 4px under the field, as
+   Notion's list does under its own padding. */
+.peopleList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 240px;
+  overflow: auto;
+}
+.selectField + .peopleList { margin-top: 4px; }
+.peopleOption {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 18px;
+  gap: var(--menu-row-gap);
+  align-items: center;
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+.peopleOption:hover,
+.peopleOption:focus-visible,
+.peopleOption[data-selected="true"],
+.peopleOption[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.peopleOption > span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.peopleOptionText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+.peopleOptionText > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.peopleOptionText > span:first-child {
+  color: var(--text-default);
+}
+.peopleOptionText > span:nth-child(2) {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}
+/* A page with its place under its title (a relation's "+ 신규 그룹"), a 45px
+   row as Notion's (seen 2026-11-12 at 1440, dark): its icon 18px (an emoji
+   14px) in a 20px box 1px under the row's padding, its title on a 16.8px
+   line and its place 2px under it in 12px, the two in the row's middle and
+   to its end. */
+.pageOption {
+  grid-template-columns: 20px minmax(0, 1fr);
+  min-height: 45px;
+}
+.pageOptionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  line-height: 1;
+}
+.pageOption .peopleOptionText {
+  gap: 2px;
+  line-height: 16.8px;
+}
+.pageOption .peopleOptionText > span:nth-child(2) {
+  font-size: 12px;
+}
+/* Nothing found, said as Notion's menus say it: "결과 없음", a menu row's
+   height and type, in gray, its words 8px in (seen 2026-10-17; 2026-11-12). */
+.peopleEmpty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+.selectField + .peopleEmpty { margin-top: 4px; }
+/* A member's picker with no one to list, as Notion's (seen 2026-11-12 at
+   1440, dark): a "사람" group, 4px under the field, its name 11px/500 gray 8px
+   in, 6px under the group's top and 9px over its row, the row saying nothing
+   in the workspace matched, 14px in faint gray 10px in, cut short with "…"; then,
+   4px on, a "더 보기" group 10px under a line 1px over it and 8px in from its
+   sides, its row "사용자 초대" — the invite's face at 8px, its words at 36px,
+   a 16px "›" at the row's end. */
+.peopleGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--menu-row-space);
+  padding-top: 4px;
+}
+.peopleGroup + .peopleGroup {
+  margin-top: 4px;
+  padding-top: 10px;
+}
+.peopleGroup + .peopleGroup::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline: 8px;
+  height: 1px;
+  background: var(--menu-divider);
+}
+.peopleGroupName {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 13.2px;
+}
+.peopleNoMatch {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  padding-inline: 10px 8px;
+  color: var(--text-tertiary);
+  font-size: var(--menu-row-font-size);
+  line-height: 16.8px;
+}
+.peopleNoMatch > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.peopleInvite {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 16px;
+  gap: var(--menu-row-gap);
+  align-items: center;
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: 16.8px;
+  text-align: start;
+}
+.peopleInvite > svg:first-child { color: var(--icon-primary); }
+.peopleInvite > svg:last-child { color: var(--icon-secondary); }
+.peopleInvite > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.peopleInvite:hover,
+.peopleInvite:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Date cells */
+.dateCell {
+  position: relative;
+  width: 100%;
+}
+.dateButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 31px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-align: start;
+}
+.dateButton:hover {
+  background: var(--bg-hover);
+}
+.dateButton[data-inline="true"] {
+  width: auto;
+  min-height: 0;
+  padding: 0;
+}
+/* A date reads as plain text, as Notion's table cell and property row
+   (seen 2026-10-25: 14px, 8px into the cell, no ground). */
+.dateValue {
+  display: block;
+  max-width: 100%;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A phone's table reads its dates in its 16px words, as Notion's (seen
+   2026-11-12 at 402pt: the digits as tall as the title's); its row page
+   keeps them 14px. */
+:global([data-phone="true"]) :global([data-table-row-id]) .dateValue {
+  font-size: 16px;
+}
+/* A date with a reminder reads blue with its clock, red once it is due, as Notion's (seen 2026-11-02). */
+.dateValue[data-reminder="true"],
+.dateValue[data-reminder="true"] ~ [data-date-reminder] {
+  color: var(--accent-blue);
+}
+.dateValue[data-reminder-due="true"],
+.dateValue[data-reminder-due="true"] ~ [data-date-reminder] {
+  color: var(--c-accent-red);
+}
+/* The date editor, its fields and calendar 12px in, as Notion's (seen
+   2026-10-05): 248px wide for its month, wider for a longer line
+   (DateEditorFrame). */
+.dateMenu {
+  position: absolute;
+  z-index: 53;
+  top: 0;
+  inset-inline-start: 0;
+  padding: 12px 12px 4px;
+  border-radius: var(--picker-radius);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.dateTemplateValues {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-default);
+}
+.dateTemplateValues button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 13px;
+  text-align: start;
+}
+.dateTemplateValues button span:last-child {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.dateTemplateValues button:hover,
+.dateTemplateValues button:focus-visible,
+.dateTemplateValues button[aria-pressed="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The month's days, as Notion's date editor shows them (seen 2026-10-05):
+   28px days in 32px cells, today in a red circle, the chosen day blue, and a
+   range's days on a band between its ends. */
+.dateWeekdays,
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+  justify-content: center;
+}
+.dateWeekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.dateGrid button {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 2px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.dateGrid button:focus-visible,
+.dateGrid button[data-focused="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The day under the pointer is ringed 2px in the blue on the blue at 15%
+   (Notion's, seen 2026-11-12 at 1440 dark). */
+.dateGrid button:hover {
+  background: rgb(35 131 226 / 15%);
+  box-shadow: inset 0 0 0 2px rgb(39, 131, 222);
+  outline: none;
+}
+.dateGrid button[aria-disabled="true"] {
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  cursor: default;
+}
+.dateGrid button[data-outside="true"] {
+  color: var(--date-outside-text);
+}
+/* Its words white in either theme (Notion's, seen 2026-11-12 at 1440 dark). */
+.dateGrid button[data-today="true"] {
+  color: #fff;
+}
+.dateGrid button[data-today="true"]::after {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%; /* physical: centred on its own box in either direction */
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--today-circle-bg);
+  transform: translate(-50%, -50%);
+  content: "";
+}
+/* A range's days on one band of the blue at 21% under them, 28px tall,
+   across each week it covers: from the start's box and to the end's, 6px
+   round there and at the week's ends; each end its own 28px box over it,
+   the one being edited the blue and the other the blue at 43%; a day under
+   the pointer keeps the band, ringed (Notion's, seen 2026-11-12 at 1440
+   dark, as a filter's month). */
+.dateGrid {
+  isolation: isolate;
+}
+.dateGrid button[data-range] {
+  z-index: auto;
+}
+.dateGrid button[data-range]:not([data-selected="true"]),
+.dateGrid button[data-range]:not([data-selected="true"]):hover {
+  background: transparent;
+}
+.dateGrid button[data-range]::before {
+  position: absolute;
+  z-index: -1;
+  inset-block: 0;
+  inset-inline: -2px;
+  background: rgb(35 131 226 / 21%);
+  content: "";
+}
+.dateGrid button[data-range="start"]::before,
+.dateGrid > [role="row"] > :first-child > button[data-range]::before {
+  inset-inline-start: 0;
+  border-start-start-radius: 6px;
+  border-end-start-radius: 6px;
+}
+.dateGrid button[data-range="end"]::before,
+.dateGrid > [role="row"] > :last-child > button[data-range]::before {
+  inset-inline-end: 0;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+}
+.dateGrid button[data-range][data-selected="true"] {
+  background: color-mix(in srgb, var(--accent-blue) 43%, transparent);
+  color: var(--text-default);
+}
+.dateGrid button[data-selected="true"],
+.dateGrid button[data-range][data-range-active="true"][data-selected="true"] {
+  background: var(--accent-blue);
+  color: #fff;
+}
+.dateGrid button[data-selected="true"]::after {
+  display: none;
+}
+/* "(나)" after the reader's own name, pale (Notion's, seen 2026-11-03). */
+.peopleOptionMe {
+  color: var(--text-secondary);
+}
+/* A chosen person in the picker's field, as Notion's (seen 2026-11-12 at
+   1440, dark): on no ground, its 20px face, its name 6px after it, a 12px
+   × in a 20px button 2px either side; what's typed or the next one 4px on. */
+.pickedPerson {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 20px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.pickedPerson > :first-child { margin-inline-end: 6px; }
+.pickedPerson > .chipRemove { margin-inline: 2px; }
+.peopleMenu .selectField { gap: 4px; }
+/* A "+ 신규 그룹" window's list is a stop of Tab (useGroupAddPicker): taken
+   by the keys it wears no ring itself, its marked line the keyboard's, as
+   Notion's (seen 2026-11-12 at 1440, dark: a 2px blue ring 2px out from the
+   line), the lines 4px in from where the list cuts them so the ring shows
+   whole; WebKit's focus moved by a Tab trap takes it while keys lead. The
+   window scrolls, not the list: it stops at half the window's height
+   (CellMenuPortal halfHigh), as Notion's. */
+.peopleList[data-group-add-list] {
+  max-height: none;
+  overflow: visible;
+  margin-block-end: -4px;
+  margin-inline: -4px;
+  padding: 4px;
+  outline: none;
+  box-shadow: none;
+}
+.peopleSearchBox + .peopleList[data-group-add-list] { margin-top: 4px; }
+.peopleList[data-group-add-list]:focus-visible,
+:root[data-keys] .peopleList[data-group-add-list]:focus { box-shadow: none; }
+.peopleList[data-group-add-list]:focus-visible .peopleOption[data-active="true"],
+:root[data-keys] .peopleList[data-group-add-list]:focus .peopleOption[data-active="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A row page's date runs onto the lines it needs, between any two
+   syllables, by Notion's property row's own rule (pre-wrap, break-word,
+   overflow visible; read 2026-11-14 at 1440, and seen on an iPad at 834
+   beside the sidebar: "2026년 11월 10일 → 2026" over "년 11월 20일"), not
+   only between words as the button holding it would; a table cell's stays
+   on its line. */
+:global([data-row-property-value]) .dateValue {
+  overflow: visible;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}

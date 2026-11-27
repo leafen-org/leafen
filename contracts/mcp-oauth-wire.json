@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "name": "mcp-oauth",
+  "typescriptImports": [
+    { "name": "Workspace", "from": "./workspaceMembershipWire.generated" }
+  ],
+  "operations": [
+    { "goName": "mcpConnectionCreate", "tsName": "createConnection", "method": "POST", "path": "/mcp/connections" },
+    { "goName": "mcpConnectionRevoke", "tsName": "revokeConnection", "method": "DELETE", "path": "/mcp/connections/{id}" },
+    { "goName": "mcpConnectionCodeCreate", "tsName": "createConnectionCode", "method": "POST", "path": "/mcp/connection-codes" },
+    { "goName": "mcpConnectionCodeExchange", "tsName": "exchangeConnectionCode", "method": "POST", "path": "/mcp/connection-codes/exchange" },
+    { "goName": "mcpOAuthReadConsent", "tsName": "readConsent", "method": "GET", "path": "/mcp/oauth/requests/{request}" },
+    { "goName": "mcpOAuthApproveConsent", "tsName": "approveConsent", "method": "POST", "path": "/mcp/oauth/requests/{request}/approve" },
+    { "goName": "mcpOAuthDenyConsent", "tsName": "denyConsent", "method": "POST", "path": "/mcp/oauth/requests/{request}/deny" }
+  ],
+  "bounds": [
+    { "goName": "maxMCPOAuthRequestBytes", "tsName": "requestBytes", "value": 8192 },
+    { "goName": "maxMCPOAuthConsentPage", "tsName": "consentPageItems", "value": 64 },
+    { "goName": "maxActiveMCPOAuthRequests", "tsName": "activeRequests", "value": 16 },
+    { "goName": "mcpOAuthRequestLifetimeMilliseconds", "tsName": "requestLifetimeMilliseconds", "value": 600000 },
+    { "goName": "maxMCPConnectionRequestIDRunes", "tsName": "connectionRequestIdRunes", "value": 255 },
+    { "goName": "maxActiveMCPConnectionsPerOwner", "tsName": "activeConnectionsPerUser", "value": 32 },
+    { "goName": "maxMCPOAuthClients", "tsName": "dynamicClientsGlobal", "value": 256 },
+    { "goName": "mcpCredentialRetentionMilliseconds", "tsName": "credentialRetentionMilliseconds", "value": 7776000000 },
+    { "goName": "mcpConnectionCodeLifetimeMilliseconds", "tsName": "connectionCodeLifetimeMilliseconds", "value": 600000 },
+    { "goName": "maxActiveMCPConnectionCodesPerOwner", "tsName": "activeConnectionCodesPerUser", "value": 16 }
+  ],
+  "constants": [
+    { "goName": "mcpOAuthScope", "tsName": "scope", "value": "mcp" }
+  ],
+  "errors": [
+    { "goName": "errorCodeMCPOAuthFailed", "tsName": "failed", "value": "LEAFEN_MCP_OAUTH_FAILED" },
+    { "goName": "errorCodeMCPOAuthRequestInvalid", "tsName": "requestInvalid", "value": "LEAFEN_MCP_OAUTH_REQUEST_INVALID" },
+    { "goName": "errorCodeMCPOAuthRequestConflict", "tsName": "requestConflict", "value": "LEAFEN_MCP_OAUTH_REQUEST_CONFLICT" },
+    { "goName": "errorCodeMCPOAuthRequestCapacity", "tsName": "requestCapacity", "value": "LEAFEN_MCP_OAUTH_REQUEST_CAPACITY" },
+    { "goName": "errorCodeMCPConnectionRequestIDReused", "tsName": "connectionRequestIdReused", "value": "LEAFEN_MCP_CONNECTION_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeMCPConnectionCapacity", "tsName": "connectionCapacity", "value": "LEAFEN_MCP_CONNECTION_CAPACITY" },
+    { "goName": "errorCodeMCPOAuthClientCapacity", "tsName": "oauthClientCapacity", "value": "LEAFEN_MCP_OAUTH_CLIENT_CAPACITY" },
+    { "goName": "errorCodeMCPConnectionCodeInvalid", "tsName": "connectionCodeInvalid", "value": "LEAFEN_MCP_CONNECTION_CODE_INVALID" },
+    { "goName": "errorCodeMCPConnectionCodeCapacity", "tsName": "connectionCodeCapacity", "value": "LEAFEN_MCP_CONNECTION_CODE_CAPACITY" },
+    { "goName": "errorCodeMCPConnectionHTTPSRequired", "tsName": "connectionHttpsRequired", "value": "LEAFEN_MCP_CONNECTION_HTTPS_REQUIRED" }
+  ],
+  "records": [
+    {
+      "goName": "mcpConnectionInput",
+      "tsName": "MCPConnectionInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ClientName", "jsonName": "clientName", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ExpiresIn", "jsonName": "expiresIn", "goType": "string", "tsType": "\"7d\" | \"30d\" | \"90d\" | \"180d\" | \"1y\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionResponse",
+      "tsName": "MCPConnection",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "ClientName", "jsonName": "clientName", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ConnectionURI", "jsonName": "connectionUri", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "mcpConnectionCodeInput",
+      "tsName": "MCPConnectionCodeInput",
+      "fields": [
+        { "goName": "ClientName", "jsonName": "clientName", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresIn", "jsonName": "expiresIn", "goType": "string", "tsType": "\"7d\" | \"30d\" | \"90d\" | \"180d\" | \"1y\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionCodeResponse",
+      "tsName": "MCPConnectionCode",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "ExchangeURL", "jsonName": "exchangeUrl", "goType": "string", "tsType": "string" },
+        { "goName": "MCPURL", "jsonName": "mcpUrl", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "OfferStart", "jsonName": "offerStart", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Next", "jsonName": "next", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionCodeExchangeInput",
+      "tsName": "MCPConnectionCodeExchangeInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Answer", "jsonName": "answer", "goType": "string", "tsType": "\"claude-code\" | \"codex\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpConnectionCodeExchangeResponse",
+      "tsName": "MCPConnectionCodeExchange",
+      "fields": [
+        { "goName": "ConnectionID", "jsonName": "connectionId", "goType": "string", "tsType": "string" },
+        { "goName": "ClientName", "jsonName": "clientName", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "MCPURL", "jsonName": "mcpUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "mcpOAuthConsentClient",
+      "tsName": "MCPAuthorizationConsentClient",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "mcpOAuthConsentResponse",
+      "tsName": "MCPAuthorizationConsent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Client", "jsonName": "client", "goType": "mcpOAuthConsentClient", "tsType": "MCPAuthorizationConsentClient" },
+        { "goName": "Resource", "jsonName": "resource", "goType": "string", "tsType": "string" },
+        { "goName": "Scopes", "jsonName": "scopes", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]workspaceResponse", "tsType": "Workspace[]" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "MembershipSnapshot", "jsonName": "membershipSnapshot", "goType": "string", "tsType": "string" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string", "nullable": true },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ActiveConnections", "jsonName": "activeConnections", "goType": "int", "tsType": "number" },
+        { "goName": "ConnectionLimit", "jsonName": "connectionLimit", "goType": "int", "tsType": "number" },
+        { "goName": "Integration", "jsonName": "integration", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpOAuthApprovalInput",
+      "tsName": "MCPAuthorizationApprovalInput",
+      "fields": [
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "IntegrationRole", "jsonName": "integrationRole", "goType": "string", "tsType": "\"member\" | \"guest\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "mcpOAuthRedirectResponse",
+      "tsName": "MCPAuthorizationRedirect",
+      "fields": [
+        { "goName": "RedirectURL", "jsonName": "redirectUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Remote", "jsonName": "remote", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    }
+  ]
+}

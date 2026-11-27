@@ -1,0 +1,32 @@
+/* A view's sideways bar kept at the window's foot on a database's own page
+   (OwnPageViewBar), the view's own bar giving way to it; on a phone it is not
+   drawn and the view keeps its own, scrolling by touch in its box. */
+.bar {
+  display: none;
+}
+.bar[data-shown="true"]:not(:global([data-phone="true"]) *) {
+  position: sticky;
+  bottom: 0;
+  z-index: 7;
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.fill {
+  height: 1px;
+}
+/* The 1px that gives the bar its sideways reach (its scroll's measure needs
+   a box with some height) takes no room of its own: the bar stands over the
+   view's last pixel, so the page counts its scrollbar alone, Notion's page
+   bar's 15px in a Chrome that keeps its bars (seen 2026-11-17 at 1440×723:
+   its page 679 tall, 664 over the bar), and a short view's page ends where
+   Notion's does (useOwnPageViewFill counts it the same). */
+.bar[data-shown="true"]:not(:global([data-phone="true"]) *) {
+  margin-block-start: -1px;
+}
+:global([data-own-page-bar="true"]):not(:global([data-phone="true"]) *) {
+  scrollbar-width: none;
+}
+:global([data-own-page-bar="true"]):not(:global([data-phone="true"]) *)::-webkit-scrollbar {
+  display: none;
+}

@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "name": "enterprise-saml",
+  "operations": [
+    { "goName": "samlManagementSnapshot", "tsName": "managementSnapshot", "method": "GET", "path": "/organizations/{organizationId}/saml" }
+  ],
+  "bounds": [
+    { "goName": "samlMaxEncodedResponseBytes", "tsName": "encodedResponseBytes", "value": 1400000 },
+    { "goName": "samlMaxXMLResponseBytes", "tsName": "xmlResponseBytes", "value": 1048576 },
+    { "goName": "samlMaxRelayStateBytes", "tsName": "relayStateBytes", "value": 2048 },
+    { "goName": "samlMaxXMLTokens", "tsName": "xmlTokens", "value": 8192 },
+    { "goName": "samlMaxAttributes", "tsName": "attributes", "value": 64 },
+    { "goName": "samlMaxAttributeTotalBytes", "tsName": "attributeBytes", "value": 32768 },
+    { "goName": "samlRequestTTLSeconds", "tsName": "requestTTLSeconds", "value": 300 },
+    { "goName": "samlCompletionTTLSeconds", "tsName": "completionTTLSeconds", "value": 600 }
+  ],
+  "errors": [
+    { "goName": "errorCodeSAMLConfigurationInvalid", "tsName": "configurationInvalid", "value": "LEAFEN_SAML_CONFIGURATION_INVALID" },
+    { "goName": "errorCodeSAMLFieldsRequired", "tsName": "fieldsRequired", "value": "LEAFEN_SAML_FIELDS_REQUIRED" },
+    { "goName": "errorCodeSAMLIssuerInvalid", "tsName": "issuerInvalid", "value": "LEAFEN_SAML_ISSUER_INVALID" },
+    { "goName": "errorCodeSAMLLoginURLNotHTTPS", "tsName": "loginUrlNotHttps", "value": "LEAFEN_SAML_LOGIN_URL_NOT_HTTPS" },
+    { "goName": "errorCodeSAMLCertificateInvalid", "tsName": "certificateInvalid", "value": "LEAFEN_SAML_CERTIFICATE_INVALID" },
+    { "goName": "errorCodeSAMLLinkedWorkspaceInvalid", "tsName": "linkedWorkspaceInvalid", "value": "LEAFEN_SAML_LINKED_WORKSPACE_INVALID" },
+    { "goName": "errorCodeSAMLEnforcementNeedsSSO", "tsName": "enforcementNeedsSso", "value": "LEAFEN_SAML_ENFORCEMENT_NEEDS_SSO" },
+    { "goName": "errorCodeSAMLProviderNotFound", "tsName": "providerNotFound", "value": "LEAFEN_SAML_PROVIDER_NOT_FOUND" },
+    { "goName": "errorCodeSAMLResponseInvalid", "tsName": "responseInvalid", "value": "LEAFEN_SAML_RESPONSE_INVALID" },
+    { "goName": "errorCodeSAMLRequestMismatch", "tsName": "requestMismatch", "value": "LEAFEN_SAML_REQUEST_MISMATCH" },
+    { "goName": "errorCodeSAMLWeakAlgorithm", "tsName": "weakAlgorithm", "value": "LEAFEN_SAML_WEAK_ALGORITHM" },
+    { "goName": "errorCodeSAMLResponseTooLarge", "tsName": "responseTooLarge", "value": "LEAFEN_SAML_RESPONSE_TOO_LARGE" },
+    { "goName": "errorCodeSAMLXMLTooComplex", "tsName": "xmlTooComplex", "value": "LEAFEN_SAML_XML_TOO_COMPLEX" },
+    { "goName": "errorCodeSAMLAttributesTooLarge", "tsName": "attributesTooLarge", "value": "LEAFEN_SAML_ATTRIBUTES_TOO_LARGE" },
+    { "goName": "errorCodeSAMLAssertionCardinalityInvalid", "tsName": "assertionCardinalityInvalid", "value": "LEAFEN_SAML_ASSERTION_CARDINALITY_INVALID" },
+    { "goName": "errorCodeSAMLAssertionReplayed", "tsName": "assertionReplayed", "value": "LEAFEN_SAML_ASSERTION_REPLAYED" },
+    { "goName": "errorCodeSAMLIdentityDenied", "tsName": "identityDenied", "value": "LEAFEN_SAML_IDENTITY_DENIED" },
+    { "goName": "errorCodeSAMLAccountCreationOff", "tsName": "accountCreationOff", "value": "LEAFEN_SAML_ACCOUNT_CREATION_OFF" },
+    { "goName": "errorCodeSAMLCompletionInvalid", "tsName": "completionInvalid", "value": "LEAFEN_SAML_COMPLETION_INVALID" },
+    { "goName": "errorCodeSAMLCompletionConsumed", "tsName": "completionConsumed", "value": "LEAFEN_SAML_COMPLETION_CONSUMED" },
+    { "goName": "errorCodeSAMLUnavailable", "tsName": "unavailable", "value": "LEAFEN_SAML_UNAVAILABLE" },
+    { "goName": "errorCodeSAMLRequired", "tsName": "required", "value": "LEAFEN_SAML_REQUIRED" }
+  ],
+  "enums": [
+    {
+      "tsName": "SAMLEnforcement",
+      "tsValuesName": "samlEnforcementValues",
+      "values": [
+        { "goName": "samlEnforcementOptional", "tsName": "optional", "value": "optional" },
+        { "goName": "samlEnforcementVerifiedDomains", "tsName": "verifiedDomains", "value": "required_for_verified_domains" },
+        { "goName": "samlEnforcementAllMembers", "tsName": "allMembers", "value": "required_for_all_members" }
+      ]
+    },
+    {
+      "tsName": "SAMLAccountCreation",
+      "tsValuesName": "samlAccountCreationValues",
+      "values": [
+        { "goName": "samlAccountCreationAutomatic", "tsName": "automatic", "value": "automatic" },
+        { "goName": "samlAccountCreationOff", "tsName": "off", "value": "off" }
+      ]
+    },
+    {
+      "tsName": "SAMLDomainStatus",
+      "tsValuesName": "samlDomainStatusValues",
+      "values": [
+        { "goName": "samlDomainPending", "tsName": "pending", "value": "pending" },
+        { "goName": "samlDomainVerified", "tsName": "verified", "value": "verified" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "samlManagementSnapshotResponse",
+      "tsName": "SAMLManagementSnapshot",
+      "fields": [
+        { "goName": "Provider", "jsonName": "provider", "goType": "*samlProviderResponse", "tsType": "SAMLProvider | null" },
+        { "goName": "Domains", "jsonName": "domains", "goType": "[]samlDomainResponse", "tsType": "SAMLDomain[]" },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]samlWorkspaceResponse", "tsType": "SAMLWorkspace[]" }
+      ]
+    },
+    {
+      "goName": "samlConfigurationInput",
+      "tsName": "SAMLConfigurationInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Issuer", "jsonName": "issuer", "goType": "string", "tsType": "string" },
+        { "goName": "LoginURL", "jsonName": "loginUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Certificate", "jsonName": "certificate", "goType": "string", "tsType": "string" },
+        { "goName": "AllowIDPInitiated", "jsonName": "allowIdpInitiated", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Enforcement", "jsonName": "enforcement", "goType": "string", "tsType": "SAMLEnforcement" },
+        { "goName": "EmailAttribute", "jsonName": "emailAttribute", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "LinkedWorkspaceID", "jsonName": "linkedWorkspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AccountCreation", "jsonName": "accountCreation", "goType": "string", "tsType": "SAMLAccountCreation", "optional": true }
+      ]
+    },
+    {
+      "goName": "samlProviderResponse",
+      "tsName": "SAMLProvider",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Issuer", "jsonName": "issuer", "goType": "string", "tsType": "string" },
+        { "goName": "LoginURL", "jsonName": "loginUrl", "goType": "string", "tsType": "string" },
+        { "goName": "AllowIDPInitiated", "jsonName": "allowIdpInitiated", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Enforcement", "jsonName": "enforcement", "goType": "string", "tsType": "SAMLEnforcement" },
+        { "goName": "EmailAttribute", "jsonName": "emailAttribute", "goType": "string", "tsType": "string" },
+        { "goName": "LinkedWorkspaceID", "jsonName": "linkedWorkspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AccountCreation", "jsonName": "accountCreation", "goType": "string", "tsType": "SAMLAccountCreation" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ServiceOrigin", "jsonName": "serviceOrigin", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "EarlierServiceOrigin", "jsonName": "earlierServiceOrigin", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ServiceOriginAdded", "jsonName": "serviceOriginAdded", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "samlServiceReturnInput",
+      "tsName": "SAMLServiceReturnInput",
+      "fields": [
+        { "goName": "Added", "jsonName": "added", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "samlDomainResponse",
+      "tsName": "SAMLDomain",
+      "fields": [
+        { "goName": "Domain", "jsonName": "domain", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "SAMLDomainStatus" },
+        { "goName": "VerificationRecord", "jsonName": "verificationRecord", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "samlWorkspaceResponse",
+      "tsName": "SAMLWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "samlDomainInput",
+      "tsName": "SAMLDomainInput",
+      "fields": [
+        { "goName": "Domain", "jsonName": "domain", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "samlExchangeInput",
+      "tsName": "SAMLExchangeInput",
+      "fields": [
+        { "goName": "Code", "jsonName": "code", "goType": "string", "tsType": "string" },
+        { "goName": "Verifier", "jsonName": "verifier", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ]
+}

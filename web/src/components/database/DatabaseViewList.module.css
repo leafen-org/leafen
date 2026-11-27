@@ -1,0 +1,101 @@
+/* Notion's list of views (seen 2026-11-02, "N개 더 보기" in a 290px menu):
+   the search a 28px box 12px down and 16px in, the rows 28px and 4px in,
+   a view's handle 10px in, its 20px icon at 36 and name at 64, the current
+   one ticked 4px before its "⋯" (24px, 16px from the end); under a line 8px
+   in, "새 보기" and "새 데이터 소스" with their 20px marks 8px in. */
+.search {
+  padding: 12px 16px 8px;
+}
+.search > input {
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--layout-search-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+.search > input:focus {
+  outline: none;
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+.items {
+  padding: 4px;
+}
+/* Notion's list is at most half the window, its search kept in place and
+   only the rows under it scrolling (seen 2026-11-05: 341.5px in a 683px
+   window, the rows from 48px down). */
+[data-view-overflow-menu="true"]:has(> .list) { display: flex; flex-direction: column; }
+[data-view-overflow-menu="true"] > .list { display: flex; flex-direction: column; min-height: 0; max-height: 50vh; }
+[data-view-overflow-menu="true"] > .list > .items { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.row { position: relative; display: flex; align-items: center; min-width: 0; height: 28px; padding-inline-end: 16px; border-radius: 6px; }
+/* The whole row lights up, its handle and "⋯" with it. */
+.row:hover, .row:has(> .item[data-focused="true"]), .row:has(> [aria-expanded="true"]) { background: var(--bg-hover); }
+.row > .item:is(:hover, [data-focused="true"]) { background: transparent; }
+/* The arrows ring the whole row, its handle to its "⋯", not the name between
+   them (Notion's, seen 2026-11-15 at 1440 in two tabs: the 267×28 row rings
+   with the keyboard ring, its 6px corners). */
+.row > .item.item[data-focused="true"][data-focus-visible="true"] { box-shadow: none; }
+.row:has(> .item[data-focused="true"][data-focus-visible="true"]:not([aria-expanded="true"])) { box-shadow: var(--keyboard-focus-ring); }
+.item { display: flex; align-items: center; flex: 1; width: 100%; min-width: 0; color: var(--text-default); text-align: start;
+  min-height: var(--menu-row-height);
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  border-radius: var(--menu-row-radius);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  gap: var(--menu-row-gap);
+}
+.action { padding-inline-start: 8px; }
+/* The two at the end 1px apart, as Notion's menus (seen 2026-10-27). */
+.action + .action {
+  margin-top: var(--menu-row-space);
+}
+.itemName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.action:hover, .action[data-focused="true"] { background: var(--bg-hover); }
+/* At its views' limit "새 보기" and "새 데이터 소스" are dim and light no more (Notion's, seen 2026-11-12). */
+.action:disabled { opacity: 0.42; cursor: default; }
+.action:disabled:hover { background: transparent; }
+.item svg { flex: 0 0 auto; }
+.current { margin-inline-start: auto; color: var(--icon-primary); }
+.divider { height: 1px; margin: 4px 8px; background: var(--border-subtle); }
+.tool { display: flex; justify-content: center; align-items: center; flex: 0 0 24px; height: 24px; padding: 0; color: var(--icon-secondary); background: transparent; border-radius: 6px; }
+/* The ⠿ draws no box and keeps its gray under the pointer, the row lighting
+   instead (Notion's, seen 2026-11-18); "⋯" is the menu row's small button,
+   lit in the hover gray with its glyph kept (DatabaseMenuRowTool). */
+.more { composes: tool from "./DatabaseMenuRowTool.module.css"; }
+.tool:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+/* A layout builder's tab "⋯" opens its actions right under it (LayoutTabStrip),
+   8px in, its two groups 8px over and under a line 16px in from either side —
+   roomier than a view's menu, 4px in with its lines 12px in (Notion's, seen
+   2026-11-24 in two tabs at 640 and 1440: the 220px menu 147 high at the
+   "⋯"'s bottom, its rows 204 wide, 17 between "보기 편집" and "보기 복제"; a
+   view tab's menu 4 in, 9 between groups). */
+.rowActions > :global([data-view-tab-menu]) { padding: 8px; }
+.rowActions :global([role="separator"]) { margin: 8px; }
+/* Its ⠿ a 20x24 box 8px in, the 16px glyph centered 18px in, the icon still
+   at 36 (Notion's, seen 2026-11-18 at 1440: box +8, glyph +10, icon +36). */
+.handle { flex-basis: 20px; margin-inline: 8px 2px; }
+/* A touch screen's list is Notion's iPad's (seen 2026-11-14 at 834, a 290px
+   list): its search a bare 20px line, 12px down and 16px in, with no box,
+   the rows 12px under it; no handles, a view's 20px icon 12px in. */
+:global([data-touch="true"]) .search > input { display: block; height: 20px; padding: 0; background: transparent; }
+:global([data-touch="true"]) .search > input:focus { box-shadow: none; }
+:global([data-touch="true"]) .handle { display: none; }
+:global([data-touch="true"]) .item:not(.action) { padding-inline-start: 8px; }
+/* Its "새 보기" is a 45px row of two lines 8px after a 22px blue round "+",
+   4px 8px in: the name 14px, then "표, 차트, 폼 등" 12px in the second grey 2px
+   under it, both on 16.8px lines (Notion's iPad, seen 2026-11-14 at 834). */
+.addRow { align-items: flex-start; min-height: 45px; padding: 4px 8px; gap: 8px; }
+.addCircle { width: 22px; height: 22px; margin-top: 1px; color: var(--accent-blue); }
+.addText { display: flex; flex-direction: column; min-width: 0; line-height: 16.8px; }
+.addKinds { margin-top: 2px; overflow: hidden; color: var(--text-secondary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Its "결과 없음" is smaller than the menus' shared row:
+   12px/400 in the secondary gray on a 16.8px line, its box 26.8px
+   with the words 6px down and 8px in, 2px under the rows' top and 10px over
+   the line before "새 보기", the line's own 4px within them (Notion's views
+   list, seen 2026-11-15 at 1440 under "zzqq": the words 12px under the
+   list's top, the line 42.8px, "새 보기" 47.8px). */
+.noResults { margin: 2px 0 10px; padding: 6px 8px 4px; color: var(--text-secondary); font-size: 12px; line-height: 16.8px; }

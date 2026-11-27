@@ -1,0 +1,382 @@
+.db {
+  container-name: database-surface;
+  container-type: inline-size;
+  margin-top: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.db[data-placement="inline"] {
+  margin-top: 4px;
+  overflow-x: visible;
+}
+
+.dbChrome {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.viewTabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--border-default);
+  margin-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.viewTabs::-webkit-scrollbar { display: none; }
+
+.viewTabWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 34px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  background: var(--table-surface, var(--bg-app));
+}
+
+.viewTabWrap[data-active="true"] { border-bottom-color: var(--text-default); }
+
+.viewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  max-width: 220px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.viewTab:hover,
+.viewTab:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.viewTabWrap[data-active="true"] .viewTab:hover,
+.viewTabWrap[data-active="true"] .viewTab:focus-visible { background: transparent; }
+
+.viewTabActive { color: var(--text-default); }
+
+.viewGlyph {
+  display: inline-flex;
+  align-items: center;
+  color: var(--icon-secondary);
+}
+
+.viewTabName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewBody {
+  max-width: 100%;
+  min-width: 0;
+  padding-top: 6px;
+}
+
+.tableScroll {
+  --table-gutter-width: 112px;
+  position: relative;
+  overflow-x: auto;
+}
+
+.table {
+  --table-gutter-width: 0px;
+  /* Notion's table lines are its secondary border (borSec, seen 2026-10-11). */
+  --table-grid-border: var(--border-subtle);
+  width: max-content;
+  min-width: 100%;
+  font-size: 14px;
+  border-top: 0;
+}
+
+.tableGrid {
+  width: 100%;
+  min-width: 100%;
+}
+
+.tableHead {
+  position: relative;
+  display: grid;
+  border-bottom: 0;
+}
+
+.tableHead::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  height: 1px;
+  background: var(--table-grid-border);
+  pointer-events: none;
+}
+
+.headCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  overflow: visible;
+}
+
+.headGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+  font-size: 12px;
+}
+
+.headName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableRow {
+  position: relative;
+  display: grid;
+  border-bottom: 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 34px;
+}
+
+.tableRow:hover { background: color-mix(in srgb, var(--bg-hover) 44%, transparent); }
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 33px;
+  border-inline-end: 1px solid var(--table-grid-border);
+  border-bottom: 1px solid var(--table-grid-border);
+  padding: 0 2px;
+  overflow: visible;
+}
+
+.cell:last-child { border-inline-end: 0; }
+.cell:focus { outline: none; }
+
+.cell:focus-visible,
+.cell:focus-within {
+  z-index: 1;
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+
+.cell[data-title="true"] { font-weight: 500; }
+
+.openRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-floating-control-hover);
+  box-shadow: 0 1px 2px rgba(15, 15, 15, 0.16);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.openRow { gap: 4px; padding: 0 7px; }
+
+.openRow:hover,
+.openRow:focus-visible {
+  color: var(--text-default);
+  outline: none;
+}
+
+.cellInput {
+  width: 100%;
+  height: 100%;
+  min-height: 31px;
+  padding: 4px 6px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-default);
+}
+
+.board {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 0 20px;
+  align-items: flex-start;
+}
+
+.boardCol {
+  position: relative;
+  flex: 0 0 260px;
+  width: 260px;
+  min-height: 120px;
+  border-radius: 8px;
+  transition: background 120ms ease;
+}
+
+.boardColHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 4px;
+}
+
+.boardNoGroup {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.boardCount {
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.boardCards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boardCardSlot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card {
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
+
+.card:hover,
+.card:focus-within { background: var(--bg-hover); }
+
+.cardTitle {
+  position: relative;
+  padding: 10px 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardTitle input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 12px 10px;
+}
+
+.cardField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A card's checkbox, its name right beside it. */
+.cardField[data-checkbox-field] {
+  justify-content: flex-start;
+  gap: 4px;
+}
+/* A rollup's checkboxes on a card stand in a row from its start, 6px apart
+   as Notion's (seen 2026-11-12), and a formula's list of them. */
+.cardField[data-rollup-checks],
+.cardField[data-formula-checks] {
+  justify-content: flex-start;
+  gap: 6px;
+}
+.cardField[data-rollup-checks] > *,
+.cardField[data-formula-checks] > * {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.cardField input {
+  width: 72px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-default);
+  text-align: end;
+}
+
+:global([data-phone="true"]) .viewTab { min-height: 44px; }
+:global([data-phone="true"]) .tableScroll { max-width: calc(100vw - 24px); }
+:global([data-phone="true"]) .boardCol { flex-basis: min(280px, 82vw); width: min(280px, 82vw); }
+
+/* A card's value with an open discussion, marked as its table cell's: one
+   square mark round the whole value, as wide as it (PropValue; Notion's card,
+   seen 2026-11-11). */
+.discussedValue {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 0 0 1px;
+  border-bottom: 2px solid rgba(255, 203, 0, 0.35);
+  background: rgba(255, 203, 0, 0.12);
+}
+.discussedValue[data-mark-room="chips"] {
+  padding: 4px;
+}
+.discussedValue[data-mark-room="options"] {
+  padding: 2px;
+}
+.discussedValue > * {
+  width: auto;
+  min-width: 0;
+}

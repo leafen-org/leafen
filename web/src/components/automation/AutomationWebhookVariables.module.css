@@ -1,0 +1,349 @@
+/* A webhook's and a variable's fields, as Notion's cards (seen 2026-10-24 at
+   1280px): a URL or header field is a 32px white box with a ring, a
+   variable's words a 28px soft one; text buttons are grey 28px rows. */
+.webhook,
+.variables {
+  display: grid;
+  min-width: 0;
+}
+
+/* "URL" stands in a 26px line (Notion's has a help mark there), its field 4px under. */
+.urlName {
+  display: flex;
+  align-items: center;
+  min-height: 26px;
+}
+
+.urlName + .box {
+  margin-top: 4px;
+}
+
+/* A line 12px under "사용자 지정 헤더 추가", "콘텐츠" 12px under it. */
+.split {
+  width: 100%;
+  margin: 12px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.contentName {
+  margin-top: 12px;
+  line-height: 21px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--border-default);
+}
+
+.box:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Its field keeps its grey ring; the words are a pale red, as Notion's. */
+.error {
+  margin: 4px 0 0;
+  line-height: 21px;
+  color: var(--red-icon-secondary);
+  font-size: 14px;
+}
+
+/* Each header 12px under the one before, the first 16px under the URL. */
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 32px;
+  align-items: end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.box + .header,
+.error + .header {
+  margin-top: 16px;
+}
+
+.headerField {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.headerRemove {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.headerRemove:hover,
+.textButton:hover {
+  background: var(--bg-hover);
+}
+
+.textButton {
+  justify-self: start;
+  height: 28px;
+  margin-top: 12px;
+  margin-inline-start: -8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  font-size: 14px;
+}
+
+/* "콘텐츠": a box of 35px checks 28px in, the first over a line. */
+.content {
+  display: grid;
+  margin-top: 4px;
+  padding: 7px 12px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 35px;
+  padding: 0 15px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.checkbox {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  min-height: 0;
+  margin: 0;
+}
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.checkIcon {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 19px;
+  color: var(--icon-secondary);
+}
+
+.checkName {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check[data-gone] .checkName {
+  color: var(--danger);
+}
+
+.rule {
+  width: 100%;
+  margin: 8px 0 7px;
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* "다른 변수 정의..." stands at the fields' start, 16px under the last. */
+.variableAdd {
+  margin-top: 16px;
+  margin-inline-start: 0;
+}
+
+/* A text variable's words, 14px on 20px lines 6px in, wrapping as they
+   grow; "@" and Σ 20px at its end 2px apart, 4px in (Notion's, seen
+   2026-10-25 at 1280px). */
+.softBox {
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  min-height: var(--name-field-height);
+  box-sizing: border-box;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--automation-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.softBox:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* A formula of a type its property can't take, or one its editor names a
+   problem in: a 1px red border, the field 30 high (Notion's, seen 2026-11-10;
+   a variable's in two tabs 2026-11-21). */
+.softBox[data-invalid] {
+  border: 1px solid var(--danger);
+  box-shadow: none;
+}
+
+/* A page line's formula: its code where the words go, 14px mono on their line; pressing it opens its editor. */
+.formulaCode {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 24px;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+  cursor: text;
+}
+
+.formulaCode code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.words {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2px 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+
+/* An empty field says what it makes, as a new page's name "제목 없음". */
+.words[data-empty="true"]::before {
+  float: inline-start;
+  height: 0;
+  content: attr(data-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+
+/* A number in the same field: its words' line, no arrows. */
+.numberBox {
+  flex: 1 1 auto;
+}
+
+.number {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 24px;
+  padding: 2px 4px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.softBoxButtons {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  margin-block: 0 2px;
+  margin-inline: 0 2px;
+}
+
+.softBoxButton {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.softBoxButton:hover {
+  background: var(--bg-hover);
+}
+
+/* Σ on a formula, blue: "텍스트로 편집" (Notion's, seen 2026-11-10). */
+.softBoxButton[aria-pressed="true"] {
+  color: var(--accent-blue);
+}
+
+/* On a phone, as Notion's sheet (seen 2026-10-24 at 375px): "URL" and
+   "콘텐츠" 16px; the checks 45px white rows of 17px words, each over a line,
+   16px between the first and the rest. A variable's card is as on a desktop. */
+:global([data-phone-automation-editor]) .urlName,
+:global([data-phone-automation-editor]) .contentName {
+  font-size: 16px;
+}
+
+:global([data-phone-automation-editor]) .contentName {
+  line-height: 24px;
+}
+
+:global([data-phone-automation-editor]) .content {
+  padding: 17px 16px;
+}
+
+:global([data-phone-automation-editor]) .check {
+  box-sizing: border-box;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: 31px 14px;
+  border-bottom: 1px solid var(--border-secondary);
+  background: var(--bg-app);
+  font-size: 17px;
+}
+
+:global([data-phone-automation-editor]) .checkLabel {
+  gap: 19px;
+}
+
+/* A property's mark stands 26px after its check, "기존 속성 모두 선택" 12px. */
+:global([data-phone-automation-editor]) .check:not([data-webhook-all]) .checkLabel {
+  margin-inline-start: 14px;
+}
+
+:global([data-phone-automation-editor]) .rule {
+  border-top-color: transparent;
+}

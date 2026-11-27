@@ -1,0 +1,474 @@
+
+/* ── Row preview ───────────────────────────────────────────── */
+/* The peek's frame — side, center or whole — its motion and its bar; the
+   row's page inside it is DatabaseRowPeekBody's, the sheet after this one. */
+.rowPeekBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(15, 15, 15, 0.12);
+  opacity: 1;
+  transition: opacity 180ms ease;
+}
+.rowPeekBackdrop[data-motion-state="opening"],
+.rowPeekBackdrop[data-motion-state="closing"] {
+  opacity: 0;
+}
+.rowPeekBackdrop:disabled {
+  cursor: default;
+}
+/* Kept beneath a template opened from a view in it, in its place (rowWindowTemplate.ts). */
+.rowPeekBackdrop[hidden],
+.rowPeek[hidden] {
+  display: none;
+}
+.rowPeek {
+  position: fixed;
+  top: 0;
+  inset-inline-end: 0;
+  bottom: 0;
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  /* Its width, up to the whole window once that is narrower, as Notion's
+     (seen 2026-11-01: 640 at x 60 in a 700px window, the window at 560). */
+  width: min(var(--row-peek-width, 564px), 100vw);
+  min-width: min(420px, 100vw);
+  overflow: hidden;
+  border-inline-start: 1px solid var(--border-default);
+  background: var(--bg-app);
+  box-shadow: calc(-10px * var(--inline-sign, 1)) 0 28px rgba(15, 15, 15, 0.14);
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+/* Beside the page, not over it, a side peek wears Notion's faint ring and
+   shadow (seen 2026-11-03), not an overlay's. */
+.rowPeek[data-mode="side"]:not([data-phone="true"]) {
+  border-inline-start: 0;
+  box-shadow: var(--shadow-raised);
+}
+.rowPeek[data-mode="side"][data-motion-state="opening"] {
+  opacity: 0.96;
+  transform: translateX(calc(100% * var(--inline-sign, 1)));
+}
+/* Closing, it slides out whole at full opacity in some 190ms, fast then
+   slow, as Notion's (seen 2026-11-12; lib/sidePeekMotion.ts). */
+.rowPeek[data-mode="side"][data-motion-state="closing"] {
+  transform: translateX(calc(100% * var(--inline-sign, 1)));
+  transition: transform 190ms ease;
+  pointer-events: none;
+}
+.rowPeek:focus {
+  outline: none;
+}
+.rowPeekResizeHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  width: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+}
+.rowPeekResizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 2px;
+  background: transparent;
+}
+.rowPeekResizeHandle:hover::after,
+.rowPeekResizeHandle:focus-visible::after,
+.rowPeek[data-resizing="true"] .rowPeekResizeHandle::after {
+  background: var(--accent-blue);
+}
+.rowPeekResizeHandle:focus-visible {
+  outline: none;
+}
+/* Center-peek (modal) mode, used by gallery/calendar by default in Notion.
+   As Notion's (seen 2026-10-30 at 800, 1024 and 1280 wide, 800 and 1100
+   high, a row's and a template's alike): 72px from the window's top and
+   bottom and at least 72px from its sides, centered; 960px wide at most and
+   the platform's scrollbar more, whether its page scrolls or not (seen
+   2026-11-13 at 1024 to 1440 wide: 880, then 975 with 15px scrollbars; a
+   page's, a row's and a new page's window from the sidebar's "+" alike —
+   sidePeekWidth.ts). */
+/* A peek is a raised surface with no line under its bar, as Notion's (seen 2026-11-05). */
+.rowPeek:not([data-mode="full"]):not([data-phone="true"]) {
+  --bg-app: var(--bg-element);
+  --bg-default: var(--bg-element);
+  background: var(--bg-app);
+}
+.rowPeek:not([data-mode="full"]):not([data-phone="true"]) .rowPeekTop {
+  background: var(--bg-app);
+  box-shadow: none;
+}
+.rowPeekBackdrop[data-mode="center"] {
+  background: var(--bg-overlay);
+}
+.rowPeek[data-mode="center"] {
+  top: 72px;
+  inset-inline-end: auto;
+  bottom: auto;
+  left: 50%; /* physical: centred on its own box in either direction */
+  transform: translateX(-50%) scale(1);
+  width: min(calc(960px + var(--center-peek-scrollbar, 15px)), calc(100vw - 144px));
+  height: calc(var(--app-height, 100dvh) - 144px);
+  max-height: none;
+  border-radius: 12px;
+  box-shadow: var(--shadow-raised);
+}
+.rowPeekBack {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 280px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.rowPeekBack span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rowPeekBack:hover,
+.rowPeekBack:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.rowPeekTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: 0 0 44px;
+  height: 44px;
+  min-height: 44px;
+  padding-block: 0;
+  padding-inline: 12px 10px;
+  /* A line that takes no room: the bar's buttons sit in its middle (Notion's 44px bar). */
+  box-shadow: inset 0 -1px 0 var(--border-default);
+  background: var(--bg-app);
+  box-sizing: border-box;
+  container: row-peek-top / inline-size;
+  transition: opacity 0.7s ease;
+}
+/* A row opened as a full page puts its bar away while someone writes, as a
+   page's top bar does (typingFade.ts); a peek keeps its own, as Notion's
+   (seen 2026-11-05). */
+:global(:root[data-typing="true"]) .rowPeek[data-mode="full"] .rowPeekTop { opacity: 0; }
+/* The view options, as Notion's peek shows them (seen 2026-10-31): after a
+   1×14px line 8px from "⤢", 8px on, seen only while the pointer is over the
+   bar, keys reach them or their menu is open — keeping their place the while. */
+.rowPeekViewOptions,
+.rowPeekSiblings {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 6px;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.rowPeekViewOptions::before,
+.rowPeekSiblings::before {
+  width: 1px;
+  height: 14px;
+  margin-inline-end: 8px;
+  background: var(--button-outline);
+  content: "";
+}
+/* A locked row's "잠금" in a peek is the page bar's chip (TopBarChrome.module.css .lockPill: 24px, 6px in,
+   a 16px lock 4px before its 14px word), after a 1×14px line 8px from "⤢" and 6px before it, as Notion's
+   (seen 2026-11-16 at 1440 dark: "⤢" ends at 782, the line at 790, the chip at 797, its word at 823). */
+.rowPeek:not([data-phone="true"]) .rowPeekChromeSide > :is([data-page-lock-status], [data-page-lock-again]) {
+  position: relative;
+  height: 24px;
+  margin-inline-start: 13px;
+  padding: 0 6px;
+  gap: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.rowPeek:not([data-phone="true"]) .rowPeekChromeSide > [data-page-lock-status] { color: var(--text-tertiary); }
+.rowPeek:not([data-phone="true"]) .rowPeekChromeSide > [data-page-lock-status] svg { color: var(--icon-tertiary); }
+.rowPeek:not([data-phone="true"]) .rowPeekChromeSide > :is([data-page-lock-status], [data-page-lock-again])::before {
+  position: absolute;
+  top: 5px;
+  inset-inline-start: -7px;
+  width: 1px;
+  height: 14px;
+  background: var(--button-outline);
+  content: "";
+}
+.rowPeekTop:hover :is(.rowPeekViewOptions, .rowPeekSiblings),
+:is(.rowPeekViewOptions, .rowPeekSiblings):focus-within,
+.rowPeekViewOptions:has([aria-expanded="true"]) {
+  opacity: 1;
+}
+/* ∧ and ∨ sit 2px apart; at either end of the view one fades and stays put. */
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.rowPeekSiblings) > button:not(button:first-of-type) { margin-inline-start: 2px; }
+.rowPeekSiblings button[aria-disabled="true"] {
+  background: none;
+  color: var(--icon-secondary);
+  cursor: default;
+  opacity: 0.4;
+}
+/* Drawn over the page (PopoverLayer) where its opener's place puts it
+   (RowPeekViewOptions): 220 wide, its rows 1px apart, as Notion's (seen 2026-11-13). */
+.rowPeekViewMenu {
+  position: fixed;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: var(--menu-row-space);
+  width: 220px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* The line before "기본 보기 변경" is a menu's (--menu-divider-margin): 4px
+   from the rows above and below it, the menu's 1px gaps among them, and 8px
+   in from their sides, as Notion's (seen 2026-11-14, 1440: rows end 153, the
+   line at 157–158 from 705.5 to 901.5, the last row at 162). */
+.rowPeekViewMenuLine {
+  flex: none;
+  height: 1px;
+  margin: calc(4px - var(--menu-row-space)) 8px;
+  border: 0;
+  background: var(--menu-divider);
+}
+/* The menu's rows are a menu's, not the bar's buttons (2026-10-17: they took
+   the bar's 13px). */
+.rowPeekViewMenu > button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+.rowPeekViewMenu > button > span { flex: 1 1 auto; text-align: start; }
+/* Its marks are icoSec, as Notion's peek marks there (seen 2026-11-13: #ada9a3 dark). */
+.rowPeekViewMenu > button > svg:first-child { flex: 0 0 auto; color: var(--icon-secondary); }
+.rowPeekViewMenu > button:is(:hover, :focus-visible) {
+  background: var(--bg-hover);
+  outline: none;
+}
+.rowPeekChromeSide {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+/* A full page's path takes the room its actions leave, so a phone-wide bar
+   keeps its "…" on screen. */
+.rowPeekChromeSide[data-path] {
+  flex: 1 1 auto;
+}
+/* Its path reads at the top bar's 14px, not the page's 16px, as Notion's row page path (2026-11-11); a phone's keeps its bar's 16px. */
+.rowPeek:not([data-phone="true"]) .rowPeekChromeSide[data-path] [data-row-page-path] { font-size: 14px; }
+:where(.rowPeekChromeSide) button {
+  color: var(--text-default);
+}
+.rowPeekActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+:where(.rowPeekChromeSide) button,
+:where(.rowPeekActions) button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: color-mix(in srgb, var(--text-default) 72%, transparent);
+  font-size: 13px;
+  white-space: nowrap;
+}
+:where(.rowPeekChromeSide) button.rowPeekIconAction {
+  color: var(--icon-secondary);
+}
+:where(.rowPeekActions) button {
+  color: var(--icon-primary);
+}
+:where(.rowPeekActions) .rowPeekTextAction {
+  max-width: 132px;
+  padding: 0 8px;
+}
+:where(.rowPeekChromeSide) .rowPeekIconAction,
+:where(.rowPeekActions) .rowPeekIconAction {
+  width: 28px;
+  min-width: 28px;
+  padding: 0;
+}
+/* "패널 닫기" beside the docked updates: the page bar's 24px button
+   (TopBarPanel.module.css) at the panel's start, in the middle of this 44px
+   bar, which leads the full row page. */
+.rowPeekActions .rowPeekClosePanel {
+  top: 22px;
+  min-width: 24px;
+  padding: 0;
+}
+/* Bar buttons 12px in from the peek's edge, as Notion's (seen 2026-11-13: 732, 758, 799 by a side peek at 720): a center peek's 1px edge counts in them. */
+.rowPeek[data-mode="center"]:not(:global([data-phone="true"]) *) .rowPeekTop {
+  padding-inline-start: 11px;
+}
+/* Close, open as a page and the view options: 24px, as Notion's peek bar
+   (seen 2026-11-01: 12, 38 and 79px in, 10px down). */
+:where(.rowPeekChromeSide) .rowPeekIconAction {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+}
+:where(.rowPeekChromeSide) button svg,
+:where(.rowPeekActions) button svg {
+  flex: 0 0 auto;
+}
+:where(.rowPeekActions) button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:where(.rowPeekChromeSide) button:hover,
+:where(.rowPeekChromeSide) button:focus-visible,
+:where(.rowPeekActions) button:hover,
+:where(.rowPeekActions) button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* "페이지 정보" stays lit while the details panel shows, as Notion's (seen 2026-11-11). */
+:where(.rowPeekActions) button[data-row-peek-details][aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+:where(.rowPeekActions) button:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.42;
+}
+:where(.rowPeekActions) button:disabled:hover {
+  background: transparent;
+  color: var(--text-tertiary);
+}
+/* A phone's row page opened as its own page (2026-10-29) takes the phone
+   page bar, as Notion's at 375px: ☰, its title, share, the comments once
+   there are any, and "⋯" — 26px icons 40px apart, no link or star; its
+   buttons past the camera's cutout on its side, as a page's (AppShell.module.css). */
+.rowPeek[data-phone="true"][data-mode="full"] .rowPeekTop {
+  padding-block: 0;
+  padding-inline: calc(4px + var(--phone-safe-start, 0px)) calc(11px + var(--phone-safe-end, 0px));
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-topbar-sidebar-toggle] {
+  width: 36px;
+  height: 44px;
+  margin-inline-end: 6px;
+  color: var(--text-default);
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-topbar-sidebar-toggle] svg {
+  width: 22px;
+  height: 22px;
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-topbar-unread] {
+  top: 9px;
+  inset-inline-start: 19px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 10px;
+  line-height: 16px;
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-actions] {
+  gap: 0;
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-share],
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-comments],
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-page-actions] {
+  width: 40px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  color: var(--icon-primary);
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-share] svg,
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-comments] svg,
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-page-actions] svg {
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  color: var(--icon-primary);
+}
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-share] span,
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-copy-link],
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-favorite],
+.rowPeek[data-phone="true"][data-mode="full"] [data-row-peek-edited-time] {
+  display: none;
+}
+:global([data-phone="true"]) .rowPeek {
+  inset-inline-start: 0;
+  width: 100vw;
+  min-width: 0;
+}
+:global([data-phone="true"]) .rowPeekResizeHandle {
+  display: none;
+}
+
+:global([data-phone="true"]) .rowPeekTop {
+  padding-inline-start: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rowPeek {
+    transition: none;
+  }
+}
+
+/* A center peek doesn't clip what opens from it: its "⋯" menu runs on past
+   the window's foot while the screen has room, as Notion's (seen 2026-11-07:
+   the menu right under the button, over the window's edge). Its top and its
+   body round their own corners instead. */
+.rowPeek[data-mode="center"]:not([data-phone="true"]) {
+  overflow: visible;
+}
+.rowPeek[data-mode="center"]:not([data-phone="true"]) > .rowPeekTop {
+  border-radius: 12px 12px 0 0;
+}
+.rowPeek[data-mode="center"]:not([data-phone="true"]) > .rowPeekScroll {
+  border-radius: 0 0 12px 12px;
+}

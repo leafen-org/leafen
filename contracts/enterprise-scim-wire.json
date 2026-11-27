@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 2,
+  "name": "enterprise-scim",
+  "bounds": [
+    { "goName": "scimMaxBodyBytes", "tsName": "bodyBytes", "value": 1048576 },
+    { "goName": "scimMaxPageSize", "tsName": "pageSize", "value": 100 },
+    { "goName": "scimMaxPatchOperations", "tsName": "patchOperations", "value": 50 },
+    { "goName": "scimMaxTokenLabelRunes", "tsName": "tokenLabelRunes", "value": 128 }
+  ],
+  "errors": [
+    { "goName": "errorCodeSCIMConfigurationInvalid", "tsName": "configurationInvalid", "value": "LEAFEN_SCIM_CONFIGURATION_INVALID" },
+    { "goName": "errorCodeSCIMTokenInvalid", "tsName": "tokenInvalid", "value": "LEAFEN_SCIM_TOKEN_INVALID" },
+    { "goName": "errorCodeSCIMTokenNotFound", "tsName": "tokenNotFound", "value": "LEAFEN_SCIM_TOKEN_NOT_FOUND" },
+    { "goName": "errorCodeSCIMOperationConflict", "tsName": "operationConflict", "value": "LEAFEN_SCIM_OPERATION_CONFLICT" },
+    { "goName": "errorCodeSCIMOperationStateInvalid", "tsName": "operationStateInvalid", "value": "LEAFEN_SCIM_OPERATION_STATE_INVALID" },
+    { "goName": "errorCodeSCIMRequestFailed", "tsName": "requestFailed", "value": "LEAFEN_SCIM_REQUEST_FAILED" },
+    { "goName": "errorCodeSCIMUnavailable", "tsName": "unavailable", "value": "LEAFEN_SCIM_UNAVAILABLE" }
+  ],
+  "headers": [
+    { "goName": "scimOperationIDHeader", "tsName": "operationId", "value": "X-Leafen-SCIM-Operation-ID" },
+    { "goName": "scimOperationStatusHeader", "tsName": "operationStatus", "value": "X-Leafen-SCIM-Operation-Status" },
+    { "goName": "scimOperationCursorHeader", "tsName": "operationCursor", "value": "X-Leafen-SCIM-Operation-Cursor" },
+    { "goName": "scimOperationTotalHeader", "tsName": "operationTotal", "value": "X-Leafen-SCIM-Operation-Total" }
+  ],
+  "enums": [
+    {
+      "tsName": "SCIMProvisioningMode",
+      "tsValuesName": "scimProvisioningModeValues",
+      "values": [
+        { "goName": "scimProvisioningModeV2", "tsName": "scimV2", "value": "scim_v2" }
+      ]
+    },
+    {
+      "tsName": "SCIMDeprovisionAction",
+      "tsValuesName": "scimDeprovisionActionValues",
+      "values": [
+        { "goName": "scimDeprovisionDeactivate", "tsName": "deactivate", "value": "deactivate" }
+      ]
+    },
+    {
+      "tsName": "SCIMOperationStatus",
+      "tsValuesName": "scimOperationStatusValues",
+      "values": [
+        { "goName": "scimOperationStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "scimOperationStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "scimOperationStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "scimConfigurationInput",
+      "tsName": "SCIMConfigurationInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ProvisioningMode", "jsonName": "provisioningMode", "goType": "string", "tsType": "SCIMProvisioningMode" },
+        { "goName": "DeprovisionAction", "jsonName": "deprovisionAction", "goType": "string", "tsType": "SCIMDeprovisionAction" }
+      ]
+    },
+    {
+      "goName": "scimTokenCreateInput",
+      "tsName": "SCIMTokenCreateInput",
+      "fields": [
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "scimTokenMetadata",
+      "tsName": "SCIMTokenMetadata",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "scimConfigurationResponse",
+      "tsName": "SCIMConfiguration",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ProvisioningMode", "jsonName": "provisioningMode", "goType": "string", "tsType": "SCIMProvisioningMode" },
+        { "goName": "DeprovisionAction", "jsonName": "deprovisionAction", "goType": "string", "tsType": "SCIMDeprovisionAction" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Tokens", "jsonName": "tokens", "goType": "[]scimTokenMetadata", "tsType": "SCIMTokenMetadata[]" }
+      ]
+    },
+    {
+      "goName": "scimTokenCreationResponse",
+      "tsName": "SCIMTokenCreation",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    }
+  ]
+}

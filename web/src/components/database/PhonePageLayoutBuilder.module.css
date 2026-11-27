@@ -1,0 +1,694 @@
+/* The page layout builder on a phone, as Notion's (seen 2026-10-24 at
+   375px): a white 45px bar over a line, then one area's cards 18px in and
+   12px apart; the sheets' lists in white groups. */
+.builder {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+
+/* It holds the focus as it opens, unringed. */
+.builder:focus {
+  outline: none;
+}
+
+/* "페이지 ⌄" 8px in, a blue "적용" and "⋯" 8px from the end. */
+.bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: 45px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.areaPicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 8px 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.barEnd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.apply {
+  height: 28px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.apply:disabled {
+  opacity: 0.4;
+}
+
+.more {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.more svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* The chosen area's "✓", on its name's line (PhoneSheetRow). */
+.chosen {
+  display: inline-flex;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* An area's cards: a 0.5px light blue ring, rounded 8; a 32px head of its
+   blue 14px name on a blue tint; a card whose sheet is open, a 1.25px blue
+   ring. */
+.area {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 18px 40px;
+}
+
+.area > section {
+  border: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--accent-blue) 34%, transparent);
+}
+
+.area > section[data-selected="true"] {
+  border: 0;
+  box-shadow: 0 0 0 1.25px var(--accent-blue), inset 0 0 0 1.25px var(--accent-blue);
+}
+
+.area > section:not([data-layout-module="tab"]) > div:first-child {
+  height: 32px;
+  padding: 0 10px;
+  background: color-mix(in srgb, var(--accent-blue) 7%, transparent);
+  font-size: 14px;
+}
+
+/* The title's card: "백링크 없음" in its 28px pill 20px under the head, the
+   page's name 28px bold, 20px in. */
+.area > [data-layout-module="heading"] > div:last-child {
+  padding: 20px 12px 12px;
+}
+
+.area > [data-layout-module="heading"] > div:last-child > div:first-of-type {
+  margin: 0 0 1px;
+}
+
+.area > [data-layout-module="heading"] > div:last-child > div:first-of-type svg {
+  margin-block: 0;
+  margin-inline: -3.5px -4.5px;
+}
+
+.area h1 {
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+/* A property's line: a 120px name cell 12px in, its value 8px on, 34px
+   lines 4px apart. */
+.area [data-layout-module="properties"] > div:last-child,
+.area [data-layout-module="property"] > div:last-child {
+  padding: 12px;
+}
+
+.area [data-layout-preview-property] {
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 8px;
+  padding: 0;
+}
+
+.area [data-layout-preview-property] + [data-layout-preview-property] {
+  margin-top: 4px;
+}
+
+.area [data-layout-preview-property] > span:first-child {
+  padding: 0 6px;
+}
+
+.area [data-layout-preview-property] > span:last-child {
+  padding-inline-start: 6px;
+}
+
+/* "속성 N개 더 보기" right under the lines, a 34px line in 14px faint, as
+   Notion's (seen 2026-10-25). */
+.area [data-layout-preview-more] {
+  display: block;
+  padding: 0;
+}
+
+.area [data-layout-preview-more] > span {
+  display: flex;
+  gap: 6px;
+  min-height: 34px;
+  margin: 0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.area [data-layout-preview-more] svg {
+  width: 12px;
+  height: 12px;
+  color: var(--icon-tertiary);
+}
+
+/* "댓글" 13px grey 20px in, then where a comment is added. */
+.area > [data-layout-module="comments"] > div:last-child {
+  padding: 15px 20px 27px;
+}
+
+.area > [data-layout-module="comments"] > div:last-child > div:first-child {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.area > [data-layout-module="comments"] > div:last-child > div:last-child {
+  margin-top: 11px;
+  line-height: 24px;
+}
+
+/* "비어 있음" 16px, 20px under the head, the card 136px tall. */
+.area > [data-layout-module="content"] > div:last-child {
+  min-height: 104px;
+  padding: 20px 12px;
+  font-size: 16px;
+}
+
+/* A tabbed layout's tabs: one grey pill of the tab shown, as Notion's (seen
+   2026-10-25 at 375px) — 12px under the title, 10px in, 36px, 6px 10px in,
+   its 20px mark, 6px on the 15px/500 name, 4px on an 18px grey "⌄". */
+.tabPill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: calc(100% - 20px);
+  height: 36px;
+  margin-inline-start: 10px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tabPill > svg {
+  flex: none;
+}
+
+.tabPill > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabPill > svg:last-child {
+  margin-inline-start: -2px;
+  color: var(--icon-tertiary);
+}
+
+/* "설정 보기"'s row: the tab's 30px tile (a 1px ring, round 6) 8px in, its name 6px on in 16px. */
+.tabSettingsRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 45px;
+  padding: 0 8px;
+  font-size: 16px;
+}
+
+.tabSettingsMark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--text-default);
+}
+
+/* Its name, which takes the keys, and the "i" for a description at its end. */
+.tabSettingsNameBox {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.tabSettingsNameBox input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 16px;
+  outline: none;
+}
+
+.tabSettingsRow + [data-content-tab-description] {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 0 8px 8px;
+}
+
+.area [data-layout-add-module] {
+  width: 32px;
+  height: 32px;
+  background: color-mix(in srgb, var(--accent-blue) 7%, transparent);
+}
+
+.area [data-layout-add-module] svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* The panel's "+ 패널에 추가", a 36px pill 30px under the bar. */
+.area > [data-layout-add-to-panel] {
+  gap: 4px;
+  height: 36px;
+  margin-top: 12px;
+  padding: 0 14px;
+  background: color-mix(in srgb, var(--accent-blue) 10%, transparent);
+}
+
+/* A sheet's list: grey 15px names 15px under what is above and 9px over
+   white 12px-round groups 16px apart; 45px rows of a 22px icon 13px in and
+   17px words. */
+div.side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: none;
+  padding: 0;
+  border-top: 0;
+  overflow: visible;
+}
+
+/* The property group's sheet starts its search 4px under "페이지에 추가"'s, the
+   title's 1px (Notion's, seen 2026-10-25 at 375px: 97, 94 and 93). */
+.side[data-layout-side="properties"] {
+  padding-top: 4px;
+}
+
+.side[data-layout-side="heading"] {
+  padding-top: 1px;
+}
+
+.side .label {
+  margin: -1px 0 -7px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 17.5px;
+}
+
+.group {
+  flex: none;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+
+.group:empty {
+  display: none;
+}
+
+.group > button,
+.group > div,
+.group > form {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  margin: 0;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 17px;
+}
+
+.group > :last-child {
+  border-bottom: 0;
+}
+
+.group > button:hover,
+.group > div:hover {
+  background: transparent;
+}
+
+.group > button:active {
+  background: var(--bg-hover);
+}
+
+.group > div > span[role="button"]:first-child {
+  display: none;
+}
+
+.group > div > svg,
+.group > button > svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  color: var(--icon-primary);
+}
+
+.group > div > button {
+  width: 28px;
+  height: 28px;
+  color: var(--icon-primary);
+}
+
+/* An option is words 16px in and a 51×31 switch. */
+.group > [data-layout-option] {
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+
+.group > [data-layout-option]:has(small) {
+  padding-block: 8px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  line-height: 20.4px;
+  text-align: start;
+}
+
+.optionText small {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20.4px;
+}
+
+/* A search: a grey 18px glass 12px in, 16px words 6px on. */
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 45px;
+  padding-block: 0;
+  padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--icon-secondary);
+}
+
+.searchRow > svg {
+  flex: none;
+}
+
+/* A property list's search, its glass 8px in (Notion's, seen 2026-10-24). */
+.sideSearch {
+  padding-inline-start: 8px;
+}
+
+.group > div > button svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* A property hidden always is faint, as Notion's shut eye (seen 2026-10-25). */
+.group > div > button[data-layout-visibility="hidden"] {
+  color: var(--icon-secondary);
+}
+
+.group > input,
+.search {
+  box-sizing: border-box;
+  width: 100%;
+  height: 45px;
+  margin: 0;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  outline: none;
+}
+
+.searchRow > .search {
+  height: 100%;
+  padding: 0;
+  font-size: 16px;
+}
+
+/* "구조": two 100px tiles, 8px in and apart, their names 12px under. */
+.structures {
+  padding: 0 8px;
+}
+
+.side [data-layout-structure] > span:first-child {
+  height: 80px;
+}
+
+.side [data-layout-structure] {
+  padding: 0;
+}
+
+.side [data-layout-structure] > span:last-child {
+  line-height: 14px;
+}
+
+/* "페이지에 추가": a 32px tile of the property's mark 6px in, its name and
+   kind 8px on; a kind alone is a 45px row (seen 2026-10-25 at 375px). */
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 6px;
+  padding-inline: calc(6px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.addRow:last-child {
+  border-bottom: 0;
+}
+
+.addTile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  color: var(--icon-secondary);
+}
+
+.addText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.addText > span,
+.addText small {
+  line-height: 20.4px;
+}
+
+.addText small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.addMore {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.empty {
+  margin: 0;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-tertiary);
+  font-size: 15px;
+}
+
+/* A wide touch screen's builder, as Notion's iPad (seen 2026-11-14 in iPad
+   Safari at 834 and 1210 wide): white, its 45px bar three equal thirds 8px
+   apart and 8px in — "미리보기: 〈page〉 ⌄" in 12px grey across the first, the
+   database's 20px mark and its name 18px 500 in the middle, "× 취소", the
+   blue "모든 페이지에 적용" and "⋯" 8px apart at the end; under it the page's
+   cards beside the panel's. */
+.wide {
+  background: var(--bg-default);
+}
+
+.wide > .bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 8px;
+}
+
+.previewPicker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 22px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+  text-align: start;
+}
+
+.previewPicker > span,
+.barName > span {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.previewPicker > svg {
+  flex: none;
+}
+
+.barName {
+  display: inline-flex;
+  align-items: center;
+  justify-self: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.barName > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.wide .barEnd {
+  justify-self: end;
+}
+
+.cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.wide .apply {
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+/* The page's column takes what the panel's 340 leaves, its cards up to 720
+   wide and centred, 24 in at the least, 18 down and 50 over its foot; the
+   panel's 18 in all round behind a grey line; no frame round them. */
+.wide > .body > [data-touch] {
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.wide > .body > [data-touch][data-panel="true"] {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.wide [data-touch] > [data-layout-page-column] > div {
+  width: min(720px, calc(100% - 48px));
+  padding: 18px 0 50px;
+}
+
+.wide [data-touch] > [data-layout-panel] {
+  padding: 18px 18px 50px;
+  border-inline-start-color: var(--border-secondary);
+}
+
+/* The title's card names the page 28px bold, as a phone's does (Notion's
+   iPad, seen 2026-11-14: 28/33.6 at 834 and 1210; a desktop's is larger). */
+.wide [data-touch] [data-layout-module="heading"] h1 {
+  font-size: 28px;
+  line-height: 1.2;
+}

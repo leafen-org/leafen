@@ -1,0 +1,648 @@
+.root {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+}
+
+/* No wider than its list, however long its head: its chips give way, their
+   names cut with "…", and its words stay whole (Notion's, seen 2026-11-15). */
+.card {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-sidebar);
+}
+
+.card header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.card header > button:last-child { margin-inline-start: auto; }
+/* The sentence runs on, its words and chips together, as Notion's ("작업 전체 ⌄ 편집 T ⌄ 에서", seen 2026-11-05), the card's tools at the end. */
+.card header .actionFold { margin-inline-start: auto; }
+.card header .actionFold + button:last-child { margin-inline-start: 0; }
+
+.card header > button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+}
+
+/* The card's own fields: bare inputs in its fields area, not a menu opened
+   from the card, a part with its own look (2026-10-17) or a checkbox, which
+   is the shared box (styles.css). */
+.actionFields input:not([class], [type="checkbox"]),
+.actionFields textarea:not([class]) {
+  width: 100%;
+  min-height: 32px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  padding: 6px 8px;
+  background: var(--bg-app);
+  color: inherit;
+  font: inherit;
+}
+
+.actionFields textarea:not([class]) {
+  min-height: 56px;
+}
+
+.actionFields p:not([class]) {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.checkLabel,
+.card .checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+}
+
+.fieldLabel,
+.card .fieldLabel,
+.messageFieldLabel {
+  display: grid;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.valueRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.addWrap {
+  position: relative;
+}
+
+.addButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 34px;
+  border: 1px dashed var(--button-outline);
+  border-radius: 7px;
+  background: transparent;
+  color: inherit;
+}
+
+.menu {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  max-height: 280px;
+  margin-top: 5px;
+  overflow-y: auto;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  padding: 5px;
+  background: var(--bg-app);
+  box-shadow: 0 8px 24px rgba(15, 15, 15, 0.16);
+}
+
+.menu > button {
+  min-height: 32px;
+  border: 0;
+  border-radius: 5px;
+  padding: 6px 9px;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+
+.menu > button:hover,
+.menu > button:focus-visible {
+  background: var(--bg-hover);
+}
+
+/* A notification's people: chips with a remove button, then the picker. */
+.recipients {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card[data-drop="before"] { border-top-color: var(--accent-blue); }
+.card[data-drop="after"] { border-bottom-color: var(--accent-blue); }
+.card header .actionTitle { flex: 1; width: auto; min-width: 0; display: block; overflow: hidden; text-align: start; text-overflow: ellipsis; white-space: nowrap; font: inherit; }
+/* A heading that reads before its chip ("Add page to [chip]") keeps to its words; words right after the mark start 8px after it, 40 in ("변수 정의", "웹훅 보내기": Notion's, seen 2026-11-18 in Chrome at 1440 and on a Galaxy A90 at 411). */
+.card header .actionTitle[data-lead] { flex: none; } .card header .actionIcon + .actionTitle { padding-inline-start: 0; }
+.card header .actionTitleText { flex: none; white-space: nowrap; }
+.card header .actionHandle { cursor: grab; color: var(--icon-secondary); }
+/* Each action's mark before its heading, tinted as Notion's (seen 2026-10-10). */
+.card header .actionIcon { display: inline-flex; flex: none; color: var(--icon-secondary); }
+.card header .actionIcon[data-tone="blue"] { color: var(--c-accent-blue, var(--accent-blue)); }
+.card header .actionIcon[data-tone="red"] { color: var(--c-accent-red, var(--danger)); }
+.card .actionWarning { margin: 0; color: var(--danger); font-size: 12px; line-height: 16px; } /* 12/16 (Notion's, seen 2026-11-21) */
+.actionFields { display: grid; gap: 8px; min-width: 0; }
+.actionFields[hidden] { display: none; }
+.menu > input { width: 100%; min-height: 32px; padding: 7px 9px; font: inherit; color: inherit; background: var(--name-field-bg); border: 0; box-shadow: var(--name-field-ring); border-radius: 5px; box-sizing: border-box; }
+
+.blockDraft { position: relative; min-height: 70px; padding: 10px 12px; border: 1px solid var(--border-default); border-radius: 6px; background: var(--bg-app); }
+/* Empty — one empty paragraph — it says to click in it, and clicked it shows
+   the blue ring, as Notion's (seen 2026-11-08: the hint 18 in, its line's
+   middle 19.5 down). */
+.blockDraft:not(:focus-within):has([data-native-editor-content] > :only-child [data-kind="paragraph"] :global(br.ProseMirror-trailingBreak):only-child)::after {
+  content: attr(data-hint);
+  position: absolute;
+  top: 9px;
+  inset-inline-start: 18px;
+  inset-inline-end: 12px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 21px;
+  pointer-events: none;
+}
+.blockDraft:focus-within { box-shadow: var(--name-field-ring-focus); }
+.blockDraft [data-editor-root] { min-height: 48px; }
+.blockDraft [data-native-editor-content] { min-height: 48px; }
+/* A select's or a checkbox's value in a page line: its pills or its box 6px in, no ground and a 1px ring outside, opening the
+   value window, lighter under the pointer (Notion's, seen 2026-11-05, 2026-11-10; its ring 2026-11-15 on a desktop and an A90). */
+.changeValue { display: flex; align-items: center; justify-content: space-between; gap: 4px; width: 100%; min-width: 0; height: 28px; padding: 0 6px; border: 0; border-radius: 6px; overflow: hidden; background: transparent; box-shadow: 0 0 0 1px var(--button-outline); }
+.changeValue:hover { background: var(--bg-hover); }
+.changeValue > svg { flex: none; color: var(--icon-secondary); }
+.changeValue input[type="checkbox"] { display: block; width: 16px; height: 16px; margin: 0; }
+.changePlaceholder { color: var(--text-tertiary); }
+.card [data-automation-add-change] { display: inline-flex; align-items: center; gap: 4px; justify-self: start; align-self: flex-start; width: auto; height: 28px; padding: 0 6px; border-radius: 6px; font-size: 14px; }
+.card [data-automation-add-change]:hover { background: var(--bg-hover); }
+
+.positionWrap { position: relative; flex: none; }
+.card header .positionButton { display: inline-flex; gap: 4px; width: auto; padding: 0 4px; font: inherit; }
+.card header .positionButton:hover { background: var(--bg-hover); }
+
+/* Where an action adds or edits pages: a database chosen from a search, as Notion's. */
+.card .targetButton { display: inline-flex; align-items: center; gap: 4px; justify-self: start; max-width: 100%; min-height: 28px; border: 0; border-radius: 6px; padding: 0 6px; background: var(--bg-hover); color: inherit; font: inherit; }
+.card .targetButton > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Unfinished, once asked for: red words and a 16px ⚠ 4px in on a pale red
+   ground, its "⌄" grey, in both themes (Notion's, seen 2026-11-15 dark:
+   rgb(229, 100, 88) on rgb(253, 245, 242)). */
+.card .targetButton[aria-invalid="true"] { color: var(--danger); background: var(--unfinished-chip-ground); }
+.card .targetButton[aria-invalid="true"] > svg:first-child:not(:last-child) { width: 16px; height: 16px; margin-inline-start: -2px; }
+.card .targetButton[aria-invalid="true"] > svg:last-child { color: var(--icon-secondary); }
+.card header .targetButton { display: inline-flex; flex: 0 1 auto; width: auto; min-width: 0; height: 24px; min-height: 24px; }
+/* A database automation's head chips, a phone's too: 20 high, 4 round, Notion's tint (seen 2026-11-09, 2026-11-15). */
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) .card header .targetButton { height: 20px; min-height: 20px; border-radius: 4px; }
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) .card header .targetButton:not([aria-invalid="true"]) { background: var(--border-subtle); }
+/* The chip sits in its sentence, a word's space from the words around it. */
+.card header .targetButton + .actionTitle, .card header .actionTitleText + .targetButton,
+.card header .actionTitle[data-lead] + .targetButton { margin-inline-start: -4px; }
+/* In a desktop's automation dialog, as Notion's (seen 2026-10-24 at 1280px): white 10px cards ringed in #f0efed, their head 46px with
+   the mark 14px in (the handle over it on hover), "+ 작업 추가" a ringed 46px row of grey 14px; 8px apart, "+ 새 작업" right under "작업"
+   with no card — a phone's editor's too (seen 2026-11-17 on a Galaxy A90 at 411: 4px under the "작업" line, 8px under a card). */
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .root,
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .list {
+  gap: 8px;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .list:empty {
+  display: none;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card {
+  gap: 0;
+  margin: 0 1px;
+  padding: 0;
+  border: 0;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px var(--automation-card-drop);
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header {
+  position: relative;
+  gap: 10px;
+  min-height: 46px;
+  padding-block: 0;
+  padding-inline: 14px 8px;
+  font-size: 14px;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header .actionHandle {
+  position: absolute;
+  inset-inline-start: -2px;
+  opacity: 0;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card:hover header .actionHandle,
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header .actionHandle:focus-visible {
+  opacity: 1;
+}
+
+/* A card's head as Notion's (seen 2026-10-31): 44px, the action's 14px mark
+   in a 20px box of its tone 12px in, its words 8px after and ending 12px
+   from the card's end (seen 2026-11-15); the card is dragged by its mark,
+   and "⇕" and "⋯" (24px) show on hover over its end in a white ringed group
+   8px from the card's end. */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header {
+  min-height: 44px;
+  padding-block: 0;
+  padding-inline: 12px;
+  gap: 8px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon {
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--action-mark-gray-bg);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon[data-tone="blue"] {
+  background: var(--action-mark-blue-bg);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon[data-tone="red"] {
+  background: var(--action-mark-red-bg);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon:not([data-gone]) svg {
+  width: 14px;
+  height: 14px;
+}
+/* An edited property's own mark stands bare, 16px and grey, 14px in (Notion's, seen 2026-11-11). */
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon[data-tone="property"] {
+  background: transparent;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionIcon[data-tone="property"] svg {
+  width: 16px;
+  height: 16px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header:has(.actionIcon) .actionHandle {
+  top: 12px;
+  inset-inline-start: 12px;
+  z-index: 1;
+  width: 20px;
+  height: 20px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card:hover header:has(.actionIcon) .actionHandle {
+  opacity: 0;
+}
+/* With two or more actions the grip takes the mark's place under the pointer, 20px grey, lit under it (Notion's, seen 2026-11-11), but for a red mark, which stays and tips what its card lacks (AutomationActionIcon). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-movable] header:has(.actionIcon) .actionHandle { border-radius: 4px; color: var(--icon-tertiary); }
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-movable]:hover header:has(.actionIcon:not([data-warning])) .actionHandle,
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-movable] header:has(.actionIcon) .actionHandle:focus-visible { opacity: 1; }
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-movable] header:has(.actionIcon) .actionHandle:hover { background: var(--bg-hover); }
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-movable]:hover header .actionIcon:not([data-warning]) { visibility: hidden; }
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionFold,
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header > button:last-child {
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  opacity: var(--card-tools-shown, 0);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionFold {
+  inset-inline-end: 35px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header > button:last-child {
+  inset-inline-end: 10px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header .actionFold svg {
+  width: 20px;
+  height: 20px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header > button:last-child svg {
+  width: 16px;
+  height: 16px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  z-index: 1;
+  width: 53px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px rgba(0, 0, 0, 0.04);
+  opacity: var(--card-tools-shown, 0);
+  pointer-events: none;
+}
+/* In the automation dialog a card and its tools' group stand on the dialog's
+   ground, the tools on the page's, as Notion's (seen 2026-11-10: rgb(32,32,32)
+   and rgb(25,25,25) dark, white alike in light); a page's button setup sits
+   on the page's ground already. */
+:global([data-automation-dialog]) .card,
+:global([data-automation-dialog]) .card header::after {
+  background: var(--modal-bg);
+}
+:global([data-automation-dialog]) .card header .actionFold,
+:global([data-automation-dialog]) .card header > button:last-child {
+  background: var(--bg-app);
+}
+:global([data-automation-dialog]) .card header .actionFold:hover,
+:global([data-automation-dialog]) .card header > button:last-child:hover {
+  background: var(--bg-hover);
+}
+/* A sentence card's line 12px under its top and over its foot, its mark at
+   the line's top (Notion's, seen 2026-11-11). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-sentence="true"] header {
+  align-items: flex-start;
+  min-height: 0;
+  padding-block: 12px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card[data-sentence="true"] header .actionSentence {
+  min-height: 20px;
+}
+/* A card with nothing to fold, its sentence or its head alone, rings its "⋯" alone. */
+:global(:is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card header:not(:has(.actionFold))::after {
+  width: 28px;
+}
+/* The card takes the state its tools read: a pointer or focus state over
+   "header" and "button" restyled every button on the page at each focus move
+   (2026-11-12: about 10 ms a move on a table of 30 rows by 40 properties). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card:is(:hover, :focus-within),
+/* A touch screen shows them on every card, no pointer bringing them (Notion's iPad, seen 2026-11-13), a phone over its head's end (an A90, 2026-11-15). */
+:global([data-touch="true"] :is([data-automation-dialog], [data-page-button-setup], [data-phone-automation-editor])) .card {
+  --card-tools-shown: 1;
+}
+
+:global(:is([data-automation-dialog], [data-page-button-setup])) .addButton svg {
+  width: 16px;
+  height: 16px;
+  margin-inline: 2px;
+}
+
+/* Fields start 10px under the head's line, as Notion's (seen 2026-10-31 on
+   a confirmation, a notification, a webhook and blocks to insert). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields:not([hidden]) {
+  display: grid;
+  gap: 7px;
+  padding: 9px 14px 14px;
+  border-top: 1px solid var(--border-secondary);
+}
+/* Blocks to insert are written in a white box ringed in grey, rounded 5px,
+   its first line 3px and 10px in; its place "버튼 아래 ⌄" a grey 20px chip
+   (seen 2026-10-31). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .blockDraft {
+  min-height: 64px;
+  padding: 3px 10px 24px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--button-outline);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .blockDraft:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .blockDraft :is([data-editor-root], [data-native-editor-content]) {
+  min-height: 37px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .card header .positionButton {
+  align-items: center;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--action-mark-gray-bg);
+}
+/* A field as Notion's (seen 2026-10-31 on a confirmation): a small label 12px/500 in the third color 6px over a 32px
+   white box ringed in grey, 14px words 10px in, typed in ringed as every field (2026-11-21); a message's label 14px in the
+   second color over its grey box. The confirmation's fields stand 16px apart, 10px under the head. */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .fieldLabel {
+  gap: 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 15.6px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .messageFieldLabel {
+  display: grid;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields :is(.fieldLabel, .messageFieldLabel) input:not([class]) {
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields :is(.fieldLabel, .messageFieldLabel) input:not([class]):focus { outline: none; box-shadow: var(--name-field-ring-focus); }
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields:has(> .messageFieldLabel):not([hidden]) {
+  gap: 16px;
+}
+/* A notification: each 20px name 6px over its field, the next name 16px under it, in a page's button (Notion,
+   seen 2026-11-01) and a database's button and automation windows alike (computed 2026-11-21 at 1440 dpr 2). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields:has(> .recipients):not([hidden]) {
+  gap: 6px;
+}
+/* Told by the recipients beside it, not by a :has() on the fields before it:
+   such a rule had every element put in the page work out more of its styles
+   again (AppShell .main). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields > p:has(~ .recipients),
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields > .recipients ~ p:not(.actionWarning) {
+  line-height: 20px;
+}
+:global(:is([data-automation-dialog], [data-page-button-setup])) .actionFields > .recipients + p {
+  margin-top: 10px;
+}
+
+/* "+ 새 작업" as the dialog's "+ 새 조건" (DatabaseAutomationDialog.module.css
+   .add): its "+" in a 20px slot 12px in, the words 8px after — 15 and 41 from
+   its edge, a page button's too (Notion's, seen 2026-10-31, 2026-11-15). */
+:global(:is([data-automation-dialog], [data-page-button-setup])) .addButton {
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 46px;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* In a phone's automation sheet, as Notion's (seen 2026-10-24 at 375px, 2026-11-15 at 402pt dark: #202020 on
+   #191919): raised 10px cards ringed, their head 44px, "+ 새 작업" a ringed 46px row in grey 14px with an 18px "+". */
+:global([data-phone-automation-editor]) .card {
+  gap: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bg-element);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px var(--automation-card-drop);
+}
+
+:global([data-phone-automation-editor]) .card header {
+  position: relative;
+  min-height: 44px;
+  padding-block: 6px;
+  padding-inline: 12px;
+  font-size: 14px;
+}
+
+/* Its mark in a 20px place 12px in, its words 40px in; a deleted
+   property's on the desktop's red 20px ground (Notion's, seen 2026-11-11 at
+   402px). */
+:global([data-phone-automation-editor]) .card header .actionIcon {
+  justify-content: center;
+  width: 20px;
+}
+:global([data-phone-automation-editor]) .card header .actionIcon[data-gone] {
+  align-items: center;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--action-mark-red-bg);
+}
+
+/* No handle on a phone, as Notion's: "⋯" moves an action there. */
+:global([data-phone-automation-editor]) .card header .actionHandle {
+  display: none;
+}
+
+/* Fields 10px under the head's line, as the dialog's (Notion's, seen 2026-11-15 on an A90 at 411: a line's name 54px down a card). */
+:global([data-phone-automation-editor]) .actionFields:not([hidden]) {
+  display: grid;
+  gap: 7px;
+  padding: 9px 14px 14px;
+  border-top: 1px solid var(--border-secondary);
+}
+
+:global([data-phone-automation-editor]) .addButton {
+  justify-content: flex-start;
+  gap: 9px;
+  min-height: 46px;
+  padding: 0 13px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+:global([data-phone-automation-editor]) .addButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.phoneNoActions {
+  margin: 0;
+  padding: 12px 20px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+/* A card that is its sentence ("Stage 속성을 [Won] 값으로 설정"), pressed to
+   set it; "⇕" folds a card's fields (Notion's, seen 2026-10-24). */
+.card header .actionSentence {
+  display: flex;
+  flex: 1;
+  width: auto;
+  min-width: 0;
+  height: auto;
+  min-height: 26px;
+  place-items: initial;
+  align-items: center;
+  padding: 0;
+  font: inherit;
+  text-align: start;
+}
+
+.card header .actionFold {
+  color: var(--icon-secondary);
+}
+
+.card[data-sentence="true"] {
+  gap: 8px;
+}
+
+/* An action's mark and words in the list it is added from; "›" where it asks more first. */
+.menu > [role="menuitem"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The dialog's list, as Notion's (seen 2026-11-02): rounded 10, rows 28px
+   1px apart and 4px in, the 242×28 search 12px in on the faint ground in its
+   1px ring, blue while it is typed in, and the rows 12px under it. */
+.menu[data-floating] {
+  gap: 1px;
+  padding: 4px;
+  border: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.menu[data-floating] > input {
+  height: 28px;
+  min-height: 28px;
+  margin: 8px 8px 11px;
+  width: auto;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--layout-search-bg);
+  box-shadow: var(--name-field-ring);
+  font-size: 14px;
+  outline: none;
+}
+.menu[data-floating] > input:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.menu[data-floating] > button {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 16.8px;
+}
+/* The row lit as the menu opens, or by the keys or the pointer since. */
+.menu[data-floating] > button[data-focused="true"] {
+  background: var(--bg-hover);
+}
+/* A line between a menu's groups, 12px in from its sides (Notion's, seen 2026-11-08). */
+.menuRule {
+  height: 1px;
+  margin: 3px 8px;
+  background: var(--border-default);
+}
+
+/* A list row's 20px icon 8 before its name, in a slot of its own width so
+   every name starts at the same x: an action's mark in the list it is added
+   from grey, as Notion's (seen 2026-11-11: rgb(173, 169, 163) dark, rgb(142,
+   139, 134) on a light phone); a card menu's in its words' colour. */
+.listIcon,
+.menuIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: var(--icon-secondary);
+}
+
+.menuIcon {
+  color: inherit;
+}
+
+.menuMore {
+  margin-inline-start: auto;
+  color: var(--icon-tertiary);
+}

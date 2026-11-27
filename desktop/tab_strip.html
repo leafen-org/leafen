@@ -1,0 +1,268 @@
+<!doctype html>
+<html class="unset">
+<head>
+<meta charset="utf-8">
+<title>Leafen tabs</title>
+<!--
+  The strip along the top of a Mac or Windows app window, as Notion's app's
+  tab bar (7.44.1's, which its web client draws: its virtual tab bar and
+  its sidebar's head over it, read 2026-11-24): 40px. While the sidebar is
+  open its head sits over the sidebar in the sidebar's color — past the
+  traffic lights (Mac) or the app menu button (Windows) the sidebar button,
+  and at its end the inbox and "신규" — and the tab bar starts at the
+  sidebar's edge in the page's color with a line under it: back and forward,
+  the window's tabs (rounded, 28 high, 200px at most and 36 at least, the
+  shown one and the pointed one on a light ground) and "+" right after
+  them. While it is folded all of it is in the tab bar. The app draws it in
+  the window's own web view and tells it what to show (window_tabs_strip.go);
+  what the person does here goes back as the window's messages.
+-->
+<style>
+  :root {
+    --bar: #f9f8f7; --page: #ffffff; --border: #f0efed; --line: rgba(42, 28, 0, 0.07);
+    --tab: rgba(33, 27, 23, 0.05); --text: #2c2c2b; --text-secondary: #7d7a75;
+    --icon: #8e8b86; --icon-dim: #ada9a3; --press: rgba(33, 27, 23, 0.05);
+    --badge: #eb5757;
+    /* The edge a border runs along, swapped right to left. */
+    --end: -1px;
+  }
+  html[dir="rtl"] { --end: 1px; }
+  /* Until the app says what to show, the window's own color shows. */
+  html.unset, html.unset body { background: transparent; }
+  html.unset #bar { visibility: hidden; }
+  /* The strip's height: 40 at a zoom of 1, Notion's tab bar's at the pages'
+     zoom (window_tabs_zoom.go), in the zoomed strip's own pixels. */
+  html, body { margin: 0; padding: 0; height: var(--strip, 40px); overflow: hidden; background: var(--page);
+    font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; -webkit-user-select: none; user-select: none; cursor: default; }
+  #bar { display: flex; flex-direction: row; align-items: center; height: var(--strip, 40px); width: 100%; background: var(--page); }
+  /* The tab bar: the page's color, a line along its foot — a border, as
+     Notion's tab bar's, which the zoom keeps one sharp pixel (a shadow's
+     blurred over two at 1.2, 2026-11-24). */
+  .section, #list { height: 100%; box-sizing: border-box; border-bottom: 1px solid var(--line); background: var(--page); }
+  .section { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+  #lead { min-width: fit-content; }
+  /* The sidebar's head while it is open: its color, its edge, no line under
+     it; 8px before its end (Notion's workspaceRow). */
+  #lead.over-sidebar { background: var(--bar); border-bottom: 0; box-shadow: inset var(--end) 0 0 0 var(--border); padding-inline-end: 8px; gap: 4px; }
+  .spacer { flex: 1 1 auto; }
+  .head { display: flex; align-items: center; gap: 2px; }
+  .button.asks svg { opacity: 0.4; }
+  /* Back and forward: 8px into the tab bar at the sidebar's edge, 2px after
+     the sidebar's buttons while it is folded. */
+  #nav { padding-inline-start: 8px; }
+  #nav.collapsed { padding-inline-start: 2px; }
+  /* The tabs and "+" after them, as wide as the tabs need at most; the rest
+     of the bar stays empty and moves the window. */
+  #list { position: relative; display: flex; align-items: center; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+  #box { display: flex; align-items: center; flex: 1 1 auto; min-width: 0; height: 100%; }
+  #tabs { position: relative; display: flex; align-items: center; flex: 1 1 auto; min-width: 0; height: 100%;
+    padding-inline: 2px; box-sizing: border-box; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  #tabs::-webkit-scrollbar { display: none; }
+  #add { display: flex; align-items: center; justify-content: flex-start; width: 40px; height: 100%; flex-shrink: 0; }
+  /* Past "+": 54px more to move the window by (none in full screen), and the bar's 8px. */
+  #trail { padding-inline: 54px 8px; }
+  #trail.fullscreen { padding-inline-start: 0; }
+  .button { position: relative; display: flex; align-items: center; justify-content: center; border-radius: 6px;
+    color: var(--icon); flex-shrink: 0; width: 28px; height: 28px; }
+  .button:hover { background: var(--press); }
+  .button.off { opacity: 0.4; }
+  .button.off:hover { background: transparent; }
+  .button svg { width: 20px; height: 20px; display: block; }
+  .button.on { background: var(--press); }
+  .button.compose { color: var(--text-secondary); }
+  /* "신규"'s mark 14 across, as Notion 7.44.1's (measured in its Windows app). */
+  .button.compose svg { width: 18px; height: 18px; }
+  /* The shade a window over the shown page lays on it goes on over the strip
+     (web/src/lib/desktopTabShade.ts), the strip still answering under it. */
+  #shade { position: fixed; inset: 0; z-index: 10; pointer-events: none; display: none; }
+  #shade.on { display: block; }
+  /* The Windows app menu's mark, 12px in its 28px button as Notion 7.44.1's
+     Windows app draws its own (measured beside it). */
+  .mark { width: 12px; height: 12px; background: currentColor;
+    -webkit-mask: url(mark.png) center / 12px 12px no-repeat; mask: url(mark.png) center / 12px 12px no-repeat; }
+  /* The inbox's count, as the page's sidebar draws it: 1px over the button, 3px past its end. */
+  .badge { position: absolute; top: -1px; inset-inline-end: -3px; display: flex; align-items: center;
+    justify-content: center; height: 12px; min-width: 12px; padding-inline: 3px; box-sizing: border-box; border-radius: 9999px;
+    font-size: 9px; font-weight: 600; line-height: 1; background: var(--badge); color: #fff; pointer-events: none;
+    -webkit-font-smoothing: auto; }
+  /* A tab: its room 40 to 204 wide with 2px each side, the tab in it 28 high and rounded. */
+  .slot { position: relative; display: flex; align-items: center; flex: 1 0 40px; min-width: 40px; max-width: 204px;
+    height: 100%; padding-inline: 2px; box-sizing: border-box; }
+  .slot.pinned { flex: 0 0 40px; max-width: 40px; }
+  .tab { position: relative; display: flex; align-items: center; width: 100%; min-width: 0; height: 28px; box-sizing: border-box;
+    padding-inline: 6px 4px; border-radius: 6px; color: var(--text-secondary); }
+  .slot.active .tab, .slot:hover .tab { background: var(--tab); }
+  .slot.active .tab { color: var(--text); }
+  /* A folded group's tabs but the shown one: no room, out of sight. */
+  .slot.hidden { flex: 0 0 0; min-width: 0; max-width: 0; padding-inline: 0; visibility: hidden; overflow: hidden; }
+  .slot.pinned .tab { justify-content: center; }
+  .inner { display: flex; align-items: center; flex: 1 1 auto; min-width: 0; height: 100%; overflow: hidden; }
+  .slot.pinned .inner { justify-content: center; }
+  .icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex-shrink: 0; }
+  .icon img { width: 16px; height: 16px; border-radius: 3px; object-fit: cover; display: block; }
+  .slot:not(.active) .icon { opacity: 0.75; }
+  .icon svg { width: 16px; height: 16px; display: block; color: var(--icon-dim); }
+  .label { display: flex; align-items: center; flex: 1 1 auto; min-width: 0; height: 100%; padding-inline: 4px; box-sizing: border-box; }
+  .icon + .label { padding-inline-start: 6px; }
+  .title { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    font-size: 14px; font-weight: 400; line-height: 20px; }
+  .slot.active .title { font-weight: 500; }
+  .skeleton-icon { width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0; background: var(--press); }
+  .skeleton-title { height: 12px; width: 72px; border-radius: 3px; background: var(--press); }
+  /* ✕: at a tab's end while the pointer is on it or a key is in it; on a
+     tab at its narrowest, over the middle of the shown one instead of its
+     face, and not on the others. */
+  .close-room { display: none; align-items: center; justify-content: center; flex-shrink: 0; height: 24px; }
+  .slot:hover .close-room, .slot:focus-within .close-room, .slot.dragged .close-room { display: flex; }
+  .slot.narrow .close-room { position: absolute; top: 50%; inset-inline-start: 2px; width: calc(100% - 4px);
+    transform: translateY(-50%); z-index: 2; pointer-events: none; }
+  .slot.narrow:not(.active):hover .close-room { display: none; }
+  .slot.narrow.active:hover .inner, .slot.narrow.active:focus-within .inner { visibility: hidden; }
+  .close { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px;
+    pointer-events: auto; color: var(--icon); }
+  .close:hover { background: var(--press); }
+  .close svg { width: 16px; height: 16px; display: block; }
+  /* Where a dragged tab would go (tab_strip_drag.js): Notion's blue line,
+     3 wide, 4 in from the strip's top and foot. */
+  .drop-line { position: absolute; top: 4px; bottom: 4px; width: 3px; border-radius: 2px; background: #2383e2;
+    z-index: 3; pointer-events: none; }
+  /* A group (tab_strip_groups.js, Notion's virtual tab groups): its ground
+     behind its head, tabs and chevron, 28 high, rounded at its ends. */
+  .tray { position: absolute; top: 50%; height: 28px; transform: translateY(-50%); z-index: 0; pointer-events: none; box-sizing: border-box; }
+  .tray.start { inset-inline: 2px 0; border-start-start-radius: 6px; border-end-start-radius: 6px; }
+  .tray.middle { inset-inline: -1px 0; }
+  .tray.end { inset-inline: -1px 2px; border-start-end-radius: 6px; border-end-end-radius: 6px; }
+  .slot.grouped .tab { position: relative; z-index: 1; background: var(--tab-ground); color: var(--tab-text); }
+  .slot.grouped:hover .tab { background: var(--tab-hover); }
+  .slot.grouped .close { color: var(--close-color); }
+  .ghead { position: relative; z-index: 1; display: flex; align-items: center; flex-shrink: 0; height: 100%; padding-inline: 2px 0; }
+  .gtitle { position: relative; z-index: 1; display: flex; align-items: center; height: 28px; border-radius: 6px;
+    padding-inline: 6px; white-space: nowrap; box-sizing: border-box; }
+  /* Folded with its tabs out of sight, the head reaches over its chevron. */
+  .gtitle.shut { padding-inline-end: 19px; margin-inline-end: -17px; }
+  .gtitle:hover, .gtitle.pressed { background: var(--hover); }
+  /* What a closing menu gives the keys back to — a tab, a group's head, the
+     back or forward button — ringed as the page's keyboard ring
+     (tab_strip_ring.js); no ring of the web view's own. */
+  .tab:focus, .gtitle:focus, .button:focus { outline: none; }
+  .tab.ring, .gtitle.ring, .button.ring { box-shadow: var(--m-keyRing, 0 0 0 2px var(--page), 0 0 0 4px #2383e2); }
+  .glabel { display: flex; align-items: center; gap: 4px; }
+  .gicon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex-shrink: 0; line-height: 0; }
+  .gicon.folded { opacity: 0.75; }
+  .gicon svg { width: 16px; height: 16px; display: block; }
+  .gicon.emoji { font-size: 14px; line-height: 16px; }
+  .gpicture { width: 16px; height: 16px; -webkit-mask: var(--shape) center / 16px 16px no-repeat; mask: var(--shape) center / 16px 16px no-repeat; }
+  .gname { display: block; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; line-height: 20px; }
+  .gline { position: relative; z-index: 1; flex-shrink: 0; width: 2px; height: 16px; border-radius: 2px; margin-inline: 4px 2px; }
+  .gline.shut { width: 0; margin-inline: 0; opacity: 0; }
+  .gend { position: relative; display: flex; align-items: center; flex-shrink: 0; height: 100%; padding-inline: 0 2px; }
+  .gend.open { padding-inline-start: 2px; }
+  .chevron { position: relative; z-index: 1; display: flex; align-items: center; width: 17px; height: 28px; border-radius: 6px; }
+  .chevron:hover { background: var(--hover); }
+  .turn { display: block; line-height: 0; }
+  .turn.open { transform: rotate(180deg); }
+  html[dir="rtl"] .turn { transform: rotate(180deg); }
+  html[dir="rtl"] .turn.open { transform: none; }
+  .turn svg { width: 16px; height: 16px; display: block; }
+  /* A tab's or a group's menu (tab_strip_menu.js), as the page's menus
+     look: their ground, corners, shadow and rows, which the page tells.
+     While it is open the strip is grown over the window, see-through under
+     its bar. */
+  html.grown, html.grown body { background: transparent; }
+  #menus { position: fixed; inset: 0; z-index: 20; pointer-events: none; }
+  .smenu { position: fixed; box-sizing: border-box; padding: 4px; max-height: calc(100vh - 24px); overflow-y: auto;
+    background: var(--m-menuGround, var(--page)); border-radius: var(--m-menuRadius, 10px);
+    box-shadow: var(--m-menuShadow, 0 0 0 1px var(--line)); pointer-events: auto; font-weight: 400; }
+  .srow { display: flex; align-items: center; gap: var(--m-rowGap, 8px); min-height: var(--m-rowHeight, 28px);
+    padding: var(--m-rowPadding, 4px 8px); box-sizing: border-box; border-radius: var(--m-rowRadius, 6px);
+    font-size: var(--m-rowFont, 14px); line-height: var(--m-rowLine, 20px); color: var(--text); }
+  .srow + .srow { margin-top: var(--m-rowSpace, 1px); }
+  /* The lit line, and the one the pointer is on, lit or not, shaded; a
+     closing one red, its mark too; the lit line of the list the keys work
+     in ringed while the keys lead (tab_strip_menu.js). */
+  .srow.lit:not([aria-disabled="true"]), .srow:hover:not([aria-disabled="true"]) { background: var(--press); }
+  .srow[aria-disabled="true"] { opacity: 0.4; }
+  .srow.danger.lit:not([aria-disabled="true"]), .srow.danger:hover:not([aria-disabled="true"]) { color: var(--m-menuDanger, #e56458); }
+  .srow.danger.lit:not([aria-disabled="true"]) .smark, .srow.danger:hover:not([aria-disabled="true"]) .smark { color: inherit; }
+  .srow.keyring { box-shadow: var(--m-keyRing, 0 0 0 2px var(--page), 0 0 0 4px #2383e2); }
+  .glines:focus { outline: none; }
+  .slabel { flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-align: start; }
+  .smark, .scheck, .schevron { display: flex; flex: none; align-items: center; justify-content: center; font-style: normal; line-height: 0; }
+  .smark { width: 16px; height: 16px; color: var(--m-menuIcon, var(--icon)); }
+  .smark svg { width: 16px; height: 16px; }
+  .smark.emoji { font-size: 14px; line-height: 16px; }
+  .smark.wide, .smark.wide svg { width: 20px; height: 20px; }
+  .scheck svg, .schevron svg { width: 16px; height: 16px; }
+  .schevron { color: var(--m-menuChevron, var(--icon)); }
+  /* Every menu of the strip lays its lines out as the page's menus and
+     Notion's menu sections do: 4 in from the menu's edges, 1 apart, and a
+     line between two sets of them 4 under the one and 4 over the other
+     (Notion 7.44.1's tab and group menus alike, measured by pixel in its
+     Windows app 2026-11-24 and 2026-11-25). */
+  .sdivider { height: 1px; background: var(--m-menuDivider, var(--line)); margin: var(--m-menuDividerMargin, 4px 8px); }
+  /* A group's menu (tab_strip_group_menu.js), in the page's field and
+     button looks: its icon and name in a row 28 high, 12 in from the menu's
+     sides and its top, then its colors 10 under them in five columns 28
+     wide and 6 apart, 8 over the line, and under the line its lines as
+     every menu's above (Notion 7.44.1's, measured by pixel in its Windows
+     app 2026-11-24).
+     Where the page's picker stands over it, it shows nothing. */
+  .sgroup, .sgroup * { box-sizing: border-box; }
+  .gnamerow { display: flex; align-items: center; gap: 8px; min-height: 28px; padding: 8px; }
+  .giconbutton, .gcell { display: flex; flex: none; align-items: center; justify-content: center; width: 28px; height: 28px;
+    padding: 0; border: 0; background: transparent; color: inherit; font: inherit; }
+  .giconbutton { border-radius: 6px; box-shadow: inset 0 0 0 1px var(--m-buttonOutline, var(--line)); }
+  .gcell { border-radius: 50%; }
+  /* Under the pointer, or the keys on it, the icon on the secondary ground
+     and a color on the hover ground; the keys on it while they lead ring it
+     as the page's keyboard ring (tab_strip_menu.js ringLit), the icon
+     keeping its edge and a chosen color losing its own ring meanwhile
+     (Notion's, measured by pixel in its Windows app 2026-11-24). No ring of
+     the web view's own. */
+  .giconbutton:focus, .gcell:focus { outline: none; }
+  .giconbutton:hover, .giconbutton.keyring { background: var(--m-buttonHover, var(--bar)); }
+  .gcell:hover, .gcell.keyring { background: var(--press); }
+  .giconbutton.keyring { box-shadow: var(--m-keyRing, 0 0 0 2px var(--page), 0 0 0 4px #2383e2),
+    inset 0 0 0 1px var(--m-buttonOutline, var(--line)); }
+  .gcell.keyring { box-shadow: var(--m-keyRing, 0 0 0 2px var(--page), 0 0 0 4px #2383e2) !important; }
+  /* A color's name (tab_strip_group_menu.js) in the page's dark tip
+     (web/src/components/IconTipButton.module.css, its shadow the page's
+     --shadow-tip), as wide as its words up to 300 and wrapped past them
+     (Notion's Tooltip), 26 high for a line (Notion's, measured by pixel in
+     its Windows app 2026-11-24 — the page's is 16.8 a line), coming in and
+     going out over 50 ms. */
+  .stip { position: fixed; z-index: 1; width: max-content; max-width: 300px; padding: 5px 8px; border-radius: 6px;
+    background: rgb(44, 44, 43); color: #f0efed; font-size: 12px; font-weight: 400; line-height: 16px; overflow-wrap: break-word;
+    box-shadow: var(--m-tipShadow, 0 4px 12px -2px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.05));
+    pointer-events: none; animation: stipIn 50ms ease-out; }
+  .stip.leaving { animation: stipOut 50ms ease-out forwards; }
+  @keyframes stipIn { from { opacity: 0; } }
+  @keyframes stipOut { to { opacity: 0; } }
+  .gcircle { width: 22px; height: 22px; border-radius: 50%; }
+  .gname-input { display: block; flex-grow: 1; width: 100%; min-width: 0; height: 28px; margin: 0; padding: 4px 10px; border: 0;
+    border-radius: 6px; background: var(--m-fieldGround, transparent); box-shadow: var(--m-fieldRing, 0 0 0 1px var(--line));
+    color: var(--text); font: inherit; font-size: 14px; line-height: 20px; text-align: start; outline: none;
+    -webkit-user-select: text; user-select: text; cursor: text; }
+  .gname-input::placeholder { color: var(--m-placeholder, var(--text-secondary)); opacity: 1; }
+  .gname-input:focus { box-shadow: var(--m-fieldRingFocus, 0 0 0 2px #2383e2); }
+  .gcolors { display: grid; grid-template-columns: repeat(5, 28px); justify-content: center; gap: 6px; padding: 2px 0 4px; }
+  /* A group's drag picture: its icon and name on its ground. */
+  .gdrag { display: flex; align-items: center; box-sizing: border-box; height: 28px; padding-inline: 6px; border-radius: 6px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div id="bar"><div id="lead" class="section"></div><div id="nav" class="section"></div>
+<div id="list"><div id="box"><div id="tabs"></div><div id="add"></div></div></div><div id="trail" class="section"></div></div>
+<div id="shade"></div>
+<div id="menus"></div>
+<script src="tab_strip_groups.js"></script>
+<script src="tab_strip_motion.js"></script>
+<script src="tab_strip_menu.js"></script>
+<script src="tab_strip_group_menu.js"></script>
+<script src="tab_strip_ring.js"></script>
+<script src="tab_strip_hover.js"></script>
+<script src="tab_strip_drag.js"></script>
+<script src="tab_strip.js"></script>
+</body>
+</html>

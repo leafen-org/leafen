@@ -1,0 +1,908 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Wczytywanie adresów e-mail konta",
+        "deniedEffect": "Nie udało się wczytać adresów e-mail; zapisane adresy nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie może potwierdzić aktualnych adresów e-mail.",
+        "stateCheckAction": "Połącz się ponownie i odśwież listę adresów e-mail przed wprowadzeniem zmian."
+      },
+      "update": {
+        "operation": "Zarządzanie adresami e-mail konta",
+        "deniedEffect": "Żądanie dotyczące adresu e-mail nie zostało przyjęte; zapisane adresy nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy żądanie dotyczące adresu e-mail zostało zrealizowane.",
+        "stateCheckAction": "Odśwież listę adresów e-mail i sprawdź wiadomość weryfikacyjną, zanim spróbujesz ponownie."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Wczytywanie ustawień powiadomień",
+        "deniedEffect": "Nie udało się wczytać ustawień powiadomień, a zapisane ustawienia nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie może potwierdzić, jakie powiadomienia otrzymujesz.",
+        "stateCheckAction": "Zamknij i otwórz ponownie ustawienia, aby wczytać ustawienia powiadomień, zanim je zmienisz."
+      },
+      "update": {
+        "operation": "Zmiana ustawień powiadomień",
+        "deniedEffect": "Ustawienia powiadomień nie zostały zmienione, a poprzednie ustawienia zostały zachowane.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy ustawienia powiadomień zostały zmienione.",
+        "stateCheckAction": "Zamknij i ponownie otwórz ustawienia, aby sprawdzić ustawienia powiadomień przed kolejną zmianą."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Wczytywanie profilu konta",
+        "deniedEffect": "Nie udało się wczytać imienia i zdjęcia, a zapisany profil nie został zmieniony.",
+        "uncertainEffect": "Leafen nie może potwierdzić aktualnego imienia i zdjęcia.",
+        "stateCheckAction": "Zamknij i ponownie otwórz ustawienia, aby wczytać profil przed jego zmianą."
+      },
+      "update": {
+        "operation": "Zapisywanie profilu konta",
+        "deniedEffect": "Profil nie został zmieniony.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy profil konta został zapisany.",
+        "stateCheckAction": "Wczytaj ponownie profil konta i historię audytu przed ponowną próbą."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Zmiana weryfikacji dwuetapowej",
+        "deniedEffect": "Żądana zmiana weryfikacji dwuetapowej nie została przyjęta; poprzednie ustawienie nadal obowiązuje.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącego stanu weryfikacji dwuetapowej.",
+        "stateCheckAction": "Wczytaj ponownie bezpieczeństwo konta przed kolejną zmianą weryfikacji dwuetapowej."
+      },
+      "password": {
+        "operation": "Zmiana hasła konta",
+        "deniedEffect": "Hasło nie zostało zmienione, a bieżące sesje pozostają ważne.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy hasło zostało zmienione, a inne sesje zakończone.",
+        "stateCheckAction": "Odśwież stronę bezpieczeństwa konta i zaloguj się ponownie, jeśli bieżąca sesja przestała działać."
+      },
+      "read": {
+        "operation": "Wczytywanie bezpieczeństwa konta",
+        "deniedEffect": "Nie wczytano ustawień zabezpieczeń i sesji; zapisany stan konta nie został zmieniony.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącego stanu weryfikacji dwuetapowej i sesji.",
+        "stateCheckAction": "Wczytaj ponownie bezpieczeństwo konta przed dokonaniem zmiany."
+      },
+      "recovery": {
+        "operation": "Zastępowanie kodów odzyskiwania",
+        "deniedEffect": "Nowe kody odzyskiwania nie zostały przyjęte; wcześniej nieużywane kody nadal działają.",
+        "uncertainEffect": "Leafen nie może potwierdzić, które kody odzyskiwania są aktywne.",
+        "stateCheckAction": "Wczytaj ponownie bezpieczeństwo konta przed decyzją o ponownym zastąpieniu kodów."
+      },
+      "sessionRevoke": {
+        "operation": "Unieważnianie sesji konta",
+        "deniedEffect": "Nie potwierdzono unieważnienia wybranej sesji; inne sesje nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy wybrana sesja została unieważniona.",
+        "stateCheckAction": "Odśwież listę sesji, zanim zdecydujesz, czy ponowić próbę."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Anulowanie kopii zapasowej serwera",
+        "deniedEffect": "Nie potwierdzono anulowania kopii zapasowej.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy kopia zapasowa została anulowana.",
+        "stateCheckAction": "Sprawdź bieżący stan kopii zapasowej przed ponownym anulowaniem."
+      },
+      "create": {
+        "operation": "Tworzenie kopii zapasowej serwera",
+        "deniedEffect": "Nie potwierdzono utworzenia nowej kopii zapasowej.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy żądanie utworzenia kopii zapasowej zostało przyjęte.",
+        "stateCheckAction": "Sprawdź bieżący stan kopii zapasowej przed przesłaniem kolejnego żądania."
+      },
+      "download": {
+        "operation": "Pobieranie kopii zapasowej serwera",
+        "deniedEffect": "Nie pobrano zweryfikowanego pliku kopii zapasowej.",
+        "uncertainEffect": "Nie udało się zweryfikować ani przesłać strumieniowo pliku kopii zapasowej.",
+        "stateCheckAction": "Sprawdź stan ukończonej kopii zapasowej przed ponownym pobraniem."
+      },
+      "retry": {
+        "operation": "Ponowna próba utworzenia kopii zapasowej serwera",
+        "deniedEffect": "Nie uruchomiono ponownie nieudanej kopii zapasowej.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy kopia zapasowa została ponownie uruchomiona.",
+        "stateCheckAction": "Sprawdź bieżący stan kopii zapasowej przed ponowną próbą."
+      },
+      "status": {
+        "operation": "Wczytywanie stanu kopii zapasowej serwera",
+        "deniedEffect": "Nie udało się wczytać stanu kopii zapasowej; zapisany stan kopii zapasowej nie został zmieniony.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu kopii zapasowej.",
+        "stateCheckAction": "Wczytaj ponownie stan kopii zapasowej przed wykonaniem kolejnej czynności."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Wczytywanie raportu serwera",
+        "deniedEffect": "Nie udało się wczytać raportu; stan raportu nie został zmieniony.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącej migawki raportu.",
+        "stateCheckAction": "Wczytaj ponownie bieżący raport przed jego odświeżeniem."
+      },
+      "refresh": {
+        "operation": "Odświeżanie raportu serwera",
+        "deniedEffect": "Nie potwierdzono nowej migawki raportu.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy migawka raportu uległa zmianie.",
+        "stateCheckAction": "Wczytaj bieżący raport przed ponownym odświeżeniem."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Wczytaj harmonogram kopii zapasowych",
+        "deniedEffect": "Nie wczytano harmonogramu kopii zapasowych; nie zmieniono żadnego ustawienia.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącego harmonogramu kopii zapasowych.",
+        "stateCheckAction": "Wczytaj ponownie harmonogram kopii zapasowych przed jego zmianą."
+      },
+      "restore": {
+        "operation": "Przywróć serwer z kopii zapasowej",
+        "deniedEffect": "Nie zmieniono danych serwera.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy przywracanie zostało skonfigurowane.",
+        "stateCheckAction": "Wczytaj ponownie ustawienia kopii zapasowych, aby sprawdzić, czy przed ponowną próbą oczekuje jakieś przywracanie."
+      },
+      "save": {
+        "operation": "Zapisz harmonogram kopii zapasowych",
+        "deniedEffect": "Nie zmieniono harmonogramu kopii zapasowych.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy harmonogram kopii zapasowych został zapisany.",
+        "stateCheckAction": "Wczytaj ponownie harmonogram kopii zapasowych, aby przed ponownym zapisem zobaczyć obowiązujące ustawienia."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Wczytaj ustawienia dziennika żądań",
+        "deniedEffect": "Nie wczytano ustawień dziennika żądań; nie zmieniono żadnego ustawienia.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżących ustawień dziennika żądań.",
+        "stateCheckAction": "Wczytaj ponownie ustawienia dziennika żądań przed ich zmianą."
+      },
+      "save": {
+        "operation": "Zapisz ustawienia dziennika żądań",
+        "deniedEffect": "Nie zmieniono ustawień dziennika żądań.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy ustawienia dziennika żądań zostały zapisane.",
+        "stateCheckAction": "Wczytaj ponownie ustawienia dziennika żądań, aby przed ponownym zapisem zobaczyć obowiązujące ustawienia."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Wczytaj proxy sieciowe",
+        "deniedEffect": "Nie wczytano proxy sieciowego; nie zmieniono żadnego ustawienia.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącego proxy sieciowego.",
+        "stateCheckAction": "Wczytaj ponownie proxy sieciowe przed zmianą."
+      },
+      "save": {
+        "operation": "Zapisz proxy sieciowe",
+        "deniedEffect": "Nie zmieniono proxy sieciowego.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy proxy sieciowe zostało zapisane.",
+        "stateCheckAction": "Wczytaj ponownie proxy sieciowe, aby przed ponownym zapisem zobaczyć obowiązujące ustawienia."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Wczytaj ustawienia serwera",
+        "deniedEffect": "Nie wczytano ustawień, a zapisane ustawienia pozostały bez zmian.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżących ustawień serwera.",
+        "stateCheckAction": "Odśwież ustawienia przed wprowadzeniem zmian."
+      },
+      "save": {
+        "operation": "Zapisz ustawienia serwera",
+        "deniedEffect": "Nowe ustawienia nie zostały przyjęte; wcześniej zapisane ustawienia pozostają w mocy.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy nowe ustawienia zostały zapisane.",
+        "stateCheckAction": "Odśwież ustawienia i porównaj bieżące wartości, a następnie spróbuj ponownie."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Sprawdź stan logowania",
+        "deniedEffect": "Sesja logowania nie została utworzona, a dane konta nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie mógł potwierdzić bieżącego stanu logowania.",
+        "stateCheckAction": "Odśwież stronę i zaloguj się ponownie."
+      },
+      "deviceCode": {
+        "operation": "Zaloguj to urządzenie",
+        "deniedEffect": "Nie zalogowano się, a dane konta nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie mógł potwierdzić, czy to urządzenie zostało zalogowane.",
+        "stateCheckAction": "Zaloguj się ponownie z nowym kodem."
+      },
+      "emailVerification": {
+        "operation": "Zweryfikuj adres e-mail",
+        "deniedEffect": "Adres e-mail nie został zweryfikowany i nie zalogowano się na konto.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy weryfikacja adresu e-mail została ukończona.",
+        "stateCheckAction": "Spróbuj się zalogować; jeśli to nie zadziała, otwórz ponownie link z e-maila."
+      },
+      "mfa": {
+        "operation": "Ukończ weryfikację dwuetapową",
+        "deniedEffect": "Nie zalogowano się, a weryfikacja MFA nie została ukończona.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy weryfikacja dwuetapowa została ukończona.",
+        "stateCheckAction": "Zacznij logowanie od nowa."
+      },
+      "passwordResetConfirm": {
+        "operation": "Zmień hasło",
+        "deniedEffect": "Hasło nie zostało zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy hasło zostało zmienione.",
+        "stateCheckAction": "Spróbuj zalogować się nowym hasłem; jeśli to nie zadziała, poproś o nowy link do resetowania."
+      },
+      "passwordResetRequest": {
+        "operation": "Poproś o reset hasła",
+        "deniedEffect": "Żadna wiadomość o resecie hasła nie została przyjęta do wysyłki.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy żądanie resetu zostało przyjęte.",
+        "stateCheckAction": "Poczekaj na e-mail przed wysłaniem kolejnego żądania."
+      },
+      "providerExchange": {
+        "operation": "Zaloguj się przez konto zewnętrzne",
+        "deniedEffect": "Nie zalogowano się, a dane konta nie zostały zmienione.",
+        "uncertainEffect": "Leafen nie mógł potwierdzić wyniku logowania przez konto zewnętrzne.",
+        "stateCheckAction": "Zaloguj się ponownie w ten sam sposób."
+      },
+      "serverSetup": {
+        "operation": "Skonfiguruj serwer Leafen",
+        "deniedEffect": "Konto administratora nie zostało utworzone.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy konfiguracja serwera została ukończona.",
+        "stateCheckAction": "Odśwież stronę i sprawdź stan konfiguracji, a następnie spróbuj ponownie."
+      },
+      "signIn": {
+        "operation": "Zaloguj się",
+        "deniedEffect": "Nie zalogowano się, a dane konta nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy logowanie zostało ukończone.",
+        "stateCheckAction": "Odśwież stronę i zaloguj się ponownie."
+      },
+      "signUp": {
+        "operation": "Utwórz konto",
+        "deniedEffect": "Nowe konto nie zostało utworzone.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy konto zostało utworzone.",
+        "stateCheckAction": "Spróbuj się zalogować; jeśli to nie pomoże, zarejestruj się ponownie."
+      },
+      "passkey": {
+        "operation": "Zaloguj się kluczem dostępu",
+        "deniedEffect": "Logowanie nie zostało zaakceptowane.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy logowanie zostało ukończone.",
+        "stateCheckAction": "Zaloguj się ponownie kluczem dostępu."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Wczytaj zawartość strony",
+        "deniedEffect": "Nie wczytano zawartości strony, a zapisana zawartość nie została zmieniona.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącej zawartości strony.",
+        "stateCheckAction": "Odśwież stronę przed rozpoczęciem edycji."
+      },
+      "update": {
+        "operation": "Zapisz zawartość strony",
+        "deniedEffect": "Zmiana nie została przyjęta; nadal obowiązuje najnowsza zawartość na serwerze.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy zawartość została zapisana.",
+        "stateCheckAction": "Wczytaj ponownie najnowszą zawartość i porównaj ją, a następnie spróbuj ponownie."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Zapisz automatyzację bazy danych",
+        "deniedEffect": "Automatyzacja nie została zmieniona.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zmiana automatyzacji bazy danych została zapisana.",
+        "stateCheckAction": "Odśwież automatyzację przed ponowną próbą."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Zapisz zasady DLP",
+        "deniedEffect": "Nowe zasady DLP nie zostały zapisane; poprzednie zasady nadal obowiązują.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zasady DLP zostały zapisane.",
+        "stateCheckAction": "Odśwież zasady DLP i historię audytu organizacji przed ponowną próbą."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Zweryfikuj domenę SAML",
+        "deniedEffect": "Domena nadal oczekuje na weryfikację; konfiguracja SAML, historia audytu i sesje logowania nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu weryfikacji domeny SAML.",
+        "stateCheckAction": "Odśwież stan domeny SAML przed ponowną próbą."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Usuń plik",
+        "deniedEffect": "Plik nie został usunięty ani zmieniony.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy plik został usunięty.",
+        "stateCheckAction": "Odśwież plik i jego odwołania przed podjęciem decyzji o ponowieniu."
+      },
+      "upload": {
+        "operation": "Prześlij plik",
+        "deniedEffect": "Nowy plik nie został zapisany; istniejące pliki pozostały bez zmian.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy plik został zapisany.",
+        "stateCheckAction": "Odśwież listę plików przed podjęciem decyzji o ponowieniu."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Zastosuj mapowania osób",
+        "deniedEffect": "Nowe mapowania nie zostały zaakceptowane.",
+        "uncertainEffect": "Nie udało się potwierdzić, które mapowania zostały zastosowane.",
+        "stateCheckAction": "Odśwież wyniki mapowania przed ponownym zastosowaniem."
+      },
+      "refresh": {
+        "operation": "Odśwież mapowania osób",
+        "deniedEffect": "Nie udało się wczytać najnowszych mapowań; zapisane mapowania pozostały bez zmian.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu mapowań.",
+        "stateCheckAction": "Odśwież panel mapowań przed kontynuowaniem."
+      },
+      "scan": {
+        "operation": "Skanuj zaimportowane osoby",
+        "deniedEffect": "Nie udało się wyświetlić zaimportowanych osób, a istniejące mapowania pozostały bez zmian.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącej listy zaimportowanych osób.",
+        "stateCheckAction": "Odśwież panel mapowań przed wprowadzeniem zmian."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Uruchamianie automatyzacji przycisku",
+        "deniedEffect": "Działania przycisku nie zostały wykonane, a zawartość strony nie została zmieniona.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy automatyzacja przycisku została wykonana.",
+        "stateCheckAction": "Odśwież zawartość i stan wykonania, których to dotyczy, przed ponowną próbą."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopiowanie tokena API organizacji",
+        "deniedEffect": "Nie potwierdzono obecności tokena w schowku; sam token nie został zmieniony.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zapis do schowka został zakończony.",
+        "stateCheckAction": "Sprawdź schowek przed ponownym skopiowaniem tokena."
+      },
+      "create": {
+        "operation": "Tworzenie tokena API organizacji",
+        "deniedEffect": "Nie potwierdzono utworzenia nowego tokena.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy token został utworzony.",
+        "stateCheckAction": "Odśwież listę tokenów przed utworzeniem kolejnego tokena."
+      },
+      "list": {
+        "operation": "Wczytywanie tokenów API organizacji",
+        "deniedEffect": "Nie wczytano tokenów, a istniejące tokeny nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącej listy tokenów.",
+        "stateCheckAction": "Odśwież listę tokenów przed wprowadzeniem zmian."
+      },
+      "revoke": {
+        "operation": "Unieważnianie tokena API organizacji",
+        "deniedEffect": "Nie potwierdzono unieważnienia tokena.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy token został unieważniony.",
+        "stateCheckAction": "Odśwież listę tokenów przed ponowną próbą unieważnienia."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Wczytywanie stron przestrzeni roboczej",
+        "deniedEffect": "Nie wczytano stron, a zapisane dane przestrzeni roboczej nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżących stron przestrzeni roboczej.",
+        "stateCheckAction": "Odśwież przestrzeń roboczą przed edytowaniem."
+      },
+      "create": {
+        "operation": "Tworzenie strony",
+        "deniedEffect": "Nie utworzono nowej strony, a istniejące strony nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy strona została utworzona.",
+        "stateCheckAction": "Odśwież listę stron i sprawdź, czy pojawiła się nowa strona, zanim spróbujesz ponownie."
+      },
+      "title": {
+        "update": {
+          "operation": "Zapisywanie tytułu strony",
+          "deniedEffect": "Zmiana tytułu nie została zaakceptowana; zapisany tytuł nadal obowiązuje.",
+          "uncertainEffect": "Nie udało się potwierdzić, czy zmiana została zapisana.",
+          "stateCheckAction": "Odśwież stronę i sprawdź bieżący tytuł."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Wczytaj analitykę strony",
+        "deniedEffect": "Nie wczytano analityki, a dane strony nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu analityki.",
+        "stateCheckAction": "Odśwież analitykę przed wyciągnięciem wniosków."
+      },
+      "policyUpdate": {
+        "operation": "Zapisz zasady analityki",
+        "deniedEffect": "Nowe zasady analityki nie zostały przyjęte.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zasady analityki zostały zapisane.",
+        "stateCheckAction": "Odśwież zasady analityki i porównaj je przed ponowną próbą."
+      },
+      "preferencesRead": {
+        "operation": "Wczytaj preferencje analityki",
+        "deniedEffect": "Nie wczytano preferencji analityki, a zapisane ustawienia nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżących preferencji analityki.",
+        "stateCheckAction": "Odśwież preferencje przed ich edycją."
+      },
+      "preferencesUpdate": {
+        "operation": "Zapisz preferencje analityki",
+        "deniedEffect": "Nowe preferencje nie zostały przyjęte.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy preferencje zostały zapisane.",
+        "stateCheckAction": "Odśwież preferencje i porównaj je przed ponowną próbą."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Bezpiecznie zapisz zmianę offline",
+        "deniedEffect": "Zmiana nie została zapisana na tym urządzeniu.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zmiana została zapisana na tym urządzeniu, czy na serwerze.",
+        "stateCheckAction": "Skopiuj edytowaną treść, następnie odśwież stronę i porównaj zapisany stan."
+      },
+      "legacy": {
+        "operation": "Przenieś zmiany offline",
+        "deniedEffect": "Starsze zmiany offline pozostają tam, gdzie były przechowywane, i nie zostały wysłane.",
+        "uncertainEffect": "Nie udało się potwierdzić, które starsze zmiany offline zostały przeniesione.",
+        "stateCheckAction": "Zostaw tę kartę otwartą i odśwież ją przed ponowną edycją."
+      },
+      "refresh": {
+        "operation": "Odśwież odzyskane zmiany",
+        "deniedEffect": "Nie pokazano odzyskanych zmian, a zapisane dane nie zostały zastąpione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu strony po odzyskaniu.",
+        "stateCheckAction": "Odśwież stronę przed kolejną edycją."
+      },
+      "replay": {
+        "operation": "Wyślij zmiany offline",
+        "deniedEffect": "Zmiana w kolejce nadal oczekuje i nie została potwierdzona przez serwer.",
+        "uncertainEffect": "Leafen nie może potwierdzić, które zmiany w kolejce dotarły do serwera.",
+        "stateCheckAction": "Zostaw tę kartę otwartą, połącz się ponownie i odśwież stronę przed ponownym edytowaniem."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Przeszukiwanie witryny publicznej",
+        "deniedEffect": "Nie wczytano wyników wyszukiwania, a opublikowana zawartość nie została zmieniona.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżących wyników wyszukiwania.",
+        "stateCheckAction": "Sprawdź stan witryny przed ponownym wyszukiwaniem."
+      },
+      "sharedPage": {
+        "operation": "Wczytywanie udostępnionej strony",
+        "deniedEffect": "Nie wczytano udostępnionej strony, a opublikowana zawartość nie została zmieniona.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącej udostępnionej strony.",
+        "stateCheckAction": "Sprawdź link udostępniania przed ponowną próbą."
+      },
+      "site": {
+        "operation": "Wczytywanie witryny publicznej",
+        "deniedEffect": "Nie wczytano witryny publicznej, a opublikowana zawartość nie została zmieniona.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącej witryny publicznej.",
+        "stateCheckAction": "Sprawdź adres witryny przed ponowną próbą."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Przywróć logowanie formularza",
+        "deniedEffect": "Nie otwarto formularza dla członków i nie przesłano odpowiedzi.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu logowania w tym formularzu.",
+        "stateCheckAction": "Odśwież formularz i zaloguj się ponownie."
+      },
+      "configurationWrite": {
+        "operation": "Zapisywanie ustawień formularza",
+        "deniedEffect": "Nie potwierdzono zapisania ustawień formularza.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącej konfiguracji formularza.",
+        "stateCheckAction": "Odśwież ustawienia formularza przed ponownym zapisaniem."
+      },
+      "definitionRead": {
+        "operation": "Wczytywanie formularza",
+        "deniedEffect": "Nie wczytano formularza i nie przesłano odpowiedzi.",
+        "uncertainEffect": "Leafen nie może potwierdzić bieżącej definicji formularza.",
+        "stateCheckAction": "Odśwież formularz przed wprowadzeniem odpowiedzi."
+      },
+      "optionsRead": {
+        "operation": "Wczytaj opcje formularza",
+        "deniedEffect": "Nie wczytano żądanych opcji i nie przesłano roboczej odpowiedzi.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżących opcji.",
+        "stateCheckAction": "Odśwież opcje przed przesłaniem formularza."
+      },
+      "responseSubmit": {
+        "operation": "Przesyłanie odpowiedzi na formularz",
+        "deniedEffect": "Odpowiedź nie została przyjęta.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy odpowiedź została przyjęta.",
+        "stateCheckAction": "Przed ponownym przesłaniem odpowiedzi sprawdź wynik formularza."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Wczytywanie konfiguracji uruchomieniowej",
+        "deniedEffect": "Nie wczytano konfiguracji uruchomieniowej; zapisane ustawienia serwera nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącej konfiguracji uruchomieniowej, więc obowiązują bezpieczne wartości zastępcze.",
+        "stateCheckAction": "Odśwież stronę, aby odczytać bieżącą konfigurację serwera."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Synchronizacja oczekujących zmian",
+        "deniedEffect": "Oczekujące zmiany pozostają w kolejce i nie zostały potwierdzone przez serwer.",
+        "uncertainEffect": "Nie udało się potwierdzić, które oczekujące zmiany dotarły do serwera.",
+        "stateCheckAction": "Pozostaw tę kartę otwartą, połącz się ponownie i przed ponowną próbą sprawdź zapisany stan."
+      },
+      "pendingRead": {
+        "operation": "Sprawdzanie oczekujących zmian",
+        "deniedEffect": "Nie wczytano liczby oczekujących zmian; zmiany w kolejce nie zostały odrzucone.",
+        "uncertainEffect": "Nie udało się potwierdzić, ile zmian wciąż oczekuje.",
+        "stateCheckAction": "Pozostaw tę kartę otwartą i ponownie sprawdź stan synchronizacji."
+      },
+      "retry": {
+        "operation": "Ponawianie synchronizacji",
+        "deniedEffect": "Synchronizacja nie została potwierdzona; oczekujące zmiany pozostają w kolejce.",
+        "uncertainEffect": "Nie udało się potwierdzić ostatniego wyniku synchronizacji.",
+        "stateCheckAction": "Przed ponowną próbą sprawdź zapisany stan i połączenie."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Tworzenie przestrzeni roboczej",
+        "deniedEffect": "Nie utworzono nowej przestrzeni roboczej, a istniejące dane nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy przestrzeń robocza została utworzona.",
+        "stateCheckAction": "Odśwież listę przestrzeni roboczych, sprawdź, czy pojawiła się nowa, i dopiero potem spróbuj ponownie."
+      },
+      "delete": {
+        "operation": "Trwałe usuwanie przestrzeni roboczej",
+        "deniedEffect": "Usunięcie nie zostało przyjęte; przestrzeń robocza i istniejące dane nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy przestrzeń robocza została usunięta.",
+        "stateCheckAction": "Przed ponowną próbą odśwież listę przestrzeni roboczych."
+      },
+      "member": {
+        "add": {
+          "operation": "Dodawanie członka przestrzeni roboczej",
+          "deniedEffect": "Członek nie został dodany i nic nie zostało zmienione.",
+          "uncertainEffect": "Nie udało się potwierdzić, czy członek przestrzeni roboczej został dodany.",
+          "stateCheckAction": "Przed ponowną próbą odśwież członków, aktywność i historię audytu."
+        },
+        "revoke": {
+          "operation": "Usuwanie członka przestrzeni roboczej",
+          "deniedEffect": "Członek nie został usunięty i nic nie zostało zmienione.",
+          "uncertainEffect": "Nie udało się potwierdzić, czy członek przestrzeni roboczej został usunięty.",
+          "stateCheckAction": "Przed ponowną próbą odśwież członków, aktywność i historię audytu."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Zapisywanie ustawień przestrzeni roboczej",
+          "deniedEffect": "Zmiana ustawień nie została zapisana; poprzednie ustawienia nadal obowiązują.",
+          "uncertainEffect": "Nie udało się potwierdzić, czy ustawienia przestrzeni roboczej zostały zapisane.",
+          "stateCheckAction": "Przed ponowną próbą odśwież ustawienia przestrzeni roboczej, aktywność i historię audytu."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Anulowanie eksportu przestrzeni roboczej",
+        "deniedEffect": "Eksport nie został anulowany i może nadal trwać.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy eksport został anulowany.",
+        "stateCheckAction": "Odśwież stan eksportu przed ponownym anulowaniem."
+      },
+      "download": {
+        "operation": "Pobieranie eksportu przestrzeni roboczej",
+        "deniedEffect": "Archiwum nie zostało pobrane; eksport po stronie serwera nie został zmieniony.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy pobieranie archiwum zostało ukończone.",
+        "stateCheckAction": "Przed ponownym pobraniem sprawdź listę pobrań."
+      },
+      "job": {
+        "operation": "Eksportowanie przestrzeni roboczej",
+        "deniedEffect": "Archiwum nie zostało utworzone; źródłowa przestrzeń robocza nie została zmieniona.",
+        "uncertainEffect": "Nie udało się potwierdzić dostępności użytecznego archiwum dla tego zadania.",
+        "stateCheckAction": "Rozpocznij zastępczy eksport z bieżącej przestrzeni roboczej."
+      },
+      "poll": {
+        "operation": "Oczekiwanie na eksport przestrzeni roboczej",
+        "deniedEffect": "Nie wczytano najnowszego stanu eksportu; zadanie eksportu nie zostało zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu eksportu.",
+        "stateCheckAction": "Przed wykonaniem kolejnej czynności odśwież stan eksportu."
+      },
+      "retry": {
+        "operation": "Ponawianie eksportu przestrzeni roboczej",
+        "deniedEffect": "Ponowna próba nie została przyjęta; istniejące zadanie eksportu nie zostało zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy ponowna próba została przyjęta.",
+        "stateCheckAction": "Odśwież stan eksportu, zanim spróbujesz ponownie."
+      },
+      "start": {
+        "operation": "Rozpoczynanie eksportu przestrzeni roboczej",
+        "deniedEffect": "Nowe zadanie eksportu nie zostało przyjęte; przestrzeń robocza nie została zmieniona.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy zadanie eksportu zostało przyjęte.",
+        "stateCheckAction": "Odśwież najnowszy stan eksportu przed rozpoczęciem kolejnego zadania."
+      },
+      "status": {
+        "operation": "Wczytywanie stanu eksportu przestrzeni roboczej",
+        "deniedEffect": "Nie wczytano najnowszego stanu eksportu; zadanie eksportu nie zostało zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu eksportu.",
+        "stateCheckAction": "Wczytaj ponownie okno eksportu przed wykonaniem kolejnej czynności."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Anulowanie importu",
+        "deniedEffect": "Import nie został anulowany i może nadal trwać.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy import został anulowany.",
+        "stateCheckAction": "Odśwież stan importu, zanim anulujesz go ponownie."
+      },
+      "job": {
+        "operation": "Importowanie pliku",
+        "deniedEffect": "Nie utworzono żadnej strony; częściowo zaimportowana zawartość została usunięta.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy dla tego importu istnieje użyteczna strona.",
+        "stateCheckAction": "Zachowaj numer referencyjny diagnostyki i rozpocznij nowy import z pliku źródłowego."
+      },
+      "start": {
+        "operation": "Rozpoczynanie importu",
+        "deniedEffect": "Nowy import nie został przyjęty i nie utworzono żadnej strony.",
+        "uncertainEffect": "Nie udało się potwierdzić, czy import został przyjęty.",
+        "stateCheckAction": "Spróbuj ponownie z tym samym, niezmienionym plikiem, aby Leafen mógł połączyć się z tym samym żądaniem."
+      },
+      "status": {
+        "operation": "Wczytanie stanu importu",
+        "deniedEffect": "Nie wczytano najnowszego stanu importu; zadanie importu nie zostało zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącego stanu importu.",
+        "stateCheckAction": "Otwórz ponownie okno importu, aby połączyć się z zapisanym zadaniem, zanim wykonasz kolejną czynność."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Wczytanie kluczy dostępu konta",
+        "deniedEffect": "Lista kluczy dostępu nie została wczytana; zapisane klucze nie zostały zmienione.",
+        "uncertainEffect": "Nie udało się potwierdzić bieżącej listy kluczy dostępu.",
+        "stateCheckAction": "Połącz ponownie i odśwież listę kluczy dostępu przed wprowadzeniem zmian."
+      },
+      "update": {
+        "operation": "Zarządzanie kluczami dostępu konta",
+        "deniedEffect": "Serwer nie zmienił zapisanych kluczy dostępu.",
+        "uncertainEffect": "Leafen nie może potwierdzić, czy zmiana klucza dostępu została zakończona.",
+        "stateCheckAction": "Odśwież listę kluczy dostępu przed ponowną próbą. Jeśli nowy klucz został utworzony, ale nie został tu zapisany, sprawdź menedżer kluczy na swoim urządzeniu."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Obecne hasło jest nieprawidłowe.",
+    "currentPasswordNext": "Jeśli nie pamiętasz hasła, wyloguj się i zresetuj je na stronie logowania.",
+    "code": "Kod jest nieprawidłowy lub został już użyty.",
+    "codeNext": "Wpisz kod, który teraz wyświetla aplikacja uwierzytelniająca.",
+    "recoveryCode": "Kod odzyskiwania jest nieprawidłowy lub został już użyty.",
+    "recoveryCodeNext": "Wpisz kod odzyskiwania, którego jeszcze nie użyto.",
+    "accountDeactivated": "To konto zostało wyłączone przez administratora serwera.",
+    "accountDeactivatedNext": "Poproś administratora o ponowne włączenie konta.",
+    "organizationSSO": "Ta organizacja zezwala na logowanie wyłącznie przez logowanie jednokrotne (SSO).",
+    "organizationSSONext": "Zaloguj się zamiast tego kontem firmowym.",
+    "organizationPasswordTwoStep": "Twoja organizacja wymaga logowania za pomocą hasła i weryfikacji dwuetapowej, a nie kodu urządzenia.",
+    "organizationPasswordTwoStepNext": "Zaloguj się adresem e-mail i hasłem; jeśli nie masz hasła, poproś administratora o hasło jednorazowe.",
+    "deviceCode": "Kod jest nieprawidłowy, został już użyty, wygasł lub okno, w którym go wyświetlono, zostało zamknięte.",
+    "deviceCodeNext": "Uzyskaj nowy kod i wpisz go ponownie.",
+    "setupCode": "Kod konfiguracji jest nieprawidłowy.",
+    "setupCodeNext": "Otwórz ponownie link konfiguracji wyświetlony przez serwer lub wpisz kod, z którym go uruchomiono.",
+    "setupCodeMissing": "Wpisz kod konfiguracji.",
+    "setupCodeMissingNext": "Otwarcie linku konfiguracyjnego wypisanego przez serwer wypełni go; kod, z którym uruchomiono serwer, też zadziała.",
+    "sessionCapacity": "To konto osiągnęło limit urządzeń.",
+    "sessionCapacityNext": "Wyloguj urządzenie, którego już nie używasz, w Ustawienia → Konto → Urządzenia, a następnie spróbuj ponownie.",
+    "signInEnded": "Ta próba logowania zakończyła się: upłynął limit czasu lub kod został wpisany błędnie zbyt wiele razy.",
+    "signInEndedNext": "Zaloguj się ponownie adresem e-mail i hasłem.",
+    "emailNotVerified": "Adres e-mail tego konta nie został jeszcze potwierdzony.",
+    "emailNotVerifiedNext": "Otwórz link w e-mailu otrzymanym podczas rejestracji, a następnie się zaloguj.",
+    "registrationFailed": "Nie udało się utworzyć konta.",
+    "registrationFailedNext": "Spróbuj ponownie za chwilę. Jeśli problem będzie się powtarzać, poinformuj administratora tego serwera."
+  },
+  "labels": {
+    "reference": "Referencja"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Ta organizacja nie tworzy nowych kont podczas logowania firmowego.",
+    "samlAccountCreationOffNext": "Poproś administratora organizacji o zaproszenie.",
+    "samlRetryAfterInvite": "Zaloguj się ponownie po otrzymaniu zaproszenia.",
+    "samlIdentityDenied": "Ten adres e-mail nie może korzystać z logowania firmowego tej organizacji.",
+    "samlIdentityDeniedNext": "Poproś administratora organizacji o sprawdzenie domeny e-mail i członkostwa w organizacji.",
+    "samlRetryAfterAdministrator": "Zaloguj się ponownie po sprawdzeniu przez administratora.",
+    "samlResponseInvalid": "Nie udało się zweryfikować odpowiedzi logowania firmowego.",
+    "samlResponseInvalidNext": "Rozpocznij logowanie ponownie. Jeśli problem będzie się powtarzać, poproś administratora organizacji o sprawdzenie ustawień SAML.",
+    "accountAlreadyExistsForEmailAddress": "Konto z tym adresem e-mail już istnieje.",
+    "accountEmailCouldNotAdmittedFor": "Nie udało się wysłać wiadomości e-mail do konta.",
+    "administratorSettingsDoNotMeetServer": "Ustawienia administratora nie spełniają wymagań serwera.",
+    "administratorSettingsNotAvailableCurrentAccount": "Ustawienia administratora nie są dostępne dla bieżącego konta.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Inny administrator już zakończył konfigurację serwera.",
+    "anotherServerOperationTemporarilyLockedAccount": "Inna operacja serwera tymczasowo zablokowała magazyn konta.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Inna operacja serwera tymczasowo zablokowała bazę danych, więc nie można było kontynuować eksportu.",
+    "anotherServerOperationTemporarilyLockedDlp": "Inna operacja serwera tymczasowo zablokowała magazyn zasad DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "Inna operacja serwera tymczasowo zablokowała magazyn plików.",
+    "anotherServerOperationTemporarilyLockedPage": "Inna operacja serwera tymczasowo zablokowała magazyn zawartości stron.",
+    "anotherServerOperationTemporarilyLockedProduct": "Inna operacja serwera tymczasowo zablokowała magazyn produktu.",
+    "askOrganizationAdministratorToAllow": "Poproś administratora organizacji lub właściciela przestrzeni zespołu o wyrażenie zgody.",
+    "askServerAdministratorCheckEmailDelivery": "Poproś administratora serwera o sprawdzenie dostarczania poczty e-mail, a następnie spróbuj ponownie.",
+    "backupArtifactNotCompleteYet": "Plik kopii zapasowej nie jest jeszcze kompletny.",
+    "backupStateNoLongerPermitsControl": "Bieżący stan kopii zapasowej nie pozwala już na wykonanie tej czynności.",
+    "causeCouldNotDetermined": "Nie udało się ustalić przyczyny.",
+    "changeSaveReceiptAndSynchronizationState": "Zmiana nie została zapisana, a zawartość strony pozostała bez zmian.",
+    "checkCurrentBackupBeforeRetrying": "Sprawdź bieżącą kopię zapasową przed ponowną próbą.",
+    "checkCurrentJobStateBeforeDeciding": "Przed podjęciem decyzji o ponownej próbie sprawdź bieżący stan zadania.",
+    "checkCurrentListBeforeTryingDifferent": "Sprawdź bieżącą listę, zanim spróbujesz innego elementu.",
+    "checkCurrentServerSettingsBeforeTrying": "Przed ponowną próbą sprawdź bieżące ustawienia serwera.",
+    "checkCurrentServerSetupStateBefore": "Przed ponowną próbą sprawdź bieżący stan konfiguracji serwera.",
+    "checkCurrentStateAndUseNew": "Sprawdź bieżący stan i rozpocznij nową kopię zapasową tylko wtedy, gdy jest potrzebna.",
+    "checkEmailAndPassword": "Sprawdź adres e-mail i hasło.",
+    "checkServerSecretStorageThenSave": "Sprawdź magazyn sekretów serwera, a następnie ponownie zapisz te same ustawienia.",
+    "checkServerStateThenLoadSettings": "Sprawdź stan serwera, a następnie ponownie wczytaj ustawienia.",
+    "createNewBackupAndInspectServer": "Utwórz nową kopię zapasową i sprawdź magazyn serwera, jeśli błąd się powtórzy.",
+    "currentAccountNotAuthorizedForOperation": "Bieżące konto nie ma uprawnień do wykonania tej operacji.",
+    "currentStateMustCheckedBeforeRetry": "Bieżący stan musi zostać sprawdzony, zanim ponowna próba będzie mogła zostać uznana za bezpieczną.",
+    "currentStateMustCheckedBeforeRetrying": "Przed ponowną próbą należy sprawdzić bieżący stan.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Usługa weryfikacji DNS jest tymczasowo niedostępna.",
+    "doNotAssumeUnchangedRetrySafe": "Nie zakładaj, że ponowna próba jest bezpieczna, dopóki magazyn serwera nie zostanie naprawiony.",
+    "doNotKeepRetryingIdentifierNew": "Nie ponawiaj tego żądania w kółko; najpierw odśwież stronę, a potem nowa próba będzie bezpieczna.",
+    "doNotResumeFailedJobStart": "Nie wznawiaj nieudanego zadania; zamiast tego rozpocznij nowy eksport.",
+    "doNotRetryBeforeLoadingLatest": "Nie ponawiaj próby przed wczytaniem najnowszych ustawień serwera.",
+    "doNotRetryDirectRequestUnchanged": "Nie ponawiaj tego przesyłania w obecnej postaci; użyj przesyłania wznawialnego.",
+    "doNotRetryDirectRequestUnchanged2": "Nie ponawiaj tego przesyłania w obecnej postaci; użyj wznawialnego przesyłania archiwum.",
+    "doNotRetrySetupRequestSign": "Nie ponawiaj tej prośby o konfigurację; zaloguj się przy użyciu istniejącego konta administratora.",
+    "doNotReuseInvalidArtifactCreate": "Nie używaj ponownie nieprawidłowego pliku kopii zapasowej; utwórz nową kopię zapasową.",
+    "doNotReuseLinkNewAction": "Nie używaj ponownie tego linku; można bezpiecznie wykonać nową operację.",
+    "emailOrPasswordDidNotMatch": "Nieprawidłowy adres e-mail lub hasło.",
+    "externalSignInProviderCouldNot": "Zewnętrzny dostawca logowania nie mógł ukończyć żądania.",
+    "fileLargerThanOneDirectUpload": "Ten plik jest zbyt duży na pojedyncze przesyłanie bezpośrednie.",
+    "formStorageTemporarilyLockedByAnother": "Magazyn formularzy został tymczasowo zablokowany przez inną operację serwera.",
+    "leafenArchiveLargerThanOneDirect": "To archiwum Leafen jest zbyt duże na pojedynczy import bezpośredni.",
+    "leafenDidNotReceiveServerResponse": "Leafen nie otrzymał odpowiedzi serwera.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen odbudowuje stan wykorzystania magazynu organizacji.",
+    "leafenServiceCouldNotCompleteOperation": "Usługa Leafen nie mogła ukończyć operacji.",
+    "isolatedRecordNotAppliedYourRequested": "Niekompletny rekord został odłożony, zmiana nie została zapisana, a zawartość strony pozostaje bez zmian.",
+    "jobCannotRetriedStartReplacementExport": "Tego zadania nie można ponowić; rozpocznij eksport zastępczy.",
+    "jobSArchiveNotPublishedAnd": "Archiwum tego zadania nie zostało utworzone, a źródłowa przestrzeń robocza nie została zmieniona.",
+    "keepDiagnosticReferenceAndAskServer": "Zachowaj numer referencyjny diagnostyki i poproś administratora serwera o naprawę magazynu serwera.",
+    "lastConfirmedSavedStateRestoredSo": "Przywrócono ostatni potwierdzony stan zapisu, więc można bezpiecznie ponowić tę samą zmianę.",
+    "loadCurrentReportAndUseNew": "Wczytaj bieżący raport, a następnie odśwież go ponownie.",
+    "loadCurrentReportBeforeRefreshingAgain": "Wczytaj bieżący raport przed ponownym odświeżeniem.",
+    "loadCurrentReportBeforeTryingAgain": "Wczytaj bieżący raport przed ponowną próbą.",
+    "newerOrIncompatibleStatePreventedOperation": "Nowszy lub niezgodny stan uniemożliwił wykonanie tej operacji.",
+    "noNewArchivePublishedAndSource": "Nie utworzono nowego archiwum, a źródłowa przestrzeń robocza i wcześniejsze archiwa pozostały bez zmian.",
+    "noNewSignInSessionCreated": "Nie utworzono nowej sesji logowania, a istniejące sesje nie zostały zmienione.",
+    "notKnownWhetherRetryingSafeUntil": "Nie wiadomo, czy ponowna próba jest bezpieczna, dopóki nie sprawdzisz bieżącego stanu.",
+    "organizationStorageAuthorityInconsistent": "Rekord wykorzystania miejsca w organizacji jest niespójny.",
+    "organizationDlpBlocksOperation": "Polityka zapobiegania utracie danych w Twojej organizacji blokuje tę operację.",
+    "takeOutTermOrAskAboutDlp": "Usuń wszelkie wrażliwe terminy i spróbuj ponownie lub zapytaj administratora organizacji, jeśli nie masz pewności.",
+    "organizationSettingsDoNotAllowOperation": "Ustawienia Twojej organizacji lub przestrzeni zespołu nie zezwalają na tę operację.",
+    "organizationStorageLimitWouldExceeded": "Zostałby przekroczony limit miejsca w organizacji.",
+    "serverDiskAlmostFull": "Dysk serwera jest prawie pełny.",
+    "askServerAdministratorToFreeSpace": "Poproś administratora serwera o zwolnienie miejsca; gdy pojawi się wolne miejsce, wszystko znów będzie działać.",
+    "safeRetryOnceServerHasRoom": "Tę samą czynność można bezpiecznie powtórzyć, gdy na serwerze pojawi się wolne miejsce.",
+    "readDoesNotChangeSavedData": "Ten odczyt nie zmienia zapisanych danych, więc można bezpiecznie spróbować ponownie.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Załaduj ponownie bieżącą kopię zapasową, zanim wybierzesz inną akcję.",
+    "reloadCurrentBackupStateBeforeContinuing": "Załaduj ponownie bieżący stan kopii zapasowej przed kontynuowaniem.",
+    "reloadCurrentStateBeforeDecidingWhether": "Załaduj ponownie bieżący stan, zanim zdecydujesz, czy ponowić próbę.",
+    "reloadSignInPageAndStart": "Odśwież stronę logowania i zaloguj się ponownie.",
+    "removeUnneededFilesOrAskOrganization": "Usuń niepotrzebne pliki lub poproś administratora rozliczeń organizacji o podniesienie limitu.",
+    "reportChangedAfterScreenLoaded": "Raport zmienił się po wczytaniu tego ekranu.",
+    "requestIdentifierBelongsDifferentOperation": "To żądanie zostało już użyte do innej akcji.",
+    "requestIdentifierBelongsDifferentReportRefresh": "To żądanie zostało już użyte do innego odświeżenia raportu.",
+    "requestedItemNoLongerExistsOr": "Żądany element już nie istnieje lub nie jest widoczny dla tego konta.",
+    "retryExportAfterOtherServerOperation": "Ponów ten eksport po zakończeniu innej operacji serwera.",
+    "retryExportJobAfterServerStorage": "Ponów to zadanie eksportu po odzyskaniu pamięci serwera.",
+    "retryOnlyAfterAccountOrPermission": "Ponów dopiero po zmianie konta lub uprawnień.",
+    "retryOnlyAfterOrganizationSettingChanges": "Ponów dopiero po zmianie tego ustawienia.",
+    "retrySameContentChangeAfterOther": "Ponów tę samą zmianę treści po zakończeniu innej operacji serwera.",
+    "retrySameContentChangeAfterServer": "Ponów tę samą zmianę treści po odzyskaniu pamięci serwera.",
+    "retrySameContentChangeNow": "Ponów teraz tę samą zmianę treści.",
+    "changeTooLargeForOneChange": "Ta zmiana jest zbyt duża, aby wprowadzić ją naraz. Jedna zmiana może obejmować do 64 MB, w tym tekst.",
+    "pageKeepsWhatItHadBefore": "Strona pozostaje w stanie sprzed zmiany.",
+    "makeTheChangeInParts": "Wykonaj tę zmianę etapami: najpierw usuń etapami bloki wewnątrz dużego przełącznika lub sekcji, a długi tekst wklejaj etapami.",
+    "sameSizeIsRefusedAgain": "Ten sam rozmiar zostanie ponownie odrzucony; po podzieleniu można bezpiecznie spróbować ponownie.",
+    "linkCannotBeKeptHere": "Ta zmiana łączy stronę lub blok, których nie można połączyć w tym miejscu.",
+    "chooseAnotherPageOrRefresh": "Wybierz inną stronę albo odśwież stronę i spróbuj ponownie.",
+    "sameLinkIsRefusedAgain": "Połączenie tego samego elementu po raz kolejny zostanie odrzucone.",
+    "retrySameDomainVerificationAfterDns": "Ponów tę samą weryfikację domeny po przywróceniu działania usługi weryfikacji DNS.",
+    "retrySameFileOperationAfterOther": "Ponów tę samą operację na pliku po zakończeniu innej operacji serwera.",
+    "retrySameFileOperationAfterServer": "Ponów tę samą operację na pliku po przywróceniu działania pamięci masowej serwera.",
+    "retrySameFormOperationAfterOther": "Ponów tę samą operację na formularzu po zakończeniu innej operacji serwera.",
+    "retrySameFormOperationAfterServer": "Ponów tę samą operację na formularzu po przywróceniu działania pamięci masowej serwera.",
+    "retrySameOperationAfterOtherServer": "Ponów tę samą operację po zakończeniu innej operacji serwera.",
+    "retrySameOperationAfterServerStorage": "Ponów tę samą operację po przywróceniu działania pamięci masowej serwera.",
+    "returnSignInWithExistingAccount": "Wróć do logowania za pomocą istniejącego konta.",
+    "reviewAndCorrectEnteredServerSettings": "Sprawdź i popraw wprowadzone ustawienia serwera.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Sprawdź wprowadzone wartości i popraw wyróżnione informacje.",
+    "safeRetryAfterEmailDeliveryRestored": "Po przywróceniu dostarczania wiadomości e-mail można bezpiecznie spróbować ponownie.",
+    "safeRetryAfterServerResourceChecks": "Po przywróceniu kontroli zasobów serwera można bezpiecznie spróbować ponownie.",
+    "safeRetryAfterTemporaryLockClears": "Po ustąpieniu tymczasowej blokady można bezpiecznie spróbować ponownie.",
+    "safeRetryRead": "Ten odczyt można bezpiecznie ponowić.",
+    "safeRetrySameAuthenticationOperationAfter": "Po przywróceniu działania pamięci masowej można bezpiecznie ponowić tę samą operację uwierzytelniania.",
+    "safeRetrySameContentChangeAfter": "Po ustąpieniu tymczasowej blokady można bezpiecznie ponowić tę samą zmianę treści.",
+    "safeRetrySameContentChangeAfter2": "Po przywróceniu działania pamięci masowej można bezpiecznie ponowić tę samą zmianę treści.",
+    "safeRetrySameDlpPolicySave": "Po przywróceniu działania pamięci masowej można bezpiecznie ponowić zapis tej samej polityki DLP.",
+    "safeRetrySameDlpPolicySave2": "Po ustąpieniu tymczasowej blokady można bezpiecznie ponowić zapis tej samej polityki DLP.",
+    "safeRetrySameDomainVerificationAfter": "Po przywróceniu działania usługi można bezpiecznie ponowić tę samą weryfikację domeny.",
+    "safeRetrySameFileOperationAfter": "Gdy pamięć masowa będzie dostępna, można bezpiecznie ponowić tę samą operację na pliku.",
+    "safeRetrySameFileOperationAfter2": "Po przywróceniu działania pamięci masowej można bezpiecznie ponowić tę samą operację na pliku.",
+    "safeRetrySameFileOperationAfter3": "Po ustąpieniu tymczasowej blokady można bezpiecznie ponowić tę samą operację na pliku.",
+    "safeRetrySameFormOperationAfter": "Po przywróceniu działania pamięci masowej można bezpiecznie ponowić tę samą operację na formularzu.",
+    "safeRetrySameFormOperationAfter2": "Po ustąpieniu tymczasowej blokady można bezpiecznie ponowić tę samą operację na formularzu.",
+    "safeRetrySameOperationAfterStorage": "Po przywróceniu działania magazynu można bezpiecznie ponowić tę samą operację.",
+    "safeRetrySameOperationAfterTemporary": "Po ustąpieniu tymczasowej blokady można bezpiecznie ponowić tę samą operację.",
+    "safeRetrySameSettingsAfterSecret": "Po przywróceniu działania magazynu danych poufnych można bezpiecznie ponowić operację na tych samych ustawieniach.",
+    "safeRetrySameSettingsSaveAfter": "Po poprawieniu nieprawidłowych wartości można bezpiecznie ponowić zapis tych samych ustawień.",
+    "safeRetryWithSameJobIdentifier": "Można bezpiecznie ponowić to samo zadanie.",
+    "safeRetryWithSameJobIdentity": "Można bezpiecznie ponowić to samo zadanie.",
+    "safeSignInInsteadCreatingAnother": "Możesz bezpiecznie zalogować się zamiast tworzyć kolejne konto.",
+    "safeStartNewProviderSignIn": "Możesz później bezpiecznie rozpocząć nowe logowanie przez dostawcę.",
+    "safeTryAgainAfterCorrectingDetails": "Po poprawieniu szczegółów można bezpiecznie spróbować ponownie.",
+    "safeTryAgainAfterCorrectingInput": "Po poprawieniu danych wejściowych można bezpiecznie spróbować ponownie.",
+    "safeTryAgainAfterWait": "Po odczekaniu można bezpiecznie spróbować ponownie.",
+    "serverTakesNoChangesNow": "Ten serwer nie ma dostępu do lokalizacji kopii zapasowej, więc obecnie nie przyjmuje zmian.",
+    "serverDataMovedElsewhere": "Dane tego serwera zostały przeniesione na inny serwer.",
+    "doItOnNewServer": "Zrób to na nowym serwerze.",
+    "serverDataMovedNoRetry": "Ponowna próba tutaj nie zapisze zmian.",
+    "sameRequestIdentityCanRetriedSafely": "To samo żądanie można bezpiecznie ponowić po krótkim odczekaniu.",
+    "saveSameDlpPolicyAgainAfter": "Po przywróceniu działania magazynu serwera zapisz ponownie tę samą politykę DLP.",
+    "saveSameDlpPolicyAgainAfter2": "Po zakończeniu innej operacji serwera zapisz ponownie tę samą politykę DLP.",
+    "serverAccountStorageTemporarilyUnavailable": "Magazyn kont serwera jest tymczasowo niedostępny.",
+    "serverCannotCurrentlyConfirmResourceState": "Serwer nie może obecnie potwierdzić stanu swoich zasobów.",
+    "serverCouldNotCompleteAdministratorSettings": "Serwer nie mógł ukończyć zapisu ustawień administratora.",
+    "serverCouldNotCompleteAdministratorSetup": "Serwer nie mógł ukończyć żądania konfiguracji administratora.",
+    "serverCouldNotCompleteBackupLifecycle": "Serwer nie mógł ukończyć tworzenia kopii zapasowej.",
+    "serverCouldNotLoadBackupState": "Serwer nie mógł wczytać tego stanu kopii zapasowej.",
+    "serverCouldNotProtectAdministratorSecret": "Serwer nie mógł zabezpieczyć poufnych wartości administratora.",
+    "serverCouldNotReadAdministratorState": "Serwer nie mógł odczytać stanu administratora.",
+    "serverCouldNotReadOneExact": "Serwer nie mógł odczytać spójnego zrzutu raportu.",
+    "serverDetectedAndIsolatedIncompleteContent": "Serwer wykrył niekompletny rekord treści i odizolował go.",
+    "serverFileStorageTemporarilyUnavailable": "Magazyn plików serwera jest tymczasowo niedostępny.",
+    "serverFormStorageTemporarilyUnavailable": "Pamięć masowa formularzy na serwerze jest tymczasowo niedostępna.",
+    "serverPageContentStorageTemporarilyUnavailable": "Pamięć masowa zawartości stron na serwerze jest tymczasowo niedostępna.",
+    "serverSettingsChangedAfterScreenLoaded": "Ustawienia serwera zmieniły się po wczytaniu tego ekranu.",
+    "serverStorageTemporarilyUnavailable": "Pamięć masowa serwera jest tymczasowo niedostępna.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Pamięć masowa serwera była tymczasowo niedostępna, więc nie udało się utworzyć archiwum.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Pamięć masowa serwera jest tymczasowo niedostępna, więc nie udało się zapisać zasady DLP.",
+    "signInAttemptIdentifierAlreadyBelongs": "Ta próba logowania została już wykorzystana z innymi danymi.",
+    "signInOrAccountActionLink": "Link do logowania lub operacji na koncie nie jest już ważny.",
+    "signInWithAuthorizedAccountOr": "Zaloguj się na konto z uprawnieniami lub poproś administratora o dostęp.",
+    "signInWithExistingAdministratorAccount": "Zaloguj się na istniejące konto administratora.",
+    "signInWithServerAdministratorAccount": "Zaloguj się na konto administratora serwera lub poproś innego administratora o dostęp.",
+    "startAccountActionAgainGetNew": "Rozpocznij ponownie działanie na koncie, aby otrzymać nowy link.",
+    "startReplacementExportFromLatestWorkspace": "Rozpocznij eksport zastępczy z najnowszej przestrzeni roboczej.",
+    "storedBackupDidNotMatchVerified": "Zapisana kopia zapasowa nie była zgodna ze zweryfikowanym plikiem.",
+    "submittedInformationDidNotMeetOperation": "Przesłane informacje nie spełniały wymagań operacji.",
+    "tooManyRequestsLimited": "Wysłano zbyt wiele żądań, więc ta operacja jest ograniczona.",
+    "tooManyRequestsMadeSoOperation": "Wysłano zbyt wiele żądań, więc ta operacja jest tymczasowo ograniczona.",
+    "tryAgainAfterServerStorageRecovers": "Spróbuj ponownie po przywróceniu pamięci masowej serwera.",
+    "tryAgainInHours_one": "Spróbuj ponownie za około godzinę.",
+    "tryAgainInHours_few": "Spróbuj ponownie za około {{count}} godziny.",
+    "tryAgainInHours_many": "Spróbuj ponownie za około {{count}} godzin.",
+    "tryAgainInHours_other": "Spróbuj ponownie za około {{count}} godziny.",
+    "tryAgainInMinutes_one": "Spróbuj ponownie za około minutę.",
+    "tryAgainInMinutes_few": "Spróbuj ponownie za około {{count}} minuty.",
+    "tryAgainInMinutes_many": "Spróbuj ponownie za około {{count}} minut.",
+    "tryAgainInMinutes_other": "Spróbuj ponownie za około {{count}} minuty.",
+    "tryAgainInSeconds_one": "Spróbuj ponownie za około {{count}} sekundę.",
+    "tryAgainInSeconds_few": "Spróbuj ponownie za około {{count}} sekundy.",
+    "tryAgainInSeconds_many": "Spróbuj ponownie za około {{count}} sekund.",
+    "tryAgainInSeconds_other": "Spróbuj ponownie za około {{count}} sekundy.",
+    "useAnotherSignInMethodOr": "Użyj innej metody logowania lub spróbuj ponownie później u tego dostawcy.",
+    "useResumableArchiveUploadSoProgress": "Użyj wznawialnego przesyłania archiwum, aby można było kontynuować od zapisanego stanu.",
+    "useResumableUploadSoProgressCan": "Użyj wznawialnego przesyłania, aby można było kontynuować od zapisanego stanu.",
+    "waitForCompletionThenRetryDownload": "Poczekaj na zakończenie, a następnie ponów pobieranie.",
+    "waitForOtherServerOperationFinish": "Poczekaj na zakończenie innej operacji serwera, a następnie spróbuj ponownie.",
+    "waitForStorageReconciliationAdvanceThen": "Poczekaj chwilę, aż pamięć masowa się zsynchronizuje, a następnie ponów tę samą operację.",
+    "waitMomentBeforeTryingAgain": "Poczekaj chwilę przed ponowną próbą.",
+    "workspaceChangedWhileExportRunning": "Przestrzeń robocza zmieniła się podczas eksportu.",
+    "youNotSignedInAndNo": "Sesja logowania nie została nawiązana, a dane konta nie zostały zmienione.",
+    "pageIsLocked": "Strona jest zablokowana, więc nie można wprowadzać zmian.",
+    "unlockPageThenTryAgain": "Odblokuj stronę tylko dla siebie lub dla wszystkich w menu strony, a następnie spróbuj ponownie.",
+    "safeToRetryAfterUnlocking": "Po odblokowaniu strony można bezpiecznie spróbować ponownie.",
+    "databaseIsLocked": "Baza danych jest zablokowana, więc nie można zmienić jej właściwości ani widoków.",
+    "unlockDatabaseThenTryAgain": "Odblokuj bazę danych dla siebie lub dla wszystkich za pomocą przycisku „Zablokowana”, a następnie spróbuj ponownie.",
+    "databaseEditorsCanUnlock": "Tylko osoba, która może edytować bazę danych, może ją odblokować.",
+    "safeToRetryAfterDatabaseUnlocked": "Po odblokowaniu bazy danych można bezpiecznie spróbować ponownie.",
+    "rowMoveNeedsFullAccess": "Przeniesienie go na inną stronę wymaga pełnego dostępu do niego i dostępu do edycji miejsca docelowego.",
+    "askFullAccessHolderToMoveIt": "Poproś o przeniesienie osobę z pełnym dostępem lub wybierz miejsce, które możesz edytować.",
+    "rowMoveRefusedUntilAccess": "Przenoszenie będzie ponownie odrzucane, dopóki nie uzyskasz tego dostępu.",
+    "otherWorkspaceCantMoveOrLink": "Nie można przenosić ani łączyć elementów między przestrzeniami roboczymi.",
+    "makeItAnewInThatWorkspace": "Utwórz go w tej przestrzeni roboczej i skopiuj tam jego zawartość. Całą stronę można tam przenieść lub skopiować z okna Przenieś do, wybierając przestrzeń roboczą.",
+    "otherWorkspaceRefusedAgain": "Kolejna próba zostanie odrzucona z tego samego powodu.",
+    "signInEndedForThisBrowser": "Logowanie w tej przeglądarce wygasło lub zostało zakończone.",
+    "signInEndedForThisApp": "Logowanie w tej aplikacji wygasło lub zostało zakończone.",
+    "signInAgainToContinue": "Zaloguj się ponownie, aby kontynuować.",
+    "retryAfterSigningInAgain": "Ponów próbę po ponownym zalogowaniu.",
+    "serverRestoredSinceDeviceCopies": "Dane tego serwera uległy zmianie, a kopie na tym urządzeniu pochodzą sprzed zmiany.",
+    "changeKeptOnThisDeviceOnly": "Zmiana nie została zapisana na serwerze; istnieje tylko na tym urządzeniu.",
+    "takeServerContentAnew": "Wybierz „Wczytaj ponownie z serwera”, aby pobrać aktualną zawartość serwera.",
+    "retryAfterTakingContentAnew": "Spróbuj ponownie po wczytaniu zawartości z serwera.",
+    "propertyUsedByViewOrDependency": "Nie można teraz zmienić tej właściwości: to właściwość tytułowa albo znajduje się ona w sekcji Usunięte właściwości.",
+    "changeWhatUsesPropertyFirst": "Wczytaj stronę ponownie, aby zobaczyć właściwość w jej aktualnym stanie.",
+    "retryAfterChangingWhatUsesProperty": "Aby zmienić usuniętą właściwość, najpierw ją przywróć.",
+    "workspaceAlreadyHasContentForArchive": "Ta przestrzeń robocza ma już zawartość, więc nie można do niej dodać archiwum Leafen.",
+    "makeNewWorkspaceToImportArchive": "Utwórz nową przestrzeń roboczą i zaimportuj tam to archiwum.",
+    "retryInNewWorkspace": "Możesz zaimportować je ponownie w nowej przestrzeni roboczej.",
+    "importFileDoesNotFitFormat": "Plik nie pasuje do formatu odczytywanego przez Leafen, więc nic nie zaimportowano.",
+    "exportFileAgainToImport": "Wyeksportuj plik ponownie z miejsca, w którym powstał, a następnie zaimportuj ten plik.",
+    "sameFileRefusedAgain": "Ponowne zaimportowanie tego samego pliku nie zadziała.",
+    "pageBusyWithAnotherChange": "Ta strona jest zajęta inną zmianą, więc przez chwilę nie można jej edytować.",
+    "tryAgainOnceThatChangeIsDone": "Spróbuj ponownie, gdy ta zmiana zostanie zakończona.",
+    "importPageInTrash": "Strona docelowa jest w Koszu, więc nic nie zostało zaimportowane.",
+    "restorePageThenImportAgain": "Przywróć stronę z Kosza, a następnie zaimportuj ponownie.",
+    "importPageDeletedForGood": "Strona docelowa została trwale usunięta, więc nic nie zostało zaimportowane.",
+    "ownerBringsDeletedPageBack": "W ciągu 30 dni właściciel przestrzeni roboczej może przywrócić stronę w sekcji Bezpieczeństwo → Przechowywanie danych; następnie przywróć ją z Kosza i zaimportuj ponownie.",
+    "importAgainOnceRestored": "Ponowna próba nie zaimportuje strony, dopóki nie zostanie ona przywrócona.",
+    "pageInTrashCantChange": "Nie można zmienić strony w Koszu, dopóki nie zostanie przywrócona.",
+    "restorePageThenTryAgain": "Przywróć stronę z Kosza, a następnie spróbuj ponownie.",
+    "tryAgainOnceRestored": "Ponowna próba nie zadziała, dopóki strona nie zostanie przywrócona.",
+    "optionNameHasComma": "Nazwa opcji nie może zawierać przecinka (,).",
+    "takeCommaOutOrSplitOption": "Usuń przecinek lub utwórz dwie opcje.",
+    "optionRefusedUntilRenamed": "Spróbuj ponownie po zmianie nazwy.",
+    "optionNameTaken": "Ta właściwość ma już opcję o tej nazwie.",
+    "useAnotherOptionName": "Użyj innej nazwy lub wybierz istniejącą już opcję.",
+    "optionsInUseLeftOut": "Ta zmiana pomija opcje używane przez strony.",
+    "keepOptionsOrDeleteOneByOne": "Zostaw te opcje lub usuń je pojedynczo z menu każdej opcji.",
+    "optionsRefusedUntilKeptOrDeleted": "Ponowna próba bez zmian zostanie odrzucona z tego samego powodu."
+  }
+}

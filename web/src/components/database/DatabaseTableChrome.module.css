@@ -1,0 +1,479 @@
+
+/* ── Table view ────────────────────────────────────────────── */
+/* The row controls' margin is a length, so what is read of it is its width,
+   not the sum a page-wide table's is given (min(86px, its offset)): read as
+   no margin at all, a table that fits stayed as wide as the page once a side
+   peek had opened and closed, 8px over its scroll (usePageWideTable, seen
+   2026-11-12). */
+@property --table-gutter-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+/* What a page-wide table's scroller keeps before its first column changes
+   with the page's width, and a value every element under it inherits made
+   all of the table's thousands work out their styles again when the page
+   narrowed for a side peek (some 70ms for a 120-row table, seen 2026-11-12).
+   It is the table's own start margin, not the scroller's padding, which
+   sticking cells count from: handed down to them, each row worked out its
+   cells' styles again as it changed, as the page's text moved to its middle
+   while a side peek slid shut (1,197 elements, 12–14 ms a frame for four
+   frames, 60 rows, NAS condition, CPU ×2, 2026-11-13). Only the table reads
+   it now (below). */
+@property --table-scroll-pad {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+/* Where frozen columns and the row controls stick changes as the table goes
+   page-wide or back, and inherited it made every element under the scroller
+   work out its styles again in that frame, as a side peek opened or closed
+   (some 35ms for a table of 60 rows, NAS condition, CPU ×2, 2026-11-13).
+   Only those sticking cells read it, so it is handed down to them alone, as
+   --table-scroll-pad is (below, and stickyPad). */
+@property --table-frozen-zone {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+/* The least a table is drawn at past its row controls, where its box (below)
+   holds one: the same whether it keeps its box or runs across the page, and
+   what that choice counts it as needing (usePageWideTable). Read on the
+   table, where it is set. */
+@property --table-least {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+/* The first column starts at the document edge. Only editable row controls
+   occupy the margin; every track, rule and frozen cell shares this width.
+   It holds them whole, "+" too, as Notion's row shows "+ ⋮⋮ ☐" from 86px
+   before the table (seen 2026-11-08), where the box would cut a narrower one. */
+.tableScroll {
+  --table-gutter-width: 86px;
+  /* A row's box keeps Notion's 36px at the edge of a table scrolled
+     sideways (seen 2026-11-03), no wider than the row controls' margin. */
+  --table-row-box: min(36px, var(--table-gutter-width));
+  /* Where that box ends and frozen columns stick, from the scroll box's
+     edge (its own padding comes off where they stick). Notion's box of a
+     table that keeps to its block starts 44px before the first column (seen
+     2026-11-09 in a column: the box at 844.5, the column at 888.5); this one
+     holds the whole controls' margin, so they stick that much further in. */
+  --table-box-lead: 44px;
+  --table-frozen-zone: max(0px, calc(var(--table-row-box) + var(--table-gutter-width) - var(--table-box-lead)));
+  position: relative;
+  margin-inline-start: calc(var(--table-gutter-width) * -1);
+  overflow-x: auto;
+}
+/* The rows and heads between the scroller and its sticking cells pass on
+   where they stick; the table takes what the scroller keeps before its
+   first column. */
+.tableScroll > .table,
+.table > .tableGrid,
+.tableGrid > [role="row"],
+.tableGrid > [data-table-rows],
+.tableGrid > [data-table-rows] > [role="row"] {
+  --table-frozen-zone: inherit;
+}
+.tableScroll > .table {
+  --table-scroll-pad: inherit;
+}
+.tableScroll:not([data-row-gutter="true"]) {
+  --table-gutter-width: 0px;
+}
+/* Scrolled sideways, such a table is cut where Notion's box is, its rows'
+   "+ ⋮⋮" with it; the table's handle layer draws the pointed row's outside
+   the box, where Notion's stand (TableRowHandleLayer, seen 2026-11-09). */
+.tableScroll:not([data-page-wide="true"])[data-scrolled="true"] {
+  clip-path: inset(0 0 0 max(0px, calc(var(--table-gutter-width) - var(--table-box-lead))));
+}
+.tableScroll[data-inline-empty-preview="true"] {
+  --table-gutter-width: 0px;
+  margin-inline-start: 0;
+  overflow-x: auto;
+}
+/* Wider than the page's text, it runs from the page's left edge to its right
+   one, its first column where the text starts and the page's margin after its
+   "+ ⋯" column (usePageWideTable's reach, less 8 that column keeps; Notion's
+   at 1440, 768 and 900 seen 2026-11-15). After the full-width rules. */
+:global([data-page-scroll]) .db[data-placement="inline"] .tableScroll[data-page-wide="true"] {
+  --table-frozen-zone: var(--table-row-box);
+  width: var(--page-wide-width);
+  max-width: none;
+  margin-inline-start: calc(var(--page-wide-reach, var(--page-wide-offset)) * -1);
+  --table-scroll-pad: calc(var(--page-wide-reach, var(--page-wide-offset)) - var(--table-gutter-width));
+  padding-inline-end: calc(var(--page-wide-reach, var(--page-wide-offset)) - 8px);
+}
+/* The room before its first column is the table's margin: the scroller's
+   padding would be counted off where its sticking cells stick. Its least
+   (below) holds here too, scrolling sideways in the page's width as Notion's
+   (seen 2026-11-14 at 768: 700px from 104 in a page 753 wide, its bar shown). */
+:global([data-page-scroll]) .db[data-placement="inline"] .tableScroll[data-page-wide="true"] > .table {
+  min-width: max(calc(100% - var(--table-scroll-pad)), calc(var(--table-least) + var(--table-gutter-width)));
+  margin-inline-start: var(--table-scroll-pad);
+}
+/* A database's own page leaves 8px less after "+ ⋯" than before its first
+   column, as Notion's (seen 2026-11-07 at 999px: 104 before, 96 after); a
+   table in a page's text has as much each side (146 and 146). */
+:global([data-database-page="true"]) .db[data-placement="inline"] .tableScroll[data-page-wide="true"] {
+  padding-inline-end: calc(var(--page-wide-offset) - 8px);
+}
+/* Its row controls no wider than the margin, so on a phone the first column
+   still starts where the text does (Notion's 26px at 375px, seen 2026-10-25). */
+:global([data-page-scroll]) .db[data-placement="inline"] .tableScroll[data-page-wide="true"][data-row-gutter="true"] {
+  --table-gutter-width: min(86px, var(--page-wide-offset));
+}
+.table {
+  /* Notion's table lines are its secondary border (borSec, seen 2026-10-11). */
+  --table-grid-border: var(--border-subtle);
+  width: max-content;
+  min-width: 100%;
+  font-size: 14px;
+  /* The page's text sizes (PageView: "작은 텍스트", a font style) are its
+     text's, which nothing in a table reads: held at the table, a page whose
+     text turns small restyles its text, not each element of its tables
+     (2026-11-13, three tables of 140 rows: 115–125 ms, held 6–8 ms). */
+  --page-font-size: 16px;
+  --page-title-size: 40px;
+  --page-marker-line: 24px;
+  border-top: 0;
+}
+.table[data-inline-empty-preview="true"] {
+  width: 100%;
+  min-width: 100%;
+}
+/* A table in a page's text is at least Notion's 700px past its row controls,
+   running on sideways where the text is narrower, as Notion's does (seen
+   2026-11-02: 700px in a 511px column at 1000px). Not in columns, on a phone
+   or in a page's layout tab, which fits its box as Notion's (seen 2026-11-12:
+   642 wide in the layout builder's 650, 700 in a page's 708, no scrollbar). */
+.db[data-placement="inline"]:not(:global(:is([data-database-page="true"], [data-column-id], [data-phone="true"], [data-row-layout-tab-panel], [data-layout-module="tab"])) *)
+  .table:not([data-inline-empty-preview="true"]) {
+  --table-least: 700px;
+  min-width: max(100%, calc(var(--table-least) + var(--table-gutter-width)));
+}
+/* Under another block it fits its box (Notion's, seen 2026-11-03: no scrollbar in a toggle). */
+.db[data-placement="inline"]:is(:global([data-block-type="inline_database"]:not([data-depth="0"])) *)
+  .table:not([data-inline-empty-preview="true"]) {
+  --table-least: 0px;
+  min-width: 100%;
+}
+.tableGrid {
+  width: 100%;
+  min-width: 100%;
+}
+/* A table its search or filters leave empty shows its actions right under
+   its head, inside its sideways scroll and over its bar, in a box from 8px
+   before its first column to its view's end that stays in sight as it
+   scrolls, as Notion's (seen 2026-11-12 at 1440: 708 wide from 487.5 by a
+   first column at 495.5 in a page's tab, from 419.5 by 427.5 in a page's
+   text, from 366 on a database's own page). It adds nothing to the table's
+   width. */
+.tableNoResults {
+  position: sticky;
+  /* From the scroll's content edge, inside any padding it has. */
+  inset-inline-start: calc(var(--table-gutter-width) - 8px);
+  width: 0;
+  margin-inline-start: calc(var(--table-gutter-width) - 8px);
+}
+.tableNoResults > [data-view-no-results] {
+  width: calc(100cqi + 8px);
+}
+/* On a database's own page it runs on to the text's end, 8 past its view
+   (Notion's, seen 2026-11-12 at 1440: 366..1344 by a first column at 374). */
+:global([data-database-page="true"]) .tableNoResults > [data-view-no-results] {
+  width: calc(100cqi + 16px);
+}
+.tableHead {
+  position: relative;
+  display: grid;
+  border-bottom: 0;
+}
+/* The rows go under it as it stays at the page's top (useStickyViewHeads),
+   on the ground it stands on from its first column only
+   (DatabaseTableHeadGround.module.css). */
+.tableHead::before,
+.tableHead::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: var(--table-gutter-width);
+  inset-inline-end: 0;
+  z-index: 6;
+  height: 1px;
+  background: var(--table-grid-border);
+  pointer-events: none;
+}
+.tableHead::before {
+  display: none;
+}
+.tableHead::after {
+  bottom: 0;
+}
+/* The row controls' margin slides with a table scrolled sideways until its
+   rows' boxes reach the edge, where they stay, as Notion's (seen 2026-11-09:
+   the box 11px in, its "+ ⋮⋮" out of the box). Only the boxes' strip is
+   filled, in the ground the table stands on (a colored block's too), whole
+   over frozen rows; scrolled at all, a row's strip is that ground with its
+   box at 0.7 and the head's whole (seen 2026-11-15 at 1440, scrolled 40 and
+   300). Written on the strips: on the table, every cell inherited it and the
+   first sideways scroll styled the whole table again (4,006 elements). */
+.tableScroll {
+  --table-row-ground: color-mix(in srgb, var(--table-surface, var(--bg-app)) 70%, transparent);
+}
+.table[data-frozen-columns] .rowGutterHead,
+.table[data-frozen-columns] .rowGutterCell,
+.tableScroll[data-scrolled="true"] > .table .rowGutterHead,
+.tableScroll[data-scrolled="true"] > .table .rowGutterCell {
+  --table-row-ground: var(--table-surface, var(--bg-app));
+}
+.tableScroll[data-scrolled="true"] > .table:not([data-frozen-columns]) .rowGutterCell {
+  --row-gutter-opacity: 0.7;
+}
+.rowGutterHead,
+.rowGutterCell {
+  background: linear-gradient(calc(270deg * var(--inline-sign, 1)), var(--table-row-ground) var(--table-row-box), transparent 0);
+}
+.table:not([data-frozen-columns]) .rowGutterHead:not(:hover, [data-some-selected="true"]) {
+  background: none;
+}
+/* Only the box's strip at its end is the head's to point at, the margin
+   before it the page's, as Notion's (seen 2026-11-15 at 1440: its 36px at
+   338–374; the box shown from 340, not at 336 nor over "이름"). */
+.rowGutterHead {
+  position: relative;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-inline-end: 9px;
+  pointer-events: none;
+}
+.rowGutterHead::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: var(--table-row-box);
+  pointer-events: auto;
+}
+/* The head's box shows while its strip is pointed at or rows are selected. */
+.rowGutterHead > .rowSelect {
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.1s;
+}
+.rowGutterHead:hover > .rowSelect,
+.rowGutterHead[data-some-selected="true"] > .rowSelect,
+.rowGutterHead > .rowSelect:focus-visible {
+  opacity: 1;
+}
+/* Its "+ ⋮⋮ ☐" stand on the row's first line, centred in a one-line row's
+   36px however tall the row grows, as Notion's (seen 2026-11-08 at 1303px:
+   "+" and handle 6px and the box 10px under the top of rows 36, 57, 141
+   and 519 high). */
+.rowGutterCell {
+  position: relative;
+  z-index: 6;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-template-rows: 36px;
+  align-content: start;
+  align-items: center;
+  justify-content: end;
+  min-height: 37px;
+  padding-inline-end: 9px;
+  color: var(--icon-tertiary);
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.1s;
+}
+/* A property's name in 14px, its line 1.2, as Notion's (seen 2026-11-08:
+   14/400, 16.8, its middle 17 down a 36px head, 32 in after the mark). */
+.headCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  border-inline-end: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.2;
+  overflow: visible;
+}
+.headCell[data-drag-over="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: -1px auto;
+  z-index: 3;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+.headCell[data-drag-over="true"][data-drop-side="after"]::before {
+  inset-block: 0;
+  inset-inline: auto -1px;
+}
+/* Its icon 9px in and its name 7px past it, as Notion's (measured
+   2026-10-24). */
+.headCellBtn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding-block: 0;
+  padding-inline: 9px 8px;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.headCell[draggable="true"] .headCellBtn {
+  cursor: grab;
+}
+.headCell[draggable="true"] .headCellBtn:active {
+  cursor: grabbing;
+}
+/* Under the pointer or with its menu open only its background shows, its
+   name keeping its grey, as Notion's (seen 2026-11-11: 173,169,163 dark and
+   125,122,117 light, on 5.5% white and 5% dark). */
+.headCellBtn:hover,
+.headCellBtn:focus-visible,
+.headCellBtn[aria-expanded="true"],
+.headCell[data-drop-hover="true"] .headCellBtn {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The head dragged along the head has no hover's background, as Notion's
+   (seen 2026-11-11), though the pointer stays over it all the way. */
+.headCell[data-dragging="live"] .headCellBtn {
+  background: transparent;
+}
+/* Notion's handle (seen 2026-11-15 at 1440, dark): a 5px bar over the
+   column's end edge, 3px before it and 2px after, from 1px above the head to
+   its bottom line, rgba(35,131,226,0.8) fading in over 200ms while the
+   pointer is on it and nothing while it is only on the head. It is grabbed
+   in its 3px before the edge, the next head taking the rest. */
+.colResize {
+  position: absolute;
+  top: -1px;
+  inset-inline-end: 0;
+  z-index: 4;
+  width: 3px;
+  height: 100%;
+  cursor: col-resize;
+}
+.colResize::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: -2px;
+  pointer-events: none;
+  width: 5px;
+  background: rgba(35, 131, 226, 0);
+  transition: background 200ms ease-out;
+}
+.colResize:hover::after,
+.colResize:focus-visible::after {
+  background: rgba(35, 131, 226, 0.8);
+}
+.colResize:focus-visible {
+  outline: none;
+}
+.headGlyph {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+  font-size: 12px;
+}
+/* The type's icon is a property list's, 19.2 as Notion's (propertyMarkClass,
+   seen 2026-11-17 on every type), its 20px place centred 16px into the head
+   over a 16px one, so the name still starts 32px in — a table's head and a
+   timeline's table's alike. */
+.headGlyphIcon {
+  display: inline-flex;
+  margin-block: -2px;
+  margin-inline: -3px -1px;
+}
+.headName {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A described property's head ends in a faint "i", as Notion's (icoTer, 11-17). */
+.headInfo {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  color: var(--icon-tertiary);
+}
+/* A touch screen's head is the name alone, as Notion's phone and iPad
+   (seen 2026-11-12 at 402 and 834: "Aa 제목" where a mouse's has its "i"). */
+:global([data-touch="true"]) .headInfo {
+  display: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* The last frozen column ends in the stronger line, as Notion's (#e6e5e3,
+   seen 2026-11-03), with no shadow. */
+.headCell[data-frozen-edge="true"] {
+  box-shadow: inset calc(-1px * var(--inline-sign, 1)) 0 0 var(--border-default);
+}
+
+/* A phone's table, as Notion's (2026-10-25, 2026-11-14; A90 411, 2026-11-17):
+   faint names after marks 8px in, each mark 1.2 times its 18px place, centred,
+   in the names' faint color, not a desktop head's icon color; both mid-head. */
+:global([data-phone="true"]) .table {
+  font-size: 16px;
+}
+:global([data-phone="true"]) .headCell {
+  color: var(--text-tertiary);
+  font-size: 15px;
+  line-height: 18px;
+}
+:global([data-phone="true"]) .headCellBtn {
+  gap: 6px;
+  padding-inline-start: 8px;
+}
+:global([data-phone="true"]) .headGlyphIcon {
+  margin: calc(18px * -0.1);
+  color: var(--text-tertiary);
+}
+:global([data-phone="true"]) .headGlyphIcon svg {
+  width: calc(18px * 1.2);
+  height: calc(18px * 1.2);
+}
+:global([data-phone="true"]) .rowGutterCell {
+  grid-template-rows: 45px;
+  min-height: 45px;
+}
+/* A phone draws no row's gutter, nor the head's box, till a row is chosen:
+   unseen, they take no finger, which reaches the cell or the head the table
+   rolled under them, as Notion's phone, whose table has no row's box (seen
+   2026-11-25 in Safari on an iPhone at 402, twice: a tap 3, 14 or 15 in over
+   a rolled row opened the cell under it, over the rolled head the property's
+   sheet; before the title or the first name, unrolled, nothing). Rows chosen
+   another way show their boxes, which take a finger again. */
+:global([data-phone="true"]) .tableRow:not([data-row-selected="true"]) > .rowGutterCell:not(:focus-within),
+:global([data-phone="true"]) .rowGutterHead:not([data-some-selected="true"])::before,
+:global([data-phone="true"]) .rowGutterHead:not([data-some-selected="true"]) > .rowSelect:not(:focus-visible) {
+  pointer-events: none;
+}

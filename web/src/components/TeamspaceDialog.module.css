@@ -1,0 +1,19 @@
+/* In the window's middle, as Notion's (seen 2026-11-03). */
+.overlay { position: fixed; inset: 0; z-index: 260; display: flex; align-items: center; }
+.backdrop { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--modal-shade); }
+.dialog { position: relative; display: flex; flex-direction: column; width: min(760px, calc(100vw - 32px)); max-height: min(760px, calc(100vh - 48px)); margin: 0 auto; overflow: hidden; border-radius: var(--modal-radius); background: var(--modal-bg); box-shadow: var(--shadow-modal); }
+/* The teamspace windows' close ("팀스페이스 만들기", a teamspace's settings,
+   the invite after making one), as Notion's (seen 2026-11-18 at 1440, light
+   and dark): its 16px ✕ in the icons' secondary colour in a 22px circle on
+   Notion's button ground, the ground lighter under the pointer, the ✕ the
+   same; on a phone, where the window is a sheet, the ✕ 18px in the same
+   circle (seen 2026-11-18 on a Galaxy A90 in Chrome at 411, light). */
+.close {
+  display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--window-close-bg); color: var(--icon-secondary);
+}
+.close:hover, .close:focus-visible { background: var(--window-close-hover-bg); outline: none; }
+:global([data-phone-window="sheet"]) .close svg { width: 18px; height: 18px; }
+@media (max-width: 640px) {
+  .dialog { width: 100%; max-height: calc(100vh - 12px); margin: 12px 0 0; border-radius: 12px 12px 0 0; }
+}

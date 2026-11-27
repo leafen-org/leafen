@@ -1,0 +1,1804 @@
+{
+  "schemaVersion": 1,
+  "name": "app-platform",
+  "operations": [
+    { "goName": "appPlatformList", "tsName": "list", "method": "GET", "path": "/admin/apps" },
+    { "goName": "appPlatformPackageUpload", "tsName": "uploadPackage", "method": "POST", "path": "/admin/apps/packages" },
+    { "goName": "appPlatformPackageRead", "tsName": "readPackage", "method": "GET", "path": "/admin/apps/packages/{packageHash}" },
+    { "goName": "appPlatformInstall", "tsName": "install", "method": "POST", "path": "/admin/apps/installs" },
+    { "goName": "appPlatformInstallStatus", "tsName": "setStatus", "method": "PATCH", "path": "/admin/apps/installs/{installId}/status" },
+    { "goName": "appPlatformInstallGrants", "tsName": "setGrants", "method": "PUT", "path": "/admin/apps/installs/{installId}/grants" },
+    { "goName": "appPlatformTenancyPeople", "tsName": "tenancyPeople", "method": "GET", "path": "/admin/apps/people" },
+    { "goName": "appPlatformTenancyGroups", "tsName": "tenancyGroups", "method": "GET", "path": "/admin/apps/groups" },
+    { "goName": "appPlatformOversightSet", "tsName": "setOversight", "method": "PUT", "path": "/admin/apps/oversight" },
+    { "goName": "appPlatformStrictSet", "tsName": "setStrict", "method": "PUT", "path": "/admin/apps/strict" },
+    { "goName": "appPlatformInstallRemove", "tsName": "remove", "method": "DELETE", "path": "/admin/apps/installs/{installId}" },
+    { "goName": "appPlatformInstallRemoval", "tsName": "readRemoval", "method": "GET", "path": "/admin/apps/installs/{installId}/removal" },
+    { "goName": "appPlatformInstallRestore", "tsName": "restore", "method": "POST", "path": "/admin/apps/installs/{installId}/restore" },
+    { "goName": "installedAppsList", "tsName": "usable", "method": "GET", "path": "/installed-apps" },
+    { "goName": "installedAppSession", "tsName": "openSession", "method": "POST", "path": "/installed-apps/{installId}/sessions" },
+    { "goName": "appPlatformDataReads", "tsName": "dataReads", "method": "GET", "path": "/installed-apps/{installId}/reads" },
+    { "goName": "appPlatformRunHistory", "tsName": "runHistory", "method": "GET", "path": "/installed-apps/{installId}/runs" },
+    { "goName": "appPlatformRunChanges", "tsName": "runChanges", "method": "GET", "path": "/installed-apps/{installId}/runs/{runId}/changes" },
+    { "goName": "appHomeScreenManifest", "tsName": "homeScreenManifest", "method": "GET", "path": "/app-home-screen/{slug}/manifest" },
+    { "goName": "appHomeScreenIcon", "tsName": "homeScreenIcon", "method": "GET", "path": "/app-home-screen/{slug}/icon" },
+    { "goName": "appIcon", "tsName": "icon", "method": "GET", "path": "/app-icon/{install}" },
+    { "goName": "appPlatformSettingsUpdate", "tsName": "updateSettings", "method": "PUT", "path": "/admin/apps/settings" },
+    { "goName": "appPlatformSecretsList", "tsName": "listSecrets", "method": "GET", "path": "/admin/apps/installs/{installId}/secrets" },
+    { "goName": "appPlatformSettingsList", "tsName": "listAppSettings", "method": "GET", "path": "/admin/apps/installs/{installId}/settings" },
+    { "goName": "appPlatformSettingSet", "tsName": "setAppSetting", "method": "PUT", "path": "/admin/apps/installs/{installId}/settings/{key}" },
+    { "goName": "appPlatformCredentialsList", "tsName": "listCredentials", "method": "GET", "path": "/apps/{installId}/credentials" },
+    { "goName": "appPlatformCredentialSet", "tsName": "setCredential", "method": "PUT", "path": "/apps/{installId}/credentials/{key}" },
+    { "goName": "appPlatformCredentialDelete", "tsName": "deleteCredential", "method": "DELETE", "path": "/apps/{installId}/credentials/{key}" },
+    { "goName": "appPlatformPersonCredentials", "tsName": "personCredentials", "method": "GET", "path": "/account/app-credentials" },
+    { "goName": "appPlatformPersonPasswords", "tsName": "personPasswords", "method": "GET", "path": "/account/app-passwords" },
+    { "goName": "appPlatformPersonPasswordCreate", "tsName": "createPersonPassword", "method": "POST", "path": "/account/app-passwords" },
+    { "goName": "appPlatformPersonPasswordDelete", "tsName": "deletePersonPassword", "method": "DELETE", "path": "/account/app-passwords/{passwordId}" },
+    { "goName": "appPlatformEndpointLimitsSet", "tsName": "setEndpointLimits", "method": "PUT", "path": "/admin/apps/installs/{installId}/endpoint-limits" },
+    { "goName": "appPlatformEndpointPublicSet", "tsName": "setEndpointPublic", "method": "PUT", "path": "/admin/apps/installs/{installId}/endpoint-public" },
+    { "goName": "appPlatformPersonSchedules", "tsName": "personSchedules", "method": "GET", "path": "/account/app-schedules" },
+    { "goName": "appPlatformPersonScheduleSet", "tsName": "setPersonSchedule", "method": "PUT", "path": "/account/app-schedules/{installId}/{schedule}" },
+    { "goName": "appPlatformCredentialsAdmin", "tsName": "adminCredentials", "method": "GET", "path": "/admin/apps/installs/{installId}/credentials" },
+    { "goName": "appPlatformCredentialsPolicy", "tsName": "setCredentialsPolicy", "method": "PUT", "path": "/admin/apps/installs/{installId}/credentials" },
+    { "goName": "appPlatformCredentialsRevoke", "tsName": "revokeCredentials", "method": "DELETE", "path": "/admin/apps/installs/{installId}/credentials" },
+    { "goName": "appPlatformSecretSet", "tsName": "setSecret", "method": "PUT", "path": "/admin/apps/installs/{installId}/secrets/{name}" },
+    { "goName": "appPlatformSecretClear", "tsName": "clearSecret", "method": "DELETE", "path": "/admin/apps/installs/{installId}/secrets/{name}" },
+    { "goName": "appPlatformRelay", "tsName": "relay", "method": "POST", "path": "/apps/{installId}/relay" },
+    { "goName": "appPlatformOAuthStart", "tsName": "oauthStart", "method": "POST", "path": "/apps/{installId}/oauth/{provider}/start" },
+    { "goName": "appPlatformOAuthCallback", "tsName": "oauthCallback", "method": "GET", "path": "/apps/oauth/callback" },
+    { "goName": "appPlatformOAuthReturn", "tsName": "oauthReturn", "method": "POST", "path": "/admin/apps/installs/{installId}/oauth/{provider}/return" },
+    { "goName": "appPlatformOAuthAccounts", "tsName": "oauthAccounts", "method": "GET", "path": "/apps/{installId}/oauth" },
+    { "goName": "appPlatformOAuthDisconnect", "tsName": "oauthDisconnect", "method": "DELETE", "path": "/apps/{installId}/oauth/{provider}" },
+    { "goName": "appPlatformHookReceive", "tsName": "hookReceive", "method": "POST", "path": "/apps/{slug}/hooks/{hook}" },
+    { "goName": "appPlatformHooksList", "tsName": "listHooks", "method": "GET", "path": "/admin/apps/installs/{installId}/hooks" },
+    { "goName": "appPlatformHookSecret", "tsName": "makeHookSecret", "method": "POST", "path": "/admin/apps/installs/{installId}/hooks/{hook}/secret" },
+    { "goName": "appPlatformHookOrgRemove", "tsName": "removeHookOrg", "method": "DELETE", "path": "/admin/apps/installs/{installId}/hooks/{hook}/orgs/{organizationId}" },
+    { "goName": "appPlatformActionRun", "tsName": "runAction", "method": "POST", "path": "/apps/{installId}/actions/{action}" },
+    { "goName": "appPlatformApprovalApprove", "tsName": "approve", "method": "POST", "path": "/apps/{installId}/approvals/{approvalId}/approve" },
+    { "goName": "appPlatformApprovalDecline", "tsName": "decline", "method": "POST", "path": "/apps/{installId}/approvals/{approvalId}/decline" },
+    { "goName": "appPlatformJobsList", "tsName": "listJobs", "method": "GET", "path": "/admin/apps/installs/{installId}/jobs" },
+    { "goName": "appPlatformJobRunsList", "tsName": "listJobRuns", "method": "GET", "path": "/admin/apps/installs/{installId}/jobs/runs" },
+    { "goName": "appPlatformJobApprovalsList", "tsName": "listJobApprovals", "method": "GET", "path": "/admin/apps/installs/{installId}/jobs/approvals" },
+    { "goName": "appPlatformUsage", "tsName": "usage", "method": "GET", "path": "/admin/apps/installs/{installId}/usage" },
+    { "goName": "appPlatformLogExport", "tsName": "logExport", "method": "GET", "path": "/admin/apps/installs/{installId}/log" },
+    { "goName": "appPlatformScheduleSet", "tsName": "setSchedule", "method": "PUT", "path": "/admin/apps/installs/{installId}/schedules/{schedule}" },
+    { "goName": "appPlatformKV", "tsName": "kv", "method": "POST", "path": "/apps/{installId}/kv" },
+    { "goName": "appPlatformDataMap", "tsName": "dataMap", "method": "GET", "path": "/app-data" },
+    { "goName": "appPlatformPeople", "tsName": "people", "method": "GET", "path": "/app-people" },
+    { "goName": "appPlatformGroups", "tsName": "groups", "method": "GET", "path": "/app-groups" },
+    { "goName": "appPlatformWorkspaces", "tsName": "workspaces", "method": "GET", "path": "/app-workspaces" },
+    { "goName": "appPlatformOwnStorage", "tsName": "ownStorage", "method": "POST", "path": "/app-storage" },
+    { "goName": "appPlatformStorage", "tsName": "storage", "method": "POST", "path": "/apps/{installId}/storage" },
+    { "goName": "appPlatformRoomTicket", "tsName": "roomTicket", "method": "POST", "path": "/apps/{installId}/rooms/{room}/ticket" },
+    { "goName": "appPlatformGuestsRead", "tsName": "readGuests", "method": "GET", "path": "/admin/apps/installs/{installId}/guests" },
+    { "goName": "appPlatformGuestsSet", "tsName": "setGuests", "method": "PUT", "path": "/admin/apps/installs/{installId}/guests" },
+    { "goName": "appPlatformGuestLinksList", "tsName": "listGuestLinks", "method": "GET", "path": "/admin/apps/installs/{installId}/guests/links" },
+    { "goName": "appPlatformGuestReportsList", "tsName": "listGuestReports", "method": "GET", "path": "/admin/apps/installs/{installId}/guests/reports" },
+    { "goName": "appPlatformGuestLinkRevoke", "tsName": "revokeGuestLink", "method": "POST", "path": "/admin/apps/installs/{installId}/guests/links/{linkId}/revoke" },
+    { "goName": "appPlatformGuestLinkMake", "tsName": "makeGuestLink", "method": "POST", "path": "/apps/{installId}/guest-links" },
+    { "goName": "appPlatformGuestReport", "tsName": "reportGuest", "method": "POST", "path": "/apps/{installId}/guests/{guestId}/report" },
+    { "goName": "appPlatformGuestSession", "tsName": "openGuestSession", "method": "POST", "path": "/app-guests/sessions" },
+    { "goName": "appPlatformGuestRoomTicket", "tsName": "guestRoomTicket", "method": "POST", "path": "/app-guests/rooms/ticket" },
+    { "goName": "appPlatformGuestKV", "tsName": "guestKV", "method": "POST", "path": "/app-guests/kv" },
+    { "goName": "appPlatformConnectionAppsRead", "tsName": "readConnectionApps", "method": "GET", "path": "/mcp/connections/{connectionId}/apps" },
+    { "goName": "appPlatformConnectionAppsSet", "tsName": "setConnectionApps", "method": "PUT", "path": "/mcp/connections/{connectionId}/apps" },
+    { "goName": "appPlatformHTMLFrame", "tsName": "htmlFrame", "method": "POST", "path": "/files/{id}/html-frame" },
+    { "goName": "appPlatformPublicHTMLFrame", "tsName": "publicHtmlFrame", "method": "GET", "path": "/public-content/{source}/{key}/files/{fileId}/html-frame" },
+    { "goName": "appPlatformCatalogsList", "tsName": "listCatalogs", "method": "GET", "path": "/admin/apps/catalogs" },
+    { "goName": "appPlatformCatalogAdd", "tsName": "addCatalog", "method": "POST", "path": "/admin/apps/catalogs" },
+    { "goName": "appPlatformCatalogUpload", "tsName": "uploadCatalog", "method": "POST", "path": "/admin/apps/catalogs/upload" },
+    { "goName": "appPlatformCatalogRefresh", "tsName": "refreshCatalog", "method": "POST", "path": "/admin/apps/catalogs/{catalogId}/refresh" },
+    { "goName": "appPlatformCatalogRemove", "tsName": "removeCatalog", "method": "DELETE", "path": "/admin/apps/catalogs/{catalogId}" },
+    { "goName": "appPlatformCatalogAppFetch", "tsName": "fetchCatalogApp", "method": "POST", "path": "/admin/apps/catalogs/{catalogId}/apps/{appId}/fetch" },
+    { "goName": "appPersonCatalog", "tsName": "personCatalog", "method": "GET", "path": "/app-catalog" },
+    { "goName": "appAvailability", "tsName": "availability", "method": "GET", "path": "/app-availability" },
+    { "goName": "appRequestCreate", "tsName": "requestApp", "method": "POST", "path": "/app-requests" },
+    { "goName": "appSelfInstall", "tsName": "selfInstall", "method": "POST", "path": "/app-self-installs" },
+    { "goName": "appConsent", "tsName": "consent", "method": "POST", "path": "/installed-apps/{installId}/consent" },
+    { "goName": "appRequestsList", "tsName": "listRequests", "method": "GET", "path": "/admin/apps/requests" },
+    { "goName": "appRequestDecide", "tsName": "decideRequest", "method": "POST", "path": "/admin/apps/requests/{requestId}/decide" },
+    { "goName": "appAllowlistSet", "tsName": "setAllowlist", "method": "PUT", "path": "/admin/apps/allowlist" }
+  ],
+  "bounds": [
+    { "goName": "appPackageMaxBytes", "tsName": "packageMaxBytes", "value": 2147483648 },
+    { "goName": "appPackageMaxUncompressedBytes", "tsName": "packageMaxUncompressedBytes", "value": 4294967296 },
+    { "goName": "appPackageMaxFiles", "tsName": "packageMaxFiles", "value": 2000 },
+    { "goName": "appPackageMaxFileBytes", "tsName": "packageMaxFileBytes", "value": 1073741824 },
+    { "goName": "appPackageMinLimitBytes", "tsName": "packageMinLimitBytes", "value": 1048576 },
+    { "goName": "appPackageMaxPathRunes", "tsName": "packageMaxPathRunes", "value": 200 },
+    { "goName": "appManifestMaxBytes", "tsName": "manifestMaxBytes", "value": 262144 },
+    { "goName": "appNameMaxRunes", "tsName": "nameMaxRunes", "value": 60 },
+    { "goName": "appDescriptionMaxRunes", "tsName": "descriptionMaxRunes", "value": 300 },
+    { "goName": "appPlatformInputMaxBytes", "tsName": "inputMaxBytes", "value": 65536 },
+    { "goName": "appActionInputMaxBytes", "tsName": "actionInputMaxBytes", "value": 1048576 },
+    { "goName": "appRelayMaxRequestBytes", "tsName": "relayMaxRequestBytes", "value": 1048576 },
+    { "goName": "appRelayMaxResponseBytes", "tsName": "relayMaxResponseBytes", "value": 5242880 },
+    { "goName": "appRelayTimeoutSeconds", "tsName": "relayTimeoutSeconds", "value": 30 },
+    { "goName": "appRelayMaxRedirects", "tsName": "relayMaxRedirects", "value": 3 },
+    { "goName": "appRelayPerMinute", "tsName": "relayPerMinute", "value": 120 },
+    { "goName": "appRelayConcurrent", "tsName": "relayConcurrent", "value": 8 },
+    { "goName": "appSecretMaxBytes", "tsName": "secretMaxBytes", "value": 8192 },
+    { "goName": "appOAuthStateSeconds", "tsName": "oauthStateSeconds", "value": 600 },
+    { "goName": "appHookMaxBodyBytes", "tsName": "hookMaxBodyBytes", "value": 1048576 },
+    { "goName": "appHookWindowSeconds", "tsName": "hookWindowSeconds", "value": 300 },
+    { "goName": "appHookPerMinute", "tsName": "hookPerMinute", "value": 60 },
+    { "goName": "appHookKeepDays", "tsName": "hookKeepDays", "value": 7 },
+    { "goName": "appApprovalSeconds", "tsName": "approvalSeconds", "value": 600 },
+    { "goName": "appRoomTicketSeconds", "tsName": "roomTicketSeconds", "value": 600 },
+    { "goName": "appGuestLinkMinMinutes", "tsName": "guestLinkMinMinutes", "value": 5 },
+    { "goName": "appGuestLinkMaxMinutes", "tsName": "guestLinkMaxMinutes", "value": 1440 },
+    { "goName": "appGuestSessionSeconds", "tsName": "guestSessionSeconds", "value": 7200 },
+    { "goName": "appAgentApprovalSeconds", "tsName": "agentApprovalSeconds", "value": 86400 },
+    { "goName": "appHTMLFrameSeconds", "tsName": "htmlFrameSeconds", "value": 3600 },
+    { "goName": "appHTMLFrameHeight", "tsName": "htmlFrameHeight", "value": 500 },
+    { "goName": "appBlockPropsMaxBytes", "tsName": "blockPropsMaxBytes", "value": 8192 },
+    { "goName": "appBlockDefaultHeight", "tsName": "blockDefaultHeight", "value": 320 },
+    { "goName": "appCatalogIndexMaxBytes", "tsName": "catalogIndexMaxBytes", "value": 8388608 },
+    { "goName": "appCatalogBundleMaxBytes", "tsName": "catalogBundleMaxBytes", "value": 268435456 },
+    { "goName": "appCatalogRefreshHours", "tsName": "catalogRefreshHours", "value": 6 },
+    { "goName": "appStorageMaxKeys", "tsName": "storageMaxKeys", "value": 200 },
+    { "goName": "appStorageKeyMaxRunes", "tsName": "storageKeyMaxRunes", "value": 100 },
+    { "goName": "appStorageValueMaxBytes", "tsName": "storageValueMaxBytes", "value": 16384 },
+    { "goName": "appStorageMaxBytes", "tsName": "storageMaxBytes", "value": 262144 }
+  ],
+  "errors": [
+    { "goName": "errorCodeAppPackageInvalid", "tsName": "packageInvalid", "value": "LEAFEN_APP_PACKAGE_INVALID" },
+    { "goName": "errorCodeAppPackageTooLarge", "tsName": "packageTooLarge", "value": "LEAFEN_APP_PACKAGE_TOO_LARGE" },
+    { "goName": "errorCodeAppPackageSignatureInvalid", "tsName": "signatureInvalid", "value": "LEAFEN_APP_PACKAGE_SIGNATURE_INVALID" },
+    { "goName": "errorCodeAppManifestInvalid", "tsName": "manifestInvalid", "value": "LEAFEN_APP_MANIFEST_INVALID" },
+    { "goName": "errorCodeAppPackageNotFound", "tsName": "packageNotFound", "value": "LEAFEN_APP_PACKAGE_NOT_FOUND" },
+    { "goName": "errorCodeAppInstallNotFound", "tsName": "installNotFound", "value": "LEAFEN_APP_NOT_FOUND" },
+    { "goName": "errorCodeAppPermissionsChanged", "tsName": "permissionsChanged", "value": "LEAFEN_APP_PERMISSIONS_CHANGED" },
+    { "goName": "errorCodeAppDataRemovals", "tsName": "dataRemovals", "value": "LEAFEN_APP_DATA_REMOVALS" },
+    { "goName": "errorCodeAppSlugTaken", "tsName": "slugTaken", "value": "LEAFEN_APP_SLUG_TAKEN" },
+    { "goName": "errorCodeAppInTrash", "tsName": "inTrash", "value": "LEAFEN_APP_IN_TRASH" },
+    { "goName": "errorCodeAppInTrashAskAdministrator", "tsName": "inTrashAskAdministrator", "value": "LEAFEN_APP_IN_TRASH_ASK_ADMINISTRATOR" },
+    { "goName": "errorCodeAppPlatformInputInvalid", "tsName": "inputInvalid", "value": "LEAFEN_APP_INPUT_INVALID" },
+    { "goName": "errorCodeAppPlatformFailed", "tsName": "failed", "value": "LEAFEN_APP_PLATFORM_FAILED" },
+    { "goName": "errorCodeAppLegalHold", "tsName": "legalHold", "value": "LEAFEN_APP_LEGAL_HOLD" },
+    { "goName": "errorCodeAppRelayDenied", "tsName": "relayDenied", "value": "LEAFEN_APP_RELAY_DENIED" },
+    { "goName": "errorCodeAppRelayFailed", "tsName": "relayFailed", "value": "LEAFEN_APP_RELAY_FAILED" },
+    { "goName": "errorCodeAppRelayLimited", "tsName": "relayLimited", "value": "LEAFEN_APP_RELAY_LIMITED" },
+    { "goName": "errorCodeAppOAuthNotReady", "tsName": "oauthNotReady", "value": "LEAFEN_APP_OAUTH_NOT_READY" },
+    { "goName": "errorCodeAppOAuthFailed", "tsName": "oauthFailed", "value": "LEAFEN_APP_OAUTH_FAILED" },
+    { "goName": "errorCodeAppHookRefused", "tsName": "hookRefused", "value": "LEAFEN_APP_HOOK_REFUSED" },
+    { "goName": "errorCodeAppHookStopped", "tsName": "hookStopped", "value": "LEAFEN_APP_HOOK_STOPPED" },
+    { "goName": "errorCodeAppHookLimited", "tsName": "hookLimited", "value": "LEAFEN_APP_HOOK_LIMITED" },
+    { "goName": "errorCodeAppApprovalRequired", "tsName": "approvalRequired", "value": "LEAFEN_APP_APPROVAL_REQUIRED" },
+    { "goName": "errorCodeAppApprovalInvalid", "tsName": "approvalInvalid", "value": "LEAFEN_APP_APPROVAL_INVALID" },
+    { "goName": "errorCodeAppApprovalDeclined", "tsName": "approvalDeclined", "value": "LEAFEN_APP_APPROVAL_DECLINED" },
+    { "goName": "errorCodeAppActionInvalid", "tsName": "actionInvalid", "value": "LEAFEN_APP_ACTION_INVALID" },
+    { "goName": "errorCodeAppActionFailed", "tsName": "actionFailed", "value": "LEAFEN_APP_ACTION_FAILED" },
+    { "goName": "errorCodeAppActionRefused", "tsName": "actionRefused", "value": "LEAFEN_APP_ACTION_REFUSED" },
+    { "goName": "errorCodeAppKVRefused", "tsName": "kvRefused", "value": "LEAFEN_APP_KV_REFUSED" },
+    { "goName": "errorCodeAppKVFull", "tsName": "kvFull", "value": "LEAFEN_APP_KV_FULL" },
+    { "goName": "errorCodeAppStorageRefused", "tsName": "storageRefused", "value": "LEAFEN_APP_STORAGE_REFUSED" },
+    { "goName": "errorCodeAppStorageFull", "tsName": "storageFull", "value": "LEAFEN_APP_STORAGE_FULL" },
+    { "goName": "errorCodeAppUnsignedRefused", "tsName": "unsignedRefused", "value": "LEAFEN_APP_UNSIGNED_REFUSED" },
+    { "goName": "errorCodeAppPolicyRefused", "tsName": "policyRefused", "value": "LEAFEN_APP_POLICY_REFUSED" },
+    { "goName": "errorCodeAppConsentNeeded", "tsName": "consentNeeded", "value": "LEAFEN_APP_CONSENT_NEEDED" },
+    { "goName": "errorCodeAppRequestNotFound", "tsName": "requestNotFound", "value": "LEAFEN_APP_REQUEST_NOT_FOUND" },
+    { "goName": "errorCodeAppRoomRefused", "tsName": "roomRefused", "value": "LEAFEN_APP_ROOM_REFUSED" },
+    { "goName": "errorCodeAppRoomFull", "tsName": "roomFull", "value": "LEAFEN_APP_ROOM_FULL" },
+    { "goName": "errorCodeAppGuestRefused", "tsName": "guestRefused", "value": "LEAFEN_APP_GUEST_REFUSED" },
+    { "goName": "errorCodeAppHTMLOff", "tsName": "htmlOff", "value": "LEAFEN_APP_HTML_OFF" },
+    { "goName": "errorCodeAppCatalogInvalid", "tsName": "catalogInvalid", "value": "LEAFEN_APP_CATALOG_INVALID" },
+    { "goName": "errorCodeAppCatalogUnreachable", "tsName": "catalogUnreachable", "value": "LEAFEN_APP_CATALOG_UNREACHABLE" },
+    { "goName": "errorCodeAppCatalogAddressRefused", "tsName": "catalogAddressRefused", "value": "LEAFEN_APP_CATALOG_ADDRESS_REFUSED" },
+    { "goName": "errorCodeAppRevoked", "tsName": "appRevoked", "value": "LEAFEN_APP_REVOKED" },
+    { "goName": "errorCodeAppStopped", "tsName": "appStopped", "value": "LEAFEN_APP_STOPPED" },
+    { "goName": "errorCodeAppActionTimedOut", "tsName": "actionTimedOut", "value": "LEAFEN_APP_ACTION_TIMED_OUT" },
+    { "goName": "errorCodeAppNeedsNewerLeafen", "tsName": "appNeedsNewerLeafen", "value": "LEAFEN_APP_NEEDS_NEWER_LEAFEN" },
+    { "goName": "errorCodeAppBudgetLimited", "tsName": "appBudgetLimited", "value": "LEAFEN_APP_BUDGET_LIMITED" },
+    { "goName": "errorCodeAppWriteTooLarge", "tsName": "appWriteTooLarge", "value": "LEAFEN_APP_WRITE_TOO_LARGE" },
+    { "goName": "errorCodeAppPasswordInvalid", "tsName": "passwordInvalid", "value": "LEAFEN_APP_PASSWORD_INVALID" },
+    { "goName": "errorCodeAppPasswordLimit", "tsName": "passwordLimit", "value": "LEAFEN_APP_PASSWORD_LIMIT" },
+    { "goName": "errorCodeAppEndpointLimitsInvalid", "tsName": "endpointLimitsInvalid", "value": "LEAFEN_APP_ENDPOINT_LIMITS_INVALID" }
+  ],
+  "records": [
+    {
+      "goName": "appDeveloperWire",
+      "tsName": "AppDeveloper",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "KeyFingerprint", "jsonName": "keyFingerprint", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appPermissionWire",
+      "tsName": "AppPermission",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "string" },
+        { "goName": "Detail", "jsonName": "detail", "goType": "string", "tsType": "string" },
+        { "goName": "Risk", "jsonName": "risk", "goType": "string", "tsType": "\"low\" | \"medium\" | \"high\"" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Target", "jsonName": "target", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "\"action\" | \"block\"", "optional": true },
+        { "goName": "Cron", "jsonName": "cron", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PerPerson", "jsonName": "perPerson", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Types", "jsonName": "types", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appInstalledRefWire",
+      "tsName": "AppInstalledRef",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "PermissionsHash", "jsonName": "permissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "Permissions", "jsonName": "permissions", "goType": "[]appPermissionWire", "tsType": "AppPermission[]" },
+        { "goName": "Change", "jsonName": "change", "goType": "string", "tsType": "\"update\" | \"reinstall\" | \"unchanged\" | \"downgrade\"" }
+      ]
+    },
+    {
+      "goName": "appPackageReviewWire",
+      "tsName": "AppPackageReview",
+      "fields": [
+        { "goName": "PackageHash", "jsonName": "packageHash", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Description", "jsonName": "description", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "appDeveloperWire", "tsType": "AppDeveloper" },
+        { "goName": "Trust", "jsonName": "trust", "goType": "string", "tsType": "\"builtin\" | \"catalog\" | \"signed\" | \"unsigned\"" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "FileCount", "jsonName": "fileCount", "goType": "int", "tsType": "number" },
+        { "goName": "Permissions", "jsonName": "permissions", "goType": "[]appPermissionWire", "tsType": "AppPermission[]" },
+        { "goName": "PermissionsHash", "jsonName": "permissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "NeedsLeafen", "jsonName": "needsLeafen", "goType": "string", "tsType": "string" },
+        { "goName": "NameLooksLike", "jsonName": "nameLooksLike", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Revoked", "jsonName": "revoked", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "RevokedReason", "jsonName": "revokedReason", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Installed", "jsonName": "installed", "goType": "*appInstalledRefWire", "tsType": "AppInstalledRef", "optional": true },
+        { "goName": "DataChanges", "jsonName": "dataChanges", "goType": "[]appDataChangeWire", "tsType": "AppDataChange[]", "optional": true },
+        { "goName": "IconURL", "jsonName": "iconUrl", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appTenancyPersonWire",
+      "tsName": "AppTenancyPerson",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appTenancyPeopleWire",
+      "tsName": "AppTenancyPeople",
+      "fields": [
+        { "goName": "People", "jsonName": "people", "goType": "[]appTenancyPersonWire", "tsType": "AppTenancyPerson[]" },
+        { "goName": "More", "jsonName": "more", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appDataChangeWire",
+      "tsName": "AppDataChange",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"add\" | \"remove\" | \"properties\" | \"kept\" | \"left\"" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Tool", "jsonName": "tool", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Added", "jsonName": "added", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Removed", "jsonName": "removed", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Converted", "jsonName": "converted", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Destructive", "jsonName": "destructive", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Behind", "jsonName": "behind", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGrantWire",
+      "tsName": "AppGrant",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Everyone", "jsonName": "everyone", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "GroupIDs", "jsonName": "groupIds", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appInstallWire",
+      "tsName": "AppInstall",
+      "fields": [
+        { "goName": "DataFailure", "jsonName": "dataFailure", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataUpdateFailed", "jsonName": "dataUpdateFailed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PersonDataFailure", "jsonName": "personDataFailure", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PersonDataFailures", "jsonName": "personDataFailures", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Description", "jsonName": "description", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "appDeveloperWire", "tsType": "AppDeveloper" },
+        { "goName": "Trust", "jsonName": "trust", "goType": "string", "tsType": "\"builtin\" | \"catalog\" | \"signed\" | \"unsigned\"" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"active\" | \"stopped\" | \"emergency\" | \"revoked\"" },
+        { "goName": "Permissions", "jsonName": "permissions", "goType": "[]appPermissionWire", "tsType": "AppPermission[]" },
+        { "goName": "PermissionsHash", "jsonName": "permissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "PackageHash", "jsonName": "packageHash", "goType": "string", "tsType": "string" },
+        { "goName": "Grants", "jsonName": "grants", "goType": "[]appGrantWire", "tsType": "AppGrant[]" },
+        { "goName": "InstalledAt", "jsonName": "installedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "InstalledBy", "jsonName": "installedBy", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "RemovedAt", "jsonName": "removedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "PurgeAt", "jsonName": "purgeAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "RevokedReason", "jsonName": "revokedReason", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PausedReason", "jsonName": "pausedReason", "goType": "string", "tsType": "\"budget\"", "optional": true },
+        { "goName": "IconURL", "jsonName": "iconUrl", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRemovalWorkspaceWire",
+      "tsName": "AppRemovalWorkspace",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyName", "jsonName": "tenancyName", "goType": "string", "tsType": "string" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Databases", "jsonName": "databases", "goType": "int", "tsType": "number" },
+        { "goName": "People", "jsonName": "people", "goType": "int", "tsType": "number" },
+        { "goName": "LegalHold", "jsonName": "legalHold", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appRemovalPreviewWire",
+      "tsName": "AppRemovalPreview",
+      "fields": [
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]appRemovalWorkspaceWire", "tsType": "AppRemovalWorkspace[]" },
+        { "goName": "LegalHold", "jsonName": "legalHold", "goType": "bool", "tsType": "boolean" },
+        { "goName": "KeepDays", "jsonName": "keepDays", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appRemoveInput",
+      "tsName": "AppRemoveInput",
+      "fields": [
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "\"trash\" | \"keep\"" }
+      ]
+    },
+    {
+      "goName": "appPlatformListResponse",
+      "tsName": "AppPlatformListResponse",
+      "fields": [
+        { "goName": "Installs", "jsonName": "installs", "goType": "[]appInstallWire", "tsType": "AppInstall[]" },
+        { "goName": "Tenancies", "jsonName": "tenancies", "goType": "[]appTenancyWire", "tsType": "AppTenancy[]" },
+        { "goName": "Settings", "jsonName": "settings", "goType": "appPlatformSettingsWire", "tsType": "AppPlatformSettings" },
+        { "goName": "Allowlist", "jsonName": "allowlist", "goType": "[]appAllowlistEntry", "tsType": "AppAllowlistEntry[]" },
+        { "goName": "Requests", "jsonName": "requests", "goType": "[]appRequestWire", "tsType": "AppRequest[]" },
+        { "goName": "RequestsNextCursor", "jsonName": "requestsNextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appTenancyWire",
+      "tsName": "AppTenancy",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Overseen", "jsonName": "overseen", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Strict", "jsonName": "strict", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGroupListWire",
+      "tsName": "AppGroupList",
+      "fields": [
+        { "goName": "Groups", "jsonName": "groups", "goType": "[]appGroupWire", "tsType": "AppGroup[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGroupWire",
+      "tsName": "AppGroup",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Members", "jsonName": "members", "goType": "int", "tsType": "number" },
+        { "goName": "ManagedBy", "jsonName": "managedBy", "goType": "string", "tsType": "\"manual\" | \"scim\"" }
+      ]
+    },
+    {
+      "goName": "appPersonScheduleWire",
+      "tsName": "AppPersonSchedule",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "AppName", "jsonName": "appName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Cron", "jsonName": "cron", "goType": "string", "tsType": "string" },
+        { "goName": "TimeZone", "jsonName": "timeZone", "goType": "string", "tsType": "string" },
+        { "goName": "On", "jsonName": "on", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appPersonScheduleList",
+      "tsName": "AppPersonScheduleList",
+      "fields": [
+        { "goName": "Schedules", "jsonName": "schedules", "goType": "[]appPersonScheduleWire", "tsType": "AppPersonSchedule[]" }
+      ]
+    },
+    {
+      "goName": "appPersonScheduleInput",
+      "tsName": "AppPersonScheduleInput",
+      "fields": [
+        { "goName": "On", "jsonName": "on", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appRunHistoryWire",
+      "tsName": "AppRunHistory",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Trigger", "jsonName": "trigger", "goType": "string", "tsType": "string" },
+        { "goName": "Place", "jsonName": "place", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "ActionName", "jsonName": "actionName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "ExternalEffect", "jsonName": "externalEffect", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UndoAction", "jsonName": "undoAction", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UndoInput", "jsonName": "undoInput", "goType": "any", "tsType": "unknown", "optional": true },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]appRunPageWire", "tsType": "AppRunPage[]" },
+        { "goName": "Comments", "jsonName": "comments", "goType": "[]appRunCommentWire", "tsType": "AppRunComment[]" },
+        { "goName": "Writes", "jsonName": "writes", "goType": "int", "tsType": "number" },
+        { "goName": "MoreCursor", "jsonName": "moreCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRunPageWire",
+      "tsName": "AppRunPage",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "VersionID", "jsonName": "versionId", "goType": "string", "tsType": "string" },
+        { "goName": "Through", "jsonName": "through", "goType": "int64", "tsType": "number" },
+        { "goName": "Rows", "jsonName": "rows", "goType": "[]appRunRowWire", "tsType": "AppRunRow[]" },
+        { "goName": "RowCount", "jsonName": "rowCount", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "Reverted", "jsonName": "reverted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRunRowWire",
+      "tsName": "AppRunRow",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Database", "jsonName": "database", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appRunCommentWire",
+      "tsName": "AppRunComment",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "CommentID", "jsonName": "commentId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "Text", "jsonName": "text", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Deletable", "jsonName": "deletable", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appAvailabilityWire",
+      "tsName": "AppAvailability",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "\"usable\" | \"notInstalled\" | \"stopped\" | \"revoked\" | \"notGranted\" | \"otherOrganization\" | \"trashed\"" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PurgeAt", "jsonName": "purgeAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "InstallPolicy", "jsonName": "installPolicy", "goType": "string", "tsType": "string" },
+        { "goName": "CanManage", "jsonName": "canManage", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanAdd", "jsonName": "canAdd", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "appRunHistoryList",
+      "tsName": "AppRunHistoryList",
+      "fields": [
+        { "goName": "Runs", "jsonName": "runs", "goType": "[]appRunHistoryWire", "tsType": "AppRunHistory[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRunChangesWindow",
+      "tsName": "AppRunChangesWindow",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]appRunPageWire", "tsType": "AppRunPage[]" },
+        { "goName": "Comments", "jsonName": "comments", "goType": "[]appRunCommentWire", "tsType": "AppRunComment[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appStrictInput",
+      "tsName": "AppStrictInput",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Strict", "jsonName": "strict", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appOversightInput",
+      "tsName": "AppOversightInput",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Overseen", "jsonName": "overseen", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appInstallInput",
+      "tsName": "AppInstallInput",
+      "fields": [
+        { "goName": "PackageHash", "jsonName": "packageHash", "goType": "string", "tsType": "string" },
+        { "goName": "AcceptPermissionsHash", "jsonName": "acceptPermissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "AcceptDataRemovals", "jsonName": "acceptDataRemovals", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PersonCredentials", "jsonName": "personCredentials", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appStatusInput",
+      "tsName": "AppStatusInput",
+      "fields": [
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"active\" | \"stopped\" | \"emergency\"" }
+      ]
+    },
+    {
+      "goName": "appGrantsInput",
+      "tsName": "AppGrantsInput",
+      "fields": [
+        { "goName": "Grants", "jsonName": "grants", "goType": "[]appGrantWire", "tsType": "AppGrant[]" }
+      ]
+    },
+    {
+      "goName": "usableAppWire",
+      "tsName": "UsableApp",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Description", "jsonName": "description", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyName", "jsonName": "tenancyName", "goType": "string", "tsType": "string" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "[]usableAppBlockWire", "tsType": "UsableAppBlock[]", "optional": true },
+        { "goName": "FullPage", "jsonName": "fullPage", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SidePanel", "jsonName": "sidePanel", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SlashItems", "jsonName": "slashItems", "goType": "[]usableAppSlashItemWire", "tsType": "UsableAppSlashItem[]", "optional": true },
+        { "goName": "MenuActions", "jsonName": "menuActions", "goType": "[]usableAppMenuActionWire", "tsType": "UsableAppMenuAction[]", "optional": true },
+        { "goName": "PropertyEditors", "jsonName": "propertyEditors", "goType": "[]usableAppPropertyEditorWire", "tsType": "UsableAppPropertyEditor[]", "optional": true },
+        { "goName": "FileOpeners", "jsonName": "fileOpeners", "goType": "[]usableAppFileOpenerWire", "tsType": "UsableAppFileOpener[]", "optional": true },
+        { "goName": "ImportSources", "jsonName": "importSources", "goType": "[]usableAppImportSourceWire", "tsType": "UsableAppImportSource[]", "optional": true },
+        { "goName": "Automations", "jsonName": "automations", "goType": "[]usableAppAutomationWire", "tsType": "UsableAppAutomation[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "usableAppAutomationWire",
+      "tsName": "UsableAppAutomation",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "ExternalEffect", "jsonName": "externalEffect", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Fields", "jsonName": "fields", "goType": "[]usableAppInputFieldWire", "tsType": "UsableAppInputField[]" }
+      ]
+    },
+    {
+      "goName": "usableAppInputFieldWire",
+      "tsName": "UsableAppInputField",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Labels", "jsonName": "labels", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"string\" | \"number\" | \"integer\" | \"boolean\" | \"other\"" },
+        { "goName": "Required", "jsonName": "required", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appDataEntryWire",
+      "tsName": "AppDataEntry",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Place", "jsonName": "place", "goType": "string", "tsType": "\"edit\" | \"view\" | \"hidden\" | \"person\"" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]appDataPropertyWire", "tsType": "AppDataProperty[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appDataPropertyWire",
+      "tsName": "AppDataProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Position", "jsonName": "position", "goType": "string", "tsType": "string" },
+        { "goName": "Config", "jsonName": "config", "goType": "map[string]any", "tsType": "Record<string, unknown>" }
+      ]
+    },
+    {
+      "goName": "appReachWorkspaceWire",
+      "tsName": "AppReachWorkspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "App", "jsonName": "app", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "OtherApp", "jsonName": "otherApp", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appReachWire",
+      "tsName": "AppReach",
+      "fields": [
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]appReachWorkspaceWire", "tsType": "AppReachWorkspace[]" }
+      ]
+    },
+    {
+      "goName": "appPersonWire",
+      "tsName": "AppPerson",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Groups", "jsonName": "groups", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appPeopleWire",
+      "tsName": "AppPeople",
+      "fields": [
+        { "goName": "People", "jsonName": "people", "goType": "[]appPersonWire", "tsType": "AppPerson[]" },
+        { "goName": "You", "jsonName": "you", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGroupNameWire",
+      "tsName": "AppGroupName",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ManagedBy", "jsonName": "managedBy", "goType": "string", "tsType": "\"manual\" | \"scim\"" }
+      ]
+    },
+    {
+      "goName": "appGroupsWire",
+      "tsName": "AppGroups",
+      "fields": [
+        { "goName": "Groups", "jsonName": "groups", "goType": "[]appGroupNameWire", "tsType": "AppGroupName[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appDataMapWire",
+      "tsName": "AppDataMap",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]appDataEntryWire", "tsType": "AppDataEntry[]" }
+      ]
+    },
+    {
+      "goName": "usableAppPropertyEditorWire",
+      "tsName": "UsableAppPropertyEditor",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Types", "jsonName": "types", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Height", "jsonName": "height", "goType": "int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "usableAppFileOpenerWire",
+      "tsName": "UsableAppFileOpener",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Types", "jsonName": "types", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Edit", "jsonName": "edit", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "NewFiles", "jsonName": "newFiles", "goType": "[]usableAppNewFileWire", "tsType": "UsableAppNewFile[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "usableAppImportSourceWire",
+      "tsName": "UsableAppImportSource",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Description", "jsonName": "description", "goType": "map[string]string", "tsType": "Record<string, string>" }
+      ]
+    },
+    {
+      "goName": "usableAppNewFileWire",
+      "tsName": "UsableAppNewFile",
+      "fields": [
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" }
+      ]
+    },
+    {
+      "goName": "usableAppSlashItemWire",
+      "tsName": "UsableAppSlashItem",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Keywords", "jsonName": "keywords", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Block", "jsonName": "block", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "usableAppMenuActionWire",
+      "tsName": "UsableAppMenuAction",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "On", "jsonName": "on", "goType": "[]string", "tsType": "(\"row\" | \"page\")[]" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "usableAppBlockWire",
+      "tsName": "UsableAppBlock",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "DefaultHeight", "jsonName": "defaultHeight", "goType": "int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "usableAppListResponse",
+      "tsName": "UsableAppListResponse",
+      "fields": [
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]usableAppWire", "tsType": "UsableApp[]" }
+      ]
+    },
+    {
+      "goName": "appSessionInput",
+      "tsName": "AppSessionInput",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Surface", "jsonName": "surface", "goType": "string", "tsType": "\"page\" | \"block\" | \"sidePanel\" | \"propertyEditor\" | \"fileOpener\" | \"importSource\"", "optional": true },
+        { "goName": "Block", "jsonName": "block", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Editor", "jsonName": "editor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Opener", "jsonName": "opener", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FileBlockID", "jsonName": "fileBlockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ImportSource", "jsonName": "importSource", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appSessionWire",
+      "tsName": "AppSession",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "appDeveloperWire", "tsType": "AppDeveloper" },
+        { "goName": "Builtin", "jsonName": "builtin", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "FrameURL", "jsonName": "frameUrl", "goType": "string", "tsType": "string" },
+        { "goName": "Device", "jsonName": "device", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "HomeURL", "jsonName": "homeUrl", "goType": "string", "tsType": "string" },
+        { "goName": "ManifestURL", "jsonName": "manifestUrl", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Administrator", "jsonName": "administrator", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appPlatformSettingsWire",
+      "tsName": "AppPlatformSettings",
+      "fields": [
+        { "goName": "StrictNetwork", "jsonName": "strictNetwork", "goType": "bool", "tsType": "boolean" },
+        { "goName": "HomeScreenAppsOff", "jsonName": "homeScreenAppsOff", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "InstallPolicy", "jsonName": "installPolicy", "goType": "string", "tsType": "\"admins\" | \"request\" | \"allowlist\"", "optional": true },
+        { "goName": "UnsignedAppsOff", "jsonName": "unsignedAppsOff", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "MaxPackageBytes", "jsonName": "maxPackageBytes", "goType": "int64", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "appSecretWire",
+      "tsName": "AppSecret",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Set", "jsonName": "set", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Last4", "jsonName": "last4", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "NeedsEntry", "jsonName": "needsEntry", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Relays", "jsonName": "relays", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "appSecretListResponse",
+      "tsName": "AppSecretList",
+      "fields": [
+        { "goName": "Secrets", "jsonName": "secrets", "goType": "[]appSecretWire", "tsType": "AppSecret[]" },
+        { "goName": "OAuthCallback", "jsonName": "oauthCallback", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "OAuthReturns", "jsonName": "oauthReturns", "goType": "[]appOAuthReturnWire", "tsType": "AppOAuthReturn[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appOAuthReturnWire",
+      "tsName": "AppOAuthReturn",
+      "fields": [
+        { "goName": "Provider", "jsonName": "provider", "goType": "string", "tsType": "string" },
+        { "goName": "Earlier", "jsonName": "earlier", "goType": "string", "tsType": "string" },
+        { "goName": "Added", "jsonName": "added", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appOAuthReturnInput",
+      "tsName": "AppOAuthReturnInput",
+      "fields": [
+        { "goName": "Added", "jsonName": "added", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appSettingWire",
+      "tsName": "AppSetting",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Help", "jsonName": "help", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "DefaultPort", "jsonName": "defaultPort", "goType": "int", "tsType": "number" },
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appSettingListResponse",
+      "tsName": "AppSettingList",
+      "fields": [
+        { "goName": "Settings", "jsonName": "settings", "goType": "[]appSettingWire", "tsType": "AppSetting[]" }
+      ]
+    },
+    {
+      "goName": "appCredentialFieldWire",
+      "tsName": "AppCredentialField",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Secret", "jsonName": "secret", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appCredentialWire",
+      "tsName": "AppCredential",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Help", "jsonName": "help", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Fields", "jsonName": "fields", "goType": "[]appCredentialFieldWire", "tsType": "AppCredentialField[]" },
+        { "goName": "Connected", "jsonName": "connected", "goType": "bool", "tsType": "boolean" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appCredentialListResponse",
+      "tsName": "AppCredentialList",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Credentials", "jsonName": "credentials", "goType": "[]appCredentialWire", "tsType": "AppCredential[]" }
+      ]
+    },
+    {
+      "goName": "appPersonCredentialWire",
+      "tsName": "AppPersonCredential",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "AppName", "jsonName": "appName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UsedAt", "jsonName": "usedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appPersonCredentialListResponse",
+      "tsName": "AppPersonCredentialList",
+      "fields": [
+        { "goName": "Credentials", "jsonName": "credentials", "goType": "[]appPersonCredentialWire", "tsType": "AppPersonCredential[]" }
+      ]
+    },
+    {
+      "goName": "appPasswordWire",
+      "tsName": "AppPassword",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Hint", "jsonName": "hint", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "LastUsedAt", "jsonName": "lastUsedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appPasswordEndpointWire",
+      "tsName": "AppPasswordEndpoint",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Address", "jsonName": "address", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appPasswordAppWire",
+      "tsName": "AppPasswordApp",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Tenancy", "jsonName": "tenancy", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyName", "jsonName": "tenancyName", "goType": "string", "tsType": "string" },
+        { "goName": "AppName", "jsonName": "appName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Endpoints", "jsonName": "endpoints", "goType": "[]appPasswordEndpointWire", "tsType": "AppPasswordEndpoint[]" },
+        { "goName": "Passwords", "jsonName": "passwords", "goType": "[]appPasswordWire", "tsType": "AppPassword[]" },
+        { "goName": "StoredBytes", "jsonName": "storedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "StorageLimitBytes", "jsonName": "storageLimitBytes", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appPasswordListResponse",
+      "tsName": "AppPasswordList",
+      "fields": [
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appPasswordAppWire", "tsType": "AppPasswordApp[]" },
+        { "goName": "PasswordLimit", "jsonName": "passwordLimit", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appPasswordCreateInput",
+      "tsName": "AppPasswordCreateInput",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Tenancy", "jsonName": "tenancy", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appPasswordCreateResponse",
+      "tsName": "AppPasswordCreated",
+      "fields": [
+        { "goName": "Password", "jsonName": "password", "goType": "appPasswordWire", "tsType": "AppPassword" },
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string" },
+        { "goName": "Username", "jsonName": "username", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appCredentialInput",
+      "tsName": "AppCredentialInput",
+      "fields": [
+        { "goName": "Values", "jsonName": "values", "goType": "map[string]string", "tsType": "Record<string, string>" }
+      ]
+    },
+    {
+      "goName": "appAdminCredentialWire",
+      "tsName": "AppAdminCredential",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "People", "jsonName": "people", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appAdminCredentialListResponse",
+      "tsName": "AppAdminCredentialList",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Credentials", "jsonName": "credentials", "goType": "[]appAdminCredentialWire", "tsType": "AppAdminCredential[]" }
+      ]
+    },
+    {
+      "goName": "appCredentialPolicyInput",
+      "tsName": "AppCredentialPolicyInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appSecretInput",
+      "tsName": "AppSecretInput",
+      "fields": [
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appRelayInput",
+      "tsName": "AppRelayInput",
+      "fields": [
+        { "goName": "Method", "jsonName": "method", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "Headers", "jsonName": "headers", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Body", "jsonName": "body", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "BodyBase64", "jsonName": "bodyBase64", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRelayResponse",
+      "tsName": "AppRelayResponse",
+      "fields": [
+        { "goName": "Status", "jsonName": "status", "goType": "int", "tsType": "number" },
+        { "goName": "Headers", "jsonName": "headers", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Body", "jsonName": "body", "goType": "string", "tsType": "string" },
+        { "goName": "BodyBase64", "jsonName": "bodyBase64", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appOAuthStartResponse",
+      "tsName": "AppOAuthStart",
+      "fields": [
+        { "goName": "AuthorizeURL", "jsonName": "authorizeUrl", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appOAuthAccountWire",
+      "tsName": "AppOAuthAccount",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Owner", "jsonName": "owner", "goType": "string", "tsType": "\"person\" | \"app\"" },
+        { "goName": "Connected", "jsonName": "connected", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ConnectedAt", "jsonName": "connectedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appOAuthAccountList",
+      "tsName": "AppOAuthAccountList",
+      "fields": [
+        { "goName": "Accounts", "jsonName": "accounts", "goType": "[]appOAuthAccountWire", "tsType": "AppOAuthAccount[]" }
+      ]
+    },
+    {
+      "goName": "appHookWire",
+      "tsName": "AppHook",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Verify", "jsonName": "verify", "goType": "string", "tsType": "\"token\" | \"hmac-sha256\"" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "Set", "jsonName": "set", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Last4", "jsonName": "last4", "goType": "string", "tsType": "string" },
+        { "goName": "Waiting", "jsonName": "waiting", "goType": "int", "tsType": "number" },
+        { "goName": "LastReceivedAt", "jsonName": "lastReceivedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "NeedsNewSecret", "jsonName": "needsNewSecret", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "EarlierAddress", "jsonName": "earlierAddress", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Organizations", "jsonName": "organizations", "goType": "[]appHookOrgWire", "tsType": "AppHookOrg[]" }
+      ]
+    },
+    {
+      "goName": "appHookOrgWire",
+      "tsName": "AppHookOrg",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "Last4", "jsonName": "last4", "goType": "string", "tsType": "string" },
+        { "goName": "Waiting", "jsonName": "waiting", "goType": "int", "tsType": "number" },
+        { "goName": "LastReceivedAt", "jsonName": "lastReceivedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "NeedsNewSecret", "jsonName": "needsNewSecret", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "EarlierAddress", "jsonName": "earlierAddress", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appHookSecretInput",
+      "tsName": "AppHookSecretInput",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appHookList",
+      "tsName": "AppHookList",
+      "fields": [
+        { "goName": "Hooks", "jsonName": "hooks", "goType": "[]appHookWire", "tsType": "AppHook[]" }
+      ]
+    },
+    {
+      "goName": "appHookSecretWire",
+      "tsName": "AppHookSecret",
+      "fields": [
+        { "goName": "Hook", "jsonName": "hook", "goType": "appHookWire", "tsType": "AppHook" },
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appHookReceipt",
+      "tsName": "AppHookReceipt",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appActionInput",
+      "tsName": "AppActionInput",
+      "fields": [
+        { "goName": "Input", "jsonName": "input", "goType": "any", "tsType": "unknown", "optional": true }
+      ]
+    },
+    {
+      "goName": "appActionResult",
+      "tsName": "AppActionResult",
+      "fields": [
+        { "goName": "Output", "jsonName": "output", "goType": "any", "tsType": "unknown" },
+        { "goName": "RunID", "jsonName": "runId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appApprovalRequest",
+      "tsName": "AppApprovalRequest",
+      "fields": [
+        { "goName": "ApprovalID", "jsonName": "approvalId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "ActionName", "jsonName": "actionName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Risk", "jsonName": "risk", "goType": "string", "tsType": "\"low\" | \"medium\" | \"high\"" },
+        { "goName": "Preview", "jsonName": "preview", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Fields", "jsonName": "fields", "goType": "[]appApprovalFieldWire", "tsType": "AppApprovalField[]" },
+        { "goName": "AllowHour", "jsonName": "allowHour", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExternalEffect", "jsonName": "externalEffect", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appApprovalFieldWire",
+      "tsName": "AppApprovalField",
+      "fields": [
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Labels", "jsonName": "labels", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"text\" | \"number\" | \"boolean\" | \"person\" | \"page\" | \"list\" | \"data\" | \"empty\"" }
+      ]
+    },
+    {
+      "goName": "appApprovalDecisionInput",
+      "tsName": "AppApprovalDecisionInput",
+      "fields": [
+        { "goName": "For", "jsonName": "for", "goType": "string", "tsType": "\"once\" | \"hour\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "appApprovalGrant",
+      "tsName": "AppApprovalGrant",
+      "fields": [
+        { "goName": "ApprovalToken", "jsonName": "approvalToken", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appScheduleWire",
+      "tsName": "AppSchedule",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Cron", "jsonName": "cron", "goType": "string", "tsType": "string" },
+        { "goName": "PerPerson", "jsonName": "perPerson", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "LastQueuedAt", "jsonName": "lastQueuedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "TimeZone", "jsonName": "timeZone", "goType": "string", "tsType": "string" },
+        { "goName": "DeclaredTimeZone", "jsonName": "declaredTimeZone", "goType": "string", "tsType": "string" },
+        { "goName": "OptedOut", "jsonName": "optedOut", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appEventWire",
+      "tsName": "AppEvent",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Types", "jsonName": "types", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Where", "jsonName": "where", "goType": "[]appEventConditionWire", "tsType": "AppEventCondition[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appEventConditionWire",
+      "tsName": "AppEventCondition",
+      "fields": [
+        { "goName": "Property", "jsonName": "property", "goType": "string", "tsType": "string" },
+        { "goName": "Equals", "jsonName": "equals", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "NotEquals", "jsonName": "notEquals", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Empty", "jsonName": "empty", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRunWire",
+      "tsName": "AppRun",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Trigger", "jsonName": "trigger", "goType": "string", "tsType": "string" },
+        { "goName": "Subject", "jsonName": "subject", "goType": "string", "tsType": "string" },
+        { "goName": "Function", "jsonName": "function", "goType": "string", "tsType": "string" },
+        { "goName": "Ref", "jsonName": "ref", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "Error", "jsonName": "error", "goType": "string", "tsType": "string" },
+        { "goName": "DurationMs", "jsonName": "durationMs", "goType": "int64", "tsType": "number" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appDataReadWire",
+      "tsName": "AppDataRead",
+      "fields": [
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"account\" | \"workspace\" | \"page\" | \"row\" | \"database\" | \"file\" | \"job\" | \"organization\"" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Reads", "jsonName": "reads", "goType": "int64", "tsType": "number" },
+        { "goName": "Days", "jsonName": "days", "goType": "int", "tsType": "number" },
+        { "goName": "LastDay", "jsonName": "lastDay", "goType": "int64", "tsType": "number" },
+        { "goName": "LastAt", "jsonName": "lastAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appDataReadsWire",
+      "tsName": "AppDataReads",
+      "fields": [
+        { "goName": "Since", "jsonName": "since", "goType": "int64", "tsType": "number" },
+        { "goName": "Total", "jsonName": "total", "goType": "int64", "tsType": "number" },
+        { "goName": "Items", "jsonName": "items", "goType": "[]appDataReadWire", "tsType": "AppDataRead[]" }
+      ]
+    },
+    {
+      "goName": "appUsageHourWire",
+      "tsName": "AppUsageHour",
+      "fields": [
+        { "goName": "Hour", "jsonName": "hour", "goType": "int64", "tsType": "number" },
+        { "goName": "Reads", "jsonName": "reads", "goType": "int64", "tsType": "number" },
+        { "goName": "Writes", "jsonName": "writes", "goType": "int64", "tsType": "number" },
+        { "goName": "Delayed", "jsonName": "delayed", "goType": "int64", "tsType": "number" },
+        { "goName": "Refused", "jsonName": "refused", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appUsageStoreWire",
+      "tsName": "AppUsageStore",
+      "fields": [
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Bytes", "jsonName": "bytes", "goType": "int64", "tsType": "number" },
+        { "goName": "MaxBytes", "jsonName": "maxBytes", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appEndpointLimitsWire",
+      "tsName": "AppEndpointLimits",
+      "fields": [
+        { "goName": "PerMinute", "jsonName": "perMinute", "goType": "int", "tsType": "number" },
+        { "goName": "Concurrent", "jsonName": "concurrent", "goType": "int", "tsType": "number" },
+        { "goName": "PersonStorageMB", "jsonName": "personStorageMb", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appEndpointInfoWire",
+      "tsName": "AppEndpointInfo",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Address", "jsonName": "address", "goType": "string", "tsType": "string" },
+        { "goName": "Public", "jsonName": "public", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Open", "jsonName": "open", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appEndpointPublicInput",
+      "tsName": "AppEndpointPublicInput",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Open", "jsonName": "open", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appEndpointUsageWire",
+      "tsName": "AppEndpointUsage",
+      "fields": [
+        { "goName": "Requests", "jsonName": "requests", "goType": "int64", "tsType": "number" },
+        { "goName": "Refused", "jsonName": "refused", "goType": "int64", "tsType": "number" },
+        { "goName": "ReceivedBytes", "jsonName": "receivedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "SentBytes", "jsonName": "sentBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "StoredBytes", "jsonName": "storedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Limits", "jsonName": "limits", "goType": "appEndpointLimitsWire", "tsType": "AppEndpointLimits" },
+        { "goName": "Defaults", "jsonName": "defaults", "goType": "appEndpointLimitsWire", "tsType": "AppEndpointLimits" },
+        { "goName": "Endpoints", "jsonName": "endpoints", "goType": "[]appEndpointInfoWire", "tsType": "AppEndpointInfo[]" }
+      ]
+    },
+    {
+      "goName": "appUsageWire",
+      "tsName": "AppUsage",
+      "fields": [
+        { "goName": "Since", "jsonName": "since", "goType": "int64", "tsType": "number" },
+        { "goName": "Hours", "jsonName": "hours", "goType": "[]appUsageHourWire", "tsType": "AppUsageHour[]" },
+        { "goName": "Runs", "jsonName": "runs", "goType": "int64", "tsType": "number" },
+        { "goName": "RunFailures", "jsonName": "runFailures", "goType": "int64", "tsType": "number" },
+        { "goName": "RunMs", "jsonName": "runMs", "goType": "int64", "tsType": "number" },
+        { "goName": "HostCalls", "jsonName": "hostCalls", "goType": "int64", "tsType": "number" },
+        { "goName": "RelayCalls", "jsonName": "relayCalls", "goType": "int64", "tsType": "number" },
+        { "goName": "RelayFailures", "jsonName": "relayFailures", "goType": "int64", "tsType": "number" },
+        { "goName": "RelaySentBytes", "jsonName": "relaySentBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "RelayReceivedBytes", "jsonName": "relayReceivedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Stores", "jsonName": "stores", "goType": "[]appUsageStoreWire", "tsType": "AppUsageStore[]" },
+        { "goName": "RoomPeople", "jsonName": "roomPeople", "goType": "int", "tsType": "number" },
+        { "goName": "RoomGuests", "jsonName": "roomGuests", "goType": "int", "tsType": "number" },
+        { "goName": "CallsPerMinute", "jsonName": "callsPerMinute", "goType": "int", "tsType": "number" },
+        { "goName": "WritesPerMinute", "jsonName": "writesPerMinute", "goType": "int", "tsType": "number" },
+        { "goName": "WorkerMemoryMB", "jsonName": "workerMemoryMb", "goType": "int", "tsType": "number" },
+        { "goName": "WorkerSeconds", "jsonName": "workerSeconds", "goType": "int", "tsType": "number" },
+        { "goName": "PausedReason", "jsonName": "pausedReason", "goType": "string", "tsType": "\"\" | \"budget\"" },
+        { "goName": "Endpoints", "jsonName": "endpoints", "goType": "*appEndpointUsageWire", "tsType": "AppEndpointUsage", "optional": true }
+      ]
+    },
+    {
+      "goName": "appJobsWire",
+      "tsName": "AppJobs",
+      "fields": [
+        { "goName": "Schedules", "jsonName": "schedules", "goType": "[]appScheduleWire", "tsType": "AppSchedule[]" },
+        { "goName": "Events", "jsonName": "events", "goType": "[]appEventWire", "tsType": "AppEvent[]" },
+        { "goName": "Runs", "jsonName": "runs", "goType": "[]appRunWire", "tsType": "AppRun[]" },
+        { "goName": "RunsNextCursor", "jsonName": "runsNextCursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Waiting", "jsonName": "waiting", "goType": "int", "tsType": "number" },
+        { "goName": "Failed", "jsonName": "failed", "goType": "int", "tsType": "number" },
+        { "goName": "LongRuns", "jsonName": "longRuns", "goType": "[]appLongRunWire", "tsType": "AppLongRun[]" },
+        { "goName": "Approvals", "jsonName": "approvals", "goType": "[]appApprovalHistoryWire", "tsType": "AppApprovalHistory[]" },
+        { "goName": "ApprovalsNextCursor", "jsonName": "approvalsNextCursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Allowances", "jsonName": "allowances", "goType": "[]appApprovalAllowanceWire", "tsType": "AppApprovalAllowance[]" },
+        { "goName": "ServerTimeZone", "jsonName": "serverTimeZone", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appApprovalHistoryWire",
+      "tsName": "AppApprovalHistory",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "ActionName", "jsonName": "actionName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Person", "jsonName": "person", "goType": "string", "tsType": "string" },
+        { "goName": "Way", "jsonName": "way", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "ForHour", "jsonName": "forHour", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "DecidedAt", "jsonName": "decidedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appRunsWindow",
+      "tsName": "AppRunsWindow",
+      "fields": [
+        { "goName": "Runs", "jsonName": "runs", "goType": "[]appRunWire", "tsType": "AppRun[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appApprovalHistoryWindow",
+      "tsName": "AppApprovalHistoryWindow",
+      "fields": [
+        { "goName": "Approvals", "jsonName": "approvals", "goType": "[]appApprovalHistoryWire", "tsType": "AppApprovalHistory[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appApprovalAllowanceWire",
+      "tsName": "AppApprovalAllowance",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "string" },
+        { "goName": "ActionName", "jsonName": "actionName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Person", "jsonName": "person", "goType": "string", "tsType": "string" },
+        { "goName": "Way", "jsonName": "way", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appLongRunWire",
+      "tsName": "AppLongRun",
+      "fields": [
+        { "goName": "Worker", "jsonName": "worker", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"running\" | \"waiting\" | \"failing\"" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "NextStart", "jsonName": "nextStart", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Restarts", "jsonName": "restarts", "goType": "int", "tsType": "number" },
+        { "goName": "LastError", "jsonName": "lastError", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appScheduleInput",
+      "tsName": "AppScheduleInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "TimeZone", "jsonName": "timeZone", "goType": "*string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appKVRequest",
+      "tsName": "AppKVRequest",
+      "fields": [
+        { "goName": "Command", "jsonName": "command", "goType": "string", "tsType": "string" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Field", "jsonName": "field", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Value", "jsonName": "value", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Member", "jsonName": "member", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Score", "jsonName": "score", "goType": "float64", "tsType": "number", "optional": true },
+        { "goName": "Start", "jsonName": "start", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Stop", "jsonName": "stop", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "TTL", "jsonName": "ttl", "goType": "int64", "tsType": "number", "optional": true },
+        { "goName": "Tenancy", "jsonName": "tenancy", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appKVResult",
+      "tsName": "AppKVResult",
+      "fields": [
+        { "goName": "Result", "jsonName": "result", "goType": "any", "tsType": "unknown" }
+      ]
+    },
+    {
+      "goName": "appStorageRequest",
+      "tsName": "AppStorageRequest",
+      "fields": [
+        { "goName": "Command", "jsonName": "command", "goType": "string", "tsType": "\"get\" | \"set\" | \"remove\" | \"keys\"" },
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Value", "jsonName": "value", "goType": "any", "tsType": "unknown", "optional": true }
+      ]
+    },
+    {
+      "goName": "appStorageResult",
+      "tsName": "AppStorageResult",
+      "fields": [
+        { "goName": "Value", "jsonName": "value", "goType": "any", "tsType": "unknown", "optional": true },
+        { "goName": "Keys", "jsonName": "keys", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Used", "jsonName": "used", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appRoomTicket",
+      "tsName": "AppRoomTicket",
+      "fields": [
+        { "goName": "ServerURL", "jsonName": "serverUrl", "goType": "string", "tsType": "string" },
+        { "goName": "RoomName", "jsonName": "roomName", "goType": "string", "tsType": "string" },
+        { "goName": "Ticket", "jsonName": "ticket", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appGuestLinkWire",
+      "tsName": "AppGuestLink",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Room", "jsonName": "room", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Revoked", "jsonName": "revoked", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGuestsWire",
+      "tsName": "AppGuests",
+      "fields": [
+        { "goName": "Declared", "jsonName": "declared", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Rooms", "jsonName": "rooms", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "MaxPerRoom", "jsonName": "maxPerRoom", "goType": "int", "tsType": "number" },
+        { "goName": "RoomNames", "jsonName": "roomNames", "goType": "map[string]map[string]string", "tsType": "Record<string, Record<string, string>>", "optional": true },
+        { "goName": "Links", "jsonName": "links", "goType": "[]appGuestLinkWire", "tsType": "AppGuestLink[]" },
+        { "goName": "LinksNextCursor", "jsonName": "linksNextCursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Reports", "jsonName": "reports", "goType": "[]appGuestReportWire", "tsType": "AppGuestReport[]" },
+        { "goName": "ReportsNextCursor", "jsonName": "reportsNextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGuestLinksWindow",
+      "tsName": "AppGuestLinksWindow",
+      "fields": [
+        { "goName": "Links", "jsonName": "links", "goType": "[]appGuestLinkWire", "tsType": "AppGuestLink[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGuestReportsWindow",
+      "tsName": "AppGuestReportsWindow",
+      "fields": [
+        { "goName": "Reports", "jsonName": "reports", "goType": "[]appGuestReportWire", "tsType": "AppGuestReport[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appGuestReportWire",
+      "tsName": "AppGuestReport",
+      "fields": [
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "Room", "jsonName": "room", "goType": "string", "tsType": "string" },
+        { "goName": "LinkID", "jsonName": "linkId", "goType": "string", "tsType": "string" },
+        { "goName": "Reporter", "jsonName": "reporter", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Blocked", "jsonName": "blocked", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGuestReportInput",
+      "tsName": "AppGuestReportInput",
+      "fields": [
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Block", "jsonName": "block", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGuestReportResult",
+      "tsName": "AppGuestReportResult",
+      "fields": [
+        { "goName": "Blocked", "jsonName": "blocked", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGuestsInput",
+      "tsName": "AppGuestsInput",
+      "fields": [
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appGuestLinkInput",
+      "tsName": "AppGuestLinkInput",
+      "fields": [
+        { "goName": "Room", "jsonName": "room", "goType": "string", "tsType": "string" },
+        { "goName": "Minutes", "jsonName": "minutes", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appGuestLinkMade",
+      "tsName": "AppGuestLinkMade",
+      "fields": [
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appGuestSessionInput",
+      "tsName": "AppGuestSessionInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appGuestSessionWire",
+      "tsName": "AppGuestSession",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "appDeveloperWire", "tsType": "AppDeveloper" },
+        { "goName": "Builtin", "jsonName": "builtin", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "FrameURL", "jsonName": "frameUrl", "goType": "string", "tsType": "string" },
+        { "goName": "GuestToken", "jsonName": "guestToken", "goType": "string", "tsType": "string" },
+        { "goName": "Room", "jsonName": "room", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appConnectionAppWire",
+      "tsName": "AppConnectionApp",
+      "fields": [
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "string", "tsType": "string" },
+        { "goName": "Builtin", "jsonName": "builtin", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Organization", "jsonName": "organization", "goType": "string", "tsType": "string" },
+        { "goName": "Tools", "jsonName": "tools", "goType": "int", "tsType": "number" },
+        { "goName": "Chosen", "jsonName": "chosen", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appConnectionAppsWire",
+      "tsName": "AppConnectionApps",
+      "fields": [
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "\"all\" | \"chosen\"" },
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appConnectionAppWire", "tsType": "AppConnectionApp[]" }
+      ]
+    },
+    {
+      "goName": "appConnectionAppsInput",
+      "tsName": "AppConnectionAppsInput",
+      "fields": [
+        { "goName": "Mode", "jsonName": "mode", "goType": "string", "tsType": "\"all\" | \"chosen\"" },
+        { "goName": "InstallIDs", "jsonName": "installIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "appHTMLFrameWire",
+      "tsName": "AppHTMLFrame",
+      "fields": [
+        { "goName": "FrameURL", "jsonName": "frameUrl", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appCatalogSourceWire",
+      "tsName": "AppCatalogSource",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"official\" | \"partner\"" },
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "\"url\" | \"file\"" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "KeyFingerprint", "jsonName": "keyFingerprint", "goType": "string", "tsType": "string" },
+        { "goName": "FetchedAt", "jsonName": "fetchedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "LastError", "jsonName": "lastError", "goType": "string", "tsType": "string" },
+        { "goName": "AppCount", "jsonName": "appCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "appCatalogEntryWire",
+      "tsName": "AppCatalogEntry",
+      "fields": [
+        { "goName": "IconURL", "jsonName": "iconUrl", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "CatalogName", "jsonName": "catalogName", "goType": "string", "tsType": "string" },
+        { "goName": "CatalogKind", "jsonName": "catalogKind", "goType": "string", "tsType": "\"official\" | \"partner\" | \"builtin\"" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Summary", "jsonName": "summary", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "string", "tsType": "string" },
+        { "goName": "Category", "jsonName": "category", "goType": "string", "tsType": "string" },
+        { "goName": "Tags", "jsonName": "tags", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Reviewed", "jsonName": "reviewed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Score", "jsonName": "score", "goType": "float64", "tsType": "number" },
+        { "goName": "Downloads", "jsonName": "downloads", "goType": "int64", "tsType": "number" },
+        { "goName": "Added", "jsonName": "added", "goType": "string", "tsType": "string" },
+        { "goName": "Updated", "jsonName": "updated", "goType": "string", "tsType": "string" },
+        { "goName": "Languages", "jsonName": "languages", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Paid", "jsonName": "paid", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Network", "jsonName": "network", "goType": "string", "tsType": "\"none\" | \"relay\" | \"direct\"" },
+        { "goName": "Risk", "jsonName": "risk", "goType": "string", "tsType": "\"low\" | \"medium\" | \"high\"" },
+        { "goName": "Featured", "jsonName": "featured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Example", "jsonName": "example", "goType": "bool", "tsType": "boolean" },
+        { "goName": "InstalledVersion", "jsonName": "installedVersion", "goType": "string", "tsType": "string" },
+        { "goName": "InstalledChange", "jsonName": "installedChange", "goType": "string", "tsType": "\"\" | \"update\" | \"reinstall\" | \"downgrade\"" },
+        { "goName": "Revoked", "jsonName": "revoked", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appCatalogBrowseWire",
+      "tsName": "AppCatalogBrowse",
+      "fields": [
+        { "goName": "Catalogs", "jsonName": "catalogs", "goType": "[]appCatalogSourceWire", "tsType": "AppCatalogSource[]" },
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appCatalogEntryWire", "tsType": "AppCatalogEntry[]" },
+        { "goName": "Categories", "jsonName": "categories", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "appPersonCatalogEntryWire",
+      "tsName": "AppPersonCatalogEntry",
+      "fields": [
+        { "goName": "IconURL", "jsonName": "iconUrl", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "CatalogName", "jsonName": "catalogName", "goType": "string", "tsType": "string" },
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Summary", "jsonName": "summary", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "string", "tsType": "string" },
+        { "goName": "Category", "jsonName": "category", "goType": "string", "tsType": "string" },
+        { "goName": "Reviewed", "jsonName": "reviewed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Network", "jsonName": "network", "goType": "string", "tsType": "string" },
+        { "goName": "Risk", "jsonName": "risk", "goType": "string", "tsType": "string" },
+        { "goName": "Featured", "jsonName": "featured", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Allowed", "jsonName": "allowed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Request", "jsonName": "request", "goType": "string", "tsType": "\"\" | \"pending\" | \"declined\"" },
+        { "goName": "Usable", "jsonName": "usable", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FullPage", "jsonName": "fullPage", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Installed", "jsonName": "installed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Stopped", "jsonName": "stopped", "goType": "string", "tsType": "\"stopped\" | \"emergency\" | \"revoked\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "appPersonCatalogWire",
+      "tsName": "AppPersonCatalog",
+      "fields": [
+        { "goName": "Policy", "jsonName": "policy", "goType": "string", "tsType": "\"admins\" | \"request\" | \"allowlist\"" },
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appPersonCatalogEntryWire", "tsType": "AppPersonCatalogEntry[]" },
+        { "goName": "Categories", "jsonName": "categories", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "CanManage", "jsonName": "canManage", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "appRequestInput",
+      "tsName": "AppRequestInput",
+      "fields": [
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRequestWire",
+      "tsName": "AppRequest",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "AppName", "jsonName": "appName", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "PersonID", "jsonName": "personId", "goType": "string", "tsType": "string" },
+        { "goName": "PersonName", "jsonName": "personName", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyName", "jsonName": "tenancyName", "goType": "string", "tsType": "string" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"approved\" | \"declined\"" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "InstalledID", "jsonName": "installedId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appRequestListWire",
+      "tsName": "AppRequestList",
+      "fields": [
+        { "goName": "Requests", "jsonName": "requests", "goType": "[]appRequestWire", "tsType": "AppRequest[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appRequestDecision",
+      "tsName": "AppRequestDecision",
+      "fields": [
+        { "goName": "Approve", "jsonName": "approve", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "appAllowlistEntry",
+      "tsName": "AppAllowlistEntry",
+      "fields": [
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appAllowlistWire",
+      "tsName": "AppAllowlist",
+      "fields": [
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]appAllowlistEntry", "tsType": "AppAllowlistEntry[]" }
+      ]
+    },
+    {
+      "goName": "appSelfInstallInput",
+      "tsName": "AppSelfInstallInput",
+      "fields": [
+        { "goName": "CatalogID", "jsonName": "catalogId", "goType": "string", "tsType": "string" },
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" },
+        { "goName": "AcceptPermissionsHash", "jsonName": "acceptPermissionsHash", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "appConsentWire",
+      "tsName": "AppConsent",
+      "fields": [
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "map[string]string", "tsType": "Record<string, string>" },
+        { "goName": "Developer", "jsonName": "developer", "goType": "string", "tsType": "string" },
+        { "goName": "Builtin", "jsonName": "builtin", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Permissions", "jsonName": "permissions", "goType": "[]appPermissionWire", "tsType": "AppPermission[]" },
+        { "goName": "PermissionsHash", "jsonName": "permissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PreviousPermissions", "jsonName": "previousPermissions", "goType": "[]appPermissionWire", "tsType": "AppPermission[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "appConsentInput",
+      "tsName": "AppConsentInput",
+      "fields": [
+        { "goName": "PermissionsHash", "jsonName": "permissionsHash", "goType": "string", "tsType": "string" },
+        { "goName": "TenancyKey", "jsonName": "tenancyKey", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "appCatalogInput",
+      "tsName": "AppCatalogInput",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "PublicKey", "jsonName": "publicKey", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

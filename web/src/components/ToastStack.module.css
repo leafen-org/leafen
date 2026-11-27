@@ -1,0 +1,345 @@
+.announcement {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.stack {
+  position: fixed;
+  left: 50%; /* physical: centred on its own box in either direction */
+  bottom: var(
+    --toast-stack-safe-bottom,
+    calc(28px + var(--developer-bar-height, 0px) + env(safe-area-inset-bottom, 0px))
+  );
+  /* Ordinary feedback stays above page chrome but below the layers over the
+     page (lib/overlayLayer, from 2000). Modal feedback is elevated below. */
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  /* As wide as its words, up to the window 4px in on each side: Notion's
+     toast took 439px for one line (2026-10-31) and its sprint notice 652
+     on a 1280 window, one line (2026-11-08); its row has no other bound. */
+  width: max-content;
+  max-width: calc(100vw - 8px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* With a window open the stack keeps its place, the bottom's middle, and
+   stays readable above every layer over the page, the image preview's
+   included (2026-11-05: raised 120px it sat over the settings window's
+   content; a window's buttons sit at its right end, clear of it). The
+   toasts' layer says a window is open (ToastStack.tsx): a rule on the body
+   asking for one restyled the whole page at each line made once a toast had
+   shown (2026-11-14). */
+:global([data-toast-layer][data-over-window]) .stack {
+  z-index: 9000;
+}
+
+/* When the active modal leaves a real side gutter, use that otherwise empty
+   lane for the whole stack. Narrow/mobile dialogs keep the footer-clear
+   centered fallback above. */
+:global([data-toast-layer][data-over-window]) .stack[data-modal-placement="side"] {
+  inset-inline-start: var(--toast-stack-inline-start);
+  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  width: var(--toast-stack-width);
+  transform: none;
+}
+
+/* Notion's toast (seen 2026-10-31, "…의 변경된 위치는 …입니다. 이동 · 실행 취소"):
+   28px over the window's foot, as wide as its words, 11px 16px in, round
+   8px, its words 14px on 21px in a light gray over dark gray; an action is
+   14px/500 words 8px in, with no line under them. */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  min-height: 43px;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background: rgb(44, 44, 43);
+  color: rgb(240, 239, 237);
+  box-shadow: rgba(25, 25, 25, 0.05) 0 20px 24px, rgba(25, 25, 25, 0.027) 0 5px 8px, rgba(15, 15, 15, 0.1) 0 0 0 1px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+  pointer-events: auto;
+  animation: toastIn 140ms ease-out;
+}
+.toast:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+.message {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.icon {
+  flex: none;
+  opacity: 0.8;
+}
+/* Notion's ring before "페이지 복제 중" (seen 2026-10-31). */
+.progress {
+  flex: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  animation: toastProgress 0.8s linear infinite;
+}
+@keyframes toastProgress {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress {
+    animation: none;
+  }
+}
+/* An action's words; "실행 취소" leads with its arrow, which takes 13px of
+   its 16px box as Notion's (seen 2026-10-31: the words 27px in). */
+.action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 21px;
+  margin: 0 -4px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: rgb(240, 239, 237);
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: auto;
+}
+.action svg {
+  flex: none;
+  margin-inline: -1.5px;
+}
+/* A line between a toast that waits on something and its action, as
+   Notion's "페이지 복제 중 | 무시하기" (seen 2026-10-31, from its picture). */
+.actionLine {
+  flex: none;
+  width: 1px;
+  height: 20px;
+  margin-block: 0;
+  margin-inline: 12px 11px;
+  background: rgba(255, 255, 255, 0.13);
+}
+.action:hover,
+.action:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+.dismiss {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin-block: -2px;
+  margin-inline: -4px -5px;
+  padding: 0;
+  place-items: center;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 18px;
+  line-height: 1;
+}
+.dismiss:hover,
+.dismiss:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  outline: none;
+}
+
+/* A notice that something is done is the plain dark one, as Notion's
+   "휴지통으로 이동됨" (seen 2026-10-31); only an error keeps its own ground. */
+.toast[data-tone="error"] {
+  background: var(--toast-error-bg);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Access feedback keeps its sentence and action readable together, including
+   the 390px peek, as the top-bar link confirmation does in Notion. */
+.stack:has(.toast[data-icon="lock"]) {
+  width: min(680px, calc(100vw - 8px));
+}
+.stack:has(.toast[data-icon="lock"]) .toast:not([data-icon="lock"]) {
+  max-width: min(420px, 100%);
+}
+.toast[data-icon="lock"] {
+  font-size: 12px;
+  padding: 12px 16px;
+}
+.toast[data-icon="lock"] .action {
+  font-size: 12px;
+}
+
+/* Notion's corner notice (seen 2026-11-03, "작업 데이터베이스로 전환됨"):
+   12px past the sidebar and over the window's foot, 280px, 8px in (4 at the
+   foot) on rgb(32, 32, 32) round 8; a green ring-check 16 in a 26×24 box,
+   then 4px in the 12/16 title (600) and its line 4 under it (400), 28 kept
+   for the 24px "×" 9 in from the corner; an action 12/500 in a 28px pill at
+   the right under them. It stays until closed. */
+.notices {
+  position: fixed;
+  /* Past the sidebar on its side, in either direction (useSidebarReach). */
+  inset-inline-start: 12px;
+  bottom: calc(12px + var(--developer-bar-height, 0px) + env(safe-area-inset-bottom, 0px));
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+:global([data-toast-layer][data-over-window]) .notices {
+  z-index: 9000;
+}
+/* Over a menu, panel or popover too (lib/overlayLayer marks the body while
+   one is open): a refusal under the trash panel was half hidden. */
+:global(body[data-layer-open]) .stack,
+:global(body[data-layer-open]) .notices {
+  z-index: 9000;
+}
+.notice {
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  width: min(280px, calc(100vw - 24px));
+  padding: 8px 8px 4px;
+  border: 1px solid rgb(44, 44, 43);
+  border-radius: 8px;
+  background: rgb(32, 32, 32);
+  color: rgb(240, 239, 237);
+  pointer-events: auto;
+  animation: noticeIn 160ms ease-out;
+}
+.notice[data-tone="error"] {
+  background: var(--toast-error-bg);
+}
+.noticeMark {
+  display: flex;
+  flex: 0 0 26px;
+  height: 24px;
+  padding-block: 4px;
+  padding-inline: 4px 6px;
+  color: rgb(70, 161, 113);
+}
+.noticeBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+.noticeText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  /* Only its title keeps clear of the ✕; the words under it run the width,
+     as Notion's task-database notice (seen 2026-11-06: 280 x 94, two lines). */
+  padding: 4px 4px 8px 4px;
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+.noticeText strong {
+  padding-inline-end: 24px;
+  font-weight: 600;
+}
+.noticeActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-block: 0 4px;
+  padding-inline: 8px 0;
+}
+.noticeAction {
+  height: 28px;
+  padding: 4px 8px;
+  /* A ringed button, Notion's (seen 2026-11-06): the ring is the page's own
+     words colour, texPri, while the words on it keep the notice's light ink —
+     so it stands out in the dark theme and all but goes in the light one,
+     whose notice stays dark (seen 2026-11-24, "초대", both themes). */
+  border: 1px solid var(--text-default);
+  border-radius: 6px;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+/* Words beside the ringed one, as Notion's "무시" (seen 2026-11-07: 12/500 in its grey). */
+.noticeAction[data-plain] {
+  border-color: transparent;
+  color: rgb(173, 169, 163);
+}
+/* The person a notice is about: a 20px face and the name 14/400 beside it, 6 between (seen 2026-11-07). */
+.noticePerson {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin: 2px 0 4px;
+}
+/* Such a question keeps all its words clear of the ✕, its lines 221 wide in
+   Notion's 280 (seen 2026-11-07: "…받지 못합 / 니다."). */
+.notice:has(.noticePerson) .noticeText {
+  padding-inline-end: 32px;
+}
+.noticePersonName {
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.noticeAction:hover,
+.noticeAction:focus-visible,
+.noticeClose:hover,
+.noticeClose:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  outline: none;
+}
+.noticeClose {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.81);
+}
+@keyframes noticeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

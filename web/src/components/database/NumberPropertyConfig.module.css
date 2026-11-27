@@ -1,0 +1,144 @@
+/* A number's display choice, as Notion's three preview cards (seen
+   2026-09-30): the number "42", a bar and a ring, the chosen one outlined. */
+/* "표시 옵션"'s three 48px cards 8px apart, as Notion's (seen 2026-11-02). */
+.kinds {
+  --number-card-track: var(--number-display-track);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 9px 13px 0;
+}
+/* A card's empty track a shade stronger in the dark (Notion's, seen 2026-11-11). */
+:global([data-theme="dark"]) .kinds {
+  --number-card-track: rgba(255, 255, 235, 0.1);
+}
+
+.kind {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 4px 4px 4px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.kind:hover,
+.kind:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The chosen card blue throughout — its words, "42" and its bar or ring on
+   a blue track — the others grey, whatever color the bars take (Notion's,
+   seen 2026-11-11 in both themes, on a desktop and a phone). */
+.kind[aria-selected="true"] {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.kind {
+  --number-card-fill: var(--c-accent-gray);
+}
+
+.kind[aria-selected="true"] {
+  --number-card-fill: var(--accent-blue);
+  --number-card-track: var(--action-mark-blue-bg);
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 20px;
+}
+
+.previewNumber {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.previewBar {
+  position: relative;
+  width: 70%;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 1000px;
+  background: var(--number-card-track);
+}
+
+.previewBar > span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 42%;
+  border-radius: 1000px;
+  background: var(--number-card-fill);
+}
+
+.previewTrack {
+  fill: var(--number-card-track);
+}
+
+.previewFill {
+  stroke: var(--number-card-fill);
+}
+
+.swatch {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* In line with the color's row above it. */
+.displaySwitch { padding: 0 8px; }
+.divideRow { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 4px 8px; color: var(--text-default); font-size: 14px; }
+.divideRow input { width: 110px; min-width: 0; height: 30px; padding: 1px 9px; border: 0; box-shadow: var(--name-field-ring); border-radius: 5px; background: var(--name-field-bg); color: var(--text-default); text-align: end; }
+.divideRow input:focus-visible { outline: none; box-shadow: var(--name-field-ring-focus); }
+
+.note {
+  margin: 6px 14px 0;
+  padding-bottom: 9px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+/* "표시 옵션" 12px in from the settings' lines in the secondary text color,
+   as Notion's (seen 2026-11-02; its color 2026-11-11 in both themes). */
+.displayHead { margin-top: 18px; padding-inline-start: 12px; color: var(--text-secondary); }
+/* "표시 옵션" under a line, 6px below the rows over it and 12px in from
+   their ends, as Notion's (seen 2026-11-06; its inset 2026-11-11). */
+.displayField { position: relative; margin-top: 6px; padding-top: 1px; }
+.displayField::before {
+  position: absolute;
+  top: 0;
+  inset-inline: 12px;
+  height: 1px;
+  background: var(--border-default);
+  content: "";
+}
+.displayField .displayHead { margin-top: 11px; }
+/* In the view settings' "속성 편집", as Notion's there (seen 2026-11-11 at
+   1440): the cards 21px in, the note 22px in and 15px under them, the
+   settings' line 14px under its words. */
+:global([data-property-type-settings]) .kinds { margin-inline: 21px; }
+:global([data-property-type-settings]) .note { margin: 14px 22px 0; padding-bottom: 5px; }

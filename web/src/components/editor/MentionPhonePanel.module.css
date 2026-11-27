@@ -1,0 +1,53 @@
+/* A phone's "@", "[[" and "+" list as Notion's Android app draws it (seen
+   2026-11-21 on a Galaxy A90 at 411, light): a panel across the screen,
+   264 high over the keyboard (mentionPhonePanel.ts), on the page's ground
+   with a 1px line along its top and none of a menu's corners or shadow; its
+   rows unnamed in groups, each 45 high over a 1px line across the screen, a
+   20px mark 21 in and the words 16px from 57, a date's or reminder's hint in
+   the same 16px secondary gray after a dash; no row lit until the keys move.
+   Two classes keep these over the menu's own (EditorSlashMenu.module.css). */
+.panel.panel {
+  height: 264px;
+  max-width: none;
+  max-height: none;
+  border-top: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-app);
+  box-shadow: none;
+}
+.panel .list {
+  padding: 0;
+}
+.panel .list > .section {
+  width: auto;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+.panel .section::before,
+.panel .groupLabel {
+  display: none;
+}
+.panel .row {
+  gap: 16px;
+  width: 100%;
+  min-height: 46px;
+  padding-block: 8px;
+  padding-inline: calc(21px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+  font-size: 16px;
+  line-height: 20px;
+}
+.panel .row[data-active="true"],
+.panel .row:hover {
+  background: none;
+}
+.panel[data-moved-by="keys"] .row[data-active="true"] {
+  background: var(--bg-hover);
+}
+.panel .hint {
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 20px;
+}

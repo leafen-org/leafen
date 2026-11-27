@@ -1,0 +1,53 @@
+{
+  "language": "ko",
+  "names": {
+    "en": {
+      "퀴즈 문제": "Quiz questions",
+      "질문": "Question",
+      "보기 1": "Choice 1",
+      "보기 2": "Choice 2",
+      "보기 3": "Choice 3",
+      "보기 4": "Choice 4",
+      "정답": "Answer",
+      "맞는 보기의 번호(1~4)": "The right choice's number (1-4)",
+      "새 줄에서 '/'를 치면 무엇이 열릴까요?": "What opens when you type '/' on a new line?",
+      "검색 창": "Search",
+      "블록 메뉴": "The block menu",
+      "설정": "Settings",
+      "휴지통": "Trash",
+      "한 주는 며칠일까요?": "How many days are in a week?",
+      "5일": "5 days",
+      "6일": "6 days",
+      "7일": "7 days",
+      "8일": "8 days",
+      "무지개의 색은 몇 가지라고 흔히 말할까요?": "How many colors is a rainbow usually said to have?",
+      "일곱": "Seven",
+      "다섯": "Five",
+      "아홉": "Nine",
+      "셋": "Three"
+    }
+  },
+  "steps": [
+    {
+      "key": "questions",
+      "tool": "create-database",
+      "args": {
+        "parent": { "page_id": "{{root}}" },
+        "title": "퀴즈 문제",
+        "schema": "CREATE TABLE (\"질문\" TITLE, \"보기 1\" RICH_TEXT, \"보기 2\" RICH_TEXT, \"보기 3\" RICH_TEXT, \"보기 4\" RICH_TEXT, \"정답\" NUMBER COMMENT '맞는 보기의 번호(1~4)')"
+      }
+    },
+    {
+      "key": "samples",
+      "tool": "create-pages",
+      "args": {
+        "parent": { "data_source_id": "{{questions.data_source_id}}" },
+        "pages": [
+          { "properties": { "질문": "새 줄에서 '/'를 치면 무엇이 열릴까요?", "보기 1": "검색 창", "보기 2": "블록 메뉴", "보기 3": "설정", "보기 4": "휴지통", "정답": 2 } },
+          { "properties": { "질문": "한 주는 며칠일까요?", "보기 1": "5일", "보기 2": "6일", "보기 3": "7일", "보기 4": "8일", "정답": 3 } },
+          { "properties": { "질문": "무지개의 색은 몇 가지라고 흔히 말할까요?", "보기 1": "일곱", "보기 2": "다섯", "보기 3": "아홉", "보기 4": "셋", "정답": 1 } }
+        ]
+      }
+    }
+  ]
+}

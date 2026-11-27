@@ -1,0 +1,58 @@
+/* Each end of a bar takes its resize in an unseen 8px band as tall as the
+   bar, 6px out of it and 2px in, on every bar, pointed at or not, as
+   Notion's (seen 2026-11-15 at 1440, month zoom: bands at 915.8 and 1036.8
+   on a bar at 921.8–1038.8, col-resize; week zoom alike, 567 and 748 on
+   573–750). */
+.edge {
+  position: absolute;
+  inset-block: 0;
+  z-index: 5;
+  width: 8px;
+  cursor: col-resize;
+}
+.edge[data-side="start"] {
+  inset-inline-start: -6px;
+}
+.edge[data-side="end"] {
+  inset-inline-end: -6px;
+}
+/* Pointed at or stretching, a 3×22 grip in the text colour from 2px inside
+   the edge to 1px past it, its middle the bar's (Notion's, seen 2026-11-24:
+   948.6 and 1145.6 on a bar at 950.6–1147.6, 6px down its 34). */
+.grip {
+  position: absolute;
+  inset-block-start: calc(50% - 11px);
+  inset-inline-start: 0;
+  width: 3px;
+  height: 22px;
+  border-radius: 3px;
+  background: var(--text-default);
+  pointer-events: none;
+}
+.edge[data-side="start"] .grip {
+  inset-inline-start: 4px;
+}
+/* The edge's day, 12px in the text colour on the page's ground, 4px in, 10px
+   outside the bar, 6px down it (Notion's, seen 2026-11-24: 58×23 at 1157.6
+   past an end at 1147.6, its right at 940.6 before a start at 950.6). */
+.day {
+  position: absolute;
+  inset-block-start: calc(50% - 11px);
+  box-sizing: border-box;
+  height: 23px;
+  padding: 4px;
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 15px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.edge[data-side="end"] .day {
+  inset-inline-start: 12px;
+}
+.edge[data-side="start"] .day {
+  inset-inline-end: 12px;
+}

@@ -1,0 +1,168 @@
+/* Notion's import "둘러보기" (seen 2026-10-08, measured 2026-11-05): sections
+   with a 14px title and a grey line, a dashed blue drop area, and three columns
+   of filled cards. */
+.browse {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 24px;
+}
+
+.browse .section h3 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.browse .section > p {
+  margin: 6px 0 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 16px 36px;
+  border: 1px dashed var(--accent-blue);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-blue) 6%, transparent);
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: center;
+}
+
+.afterDrop {
+  margin-top: 12px;
+}
+
+.drop[data-over="true"] {
+  background: color-mix(in srgb, var(--accent-blue) 14%, transparent);
+}
+
+.drop > svg {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  color: var(--accent-blue);
+}
+
+.drop strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.drop > span {
+  line-height: 20px;
+}
+
+.drop small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.choose {
+  padding: 0;
+  color: var(--accent-blue);
+  font: inherit;
+}
+
+.choose:hover,
+.choose:focus-visible {
+  text-decoration: underline;
+  outline: none;
+}
+
+/* A card is at least 240 wide, so three share the settings' 800 and 777 and
+   two a narrower window (Notion's own rule, read 2026-11-18 in two tabs,
+   and seen at 1200: two cards of 340 in 705, where cards of 200 had kept
+   three and broken their lines sooner than Notion's); a place narrower
+   than one card keeps the card inside it. A card's line that is longer
+   than its card takes a second line, as Notion's does. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
+  gap: 16px 20px;
+  padding: 0 2px;
+}
+
+/* A card whose row is taller, beside one whose words take two lines, keeps
+   its lines in its middle, as Notion's (measured 2026-11-12 in English). */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  min-height: 70px;
+  padding: 12px;
+  border-radius: 4px;
+  background: var(--bg-soft);
+  text-align: start;
+}
+
+.card:hover:not(:disabled),
+.card:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.cardTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+/* A card's mark on a white tile, as Notion's (measured 2026-11-05). */
+.cardTitle > svg {
+  flex: none;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.1);
+  color: #191919;
+}
+
+/* An app's own mark, a 24px picture as Notion's app logos (seen 2026-11-15). */
+.cardTitle > img {
+  flex: none;
+  border-radius: 4px;
+}
+
+/* A card's words stop at its padding, as Notion's: in English the same
+   letters wrap where Notion's do — CSV and HTML on two lines at 1440, Word
+   too at 1279 (measured 2026-11-12). Korean words may run into the end
+   padding: Leafen's Korean letters are about 6% wider than Notion's, so a
+   line Notion's card holds whole ("스프레드시트에서 구조화된 데이터 가져오기",
+   207 of 220 at 1280 there, 220 here) stays one line here too, in Chrome
+   and in the app's WebKit alike (2026-11-12). */
+.cardText {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.cardText:lang(ko) {
+  margin-inline-end: -12px;
+}
+
+/* An app's card says which app it is, as its menu lines do. */
+.cardMark {
+  color: var(--text-tertiary);
+  font-size: 11.5px;
+}

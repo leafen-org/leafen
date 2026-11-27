@@ -1,0 +1,160 @@
+/* Where an add menu's card will go while the menu is open, in place of its
+   "+", as Notion's (seen 2026-11-12 at 1440): the column's width and 160 tall,
+   round 12, a faint blue in a 1px ring and a soft blue glow, 12px from what is
+   over and under it (alone in the panel, 12px under the panel's top room). */
+.addSlot {
+  flex: none;
+  align-self: stretch;
+  height: 160px;
+  border-radius: 12px;
+  background: rgba(35, 131, 226, 0.05);
+  box-shadow: inset 0 0 0 1px var(--blue-text-tertiary), 0 0 0 4px rgba(35, 131, 226, 0.094), 0 0 4px 7px rgba(35, 131, 226, 0.04);
+}
+.addSlot[data-alone] { margin-top: 12px; }
+
+/* The tabbed structure's tab row, as Notion's builder (seen 2026-11-12 at
+   1440): a 60 high band meeting the cards over and under it (past the
+   column's 12 gaps), its pills from 10 in and 5 apart, each 32 high, 12 in,
+   a 20 icon 6 before its 14/500 name, in a 1px ring of the cards' blue —
+   the one shown in a 2.5px ring of the bright blue, its name in the text's
+   colour — and the "+" a 28 blue circle 5 after them, which its menu opens
+   centred under (PageLayoutTabMenu). */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 60px;
+  margin-block: -12px;
+  padding-inline-start: 10px;
+}
+
+.tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: 0 0 0 0.5px var(--blue-text-tertiary), inset 0 0 0 0.5px var(--blue-text-tertiary);
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tab[aria-pressed="true"] {
+  box-shadow: 0 0 0 1.25px var(--accent-blue), inset 0 0 0 1.25px var(--accent-blue);
+  color: var(--text-default);
+}
+
+/* The tabs' "+", shown as the row is pointed at, as Notion's. */
+.tabAdd {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--c-bg-blue);
+  color: var(--accent-blue);
+  opacity: 0;
+  cursor: pointer;
+}
+.tabs:hover .tabAdd, .tabAdd:focus-visible { opacity: 1; }
+.tabAdd:hover, .tabAdd:focus-visible { background: color-mix(in srgb, var(--accent-blue) 18%, var(--c-bg-blue)); outline: none; }
+
+/* A data tab's view, as Notion's builder (seen 2026-11-12 at 1440): no
+   frame, the tabs' band its title row (PageLayoutCanvas) with its filter and
+   sort at the band's end 8 in, centred on its pills, and its table from the
+   band's foot; band and view at least 500 high, the column scrolling. The
+   inline database's own rows are outweighed by the attributes they set. */
+.tabView {
+  min-width: 0;
+  min-height: 488px;
+}
+.tabView .tabs {
+  margin-block: 0;
+}
+.tabView :global([data-database-view][data-placement][data-database-placement]) > :global([data-database-chrome][data-title-row]) {
+  min-height: 60px;
+  margin-top: -12px;
+  padding-inline-end: 8px;
+}
+.tabView :global([data-database-view][data-placement][data-database-placement] [data-database-toolbar][role="toolbar"]) {
+  padding-block: 0;
+}
+/* Its table, a preview without row controls' room, starts 8 in (Notion's first column at 72 in a box from 64). */
+.tabView :global([data-database-view] [data-table-scroll]) {
+  padding-inline-start: 8px;
+}
+/* Its empty table's box the box's width from 8 before that column, its
+   sideways bar 27 under it (Notion's builder, seen 2026-11-12 at 1440: the
+   box 64..714 and 144 high, the scroll 222 under the head's top). */
+.tabView :global([data-table-no-results]) > :global([data-view-no-results]) {
+  width: 100cqi;
+}
+.tabView :global([data-database-view] [data-view-type="table"] [data-table-scroll]) {
+  padding-bottom: 27px;
+}
+/* Its calendar keeps to the box, not out to a page's margins, its days from
+   9 in to 8 short of its end, the canvas never scrolling sideways (Notion's
+   grid from 73 to 706 in a box from 64 to 714, seen 2026-11-12). */
+.tabView :global([data-database-view][data-placement] [data-view-type="calendar"]) {
+  width: auto;
+  margin-inline: 0;
+  padding-inline: 9px 8px;
+}
+
+/* The previewed page's icon heads the title card as it heads the page, in
+   the page's box (an emoji's 78, a picture's 140), at the body's top on the
+   title's words — 8 in — and "백링크 없음" 8 under it, as Notion's builder
+   (seen 2026-11-14 at 1440: body 76.5 and 132.4, icon 84.5 and 132.4,
+   backlinks 8 under the box, emoji and picture alike). Only drawn. */
+.pageIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 78px;
+  height: 78px;
+  margin-inline-start: 8px;
+  font-size: 78px;
+  line-height: 1;
+  pointer-events: none;
+}
+.pageIcon[data-icon-picture] {
+  width: 140px;
+  height: 140px;
+}
+
+/* The title card's "세부 정보 보기" while the panel holds a card, as Notion's
+   builder (seen 2026-11-14 at 1440): the page's grey 28 high button, its
+   words on the title's, 12 under the title and 12 over the card's foot, its
+   pinned properties' line 22 under it, the names 25 (over the page's own
+   button rules, whichever comes first in the bundle). */
+:global([data-layout-module="heading"]) .detailsToggle {
+  display: flex;
+  width: fit-content;
+  margin-block: 12px 0;
+  margin-inline: 0;
+}
+
+:global([data-layout-module="heading"]) .detailsToggle + :global([data-layout-pinned]) {
+  margin-top: 22px;
+}
+/* Their names stand on the title's words, 8 into the body less the line's
+   own 6, and the card's foot is its body's own 12 under them. */
+:global([data-layout-module="heading"]) :global([data-layout-pinned]) {
+  margin-inline-start: 2px;
+  margin-bottom: 0;
+}
+
+/* An untitled page's name in the title's placeholder color, as the page's
+   own title and Notion's builder (seen 2026-11-14 at 1440). */
+.title[data-empty="true"] { color: var(--text-title-placeholder); }

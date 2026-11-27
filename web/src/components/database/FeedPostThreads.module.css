@@ -1,0 +1,52 @@
+/* Its discussion over the post: 480px, 10px round with the menu's shadow,
+   its faces 14px in (Notion's, seen 2026-10-21; 480 since, seen 2026-11-25
+   at 1440, dpr 2, two tabs). */
+.threads {
+  position: fixed;
+  padding: 0 14px 12px;
+  z-index: 1000;
+  box-sizing: border-box;
+  width: 480px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  max-height: 70vh;
+  overflow-y: auto;
+  border-radius: 10px;
+  background: var(--bg-elevated, var(--bg-app));
+  box-shadow: var(--shadow-menu);
+}
+
+/* Its box closes it, with no line under it as under a page's title, its
+   face 12px under the last thread. */
+.threads [data-comments-composer] {
+  padding-top: 12px;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Its threads drawn as under a page's title (Notion's, seen 2026-11-25): each
+   comment 8px under its frame's top and over its foot, 64px in all, its
+   buttons 4px over its face; the thread's line 6px under the first face in
+   the faint line colour, its ends rounded. */
+.threads [data-comment-thread] > [data-comment-id],
+.threads [data-comment-thread] > [data-thread-step] > [data-comment-id] {
+  --comment-pill-top: 4px;
+  padding-block: 8px;
+}
+
+.threads [data-comment-thread] > [data-comment-id]:not(:last-child)::before {
+  top: 38px;
+  bottom: -2px;
+  border-radius: 2px;
+  background: var(--border-secondary);
+}
+
+/* Its head "토론", 16px in and 12px under its top in 13px/18px words of the
+   second text colour, 4px over its first thread (Notion's, seen 2026-11-25). */
+.head {
+  padding: 12px 2px 0;
+  margin-block-end: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}

@@ -1,0 +1,204 @@
+/* A comment's files, as Notion's (seen 2026-09-30): pictures shown after the
+   text, other files as chips with their name and size — 8px under the
+   words in a frame 6px wide all round (seen 2026-11-06). */
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 6px;
+}
+.image {
+  display: block;
+  max-width: min(100%, 320px);
+  max-height: 240px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  object-fit: contain;
+  cursor: zoom-in;
+}
+/* A picture that couldn't be loaded: the failure state, square at the
+   picture's largest height. */
+.imageFailed {
+  width: min(100%, 240px);
+  overflow: hidden;
+  border-radius: 8px;
+}
+.imagePlaceholder {
+  width: 120px;
+  height: 80px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-hover);
+}
+.chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 214px;
+  max-width: 100%;
+  height: 48px;
+  padding-block: 7px 8px;
+  padding-inline: 8px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  text-align: start;
+  cursor: pointer;
+}
+.chip:hover,
+.chip:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The file's mark in a 32px rounded square, as Notion's (bacTerTra). */
+.chipIconBox {
+  display: inline-flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--border-subtle);
+  color: var(--icon-primary);
+}
+.chipText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+.chipName {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chipSize {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 15px;
+}
+.more {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+.more:hover {
+  background: var(--bg-active);
+}
+/* A file's "…" menu, where it was pressed, 265px wide as Notion's (seen 2026-11-06). */
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.menu {
+  position: fixed;
+  width: 265px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.menuLabel {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--menu-row-radius);
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+.menuItem > svg {
+  flex: none;
+  color: var(--icon-primary);
+}
+/* Its key, at the row's end in the tertiary grey (Notion's "Del"). */
+.menuHint {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* A comment being written or edited: the files it will hold, as Notion's
+   cards (seen 2026-11-06) on the field's ground, 4px apart. */
+.pending {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px 0 0;
+}
+.pendingCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 214px;
+  max-width: 100%;
+  height: 48px;
+  padding-block: 7px 8px;
+  padding-inline: 8px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--bg-element);
+  color: var(--text-default);
+}
+.pendingCard[data-uploading="true"] .chipText {
+  opacity: 0.5;
+}
+/* Its round "×" sits over the card's corner while the pointer is on it. */
+.pendingRemove {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: -4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg-app);
+  color: var(--icon-primary);
+  cursor: pointer;
+}
+.pendingCard:hover .pendingRemove,
+.pendingRemove:focus-visible {
+  display: inline-flex;
+}

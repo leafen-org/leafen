@@ -1,0 +1,558 @@
+{
+  "schemaVersion": 1,
+  "name": "public-mutation",
+  "operations": [
+    { "goName": "publicMutationStatePath", "tsName": "state", "method": "GET", "path": "/pages/{pageId}/public-mutations" },
+    { "goName": "publicMutationMutatePath", "tsName": "mutate", "method": "POST", "path": "/pages/{pageId}/public-mutations" },
+    { "goName": "publicMutationOperationPath", "tsName": "operation", "method": "GET", "path": "/pages/{pageId}/public-mutations/{operationId}" },
+    { "goName": "publicMutationContinuePath", "tsName": "continueOperation", "method": "POST", "path": "/pages/{pageId}/public-mutations/{operationId}/continue" },
+    { "goName": "publicMutationShareInheritancePath", "tsName": "shareInheritance", "method": "POST", "path": "/pages/{pageId}/share-inheritance" },
+    { "goName": "publicMutationAppConnectionsPath", "tsName": "appConnections", "method": "GET", "path": "/pages/{pageId}/app-connections" },
+    { "goName": "publicMutationAppConnectionChangePath", "tsName": "changeAppConnection", "method": "POST", "path": "/pages/{pageId}/app-connections" },
+    { "goName": "publicMutationAgentGrantScopePath", "tsName": "agentGrantScope", "method": "POST", "path": "/pages/{pageId}/agent-grant-scope" },
+    { "goName": "publicMutationInheritedPeoplePath", "tsName": "inheritedPeople", "method": "GET", "path": "/pages/{pageId}/inherited-shares" },
+    { "goName": "publicMutationPageRulesPath", "tsName": "pageRules", "method": "GET", "path": "/pages/{pageId}/page-rules" },
+    { "goName": "publicMutationPageRuleChangePath", "tsName": "changePageRule", "method": "POST", "path": "/pages/{pageId}/page-rules" },
+    { "goName": "publicMutationShareLinkJoinPath", "tsName": "joinShareLink", "method": "POST", "path": "/share-links/join" }
+  ],
+  "bounds": [
+    { "goName": "publicMutationMaxBodyBytes", "tsName": "bodyBytes", "value": 65536 },
+    { "goName": "publicMutationMaxRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "publicMutationMaxTextRunes", "tsName": "textRunes", "value": 2000 },
+    { "goName": "publicMutationMaxNavigationPages", "tsName": "navigationPages", "value": 100 },
+    { "goName": "publicMutationPermissionWindow", "tsName": "permissionWindow", "value": 100 },
+    { "goName": "publicMutationPrincipalWindow", "tsName": "principalWindow", "value": 100 },
+    { "goName": "publicMutationPermissionCursorBytes", "tsName": "permissionCursorBytes", "value": 1024 },
+    { "goName": "publicMutationPrincipalCursorBytes", "tsName": "principalCursorBytes", "value": 2048 },
+    { "goName": "publicMutationEffectWindow", "tsName": "effectWindow", "value": 32 },
+    { "goName": "publicMutationRoutingWindow", "tsName": "routingWindow", "value": 100 }
+  ],
+  "strings": [
+    { "goName": "publicHeadUntitledTitle", "tsName": "untitledHeadTitle", "value": "Published with Leafen" },
+    { "goName": "publicHeadDefaultDescription", "tsName": "defaultHeadDescription", "value": "Leafen is open-source software for notes, docs and databases." }
+  ],
+  "errors": [
+    { "goName": "errorCodePublicMutationInvalid", "tsName": "invalid", "value": "LEAFEN_PUBLIC_MUTATION_INVALID" },
+    { "goName": "errorCodePublicMutationNotFound", "tsName": "notFound", "value": "LEAFEN_PUBLIC_MUTATION_NOT_FOUND" },
+    { "goName": "errorCodePublicMutationDenied", "tsName": "denied", "value": "LEAFEN_PUBLIC_MUTATION_DENIED" },
+    { "goName": "errorCodePublicMutationRevisionConflict", "tsName": "revisionConflict", "value": "LEAFEN_PUBLIC_MUTATION_REVISION_CONFLICT" },
+    { "goName": "errorCodePublicMutationRequestReused", "tsName": "requestReused", "value": "LEAFEN_PUBLIC_MUTATION_REQUEST_REUSED" },
+    { "goName": "errorCodePublicMutationSiteAddressTaken", "tsName": "siteAddressTaken", "value": "LEAFEN_PUBLIC_MUTATION_SITE_ADDRESS_TAKEN" },
+    { "goName": "errorCodePublicMutationPersonPageRestricted", "tsName": "personPageRestricted", "value": "LEAFEN_PUBLIC_MUTATION_PERSON_PAGE_RESTRICTED" },
+    { "goName": "errorCodePublicMutationPersonPageLinked", "tsName": "personPageLinked", "value": "LEAFEN_PUBLIC_MUTATION_PERSON_PAGE_LINKED" },
+    { "goName": "errorCodePublicMutationDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_PUBLIC_MUTATION_DATABASE_BUSY" },
+    { "goName": "errorCodePublicMutationStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_PUBLIC_MUTATION_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodePublicMutationFailed", "tsName": "failed", "value": "LEAFEN_PUBLIC_MUTATION_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "PublicMutationAction",
+      "tsValuesName": "publicMutationActions",
+      "values": [
+        { "goName": "publicMutationActionSetWebSharing", "tsName": "setWebSharing", "value": "set_web_sharing" },
+        { "goName": "publicMutationActionRotateShareToken", "tsName": "rotateShareToken", "value": "rotate_share_token" },
+        { "goName": "publicMutationActionPublishSite", "tsName": "publishSite", "value": "publish_site" },
+        { "goName": "publicMutationActionUnpublishSite", "tsName": "unpublishSite", "value": "unpublish_site" },
+        { "goName": "publicMutationActionGrantPermission", "tsName": "grantPermission", "value": "grant_permission" },
+        { "goName": "publicMutationActionUpdatePermission", "tsName": "updatePermission", "value": "update_permission" },
+        { "goName": "publicMutationActionRemovePermission", "tsName": "removePermission", "value": "remove_permission" }
+      ]
+    },
+    {
+      "tsName": "PublicMutationPrincipalType",
+      "tsValuesName": "publicMutationPrincipalTypes",
+      "values": [
+        { "goName": "publicMutationPrincipalUser", "tsName": "user", "value": "user" },
+        { "goName": "publicMutationPrincipalEmail", "tsName": "email", "value": "email" },
+        { "goName": "publicMutationPrincipalGroup", "tsName": "group", "value": "group" },
+        { "goName": "publicMutationPrincipalIntegration", "tsName": "integration", "value": "integration" },
+        { "goName": "publicMutationPrincipalWorkspace", "tsName": "workspace", "value": "workspace" }
+      ]
+    },
+    {
+      "tsName": "PublicMutationRole",
+      "tsValuesName": "publicMutationRoles",
+      "values": [
+        { "goName": "publicMutationRoleView", "tsName": "view", "value": "view" },
+        { "goName": "publicMutationRoleComment", "tsName": "comment", "value": "comment" },
+        { "goName": "publicMutationRoleEdit", "tsName": "edit", "value": "edit" },
+        { "goName": "publicMutationRoleFullAccess", "tsName": "fullAccess", "value": "full_access" }
+      ]
+    },
+    {
+      "tsName": "PublicMutationField",
+      "tsValuesName": "publicMutationFields",
+      "values": [
+        { "goName": "publicMutationFieldRequestID", "tsName": "requestId", "value": "requestId" },
+        { "goName": "publicMutationFieldExpectedRevision", "tsName": "expectedRevision", "value": "expectedRevision" },
+        { "goName": "publicMutationFieldAction", "tsName": "action", "value": "action" },
+        { "goName": "publicMutationFieldEnabled", "tsName": "enabled", "value": "enabled" },
+        { "goName": "publicMutationFieldExpiresAt", "tsName": "expiresAt", "value": "expiresAt" },
+        { "goName": "publicMutationFieldSlug", "tsName": "slug", "value": "slug" },
+        { "goName": "publicMutationFieldTitle", "tsName": "title", "value": "title" },
+        { "goName": "publicMutationFieldDescription", "tsName": "description", "value": "description" },
+        { "goName": "publicMutationFieldTheme", "tsName": "theme", "value": "theme" },
+        { "goName": "publicMutationFieldShowBreadcrumbs", "tsName": "showBreadcrumbs", "value": "showBreadcrumbs" },
+        { "goName": "publicMutationFieldShowSearch", "tsName": "showSearch", "value": "showSearch" },
+        { "goName": "publicMutationFieldShowBranding", "tsName": "showBranding", "value": "showBranding" },
+        { "goName": "publicMutationFieldNavigationPageIDs", "tsName": "navigationPageIds", "value": "navigationPageIds" },
+        { "goName": "publicMutationFieldPreviewImageFileID", "tsName": "previewImageFileId", "value": "previewImageFileId" },
+        { "goName": "publicMutationFieldFaviconFileID", "tsName": "faviconFileId", "value": "faviconFileId" },
+        { "goName": "publicMutationFieldGoogleAnalyticsID", "tsName": "googleAnalyticsId", "value": "googleAnalyticsId" },
+        { "goName": "publicMutationFieldPrincipalType", "tsName": "principalType", "value": "principalType" },
+        { "goName": "publicMutationFieldPrincipalID", "tsName": "principalId", "value": "principalId" },
+        { "goName": "publicMutationFieldRole", "tsName": "role", "value": "role" },
+        { "goName": "publicMutationFieldPermissionID", "tsName": "permissionId", "value": "permissionId" },
+        { "goName": "publicMutationFieldInviteMessage", "tsName": "inviteMessage", "value": "inviteMessage" },
+        { "goName": "publicMutationFieldNotifyOnAccess", "tsName": "notifyOnAccess", "value": "notifyOnAccess" },
+        { "goName": "publicMutationFieldHideFromSearch", "tsName": "hideFromSearch", "value": "hideFromSearch" }
+      ]
+    },
+    {
+      "tsName": "PublicMutationOperationStatus",
+      "tsValuesName": "publicMutationOperationStatuses",
+      "values": [
+        { "goName": "publicMutationOperationPending", "tsName": "pending", "value": "pending" },
+        { "goName": "publicMutationOperationCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "publicMutationOperationFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "publicMutationInput",
+      "tsName": "PublicMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "PublicMutationAction" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "\"system\" | \"light\" | \"dark\"", "optional": true },
+        { "goName": "ShowBreadcrumbs", "jsonName": "showBreadcrumbs", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowSearch", "jsonName": "showSearch", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowBranding", "jsonName": "showBranding", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "NavigationPageIDs", "jsonName": "navigationPageIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "PreviewImageFileID", "jsonName": "previewImageFileId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FaviconFileID", "jsonName": "faviconFileId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "GoogleAnalyticsID", "jsonName": "googleAnalyticsId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AllowIndexing", "jsonName": "allowIndexing", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "AllowDuplicate", "jsonName": "allowDuplicate", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowShare", "jsonName": "showShare", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType", "optional": true },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole", "optional": true },
+        { "goName": "PermissionID", "jsonName": "permissionId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "InviteMessage", "jsonName": "inviteMessage", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "NotifyOnAccess", "jsonName": "notifyOnAccess", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "HideFromSearch", "jsonName": "hideFromSearch", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationPermission",
+      "tsName": "PublicMutationPermission",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalLabel", "jsonName": "principalLabel", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalEmail", "jsonName": "principalEmail", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalUserID", "jsonName": "principalUserId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "OtherAccess", "jsonName": "otherAccess", "goType": "*publicMutationOtherAccess", "tsType": "PublicMutationOtherAccess | null" },
+        { "goName": "HideFromSearch", "jsonName": "hideFromSearch", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Guest", "jsonName": "guest", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Rule", "jsonName": "rule", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "RuleCreator", "jsonName": "ruleCreator", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SignupToken", "jsonName": "signupToken", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "InviteMail", "jsonName": "inviteMail", "goType": "string", "tsType": "\"limited\" | \"failed\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationOtherAccess",
+      "tsName": "PublicMutationOtherAccess",
+      "fields": [
+        { "goName": "Source", "jsonName": "source", "goType": "string", "tsType": "\"teamspace\" | \"page\" | \"workspace\"" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "Database", "jsonName": "database", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationTeamspace",
+      "tsName": "PublicMutationTeamspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number" },
+        { "goName": "OwnerCount", "jsonName": "ownerCount", "goType": "int", "tsType": "number" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole | \"none\"" },
+        { "goName": "OwnerRole", "jsonName": "ownerRole", "goType": "string", "tsType": "PublicMutationRole | \"none\"" },
+        { "goName": "OpenRole", "jsonName": "openRole", "goType": "string", "tsType": "PublicMutationRole | \"\"" },
+        { "goName": "ChangeUnlinks", "jsonName": "changeUnlinks", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewerGroup", "jsonName": "viewerGroup", "goType": "string", "tsType": "\"owner\" | \"member\" | \"\"" }
+      ]
+    },
+    {
+      "goName": "publicMutationPrincipalOption",
+      "tsName": "PublicMutationPrincipalOption",
+      "fields": [
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Guest", "jsonName": "guest", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WorkspaceOwner", "jsonName": "workspaceOwner", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationAccessOwner",
+      "tsName": "PublicMutationAccessOwner",
+      "fields": [
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "IsCurrent", "jsonName": "isCurrent", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PrivatePage", "jsonName": "privatePage", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationShareLink",
+      "tsName": "PublicMutationShareLink",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationShareLinkJoinInput",
+      "tsName": "PublicMutationShareLinkJoinInput",
+      "fields": [
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationShareLinkJoin",
+      "tsName": "PublicMutationShareLinkJoin",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\"" }
+      ]
+    },
+    {
+      "goName": "publicMutationSite",
+      "tsName": "PublicMutationSite",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "DefaultDescription", "jsonName": "defaultDescription", "goType": "string", "tsType": "string" },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "\"system\" | \"light\" | \"dark\"" },
+        { "goName": "ShowBreadcrumbs", "jsonName": "showBreadcrumbs", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShowSearch", "jsonName": "showSearch", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShowBranding", "jsonName": "showBranding", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NavigationPageIDs", "jsonName": "navigationPageIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "PreviewImageFileID", "jsonName": "previewImageFileId", "goType": "string", "tsType": "string" },
+        { "goName": "FaviconFileID", "jsonName": "faviconFileId", "goType": "string", "tsType": "string" },
+        { "goName": "GoogleAnalyticsID", "jsonName": "googleAnalyticsId", "goType": "string", "tsType": "string" },
+        { "goName": "AllowIndexing", "jsonName": "allowIndexing", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AllowDuplicate", "jsonName": "allowDuplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShowShare", "jsonName": "showShare", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Published", "jsonName": "published", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "publicMutationInheritedPerson",
+      "tsName": "PublicMutationInheritedPerson",
+      "fields": [
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "Guest", "jsonName": "guest", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "FromTitle", "jsonName": "fromTitle", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationInheritedPeopleResponse",
+      "tsName": "PublicMutationInheritedPeople",
+      "fields": [
+        { "goName": "People", "jsonName": "people", "goType": "[]publicMutationInheritedPerson", "tsType": "PublicMutationInheritedPerson[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationInheritedGroup",
+      "tsName": "PublicMutationInheritedGroup",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" },
+        { "goName": "People", "jsonName": "people", "goType": "[]publicMutationInheritedPerson", "tsType": "PublicMutationInheritedPerson[]" },
+        { "goName": "Database", "jsonName": "database", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationInheritedWebLink",
+      "tsName": "PublicMutationInheritedWebLink",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "publicMutationRelinkChange",
+      "tsName": "PublicMutationRelinkChange",
+      "fields": [
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "FromRole", "jsonName": "fromRole", "goType": "string", "tsType": "PublicMutationRole | \"\"" },
+        { "goName": "ToRole", "jsonName": "toRole", "goType": "string", "tsType": "PublicMutationRole" }
+      ]
+    },
+    {
+      "goName": "publicMutationShareDiffers",
+      "tsName": "PublicMutationShareDiffers",
+      "fields": [
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "ParentTitle", "jsonName": "parentTitle", "goType": "string", "tsType": "string" },
+        { "goName": "ParentDatabase", "jsonName": "parentDatabase", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationShareUnlink",
+      "tsName": "PublicMutationShareUnlink",
+      "fields": [
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "ParentTitle", "jsonName": "parentTitle", "goType": "string", "tsType": "string" },
+        { "goName": "ParentDatabase", "jsonName": "parentDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Teamspace", "jsonName": "teamspace", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Changes", "jsonName": "changes", "goType": "[]publicMutationRelinkChange", "tsType": "PublicMutationRelinkChange[]" },
+        { "goName": "TeamspaceChanges", "jsonName": "teamspaceChanges", "goType": "[]publicMutationTeamspaceRelinkChange", "tsType": "PublicMutationTeamspaceRelinkChange[]" }
+      ]
+    },
+    {
+      "goName": "publicMutationTeamspaceRelinkChange",
+      "tsName": "PublicMutationTeamspaceRelinkChange",
+      "fields": [
+        { "goName": "Group", "jsonName": "group", "goType": "string", "tsType": "\"owner\" | \"member\"" },
+        { "goName": "FromRole", "jsonName": "fromRole", "goType": "string", "tsType": "PublicMutationRole | \"none\"" },
+        { "goName": "ToRole", "jsonName": "toRole", "goType": "string", "tsType": "PublicMutationRole | \"none\"" }
+      ]
+    },
+    {
+      "goName": "publicMutationShareInheritanceInput",
+      "tsName": "PublicMutationShareInheritanceInput",
+      "fields": [
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"unlink\" | \"relink\" | \"teamspace_role\" | \"web_role\"" },
+        { "goName": "PrincipalType", "jsonName": "principalType", "goType": "string", "tsType": "PublicMutationPrincipalType", "optional": true },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "PublicMutationRole | \"none\" | \"\"", "optional": true },
+        { "goName": "HideFromSearch", "jsonName": "hideFromSearch", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationAppConnection",
+      "tsName": "PublicMutationAppConnection",
+      "fields": [
+        { "goName": "ShareID", "jsonName": "shareId", "goType": "string", "tsType": "string" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "publicMutationPageRule",
+      "tsName": "PublicMutationPageRule",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\"" },
+        { "goName": "Fixed", "jsonName": "fixed", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationRuleProperty",
+      "tsName": "PublicMutationRuleProperty",
+      "fields": [
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"person\" | \"created_by\" | \"last_edited_by\"" }
+      ]
+    },
+    {
+      "goName": "publicMutationPageRules",
+      "tsName": "PublicMutationPageRules",
+      "fields": [
+        { "goName": "Rules", "jsonName": "rules", "goType": "[]publicMutationPageRule", "tsType": "PublicMutationPageRule[]" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]publicMutationRuleProperty", "tsType": "PublicMutationRuleProperty[]" }
+      ]
+    },
+    {
+      "goName": "publicMutationPageRuleInput",
+      "tsName": "PublicMutationPageRuleInput",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"create\" | \"update\" | \"delete\"" },
+        { "goName": "RuleID", "jsonName": "ruleId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "\"view\" | \"comment\" | \"edit\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationConnectableApp",
+      "tsName": "PublicMutationConnectableApp",
+      "fields": [
+        { "goName": "AppID", "jsonName": "appId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "publicMutationNotionConnection",
+      "tsName": "PublicMutationNotionConnection",
+      "fields": [
+        { "goName": "GrantID", "jsonName": "grantId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Reach", "jsonName": "reach", "goType": "string", "tsType": "\"page\" | \"parent\" | \"none\"" },
+        { "goName": "CreatorName", "jsonName": "creatorName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceID", "jsonName": "sourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceTitle", "jsonName": "sourceTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceKind", "jsonName": "sourceKind", "goType": "string", "tsType": "\"database\"", "optional": true },
+        { "goName": "SourceViewBlock", "jsonName": "sourceViewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "SourceIcon", "jsonName": "sourceIcon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceIconType", "jsonName": "sourceIconType", "goType": "string", "tsType": "\"none\" | \"emoji\" | \"image\" | \"custom_emoji\" | \"icon\"", "optional": true },
+        { "goName": "SourceHasContent", "jsonName": "sourceHasContent", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Capabilities", "jsonName": "capabilities", "goType": "[]string", "tsType": "(\"read_content\" | \"insert_content\" | \"update_content\" | \"insert_comments\" | \"read_comments\")[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationAppConnections",
+      "tsName": "PublicMutationAppConnections",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Manageable", "jsonName": "manageable", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Apps", "jsonName": "apps", "goType": "[]publicMutationConnectableApp", "tsType": "PublicMutationConnectableApp[]" },
+        { "goName": "Connections", "jsonName": "connections", "goType": "[]publicMutationAppConnection", "tsType": "PublicMutationAppConnection[]" },
+        { "goName": "NotionConnections", "jsonName": "notionConnections", "goType": "[]publicMutationNotionConnection", "tsType": "PublicMutationNotionConnection[]" }
+      ]
+    },
+    {
+      "goName": "publicMutationAppConnectionInput",
+      "tsName": "PublicMutationAppConnectionInput",
+      "fields": [
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"connect\" | \"disconnect\"" },
+        { "goName": "PrincipalID", "jsonName": "principalId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ShareID", "jsonName": "shareId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "GrantID", "jsonName": "grantId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationAgentGrantScopeInput",
+      "tsName": "PublicMutationAgentGrantScopeInput",
+      "fields": [
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Scope", "jsonName": "scope", "goType": "string", "tsType": "\"full_access\" | \"access\"" }
+      ]
+    },
+    {
+      "goName": "publicMutationState",
+      "tsName": "PublicMutationState",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "WebSharingEnabled", "jsonName": "webSharingEnabled", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShareLink", "jsonName": "shareLink", "goType": "*publicMutationShareLink", "tsType": "PublicMutationShareLink | null" },
+        { "goName": "Site", "jsonName": "site", "goType": "*publicMutationSite", "tsType": "PublicMutationSite | null" },
+        { "goName": "Permissions", "jsonName": "permissions", "goType": "[]publicMutationPermission", "tsType": "PublicMutationPermission[]" },
+        { "goName": "PermissionsNextCursor", "jsonName": "permissionsNextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "AccessOwner", "jsonName": "accessOwner", "goType": "publicMutationAccessOwner", "tsType": "PublicMutationAccessOwner" },
+        { "goName": "PrincipalOptions", "jsonName": "principalOptions", "goType": "[]publicMutationPrincipalOption", "tsType": "PublicMutationPrincipalOption[]" },
+        { "goName": "PrincipalOptionsNextCursor", "jsonName": "principalOptionsNextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "PublishingAllowed", "jsonName": "publishingAllowed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "GuestsAllowed", "jsonName": "guestsAllowed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExternalEmailAllowed", "jsonName": "externalEmailAllowed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "WorkspaceName", "jsonName": "workspaceName", "goType": "string", "tsType": "string" },
+        { "goName": "Teamspace", "jsonName": "teamspace", "goType": "*publicMutationTeamspace", "tsType": "PublicMutationTeamspace | null" },
+        { "goName": "WorkspacePermission", "jsonName": "workspacePermission", "goType": "*publicMutationPermission", "tsType": "PublicMutationPermission | null", "optional": true },
+        { "goName": "WorkspaceInheritedRole", "jsonName": "workspaceInheritedRole", "goType": "string", "tsType": "PublicMutationRole | \"\"", "optional": true },
+        { "goName": "WorkspaceOwnersHold", "jsonName": "workspaceOwnersHold", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "GeneralAccessFixed", "jsonName": "generalAccessFixed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "OnlyReaderOpens", "jsonName": "onlyReaderOpens", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WorkspaceSharingAllowed", "jsonName": "workspaceSharingAllowed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "InheritedGroups", "jsonName": "inheritedGroups", "goType": "[]publicMutationInheritedGroup", "tsType": "PublicMutationInheritedGroup[]", "optional": true },
+        { "goName": "ShareUnlink", "jsonName": "shareUnlink", "goType": "*publicMutationShareUnlink", "tsType": "PublicMutationShareUnlink | null", "optional": true },
+        { "goName": "InheritedWebLink", "jsonName": "inheritedWebLink", "goType": "*publicMutationInheritedWebLink", "tsType": "PublicMutationInheritedWebLink | null", "optional": true },
+        { "goName": "ShareDiffers", "jsonName": "shareDiffers", "goType": "*publicMutationShareDiffers", "tsType": "PublicMutationShareDiffers | null", "optional": true },
+        { "goName": "AgentGrantScope", "jsonName": "agentGrantScope", "goType": "string", "tsType": "\"full_access\" | \"access\"", "optional": true },
+        { "goName": "PageRuleCount", "jsonName": "pageRuleCount", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "CanManage", "jsonName": "canManage", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ViewerRole", "jsonName": "viewerRole", "goType": "string", "tsType": "PublicMutationRole" },
+        { "goName": "ViewerGuest", "jsonName": "viewerGuest", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "EmailSends", "jsonName": "emailSends", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "OwnLineOnly", "jsonName": "ownLineOnly", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationOperation",
+      "tsName": "PublicMutationOperation",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "PublicMutationAction" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "PublicMutationOperationStatus" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "publicMutationResponse",
+      "tsName": "PublicMutationResponse",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "publicMutationState", "tsType": "PublicMutationState" },
+        { "goName": "Operation", "jsonName": "operation", "goType": "publicMutationOperation", "tsType": "PublicMutationOperation" },
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicMutationStateResponse",
+      "tsName": "PublicMutationStateResponse",
+      "fields": [
+        { "goName": "State", "jsonName": "state", "goType": "publicMutationState", "tsType": "PublicMutationState" }
+      ]
+    },
+    {
+      "goName": "publicMutationOperationResponse",
+      "tsName": "PublicMutationOperationResponse",
+      "fields": [
+        { "goName": "Operation", "jsonName": "operation", "goType": "publicMutationOperation", "tsType": "PublicMutationOperation" }
+      ]
+    }
+  ]
+}

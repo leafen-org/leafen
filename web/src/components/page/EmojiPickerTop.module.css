@@ -1,0 +1,161 @@
+/* The pickers' top row, the emoji tab's and the Icons tab's alike, as
+   Notion's (seen 2026-09-30): the filter, random and the skin tone or the
+   icon color. Measured 2026-11-01 in a 408×390 picker: a 322×28 filter at
+   8,48, 28px random and skin tone 8 and 6 after it. */
+.top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-inline-end: 2px;
+}
+
+/* A magnifier inside the filter's start, 6 in as Notion's (its 16 box in a
+   field 6px in, seen 2026-11-21 at 1440: the words 28 in). */
+.searchMark {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 6px;
+  color: var(--text-tertiary);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.search {
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 1px 29px 1px 29px;
+  border: 0; background: var(--name-field-bg); box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  font-size: 14px;
+  outline: none;
+}
+
+.search:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.iconButton,
+.remove {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+}
+
+.iconButton {
+  width: 28px;
+  height: 28px;
+}
+
+/* Random and the icon color are outlined 28px buttons with a 14px dark
+   mark, as Notion's (random 2026-11-01; the color seen 2026-11-17 at 1440
+   and on phones: 1px, 6px round, 6 apart); the skin tone's hand, 20px, has
+   no outline. */
+.outlined {
+  border: 1px solid var(--button-outline);
+  color: var(--icon-primary);
+}
+
+/* "제거" stays grey under the pointer, its ground alone lit, as Notion's (seen 2026-11-24). */
+.remove {
+  padding: 0 8px;
+  color: var(--icon-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.iconButton:hover,
+.iconButton:focus-visible,
+.iconButton[aria-expanded="true"],
+.remove:hover,
+.remove:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.toneHand {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.toneHolder {
+  position: relative;
+}
+
+/* A touch screen's pickers, as Notion's: the reaction sheet (PhoneEmojiSheet,
+   seen 2026-11-14 at 411px) and a page icon's card (TouchPickerCard, both
+   tabs, seen 2026-11-17 in iPhone Safari at 402, Android Chrome at 411 and
+   iPad Safari at 834): a borderless filter, its 16px words 22 in after a
+   16px magnifier at its start, its buttons 4 after it and 6 apart with 16px
+   marks. An iPad's card keeps the desk's 28px row and buttons, flush under
+   the tab row; a phone's is a 45px band on the sheet's white, 16 in, its
+   buttons 30px, 9px of the sheet's ground under it. */
+:is([data-emoji-sheet="true"], [data-touch-card="true"]) .searchBox {
+  margin-inline-end: -2px;
+}
+:is([data-emoji-sheet="true"], [data-touch-card="true"]) .search {
+  padding-block: 0;
+  padding-inline: 22px 28px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+}
+:is([data-emoji-sheet="true"], [data-touch-card="true"]) .searchMark {
+  inset-inline-start: 0;
+  width: 16px;
+  height: 16px;
+}
+:is([data-emoji-sheet="true"], [data-touch-card="true"]) .iconButton svg {
+  width: 16px;
+  height: 16px;
+}
+/* An iPad's card starts its list 10 under the filter's row, the emoji tab's
+   and the Icons tab's alike (Notion's iPad Safari at 834, seen 2026-11-17:
+   the row at 271–299, both lists from 309); a phone's band says its own. */
+[data-touch-card="true"] .top {
+  margin-bottom: 10px;
+}
+[data-emoji-sheet="true"] .top,
+[data-phone="true"] [data-touch-card="true"] .top {
+  flex: none;
+  gap: 6px;
+  height: 45px;
+  margin: 0 0 9px;
+  padding: 0 16px;
+  background: var(--bg-app);
+}
+/* A page icon's card draws the band across its 8px sides, 1px under the
+   tab row (Notion's iPhone and Android, 2026-11-17). On an Apple phone the
+   band has a line of the faint border inside its foot, the reaction sheet's
+   as the card's (Notion's iPhone Safari at 402, light and dark: the card's
+   both tabs, the sheet's at 7:43 and 7:47 — its band 45–90 with the line,
+   the list 9 under it); none on Android (Notion's Chrome on a Galaxy A90 at
+   411, both tabs, two tabs of the browser apart). */
+[data-phone="true"] [data-touch-card="true"] .top {
+  margin: 1px -8px 9px;
+}
+[data-phone="true"][data-apple-touch] :is([data-touch-card="true"], [data-emoji-sheet="true"]) .top {
+  border-bottom: 1px solid var(--border-subtle);
+}
+[data-emoji-sheet="true"] .search,
+[data-phone="true"] [data-touch-card="true"] .search {
+  height: 30px;
+}
+[data-emoji-sheet="true"] .iconButton,
+[data-phone="true"] [data-touch-card="true"] .iconButton {
+  width: 30px;
+  height: 30px;
+}

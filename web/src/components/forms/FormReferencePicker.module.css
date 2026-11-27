@@ -1,0 +1,178 @@
+/* A form's relation or person answer (FormReferencePicker.tsx), as Notion's
+   respondents see it (seen 2026-11-04); the field and the open list are the
+   dropdown answer's (FormDropdown.module.css). */
+.count {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The chosen pages under a relation's field, each with × after its name. */
+.pickedPages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px;
+}
+
+.pickedPage {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  height: 21px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.pickedRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.pickedRemove:hover {
+  background: var(--bg-hover);
+}
+
+.personChip,
+.searchPerson {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 20px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* A relation's search line: 36 high on a faint ground, a line under it. */
+.pageSearch {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 6px 10px;
+  background: var(--bg-muted);
+  box-shadow: 0 1px 0 var(--border-default);
+}
+
+.options {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.page,
+.person {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.page {
+  min-height: 32px;
+  padding-block: 2px;
+  padding-inline: 6px 4px;
+  font-weight: 500;
+}
+
+.person {
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.page[data-active="true"],
+.person[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.pageIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-secondary, var(--text-secondary));
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* + or − at a page's end, shown under the pointer or the keys. */
+.rowAction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 8px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-secondary);
+  visibility: hidden;
+}
+
+.page[data-active="true"] .rowAction {
+  visibility: visible;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.state button {
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font: inherit;
+  cursor: pointer;
+}
+
+/* A relation's search line ends in its filter and where it searches, as Notion's (seen 2026-11-05). */
+.pageSearch input { flex: 1 1 auto; min-width: 0; }
+.filterWrap { position: relative; flex: none; }
+.filterButton { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border: 0; border-radius: 32px; background: transparent; color: var(--icon-secondary, var(--text-secondary)); cursor: pointer; }
+.filterButton:hover, .filterButton[aria-expanded="true"] { background: var(--bg-hover); }
+.filterButton > svg:last-child { margin: 0 -2.5px; }
+.filterMenu { position: fixed; z-index: 1; display: flex; flex-direction: column; width: 260px; padding: 6px 4px 5px; border-radius: var(--radius-menu); background: var(--bg-elevated); box-shadow: var(--shadow-menu); }
+.filterItem { display: flex; align-items: center; gap: 4px; min-height: 28px; padding-block: 0; padding-inline: 4px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--text-default); font: inherit; font-size: 14px; text-align: start; cursor: pointer; }
+.filterItem:hover { background: var(--bg-hover); }
+.filterCheck { display: inline-flex; flex: none; justify-content: center; width: 20px; }
+.searchWhere { display: inline-flex; flex: none; align-items: center; gap: 2px; margin-inline-start: 9px; padding-inline-start: 4px; color: var(--text-secondary); font-size: 14px; }
+.searchWhere b { margin-inline-end: 2px; color: var(--text-default); font-weight: 600; }

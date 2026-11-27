@@ -1,0 +1,38 @@
+/* A card's "페이지 콘텐츠": its page's first block at 12px on a faint tint,
+   8px in from its top and sides, as Notion's (seen 2026-10-08: 148px on a
+   medium board card; 2026-11-17: a gallery card's 8px 8px 0, the block's
+   own room inside that, CardPreviewBlocks). */
+div.pageContent {
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 8px 8px 0;
+  background: color-mix(in srgb, var(--text-default) 4%, var(--bg-app));
+  background-image: none;
+}
+
+div.blocks {
+  display: flex;
+  flex-direction: column;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+
+.blocks img {
+  max-width: 100%;
+}
+
+.cover { position: relative; }
+
+/* A cover that couldn't be loaded is left blank on the card's colour, and a
+   picture in the page's content the same, as Notion's (seen 2026-10-21). */
+.cover[data-image-failed="true"] {
+  background-color: transparent;
+}
+
+.blocks [data-image-failed] {
+  visibility: hidden;
+}

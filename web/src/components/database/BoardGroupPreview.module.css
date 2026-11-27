@@ -1,0 +1,375 @@
+/* Notion's "표 데이터 미리보기" (seen 2026-10-11): 800×496 in the window's
+   middle, 12px corners; a 48px head 24px in with the group's chip and its
+   28px tools; a table 24px in of 200px columns (the title 276px) with 36px rows. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--modal-shade);
+  box-sizing: border-box;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(800px, 100%);
+  height: min(496px, 100%);
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+.head {
+  display: flex;
+  flex: 0 0 48px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.group {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chip {
+  overflow: hidden;
+  padding: 0 6px;
+  border-radius: 4px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-inline-start: 8px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.tools {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: auto;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: 6px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--icon-secondary);
+}
+
+.tool:hover,
+.tool:focus-visible,
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.scroller {
+  flex: 1 1 auto;
+  overflow: auto;
+}
+
+/* The table starts 24px in, its heads 36px with their property's icon 8px
+   in and the name 8px after it in grey, the title's column 276px with its
+   page's icon before its name in 14px/500 (Notion's, seen 2026-11-12). */
+.table {
+  margin-inline-start: 24px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  min-width: 200px;
+  max-width: 200px;
+  height: 36px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.table th {
+  color: var(--text-secondary);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.columnHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.columnHead > svg {
+  flex: none;
+  color: currentColor;
+}
+
+.table th[data-title="true"],
+.table td[data-title="true"] {
+  position: relative;
+  min-width: 276px;
+  max-width: 276px;
+}
+
+.table td {
+  overflow: hidden;
+  color: var(--text-default);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.titleIcon {
+  display: inline-flex;
+  flex: none;
+}
+
+.titleText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "열기" as a table's title cell has it under the pointer: 6px down and 4px
+   in from the cell's end, with its middle-peek mark, in the rows' shared
+   look (RowOpenButton.module.css; Notion's, seen 2026-11-12). */
+.openRow {
+  composes: button from "../RowOpenButton.module.css";
+  position: absolute;
+  inset-inline-end: 4px;
+  top: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.openRow svg {
+  pointer-events: none;
+}
+
+.table tr:hover .openRow,
+.openRow:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* As wide as its rows, 180 to 250px, as Notion's (seen 2026-11-11). */
+.menu {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 180px;
+  max-width: 250px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem svg {
+  flex: none;
+  color: var(--icon-primary);
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.menuName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "⛁ 〈DB〉 열기" in the language's order, its name cut short before the
+   words: the words' space falls away in the row, as Notion's. */
+.menuOpen {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.menuDatabase {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* The database's 16px icon, 4px in and 2px before its name: the cylinder
+   grey, an emoji 11.2px in its box, as Notion's. */
+.menuItem .menuDatabaseIcon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-inline: 4px 2px;
+  color: var(--icon-secondary);
+  font-size: 11.2px;
+  line-height: 1;
+}
+
+.menuItem .menuDatabaseIcon svg {
+  color: inherit;
+}
+
+.menuDatabaseName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Its 44px filter bar under the head, 24px in, as Notion's. */
+.filters {
+  display: flex;
+  flex: 0 0 44px;
+  align-items: center;
+  min-width: 0;
+  padding: 0 24px;
+}
+
+/* With no row left, "필터 편집하기" under the head row, as Notion's. */
+.empty {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.editFilters {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.editFilters:hover {
+  background: var(--bg-hover);
+}
+
+/* A chart's group: its name 17px bold, the head 53 high with it 30 under
+   the top (Notion's, seen 2026-11-11). */
+.head[data-plain-title] {
+  flex-basis: 53px;
+  padding-top: 8px;
+}
+
+.headTitle {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Its rows by what the chart stacks by: each part's "▼" and chip over its
+   own table (Notion's, seen 2026-11-11). */
+.section + .section {
+  margin-top: 12px;
+}
+
+.sectionHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 4px;
+  margin-inline-start: 20px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.sectionHead:hover {
+  background: var(--bg-hover);
+}
+
+.sectionToggle {
+  color: var(--icon-secondary);
+  font-size: 10px;
+  transition: transform 120ms ease;
+}
+
+.sectionToggle[data-folded] {
+  transform: rotate(-90deg);
+}
+
+.sectionToggle[data-folded]:dir(rtl) {
+  transform: rotate(90deg);
+}

@@ -1,0 +1,420 @@
+/* ── Timeline view's table beside its bars (split from DatabaseTimelineCore.module.css) ── */
+/* Beside the bars, a table over the dates' left end, as Notion's (seen
+   2026-11-01 at 1280px): from the page's edge, its columns starting 8px
+   before the text, on the page's colour with a faint edge and shadow over
+   the canvas, which keeps its width; its head the dates' height with
+   "Aa 이름" on the days' line; rows 36px over faint lines. */
+/* Where the text starts and ends across the timeline, its table's inset and
+   how far that table covers the days change as a side peek opens or closes
+   beside the page (--page-wide-edge, DatabaseTimelineCore), and inherited they made every
+   element of the timeline work out its styles again in that frame (1,591
+   for 50 rows, 17–19 ms, NAS condition, CPU ×2, 2026-11-13). Only its heads,
+   its table's pane, "+ 새로 만들기", the group rows' starts and the bars' and
+   off-range markers' titles read them, so they are handed down along the way
+   to those alone, as a table's sticking cells are given theirs
+   (DatabaseTableChrome --table-frozen-zone). */
+@property --timeline-offset { syntax: "*"; inherits: false; }
+@property --timeline-offset-end { syntax: "*"; inherits: false; }
+@property --timeline-table-inset { syntax: "*"; inherits: false; }
+@property --timeline-cover { syntax: "*"; inherits: false; }
+.timeline > *,
+.timelineToolbar > *,
+.timelineBody,
+.timelineBody > *,
+.timelineScroll > .timelineCanvas,
+.timelineCanvas > :is(.timelineCreateLane, .timelineLanes),
+.timelineCreateLane > .timelineCreateRow,
+.timelineLanes > *,
+.timelineBar > .timelineBarOpen,
+.timelineBarOpen > .timelineBarLabel,
+.timelineOffRange > .timelineOffRangeButton,
+.timelineGroupHead > .timelineGroupHeadInner,
+.timelineGroupAdd > button,
+.timelineNewGroup > button {
+  --timeline-offset: inherit;
+  --timeline-offset-end: inherit;
+  --timeline-table-inset: inherit;
+  --timeline-cover: inherit;
+}
+.timeline {
+  --timeline-table-inset: max(0px, calc(var(--timeline-offset) - 8px));
+  --timeline-cover: 0px;
+}
+/* Across the page its table's columns start 96px into its box, the box at the
+   page's edge or 6px past it once the text stands centred (Notion's, seen
+   2026-11-03 at 1280 and 1600: 90 from the page's edge; 2026-11-15 at 1024:
+   96 from it, the text's start). */
+.timeline[data-page-wide="true"] {
+  --timeline-table-inset: 96px;
+}
+/* How far the table reaches over the days: the shown days start past it. */
+.timeline[data-show-table="true"] {
+  --timeline-cover: calc(var(--timeline-table-inset) + var(--timeline-table-width, 280px));
+}
+/* As tall as the days' area beside it (TimelineCanvas), not over the scrollbar under it.
+   Its own, not its rows': given them, its first measure styled every row again (~4 ms at CPU ×2, 2026-11-15). */
+@property --timeline-days-block {
+  syntax: "*";
+  inherits: false;
+}
+.timelineTablePane {
+  position: absolute;
+  top: 0;
+  height: var(--timeline-days-block, 100%);
+  inset-inline-start: 0;
+  z-index: 5;
+  display: grid;
+  grid-template-rows: 68px auto;
+  align-content: start;
+  width: calc(var(--timeline-table-inset) + var(--timeline-table-width, 280px));
+  min-width: 0;
+  padding-inline-start: var(--timeline-table-inset);
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--bg-app);
+  /* Its edge a line past its width, which its columns fill. */
+  box-shadow: calc(1px * var(--inline-sign, 1)) 0 0 var(--border-subtle), 0 4px 12px rgba(25, 25, 25, 0.027), 0 1px 2px rgba(25, 25, 25, 0.02);
+}
+/* "«" 28×24 ending 9px inside the table and the month's name 16px past
+   its edge, as Notion's (seen 2026-11-11 at 1440: toggle 609–637, table's
+   edge 646, month at 662). */
+.timeline[data-show-table="true"] .timelineHeading {
+  gap: 25px;
+  padding-inline-start: calc(var(--timeline-table-inset) + var(--timeline-table-width, 280px) - 37px);
+}
+/* Its ground only past the table, which holds its own line there: a grouped
+   table's first head beside the month, "«" at that line's end (Notion's,
+   seen 2026-11-15 at 1440: "▼ 시작 전" at 366 and "«" at 609 on the month's
+   line, the table over the canvas's band). The table's part lets presses
+   through to that head. */
+.timeline[data-show-table="true"]:not(:global([data-phone="true"]) *) .timelineHeading {
+  position: relative;
+  background: none;
+  pointer-events: none;
+}
+.timeline[data-show-table="true"]:not(:global([data-phone="true"]) *) .timelineHeading > * {
+  pointer-events: auto;
+}
+.timeline[data-show-table="true"]:not(:global([data-phone="true"]) *) .timelineHeading::before {
+  --timeline-cover: inherit;
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline: var(--timeline-cover) 0;
+  z-index: -1;
+  background: var(--bg-app);
+  pointer-events: auto;
+}
+/* Held at the page's top, a grouped table's first head and columns' names keep the page's ground under them. */
+.timelineTablePane[data-grouped="true"] [data-sticky-head] {
+  background: var(--bg-app);
+}
+.timeline[data-show-table="true"] .timelineTableToggle {
+  width: 28px;
+  height: 24px;
+  margin-top: -3.5px;
+}
+.timelineTableHead {
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+  padding-block: 0 5.5px;
+  padding-inline: 9px 0;
+  box-shadow: inset 0 -1px 0 var(--border-subtle), inset 0 1px 0 var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+/* Held at the page's top over its rows (useStickyViewHeads), on the page's ground. */
+.timelineTablePane > .timelineTableHead {
+  background: var(--bg-app);
+}
+.timelineTableNameHead {
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 7px;
+  min-width: 160px;
+}
+.timelineTableCell {
+  flex: 0 0 auto;
+  min-width: 0;
+  padding: 0 8px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A column's head as the title's: its property's icon 9px in, its name 7px
+   on, in 14px, as Notion's (seen 2026-11-12 at 1440: "# 금액" 9 and 32 into
+   its column). */
+.timelineTableColumnHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding-inline-start: 9px;
+  font-size: 14px;
+}
+.timelineTableColumnName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timelineTableCell[data-wrap="true"] {
+  white-space: normal;
+}
+/* A cell written in as a table's (TimelineTableCell): an editable value where
+   Notion's stands (seen 2026-11-12 at 1440), 8px in from its column's edges,
+   its own button holding 6 of them, level with the row's middle; chosen, it
+   wears a table cell's ring, and its value is written in a table cell's box
+   (DatabaseTableRows.module.css). Its name too: the page's icon 8px in and
+   the title 32px in, 14px/500 (seen 2026-11-01 at 1280px). */
+.timelineTableCell[data-table-cell] {
+  --cell-line: 35px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-inline: 2px;
+  overflow: visible;
+  outline: none;
+}
+/* The name hangs from the cell's top as a table's title (its first line the
+   row's), its comment count right after it on that line. */
+.timelineTableCell[data-title="true"] {
+  flex: 1 1 auto;
+  align-items: flex-start;
+  min-width: 120px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* Its value's edit button keeps to the value's line, or a long status makes the row two lines tall. */
+.timelineTableCell[data-table-cell] > [data-cell-editor] > * > * {
+  flex-wrap: nowrap;
+}
+/* Its value's box covers the cell with its column's line and the row's: the
+   column's width, 2px over the row (Notion's, seen 2026-11-24 in two tabs:
+   280×38 over a 280px column's name in a 36px row, 1px up and in). */
+.timelineTableCell[data-table-cell]:not(:global([data-phone="true"]) *) > .cellEditor:has(.cellInput:is(:focus, [data-field-held])) {
+  width: max(100%, 240px);
+  min-height: calc(100% + 3px);
+}
+.timelineTableColumnResize {
+  position: absolute;
+  top: 0;
+  inset-inline-end: -3px;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+}
+.timelineTableColumnResize:hover,
+.timelineTableColumnResize:focus-visible {
+  background: var(--accent-blue);
+  outline: none;
+}
+.timelineTableRows {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: auto;
+  min-width: 0;
+}
+/* Rows 36px over a faint line, a page's icon 8px in and its title 32px in,
+   14px/500, as Notion's timeline (seen 2026-11-01 at 1280px). */
+.timelineTableTreeRow {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  min-height: 36px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+/* "+ 새로 만들기" under them, lighter, its plus 8px in. */
+.timelineTableCreate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.timelineTableCreate:hover,
+.timelineTableCreate:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* Its calculations' row under them is 36px, its buttons the table's foot's
+   (TableSummaryRow; Notion's, seen 2026-11-15 at 1024 and 1440: "계산" 36×26
+   ending 4px before the table's edge, "개수 46" 53×21). */
+.timelineTableSummary {
+  height: 36px;
+}
+/* On its database's own page the row is 51px, its calculations in its middle
+   26px under "+ 새로 만들기", the area ending 43px under that (Notion's, seen
+   2026-11-15 at 1440×723: "개수 46" centred at 690.9 under a row ending at 664.9). */
+:global([data-database-page="true"]) .timelineTableSummary {
+  height: 51px;
+}
+.timelineTableSummary > .tableSummary,
+.timelineTableSummary .summaryCell {
+  height: 100%;
+  min-height: 0;
+}
+/* A grouped table has no head of its own: each group's head and its
+   columns' names sit in its rows, the first beside the canvas's dates, as
+   Notion's (seen 2026-11-01 at 1280px). */
+.timelineTablePane[data-grouped="true"] {
+  grid-template-rows: auto;
+}
+.timelineTablePane[data-grouped="true"] .timelineTableRows {
+  grid-auto-rows: auto;
+  padding: 0;
+}
+.timelineTableHead[data-group-columns="true"] {
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px;
+  border-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+.timelineTableHead[data-group-columns="true"] .timelineTableNameHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.timelineTableRow {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 120px;
+  padding: 0 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+}
+.timelineTableRow:hover,
+.timelineTableRow:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.timelineTableRow > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Its comment count 5px after the name, kept whole (Notion's, seen 2026-11-15). */
+.timelineTableCell[data-title="true"] > [data-row-comment-count],
+.timelineTableRow > [data-row-comment-count] {
+  flex: none;
+  margin-inline-start: -1px;
+  overflow: visible;
+}
+/* A group's name keeps its width. On the days its head runs the canvas's
+   width and the name never wants to shrink; beside a table the head is the
+   table's width rather than its words', the name cut short only where the
+   table is narrower. Drawn as wide as its words, a head is reckoned by Safari
+   a fraction of a pixel short of the name, which cut "완료" to "완…" (seen
+   2026-11-15 in iPad Safari at 834: the name 37.0 wide for 37.8 of words;
+   Chrome drew it whole, as Notion's). */
+.timelineLanes .timelineGroupHeadInner > .tableGroupLabel {
+  flex-shrink: 0;
+}
+.timelineGroupHead[data-table="true"] > .timelineGroupHeadInner {
+  width: 100%;
+}
+/* A row's ⠿ 20px before it, 3px down its first line, shown with the pointer
+   over the row, as Notion's timeline table's (seen 2026-11-24 in Chrome at
+   1685, dpr 1: 18×24 ending 2px before the row, 3px under its top). */
+.timelineTableTreeRow {
+  position: relative;
+}
+/* A table row's "+" 44px before it (Notion's, seen 2026-11-24: 24×24, 3px down), shown as its ⠿ is. */
+.timelineRowAdd {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: -44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-tertiary);
+  opacity: 0;
+}
+.timelineRowAdd svg {
+  pointer-events: none;
+}
+.timelineRowHandle {
+  position: absolute;
+  top: 3px;
+  inset-inline-start: -20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-tertiary);
+  cursor: grab;
+  opacity: 0;
+}
+:global(:root:not([data-pointer-still])) .timelineTableTreeRow:hover > .timelineRowHandle,
+:global(:root:not([data-pointer-still])) .timelineTableTreeRow:hover > .timelineRowAdd,
+.timelineTableTreeRow[data-dragging="true"] > .timelineRowHandle,
+.timelineRowHandle:focus-visible,
+.timelineRowAdd:focus-visible {
+  opacity: 1;
+}
+.timelineRowHandle:hover,
+.timelineRowHandle:focus-visible,
+.timelineRowAdd:hover,
+.timelineRowAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A key pressed in the table, or in a picker opened from it, puts away what
+   the row under a still pointer shows — its "+", its ⠿ and its "열기" —
+   until the mouse moves, as a table's (useKeysHideRowTools; Notion's
+   timeline table, seen 2026-11-26). A row being dragged keeps its ⠿. */
+.timelineTableRows[data-keys-pressed="true"] .timelineTableTreeRow:not([data-dragging="true"]) > :is(.timelineRowHandle, .timelineRowAdd):not(:focus-visible),
+.timelineTableRows[data-keys-pressed="true"] .timelineTableTreeRow [data-table-row-open]:not(:focus-visible) {
+  opacity: 0;
+  pointer-events: none;
+}
+.timelineRowHandle svg {
+  pointer-events: none;
+}
+/* Where a row carried by its ⠿ or its bar lands: a 4px line in Notion's faint
+   blue from the lanes' edge down, across the days and under the table; a row
+   carried by its bar has the bar itself faint with the pointer up and down, a
+   ⠿'s copies of the bars it carries going with the pointer instead
+   (useTimelineRowReorder; Notion's, seen 2026-11-24 in Chrome: 4px
+   rgba(35,131,226,.43) the canvas's width, the bar at 40%). */
+.timelineDropLine {
+  grid-column: 1 / -1;
+  z-index: 4;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+.timelineDropLine[data-side="before"] {
+  align-self: start;
+}
+.timelineDropLine[data-side="after"] {
+  align-self: end;
+  margin-block-end: -4px;
+}
+.timelineLanes > [data-row-carried] {
+  z-index: 4;
+  opacity: 0.4;
+  translate: var(--timeline-carried-x, 0px) var(--timeline-carried-y, 0px);
+  pointer-events: none;
+}

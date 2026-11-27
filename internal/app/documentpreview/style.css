@@ -1,0 +1,69 @@
+/* The document preview's page, on Leafen's colors; the light view's own rules are the Office app's (light.css, a copy). */
+:root { color-scheme: light; --ink: #191919; --muted: #6b6b6b; --line: #e3e2e0; --back: #f1f1ef; --bar: rgba(247, 247, 245, .94); }
+:root[data-theme="dark"] { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94);
+  --zoom-back: #191919; --zoom-line: #2c2c2b; --zoom-outline: rgba(255, 255, 235, .1); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .94);
+  --zoom-back: #191919; --zoom-line: #2c2c2b; --zoom-outline: rgba(255, 255, 235, .1); } }
+html, body { margin: 0; height: 100%; background: var(--back); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+body { display: flex; flex-direction: column; }
+/* A Word or PowerPoint file in a page's embed (preview.js embed), as Notion's draws one (measured 2026-11-12 at 1440
+   dark, a full-width embed made by upload): the view runs 2px past the frame's inside, under its line, so its bar
+   (Notion's colors) shows 13px of 15; each page or slide is drawn 2px narrower than its white, which runs on 2px past
+   its end and 8px under it — 657 white, 655 drawn in a 702px frame — 8px above the first, 16px before, 16px between
+   the white and the bar, 8px between and 16px under the last, flat. The white reaches into the room after the
+   drawing, which the view doesn't scroll across. */
+:root.embed .light.docx, :root.embed .light.pptx { padding-block: 8px; padding-inline: 16px 18px; overflow-x: hidden;
+  scrollbar-color: rgba(125, 122, 117, .5) transparent; }
+:root.embed .light.docx .docx-wrapper { align-items: flex-start; }
+:root.embed .light.docx .fit, :root.embed .light.pptx [data-slide-index] { margin-inline: 0 !important; margin-block: 0 8px !important;
+  padding-inline-end: 2px; padding-block-end: 8px; background: #fff; }
+:root.embed .light.docx section.docx { margin: 0 0 8px; box-shadow: none; }
+:root.embed .light.docx .fit > section.docx { margin: 0; box-shadow: none; }
+/* A PDF (preview.js showPDF): pdf.js's pages, white on the page's back, as the docx pages. */
+.light.pdf { position: relative; padding: 0; }
+/* Its scrollbar's room kept even with nothing to scroll, so a page stands where Notion's does (2026-11-06: 995 of 1010). */
+.pdfScroll { position: absolute; inset: 0; overflow-x: auto; overflow-y: scroll; }
+/* Each page 8px below the last, white for 8px under its picture and with no
+   shadow, as Notion's (measured 2026-11-06: an A4 page's white at 56 to 827
+   under a 48px head). Above pdf.js's own rule, which comes in after this file. */
+.light.pdf .pdfViewer .page { box-shadow: none; border: 0; border-bottom: 8px solid #fff; margin: 8px auto 0; }
+/* The PDF's zoom bar, as Notion's: 44px, its four controls 8px apart in the middle. */
+.zoom[hidden] { display: none; }
+/* Dark, on the page's own ground under Notion's 1px line (measured 2026-11-06: #191919, #2c2c2b). */
+.zoom { flex: none; display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; box-sizing: border-box;
+  background: var(--zoom-back, var(--bar)); border-top: 1px solid var(--zoom-line, var(--line)); --press: rgba(55, 53, 47, .06); }
+:root[data-theme="dark"] .zoom { --press: rgba(255, 255, 255, .055); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .zoom { --press: rgba(255, 255, 255, .055); } }
+.zoom button { font: inherit; font-size: 14px; height: 24px; padding: 0 6px; border: 0; border-radius: 6px; background: none; color: var(--ink); cursor: pointer; }
+.zoom button:hover, .zoom button[aria-pressed="true"] { background: var(--press); }
+.zoom .icon { display: inline-flex; align-items: center; justify-content: center; width: 24px; padding: 0; color: var(--muted); }
+#zoomReset { font-weight: 500; box-shadow: inset 0 0 0 1px var(--zoom-outline, var(--line)); }
+/* A PowerPoint file presented (preview.js showPresentation): one slide whole in the frame, in its middle, on black. */
+:root.presenting, :root.presenting body { background: #000; }
+.light.present { display: flex; align-items: center; justify-content: center; padding: 0; overflow: hidden; }
+.slideStage { flex: none; width: min(100vw, calc(100vh * var(--slide-ratio, 1.7778))); }
+.slideStage > div { box-shadow: none !important; }
+/* A sheet drawn as a plain table (table.js), as Notion's for a sheet that isn't an .xlsx file (measured 2026-11-15
+   at 1440 dark: the page's ground #191919, the head row and the numbers on #202020, 1px lines #2c2c2b under and at
+   the end of each cell, the head's words #ada9a3, the cells' #f0efed, the numbers' and an error's "—" #7d7a75; light unmeasured, on
+   Notion's light tokens). The head row and the numbers stay in view as it scrolls. */
+.light.table { --table-ground: #ffffff; --table-bar: #f7f7f5; --table-line: #e9e9e7; --table-head: #787774; --table-ink: #37352f;
+  --table-faint: #a5a29a; padding: 0; overflow: auto; background: var(--table-ground); }
+:root[data-theme="dark"] .light.table { --table-ground: #191919; --table-bar: #202020; --table-line: #2c2c2b; --table-head: #ada9a3;
+  --table-ink: #f0efed; --table-faint: #7d7a75; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .light.table { --table-ground: #191919; --table-bar: #202020;
+  --table-line: #2c2c2b; --table-head: #ada9a3; --table-ink: #f0efed; --table-faint: #7d7a75; } }
+.tableGrid { display: grid; grid-auto-rows: 31px; min-width: 100%; width: max-content; }
+.tableGrid > div { display: flex; align-items: center; min-width: 0; box-sizing: border-box; padding: 0 12px; overflow: hidden;
+  border: 0 solid var(--table-line); border-block-end-width: 1px; border-inline-end-width: 1px; }
+.tableGrid > div > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tableGrid > .tableRest { border-inline-end-width: 0; }
+.tableCell, .tableHead { font-family: Arial, Arimo, "Liberation Sans", sans-serif; font-size: var(--table-text, 16px); line-height: 1.3; }
+.tableHead { font-size: var(--table-head-text, 11px); }
+.tableCell { color: var(--table-ink); }
+.tableCell[data-end] { justify-content: flex-end; }
+.tableCell[data-error] { color: var(--table-faint); }
+.tableHead, .tableCorner { position: sticky; inset-block-start: 0; z-index: 1; background: var(--table-bar); color: var(--table-head); }
+.tableCorner, .tableNumber { position: sticky; inset-inline-start: 0; justify-content: flex-end; background: var(--table-bar); }
+.tableCorner { z-index: 2; }
+.tableNumber { color: var(--table-faint); font-size: 12px; line-height: 18px; font-variant-numeric: tabular-nums; }

@@ -1,0 +1,146 @@
+/* "페이지 위치:"'s window (Notion, seen 2026-10-01): 400×420 beside the
+   turn list, a search field, "추천" in 12px gray and 28px page rows that
+   open with a chevron. */
+.picker {
+  position: fixed;
+  z-index: 1003;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.search {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 8px 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: var(--name-field-ring);
+  color: var(--text-tertiary);
+}
+
+.search:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 4px 6px;
+}
+
+.heading {
+  padding: 8px 8px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding-inline-end: 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* The pointer grounds the row under it apart from the one the arrows lit,
+   as Notion's "페이지 위치:" (seen 2026-11-14). */
+.row:not([aria-disabled="true"]):hover,
+.row[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.row[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.expand,
+.expandSpace {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.expand:hover {
+  background: var(--bg-active);
+}
+
+.expand svg {
+  transition: transform 120ms ease;
+}
+
+.expand[data-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "〈이름〉 개인 페이지" (seen 2026-10-02): the owner's initial in 11px gray
+   where a page's icon goes, and a 16px gray lock after the name. */
+.owner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.lock {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+}
+
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.empty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}

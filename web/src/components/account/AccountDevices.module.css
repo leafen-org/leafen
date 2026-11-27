@@ -1,0 +1,334 @@
+/* The account's devices, as Notion's "기기" (seen 2026-10-12): a table of
+   name, last activity and place under a line that signs every other device
+   out, the first three rows shown and the rest a click away. */
+/* "모든 기기에서 로그아웃" and "내 계정 삭제": a settings row's red button. */
+.softDanger {
+  composes: softDangerButton from "../WorkspaceSettingsChrome.module.css";
+}
+
+.devices {
+  width: 100%;
+  /* 20 under the row above; a page that spaces its rows otherwise, as far as its rows (SettingsTouchWindow). */
+  margin-top: var(--settings-row-gap, 20px);
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13px;
+}
+
+.devices th {
+  height: 32px;
+  padding: 0 4px;
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-align: start;
+}
+
+.devices td {
+  height: 40px;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.devices th:last-child,
+.devices td:last-child {
+  width: 80px;
+  text-align: end;
+}
+
+/* A time and a place are read whole: they wrap rather than end in "…"
+   (2026-10-26: "2026년 10월 26일 오후 6…" in a 1024px window); a device's name
+   keeps one line, its whole user agent in the title. */
+.devices td:nth-child(2),
+.devices td:nth-child(3) {
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.deviceName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--text-default);
+}
+
+.deviceName svg {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.deviceName > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.thisDevice {
+  color: var(--accent-blue);
+  font-size: 12px;
+}
+
+/* "마지막 활동 ⓘ" names its hint in a tip and greys under the pointer, as Notion's. */
+.lastActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: -4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: default;
+}
+
+.lastActive:hover {
+  background: var(--bg-hover);
+}
+
+.lastActive svg,
+.titleHint svg {
+  color: var(--icon-tertiary);
+}
+
+.titleHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+}
+
+.rowButton {
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: var(--radius);
+  color: var(--text-default);
+  font-size: 12px;
+}
+
+.rowButton:hover:not(:disabled),
+.rowButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 4px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.more:hover,
+.more:focus-visible {
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.userId {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.userId code {
+  overflow-wrap: anywhere;
+}
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+}
+
+.copy:hover,
+.copy:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "새 기기 등록" (Leafen's own, account_device_codes.go): a row like the
+   others, opening a QR beside the steps and the code to type. */
+.addDevice {
+  margin-top: 4px;
+  /* The row after it stands off as rows after rows do (24px; SettingsTouchWindow). */
+  margin-bottom: var(--settings-row-gap, 24px);
+}
+
+.addDevicePanel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin: 8px 0 4px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+}
+
+/* The QR's place and the code sit on a code block's see-through fill
+   (--bg-code-block), one step over whatever holds them: the settings panel
+   and the workspace menu's "새 기기 로그인" window alike (2026-11-12: on
+   --bg-secondary the code's chip vanished into that window's own ground). */
+/* The QR, and under it the host of the address it opens. */
+.addDeviceScan {
+  display: grid;
+  flex: none;
+  gap: 6px;
+  justify-items: center;
+}
+
+.addDeviceHost {
+  max-width: 176px;
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.addDeviceQR {
+  flex: none;
+  width: 176px;
+  height: 176px;
+  border-radius: 6px;
+  background: var(--bg-code-block);
+}
+
+.addDeviceQR img {
+  display: block;
+  border-radius: 6px;
+}
+
+.addDeviceSteps {
+  display: grid;
+  flex: 1 1 200px;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.addDeviceSteps > p {
+  margin: 0;
+}
+
+/* What scanning does, the panel's own line. */
+.addDeviceSteps > .addDeviceLead {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.addDeviceCode {
+  width: fit-content;
+  /* One piece: it isn't broken at its hyphen. */
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--bg-code-block);
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.addDeviceJoined {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* "등록된 기기" is a line of its own under the name, as "이 기기" is, and
+   starts where they do. */
+.registered {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.locationCredit {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.locationCredit a {
+  color: inherit;
+}
+
+/* On a phone's settings each device is a row as the rows above it
+   (AccountSettingsPhone.module.css): its name over when and where, its
+   "로그아웃" at its end, 48px from the next with a line halfway, and no
+   heads over them. */
+:global([data-phone="true"] [data-settings-phone]) .devices {
+  display: block;
+  margin-top: 0;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices thead {
+  display: none;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices tbody {
+  display: block;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices tr {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  row-gap: 4px;
+  align-items: center;
+  margin-top: 23.5px;
+  padding-top: 23.5px;
+  border-top: 1px solid var(--border-default);
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td {
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  line-height: 18px;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td:nth-child(1) {
+  grid-area: 1 / 1 / 2 / 3;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td:nth-child(2) {
+  grid-area: 2 / 1;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td:nth-child(3) {
+  grid-area: 2 / 2;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td:nth-child(3)::before {
+  content: "·";
+  margin-inline: 4px;
+}
+
+:global([data-phone="true"] [data-settings-phone]) .devices td:nth-child(4) {
+  grid-area: 1 / 3 / 3 / 4;
+  margin-inline-start: 12px;
+}

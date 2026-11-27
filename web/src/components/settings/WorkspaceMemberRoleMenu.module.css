@@ -1,0 +1,132 @@
+/* The members table's role menu, as Notion's (seen 2026-10-12): 264px,
+   "역할 선택" over 60px rows of an icon, the role and a 12px line, the
+   current one checked, then a 28px "워크스페이스에서 제거". */
+/* Its button: 28px at its cell's 12px, 8px in, 6px corners, the chevron 6px
+   on (Notion's "워크스페이스 소유자 ⌄", seen 2026-11-14), its box as wide as
+   its glyph (RoleChevron). In the members table it is at most 160 wide and
+   a longer role's name is cut with "…" inside it (read 2026-11-18 from its
+   own rule and seen on Notion's French screen at 1440: "Propriétaire de
+   l’esp…"). */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+[role="cell"] .button {
+  max-width: 160px;
+}
+
+[role="cell"] .button > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.button svg {
+  color: var(--icon-tertiary);
+}
+
+.button:hover,
+.button:focus-visible,
+.button[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.button:disabled {
+  cursor: default;
+}
+
+.menu {
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  width: 264px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.title {
+  padding: 6px 8px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.menu [data-native-menu-item] {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 18px;
+  text-align: start;
+}
+
+/* Its marks in the words' colour, as Notion's (seen 2026-11-12). */
+.menu [data-native-menu-item] > svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: inherit;
+}
+
+.menu [data-native-menu-item]:hover,
+.menu [data-native-menu-item][data-focused="true"] {
+  background: var(--bg-hover);
+}
+
+.menu [data-native-menu-item][aria-checked="true"]::after {
+  content: "✓";
+  margin-inline-start: auto;
+  padding-inline-start: 8px;
+  color: var(--text-default);
+}
+
+.menu [data-native-menu-item][aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.text span:last-child:not(:first-child) {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+  white-space: normal;
+}
+
+/* On a touch screen wider than a phone its rows fill the middle window
+   (WorkspaceMemberRoleTouchWindow), its leaving red as Notion's iPad's. */
+.menu.windowList {
+  z-index: auto;
+  width: auto;
+  max-width: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.menu [data-native-menu-item][data-danger="true"] {
+  color: var(--menu-danger);
+}

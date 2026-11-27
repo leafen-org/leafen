@@ -1,0 +1,371 @@
+
+/* Day/Week/Month segmented zoom control */
+.timelineZoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-end: 4px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+}
+
+/* Wrapper that lets a narrow bar's title run beyond the bar. A bar whose
+   start lies past the shown days' start, or under the table, keeps its
+   title 27px past that edge, after the arrow there, as Notion's (seen
+   2026-11-11: "← 제목" beside the table's edge). */
+.timelineBarLabel {
+  position: sticky;
+  inset-inline-start: calc(var(--timeline-cover, 0px) + 27px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+/* A bar is at least 11px, a moment under the hour zooms (an end in its
+   start's quarter hour, or a time with no end) an 11px stub at its start, its
+   title on past it, as Notion's (seen 2026-11-24 in Chrome at 1685, two tabs:
+   23:00–23:00, 13:02–13:07 and 13:30 alone at the day and hours zooms, a
+   quarter hour at the day zoom and a day at the quarter zoom); one too short
+   for its title keeps no room inside for it. */
+.timelineBar {
+  min-width: 11px;
+}
+.timelineBar[data-narrow="true"] {
+  overflow: visible;
+  padding-inline: 0;
+}
+.timelineBar[data-moment="true"] {
+  justify-self: start;
+  width: 11px;
+}
+/* A narrow bar's title starts in the bar, 6px in, and runs on past its end, as Notion's (seen 2026-11-04);
+   pressed there, it opens its row as the bar does (seen 2026-11-12). */
+.timelineBar[data-narrow="true"] .timelineBarLabel {
+  position: absolute;
+  inset-inline-start: 6px;
+  max-width: 800px;
+}
+.timelineBar[data-narrow="true"] .timelineBarTitle {
+  white-space: nowrap;
+}
+/* A bar the shown days' start cuts, its shown part too short for its title:
+   the title runs on past the bar's end where TimelineOffRangeMarkers puts it,
+   as Notion's (seen 2026-11-11). */
+.timelineBar[data-title-out="true"] {
+  overflow: visible;
+}
+.timelineBar[data-title-out="true"] .timelineBarLabel {
+  position: absolute;
+  inset-inline-start: var(--timeline-title-out, 6px);
+  max-width: 800px;
+}
+.timelineBar[data-title-out="true"] .timelineBarTitle {
+  white-space: nowrap;
+}
+/* A bar with its sub-items' toggle, as Notion's (seen 2026-11-03, a one-day
+   bar 43px at any zoom): at least 43px, the 24px toggle at its start and the
+   title right after it, running on past the bar's end. */
+.timelineBar[data-subitem-toggle="true"] {
+  min-width: 43px;
+  padding-inline-start: 0;
+  gap: 0;
+  overflow: visible;
+}
+.timelineBar[data-subitem-toggle="true"] .timelineBarLabel {
+  flex: none;
+  overflow: visible;
+}
+.timelineBar[data-subitem-toggle="true"] .timelineBarTitle {
+  max-width: none;
+}
+
+/* Empty-state inside the lanes area when no bars fall in the visible window */
+.timelineLanesEmpty {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.timelineLanesEmpty button {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 13px;
+}
+.timelineLanesEmpty button:hover,
+.timelineLanesEmpty button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+:global([data-phone="true"]) .calendarToolbar {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 6px;
+}
+
+:global([data-phone="true"]) .calendarControls {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+:global([data-phone="true"]) .timelineZoom {
+  margin-inline-end: 0;
+}
+
+:global([data-phone="true"]) .timelineBody[data-show-table="true"] {
+  display: block;
+}
+
+/* A phone's days, their lines and bars run to the screen's edges past the
+   page's margins, the timeline standing in the middle, as Notion's (seen
+   2026-11-15 at 402pt in iOS Safari: its days' box 0–402, 10일 cut at the
+   left edge and 20일 at the right, where the page's text starts 24 in).
+   What it runs past (`--timeline-bleed`, the page's margin beside the
+   timeline) keeps "+ 새로 만들기" where the page's text is. */
+:global([data-phone="true"]) .timelineBody {
+  container-type: inline-size;
+}
+:global([data-phone="true"]) .timelineScroll {
+  --timeline-bleed: calc((100vw - 100cqw) / 2);
+  max-width: none;
+  margin-inline: calc(-1 * var(--timeline-bleed));
+}
+
+:global([data-phone="true"]) .timelineTablePane {
+  display: none;
+}
+
+:global([data-phone="true"]) .calendarControls::-webkit-scrollbar {
+  display: none;
+}
+
+:global([data-phone="true"]) .calendarGrid {
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  overflow-x: hidden;
+}
+
+:global([data-phone="true"]) .calendarWeekday {
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 2px;
+  font-size: 11px;
+}
+
+:global([data-phone="true"]) .calendarCell {
+  min-height: 92px;
+}
+
+:global([data-phone="true"]) .calendar[data-layout="week"] .calendarCell {
+  min-height: 260px;
+}
+
+:global([data-phone="true"]) .calendarDayHead {
+  justify-content: center;
+  height: 24px;
+  padding: 4px 3px 0;
+  font-size: 11px;
+}
+
+:global([data-phone="true"]) .calendarCell[data-today="true"] .calendarDayHead > span {
+  min-width: 20px;
+  height: 20px;
+}
+
+:global([data-phone="true"]) .calendarCards {
+  gap: 2px;
+  padding: 1px 2px 4px;
+}
+
+:global([data-phone="true"]) .calendarCard {
+  min-height: 24px;
+  padding: 3px;
+  border-radius: 3px;
+  box-shadow: none;
+}
+
+:global([data-phone="true"]) .calendarCardTitle {
+  min-height: 0;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+:global([data-phone="true"]) .calendarCardMeta {
+  display: none;
+}
+
+/* Shared backdrop for cell/menu popovers */
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 52;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* "+ 새로 만들기" under the bars, a 36px line across the days whose words
+   stay at the shown start (DatabaseTimelineCore .timelineCreateRow): pointed
+   at, they give way to the bar a new row would be under the pointer, a 34px
+   box in the hover ground, round 6, from 2px past its first column to 1px
+   short of its last one's end, the crosshair over it, as Notion's (seen
+   2026-11-15 at 1440: rgba(255, 255, 255, 0.055) at 1001.5 by 197 for five
+   40px days from 999.5; TimelineCreateLane). */
+.timelineCreateLane {
+  position: relative;
+  min-height: 36px;
+}
+/* A group's, in its own lane across the days, over their shading as the
+   group's head (TimelineGroupLanes). */
+.timelineLanes > .timelineCreateLane {
+  grid-column: 1 / -1;
+  z-index: 2;
+}
+.timelineCreateLane[data-pointed="true"] {
+  cursor: crosshair;
+}
+/* Its block chosen, the days' grid ends with the bars' last lane, as the
+   chosen band does (EditorBlockSelection): "+ 새로 만들기" stands under it on
+   the bars' ground, the weekends' shade and today's line not running on
+   through it to the area's foot, as Notion's (seen 2026-11-14 and 2026-11-15
+   at 1440, its table shut: the shade 176 tall from the months' top, 215 when
+   not chosen). Its ground runs on over the area's last 4px, to the faint
+   line at its foot (DatabaseTimelineCore), drawn again over today's line. */
+:global([data-block-type="inline_database"][data-selected="true"]) .timeline:not([data-show-table="true"]):not(:global([data-phone="true"]) *) .timelineCanvas > .timelineCreateLane {
+  z-index: 1;
+  background: var(--timeline-body);
+  box-shadow: 0 3px 0 var(--timeline-body), 0 4px 0 var(--border-default);
+}
+.timelineCreateLane[data-pointed="true"] > .timelineCreateRow {
+  visibility: hidden;
+}
+.timelineCreateGhost {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-inline: 6px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* On a database's own page the days run on under the page's margin
+   (DatabaseTimelineCore .timelineScroll), and the month's ground runs on to
+   their start, so a month's name passing under it is hidden, as Notion's
+   (seen 2026-11-15 at 1440: its box 270–474 over the months' line, "11월"
+   at 280 under it hidden, "12월" at 880 shown; 2026-11-12 in Safari at
+   1194: "11월" over 11월 1일 under it). */
+:global([data-database-page="true"]) .timeline:not([data-show-table="true"]):not(:global([data-phone="true"]) *) .timelineHeading {
+  position: relative;
+}
+:global([data-database-page="true"]) .timeline:not([data-show-table="true"]):not(:global([data-phone="true"]) *) .timelineHeading::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 100%;
+  width: 96px;
+  background: inherit;
+}
+/* A month running under the controls fades out over the 30px before them,
+   as Notion's (seen 2026-11-15 at 1440, a table of three or four columns
+   leaving the chart narrow: "2026년 11" fading under "월 ⌄"): a band of
+   the page's colour from 20% of it, over the controls' 24px line and the
+   2.5px around it (7px down to the row's foot), not a cut. */
+.timelineControls {
+  position: relative;
+}
+/* The controls hold the row's end however narrow the row, over the month
+   where they meet it, and controls wider than the row run on past its
+   start: Notion's two boxes, the month's from the start and the controls'
+   from the end, the later over the earlier (seen 2026-11-19 at 606 in
+   Arabic and Korean: the controls held at the days' end over "نوفمبر 2026",
+   and "2026년 11" up to them, its "월" under them). Over a sticky head's
+   own placing (DatabaseStickyHeads), which keeps sliding it down. */
+.timeline > .timelineToolbar > .timelineControls {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+}
+.timelineControls::before {
+  content: "";
+  position: absolute;
+  inset-block: 7px 0;
+  inset-inline-end: 100%;
+  width: 30px;
+  background: linear-gradient(calc(-90deg * var(--inline-sign, 1)), var(--bg-app) 20%, transparent);
+  pointer-events: none;
+}
+/* The zoom list, as Notion's (seen 2026-11-03; 2026-11-15 at 1440: 180px
+   wide, 4px in, 172×28 rows 1px apart rounded 6px, their 14px words on
+   16.8px lines 8px in across the row, no mark beside the step shown). The
+   rows are the list's own, over the select's choice grid, whose 18px icon
+   column first gave the words 18px ("시..", "2...", "5..."). */
+.timelineZoomMenu[data-notion-select-menu] {
+  --select-inset: 4px;
+}
+.timelineZoomMenu .timelineZoomOption + .timelineZoomOption {
+  margin-top: 1px;
+}
+.timelineZoomMenu .timelineZoomOption {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  height: 28px;
+  padding: 0 8px;
+  gap: 0;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+.timelineZoomMenu .timelineZoomOption > :first-child {
+  display: none;
+}
+.timelineZoomMenu .timelineZoomOption > :nth-child(2) {
+  flex: 1 1 auto;
+}
+.timelineControls .timelineZoomSelect {
+  width: auto;
+}
+.timelineControls .timelineZoomButton {
+  grid-template-columns: auto 12px;
+  gap: 2px;
+  width: auto;
+  height: 24px;
+  margin-inline-end: 4px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  border-color: transparent;
+  border-radius: 6px;
+  background: transparent;
+  /* Its words and arrow in Notion's gray accent, both themes (seen 2026-11-14, 11-15 dark). */
+  color: var(--text-gray-accent);
+  font-size: 14px;
+}
+.timelineControls .timelineZoomButton:hover,
+.timelineControls .timelineZoomButton:focus-visible,
+.timelineControls .timelineZoomButton[aria-expanded="true"] {
+  border-color: transparent;
+  background: var(--bg-hover);
+}

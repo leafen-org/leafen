@@ -1,0 +1,44 @@
+.backdrop { position: fixed; inset: 0; display: grid; place-items: center; background: var(--modal-shade); }
+/* Notion's crop window (seen 2026-11-15, 1440 dark, pictures of 800×500, 2400×1200, 600×1600 and 200×150): as
+   wide as the picture it shows plus 30px each side — the picture at its own size, never larger, within 70% of
+   the window's width and 75% of its height — so 860, 1068, 263 and 260 there; the head lies over that width
+   and may crowd over a narrow picture, as Notion's. */
+.dialog { width: fit-content; max-width: 100vw; max-height: 100%; overflow: hidden; border-radius: var(--modal-radius);
+  background: var(--modal-bg); box-shadow: var(--shadow-modal); color: var(--text-default); }
+/* Its head: 12px all round, a 28px row — the ratio button at the start, the name centred over the whole head,
+   "취소" and "저장" 5px apart at the end — and a 1px rule under it. */
+.header { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border-default); }
+.header strong { position: absolute; inset-inline: 0; width: fit-content; margin-inline: auto; font-size: 16px; font-weight: 400; line-height: 24px; pointer-events: none; }
+.header button { height: 28px; border-radius: 6px; padding: 0 8px; font-size: 14px; background: transparent; color: var(--text-gray-accent); white-space: nowrap; }
+.header button:hover, .header button:focus-visible { background: var(--bg-hover); }
+.buttons { display: flex; gap: 5px; }
+.buttons button:last-child { background: var(--accent-blue); color: var(--accent-blue-text); font-weight: 500; }
+.buttons button:disabled { opacity: .5; }
+.ratios { position: relative; }
+/* The ratio button: a 20px square-on-circle and a 16px chevron 2px apart, 8px in, in the secondary text colour. */
+.ratios > button { display: flex; align-items: center; gap: 2px; color: var(--text-secondary); }
+/* Notion's ratio menu (seen 2026-11-15, 1440 dark): 180px, 4px in, 28px rows 1px apart with a 6px corner, 8px in,
+   14px words in the text colour, the chosen row unlit with a 16px tick 8px from its end; after "자유형" a
+   2px dot 8px clear above and below (Notion's hr between 85px sides). */
+/* It opens right under the button, from its start (Notion's: 40px under the window's top). */
+.ratioMenu { position: absolute; top: 100%; inset-inline-start: 0; z-index: 2; display: flex; flex-direction: column; gap: 1px; width: 180px; padding: 4px; border-radius: var(--radius-menu); background: var(--bg-elevated); box-shadow: var(--shadow-menu); }
+.header .ratioMenu button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 28px; padding: 0 8px; border-radius: var(--menu-row-radius); font-size: 14px; text-align: start; color: var(--text-default); }
+.header .ratioMenu button:hover, .header .ratioMenu button:focus-visible { background: var(--bg-hover); }
+.ratioMenu button > svg { flex: none; }
+.ratioRule { width: 0; height: 0; margin: 8px auto; border: 1px solid var(--border-secondary); }
+.body { padding: 30px; }
+.status { padding: 0 20px 16px; font-size: 13px; }
+/* The picture and the crop over it keep the picture's own left and right. */
+.stage { position: relative; width: fit-content; max-width: 100%; margin: auto; direction: ltr; }
+.stage > img { display: block; max-width: 70vw; max-height: 75vh; object-fit: contain; opacity: .4; user-select: none; }
+.selection { position: absolute; border: 1px solid #fff; background: rgba(255,255,255,.25); cursor: move; }
+.selection[data-circle="true"] { border-radius: 50%; }
+.handle { position: absolute; width: 14px; height: 14px; min-height: 0; padding: 0; border: 2px solid #fff; background: rgba(0,0,0,.5); border-radius: 2px; transform: translate(-50%,-50%); }
+.handle[data-crop-handle="nw"] { inset-inline-start: 0; top: 0; cursor: nwse-resize; }
+.handle[data-crop-handle="n"] { inset-inline-start: 50%; top: 0; width: 48px; height: 6px; cursor: ns-resize; }
+.handle[data-crop-handle="ne"] { inset-inline-start: 100%; top: 0; cursor: nesw-resize; }
+.handle[data-crop-handle="e"] { inset-inline-start: 100%; top: 50%; width: 6px; height: 48px; cursor: ew-resize; }
+.handle[data-crop-handle="se"] { inset-inline-start: 100%; top: 100%; cursor: nwse-resize; }
+.handle[data-crop-handle="s"] { inset-inline-start: 50%; top: 100%; width: 48px; height: 6px; cursor: ns-resize; }
+.handle[data-crop-handle="sw"] { inset-inline-start: 0; top: 100%; cursor: nesw-resize; }
+.handle[data-crop-handle="w"] { inset-inline-start: 0; top: 50%; width: 6px; height: 48px; cursor: ew-resize; }

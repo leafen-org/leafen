@@ -1,0 +1,369 @@
+/* The search window's filter bar and the menus under its chips (filters,
+   sort, dates, teamspaces, areas, people), beside SearchDialog.module.css
+   which draws the window, its field and its results. */
+
+/* Filters and sort, with each one's menu under its chip. */
+.filterBar {
+  position: relative;
+  flex: none;
+}
+
+/* Its search stays put and only its rows scroll (FilterMenuList), as Notion's. */
+.filterMenu {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  --filter-menu-row-gap: 1px;
+  width: 250px;
+  max-height: 420px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A filter menu's search, as Notion's (seen 2026-10-30): a filled 28px
+   field 12px in from the menu's top and side, 12px over the first row (8
+   to its rows' list, whose own 4 follow), its words 14px, ringed as a
+   focused field while typed in. */
+.filterMenuInput {
+  flex: none;
+  height: 28px;
+  margin: 12px 12px 8px;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.filterMenuInput:focus {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A page search that finds nothing says so where its rows stand, 14px in the
+   secondary color, as Notion's "검색 범위" (seen 2026-11-16 at 1440: "검색 결과
+   없음", a 28px row 8px in). */
+.filterMenuEmpty {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Every filter menu's rows say their words 14px, as Notion's people, page,
+   date, teamspace, content state and sort menus (seen 2026-11-14). */
+.filterMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.filterMenuItem:hover {
+  background: var(--bg-hover);
+}
+
+.filterMenuCheck {
+  flex: none;
+  width: 14px;
+  color: var(--text-secondary);
+}
+
+.filterMenuLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "검색 범위:", as Notion's (seen 2026-11-16 at 1440×723, its search
+   window's and the trash's alike: 250 × 289.2): the other menus' 250px, up
+   to 40vh tall; a page's row 28px alone and 45px with where it sits under
+   its title — the title 14/16.8 at 4.7, the place 12/16.8 2px under it. */
+.filterMenu[data-search-filter-menu="in"] {
+  max-height: 40vh;
+}
+
+/* A page of "검색 범위:" with where it sits under its title (seen 2026-10-12). */
+.filterMenuPage {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-block: 4.7px;
+  line-height: 16.8px;
+}
+
+.filterMenuPage > span,
+.filterMenuPage > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterMenuPage > small {
+  margin-block-start: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* A page's emoji in the 20px place its glyph has, 18px, the title 36px in as
+   for any icon (Notion's, seen 2026-11-14). */
+.filterMenu[data-search-filter-menu="in"] .filterMenuMarked > [data-emoji-glyph] {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* The date filter, as Notion's (seen 2026-10-12): its time and "초기화" at
+   the head, three ranges, then a month of days. */
+.dateFilter {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.dateFilterHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+}
+
+.dateFilterField,
+.dateFilterReset {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.dateFilterField:hover,
+.dateFilterField:focus-visible,
+.dateFilterReset:hover,
+.dateFilterReset:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.dateFilterFields {
+  position: absolute;
+  top: 100%;
+  inset-inline-start: 4px;
+  z-index: 1;
+  width: 160px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The teamspace and area menus, as Notion's teamspace filter (seen 2026-10-14):
+   the chosen ones in the search, each with ×, and ⓧ clearing them; each row
+   its mark and name, without a check; "제거하기" under a line. */
+.filterMenuTokens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-height: 28px;
+  margin: 12px 12px 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+}
+
+.filterMenuTokens:focus-within {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.filterMenuTokens > input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+/* A chosen person is their picture and name in the field, with no chip
+   behind them (Notion, seen 2026-10-30). */
+.filterMenuTokens[data-search-filter-tokens="createdBy"] .filterMenuToken {
+  gap: 4px;
+  padding: 0;
+  background: transparent;
+}
+
+/* "(나)" after the reader's own name. */
+.filterMenuMe {
+  color: var(--text-secondary);
+}
+
+.filterMenuToken {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 100%;
+  height: 20px;
+  padding-block: 0;
+  padding-inline: 4px 2px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 12px;
+}
+
+.filterMenuToken > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterMenuToken > button,
+.filterMenuClear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.filterMenuClear {
+  margin-inline-start: auto;
+}
+
+/* Its mark and words, in the middle of the row: not on the words' line,
+   which set them 0.9px low. */
+.filterMenuMarked {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+/* A teamspace's or an area's mark in its 20px place, the name 36px in. */
+.filterMenuMark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* A teamspace's own icon, as Notion's teamspace filter draws it (seen
+   2026-11-14): a 14px tile rounded 3.5px, its letter 9.625px, a picture or
+   emoji as large as the letter's line. */
+.filterMenuTeamspace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3.5px;
+  background: var(--teamspace-letter-bg);
+  color: var(--text-secondary);
+  font-size: 9.625px;
+  line-height: 1;
+}
+
+/* A long name (one told apart from another of the same name) ends in "…", not cut mid-letter. */
+.filterMenuMarked > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterMenuItem[data-search-filter-choice] .filterMenuCheck,
+.filterMenuItem[data-search-filter-remove] .filterMenuCheck {
+  display: none;
+}
+
+/* "+ 필터" lists filters to add as Notion's (seen 2026-11-07, 2026-11-14):
+   200px, its rows 192, no check column, a 20px mark 8px in and its name 8px
+   after it. */
+.filterMenu:has(> [data-search-add-filter]) {
+  width: 200px;
+}
+.filterMenuItem[data-search-add-filter] .filterMenuCheck {
+  display: none;
+}
+.filterMenuItem[data-search-add-filter] .filterMenuLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.filterMenuItem[data-search-add-filter] .filterMenuLabel svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.filterMenuItem[data-divided] {
+  position: relative;
+  margin-top: 8px;
+}
+
+/* The line over "제거하기", 8px in from its row's sides, as Notion's
+   teamspace and content state menus (seen 2026-11-14). */
+.filterMenuItem[data-divided]::before {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  border-top: 1px solid var(--border-default);
+  content: "";
+}
+
+/* The content state's choices, as Notion's (seen 2026-11-14): 260px, the
+   chosen one's 16px ✓ in a 20px column 8px in, the words 8px
+   after it (36px in) on every row, "제거하기" 8px in under the line. */
+.filterMenu[data-search-filter-menu="contentState"] {
+  width: 260px;
+}
+.filterMenu[data-search-filter-menu="contentState"] .filterMenuItem {
+  gap: 8px;
+}
+.filterMenu[data-search-filter-menu="contentState"] .filterMenuCheck {
+  display: inline-flex;
+  justify-content: center;
+  width: 20px;
+  color: var(--text-default);
+}

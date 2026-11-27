@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./light.css">
+  <script>
+    // In a frame with no origin the editor's frame has none either, and its
+    // messages arrive from "null"; ONLYOFFICE's API takes only those from the
+    // editor page's own address, so they are handed on again with it.
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "null" || event.leafenAgain) return;
+      const frame = document.querySelector('iframe[name="frameEditor"]');
+      if (!frame || event.source !== frame.contentWindow) return;
+      event.stopImmediatePropagation();
+      const again = new MessageEvent("message", { data: event.data, origin: new URL(frame.src, location.href).origin, source: event.source });
+      again.leafenAgain = true;
+      window.dispatchEvent(again);
+    }, true);
+  </script>
+  <script src="./vendor/onlyoffice-9.3.2/web-apps/apps/api/documents/api.js"></script>
+</head>
+<body>
+  <div class="bar" id="bar" hidden><span class="status" id="status"></span><button class="save" id="editInstead" type="button" hidden></button><button class="save" id="save" type="button" hidden></button></div>
+  <p class="state" id="state"></p>
+  <div class="editor" id="editor" hidden><div id="placeholder"></div></div>
+  <main class="light" id="light" aria-live="polite" hidden></main>
+  <nav class="sheets" id="sheets" hidden></nav>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

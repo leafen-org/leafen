@@ -1,0 +1,86 @@
+/* The "New" line before a thread's first comment the reader hasn't read, as
+   Notion's (seen 2026-11-25 in Chrome at 1440 and 900, dpr 1, two tabs at
+   different times): a 1.5px rounded rule in the page's pale blue across the
+   column, its pill in the middle 12px from either side — 11/500 blue on
+   light blue, round 4, 2px 4px in. */
+.line {
+  display: flex;
+  align-items: center;
+}
+.line::before,
+.line::after {
+  flex: 1 1 0;
+  height: 1.5px;
+  border-radius: 2px;
+  background: var(--c-bg-blue);
+  content: "";
+}
+.pill {
+  margin-inline: 12px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+  white-space: nowrap;
+}
+
+/* In a card, before a reply (Notion's beside a block, open or closed, and in
+   a block's window): in the card's 16px gaps between comments it stands 8px
+   under the comment before and 12px over the reply's face. The thread's line
+   down the faces' column, 11.25px in, runs on through it to 6px over that
+   face, as between any two comments (MarginDiscussions .entry, CommentsPanel
+   .replies). */
+.line[data-shape="card"] {
+  position: relative;
+  margin-block: -8px -4px;
+}
+.joint {
+  position: absolute;
+  top: 0;
+  bottom: -6px;
+  inset-inline-start: 11.25px;
+  width: 1.5px;
+  border-radius: 2px;
+  background: var(--border-secondary);
+}
+
+/* A closed card's "답글 N개 더 보기" hiding the first new reply: the pill
+   alone, 6px after the words (Notion's, seen 2026-11-25 at 1440, two tabs). */
+.pill[data-shape="more"] {
+  margin-inline: 6px;
+}
+
+/* Under a page's title, before a thread new as a whole (Notion's, seen
+   2026-11-25 at 1440, two tabs): 4px under the thread before and 12px over
+   the thread's frame, its face 20px under the line's row. */
+.line[data-shape="thread"] {
+  margin: 0 0 12px;
+}
+
+/* Before the first new reply of an opened thread drawn flat: a 1px rule laid
+   over the room above the reply, 8px over its face, from its words to the
+   column's end, "New" bare at its end 12px after it — taking no room of its
+   own (Notion's under a page's title, in "모든 토론" and in a feed post's
+   discussion, seen 2026-11-25 at 1440, two tabs each). */
+.line[data-shape="reply"] {
+  position: absolute;
+  inset-block-start: var(--new-line-top, 0);
+  inset-inline: var(--new-line-start, 0) 0;
+  z-index: 1;
+  height: 0;
+  pointer-events: none;
+}
+.line[data-shape="reply"]::before {
+  height: 1px;
+}
+.line[data-shape="reply"]::after {
+  content: none;
+}
+.line[data-shape="reply"] .pill {
+  margin-inline: 12px 0;
+  padding: 0;
+  background: transparent;
+}

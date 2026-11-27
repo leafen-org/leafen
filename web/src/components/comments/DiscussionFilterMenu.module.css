@@ -1,0 +1,85 @@
+/* "모든 토론"'s filter menu, as Notion's (seen 2026-11-16 at 1440, dark):
+   272 wide, its top on the filter button's foot, its start at the button's
+   kept 12px inside the window (usePopoverPlacement). Each group is a column
+   of 28px rows 1px apart, 4px in; a later group stands 6px under the one
+   before with a line along its top, 12px in from the menu's sides, and 6px
+   more over its heading. A heading is 12px words 8px in, 6px under its
+   group's top and 8px over its first row; a row's 14px box stands 8px in,
+   its words 8px after it, a sub-row's 8px further in. */
+.menu {
+  position: fixed;
+  z-index: 70;
+  width: 272px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+}
+
+.group + .group {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.group + .group::before {
+  position: absolute;
+  top: -1px;
+  inset-inline: 12px;
+  height: 1px;
+  background: var(--menu-divider);
+  content: "";
+}
+
+.label {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--bg-hover);
+}
+
+.item[data-sub="true"] {
+  padding-inline-start: 16px;
+}
+
+.item input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+
+/* A writer's face, 20px, 8px before the name — over the discussions'
+   22px face it also wears, by naming the row it stands in. */
+.item > .face {
+  width: 20px;
+  height: 20px;
+}
+
+/* The reader's own name is followed by "(나)" in the second text colour. */
+.self {
+  color: var(--text-secondary);
+}

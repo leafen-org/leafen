@@ -1,0 +1,94 @@
+/* The screen a public page shows while it comes (SharedPageLoading). Its
+   frame, cover, icon and title are the page's own (PageView .doc, PageCover
+   .cover, PageHeader .header), laid by their rules; this sheet only fills
+   them in grey and lays the lines under the title. */
+/* A view link's screen in its frame (ViewLinkFrameHost): the page's own
+   window, its height the frame's. */
+.frame {
+  overflow: hidden;
+}
+
+.part {
+  border-radius: 5px;
+  background: var(--bg-hover);
+  animation: sharedLoadingPulse 1.4s ease-in-out infinite alternate;
+}
+/* The icon's grey fills its box, the cover's the cover, edge to edge. */
+.iconFill {
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+.coverFill {
+  display: block;
+  height: 100%;
+  border-radius: 0;
+}
+/* The title's grey stands on its line where its words will, the words'
+   height in the middle of the line (PageHeader .title: its size and line). */
+.title {
+  display: inline-block;
+  vertical-align: top;
+  width: min(58%, 420px);
+  height: 1lh;
+  border-block: calc((1lh - 1em) / 2) solid transparent;
+  background-clip: padding-box;
+}
+/* A database's name is shorter. */
+:global([data-database-page="true"]) .title {
+  width: min(30%, 320px);
+}
+
+/* A page's first lines 31px under its title's line, 14px tall, 14px apart,
+   where its words start (.doc --page-title-inset); on a touch screen the
+   head's own 16 under the title are all of it (PageHeader .header). */
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-block-start: 31px;
+  padding-inline-start: var(--page-title-inset, 0px);
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .body {
+  padding-block-start: 0;
+}
+.line {
+  display: block;
+  width: min(88%, 640px);
+  height: 14px;
+  margin-bottom: 14px;
+}
+.lineShort {
+  width: min(62%, 440px);
+}
+/* A database's views' 32px tab, 12px under the title's line: the block's 8
+   under the title, its own 3 and the row's 1 over the tab; its table's head
+   row 4px under the tab, its line standing in that 36px row, the next in the
+   first row under it, the head's running to the table's end. */
+.body[data-shape="database"] {
+  padding-block-start: 12px;
+}
+:global(:is([data-phone="true"], [data-touch="true"])) .body[data-shape="database"] {
+  padding-block-start: 0;
+}
+.views {
+  display: block;
+  width: 63px;
+  height: 32px;
+}
+.body[data-shape="database"] .line {
+  margin-block: 20px 0;
+}
+.body[data-shape="database"] .tableLine {
+  width: 100%;
+  margin-block-start: 15px;
+}
+@keyframes sharedLoadingPulse {
+  to {
+    opacity: 0.48;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .part {
+    animation: none;
+  }
+}

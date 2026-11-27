@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "name": "view-link",
+  "operations": [
+    { "goName": "viewLinkCreate", "tsName": "create", "method": "POST", "path": "/pages/{pageId}/view-links" },
+    { "goName": "viewLinkRevoke", "tsName": "revoke", "method": "DELETE", "path": "/view-links/{viewLinkId}" },
+    { "goName": "viewLinkOpens", "tsName": "opens", "method": "GET", "path": "/view-links/{viewLinkId}/opens" }
+  ],
+  "bounds": [
+    { "goName": "viewLinkDefaultSeconds", "tsName": "defaultSeconds", "value": 600 },
+    { "goName": "viewLinkMaxSeconds", "tsName": "maxSeconds", "value": 3600 },
+    { "goName": "viewLinkSingleUseWindowSeconds", "tsName": "singleUseWindowSeconds", "value": 120 },
+    { "goName": "viewLinkDesktopWidth", "tsName": "desktopWidth", "value": 1280 },
+    { "goName": "viewLinkDesktopHeight", "tsName": "desktopHeight", "value": 800 },
+    { "goName": "viewLinkTabletWidth", "tsName": "tabletWidth", "value": 768 },
+    { "goName": "viewLinkTabletHeight", "tsName": "tabletHeight", "value": 1024 },
+    { "goName": "viewLinkMobileWidth", "tsName": "mobileWidth", "value": 390 },
+    { "goName": "viewLinkMobileHeight", "tsName": "mobileHeight", "value": 844 },
+    { "goName": "viewLinkMaxSecretFailures", "tsName": "maxSecretFailures", "value": 5 },
+    { "goName": "viewLinkOpensLimit", "tsName": "opensLimit", "value": 100 }
+  ],
+  "errors": [
+    { "goName": "errorCodeViewLinkInvalid", "tsName": "invalid", "value": "LEAFEN_VIEW_LINK_INVALID" },
+    { "goName": "errorCodeViewLinkNotFound", "tsName": "notFound", "value": "LEAFEN_VIEW_LINK_NOT_FOUND" },
+    { "goName": "errorCodeViewLinkFailed", "tsName": "failed", "value": "LEAFEN_VIEW_LINK_FAILED" },
+    { "goName": "errorCodeViewLinkSecretRequired", "tsName": "secretRequired", "value": "LEAFEN_VIEW_LINK_SECRET_REQUIRED" },
+    { "goName": "errorCodeViewLinkSecretWrong", "tsName": "secretWrong", "value": "LEAFEN_VIEW_LINK_SECRET_WRONG" },
+    { "goName": "errorCodeViewLinkRefused", "tsName": "refused", "value": "LEAFEN_VIEW_LINK_REFUSED" }
+  ],
+  "records": [
+    {
+      "goName": "viewLinkCreateRequest",
+      "tsName": "ViewLinkCreateRequest",
+      "fields": [
+        { "goName": "Viewport", "jsonName": "viewport", "goType": "string", "tsType": "\"desktop\" | \"tablet\" | \"mobile\"", "optional": true },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "\"system\" | \"light\" | \"dark\"", "optional": true },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Seconds", "jsonName": "seconds", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SingleUse", "jsonName": "singleUse", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "WithoutSecret", "jsonName": "withoutSecret", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "viewLinkResponse",
+      "tsName": "ViewLink",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Viewport", "jsonName": "viewport", "goType": "string", "tsType": "\"desktop\" | \"tablet\" | \"mobile\"" },
+        { "goName": "Width", "jsonName": "width", "goType": "int", "tsType": "number" },
+        { "goName": "Height", "jsonName": "height", "goType": "int", "tsType": "number" },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "\"system\" | \"light\" | \"dark\"" },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string" },
+        { "goName": "SingleUse", "jsonName": "singleUse", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Secret", "jsonName": "secret", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SecretRequired", "jsonName": "secretRequired", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "viewLinkOpen",
+      "tsName": "ViewLinkOpen",
+      "fields": [
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" },
+        { "goName": "Outcome", "jsonName": "outcome", "goType": "string", "tsType": "\"opened\" | \"secret_wrong\" | \"closed\"" },
+        { "goName": "IP", "jsonName": "ip", "goType": "string", "tsType": "string" },
+        { "goName": "UserAgent", "jsonName": "userAgent", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "viewLinkOpensResponse",
+      "tsName": "ViewLinkOpens",
+      "fields": [
+        { "goName": "Opens", "jsonName": "opens", "goType": "[]viewLinkOpen", "tsType": "ViewLinkOpen[]" }
+      ]
+    }
+  ]
+}

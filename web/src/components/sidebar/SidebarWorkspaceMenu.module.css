@@ -1,0 +1,470 @@
+/* The workspace switcher's menu, its account groups and the sign-out
+   prompt (moved out of SidebarChrome.module.css, 2026-10-02). */
+.workspaceMenuBackdrop,
+.workspaceMenuBackdrop:hover {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.workspaceMenu {
+  position: absolute;
+  top: 39px;
+  inset-inline-start: 8px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  /* Notion's is 300px whatever the sidebar's width, over the page beside it
+     (measured 2026-10-27). */
+  width: min(300px, calc(100vw - 16px));
+  max-height: calc(100vh - 60px);
+  /* 8px in all round, a 36px head and 8px either side of each line
+     (measured 2026-11-02). */
+  padding: 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-element);
+  box-shadow: var(--shadow-menu);
+}
+.workspaceMenu > * {
+  flex: 0 0 auto;
+}
+.workspaceMenuAccount {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+}
+.workspaceMenuIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: var(--letter-icon-bg);
+  color: var(--text-secondary);
+  font-size: 24.75px;
+}
+/* An icon of its own fills the head's 36px without the tint: an emoji 36px,
+   a built-in icon or a picture 36px (Notion's, seen 2026-11-11). */
+.workspaceMenuIcon[data-workspace-icon]:not([data-workspace-icon="letter"]) {
+  background: none;
+  font-size: 36px;
+  line-height: 1;
+}
+.workspaceMenuAccount > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.workspaceMenuAccount strong,
+.workspaceMenuAccount > span:last-child span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspaceMenuAccount strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+.workspaceMenuAccount > span:last-child span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.workspaceMenuDivider {
+  flex: none;
+  border: 0;
+  height: 1px;
+  margin: 8px 0;
+  background: var(--border-default);
+}
+/* Notion's rows: 28px, 6px in and between (measured 2026-10-27), each under the pointer's hand, the
+   workspace one is in too (seen 2026-11-21). */
+.workspaceMenuItem {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: 0 6px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+/* Its foot reads small and grey, as Notion's "모든 계정에서 로그아웃". */
+.workspaceMenuItem[data-workspace-menu-sign-out] {
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.workspaceMenuItem:hover,
+.workspaceMenuItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.workspaceMenuItem:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.workspaceMenuItem[data-active="true"] {
+  background: var(--bg-active);
+  font-weight: 500;
+}
+
+.pendingSignOutBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--modal-shade);
+}
+.pendingSignOutDialog {
+  width: min(420px, 100%);
+  padding: 22px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+  user-select: text;
+}
+.pendingSignOutDialog h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+/* A long address wraps rather than overflow. */
+.pendingSignOutDialog h2,
+.pendingSignOutDialog p {
+  overflow-wrap: anywhere;
+}
+.pendingSignOutDialog p {
+  margin: 10px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.55;
+}
+.pendingSignOutActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+/* The add-server window's foot buttons, 32px at 14/500 as Notion's window
+   buttons (seen 2026-11-08); its "취소" keeps the shared outline look. */
+.pendingSignOutActions button {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+/* A window's "취소" in the shared outline look (DialogButtons.module.css), at this row's height. */
+.pendingSignOutCancel {
+  composes: cancel from "../DialogButtons.module.css";
+}
+.pendingSignOutActions button:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+.workspaceMenuItem svg {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+.workspaceMenuItem span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* An account group, as Notion's (seen 2026-10-02): the account's email in
+   small grey letters with its "…", then its workspaces. */
+/* The accounts' list rolls past about ten lines, the rows around it staying (Notion's). */
+.profileGroup {
+  position: relative;
+  display: flex;
+  max-height: 273px;
+  overflow-y: auto;
+  flex-direction: column;
+}
+.profileGroup + .profileGroup {
+  margin-top: 4px;
+}
+/* An account's head takes a ground under the pointer, rounded 6, its "…" on it too, as Notion's (seen
+   2026-11-21 in two tabs at 1440, dpr 1, dark: rgba(255, 255, 243, .082), the "…" rounded 6 with its own
+   hover over it). */
+.profileHeader:hover,
+.profileHeader:has(+ .profileOptionsButton:hover) {
+  background: var(--border-subtle);
+}
+.profileHeader {
+  position: relative;
+  display: flex;
+  border-radius: 6px;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--menu-row-height);
+  padding-block: 6px;
+  padding-inline: 6px 28px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.profileLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A workspace named as another server's shows its server after it. */
+/* What tells a repeated name apart (a workspace's server, an app's
+   organization) gives way first, the name before it keeping its room. */
+.profileWorkspaceServer {
+  flex-shrink: 100;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profileWorkspaceServer::before {
+  content: "· ";
+}
+.profileGroup > .profileOptionsButton {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  margin: 0;
+}
+.profileOptionsButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.profileOptionsButton:hover,
+.profileOptionsButton:focus-visible,
+.profileOptionsButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* An account's "…", as Notion's (seen 2026-10-30): 209px, each row's 20px icon 12px in and its words 40px in.
+   Leafen's Korean face is wider than Notion's, so it grows to show its words
+   whole rather than cut them (font decision B, 2026-10-30). */
+.profileOptions {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 209px;
+  max-width: calc(100vw - 16px);
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.profileOptions [role="menu"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.profileOptionsItem {
+  gap: 8px;
+  padding: 0 8px;
+}
+.profileOptionsItem > svg {
+  flex: 0 0 20px;
+  color: var(--text-secondary);
+}
+.profileWorkspaceIcon {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--letter-icon-bg);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+/* The desktop menu's letter is Notion's, 0.6875 of its mark. */
+.workspaceMenu .profileWorkspaceIcon {
+  font-size: 13.75px;
+}
+/* Pointed at, a workspace row's icon gives way to its order handle, a 14px ⋮⋮
+   in the icon's colour, as Notion's (seen 2026-11-16, dark 1440). */
+.profileWorkspaceHandle {
+  position: absolute;
+  inset: 3px;
+  display: none;
+  width: 14px;
+  height: 14px;
+}
+[data-workspace-order-row]:hover > .profileWorkspaceIcon {
+  background: none;
+  color: transparent;
+}
+[data-workspace-order-row]:hover > .profileWorkspaceIcon {
+  --workspace-icon-face: hidden;
+}
+.profileWorkspaceIcon > :not(.profileWorkspaceHandle) {
+  visibility: var(--workspace-icon-face, inherit);
+}
+[data-workspace-order-row]:hover > .profileWorkspaceIcon > .profileWorkspaceHandle {
+  display: block;
+  color: var(--text-secondary);
+}
+/* A workspace's own icon has no tint: an emoji 14px (Notion's, seen 2026-11-11). */
+.profileWorkspaceIcon[data-workspace-icon]:not([data-workspace-icon="letter"]),
+.workspaceMenu .profileWorkspaceIcon[data-workspace-icon]:not([data-workspace-icon="letter"]) {
+  background: none;
+  font-size: 14px;
+}
+/* "게스트" as Notion's chip in its menu and on its switcher: the shared
+   yellow tag (people/NameTag.module.css). */
+.profileGuestBadge {
+  composes: tag yellow from "../people/NameTag.module.css";
+}
+/* On the switcher it sits 8px after the name and 6px before the ⌄, as Notion's. */
+.wsGuestBadge {
+  margin-inline-start: -1px;
+}
+/* An app's row is marked "앱" in the neutral tone, not a guest's. */
+.profileAppBadge {
+  flex: 0 0 auto;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.profileCurrentCheck {
+  margin-inline-start: auto;
+}
+.profileNewWorkspace,
+.profileNewWorkspace svg {
+  color: var(--accent-blue);
+}
+/* Notion's rows touch; its "+ 새 워크스페이스" sits 1px under the last. */
+.workspaceMenu .profileNewWorkspace {
+  margin-top: 1px;
+}
+
+.addServerLabel {
+  display: block;
+  margin-top: 14px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.addServerInput {
+  width: 100%;
+  height: 32px;
+  margin-top: 6px;
+  padding: 1px 11px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+.addServerInput:focus-visible {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.addServerError {
+  color: var(--danger) !important;
+}
+.addServerContinue {
+  border: 1px solid var(--accent-blue);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+.addServerContinue:disabled {
+  opacity: 0.65;
+}
+
+/* A workspace with unread notifications, as Notion marks it in the switcher
+   and on the sidebar's workspace mark (seen 2026-10-06/07): an 8px red dot
+   at the mark's top-right corner, 2px above and 4px out, ringed in the
+   sidebar's color wherever it sits — Notion's ring is its secondary ground
+   in the menu too, not the menu's (var(--c-bacSec), read 2026-11-23). */
+.workspaceUnreadDot {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -4px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-sidebar);
+  border-radius: 50%;
+  background: var(--unread-mark);
+  pointer-events: none;
+}
+/* The mark holding the dot lets it out past its corner: the sidebar's, and
+   a switcher row's icon, which the rows' rule for their text
+   (.workspaceMenuItem span) clipped, cutting the dot's top and outer half
+   away (2026-11-23). */
+.wsIcon[data-unread="true"],
+.profileWorkspaceIcon[data-unread="true"] {
+  position: relative;
+  overflow: visible;
+}
+/* A switcher row's dot sits 3px above its 20px icon (Notion's, read
+   2026-11-23), where the sidebar mark's sits 2px. */
+.profileWorkspaceIcon > .workspaceUnreadDot {
+  top: -3px;
+}
+
+/* Another server's list that couldn't be read just now, said quietly. */
+.workspaceMenuItem.profileListState {
+  min-height: 24px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  opacity: 1;
+  cursor: default;
+}
+
+/* A row being dragged floats, a grip where its icon was, as Notion's (seen 2026-11-03). */
+.workspaceMenuItem[data-dragging="true"] {
+  position: relative;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  box-shadow: var(--shadow-menu);
+  cursor: grabbing;
+}
+.workspaceMenuItem[data-dragging="true"] .profileWorkspaceIcon > * {
+  visibility: hidden;
+}
+.workspaceMenuItem[data-dragging="true"] .profileWorkspaceIcon::after {
+  content: "⠿";
+  position: absolute;
+  color: var(--icon-secondary);
+}

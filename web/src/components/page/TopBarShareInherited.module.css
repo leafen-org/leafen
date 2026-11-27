@@ -1,0 +1,301 @@
+/* The people a page inherits from a page above it, as Notion's share window
+   lists them (seen 2026-10-11; lead seen again 2026-11-06): a 48px row whose
+   32px lead holds the page's 20px icon — › in its place under the pointer,
+   ⌄ while open — then "〈page〉에 초대된 사용자" over "사용자 N명" and, shut,
+   their widest role in grey; open, each person 23px in, a "게스트" mark
+   beside a guest's name. */
+.groupRow {
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  width: 100%;
+  min-height: 48px;
+  color: var(--icon-secondary);
+  text-align: start;
+}
+
+/* Notion's lights no row under the pointer (seen 2026-11-07): the page's
+   mark on its round tint gives way to a chevron, open or not. */
+.groupRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.groupLead {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.groupChevron {
+  display: none;
+  color: var(--text-default);
+  transition: transform 120ms ease;
+}
+
+:is(.groupRow:hover, .groupRow:focus-visible) .groupChevron {
+  display: block;
+}
+
+:is(.groupRow:hover, .groupRow:focus-visible) .groupIcon {
+  display: none;
+}
+
+.groupRow[aria-expanded="true"] .groupChevron {
+  transform: rotate(90deg);
+}
+
+.groupIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.groupRow .groupTitle {
+  font-weight: 400;
+}
+
+.person {
+  margin-inline-start: 23px;
+}
+
+.more {
+  margin-block: 0 4px;
+  margin-inline: 27px 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.name > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A small tag beside the name, as Notion's (seen 2026-11-05 dark,
+   2026-11-12 light at 402pt): "게스트" or "제한됨" in the shared yellow tag
+   (people/NameTag.module.css). */
+.guest {
+  composes: tag yellow from "../people/NameTag.module.css";
+}
+
+/* "워크스페이스 소유자" in grey, as Notion's phone (seen 2026-11-12 at 402pt:
+   rgb(142, 139, 134) words on rgb(240, 239, 237), on rgb(59, 59, 57) dark). */
+.ownerTag {
+  composes: tag from "../people/NameTag.module.css";
+  background: rgba(42, 28, 0, 0.07);
+  color: rgb(142, 139, 134);
+}
+
+:global([data-theme="dark"]) .ownerTag {
+  background: rgba(255, 255, 235, 0.1);
+}
+
+/* "현재 사용 권한" at the head of an inherited person's role menu. */
+/* "현재 사용 권한" over a role's menu, as Notion's (seen 2026-10-28): 12px/500
+   secondary heads, the role 14px with where it comes from 2px under (its
+   source in 600), a line 8px in from either side, "사용자 사용 권한". */
+.current {
+  display: flex;
+  flex-direction: column;
+}
+
+.heading {
+  padding: 6.5px 8px 9.5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+
+.currentRole {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 8px 6px;
+  padding: 4.5px 0 13px;
+  border-bottom: 1px solid var(--menu-divider);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+
+.currentRole span:last-child {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.currentRole strong {
+  font-weight: 600;
+}
+
+/* The note that the page's sharing is no longer linked to the page above. */
+/* A note at the top of the share window, lined up with the field above it:
+   8px in, round 8, its words 14px/20px, as Notion's (seen 2026-11-06). */
+.banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 4px 8px 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.banner > span {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.banner > button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.banner > button:hover,
+.banner > button:focus-visible,
+.banner > button[aria-expanded="true"] {
+  background: var(--bg-active);
+  outline: none;
+}
+
+.bannerMenu {
+  min-width: 172px;
+}
+
+/* Each choice after its mark, as Notion's (seen 2026-11-06). */
+.bannerMenu [role="menuitem"] {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bannerMenu [role="menuitem"] svg {
+  flex: 0 0 auto;
+  color: var(--icon-primary);
+}
+
+/* A teamspace page's teamspace: the whole row opens its owners and members. */
+/* A page's teamspace (TopBarShareTeamspace) is a group row too: its square
+   mark starts where the people's avatars do, giving way to a chevron in
+   Notion's icon grey under the pointer (measured 2026-11-17); its groups
+   stand 16px in, each with Notion's two people on the round tint. */
+.teamspaceLeadIcon {
+  margin-inline-end: 4px;
+}
+
+/* Unlike the pages' groups it grounds once pressed, rounded 10px, in
+   Notion's pressed-button ground (its token butPreBacLig, app/olderInk.css),
+   0.15s, as Notion's. The ground is its pressed look, not a hover one:
+   Notion gives the row a pressedStyle and no hoveredStyle (its props, read
+   2026-11-17 04:1x, twice in two tabs), so it shows from a press on the row until the pointer
+   leaves it, and a pointer merely passing over it, before or after, shows
+   none (TopBarShareTeamspace sets `data-pressed`). */
+.teamspaceHead {
+  border-radius: 10px;
+  transition: background 0.15s ease-out;
+}
+
+.teamspaceHead[data-pressed] {
+  background: var(--button-light-pressed-bg);
+}
+
+/* Open, its words run to the row's end where the role was (Notion's 382 of 440). */
+.teamspaceHead[aria-expanded="true"] {
+  grid-template-columns: 32px minmax(0, 1fr);
+}
+
+:is(.groupRow:hover, .groupRow:focus-visible) .teamspaceLeadIcon {
+  display: none;
+}
+
+.teamspaceChevron {
+  color: var(--icon-secondary);
+}
+
+.teamspaceGroup {
+  margin-inline-start: 16px;
+}
+
+.teamspaceGroupIcon {
+  color: var(--icon-secondary);
+}
+
+.teamspaceRole {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.roleNote {
+  margin: 0;
+  padding: 8px 12px 6px;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* The parent page named in the note, underlined as Notion's (seen 2026-11-06). */
+.bannerLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 2px;
+}
+
+/* Unlinked from its parent: the parting arrows lead it. */
+.bannerUnlinked > svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+/* A phone's row of those a page above gives (TopBarShareInheritedGroups):
+   a person's row whose 40px circle holds the page's icon in the tint the
+   general access tile has, as Notion's phone (seen 2026-11-12 at 402pt: the
+   circle rgb(50,50,49) in dark, the icon 18px in the secondary icon colour,
+   "›" 11px after the title in its colour). */
+.phoneGroup {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+}
+
+.phoneGroupIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--share-tint);
+  color: var(--icon-secondary);
+  font-size: 18px;
+}
+
+.phoneGroup svg {
+  flex: none;
+}

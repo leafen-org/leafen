@@ -1,0 +1,128 @@
+/* Notion's touch phone sidebar, observed at 390px. Mouse windows keep the
+   desktop content even when their sidebar uses the narrow push layout. */
+.sidebar[data-phone="true"] .topArea { padding-block: 0; padding-inline: 9px 5px; border-bottom: 1px solid var(--border-default); }
+.sidebar[data-phone="true"] .headerRow { height: 44px; gap: 0; }
+.sidebar[data-phone="true"] .headerIcon { width: 40px; height: 44px; border-radius: 0; }
+.sidebar[data-phone="true"] .workspaceSwitcher { flex: 1; }
+.sidebar[data-phone="true"] .workspaceBtn { height: 32px; padding: 0 6px; font-size: 16px; }
+/* With other accounts signed in, the account's email under the workspace's
+   name: 14px/500 over 11px secondary (Notion's, seen 2026-10-27). */
+.sidebar[data-phone="true"] .workspaceBtn[data-account-line="true"] { height: 40px; }
+.sidebar[data-phone="true"] .wsNameStack { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.sidebar[data-phone="true"] .workspaceBtn[data-account-line="true"] .wsName { font-size: 14px; font-weight: 500; line-height: 20px; }
+/* The struck-out cloud of no connection 6px after the name and its account,
+   as Notion's drawer (seen 2026-11-14 in iPhone Safari 402). */
+.sidebar[data-phone="true"] .wsNameStack:has(+ .wsOffline) { flex: 0 1 auto; }
+.sidebar[data-phone="true"] .wsOffline { margin-inline-start: -2px; }
+.sidebar[data-phone="true"] .wsAccount { display: block; overflow: hidden; color: var(--text-secondary); font-size: 11px; font-weight: 400; line-height: 16px; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar[data-phone="true"] .workspaceMenu { top: calc(100% + 4px); bottom: auto; max-width: calc(var(--phone-drawer-width, 87vw) - 20px); }
+.sidebar[data-phone="true"] .scroll { padding: 10px 0 20px; --tree-level-indent: 18px; --tree-leading-extra: 31px; }
+.sidebar[data-phone="true"] .section { margin: 0 0 12px; }
+/* Rows as Notion's phone sidebar (seen 2026-10-27): section heads 13px/600,
+   page rows 48px with 16px/400 names (a teamspace's pages 42px), and "+"
+   then "⋯" as 32px buttons with 22px icons on every row, 10px from its end. */
+.sidebar[data-phone="true"] .sectionLabel { padding-inline: 10px; height: 30px; font-size: 13px; font-weight: 600; }
+.sidebar[data-phone="true"] .sectionActions { opacity: 1; pointer-events: auto; }
+/* A phone's section heads are their name and "↗" alone, as Notion's (seen 2026-10-28). */
+.sidebar[data-phone="true"] .sectionChevron,
+.sidebar[data-phone="true"] .sectionAdd { display: none; }
+.sidebar[data-phone="true"] .treeRow { min-height: 48px; height: 48px; font-size: 16px; }
+/* Notion's phone page rows stand 50px apart (seen 2026-10-30: each 48px row holds 1px more under it). */
+.sidebar[data-phone="true"] .tree,
+.sidebar[data-phone="true"] .tree [role="group"] { gap: 2px; }
+/* A phone's rows other than the open page's are in the secondary text color (Notion's, seen 2026-10-27). */
+.sidebar[data-phone="true"] .treeRow:not(.treeRowActive) { color: var(--text-secondary); }
+.sidebar[data-phone="true"] .teamspaceEntry .treeRow { min-height: 42px; height: 42px; }
+.sidebar[data-phone="true"] .treeTitle,
+.sidebar[data-phone="true"] .treeRow[aria-current="page"] .treeTitle { padding-inline-end: 70px; font-size: 16px; font-weight: 400; }
+/* The 24px chevron 2px in, the 22px icon ending 51px in and the name 10px on (Notion's 2026-10-27). */
+.sidebar[data-phone="true"] .treeLeading { width: 51px; flex-basis: 51px; margin-inline-end: 10px; }
+.sidebar[data-phone="true"] .disclosure { inset-inline-start: 2px; width: 24px; height: 24px; }
+.sidebar[data-phone="true"] .treeIcon { width: 22px; height: 22px; }
+.sidebar[data-phone="true"] .treeActions { inset-inline-end: 10px; opacity: 1; pointer-events: auto; }
+.sidebar[data-phone="true"] .treeActions .iconBtn { width: 32px; height: 32px; border-radius: 6px; }
+.sidebar[data-phone="true"] .treeActions .iconBtn svg { width: 22px; height: 22px; }
+.sidebar[data-phone="true"] .viewRow { height: 48px; padding-inline-end: 80px; font-size: 16px; }
+/* The "+" rows as Notion's phone ones (seen 2026-10-31): 40px holding 1px more under it, 2px below
+   the last page as the rows are, an 18px plus 13px in and the words 11px on; a teamspace's 30px, its plus 35px in. */
+.sidebar[data-phone="true"] .emptyTreeAction { height: 40px; margin: 2px 0 1px; padding-inline-start: 13px; font-size: 16px; }
+.sidebar[data-phone="true"] .emptyTreeAction svg { width: 18px; height: 18px; }
+.sidebar[data-phone="true"] .teamspaceEntry > .teamspaceAddRow { height: 30px; margin-bottom: 0; padding-inline-start: 35px; }
+/* An empty teamspace the reader may not add to, as Notion's phone drawer (measured 2026-11-17 at 402, two tabs):
+   "하위 페이지 없음" on a 48px row 4px under its head (past an empty 1px tree) and 1px over the block's margin,
+   its 16px words on a 24px line 39px in (the row's 10px and 29 more). Its pages stand 2px under the head. */
+.sidebar[data-phone="true"] .teamspaceEmpty { height: 48px; margin-block: 4px 1px; padding-inline-start: 39px; font-size: 16px; line-height: 24px; }
+.sidebar[data-phone="true"] .teamspaceEntry > [role="tree"]:not(:empty) { margin-block-start: 2px; }
+/* Every open teamspace keeps 12px under its block, the last too, and a folded one only its head's
+   (Notion's phone drawer, measured 2026-11-17 at 402: 12 under each open one and the last, the
+   section's own 12 after it; a folded one's next head right under its 1px foot) — as the iPad's. */
+.sidebar[data-phone="true"] .teamspaceEntry:has(> [role="tree"]) { margin-block-end: 12px; }
+/* A teamspace's head keeps 8px inside both its ends where a page row's last
+   button stops 10px short (Notion's phone drawer, measured 2026-11-18 on a
+   Galaxy A90 at 411: the row 357.57 across, its fold at 8 and its "+" ending
+   8 before the row's end; iPhone 402's "+" at 310 is the same rule). */
+.sidebar[data-phone="true"] .teamspaceEntry > .sectionLabel { height: 48px; padding-inline: 8px; }
+.sidebar[data-phone="true"] .teamspaceName { font-size: 16px; font-weight: 500; }
+/* A teamspace's head as Notion's phone drawer (seen 2026-10-31): a 24px fold
+   at the row's start, its 16px mark 2px on and the name 11px after it, only
+   "+" (32px, a 22px icon) at its end; its pages one 18px step in. */
+.sidebar[data-phone="true"] .teamspaceToggle { gap: 11px; max-width: calc(100% - 44px); }
+.sidebar[data-phone="true"] .teamspaceLeading { gap: 2px; width: auto; height: 24px; }
+.sidebar[data-phone="true"] .sectionLabel .teamspaceDisclosure { position: static; order: -1; width: 24px; height: 24px; }
+.sidebar[data-phone="true"] .sectionLabel .teamspaceChevron { position: static; display: block; order: -1; width: 24px; height: 24px; padding: 5.5px; opacity: 1; }
+.sidebar[data-phone="true"] .sectionLabel .teamspaceIcon { width: 16px; height: 16px; font-size: 11px; opacity: 1; }
+.sidebar[data-phone="true"] [data-sidebar-teamspace-actions] .sectionAction:not(.sectionAdd) { display: none; }
+.sidebar[data-phone="true"] [data-sidebar-teamspace-actions] .sectionAdd { display: inline-flex; width: 32px; height: 32px; border-radius: 6px; }
+.sidebar[data-phone="true"] [data-sidebar-teamspace-actions] .sectionAdd svg { width: 22px; height: 22px; }
+.sidebar[data-phone="true"] .teamspaceEntry > [role="tree"] { padding-inline-start: 18px; }
+/* Notion's phone rows below the tree (seen 2026-10-27): 40px, 16px names in
+   the secondary text color from 41px, icons in the secondary icon color —
+   26px for home, library and trash, 22px for members and settings — in the
+   same 33px place. */
+/* A phone drawer's bottom bar (the one-sidebar decision of 2026-10-29, 10):
+   home, the inbox and search, each an icon over its
+   name, and a round "+" at the end, above the safe area. */
+.phoneTabBar { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; padding: 6px 12px calc(6px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border-subtle); }
+.phoneTabBar > button { position: relative; display: flex; flex: 1 1 0; flex-direction: column; align-items: center; justify-content: center;
+  gap: 2px; min-width: 0; height: 48px; padding: 0; border-radius: 8px; color: var(--text-secondary); font-size: 11px; }
+.phoneTabBar > button svg { width: 24px; height: 24px; color: var(--icon-secondary); }
+.phoneTabBar > button:hover, .phoneTabBar > button:focus-visible, .phoneTabBar > button[aria-pressed="true"] { background: var(--bg-hover); outline: none; }
+.phoneTabBar .phoneTabCount { position: absolute; top: 3px; inset-inline-start: calc(50% + 4px); }
+.phoneTabBar > .phoneTabNew { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%; background: var(--accent-blue); color: #fff; }
+.phoneTabBar > .phoneTabNew svg { color: #fff; }
+.phoneTabBar > .phoneTabNew:hover, .phoneTabBar > .phoneTabNew:focus-visible { background: var(--accent-blue); filter: brightness(0.95); }
+/* Notion's phone drawer's rows under the tree (seen 2026-11-13, iPhone Safari
+   402): 40px each, 1px apart; a 26px icon 9px in or a 22px one 11px in, the
+   name 42px in. */
+.phoneNavigation { display: flex; flex-direction: column; gap: 1px; margin-top: 8px; }
+.phoneNavigation button { display: flex; align-items: center; gap: 0; width: 100%; min-height: 40px;
+  padding-block: 0;
+  padding-inline: 5px 10px; color: var(--text-secondary); text-align: start; font-size: 16px; }
+.phoneNavigation button svg { flex: 0 0 auto; width: 26px; height: 26px; margin-block: 0; margin-inline: 4px 7px; color: var(--icon-secondary); }
+.phoneNavigation button:is([data-sidebar-phone-item="members"], [data-sidebar-phone-item="settings"]) svg {
+  width: 22px; height: 22px; margin-block: 0; margin-inline: 6px 9px; }
+.phoneNavigation button:hover, .phoneNavigation button:focus-visible { background: var(--bg-hover); outline: none; }
+/* The phone's "계정과 워크스페이스" sheet, as Notion's (seen 2026-10-28): a
+   whole screen of flat rows — each account's head 44px, 15px/500 grey 12px in
+   with its "⋯" 12px from the right; its workspaces in 32px rows, the mark 8px
+   in and the name at 36px, 16px; "+ 새 워크스페이스" blue; then the foot's rows,
+   45px under a line, 16px/500 grey and without marks. */
+/* Its first head 10px under the sheet's head: over a whole screen's 28px top. */
+.workspacePhoneMenu { display: flex; flex-direction: column; margin-top: -28px; padding: 10px 0 24px; border-radius: 0; background: transparent; }
+.workspacePhoneMenu .profileGroup { gap: 0; }
+.workspacePhoneMenu .profileGroup + .profileGroup { margin-top: 10px; }
+.workspacePhoneMenu .profileHeader { min-height: 44px; padding-block: 0; padding-inline: 12px 48px; color: var(--text-secondary); font-size: 15px; font-weight: 500; }
+.workspacePhoneMenu .profileGroup > .profileOptionsButton { top: 10px; inset-inline-end: 12px; width: 24px; height: 24px; }
+.workspacePhoneMenu .workspaceMenuItem { min-height: 32px; gap: 8px; padding: 0 8px; border-radius: 0; font-size: 16px; }
+.workspacePhoneMenu .profileCurrentCheck { width: 22px; height: 22px; }
+.workspacePhoneMenu .workspaceMenuDivider { display: none; }
+.workspacePhoneMenu > .workspaceMenuItem { min-height: 45px; padding: 0 12px; border-top: 1px solid var(--border-subtle);
+  color: var(--text-secondary); font-size: 16px; font-weight: 500; }
+.workspacePhoneMenu > .workspaceMenuItem svg { display: none; }
+.workspacePhoneMenu > [data-workspace-phone-foot] { margin-top: 28px; }
+.workspacePhoneMenu > .workspaceMenuItem:last-child { border-bottom: 1px solid var(--border-subtle); }
+/* A wider touch screen's half sheet in the middle (Notion's iPad, seen
+   2026-11-13 at 834 and 1210) keeps its first head 10px under the sheet's
+   head, over the sheet body's 16px top. */
+:global([data-phone-sheet="half"]) .workspacePhoneMenu { margin-top: -6px; }

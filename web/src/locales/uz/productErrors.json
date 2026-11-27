@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Hisob e-pochta manzillarini yuklash",
+        "deniedEffect": "E-pochta manzillari yuklanmadi; saqlangan manzillar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy e-pochta manzillarini tasdiqlay olmadi.",
+        "stateCheckAction": "O'zgartirish kiritishdan oldin qayta ulaning va e-pochta ro'yxatini yangilang."
+      },
+      "update": {
+        "operation": "Hisob e-pochta manzillarini boshqarish",
+        "deniedEffect": "E-pochta so'rovi qabul qilinmadi; saqlangan manzillar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen elektron pochta so‘rovi bajarilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin elektron pochta ro‘yxatini yangilang va tasdiqlash xabarini tekshiring."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Bildirishnoma sozlamalarini yuklash",
+        "deniedEffect": "Bildirishnoma sozlamalaringiz yuklanmadi, saqlangan sozlamalar esa o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen qaysi bildirishnomalarni olishingizni tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin bildirishnoma sozlamalaringizni yuklash uchun sozlamalarni yopib, qayta oching."
+      },
+      "update": {
+        "operation": "Bildirishnoma sozlamalarini o‘zgartirish",
+        "deniedEffect": "Bildirishnoma sozlamalaringiz o‘zgartirilmadi va oldingi sozlamalaringiz saqlanib qoldi.",
+        "uncertainEffect": "Leafen bildirishnoma sozlamalaringiz o‘zgarganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana o‘zgartirishdan oldin bildirishnoma sozlamalaringizni tekshirish uchun sozlamalarni yopib, qayta oching."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Hisob profilini yuklash",
+        "deniedEffect": "Ismingiz va rasmingiz yuklanmadi, saqlangan profilingiz esa o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen hozirgi ismingiz va rasmingizni tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin profilingizni yuklash uchun sozlamalarni yopib, qayta oching."
+      },
+      "update": {
+        "operation": "Hisob profilini saqlash",
+        "deniedEffect": "Profilingiz o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen hisob profili saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin hisob profili va audit tarixini qayta yuklang."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Ikki bosqichli tasdiqlashni o‘zgartirish",
+        "deniedEffect": "So‘ralgan ikki bosqichli tasdiqlash o‘zgarishi qabul qilinmadi; oldingi sozlama kuchda qoladi.",
+        "uncertainEffect": "Leafen hozirgi ikki bosqichli tasdiqlash holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa ikki bosqichli tasdiqlash o‘zgarishini sinab ko‘rishdan oldin hisob xavfsizligini qayta yuklang."
+      },
+      "password": {
+        "operation": "Hisob parolini o‘zgartirish",
+        "deniedEffect": "Parol o‘zgartirilmadi va joriy seanslar amalda qoladi.",
+        "uncertainEffect": "Leafen parol o‘zgartirilganini va boshqa seanslar tugatilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Hisob xavfsizligini qayta yuklang va agar joriy seans endi ishlamasa, qayta kiring."
+      },
+      "read": {
+        "operation": "Hisob xavfsizligini yuklash",
+        "deniedEffect": "Xavfsizlik sozlamalari va sessiyalar yuklanmadi; saqlangan hisob holati o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen hozirgi ikki bosqichli tasdiqlash va seans holatini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin hisob xavfsizligini qayta yuklang."
+      },
+      "recovery": {
+        "operation": "Tiklash kodlarini almashtirish",
+        "deniedEffect": "Yangi tiklash kodlari qabul qilinmadi; avval ishlatilmagan kodlar hali ham amal qiladi.",
+        "uncertainEffect": "Leafen qaysi tiklash kodlari faol ekanini tasdiqlay olmadi.",
+        "stateCheckAction": "Kodlarni yana almashtirish kerakligini hal qilishdan oldin hisob xavfsizligini qayta yuklang."
+      },
+      "sessionRevoke": {
+        "operation": "Hisob seansini bekor qilish",
+        "deniedEffect": "Tanlangan seans bekor qilingani tasdiqlanmadi; boshqa seanslar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen tanlangan seans bekor qilingan-qilinmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinish kerakligini hal qilishdan oldin seanslar ro'yxatini qayta yuklang."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Server zaxira nusxasini bekor qilish",
+        "deniedEffect": "Zaxira nusxasi bekor qilingani tasdiqlanmadi.",
+        "uncertainEffect": "Leafen zaxira nusxasi bekor qilingan-qilinmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana bekor qilishdan oldin joriy zaxira holatini tekshiring."
+      },
+      "create": {
+        "operation": "Server zaxira nusxasini yaratish",
+        "deniedEffect": "Yangi zaxira nusxasi tasdiqlanmadi.",
+        "uncertainEffect": "Leafen zaxira nusxasi so'rovi qabul qilingan-qilinmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa so'rov yuborishdan oldin joriy zaxira nusxasini tekshiring."
+      },
+      "download": {
+        "operation": "Server zaxira nusxasini yuklab olish",
+        "deniedEffect": "Tasdiqlangan zaxira fayli yuklab olinmadi.",
+        "uncertainEffect": "Leafen zaxira faylini tekshira olmadi yoki uzatib bera olmadi.",
+        "stateCheckAction": "Yana yuklab olishdan oldin yakunlangan zaxira nusxasi holatini tekshiring."
+      },
+      "retry": {
+        "operation": "Server zaxira nusxasini yaratishga qayta urinish",
+        "deniedEffect": "Muvaffaqiyatsiz zaxira nusxasi qayta boshlanmadi.",
+        "uncertainEffect": "Leafen zaxira nusxasi qayta boshlangan-qayta boshlanmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana qayta urinishdan oldin joriy zaxira holatini tekshiring."
+      },
+      "status": {
+        "operation": "Server zaxira nusxasi holatini yuklash",
+        "deniedEffect": "Zaxira holati yuklanmadi; hech qanday zaxira holati o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy zaxira holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa amalni bajarishdan oldin zaxira holatini qayta yuklang."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Server hisobotini yuklash",
+        "deniedEffect": "Hisobot yuklanmadi; hech qanday hisobot holati o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy hisobot snapshotini tasdiqlay olmadi.",
+        "stateCheckAction": "Yangilashdan oldin joriy hisobotni qayta yuklang."
+      },
+      "refresh": {
+        "operation": "Server hisobotini yangilash",
+        "deniedEffect": "Yangi hisobot snapshoti tasdiqlanmadi.",
+        "uncertainEffect": "Leafen hisobot snapshoti o‘zgarganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana yangilashdan oldin joriy hisobotni yuklang."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Zaxira jadvalini yuklash",
+        "deniedEffect": "Zaxira jadvali yuklanmadi; hech qanday sozlama o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy zaxira jadvalini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin zaxira jadvalini qayta yuklang."
+      },
+      "restore": {
+        "operation": "Serverni zaxira nusxasidan tiklash",
+        "deniedEffect": "Server maʼlumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen tiklash sozlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin tiklash kutilmoqda yoki yo‘qligini bilish uchun zaxira sozlamalarini qayta yuklang."
+      },
+      "save": {
+        "operation": "Zaxira jadvalini saqlash",
+        "deniedEffect": "Zaxira jadvali o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen zaxira jadvali saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana saqlashdan oldin amaldagi sozlamalarni ko‘rish uchun zaxira jadvalini qayta yuklang."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "So‘rovlar jurnali sozlamalarini yuklash",
+        "deniedEffect": "So‘rovlar jurnali sozlamalari yuklanmadi; hech qanday sozlama o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy so‘rovlar jurnali sozlamalarini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin so‘rovlar jurnali sozlamalarini qayta yuklang."
+      },
+      "save": {
+        "operation": "So‘rovlar jurnali sozlamalarini saqlash",
+        "deniedEffect": "So‘rovlar jurnali sozlamalari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen so‘rovlar jurnali sozlamalari saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana saqlashdan oldin amaldagi sozlamalarni ko‘rish uchun so‘rovlar jurnali sozlamalarini qayta yuklang."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Tarmoq proksisini yuklash",
+        "deniedEffect": "Tarmoq proksisi yuklanmadi; hech qanday sozlama o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy tarmoq proksisini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin tarmoq proksisini qayta yuklang."
+      },
+      "save": {
+        "operation": "Tarmoq proksisini saqlash",
+        "deniedEffect": "Tarmoq proksisi oʻzgartirilmadi.",
+        "uncertainEffect": "Leafen tarmoq proksisi saqlanganligini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana saqlashdan oldin amaldagi proksini koʻrish uchun tarmoq proksisini qayta yuklang."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Server sozlamalarini yuklash",
+        "deniedEffect": "Sozlamalar yuklanmadi va saqlangan sozlamalar oʻzgartirilmadi.",
+        "uncertainEffect": "Leafen joriy server sozlamalarini tasdiqlay olmadi.",
+        "stateCheckAction": "Oʻzgarishlar kiritishdan oldin sozlamalarni qayta yuklang."
+      },
+      "save": {
+        "operation": "Server sozlamalarini saqlash",
+        "deniedEffect": "Yangi sozlamalar qabul qilinmadi; avval saqlangan sozlamalar amalda qoladi.",
+        "uncertainEffect": "Leafen yangi sozlamalar saqlanganligini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin sozlamalarni qayta yuklang va joriy qiymatlarni solishtiring."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Kirish holatini tekshirish",
+        "deniedEffect": "Kirish seansi yaratilmadi va hisob ma’lumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy kirish holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Sahifani yangilang, so‘ng qayta kiring."
+      },
+      "deviceCode": {
+        "operation": "Bu qurilmada kirish",
+        "deniedEffect": "Siz tizimga kirmadingiz va hisob ma’lumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen bu qurilma tizimga kirgan-kirmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yangi kod bilan qayta kiring."
+      },
+      "emailVerification": {
+        "operation": "E-pochta manzilini tasdiqlash",
+        "deniedEffect": "Elektron pochta manzili tasdiqlanmadi va hisobga kirilmadi.",
+        "uncertainEffect": "Leafen elektron pochtani tasdiqlash yakunlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Kirishga urinib ko‘ring; agar ishlamasa, elektron pochtadagi havolani qayta oching."
+      },
+      "mfa": {
+        "operation": "Ikki bosqichli tasdiqlashni yakunlash",
+        "deniedEffect": "Siz tizimga kirmadingiz va MFA tekshiruvi tugallanmaganligicha qoldi.",
+        "uncertainEffect": "Leafen ikki bosqichli tasdiqlash yakunlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Kirishni qaytadan boshlang."
+      },
+      "passwordResetConfirm": {
+        "operation": "Parolni o'zgartirish",
+        "deniedEffect": "Parol oʻzgartirilmadi.",
+        "uncertainEffect": "Leafen parol o'zgarganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yangi parol bilan kirishga urinib ko‘ring; agar ishlamasa, yangi parolni tiklash havolasini oling."
+      },
+      "passwordResetRequest": {
+        "operation": "Parolni tiklashni so'rash",
+        "deniedEffect": "Parolni tiklash xabari yetkazish uchun qabul qilinmadi.",
+        "uncertainEffect": "Leafen tiklash so'rovi qabul qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana so'rov yuborishdan oldin elektron xatni kuting."
+      },
+      "providerExchange": {
+        "operation": "Tashqi hisob bilan kirish",
+        "deniedEffect": "Siz tizimga kirmadingiz va hisob ma’lumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen tashqi kirish natijasini tasdiqlay olmadi.",
+        "stateCheckAction": "Xuddi shu tarzda qayta kiring."
+      },
+      "serverSetup": {
+        "operation": "Leafen serverini sozlash",
+        "deniedEffect": "Administrator hisobi yaratilmadi.",
+        "uncertainEffect": "Leafen server sozlamasi tugaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Sahifani yangilab, sozlash holatini tekshiring, so'ng yana urinib ko'ring."
+      },
+      "signIn": {
+        "operation": "Kirish",
+        "deniedEffect": "Siz tizimga kirmadingiz va hisob ma’lumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen tizimga kirish tugallanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Sahifani yangilang va qaytadan tizimga kiring."
+      },
+      "signUp": {
+        "operation": "Hisob yaratish",
+        "deniedEffect": "Yangi hisob yaratilmadi.",
+        "uncertainEffect": "Leafen hisob yaratilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Tizimga kirishga urinib ko'ring; agar ishlamasa, qaytadan ro'yxatdan o'ting."
+      },
+      "passkey": {
+        "operation": "Passkey bilan tizimga kirish",
+        "deniedEffect": "Tizimga kirish qabul qilinmadi.",
+        "uncertainEffect": "Leafen tizimga kirish tugallanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Passkey bilan qaytadan tizimga kiring."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Sahifa mazmunini yuklash",
+        "deniedEffect": "Sahifa mazmuni yuklanmadi va saqlangan mazmun o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy sahifa mazmunini tasdiqlay olmadi.",
+        "stateCheckAction": "Tahrirlashdan oldin sahifani yangilang."
+      },
+      "update": {
+        "operation": "Sahifa mazmunini saqlash",
+        "deniedEffect": "O'zgarish qabul qilinmadi; serverdagi eng so'nggi mazmun o'z kuchida qoladi.",
+        "uncertainEffect": "Leafen mazmun saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin eng so'nggi mazmunni qayta yuklab, uni solishtiring."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Ma'lumotlar bazasi avtomatlashtirishini saqlash",
+        "deniedEffect": "Avtomatlashtirish o'zgartirilmadi.",
+        "uncertainEffect": "Leafen ma'lumotlar bazasi avtomatlashtirishidagi o'zgarish saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin avtomatlashtirishni qayta yuklang."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "DLP siyosatini saqlash",
+        "deniedEffect": "Yangi DLP siyosati saqlanmadi; avvalgi siyosat o'z kuchida qoladi.",
+        "uncertainEffect": "Leafen DLP siyosati saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin DLP siyosati va tashkilot audit tarixini qayta yuklang."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "SAML domenini tasdiqlash",
+        "deniedEffect": "Domen kutilmoqda holatida qoldi; SAML konfiguratsiyasi, audit tarixi va kirish sessiyalari o'zgartirilmadi.",
+        "uncertainEffect": "Leafen SAML domenini tasdiqlashning joriy holatini aniqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin SAML domeni holatini qayta yuklang."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Faylni o'chirish",
+        "deniedEffect": "Fayl o'chirilmadi va o'zgartirilmadi.",
+        "uncertainEffect": "Leafen fayl o'chirilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinish kerakligini hal qilishdan oldin fayl va uning havolalarini qayta yuklang."
+      },
+      "upload": {
+        "operation": "Faylni yuklash",
+        "deniedEffect": "Yangi fayl saqlanmadi; mavjud fayllar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen fayl saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinish kerakligini hal qilishdan oldin fayllar ro'yxatini qayta yuklang."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Foydalanuvchi mosliklarini qo'llash",
+        "deniedEffect": "Yangi mosliklar qabul qilinmadi.",
+        "uncertainEffect": "Leafen qaysi mosliklar qo'llanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta qo'llashdan oldin moslik natijalarini qayta yuklang."
+      },
+      "refresh": {
+        "operation": "Foydalanuvchi mosliklarini yangilash",
+        "deniedEffect": "Eng so'nggi mosliklar yuklanmadi; saqlangan mosliklar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy mosliklar holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Davom etishdan oldin mosliklar panelini qayta yuklang."
+      },
+      "scan": {
+        "operation": "Import qilingan odamlarni skanerlash",
+        "deniedEffect": "Import qilingan odamlar ro‘yxatda ko‘rsatilmadi va mavjud mosliklar o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen import qilingan odamlarning joriy ro‘yxatini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin mosliklar panelini qayta yuklang."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Tugma avtomatlashtirishini bajarish",
+        "deniedEffect": "Tugmaning amallari bajarilmadi va sahifa mazmuni o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen tugma avtomatlashtirishi bajarilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin ta’sir ko‘rgan kontent va bajarilish holatini qayta yuklang."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Tashkilot API tokenini nusxalash",
+        "deniedEffect": "Token vaqtinchalik xotirada tasdiqlanmadi; tokenning o‘zi o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen vaqtinchalik xotiraga yozish tugaganligini tasdiqlay olmadi.",
+        "stateCheckAction": "Tokenni qayta nusxalashdan oldin vaqtinchalik xotirani tekshiring."
+      },
+      "create": {
+        "operation": "Tashkilot API tokenini yaratish",
+        "deniedEffect": "Yangi token tasdiqlanmadi.",
+        "uncertainEffect": "Leafen token yaratilganligini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa token yaratishdan oldin tokenlar ro‘yxatini qayta yuklang."
+      },
+      "list": {
+        "operation": "Tashkilot API tokenlarini yuklash",
+        "deniedEffect": "Tokenlar yuklanmadi va mavjud tokenlar o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy tokenlar ro‘yxatini tasdiqlay olmadi.",
+        "stateCheckAction": "O‘zgartirishdan oldin tokenlar ro‘yxatini qayta yuklang."
+      },
+      "revoke": {
+        "operation": "Tashkilot API tokenini bekor qilish",
+        "deniedEffect": "Token bekor qilinishi tasdiqlanmadi.",
+        "uncertainEffect": "Leafen token bekor qilinganligini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana bekor qilishga urinishdan oldin tokenlar ro‘yxatini qayta yuklang."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Ish maydoni sahifalarini yuklash",
+        "deniedEffect": "Sahifalar yuklanmadi va saqlangan ish maydoni ma’lumotlari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy ish maydoni sahifalarini tasdiqlay olmadi.",
+        "stateCheckAction": "Tahrirlashdan oldin ish maydonini qayta yuklang."
+      },
+      "create": {
+        "operation": "Sahifa yaratish",
+        "deniedEffect": "Yangi sahifa yaratilmadi va mavjud sahifalar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen sahifa yaratilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin sahifalar ro'yxatini yangilang va yangi sahifa bor-yo'qligini tekshiring."
+      },
+      "title": {
+        "update": {
+          "operation": "Sahifa sarlavhasini saqlash",
+          "deniedEffect": "Sarlavha o'zgarishi qabul qilinmadi; saqlangan sarlavha o'z kuchida qoladi.",
+          "uncertainEffect": "Leafen o'zgarish saqlanganini tasdiqlay olmadi.",
+          "stateCheckAction": "Sahifani yangilang va joriy sarlavhani tekshiring."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Sahifa tahlilini yuklash",
+        "deniedEffect": "Tahlil ma'lumotlari yuklanmadi va sahifa ma'lumotlari o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy tahlil ma'lumotlarini tasdiqlay olmadi.",
+        "stateCheckAction": "Xulosa chiqarishdan oldin tahlilni qayta yuklang."
+      },
+      "policyUpdate": {
+        "operation": "Tahlil siyosatini saqlash",
+        "deniedEffect": "Yangi tahlil siyosati qabul qilinmadi.",
+        "uncertainEffect": "Leafen siyosat saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin siyosatni yangilang va taqqoslang."
+      },
+      "preferencesRead": {
+        "operation": "Tahlil sozlamalarini yuklash",
+        "deniedEffect": "Tahlil sozlamalari yuklanmadi va saqlangan sozlamalar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy tahlil sozlamalarini tasdiqlay olmadi.",
+        "stateCheckAction": "Sozlamalarni tahrirlashdan oldin ularni qayta yuklang."
+      },
+      "preferencesUpdate": {
+        "operation": "Tahlil sozlamalarini saqlash",
+        "deniedEffect": "Yangi sozlamalar qabul qilinmadi.",
+        "uncertainEffect": "Leafen sozlamalar saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin sozlamalarni yangilang va taqqoslang."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Oflayn o'zgarishni xavfsiz saqlash",
+        "deniedEffect": "O'zgarish bu qurilmada saqlanmadi.",
+        "uncertainEffect": "Leafen o'zgarish bu qurilmada yoki serverda saqlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Tahrirlangan tarkibni nusxalab oling, so'ng sahifani yangilang va saqlangan holatni taqqoslang."
+      },
+      "legacy": {
+        "operation": "Oflayn o'zgarishlarni ko'chirish",
+        "deniedEffect": "Eski oflayn o'zgarishlar saqlangan joyida qoldi va yuborilmadi.",
+        "uncertainEffect": "Leafen qaysi eski oflayn o'zgarishlar ko'chirilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Bu varaqni ochiq qoldiring va yana tahrirlashdan oldin qayta yuklang."
+      },
+      "refresh": {
+        "operation": "Tiklangan o'zgarishlarni qayta yuklash",
+        "deniedEffect": "Tiklangan o'zgarishlar ko'rsatilmadi va saqlangan ma'lumotlar almashtirilmadi.",
+        "uncertainEffect": "Leafen tiklanishdan so'ng joriy sahifani tasdiqlay olmadi.",
+        "stateCheckAction": "Yana tahrirlashdan oldin sahifani qayta yuklang."
+      },
+      "replay": {
+        "operation": "Oflayn o'zgarishlarni yuborish",
+        "deniedEffect": "Navbatdagi o'zgarish kutilayotgan holicha qoldi va server tomonidan tasdiqlanmadi.",
+        "uncertainEffect": "Leafen qaysi navbatdagi o'zgarishlar serverga yetib kelganini tasdiqlay olmadi.",
+        "stateCheckAction": "Bu varaqni ochiq qoldiring, qayta ulaning va yana tahrirlashdan oldin qayta yuklang."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Ommaviy saytni qidirish",
+        "deniedEffect": "Qidiruv natijalari yuklanmadi va nashr etilgan kontent o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy qidiruv natijalarini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana qidirishdan oldin sayt holatini tekshiring."
+      },
+      "sharedPage": {
+        "operation": "Ulashilgan sahifani yuklash",
+        "deniedEffect": "Ulashilgan sahifa yuklanmadi va nashr etilgan kontent o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy ulashilgan sahifani tasdiqlay olmadi.",
+        "stateCheckAction": "Yana urinishdan oldin ulashish havolasini tekshiring."
+      },
+      "site": {
+        "operation": "Ommaviy saytni yuklash",
+        "deniedEffect": "Ommaviy sayt yuklanmadi va nashr etilgan kontent o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy ommaviy saytni tasdiqlay olmadi.",
+        "stateCheckAction": "Yana urinishdan oldin sayt manzilini tekshiring."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Forma kirishini tiklash",
+        "deniedEffect": "A'zo formasi ochilmadi va hech qanday javob yuborilmadi.",
+        "uncertainEffect": "Leafen bu formaning joriy kirish holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Formani qayta yuklang va qaytadan tizimga kiring."
+      },
+      "configurationWrite": {
+        "operation": "Forma sozlamalarini saqlash",
+        "deniedEffect": "Forma sozlamalari saqlanganligi tasdiqlanmadi.",
+        "uncertainEffect": "Leafen joriy forma konfiguratsiyasini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana saqlashdan oldin forma sozlamalarini qayta yuklang."
+      },
+      "definitionRead": {
+        "operation": "Formani yuklash",
+        "deniedEffect": "Forma yuklanmadi va hech qanday javob yuborilmadi.",
+        "uncertainEffect": "Leafen joriy forma ta’rifini tasdiqlay olmadi.",
+        "stateCheckAction": "Javob kiritishdan oldin formani qayta yuklang."
+      },
+      "optionsRead": {
+        "operation": "Forma variantlarini yuklash",
+        "deniedEffect": "So‘ralgan variantlar yuklanmadi va qoralama javob yuborilmadi.",
+        "uncertainEffect": "Leafen joriy variantlarni tasdiqlay olmadi.",
+        "stateCheckAction": "Formani yuborishdan oldin variantlarni qayta yuklang."
+      },
+      "responseSubmit": {
+        "operation": "Forma javobini yuborish",
+        "deniedEffect": "Javob qabul qilinmadi.",
+        "uncertainEffect": "Leafen javob qabul qilingan-qilinmaganini tasdiqlay olmadi.",
+        "stateCheckAction": "Javobni qayta yuborishdan oldin forma natijasini tekshiring."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Runtime sozlamalarini yuklash",
+        "deniedEffect": "Runtime sozlamalari yuklanmadi; saqlangan server sozlamalari o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy runtime sozlamasini tasdiqlay olmadi, shuning uchun xavfsiz zaxira qiymatlari faol.",
+        "stateCheckAction": "Joriy server sozlamalarini o‘qish uchun sahifani qayta yuklang."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Kutilayotgan o‘zgarishlarni sinxronlash",
+        "deniedEffect": "Kutilayotgan o‘zgarishlar navbatda qolmoqda va server tomonidan tasdiqlanmadi.",
+        "uncertainEffect": "Leafen qaysi kutilayotgan o‘zgarishlar serverga yetib borganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin bu varaqni ochiq qoldiring, qayta ulaning va saqlangan holatni tekshiring."
+      },
+      "pendingRead": {
+        "operation": "Kutilayotgan o‘zgarishlarni tekshirish",
+        "deniedEffect": "Kutilayotgan o‘zgarishlar soni yuklanmadi; navbatdagi o‘zgarishlar o‘chirib tashlanmadi.",
+        "uncertainEffect": "Leafen hali qancha o‘zgarish kutilayotganini tasdiqlay olmadi.",
+        "stateCheckAction": "Bu varaqni ochiq qoldiring va sinxronizatsiya holatini yana tekshiring."
+      },
+      "retry": {
+        "operation": "Sinxronizatsiyani qayta urinib ko‘rish",
+        "deniedEffect": "Sinxronizatsiya tasdiqlanmadi; kutilayotgan o‘zgarishlar navbatda qolmoqda.",
+        "uncertainEffect": "Leafen oxirgi sinxronizatsiya natijasini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin saqlangan holat va ulanishni tekshiring."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Ish maydonini yaratish",
+        "deniedEffect": "Yangi ish maydoni yaratilmadi va mavjud ma’lumotlar o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen ish maydoni yaratilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin ish maydonlari ro'yxatini qayta yuklang va yangi ish maydoni borligini tekshiring."
+      },
+      "delete": {
+        "operation": "Ish maydonini butunlay o'chirish",
+        "deniedEffect": "O'chirish qabul qilinmadi; ish maydoni va mavjud ma'lumotlar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen ish maydoni o'chirilganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin ish maydonlari ro'yxatini qayta yuklang."
+      },
+      "member": {
+        "add": {
+          "operation": "Ish maydoni a'zosini qo'shish",
+          "deniedEffect": "A'zo qo'shilmadi va hech narsa o'zgartirilmadi.",
+          "uncertainEffect": "Leafen ish maydoni a'zosi qo'shilganini tasdiqlay olmadi.",
+          "stateCheckAction": "Qayta urinishdan oldin a'zolar, faoliyat va audit tarixini qayta yuklang."
+        },
+        "revoke": {
+          "operation": "Ish maydoni a'zosini olib tashlash",
+          "deniedEffect": "A'zo olib tashlanmadi va hech narsa o'zgartirilmadi.",
+          "uncertainEffect": "Leafen ish maydoni a'zosi olib tashlanganini tasdiqlay olmadi.",
+          "stateCheckAction": "Qayta urinishdan oldin a'zolar, faoliyat va audit tarixini qayta yuklang."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Ish maydoni sozlamalarini saqlash",
+          "deniedEffect": "Sozlamalardagi o'zgarish saqlanmadi; avvalgi sozlamalar amalda qoladi.",
+          "uncertainEffect": "Leafen ish maydoni sozlamalari saqlanganini tasdiqlay olmadi.",
+          "stateCheckAction": "Qayta urinishdan oldin ish maydoni sozlamalari, faoliyat va audit tarixini qayta yuklang."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Ish maydoni eksportini bekor qilish",
+        "deniedEffect": "Eksport bekor qilinmadi va u hali ham davom etayotgan bo'lishi mumkin.",
+        "uncertainEffect": "Leafen eksport bekor qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana bekor qilishdan oldin eksport holatini yangilang."
+      },
+      "download": {
+        "operation": "Ish maydoni eksportini yuklab olish",
+        "deniedEffect": "Arxiv yuklab olinmadi; serverdagi eksport o'zgartirilmadi.",
+        "uncertainEffect": "Leafen arxivni yuklab olish yakunlanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana yuklab olishdan oldin yuklamalar ro'yxatini tekshiring."
+      },
+      "job": {
+        "operation": "Ish maydonini eksport qilish",
+        "deniedEffect": "Arxiv yaratilmadi; manba ish maydoni o'zgartirilmadi.",
+        "uncertainEffect": "Leafen bu vazifa uchun yaroqli arxiv mavjudligini tasdiqlay olmadi.",
+        "stateCheckAction": "Joriy ish maydonidan o'rnini bosuvchi eksportni boshlang."
+      },
+      "poll": {
+        "operation": "Ish maydoni eksportini kutish",
+        "deniedEffect": "Eng so‘nggi eksport holati yuklanmadi; eksport vazifasi o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy eksport holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa amalni bajarishdan oldin eksport holatini yangilang."
+      },
+      "retry": {
+        "operation": "Eksportni qayta urinib ko‘rish",
+        "deniedEffect": "Qayta urinish qabul qilinmadi; mavjud eksport vazifasi o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen qayta urinish qabul qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana qayta urinishdan oldin eksport holatini yangilang."
+      },
+      "start": {
+        "operation": "Ish maydoni eksportini boshlash",
+        "deniedEffect": "Yangi eksport vazifasi qabul qilinmadi; ish maydoni o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen eksport vazifasi qabul qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yangi vazifani boshlashdan oldin eng so‘nggi eksport holatini yangilang."
+      },
+      "status": {
+        "operation": "Ish maydoni eksporti holatini yuklash",
+        "deniedEffect": "Eng so‘nggi eksport holati yuklanmadi; eksport vazifasi o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy eksport holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa amalni bajarishdan oldin eksport oynasini qayta yuklang."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Importni bekor qilish",
+        "deniedEffect": "Import bekor qilinmadi va hali ham davom etayotgan bo‘lishi mumkin.",
+        "uncertainEffect": "Leafen import bekor qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Yana bekor qilishdan oldin import holatini yangilang."
+      },
+      "job": {
+        "operation": "Faylni import qilish",
+        "deniedEffect": "Sahifa yaratilmadi; qisman import qilingan kontent olib tashlandi.",
+        "uncertainEffect": "Leafen bu import uchun yaroqli sahifani tasdiqlay olmadi.",
+        "stateCheckAction": "Diagnostika havolasini saqlab qoling va manba fayldan yangi import boshlang."
+      },
+      "start": {
+        "operation": "Importni boshlash",
+        "deniedEffect": "Yangi import qabul qilinmadi va sahifa yaratilmadi.",
+        "uncertainEffect": "Leafen import qabul qilinganini tasdiqlay olmadi.",
+        "stateCheckAction": "Leafen o‘sha so‘rovga qayta ulanishi uchun faylni o‘zgartirmasdan o‘sha faylni qayta yuboring."
+      },
+      "status": {
+        "operation": "Import holatini yuklash",
+        "deniedEffect": "Eng so‘nggi import holati yuklanmadi; import vazifasi o‘zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy import holatini tasdiqlay olmadi.",
+        "stateCheckAction": "Boshqa amalni bajarishdan oldin saqlangan vazifaga qayta ulanish uchun import oynasini qayta oching."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Hisob passkeylarini yuklash",
+        "deniedEffect": "Passkeylar ro'yxati yuklanmadi; saqlangan kalitlar o'zgartirilmadi.",
+        "uncertainEffect": "Leafen joriy passkeylar ro'yxatini tasdiqlay olmadi.",
+        "stateCheckAction": "O'zgartirishdan oldin qayta ulaning va passkeylar ro'yxatini yangilang."
+      },
+      "update": {
+        "operation": "Hisob passkeylarini boshqarish",
+        "deniedEffect": "Server saqlangan passkeylarni o'zgartirmadi.",
+        "uncertainEffect": "Leafen passkey o'zgarishi tugallanganini tasdiqlay olmadi.",
+        "stateCheckAction": "Qayta urinishdan oldin passkeylar ro'yxatini yangilang. Yangi kalit yaratilgan bo'lsa-yu, bu yerga saqlanmagan bo'lsa, qurilmangizning kalit menejerini tekshiring."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Joriy parol noto'g'ri.",
+    "currentPasswordNext": "Agar uni esdan chiqargan bo'lsangiz, tizimdan chiqing va kirish sahifasidan uni qayta o'rnating.",
+    "code": "Kod noto'g'ri yoki allaqachon ishlatilgan.",
+    "codeNext": "Autentifikator ilovangiz hozir ko'rsatib turgan kodni kiriting.",
+    "recoveryCode": "Tiklash kodi noto'g'ri yoki allaqachon ishlatilgan.",
+    "recoveryCodeNext": "Hali ishlatilmagan tiklash kodini kiriting.",
+    "accountDeactivated": "Bu hisob server administratori tomonidan faolsizlantirilgan.",
+    "accountDeactivatedNext": "Uni qayta faollashtirishni administratordan so'rang.",
+    "organizationSSO": "Bu tashkilot faqat yagona kirish (SSO) orqali tizimga kirishga ruxsat beradi.",
+    "organizationSSONext": "Buning o'rniga kompaniya hisobingiz bilan tizimga kiring.",
+    "organizationPasswordTwoStep": "Tashkilotingiz qurilma kodi emas, parol va ikki bosqichli tekshiruv bilan tizimga kirishni talab qiladi.",
+    "organizationPasswordTwoStepNext": "Elektron pochta va parolingiz bilan tizimga kiring; agar parolingiz bo'lmasa, administratordan bir martalik parol so'rang.",
+    "deviceCode": "Kod noto‘g‘ri, allaqachon ishlatilgan, muddati o‘tgan yoki kodni ko‘rsatgan oyna yopilgan.",
+    "deviceCodeNext": "Yangi kod oling va uni qaytadan kiriting.",
+    "setupCode": "Sozlash kodi noto'g'ri.",
+    "setupCodeNext": "Server chiqargan sozlash havolasini qayta oching yoki server ishga tushirilganda berilgan kodni kiriting.",
+    "setupCodeMissing": "Sozlash kodini kiriting.",
+    "setupCodeMissingNext": "Server chiqargan sozlash havolasini ochsangiz, u avtomatik to‘ldiriladi; server ishga tushirilganda berilgan kod ham ishlaydi.",
+    "sessionCapacity": "Bu hisob qurilmalar soni chegarasiga yetdi.",
+    "sessionCapacityNext": "Endi ishlatmaydigan qurilmangizni Sozlamalar → Hisob → Qurilmalar bo'limida tizimdan chiqaring, so'ng qayta urinib ko'ring.",
+    "signInEnded": "Bu kirish so'rovi tugadi: vaqt tugadi yoki kod juda ko'p marta noto'g'ri kiritildi.",
+    "signInEndedNext": "Elektron pochta va parolingiz bilan qaytadan tizimga kiring.",
+    "emailNotVerified": "Bu hisobning elektron pochta manzili hali tasdiqlanmagan.",
+    "emailNotVerifiedNext": "Ro'yxatdan o'tganda olgan xatingizdagi havolani oching, so'ng tizimga kiring.",
+    "registrationFailed": "Hisob yaratilmadi.",
+    "registrationFailedNext": "Birozdan so'ng qayta urinib ko'ring. Muammo davom etsa, bu server administratoriga xabar bering."
+  },
+  "labels": {
+    "reference": "Referens"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Bu tashkilot kompaniya hisobi orqali kirishda yangi hisob yaratmaydi.",
+    "samlAccountCreationOffNext": "Tashkilotingiz administratoridan sizni taklif qilishni so'rang.",
+    "samlRetryAfterInvite": "Taklif olganingizdan so'ng qaytadan tizimga kiring.",
+    "samlIdentityDenied": "Bu elektron pochta bu tashkilotning kompaniya hisobi orqali kirishidan foydalana olmaydi.",
+    "samlIdentityDeniedNext": "Tashkilotingiz administratoridan email domeni va a'zoligingizni tekshirishni so'rang.",
+    "samlRetryAfterAdministrator": "Administrator tekshirgandan so'ng qaytadan tizimga kiring.",
+    "samlResponseInvalid": "Kompaniya hisobi orqali kirish javobini tekshirib bo'lmadi.",
+    "samlResponseInvalidNext": "Tizimga kirishni qaytadan boshlang. Bu takrorlanaversa, tashkilotingiz administratoridan SAML sozlamalarini tekshirishni so'rang.",
+    "accountAlreadyExistsForEmailAddress": "Bu elektron pochta manzili uchun hisob allaqachon mavjud.",
+    "accountEmailCouldNotAdmittedFor": "Hisob elektron xatini yuborib bo'lmadi.",
+    "administratorSettingsDoNotMeetServer": "Administrator sozlamalari server talablariga javob bermaydi.",
+    "administratorSettingsNotAvailableCurrentAccount": "Administrator sozlamalari joriy hisob uchun mavjud emas.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Boshqa administrator server sozlashni allaqachon tugatgan.",
+    "anotherServerOperationTemporarilyLockedAccount": "Boshqa server amali hisob xotirasini vaqtincha qulfladi.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Boshqa server amali ma'lumotlar bazasini vaqtincha qulfladi, shuning uchun eksportni davom ettirib bo'lmadi.",
+    "anotherServerOperationTemporarilyLockedDlp": "Boshqa server amali DLP siyosatlari xotirasini vaqtincha qulfladi.",
+    "anotherServerOperationTemporarilyLockedFile": "Boshqa server amali fayl xotirasini vaqtincha qulfladi.",
+    "anotherServerOperationTemporarilyLockedPage": "Boshqa server amali sahifa mazmuni xotirasini vaqtincha qulfladi.",
+    "anotherServerOperationTemporarilyLockedProduct": "Boshqa server amali mahsulot xotirasini vaqtincha qulfladi.",
+    "askOrganizationAdministratorToAllow": "Tashkilot administratori yoki jamoa maydoni egasidan ruxsat berishini so'rang.",
+    "askServerAdministratorCheckEmailDelivery": "Server administratoridan email yetkazib berishni tekshirishni so'rang, so'ng qayta urinib ko'ring.",
+    "backupArtifactNotCompleteYet": "Zaxira nusxa fayli hali tugallanmagan.",
+    "backupStateNoLongerPermitsControl": "Zaxira nusxaning joriy holati endi bu amalga ruxsat bermaydi.",
+    "causeCouldNotDetermined": "Sababni aniqlab bo'lmadi.",
+    "changeSaveReceiptAndSynchronizationState": "O'zgarish saqlanmadi va sahifa mazmuni o'zgarishsiz qoldi.",
+    "checkCurrentBackupBeforeRetrying": "Qayta urinishdan oldin joriy zaxira nusxasini tekshiring.",
+    "checkCurrentJobStateBeforeDeciding": "Qayta urinish kerakligini hal qilishdan oldin joriy vazifa holatini tekshiring.",
+    "checkCurrentListBeforeTryingDifferent": "Boshqa element bilan urinishdan oldin joriy ro‘yxatni tekshiring.",
+    "checkCurrentServerSettingsBeforeTrying": "Qayta urinishdan oldin joriy server sozlamalarini tekshiring.",
+    "checkCurrentServerSetupStateBefore": "Qayta urinishdan oldin joriy server sozlash holatini tekshiring.",
+    "checkCurrentStateAndUseNew": "Joriy holatni tekshiring va yangi zaxira nusxani faqat kerak bo‘lganda yarating.",
+    "checkEmailAndPassword": "Elektron pochta va parolni tekshiring.",
+    "checkServerSecretStorageThenSave": "Server maxfiy saqlash omborini tekshiring, so‘ngra o‘sha sozlamalarni qayta saqlang.",
+    "checkServerStateThenLoadSettings": "Server holatini tekshiring, so‘ngra sozlamalarni qayta yuklang.",
+    "createNewBackupAndInspectServer": "Yangi zaxira nusxa yarating va xato takrorlansa, server xotirasini tekshiring.",
+    "currentAccountNotAuthorizedForOperation": "Joriy hisob bu amaliyotni bajarishga ruxsat etilmagan.",
+    "currentStateMustCheckedBeforeRetry": "Qayta urinishni xavfsiz deb hisoblashdan oldin joriy holat tekshirilishi kerak.",
+    "currentStateMustCheckedBeforeRetrying": "Qayta urinishdan oldin joriy holat tekshirilishi kerak.",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS tekshirish xizmati vaqtincha mavjud emas.",
+    "doNotAssumeUnchangedRetrySafe": "Server xotirasi tuzatilmaguncha qayta urinishni xavfsiz deb hisoblamang.",
+    "doNotKeepRetryingIdentifierNew": "Bu so‘rovni qayta-qayta urinmang; avval qayta yuklang, shundan keyin yangi urinish xavfsiz.",
+    "doNotResumeFailedJobStart": "Muvaffaqiyatsiz vazifani davom ettirmang; uning o‘rniga yangi eksportni boshlang.",
+    "doNotRetryBeforeLoadingLatest": "Eng so‘nggi server sozlamalarini yuklamaguningizcha qayta urinmang.",
+    "doNotRetryDirectRequestUnchanged": "Bu yuklashni shu holicha qayta urinmang; davom ettiriladigan yuklashdan foydalaning.",
+    "doNotRetryDirectRequestUnchanged2": "Bu yuklashni shu holicha qayta urinmang; davom ettiriladigan arxiv yuklashdan foydalaning.",
+    "doNotRetrySetupRequestSign": "Bu sozlash so'rovini qayta urinmang; mavjud administrator hisobi bilan tizimga kiring.",
+    "doNotReuseInvalidArtifactCreate": "Yaroqsiz zaxira faylini qayta ishlatmang; yangi zaxira nusxa yarating.",
+    "doNotReuseLinkNewAction": "Bu havolani qayta ishlatmang; yangi amaliyot xavfsiz.",
+    "emailOrPasswordDidNotMatch": "Elektron pochta yoki parol mos kelmadi.",
+    "externalSignInProviderCouldNot": "Tashqi kirish provayderi so'rovni bajara olmadi.",
+    "fileLargerThanOneDirectUpload": "Bu fayl bitta to‘g‘ridan-to‘g‘ri yuklash uchun juda katta.",
+    "formStorageTemporarilyLockedByAnother": "Forma xotirasi boshqa server amaliyoti tomonidan vaqtincha qulflandi.",
+    "leafenArchiveLargerThanOneDirect": "Bu Leafen arxivi bitta to‘g‘ridan-to‘g‘ri import qilish uchun juda katta.",
+    "leafenDidNotReceiveServerResponse": "Leafen serverdan javob olmadi.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen tashkilot xotirasidan foydalanish holatini qayta tiklamoqda.",
+    "leafenServiceCouldNotCompleteOperation": "Leafen xizmati amalni bajara olmadi.",
+    "isolatedRecordNotAppliedYourRequested": "Tugallanmagan yozuv chetga olindi, o‘zgartirishingiz saqlanmadi va sahifa mazmuni o‘zgarmadi.",
+    "jobCannotRetriedStartReplacementExport": "Bu vazifani qayta urinish mumkin emas; uning o‘rniga yangi eksportni boshlang.",
+    "jobSArchiveNotPublishedAnd": "Bu vazifaning arxivi yaratilmadi va manba ish maydoni o‘zgartirilmadi.",
+    "keepDiagnosticReferenceAndAskServer": "Diagnostika ma’lumotnomasini saqlab qoling va server administratoridan server xotirasini tiklashni so‘rang.",
+    "lastConfirmedSavedStateRestoredSo": "Oxirgi tasdiqlangan saqlangan holat tiklandi, shuning uchun o‘sha o‘zgarishni qayta urinib ko‘rish xavfsiz.",
+    "loadCurrentReportAndUseNew": "Joriy hisobotni yuklang, so‘ng qayta yangilang.",
+    "loadCurrentReportBeforeRefreshingAgain": "Yana yangilashdan oldin joriy hisobotni yuklang.",
+    "loadCurrentReportBeforeTryingAgain": "Qayta urinishdan oldin joriy hisobotni yuklang.",
+    "newerOrIncompatibleStatePreventedOperation": "Yangiroq yoki mos kelmaydigan holat bu amalni bajarishga to‘sqinlik qildi.",
+    "noNewArchivePublishedAndSource": "Yangi arxiv yaratilmadi, manba ish maydoni va oldingi arxivlar o‘zgarmadi.",
+    "noNewSignInSessionCreated": "Yangi kirish sessiyasi yaratilmadi va mavjud sessiyalar o'zgartirilmadi.",
+    "notKnownWhetherRetryingSafeUntil": "Joriy holat tekshirilmaguncha qayta urinish xavfsizligi noma’lum.",
+    "organizationStorageAuthorityInconsistent": "Tashkilotning saqlash hajmi yozuvi nomuvofiq.",
+    "organizationDlpBlocksOperation": "Tashkilotingizning ma'lumotlar yo'qolishining oldini olish siyosati bunga yo'l qo'ymaydi.",
+    "takeOutTermOrAskAboutDlp": "Maxfiy atamani olib tashlab qayta urinib ko‘ring, agar ishonchingiz komil bo‘lmasa, tashkilot administratoridan so‘rang.",
+    "organizationSettingsDoNotAllowOperation": "Tashkilotingiz yoki jamoa maydoni sozlamalari bunga ruxsat bermaydi.",
+    "organizationStorageLimitWouldExceeded": "Tashkilotning saqlash hajmi chegarasidan oshib ketadi.",
+    "serverDiskAlmostFull": "Server diskida joy deyarli tugadi.",
+    "askServerAdministratorToFreeSpace": "Server administratoridan joy bo‘shatishni so‘rang; joy ochilgach yana ishlaydi.",
+    "safeRetryOnceServerHasRoom": "Serverda joy ochilgach, o‘sha ishni qayta sinab ko‘rish xavfsiz.",
+    "readDoesNotChangeSavedData": "Bu o‘qish saqlangan ma’lumotlarni o‘zgartirmaydi, shuning uchun qayta urinib ko‘rish xavfsiz.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Boshqa amalni tanlashdan oldin joriy zaxira nusxasini qayta yuklang.",
+    "reloadCurrentBackupStateBeforeContinuing": "Davom etishdan oldin joriy zaxira holatini qayta yuklang.",
+    "reloadCurrentStateBeforeDecidingWhether": "Qayta urinish kerakmi-yo‘qmi, shuni hal qilishdan oldin joriy holatni qayta yuklang.",
+    "reloadSignInPageAndStart": "Kirish sahifasini yangilang va qaytadan tizimga kiring.",
+    "removeUnneededFilesOrAskOrganization": "Keraksiz fayllarni o‘chiring yoki tashkilotning to‘lov bo‘yicha administratoridan chegarani oshirishni so‘rang.",
+    "reportChangedAfterScreenLoaded": "Ushbu ekran yuklangandan so‘ng hisobot o‘zgardi.",
+    "requestIdentifierBelongsDifferentOperation": "Bu so‘rov allaqachon boshqa amal uchun ishlatilgan.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Bu so‘rov allaqachon boshqa hisobotni yangilash uchun ishlatilgan.",
+    "requestedItemNoLongerExistsOr": "So‘ralgan element endi mavjud emas yoki bu hisob uchun ko‘rinmaydi.",
+    "retryExportAfterOtherServerOperation": "Boshqa server amali tugagach, ushbu eksportni qayta urinib ko‘ring.",
+    "retryExportJobAfterServerStorage": "Server xotirasi tiklangach, ushbu eksport vazifasini qayta urinib ko‘ring.",
+    "retryOnlyAfterAccountOrPermission": "Hisob yoki ruxsat o'zgargandan keyingina qayta urinib ko'ring.",
+    "retryOnlyAfterOrganizationSettingChanges": "O'sha sozlama o'zgargandan keyingina qayta urinib ko'ring.",
+    "retrySameContentChangeAfterOther": "Boshqa server amali tugagach, xuddi shu kontent o'zgarishini qayta bajarishga urinib ko'ring.",
+    "retrySameContentChangeAfterServer": "Server xotirasi tiklangach, xuddi shu kontent o'zgarishini qayta bajarishga urinib ko'ring.",
+    "retrySameContentChangeNow": "Xuddi shu kontent o'zgarishini hoziroq qayta bajarishga urinib ko'ring.",
+    "changeTooLargeForOneChange": "Bu bir martada o'zgartirish uchun juda katta. Bitta o'zgarish matn bilan birga 64 MB gacha sig'adi.",
+    "pageKeepsWhatItHadBefore": "Sahifa avvalgidek qoladi.",
+    "makeTheChangeInParts": "Buni qismlarga bo'lib bajaring: katta ochiladigan blok yoki bo'lim ichidagi bloklarni avval qismlarga bo'lib o'chiring, uzun matnni esa qismlarga bo'lib joylashtiring.",
+    "sameSizeIsRefusedAgain": "Xuddi shu hajm yana rad etiladi; bo'lingandan keyin qayta urinish xavfsiz.",
+    "linkCannotBeKeptHere": "Bu o'zgarish shu yerda bog'lab bo'lmaydigan sahifa yoki blokni bog'laydi.",
+    "chooseAnotherPageOrRefresh": "Boshqa sahifani tanlang yoki sahifani yangilab, qayta urinib ko'ring.",
+    "sameLinkIsRefusedAgain": "Xuddi shu elementni qayta bog'lash yana rad etiladi.",
+    "retrySameDomainVerificationAfterDns": "DNS tekshirish xizmati tiklangach, xuddi shu domen tekshiruvini qayta bajarishga urinib ko'ring.",
+    "retrySameFileOperationAfterOther": "Boshqa server amali tugagach, xuddi shu fayl amalini qayta bajarishga urinib ko'ring.",
+    "retrySameFileOperationAfterServer": "Server xotirasi tiklangach, xuddi shu fayl amalini qayta bajarishga urinib ko'ring.",
+    "retrySameFormOperationAfterOther": "Boshqa server amali tugagach, xuddi shu forma amalini qayta bajarishga urinib ko'ring.",
+    "retrySameFormOperationAfterServer": "Server xotirasi tiklangach, xuddi shu forma amalini qayta bajarishga urinib ko'ring.",
+    "retrySameOperationAfterOtherServer": "Boshqa server amali tugagach, xuddi shu amalni qayta bajarishga urinib ko'ring.",
+    "retrySameOperationAfterServerStorage": "Server xotirasi tiklangach, xuddi shu amalni qayta bajarishga urinib ko'ring.",
+    "returnSignInWithExistingAccount": "Mavjud hisob bilan tizimga kirishga qayting.",
+    "reviewAndCorrectEnteredServerSettings": "Kiritilgan server sozlamalarini ko'rib chiqing va tuzating.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Kiritilgan qiymatlarni ko'rib chiqing va ajratib ko'rsatilgan ma'lumotlarni tuzating.",
+    "safeRetryAfterEmailDeliveryRestored": "Elektron pochta yetkazilishi tiklangach, qayta urinish xavfsiz.",
+    "safeRetryAfterServerResourceChecks": "Server resurslarini tekshirish tiklangach, qayta urinish xavfsiz.",
+    "safeRetryAfterTemporaryLockClears": "Vaqtinchalik qulf ochilgach, qayta urinish xavfsiz.",
+    "safeRetryRead": "Bu o'qishni qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameAuthenticationOperationAfter": "Xotira tiklangach, xuddi shu autentifikatsiya amalini qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameContentChangeAfter": "Vaqtinchalik qulf ochilgach, xuddi shu kontent o'zgarishini qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameContentChangeAfter2": "Xotira tiklangach, xuddi shu kontent o'zgarishini qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameDlpPolicySave": "Xotira tiklangach, xuddi shu DLP siyosatini qayta saqlashga urinish xavfsiz.",
+    "safeRetrySameDlpPolicySave2": "Vaqtinchalik qulf ochilgach, xuddi shu DLP siyosatini qayta saqlashga urinish xavfsiz.",
+    "safeRetrySameDomainVerificationAfter": "Xizmat tiklangach, xuddi shu domen tekshiruvini qayta urinish xavfsiz.",
+    "safeRetrySameFileOperationAfter": "Saqlash xotirasi mavjud bo'lgach, xuddi shu fayl amalini qayta urinish xavfsiz.",
+    "safeRetrySameFileOperationAfter2": "Saqlash xotirasi tiklangach, xuddi shu fayl amalini qayta urinish xavfsiz.",
+    "safeRetrySameFileOperationAfter3": "Vaqtinchalik qulf ochilgach, xuddi shu fayl amalini qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameFormOperationAfter": "Saqlash xotirasi tiklangach, xuddi shu forma amalini qayta urinish xavfsiz.",
+    "safeRetrySameFormOperationAfter2": "Vaqtinchalik qulf ochilgach, xuddi shu form amalini qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameOperationAfterStorage": "Saqlash xotirasi tiklangach, xuddi shu amalni qayta urinish xavfsiz.",
+    "safeRetrySameOperationAfterTemporary": "Vaqtinchalik qulf ochilgach, xuddi shu amalni qayta bajarishga urinish xavfsiz.",
+    "safeRetrySameSettingsAfterSecret": "Maxfiy xotira tiklangach, xuddi shu sozlamalarni qayta urinish xavfsiz.",
+    "safeRetrySameSettingsSaveAfter": "Noto'g'ri qiymatlarni tuzatgach, xuddi shu sozlamalarni saqlashni qayta urinish xavfsiz.",
+    "safeRetryWithSameJobIdentifier": "Xuddi shu vazifani qayta urinish xavfsiz.",
+    "safeRetryWithSameJobIdentity": "Xuddi shu vazifani qayta urinish xavfsiz.",
+    "safeSignInInsteadCreatingAnother": "Boshqa hisob yaratish o'rniga tizimga kirish xavfsiz.",
+    "safeStartNewProviderSignIn": "Keyinroq yangi provayder orqali tizimga kirishni boshlash xavfsiz.",
+    "safeTryAgainAfterCorrectingDetails": "Ma'lumotlarni to'g'rilagach, qayta urinish xavfsiz.",
+    "safeTryAgainAfterCorrectingInput": "Kiritilgan ma'lumotlarni to'g'rilagach, qayta urinish xavfsiz.",
+    "safeTryAgainAfterWait": "Kutgandan so'ng qayta urinish xavfsiz.",
+    "serverTakesNoChangesNow": "Bu server zaxira joyiga ulana olmayapti, shuning uchun hozir o'zgarishlarni qabul qilmayapti.",
+    "serverDataMovedElsewhere": "Bu serverning ma'lumotlari boshqa serverga ko'chirildi.",
+    "doItOnNewServer": "Buni yangi serverda bajaring.",
+    "serverDataMovedNoRetry": "Bu yerda qayta urinish uni saqlab qolmaydi.",
+    "sameRequestIdentityCanRetriedSafely": "Qisqa kutishdan so'ng xuddi shu so'rovni xavfsiz qayta urinish mumkin.",
+    "saveSameDlpPolicyAgainAfter": "Server xotirasi tiklangach, xuddi shu DLP siyosatini qayta saqlang.",
+    "saveSameDlpPolicyAgainAfter2": "Boshqa server amali tugagach, xuddi shu DLP siyosatini qayta saqlang.",
+    "serverAccountStorageTemporarilyUnavailable": "Serverdagi akkaunt xotirasi vaqtincha mavjud emas.",
+    "serverCannotCurrentlyConfirmResourceState": "Server hozirda resurs holatini tasdiqlay olmaydi.",
+    "serverCouldNotCompleteAdministratorSettings": "Server administrator sozlamalarini saqlashni yakunlay olmadi.",
+    "serverCouldNotCompleteAdministratorSetup": "Server administratorni sozlash so'rovini yakunlay olmadi.",
+    "serverCouldNotCompleteBackupLifecycle": "Server zaxira nusxalashni yakunlay olmadi.",
+    "serverCouldNotLoadBackupState": "Server o‘sha zaxira holatini yuklay olmadi.",
+    "serverCouldNotProtectAdministratorSecret": "Server administratorning maxfiy qiymatlarini himoya qila olmadi.",
+    "serverCouldNotReadAdministratorState": "Server administrator holatini o‘qiy olmadi.",
+    "serverCouldNotReadOneExact": "Server izchil hisobot snapshotini o‘qiy olmadi.",
+    "serverDetectedAndIsolatedIncompleteContent": "Server tugallanmagan kontent yozuvini aniqladi va uni chetga ajratdi.",
+    "serverFileStorageTemporarilyUnavailable": "Server fayl xotirasi vaqtincha mavjud emas.",
+    "serverFormStorageTemporarilyUnavailable": "Server forma xotirasi vaqtincha mavjud emas.",
+    "serverPageContentStorageTemporarilyUnavailable": "Server sahifa kontenti xotirasi vaqtincha mavjud emas.",
+    "serverSettingsChangedAfterScreenLoaded": "Server sozlamalari bu ekran yuklangach o‘zgardi.",
+    "serverStorageTemporarilyUnavailable": "Server xotirasi vaqtincha mavjud emas.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Server xotirasi vaqtincha mavjud emas edi, shu sababli arxiv yaratilmadi.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Server xotirasi vaqtincha mavjud emas, shu sababli DLP siyosatini saqlab bo‘lmadi.",
+    "signInAttemptIdentifierAlreadyBelongs": "Bu kirish urinishi allaqachon boshqa ma'lumotlar bilan ishlatilgan.",
+    "signInOrAccountActionLink": "Kirish yoki hisob amali havolasi endi yaroqli emas.",
+    "signInWithAuthorizedAccountOr": "Vakolatli hisob bilan tizimga kiring yoki administratordan kirish huquqini so'rang.",
+    "signInWithExistingAdministratorAccount": "Mavjud administrator hisobi bilan tizimga kiring.",
+    "signInWithServerAdministratorAccount": "Server administratori hisobi bilan tizimga kiring yoki boshqa administratorдан kirish huquqini so'rang.",
+    "startAccountActionAgainGetNew": "Yangi havola olish uchun hisob amalini qaytadan boshlang.",
+    "startReplacementExportFromLatestWorkspace": "Eng so‘nggi ish maydonidan almashtiruvchi eksportni boshlang.",
+    "storedBackupDidNotMatchVerified": "Saqlangan zaxira nusxasi tekshirilgan faylga mos kelmadi.",
+    "submittedInformationDidNotMeetOperation": "Yuborilgan ma’lumotlar amal talablariga javob bermadi.",
+    "tooManyRequestsLimited": "Juda ko‘p so‘rov yuborilgani uchun bu amal cheklangan.",
+    "tooManyRequestsMadeSoOperation": "Juda ko‘p so‘rov yuborilgani sababli bu amal vaqtincha cheklangan.",
+    "tryAgainAfterServerStorageRecovers": "Server xotirasi tiklangandan so‘ng qayta urinib ko‘ring.",
+    "tryAgainInHours_one": "Taxminan bir soatdan keyin qayta urinib ko‘ring.",
+    "tryAgainInHours_other": "Taxminan {{count}} soatdan keyin qayta urinib ko‘ring.",
+    "tryAgainInMinutes_one": "Taxminan bir daqiqadan keyin qayta urinib ko‘ring.",
+    "tryAgainInMinutes_other": "Taxminan {{count}} daqiqadan keyin qayta urinib ko‘ring.",
+    "tryAgainInSeconds_one": "Taxminan {{count}} soniyadan keyin qayta urinib ko‘ring.",
+    "tryAgainInSeconds_other": "Taxminan {{count}} soniyadan keyin qayta urinib ko‘ring.",
+    "useAnotherSignInMethodOr": "Boshqa kirish usulidan foydalaning yoki bu provayderni keyinroq sinab ko'ring.",
+    "useResumableArchiveUploadSoProgress": "Saqlangan holatdan davom etish uchun arxivni to‘xtagan joyidan yuklash usulidan foydalaning.",
+    "useResumableUploadSoProgressCan": "Saqlangan holatdan davom etish uchun to‘xtagan joyidan yuklash usulidan foydalaning.",
+    "waitForCompletionThenRetryDownload": "Tugashini kuting, so‘ng yuklab olishni qayta urinib ko‘ring.",
+    "waitForOtherServerOperationFinish": "Boshqa server amali tugashini kuting, so‘ng qayta urinib ko‘ring.",
+    "waitForStorageReconciliationAdvanceThen": "Xotira yangilanishi uchun biroz kuting, so‘ng xuddi shu amalni qayta urinib ko‘ring.",
+    "waitMomentBeforeTryingAgain": "Qayta urinishdan oldin biroz kuting.",
+    "workspaceChangedWhileExportRunning": "Eksport bajarilayotganda ish maydoni o‘zgardi.",
+    "youNotSignedInAndNo": "Tizimga kirmagansiz va hisob ma'lumotlari o'zgartirilmagan.",
+    "pageIsLocked": "Sahifa qulflangan, shuning uchun o‘zgartirish kiritib bo‘lmaydi.",
+    "unlockPageThenTryAgain": "Sahifa menyusidan sahifani o‘zingiz uchun yoki hamma uchun qulfdan chiqaring, so‘ng qayta urinib ko‘ring.",
+    "safeToRetryAfterUnlocking": "Sahifani qulfdan chiqargandan so‘ng qayta urinish xavfsiz.",
+    "databaseIsLocked": "Ma’lumotlar bazasi qulflangan, shuning uchun uning xususiyatlari va ko‘rinishlarini o‘zgartirib bo‘lmaydi.",
+    "unlockDatabaseThenTryAgain": "Ma’lumotlar bazasini “Qulflangan” tugmasi orqali o‘zingiz yoki hamma uchun qulfdan chiqaring, so‘ng qayta urinib ko‘ring.",
+    "databaseEditorsCanUnlock": "Faqat ma’lumotlar bazasini tahrirlay oladigan kishi uni qulfdan chiqara oladi.",
+    "safeToRetryAfterDatabaseUnlocked": "Ma’lumotlar bazasi qulfdan chiqarilgandan so‘ng qayta urinish xavfsiz.",
+    "rowMoveNeedsFullAccess": "Uni boshqa sahifaga ko‘chirish uchun unga to‘liq ruxsat va ko‘chiriladigan joyga tahrirlash ruxsati kerak.",
+    "askFullAccessHolderToMoveIt": "Uni ko‘chirish uchun to‘liq ruxsatga ega odamdan so‘rang yoki o‘zingiz tahrirlay oladigan joyni tanlang.",
+    "rowMoveRefusedUntilAccess": "Sizda o‘sha ruxsat bo‘lmaguncha uni ko‘chirish yana rad etiladi.",
+    "otherWorkspaceCantMoveOrLink": "Elementlarni ish maydonlari o'rtasida ko'chirish yoki bog'lash mumkin emas.",
+    "makeItAnewInThatWorkspace": "Uni o'sha ish maydonida yarating va mazmunini ko'chirib o'tkazing. Butun sahifa «Ko'chirish» oynasida ish maydonini tanlab, u yerga ko'chiriladi yoki nusxalanadi.",
+    "otherWorkspaceRefusedAgain": "Qayta urinish xuddi shu sabab bilan rad etiladi.",
+    "signInEndedForThisBrowser": "Bu brauzerdagi kirish muddati tugagan yoki u tugatilgan.",
+    "signInEndedForThisApp": "Bu ilovadagi kirish muddati tugagan yoki u tugatilgan.",
+    "signInAgainToContinue": "Davom etish uchun qayta tizimga kiring.",
+    "retryAfterSigningInAgain": "Qayta tizimga kirgandan so'ng qayta urinib ko'ring.",
+    "serverRestoredSinceDeviceCopies": "Bu serverning ma’lumotlari o‘zgargan, bu qurilmadagi nusxalar esa o‘zgarishdan oldingi holatga tegishli.",
+    "changeKeptOnThisDeviceOnly": "O‘zgartirish serverda saqlanmagan; u faqat shu qurilmada mavjud.",
+    "takeServerContentAnew": "Serverning joriy kontentini olish uchun “Serverdan qayta yuklash”ni tanlang.",
+    "retryAfterTakingContentAnew": "Serverdan qayta yuklagandan so‘ng qayta urinib ko‘ring.",
+    "propertyUsedByViewOrDependency": "Bu xususiyatni hozir o‘zgartirib bo‘lmaydi: u sarlavha xususiyati yoki “O‘chirilgan xususiyatlar” ro‘yxatida.",
+    "changeWhatUsesPropertyFirst": "Xususiyatni hozirgi holatida ko‘rish uchun sahifani qayta yuklang.",
+    "retryAfterChangingWhatUsesProperty": "Uni o‘zgartirish uchun avval o‘chirilgan xususiyatni tiklang.",
+    "workspaceAlreadyHasContentForArchive": "Bu ish maydonida allaqachon kontent mavjud, shuning uchun unga Leafen arxivini joylashtirib bo‘lmaydi.",
+    "makeNewWorkspaceToImportArchive": "Yangi ish maydoni yarating va bu arxivni o‘sha yerga import qiling.",
+    "retryInNewWorkspace": "Yangi ish maydonida uni qayta import qilishingiz mumkin.",
+    "importFileDoesNotFitFormat": "Fayl Leafen o'qiydigan formatga mos kelmaydi, shuning uchun hech narsa import qilinmadi.",
+    "exportFileAgainToImport": "Faylni yaratilgan joyidan qayta eksport qiling, so'ngra o'sha faylni import qiling.",
+    "sameFileRefusedAgain": "Bir xil faylni qayta import qilib bo'lmaydi.",
+    "pageBusyWithAnotherChange": "Bu sahifa boshqa o‘zgarish bilan band, shuning uchun uni bir oz vaqt tahrirlab bo‘lmaydi.",
+    "tryAgainOnceThatChangeIsDone": "O‘sha o‘zgarish tugagach, qayta urinib ko‘ring.",
+    "importPageInTrash": "Joylashtiriladigan sahifa savatda, shuning uchun hech narsa import qilinmadi.",
+    "restorePageThenImportAgain": "Sahifani savatdan tiklang, so‘ng qayta import qiling.",
+    "importPageDeletedForGood": "Joylashtiriladigan sahifa butunlay o‘chirilgan, shuning uchun hech narsa import qilinmadi.",
+    "ownerBringsDeletedPageBack": "30 kun ichida ish maydoni egasi uni Xavfsizlik → Ma’lumotlarni saqlash bo‘limida tiklab olishi mumkin; so‘ng uni savatdan tiklang va qayta import qiling.",
+    "importAgainOnceRestored": "Sahifa tiklanmaguncha qayta urinish ham uni import qilmaydi.",
+    "pageInTrashCantChange": "Savatdagi sahifani tiklamaguncha o‘zgartirib bo‘lmaydi.",
+    "restorePageThenTryAgain": "Sahifani savatdan tiklang, so‘ng qayta urinib ko‘ring.",
+    "tryAgainOnceRestored": "Sahifa tiklanmaguncha qayta urinish natija bermaydi.",
+    "optionNameHasComma": "Variant nomida vergul (,) bo'lishi mumkin emas.",
+    "takeCommaOutOrSplitOption": "Vergulni olib tashlang yoki uni ikkita variantga ajrating.",
+    "optionRefusedUntilRenamed": "Nom o'zgartirilgandan so'ng qayta urinib ko'ring.",
+    "optionNameTaken": "Bu xususiyatda bunday nomli variant allaqachon mavjud.",
+    "useAnotherOptionName": "Boshqa nomdan foydalaning yoki mavjud variantni tanlang.",
+    "optionsInUseLeftOut": "Bu o'zgarish sahifalar foydalanadigan variantlarni chiqarib tashlaydi.",
+    "keepOptionsOrDeleteOneByOne": "O'sha variantlarni saqlab qoling yoki ularni har bir variant menyusidan birma-bir o'chiring.",
+    "optionsRefusedUntilKeptOrDeleted": "Shu holicha qayta urinish xuddi shu sabab bilan rad etiladi."
+  }
+}

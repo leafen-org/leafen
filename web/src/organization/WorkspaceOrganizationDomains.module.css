@@ -1,0 +1,123 @@
+/* "새 도메인 추가", as Notion's (seen 2026-11-08, dark, at 768): 410 wide,
+   24px in, centered words in the default color — the title 17/24 500 8px
+   over its line 14/19 — the field 28px (4px 10px in) 22px under them, then
+   only "다음", the full width and 32px tall, 14px under the field, faint
+   until a domain is typed. No "취소": Escape or the dimmed page closes it.
+   It outranks the settings windows' 466px width it is drawn with. */
+.dialog[role="dialog"] {
+  width: min(410px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  text-align: center;
+}
+
+.title {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+/* Notion breaks its Korean line after "사용자는" (seen 2026-11-08). */
+.words {
+  margin: 0;
+  white-space: pre-line;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.field {
+  display: block;
+  margin: 22px 0 14px;
+}
+
+.field > input {
+  width: 100%;
+  height: 28px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+  outline: none;
+}
+
+.field > input:focus {
+  box-shadow: var(--menu-search-focus-ring);
+}
+
+.next {
+  width: 100%;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.next:hover:not(:disabled),
+.next:focus-visible {
+  background: var(--accent-blue-hover);
+}
+
+.next:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* Narrow (the settings content 600px or less), a domain's row stacks as the
+   other name and value rows do (SettingsRows .values): its name and DNS
+   record across the row beside its "⋯", its status under them, and the
+   status head goes — beside the status and "⋯" columns a 300px content left
+   the record 97px (600 window, 2026-11-15). Named after the settings content,
+   one step past the table's own rules whatever order the sheets load in. */
+@container settings (max-width: 600px) {
+  :global([data-settings-content]) .domains,
+  :global([data-settings-content]) .domains :is(thead, tbody) {
+    display: block;
+  }
+
+  :global([data-settings-content]) .domains tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  :global([data-settings-content]) .domains thead tr {
+    border-top: 1px solid var(--border-default);
+  }
+
+  :global([data-settings-content]) .domains :is(th, td) {
+    border-block: 0;
+  }
+
+  :global([data-settings-content]) .domains :is(th, td):first-child {
+    grid-area: 1 / 1;
+  }
+
+  :global([data-settings-content]) .domains th:nth-child(2) {
+    display: none;
+  }
+
+  :global([data-settings-content]) .domains td:nth-child(2) {
+    grid-area: 2 / 1;
+    padding-top: 0;
+    color: var(--text-secondary);
+  }
+
+  :global([data-settings-content]) .domains :is(th, td):last-child {
+    grid-area: 1 / 2 / span 2;
+  }
+
+  :global([data-settings-content]) .domains td[colspan] {
+    grid-area: 1 / 1 / auto / -1;
+  }
+}

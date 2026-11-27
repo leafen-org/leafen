@@ -1,0 +1,66 @@
+/* The change a version's stepper is on (PageHistoryChangeNav), outlined
+   as Notion's preview outlines it (measured 2026-11-15 at 1440): a square
+   2px blue line 2px off the block's own box, which spans the column 8px
+   past its words on either side (a line of words 900 wide in a 884 column,
+   its line 426 to 1334 around words 438 to 1322), its height the block's.
+   The block here stands at its words, so the line is drawn 12px past them
+   at its start and end and 4px over and under it. */
+.document [data-history-changed="true"][data-history-current-change] {
+  border-image: linear-gradient(var(--c-accent-blue), var(--c-accent-blue)) 1 / 2px / 4px 12px;
+}
+
+/* A callout's block holds its box 8px in on every side, so its line is 12px
+   off the box all round (Notion's: a callout box 884 wide, its block 900 by
+   the box's height and 16). */
+.document [data-history-changed="true"][data-history-current-change][data-type="callout"] {
+  border-image-outset: 12px;
+}
+
+/* Blocks a version deleted are one change, outlined under the box's head
+   and its line, around the deleted blocks across the box (Notion's,
+   measured 2026-11-15: the box 900 wide, its deleted block the box's width
+   and 40 high under a 1px line, outlined 2px off it). */
+.document [data-history-removed][data-history-current-change] > [data-history-removed-body] {
+  border-image: linear-gradient(var(--c-accent-blue), var(--c-accent-blue)) 1 / 2px / 3px 4px 4px;
+}
+
+/* An inline database's block: its name's line and its table, one block in
+   the column as they stand apart. */
+.database {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A block a restore brought back, as Notion's preview marks it (measured
+   2026-11-16 at 1440, dark): the whole block on its author's tint, 14% as
+   added words', from 8px past the column on either side (the document's
+   edges) to 8px over and under its words' lines (its row's padding less
+   8), rounded 4px, its words as they read. When the stepper is on it, its
+   outline stands 2px off the tint, rounded with it (Notion's: tint 900×40
+   around a 24px line, outline 2px at 2px). The author's chip stands 4px
+   over the tint (PageHistoryPreview). */
+.document [data-history-returned="true"] {
+  position: relative;
+  isolation: isolate;
+}
+
+.document [data-history-returned="true"]::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-block: calc(var(--history-pad-top-now, 8px) - 8px) calc(var(--history-pad-bottom-now, 8px) - 8px);
+  inset-inline: -8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--history-change-color, rgb(35, 131, 226)) 14%, transparent);
+  pointer-events: none;
+}
+
+/* (border-image-source: the minifier writes the shorthand "none" as nothing.) */
+.document [data-history-returned="true"][data-history-current-change] {
+  border-image-source: none;
+}
+
+.document [data-history-returned="true"][data-history-current-change]::before {
+  outline: 2px solid var(--c-accent-blue);
+  outline-offset: 2px;
+}

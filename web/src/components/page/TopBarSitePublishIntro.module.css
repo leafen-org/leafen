@@ -1,0 +1,394 @@
+/* Notion's publish tab before publishing (read from its page 2026-11-14):
+   a column 10px apart inside 12px 20px 20px of the window (the window's own
+   6px 8px taken off here) — a centred 17/22 heading over its 14/20 line 4px
+   below, the preview, a 32px blue button the column's width, and 16px more
+   under it a 12/16 grey notice beside its mark. */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 14px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.heading strong {
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.heading span {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.turnedOff {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* The preview, as Notion's: 92% of the column, rounded 6px in its outline
+   shadow (shaOutMd), as tall as the small page in it; a 22px browser bar
+   (its gray 75: rgba(84, 72, 49, 0.08), dark #1c1c1c) with three 6px dots,
+   a line, the site's 9px bar 6px above and below its 19.5px line, a line. */
+.preview {
+  position: relative;
+  align-self: center;
+  width: 92%;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: var(--media-tools-shadow);
+  pointer-events: none;
+}
+
+/* Under the preview, a 58px fade from nothing to the window's ground over
+   its foot and as wide as the column, as Notion's (its bacEle). */
+.fade {
+  position: relative;
+  height: 0;
+}
+
+.fade::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 58px;
+  background: linear-gradient(transparent, var(--bg-element));
+  pointer-events: none;
+}
+
+.frameBar {
+  display: flex;
+  gap: 4px;
+  height: 23px;
+  align-items: center;
+  padding-inline: 8px 10px;
+  border-bottom: 1px solid var(--border-default);
+  background: rgba(84, 72, 49, 0.08);
+}
+
+:global([data-theme="dark"]) .frameBar {
+  background: #1c1c1c;
+}
+
+.frameBar span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-disabled);
+}
+
+.siteBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: calc(19.5px + 2 * 6px + 1px);
+  padding-inline: 12px 10px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+.siteBarTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The small page, as Notion's: 62px of the page's head and 8px, then 48px
+   in from either side its 24/600 title on a 36px line, and 8px under it a
+   48px window of its first blocks drawn at 91%, 12/18 at 0.8, each 6px and
+   2px in; what does not fit is cut. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: calc(62px + 8px) 48px 0;
+}
+
+.pageTitle {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 36px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 110% wide drawn at 91% about its top, so it fills the page's width. */
+.blocks {
+  width: 110%;
+  height: 48px;
+  margin-inline: -5%;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 18px;
+  transform: scale(0.91);
+  transform-origin: top;
+}
+
+.blocks .pageText {
+  display: block;
+}
+
+.blocks .pageText,
+.blocks .pageRow {
+  height: auto;
+  margin: 0;
+  padding: 8px;
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.8;
+  -webkit-line-clamp: none;
+}
+
+/* The body's first lines, at the preview's small size. */
+.pageText {
+  display: -webkit-box;
+  margin: 0 0 4px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 10px;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.pageText[data-heading="true"] {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pageRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  overflow: hidden;
+  padding-inline-start: 8px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.publish {
+  height: 32px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.publish:hover:not(:disabled),
+.publish:focus-visible:not(:disabled) {
+  filter: brightness(0.95);
+  outline: none;
+}
+
+.publish:disabled {
+  opacity: 0.5;
+}
+
+.notice {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Its 16px mark in a 20px box. */
+.notice svg {
+  flex: 0 0 auto;
+  margin: 2px;
+}
+
+/* A phone's (TopBarSitePublishIntro): the heading 20px and its line 16px,
+   the preview a 290×373 phone 24px round with a soft shadow, its white
+   status bar 32px with "9:41" (12px/500) and its marks; the site's bar 33px
+   under a line; the page's title 24px/600 48px in; the button 50px, 25px in,
+   17px/500; the notice 15px with its 18px mark 30px in. */
+.intro[data-phone="true"] {
+  gap: 0;
+  padding: 12px 0 0;
+}
+
+.intro[data-phone="true"] .heading {
+  gap: 4px;
+}
+
+.intro[data-phone="true"] .heading strong {
+  font-size: 20px;
+  line-height: 25px;
+}
+
+.intro[data-phone="true"] .heading span {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.intro[data-phone="true"] .preview {
+  width: 290px;
+  height: 373px;
+  margin: 18px auto 0;
+  border-radius: 24px 24px 0 0;
+  background: var(--bg-default);
+  box-shadow: rgba(25, 25, 25, 0.027) 0 8px 12px, rgba(25, 25, 25, 0.06) 0 0 0 1px;
+}
+
+/* A phone's page fades out at the bottom inside its frame. */
+.intro[data-phone="true"] .preview::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 48px;
+  background: linear-gradient(transparent, var(--bg-default));
+}
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusMarks {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.statusMarks svg:first-child {
+  width: 15px;
+  height: 15px;
+}
+
+.statusMarks svg:nth-child(2) {
+  width: 16px;
+  height: 11px;
+}
+
+.statusMarks svg:last-child {
+  width: 8px;
+  height: 14px;
+}
+
+.intro[data-phone="true"] .siteBar {
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  line-height: normal;
+}
+
+.intro[data-phone="true"] .page {
+  display: block;
+  padding: 12px 48px 0;
+}
+
+.intro[data-phone="true"] .pageTitle {
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.intro[data-phone="true"] .pageText {
+  font-size: 12px;
+}
+
+.intro[data-phone="true"] .pageRow {
+  gap: 6px;
+  height: 24px;
+  padding-inline-start: 2px;
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.intro[data-phone="true"] .pageRow svg {
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+}
+
+.intro[data-phone="true"] .publish {
+  height: 50px;
+  margin: 0 30px;
+  border-radius: 10px;
+  font-size: 17px;
+}
+
+.intro[data-phone="true"] .notice {
+  gap: 13px;
+  margin-block: 26px 0;
+  margin-inline: 35px 34px;
+  padding: 0;
+  color: var(--text-tertiary);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.intro[data-phone="true"] .notice svg {
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+}
+
+
+/* A wider touch screen's publish tab fills its sheet, as Notion's iPad
+   (seen 2026-11-16 in iPad Safari at 834, the audit's picture and the
+   worker's look: the phone 665pt tall, the button 78pt over the screen's
+   foot with the notice under it): the sheet's body, the tabs and the tab
+   grow to the sheet's foot, and the phone in the preview takes the height
+   the heading, the button and the notice leave — at least its page's own —
+   34px over the sheet's 24px and the screen's safe area under the notice.
+   A phone's keeps its 373 (Notion's iPhone: about 346pt, the button high
+   with room under the notice, seen 2026-11-16 at 402). */
+.fillBody {
+  flex: 1 1 auto;
+}
+
+.fillBody > *,
+.fillTabs,
+.fillPanel {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.fillPanel .intro[data-phone="true"] {
+  flex: 1 0 auto;
+  padding-bottom: 34px;
+}
+
+.fillPanel .intro[data-phone="true"] .preview {
+  flex: 1 0 auto;
+  height: auto;
+}

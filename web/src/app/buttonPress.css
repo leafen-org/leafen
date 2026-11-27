@@ -1,0 +1,19 @@
+/* A blue button under the pointer and held down is Notion's blue 5% and 10%
+   darker in lightness in the light theme and as much lighter in the dark
+   (hsl(from #2783de h s calc(l ∓ 5)), seen 2026-11-18 in Chrome on its
+   database's "새로 만들기" and the share window's "공유하기", both themes, two
+   tabs): the hover is --accent-blue-hover (globals.css), the press here. A
+   button held down takes the pressed blue where its hover takes the hover
+   blue. High contrast keeps its own (contrast.css). */
+:root,
+[data-theme="light"] {
+  --accent-blue-pressed: rgb(28, 105, 182);
+}
+
+[data-theme="dark"] {
+  --accent-blue-pressed: rgb(83, 156, 229);
+}
+
+:where(button, [role="button"]):active:not(:disabled) {
+  --accent-blue-hover: var(--accent-blue-pressed);
+}

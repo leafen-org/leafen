@@ -1,0 +1,369 @@
+/* The advanced filter's window, as Notion's (seen 2026-11-03, 1280px): each
+   group a grid of [60px join · property · condition and value ·
+   32px "⋯"], 8px apart and 8px in; 32px controls rounded 6px; a group in a
+   faint box with a 1px ring; "+ 필터 규칙 추가" rows 32px and "필터 제거"
+   28px, 4px in, under a line. */
+/* Its window, rounded 10px over the page, as wide as its rows. */
+.window {
+  position: fixed;
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* It holds the keys without a ring of its own (useFilterWindowKeys). */
+.window:focus {
+  outline: none;
+}
+
+/* The control the keys light takes its pointer look and no ring, as Notion's
+   (seen 2026-11-24 at 1685 dark: a choice's ground rgb(38,38,38) over its
+   rgb(25,25,25), "⋯" and "+ 필터 규칙 추가" the hover tint, a typed value's
+   field the hover tint with its edge gone). */
+.editor .choice[data-filter-key-lit],
+.editor .value[data-filter-key-lit]:not(:has(> input)) [data-notion-select-button] {
+  border-color: var(--button-outline);
+  background-image: linear-gradient(var(--bg-hover), var(--bg-hover));
+}
+.more[data-filter-key-lit],
+.add[data-filter-key-lit],
+.value[data-filter-key-lit]:has(> input) {
+  background: var(--bg-hover);
+  box-shadow: none;
+}
+
+
+.editor {
+  box-sizing: border-box;
+  width: max-content;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 60px max-content minmax(min-content, 1fr) 32px;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 8px 0;
+}
+
+.join {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 32px;
+}
+
+.joinWord {
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.rule {
+  display: contents;
+}
+
+/* A date rule's property and its part ("시작일 ⌄") share the property's
+   column, 120 and 100 wide 4px apart, and every rule's property stretches
+   to that column (Notion's, seen 2026-11-12 at 1440: 120 · 100, a 224
+   column). */
+.propertyCell {
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.editor .propertyCell > .property {
+  flex: none;
+  width: 120px;
+}
+
+.editor .datePart {
+  flex: none;
+  width: 100px;
+  min-width: 0;
+}
+
+/* A rule's condition, its value and an empty room after it, 8px apart: the
+   rules share one width, and what a rule's own leave free its value and the
+   empty room split evenly, a typed value from 170px, a chosen one from its
+   button's width (Notion's, seen 2026-11-12 at 1440: by a 454.67 width
+   "값을 포함하는 데이터" 151 · a 228.83 field · 58.84, ">" 43.5 · 282.58 ·
+   112.59, "값과 동일한 데이터" 138.89 · an "A" option's 180.98 · 118.8). */
+.condition {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.condition::after {
+  content: "";
+  flex: 1 1 0;
+}
+
+.editor .property,
+.editor .operator,
+.editor .joinSelect {
+  min-width: 0;
+}
+
+.editor .operator,
+.editor .joinSelect {
+  flex: none;
+  width: auto;
+}
+
+.editor .choice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.editor .choice > span:not([aria-hidden]) {
+  flex: 1;
+}
+
+/* A property's icon sits 6px before its name, and each ⌄ is Notion's thin
+   one, 8.64 of ink in its own 8.64 by 14 (RULE_CARET; seen 2026-11-12 and
+   2026-11-22 at 1440). */
+.editor .choice > span:not([aria-hidden]):not(:first-child) {
+  margin-inline-start: -2px;
+}
+
+.editor .choice > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+/* Pointed at, open, or holding the keyboard's ring — :focus-visible, which
+   the keys' own mark on a focus given back by code takes too
+   (postcss.config.mjs) — a control takes its pointer look under the ring, as
+   Notion's "+ 필터 규칙 추가" and a rule's property ringed by Escape after
+   their menu or list (seen 2026-11-24 at 1685 dark, dpr 1, in two tabs:
+   rgba(255,255,255,0.055) and rgb(38,38,38) under the ring, the pointer away). */
+.editor .choice:hover,
+.editor .choice:focus-visible,
+.editor .choice[aria-expanded="true"] {
+  border-color: var(--button-outline);
+  background-image: linear-gradient(var(--bg-hover), var(--bg-hover));
+}
+
+.value {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+  min-height: 32px;
+}
+
+/* A typed value sits in a faint field from 170px, its input filling it; a
+   chosen one is a button like the property's, filling its value alone, a
+   relative date's parts 28px high. */
+.value:has(> input) {
+  flex: 1 1 170px;
+  box-sizing: border-box;
+  min-width: 170px;
+  min-height: 32px;
+  padding-block: 4px;
+  padding-inline: 6px 0;
+  border-radius: 6px;
+  background: var(--bg-block-empty);
+  box-shadow: 0 0 0 1px var(--button-outline);
+}
+
+/* A day rule's "사용자 지정 날짜 ⌄" and its day split their value evenly,
+   the choice from its words and the day from 165px, and the value takes
+   the room the rules leave before any empty room after it does (Notion's,
+   seen 2026-11-12 at 1440: 126.78 · 165 alone, 140 · 165 by a wider rule). */
+.condition:has(> .value [data-date-day-value])::after {
+  flex-grow: 0;
+}
+
+.value [data-date-day-value] > [data-notion-select] {
+  flex: 1 1 0;
+  min-width: max-content;
+}
+
+.editor .value [data-date-day-value] > [data-notion-select] > [data-notion-select-button] {
+  width: 100%;
+}
+
+.editor .value [data-date-day-value] > [data-notion-select] > [data-notion-select-button] > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Its day is a field opening the day's window, from 165px. */
+.value [data-date-day-value] > [data-date-day-field] {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 165px;
+}
+
+/* The input fills its field and never widens it: its own width, which the
+   font sets, gives way to the field's 170px. */
+.value > input:not([class]) {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.editor .value [data-notion-select-button] {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: auto;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* A relative date's value, as Notion's (seen 2026-11-12 at 1440): its
+   choices 28px high, the words 11px in and its ⌄ (the row's own, 9.88
+   by 16) 6px after them and
+   5px from the end; "이번 ⌄" and "주 ⌄" 4px apart, each from its own width
+   taking the same share of what the value gets (88.64 · 76.53, the empty
+   room 65.06 by a 170px typed value). Its row and count are their own rule
+   (DatabaseRules.module.css .relativeDateValue): the count takes the room
+   the rules leave before any empty room after it does — 60 for a lone rule,
+   110.13 beside a typed value (seen 2026-11-22 at 1440 dark, dpr 2). */
+.editor .value[data-relative="true"] > [data-direction] {
+  flex: 1 1 auto;
+}
+
+.condition:has(> .value[data-relative="true"] > [data-direction]:not([data-direction="this"]))::after {
+  flex-grow: 0;
+}
+
+.editor .value[data-relative="true"] [data-notion-select-button] {
+  gap: 6px;
+  width: 100%;
+  height: 28px;
+  padding-inline: 10px 4px;
+}
+
+.editor .value[data-relative="true"] [data-notion-select-button] > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A value that is one choice fills its value, its ⌄ at the end (Notion's, seen 2026-11-12). */
+.editor .value > [data-notion-select]:only-child > [data-notion-select-button] {
+  width: 100%;
+}
+
+.editor .value > [data-notion-select]:only-child > [data-notion-select-button] > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A value's choices draw the rule's ⌄ as drawn (RULE_CARET), a relative
+   date's its own (DatabaseRules.module.css .relativeDateValue). */
+.editor .value:not([data-relative="true"]) [data-notion-select-button] > svg {
+  flex: none;
+  width: auto;
+  height: auto;
+  color: var(--icon-tertiary);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.more:hover,
+.more:focus-visible,
+.more[aria-expanded="true"],
+.add:hover,
+.add:focus-visible,
+.add[aria-expanded="true"],
+.removeAll:hover,
+.removeAll:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.group {
+  grid-column: 2 / 4;
+  min-width: 0;
+  border-radius: 6px;
+  background: var(--bg-block-empty);
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: calc(100% - 8px);
+  height: 32px;
+  margin: 4px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.addIcon {
+  display: inline-flex;
+  color: var(--icon-secondary);
+}
+
+/* Its ⌄ Notion's thin one in its whole 14px box, 6px after the words (seen
+   2026-11-22 twice at 1440 dark, dpr 2). */
+.addCaret {
+  margin-inline-start: -2px;
+  color: var(--icon-secondary);
+}
+
+.divider {
+  height: 1px;
+  margin: 0 12px 4px;
+  background: var(--border-subtle);
+}
+
+.removeAll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: calc(100% - 8px);
+  height: 28px;
+  margin: 0 4px 4px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}

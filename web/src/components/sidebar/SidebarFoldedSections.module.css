@@ -1,0 +1,19 @@
+/* A folded section's next part follows its head as Notion's: sections stand
+   4px apart, and the 12px more under an open one belong to its rows there
+   (margin-bottom: 12px on the head-and-rows block), so they fold with them —
+   a folded head 4px over the next section's and 12px over "사이드바 사용자
+   지정" (seen 2026-11-22 in Chrome at 1440x722, dark, in a short and a long
+   list in two tabs: a folded 팀스페이스 head 313–343 and the next head at 347;
+   a folded last section's head ending 560 and the row at 572). Leafen keeps
+   the open section's 16px (.section) and the customize row's 24
+   (SidebarListEnd), and a wide touch screen its 18 (SidebarWideTouch — its
+   folded one is taken to fold the same, not seen); a phone's drawer keeps its
+   own. A section says it is folded with data-section-folded. */
+.sidebar:not([data-phone="true"]) .section[data-section-folded="true"] + .section,
+:global(body[data-touch="true"]) .sidebar:not([data-phone="true"]) .section[data-section-folded="true"] + .section {
+  margin-top: 4px;
+}
+
+.section[data-section-folded="true"] + .customizeFoot {
+  padding-top: 12px;
+}

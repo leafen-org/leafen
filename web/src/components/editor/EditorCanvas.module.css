@@ -1,0 +1,426 @@
+.editor {
+  position: relative;
+  /* The first block's own 5px (EditorBlocks .blockGroup) keeps its place
+     under the title: the canvas gives it back here and below. */
+  margin-top: -1px;
+  padding: 0 0 40px;
+  font-size: var(--page-font-size, 16px);
+  line-height: var(--page-line-height, 1.5);
+}
+/* A mono page's text stands 0.055em of its own size apart — 0.825px, 0.77px
+   in small text — in every block under its title, its headings, a table's
+   cells and a database's alike, not in the title, as Notion's page body
+   (seen 2026-11-16: its content's letter-spacing 0.055em, inherited); a
+   serif or default page's none. */
+:global([data-font="mono"]) .editor {
+  letter-spacing: 0.055em;
+}
+/* On a touch screen, a phone's or wider, the first block stands its whole
+   16px under the title (the header's own margin), as Notion's (seen
+   2026-10-31 on a phone, 2026-11-13 on an iPad at 834: title 237, first line 293). */
+:global(:is([data-phone="true"], [data-touch="true"])) .editor {
+  margin-top: 0;
+}
+/* A page's first block, whatever it is, stands 16px under its title, as
+   Notion's (measured 2026-11-08 from the title's foot: a line, table, code,
+   heading, list item, callout, file, bookmark, synced block, image, quote and
+   toggle all at 16); each block keeps its own inner room from there. */
+:global(
+    [data-page-search-root][data-kind="page"]:not(
+        [data-row-page="true"]
+      ):not([data-database-page="true"])
+  ):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .editor[data-page-body-populated="true"] {
+  padding-top: 17px;
+}
+/* A database's own page has its tabs' row 8px under its title (PageView),
+   the block's own 5px in it; a wiki's peek too (PagePeek). On a touch screen
+   the title's own 16px are all of it (PageView). */
+:global([data-page-search-root][data-database-page="true"]):not(:global([data-touch="true"]) *) .editor,
+:global([data-database-peek="wiki"]):not(:global([data-phone="true"]) *) .editor {
+  padding-top: 4px;
+}
+:global([data-row-page="true"]):not(:global([data-phone="true"]) *) .inlineDatabase[data-contained="true"] {
+  width: 100%;
+  margin-inline-start: 0;
+}
+.editorTail {
+  min-height: 36vh;
+}
+/* A page's last block stands 16px over the page's 30vh foot, as Notion's
+   (seen 2026-11-01: a short page doesn't scroll); the foot takes the click
+   under the last block (EditorDropLayer's margins), so no tail of its own. */
+:global(:is([data-page-search-root]:not([data-row-page="true"]), [data-row-page-mode="full"])) .editor {
+  padding-bottom: 16px;
+}
+:global(:is([data-page-search-root]:not([data-row-page="true"]), [data-row-page-mode="full"])) .editorTail {
+  min-height: 0;
+}
+/* An empty page's body, no blocks yet and its starter showing, ends 15vh
+   further down, as Notion's (seen 2026-11-16 at 1440×523 and 1440×873, with
+   a cover and without: under the title's 16px its blocks' list keeps only
+   its own 16px foot, then the page's content 15vh more over the 30vh foot),
+   so an empty page with a cover scrolls in a window under about 800px tall.
+   The blank line stays where it is; the editor's -1px is given back. */
+:global([data-page-search-root][data-kind="page"]:not([data-row-page="true"]):not([data-database-page="true"])):not(:global(:is([data-phone="true"], [data-touch="true"])) *)
+  .editor[data-page-starter-visible="true"]:not([data-page-body-populated="true"], [data-loading="true"]) {
+  min-height: calc(33px + 15vh);
+}
+/* A touch screen's page and row page end at their last block, the foot
+   right under it (PageView .doc, DatabaseRowProperties .rowPeekDoc), as
+   Notion's (seen 2026-11-14: a long page's last block 300 over its end at
+   402×714 on an iPhone, 400 on a Galaxy A90, 380 on an iPad at 834). */
+:global([data-touch="true"]) :global(:is([data-page-search-root]:not([data-row-page="true"]), [data-row-page-mode="full"])) .editor {
+  padding-bottom: 0;
+}
+/* A peek's last block, a page's, a row's or a template's, stands 16px over
+   its doc's 120px foot, as Notion's (seen 2026-11-11 at 1191x679: 137 under
+   the last line in a center and a side peek, a short page not scrolling);
+   the foot takes the click under the last block as a page's does
+   (pageBodyFrame). */
+:global(:is([data-peek-mode] > [data-page-peek-body], [data-row-page-mode="side"], [data-row-page-mode="center"])):not(:global([data-phone="true"]) *) .editor {
+  padding-bottom: 16px;
+}
+:global(:is([data-peek-mode] > [data-page-peek-body], [data-row-page-mode="side"], [data-row-page-mode="center"])):not(:global([data-phone="true"]) *) .editorTail {
+  min-height: 0;
+}
+/* A database's own page, and its peek: its view keeps its own foot
+   (EditorDatabaseBlocks), on a phone too — nothing under it but that, as
+   Notion's (read 2026-11-15 on a Galaxy A90 at 411: a list's and a
+   gallery's last row 90 + 4 from the scroll's end, a timeline that fits
+   not scrolling). */
+:global(:is([data-page-search-root]:is([data-kind="database"], [data-database-page="true"]):not([data-row-page="true"]), [data-database-peek] > [data-page-peek-body])) .editor {
+  padding-bottom: 0;
+}
+/* While a block is dragged, the page's margin beside the blocks takes it too:
+   out beyond a block's edge makes columns. The handle marks the layers it
+   drags in (BlockHandle): a ":has()" on the layer read its whole page again
+   at each row a database put in or took out (2026-11-13). */
+[data-editor-drop-layer][data-block-dragging="true"] {
+  position: relative;
+}
+[data-editor-drop-layer][data-block-dragging="true"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 100%;
+  width: 96px;
+}
+.editorFileDropIndicator {
+  position: absolute;
+  z-index: 4;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+/* While a page's body is read, only the placeholder lines show: what is
+   drawn meanwhile is the page left behind. */
+.editor[data-loading="true"] > :not(.editorContentLoading, .editorContentUnavailable) {
+  display: none;
+}
+/* A page that couldn't be read says so where its body would be. */
+.editorContentUnavailable {
+  margin: 22px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* The lines show only when the read takes a moment: a page read from the
+   cache replaces them before they show, so opening it doesn't flash them
+   (2026-10-16). */
+.editorContentLoading {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  opacity: 0;
+  animation: editorContentLoadingReveal 140ms ease 300ms forwards;
+}
+@keyframes editorContentLoadingReveal {
+  to {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorContentLoading {
+    animation-duration: 1ms;
+  }
+}
+.editorContentLoadingTextLine {
+  width: min(680px, 72%);
+  height: 13px;
+  margin: 0 0 22px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text-default) 10%, transparent);
+}
+/* Notion's (seen 2026-10-31): "시작하기" 12px/500 in the faint text, 12px
+   over a row of 32px pills 8px apart, from the page's 720px column — 6px
+   left of the blocks' box (PageView.module.css). */
+.pageStarter {
+  --page-starter-pill: rgba(42, 28, 0, 0.07);
+  --page-starter-icon: color-mix(in srgb, var(--text-default) 95%, var(--bg-default));
+  display: grid;
+  gap: 12px;
+  width: calc(100% + 12px);
+  margin-block: clamp(240px, 34vh, 420px) 12px;
+  margin-inline: -6px 0;
+  padding-bottom: 8px;
+}
+:global([data-theme="dark"]) .pageStarter {
+  --page-starter-pill: var(--bg-hover);
+}
+/* Over the page's foot, placed by PageStarter: a 140px fade into the page,
+   the row, then min(48px, 5vh), as Notion's. Only the row takes the
+   pointer. */
+.pageStarter[data-pinned="true"] {
+  position: absolute;
+  inset-inline-start: -6px;
+  z-index: 1;
+  margin: 0;
+  padding: 140px 0 min(48px, 5vh);
+  background: linear-gradient(to bottom, transparent, var(--bg-default) 140px);
+  pointer-events: none;
+  transition: top 220ms;
+}
+.pageStarter[data-pinned="true"] > * {
+  pointer-events: auto;
+}
+/* Read by its siblings, not by a ":has()" on the body: one there ran
+   through the whole body at each row a database in it put in or took out
+   (2026-11-13). The starter comes after the body's surface, the tail last
+   (EditorSurface). */
+.editor > .pageStarter[data-pinned="true"] ~ .editorTail {
+  min-height: 0;
+}
+/* A phone's empty page has no starter row: Notion's phone offers its
+   Marketplace templates there instead ("템플릿 선택하기…", seen 2026-10-31),
+   which Leafen leaves out. */
+:global([data-phone="true"]) .pageStarter {
+  display: none;
+}
+.pageStarterPrimary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pageStarterMore {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  max-width: 520px;
+  padding-inline-start: 2px;
+}
+/* The hint stands 16 under the body's first line, where the words typed
+   after it go, as Notion's (seen 2026-11-11: its first block's words 16 above
+   the hint's): the empty surface above it gives up its line meanwhile. The
+   body says so itself (EditorSurface), not a ":has()" on the surface, which
+   Chrome worked out again at each line put in (2026-11-14). */
+.editor[data-page-starter-hint="true"]:not([data-page-body-populated]) > [data-editor-root] {
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+/* A first block's line starts 5px under the surface's top, the hint's 16 more. */
+.editor > .pageStarterHint {
+  margin-top: 21px;
+}
+/* A template's empty body: one line that starts writing, where its first
+   line would be (Notion's, seen 2026-10-30). */
+.pageStarterHint > button {
+  display: block;
+  width: 100%;
+  padding: 3px 2px;
+  color: var(--text-tertiary);
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: start;
+}
+.pageStarterLabel {
+  padding-block: 0;
+  padding-inline: 10px 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  letter-spacing: 0;
+}
+.pageStarterButton {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  height: 32px;
+  padding-block: 6px;
+  padding-inline: 10px 14px;
+  border: none;
+  border-radius: 100px;
+  background: var(--page-starter-pill);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: start;
+  cursor: pointer;
+}
+.pageStarterButton:hover,
+.pageStarterButton:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+.pageStarterButton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.pageStarterButton:disabled:hover {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.pageStarterIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 4px;
+  color: var(--page-starter-icon);
+}
+/* "⋯": a 32px round pill, its dots in the secondary grey, and its menu
+   200px wide, its rows touching and its line across it 6px from each
+   (Notion's, seen 2026-10-31). */
+.pageStarterMore {
+  justify-content: center;
+  width: 32px;
+  padding: 0;
+  color: var(--text-secondary);
+}
+.pageStarterMore svg {
+  width: 20px;
+  height: 20px;
+}
+/* Notion's open menu takes the pointer: the pill under it shows no hover. */
+.pageStarterMore[aria-expanded="true"]:hover {
+  background: var(--page-starter-pill);
+}
+div.pageStarterMenu {
+  width: 200px;
+  min-width: 200px;
+  padding: 6px 4px;
+}
+.pageStarterMenu [data-native-menu-item] {
+  padding-block: 4px;
+  padding-inline: 8px 10px;
+}
+.pageStarterMenu [data-native-menu-item] + [data-native-menu-item] {
+  margin-top: 0;
+}
+.pageStarterMenu [role="separator"] {
+  margin: 6px -4px;
+}
+.pageStarterText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:global([data-phone="true"]) .pageStarter {
+  width: 100%;
+  margin-top: clamp(168px, 22vh, 260px);
+}
+:global([data-phone="true"]) :global([data-has-cover="true"]) .pageStarter {
+  margin-top: clamp(96px, 16vh, 180px);
+}
+/* Longer labels (English's) wrap to a second line rather than run past
+   the page's edge, where a press would scroll the page sideways. */
+:global([data-phone="true"]) .pageStarterPrimary {
+  gap: 5px;
+}
+:global([data-phone="true"]) .pageStarterButton {
+  height: 28px;
+  padding: 0 6px;
+  font-size: 13px;
+}
+:global([data-phone="true"]) .pageStarterIcon {
+  flex-basis: 14px;
+  width: 14px;
+  height: 14px;
+  margin-inline-end: 4px;
+}
+:global([data-phone="true"]) .pageStarterIcon svg {
+  width: 14px;
+  height: 14px;
+}
+:global([data-phone="true"]) .pageStarterMore {
+  width: 28px;
+}
+
+/* Rubber-band block selection rectangle. Positioned with viewport coordinates
+   (clientX/clientY), so it must be fixed rather than absolute. */
+.selectionMarquee {
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  border: 1px solid var(--accent-blue);
+  background: rgba(35, 131, 226, 0.08);
+  border-radius: 2px;
+}
+
+/* ProseMirror's own rules, which these editors are made without
+   (injectCSS: false): while a whole block is held, the browser's text
+   highlight in it is hidden, and the parts of a block that aren't written in
+   (a database's title row, its buttons and headers, a file's name) take no
+   text highlight at all, as Notion's (2026-11-05: a selection painted a
+   database's title, "속성 추가" and "새 페이지" blue). Fields in them still do.
+   The text's own box takes the highlight its words read (the page's
+   ::selection), the parts not written in taking none at all (user-select
+   below): a class over "*" restyled the whole page each time a block was
+   held (2026-11-12: about 120 ms on a page with a table of 30 rows by 40
+   properties). */
+:global(.ProseMirror-hideselection) .editable {
+  --text-selection: transparent;
+}
+:global(.ProseMirror-hideselection) {
+  caret-color: transparent;
+}
+/* A part not written in keeps its own caret color (no caret stands in it),
+   so the editor's change above stops there instead of reaching every box of
+   a database in the page (2026-11-12: about 80 ms each time a block was
+   held, a table of 30 rows by 40 properties). */
+:global(.ProseMirror) [contenteditable="false"] {
+  caret-color: auto;
+  -webkit-user-select: none;
+  user-select: none;
+}
+:global(.ProseMirror) [contenteditable="false"] :is([contenteditable="true"], input, textarea, [data-node-view-content]) {
+  -webkit-user-select: text;
+  user-select: text;
+}
+/* An iPhone's or iPad's field is plain text to the system while it is
+   editable, as Notion's: no B I U in the keyboard's bar (appleTouchPlainText.ts). */
+:global(.ProseMirror[data-apple-plain="true"][contenteditable="true"]) {
+  -webkit-user-modify: read-write-plaintext-only;
+}
+/* A field in such a part (a database's title) shows a highlight only while it
+   is the one being written in; a selection passing over it paints nothing.
+   The field takes the highlight its text reads (the page's ::selection): a
+   focus state over its "*" restyled the whole page at each focus move
+   (2026-11-12: about 70 ms a move on a table of 30 rows by 40 properties). */
+:global(.ProseMirror) [contenteditable="false"] [contenteditable="true"]:not(:focus, :focus-within) {
+  --text-selection: transparent;
+}
+/* A mention or an inline equation a text selection passes over shows the
+   selection's highlight (nativeTiptapChosenAtoms), as Notion's. */
+:global(.ProseMirror) [data-in-selection="true"] {
+  background: var(--text-selection);
+}
+/* Blocks held whole show their own highlight only: a text highlight left in
+   them from before (⌘A's first press, a drag) is hidden, as Notion's. Its
+   text's own boxes take the highlight their words read: a held block's
+   state over "*" restyled all of it each time it was held or let go
+   (2026-11-12: about 60 ms for a table of 30 rows by 40 properties). */
+:global(.ProseMirror) [data-block-id][data-selected="true"] .editable {
+  --text-selection: transparent;
+}

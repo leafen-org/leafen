@@ -1,0 +1,276 @@
+/* A table's and a list's groups (TableGrid, ListView, GroupHeadContent,
+   TableGroupAddRow): their heads with the toggle, the name, the count and the
+   head's "⋯" and "+", every view's "+ 신규 그룹" (ViewGroupAdd) and where a
+   table, a list and a gallery put it, and a group's "+ 새 페이지" line;
+   part of the database views' sheet (databaseSheet.ts), just before the rows'
+   (DatabaseTableRows.module.css). */
+
+/* A group's head, as Notion's table (seen 2026-10-24 at 1280px): 42px with
+   its line, its 24px toggle at the first column's edge and its name 3px on —
+   a chip 27px in, plain words 28px — 14px/500, no count unless the view
+   shows counts. */
+.tableGroupHeader {
+  width: calc(100% - var(--table-gutter-width));
+  margin-inline-start: var(--table-gutter-width);
+  display: grid;
+  min-height: 42px;
+  /* No line under it now (Notion's, seen 2026-11-05); its height stays. */
+  border-bottom: 1px solid transparent;
+  color: var(--text-secondary);
+}
+/* It stays at the page's top over its rows with its column head as they
+   pass (useStickyViewHeads), on the table's ground. */
+:global([data-sticky-heads]) .tableGroupHeader[data-sticky-head] {
+  background: var(--table-surface, var(--bg-app));
+}
+.tableGroupHeaderInner {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 41px;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+/* A group's toggle: Notion's dark filled triangle in a 24px button (seen 2026-10-11). */
+.tableGroupToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  height: 24px;
+  margin-inline-end: 3px;
+  border-radius: 4px;
+  color: var(--text-default);
+}
+.tableGroupToggle:hover {
+  background: var(--bg-hover);
+}
+.tableGroupToggle[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+/* A related page's group is titled with a page's glyph (Notion's, seen 2026-10-11). */
+.tableGroupHeaderInner svg[data-table-group-page] {
+  flex: none;
+  margin-inline-end: 4px;
+  color: var(--icon-secondary);
+}
+.tableGroupHeaderInner [data-table-group-checkbox] {
+  margin-inline-end: 7px;
+}
+/* "현재:" before a sprint's page, as Notion's sprint planning (seen 2026-11-04). */
+.tableGroupPlace {
+  flex: none;
+  margin-inline-end: 6px;
+  color: var(--text-default);
+}
+.tableGroupLabel {
+  overflow: hidden;
+  color: var(--text-default);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tableGroupLabel[data-table-group-chip="true"] {
+  padding: 0 6px;
+  border-radius: 4px;
+  line-height: 20px;
+}
+.tableGroupLabel:not([data-table-group-chip="true"]) {
+  margin-inline-start: 1px;
+}
+/* A person's group head: their 20px avatar, then their name 6px on (Notion's, seen 2026-11-12). */
+.tableGroupPerson {
+  margin-inline-end: 5px;
+}
+/* After the name, 6px past a chip and 4px past words: the count in 24px with
+   8px each side, then 24px "⋯" and "+" with 16px grey marks, shown on a
+   desktop while the head is pointed at (Notion's, seen 2026-10-25). */
+.tableGroupTail {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: 4px;
+}
+.tableGroupTail[data-after-chip="true"] {
+  margin-inline-start: 6px;
+}
+.tableGroupCount {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.tableGroupAction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+.tableGroupHeader:hover .tableGroupAction,
+.tableGroupHeader[data-group-pointed="true"] .tableGroupAction,
+.tableGroupHeader:focus-within .tableGroupAction,
+.listGroupHead:hover .tableGroupAction,
+.listGroupHead:focus-within .tableGroupAction,
+.tableGroupAction[aria-expanded="true"] {
+  opacity: 1;
+}
+/* A list's group, as Notion's (seen 2026-10-25 at 1280px): its head 48px,
+   the toggle at the list's edge; its rows, then its 30px "+ 새 페이지" across
+   the list; the next group 16px on, and "+ 신규 그룹" 4px under the last,
+   8px further in. Spaces are inside the rows, which the list measures. */
+.listGroupHead {
+  display: flex;
+  box-sizing: content-box;
+  align-items: center;
+  min-width: 0;
+  height: 48px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.listGroupHead:not(:first-child) {
+  padding-top: 16px;
+}
+.listGroupAdd {
+  width: 100%;
+}
+/* A grouped list's rows 31 apart and its "+ 새 페이지" 1 under the last, as
+   Notion's (seen 2026-11-12 at 1440: 30px rows at 215.4 and 246.4 under a
+   head at 180.4, "+ 새 페이지" at 277.4; a list without groups keeps 32). */
+.list[data-grouped="true"] .listTreeRow {
+  min-height: 31px;
+  padding-bottom: 0;
+}
+.list[data-grouped="true"] .listGroupAdd {
+  height: 31px;
+  border-top: 1px solid transparent;
+  background-clip: padding-box;
+}
+/* "+ 신규 그룹", one button in every view (ViewGroupAdd, and a board's
+   sub-groups' in BoardLanes), as Notion's table, list, gallery, board, its
+   sub-groups and timeline alike (seen 2026-11-12 at 1440): as wide
+   as its words, 30px, its 16px "+" 6px in and 8px before them, 6px corners,
+   in the tertiary text and icon colors; a phone's in 16px words with a 20px
+   "+". Each view only places it. */
+.newGroupButton {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.newGroupButton svg {
+  flex: 0 0 auto;
+  color: var(--icon-tertiary);
+}
+.newGroupButton:hover {
+  background: var(--bg-hover);
+}
+.newGroupButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+:global([data-phone="true"]) .newGroupButton {
+  font-size: 16px;
+}
+:global([data-phone="true"]) .newGroupButton svg {
+  width: 20px;
+  height: 20px;
+}
+/* A list's and a gallery's, 4px into a 38px line, 8px in from the view's
+   start (Notion's, seen 2026-11-12 at 1440: x 382 for a list at 374, its "+"
+   at 388 and its words at 412). Under that line Notion's list keeps 8px and
+   its own 4px foot before its view's room (31px under the button in a page's
+   text). */
+.listNewGroupRow {
+  padding-block: 4px 16px;
+}
+/* A gallery keeps 8px under that line before its view's room (Notion's, seen
+   2026-11-12 at 1440: 12px under the button in a page's text, where a
+   gallery without it keeps 24). */
+.galleryNewGroupRow {
+  padding-block: 4px;
+}
+.galleryGroups:has(> .galleryNewGroupRow) {
+  padding-bottom: 8px;
+}
+.listNewGroup {
+  margin-inline-start: 8px;
+}
+.tableGroupAction:hover,
+.tableGroupAction:focus-visible,
+.tableGroupAction[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A phone shows them always, their marks 18px. */
+:global([data-touch="true"]) .tableGroupAction { opacity: 1; }
+:global([data-touch="true"]) .tableGroupAction svg { width: 18px; height: 18px; }
+/* A group's "+ 새 페이지" is a 37px line 12px over the next group, as
+   Notion's (seen 2026-10-24 at 1280px). */
+.newRowRail[data-table-group-new-row="true"] {
+  padding-bottom: 12px;
+}
+.newRowRail[data-table-group-new-row="true"] .newRowGutterCell,
+.newRowRail[data-table-group-new-row="true"] .newRowCell {
+  height: 37px;
+  min-height: 37px;
+}
+/* "+ 신규 그룹" under a table's last group, as Notion's (seen 2026-11-12 at
+   1440): 4px into a 38px line, 2px in from where the table starts (x 376
+   for a table at 374) and kept there as the table scrolls sideways. Under
+   that line Notion keeps 8px and then its view's room (15px in a page's
+   text: 23 in all), 4px less than a table's room after its last row (27,
+   EditorDatabaseBlocks.module.css), so the line ends 4px early. */
+.newRowRail[data-table-new-group="true"] {
+  margin-bottom: -4px;
+}
+/* A table whose groups take no new one (a status's) still keeps Notion's 8px
+   place for that line under its last group's 12px (seen 2026-11-17 at
+   1440×723 on a database's own page: an empty line with an 8px margin at
+   725.4, the room after it), so its last group's "+ 새 페이지" ends its
+   table 4px early the same way. */
+[data-table-rows] > .newRowRail[data-table-group-new-row="true"]:last-child {
+  margin-bottom: -4px;
+}
+.newRowRail[data-table-new-group="true"] .newRowGutterCell,
+.newRowRail[data-table-new-group="true"] .newRowCell {
+  height: 38px;
+  min-height: 38px;
+}
+/* "+ 새 페이지" — a table's and a group's — and "+ 신규 그룹" stay where they
+   stand as the table scrolls sideways, as Notion's (seen 2026-11-16 at 1440
+   on a database's own page: "+" at 390 and its words at 406 scrolled or not;
+   they stood 18px further in): past the table's margin before its row
+   controls (--table-scroll-pad, handed down to them here) and those controls,
+   where they start unscrolled. */
+.tableGrid,
+.tableGrid > [data-table-rows],
+.newRowRail,
+.newRowCell,
+.newRowCell > *,
+.newRow {
+  --table-scroll-pad: inherit;
+}
+.tableNewGroup {
+  position: sticky;
+  inset-inline-start: calc(var(--table-scroll-pad) + var(--table-gutter-width) + 2px);
+  margin-inline-start: 2px;
+}

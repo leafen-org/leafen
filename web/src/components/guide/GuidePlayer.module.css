@@ -1,0 +1,278 @@
+/* The moving screen guide's player: the "Example" mark and what it shows,
+ * step dots, the fixed frame a scene is drawn in, and the heading with its
+ * controls. Shared by every guide. It reads as an example, not the screen
+ * itself: a dashed sheet of a soft color around the drawn screen, and nothing
+ * drawn takes the pointer (no hover, focus or pointing hand). */
+
+.guide {
+  display: grid;
+  gap: 8px;
+}
+
+.player {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-soft);
+}
+
+.exampleHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: start;
+}
+
+.exampleMark {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--c-bg-orange);
+  color: var(--c-orange);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.exampleShows {
+  min-width: 0;
+  color: var(--text-secondary);
+}
+
+.progressRow {
+  display: flex;
+  gap: 5px;
+}
+
+.progressSegment {
+  flex: 1;
+  height: 12px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.progressSegment span {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--bg-hover);
+  overflow: hidden;
+  position: relative;
+}
+
+.progressSegment[data-state="done"] span::after,
+.progressSegment[data-state="active"] span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--accent-blue);
+}
+
+.progressSegment[data-state="active"] span::after {
+  transform: translateX(calc(-100% * var(--inline-sign, 1)));
+  animation: guideProgressFill linear forwards;
+  animation-duration: var(--guide-scene-ms, 3000ms);
+}
+
+.player[data-playing] .progressSegment[data-state="active"] span::after {
+  animation-play-state: running;
+}
+
+.player:not([data-playing]) .progressSegment[data-state="active"] span::after {
+  animation-play-state: paused;
+}
+
+@keyframes guideProgressFill {
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* A picture, set in from the sheet's edges: the arrow stays an arrow over it. */
+.stage {
+  display: grid;
+  padding: 0 6px;
+  cursor: default;
+}
+
+/*
+ * The "screen recording". Colors come from --rec-* variables so a scene's
+ * replica of another app's screen follows BOTH app themes: light defaults
+ * below, dark overrides after this rule keyed on the app's
+ * :root[data-theme="dark"] attribute. The palette is the Notion developer
+ * portal's; a guide drawing another app can set its own --rec-* values on
+ * its picture.
+ */
+.recording {
+  --rec-bg: #ffffff;
+  --rec-surface: #ffffff;
+  --rec-sidebar: #f8f8f7;
+  --rec-chrome: #ececeb;
+  --rec-url-bg: rgba(0, 0, 0, 0.05);
+  --rec-url-text: rgba(28, 27, 26, 0.45);
+  --rec-border: rgba(0, 0, 0, 0.09);
+  --rec-text: rgba(28, 27, 26, 0.92);
+  --rec-text2: rgba(28, 27, 26, 0.62);
+  --rec-text3: rgba(28, 27, 26, 0.42);
+  --rec-input-bg: rgba(0, 0, 0, 0.028);
+  --rec-input-border: rgba(0, 0, 0, 0.13);
+  --rec-hover: rgba(0, 0, 0, 0.06);
+  --rec-menu-bg: #ffffff;
+  --rec-menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  --rec-backdrop: rgba(15, 15, 15, 0.25);
+  --rec-blue: var(--accent-blue);
+  --rec-badge-bg: rgba(35, 131, 226, 0.12);
+  --rec-badge-text: var(--accent-blue);
+  --rec-selected-bg: rgba(35, 131, 226, 0.06);
+  --rec-ripple: rgba(0, 0, 0, 0.5);
+  --rec-tooltip-bg: #1f1f1f;
+  --rec-tooltip-text: #ffffff;
+  --rec-skeleton: rgba(0, 0, 0, 0.06);
+  --rec-chip-bg: rgba(0, 0, 0, 0.08);
+  --rec-chip-text: rgba(28, 27, 26, 0.72);
+  --rec-frame-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+
+  position: relative;
+  width: 100%;
+  /* Locked size: the frame must stay identical across every scene and wherever
+   * the walkthrough is placed in the dialog — content never resizes it. */
+  height: 304px;
+  min-height: 304px;
+  max-height: 304px;
+  border: 1px solid var(--rec-border);
+  border-radius: 8px;
+  background: var(--rec-bg);
+  color: var(--rec-text);
+  box-shadow: var(--rec-frame-shadow);
+  overflow: hidden;
+  font-size: 10.5px;
+  line-height: 1.4;
+  pointer-events: none;
+  user-select: none;
+  /* Scenes lay themselves out by the frame's width (@container), so they fit
+   * a phone as well as a wide panel. */
+  container-type: inline-size;
+}
+
+:global(:root[data-theme="dark"]) .recording {
+  --rec-bg: #191919;
+  --rec-surface: #252525;
+  --rec-sidebar: #1c1c1c;
+  --rec-chrome: #262626;
+  --rec-url-bg: rgba(255, 255, 255, 0.07);
+  --rec-url-text: rgba(255, 255, 255, 0.45);
+  --rec-border: rgba(255, 255, 255, 0.09);
+  --rec-text: rgba(255, 255, 255, 0.9);
+  --rec-text2: rgba(255, 255, 255, 0.55);
+  --rec-text3: rgba(255, 255, 255, 0.4);
+  --rec-input-bg: rgba(255, 255, 255, 0.045);
+  --rec-input-border: rgba(255, 255, 255, 0.12);
+  --rec-hover: rgba(255, 255, 255, 0.08);
+  --rec-menu-bg: #252525;
+  --rec-menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --rec-backdrop: rgba(0, 0, 0, 0.45);
+  --rec-badge-bg: rgba(35, 131, 226, 0.25);
+  --rec-badge-text: #529cce;
+  --rec-selected-bg: rgba(35, 131, 226, 0.08);
+  --rec-ripple: rgba(255, 255, 255, 0.85);
+  --rec-tooltip-bg: #f1f1f1;
+  --rec-tooltip-text: #1f1f1f;
+  --rec-skeleton: rgba(255, 255, 255, 0.08);
+  --rec-chip-bg: rgba(255, 255, 255, 0.14);
+  --rec-chip-text: rgba(255, 255, 255, 0.75);
+  --rec-frame-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ---- caption + controls ---- */
+
+.captionRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.caption {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  margin: 0;
+  min-width: 0;
+  /* Room for a heading and two lines, which the short captions keep to at
+   * the widths the guides stand in, so the box's bottom edge stays put as
+   * scenes cycle. */
+  min-height: 54px;
+  align-content: start;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.caption strong {
+  color: var(--text-secondary);
+}
+
+.caption span {
+  color: var(--text-tertiary);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.stepCounter {
+  margin-inline-end: 2px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  background: var(--bg-app);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.controls button:hover {
+  background: var(--bg-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressSegment[data-state="active"] span::after {
+    animation: none;
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .recording {
+    height: 276px;
+    min-height: 276px;
+    max-height: 276px;
+  }
+
+  .captionRow {
+    flex-direction: column;
+  }
+
+  .controls {
+    align-self: flex-end;
+  }
+}

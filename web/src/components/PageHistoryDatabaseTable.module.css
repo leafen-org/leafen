@@ -1,0 +1,136 @@
+/* A version's database table, read only, as Notion's version preview draws
+   it (measured 2026-11-07): columns at the view's widths and an empty one on
+   to the preview's edge; a 36px head with a line under it and no lines
+   between its columns, each property's icon 9px in and its name 7px past it;
+   36px rows with a line under each cell and after it, none before the first. */
+.scroll {
+  max-width: 100%;
+  margin: 0 0 12px;
+  overflow-x: auto;
+}
+
+.table {
+  width: max(100%, var(--history-table-width, 0px));
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.table th,
+.table td {
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.table th {
+  height: 36px;
+  padding: 0;
+  box-shadow: inset 0 -1px 0 var(--border-subtle);
+  color: var(--text-secondary);
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding-block: 0;
+  padding-inline: 9px 8px;
+}
+
+.headIcon {
+  display: inline-flex;
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.headName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.table td {
+  height: 37px;
+  padding: 7.5px 8px;
+  border-inline-end: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--history-row-line, var(--border-subtle));
+}
+
+.table td:last-child {
+  border-inline-end: 0;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+/* The page's icon in a 22px box 2px before the cell's padding, the name
+   4px past it, as the table's title cell. */
+.titleIcon {
+  display: inline-flex;
+  flex: 0 0 22px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  margin-block: 0;
+  margin-inline: -2px 4px;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.titleText {
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+}
+
+/* What the version changed in its rows, as Notion marks them (seen
+   2026-10-01, 2026-11-07): a new row, a changed value and a renamed
+   property's column head on the author's tint, one taken away on red, and
+   only the change the version's stepper is on outlined in blue. */
+.table tr[data-history-row-change="added"] td,
+.table td[data-history-cell-changed="true"],
+.table th[data-history-head-changed="true"] {
+  background: color-mix(in srgb, var(--history-change-color, rgb(35, 131, 226)) 14%, transparent);
+}
+
+/* The change the stepper is on: the line above the row and its own bottom
+   line turn blue, across its whole width, none at its sides, each a pixel off
+   the row's tint (Notion's, measured 2026-11-07). The first row has no line
+   above it in the body, so its top line is drawn inside it. */
+/* Said on the rows, which their cells take: a :has() before a bare `td` restyled every cell under a :has() that changed (check-css-sibling-invalidation.mjs). */
+.table tr:has(+ tr[data-history-current-change]),
+.table tr[data-history-current-change] { --history-row-line: var(--c-accent-blue); }
+.table tr[data-history-current-change] td {
+  box-shadow:
+    inset 0 1px 0 var(--bg-default),
+    inset 0 -1px 0 var(--bg-default);
+}
+.table tr[data-history-current-change]:first-child td {
+  box-shadow:
+    inset 0 1px 0 var(--c-accent-blue),
+    inset 0 2px 0 var(--bg-default),
+    inset 0 -1px 0 var(--bg-default);
+}
+
+.table tr[data-history-row-change="removed"] td {
+  background: var(--c-bg-red);
+}
+
+.more {
+  padding: 6px 8px;
+  color: var(--icon-secondary);
+  font-size: 13px;
+}

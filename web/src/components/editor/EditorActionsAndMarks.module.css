@@ -1,0 +1,475 @@
+
+/* ── Block actions menu ────────────────────────────────────── */
+/* 265px with its rows 4px in, as Notion's (seen 2026-10-17). */
+.blockMenu {
+  position: fixed;
+  z-index: 1001;
+  width: min(265px, calc(100vw - 2 * var(--popover-edge)));
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+/* The block menu's search, as Notion's (seen 2026-10-01): a text field
+   (--name-field-bg and -ring), 14px text on a 20px line — 28px, 8px in
+   from the rows' sides, 12px under the menu's top, its first group's name
+   where it was (seen 2026-10-27; 28 and 12 seen 2026-11-15 twice, a code
+   block's ⌘/ and a line's, where it had been 27 and 11). */
+.blockMenuSearch {
+  display: block;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 8px 8px 12px;
+  padding: 4px 6px;
+  line-height: 20px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  --menu-search-rest-ring: var(--name-field-ring);
+  box-shadow: var(--menu-search-rest-ring);
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* With the search over its own scrolling rows (BlockMenuList), as Notion's
+   (seen 2026-11-14 and 2026-11-15 at 1440: a code block's ⌘/ menu 506 high,
+   the search 241 wide, the scroll bar beside the rows alone from 48 under
+   the menu's top), the rows and the scroll bar take the menu's full width and
+   the search's room stays where it was. */
+.blockMenu.blockMenuHead {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.blockMenuHead > .blockMenuSearch {
+  flex: none;
+  width: calc(100% - 24px);
+  margin: 12px 12px 8px;
+}
+/* A touch screen's search is a plain line of 16px words 20 high, with no
+   box or ground, its first group's name 18 under it as above, as
+   Notion's iPad (measured 2026-11-16 in iPad Pro 11 Safari's Web Inspector:
+   241×20, 12 inside the menu, 16px on a 16.8 line, no padding, border,
+   background or radius). */
+:global([data-touch="true"]) .blockMenuHead > .blockMenuSearch {
+  height: 20px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: 16px;
+  line-height: 16.8px;
+}
+.blockMenuList {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px;
+}
+/* A group's name right under the search keeps its 6px over it, which the
+   search's margin would swallow (Notion's groups are padded apart). */
+.blockMenuList > .menuLabel:first-child,
+.blockMenuSearch + .menuLabel {
+  margin-top: 0;
+  padding-top: 6px;
+}
+/* ⌘/ search's groups, as Notion's (measured 2026-11-13 at 1440: "빨" lists
+   텍스트 색상 and 배경 색상, "제" 전환 and the block's actions): a group's
+   name 12px on a 14.4px line, 9.5 over its first row, its text 58.5 under
+   the menu's top for the first group; each group after the first opens
+   with a line 4 under the row before (9 under a color's), 4 over the
+   group's first row or 12.5 over its name. */
+.blockMenuSearchLabel {
+  margin: 0 0 9.5px;
+  padding: 0 8px;
+  line-height: 14.4px;
+}
+.blockMenuList > .blockMenuSearchLabel:first-child,
+.blockMenuSearch + .blockMenuSearchLabel {
+  padding-top: 6.5px;
+}
+.blockMenuSearchDivider + .blockMenuSearchLabel {
+  padding-top: 8.5px;
+}
+.menuDivider.blockMenuSearchDivider {
+  margin: 4px 8px;
+}
+.colorItem + .menuDivider.blockMenuSearchDivider {
+  margin-top: 9px;
+}
+.blockMenuSearch:focus {
+  outline: none;
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  font-size: var(--menu-row-font-size);
+  text-align: start;
+  color: var(--text-default);
+  min-height: var(--menu-row-height);
+  line-height: var(--menu-row-line-height);
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.menuItem + .menuItem {
+  margin-top: var(--menu-row-space);
+}
+/* A group's name is one of them: Notion's groups are columns of their name
+   and rows 1px apart, the first row 8 + 1 under the name (seen 2026-11-18
+   at 1440, dpr 2: the block menu's "텍스트", the colors' "텍스트 색상", the
+   sidebar ⋯'s "페이지"; the view settings' groups the same) — past the
+   name's 8, which a smaller margin here would fold into (a search's group
+   name keeps its own 9.5, which this folds into). */
+.blockMenuList > .menuLabel + .menuItem {
+  margin-top: calc(8px + var(--menu-row-space));
+}
+/* The row's mark sits in its 20px without a line's descent below it, so
+   the row keeps the menu row's 28px. */
+.menuItem > span[aria-hidden="true"]:first-child {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+.menuItem:focus-visible {
+  outline: none;
+}
+/* A row's name stays on its one line and gives way with "…" to the keys at
+   its end, which stay whole, as Notion's (read 2026-11-18 at 1440 from the
+   row's own rule — the name grows and shrinks on one line, its keys do
+   neither — and seen on its French screen: "Suggérer des modificat… ⌘⇧⌥X"
+   in a row 28 high, the menu 265 as in every language). */
+.blockMenu .menuItem > span:not([aria-hidden="true"]):not(.menuHint):not(.menuShortcut) {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.blockMenu .menuItem > .menuHint,
+.blockMenu .menuItem > .menuShortcut {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+/* A name with a mark after it gives way alone: the mark stays whole, as
+   Notion's "Présenter à partir d… [Bêta] ⌘⌥P" (seen 2026-11-18). */
+.blockMenu .menuItem > .menuBadged {
+  display: flex;
+  align-items: center;
+}
+.menuBadged > span:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.menuBadged > .menuBadge {
+  flex: 0 0 auto;
+}
+/* A row that can't be chosen now is dimmed, as Notion's "간단한 표로 전환"
+   is without full access (seen 2026-10-11). */
+.blockMenu .menuItem[aria-disabled="true"] {
+  --menu-mark: currentColor;
+  color: var(--text-tertiary);
+  cursor: default;
+}
+.blockMenu .menuItem[data-focused="true"] {
+  background: var(--bg-hover);
+}
+/* The row under the pointer is shaded too, one the menu opened under a still
+   pointer as well, beside the row the keys light, as Notion's (seen
+   2026-11-15, twice: ⌘/ opened over a resting pointer shaded "삭제" at once,
+   red; ↓ then ringed "전환" and "삭제" kept its shade). */
+@media (hover: hover) {
+  .blockMenu .menuItem:hover:not([aria-disabled="true"]),
+  .blockSubmenu [data-block-menu-item]:hover {
+    background: var(--bg-hover);
+  }
+}
+/* "삭제" reads as the other rows and turns red under the pointer, as Notion's (seen 2026-10-07). */
+.blockMenu .menuItemDanger[data-focused="true"],
+.blockMenu .menuItemDanger:hover {
+  --menu-mark: currentColor;
+  color: var(--menu-danger);
+}
+/* A touch screen has no pointer to bring the red, and no keys to show: its
+   "삭제" is red as the menu opens and the rows show no shortcuts, its
+   submenus' neither, as Notion's iPad (seen 2026-11-13 in iPad Safari 834
+   wide, "추가 옵션 › 이름 바꾸기" too). */
+:global([data-touch="true"]) .blockMenu .menuItemDanger {
+  --menu-mark: currentColor;
+  color: var(--menu-danger);
+}
+:global([data-touch="true"]) .blockMenu .menuHint,
+:global([data-touch="true"]) .blockMenu .menuShortcut {
+  display: none;
+}
+/* A row's mark is the menu rows' icon color, a little softer than its name (a dimmed row's and a red "삭제"'s the row's own); a submenu's row
+   ends in a chevron in the secondary gray and stays marked while it is open, as Notion's block menu (seen 2026-11-20 in dark: rgb(230,229,227), rgb(173,169,163)). */
+.menuItem svg {
+  flex: 0 0 auto;
+  color: var(--menu-mark, var(--icon-primary));
+}
+:is(.menuItem, .turnItem) .menuChevron {
+  margin-inline-start: auto;
+  color: var(--icon-secondary);
+}
+.menuItem[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+/* Turn into and color open beside the block menu, as Notion's (seen
+   2026-10-01): a 205px list with 4px inside, 28px rows 1px apart, a 20px
+   type icon or a 26px swatch before 14px names, and a check at the block's
+   own type. The row the pointer or the keys reach is marked. */
+.blockSubmenu {
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* 220 wide, or as its rows need, as Notion's (seen 2026-11-05). */
+  width: max-content;
+  min-width: 220px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 4px;
+}
+/* The main menu's search finds the turn choices as Notion's lists them
+   there (seen 2026-11-13: rows 28 high, a 20px icon, 14px words). */
+.blockSubmenu .turnItem,
+.blockMenu[data-block-menu-panel="main"] .turnItem,
+.blockSubmenu .colorItem,
+.blockMenu[data-block-menu-panel="main"] .colorItem {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 8px;
+  gap: 8px;
+  font-size: 14px;
+}
+.blockMenu[data-block-menu-panel="main"] .turnItem + .turnItem {
+  margin-top: 1px;
+}
+.blockSubmenu [data-focused="true"] {
+  background: var(--bg-hover);
+}
+/* The row the arrow keys chose is ringed, as the slash menu's (Notion, seen 2026-11-01). */
+.blockSubmenu[data-moved-by="keys"] [data-focused="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* Each row's 20px icon stands on the menu with no tile of its own, the row's
+   fill behind it, as Notion's "전환" (seen 2026-11-14 and 2026-11-15 in
+   dark at 1440). */
+.blockSubmenu .turnGlyph {
+  display: inline-flex;
+  flex: 0 0 20px;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.blockSubmenu .turnName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A group's name beside the menu ("텍스트 색상", "배경 색상") is the group
+   head every menu draws (.menuLabel, the menu tokens): Notion's colors are
+   groups 6 apart, each 6 in at its top and 4 at its foot, the name 6 under
+   that, 14.898 high, and the first row 8 + 1 under it (seen 2026-11-18 at
+   1440, dpr 2: the name's words 22.25 under the row before, the first row
+   9.648 under them). A later group's name: 4 + 6 + 6 + 6 under the row
+   before, less the list's 1px. */
+.blockSubmenu .colorList + .menuLabel,
+.blockSubmenu .colorItem + .menuLabel {
+  margin-top: 21px;
+}
+/* The main menu's search finds the colors as rows of the color submenu
+   (Notion's, seen 2026-11-13: 28 high, a 26px swatch, the name 42 in). */
+.blockSubmenu .colorItem,
+.blockMenu[data-block-menu-panel="main"] .colorItem {
+  grid-template-columns: 26px 1fr;
+}
+/* The color last used ends in its keys (⌘⇧H). */
+.blockSubmenu .colorItem[data-block-color-recent="true"] {
+  grid-template-columns: 26px 1fr auto;
+}
+.blockSubmenu .colorSwatch,
+.blockMenu[data-block-menu-panel="main"] .colorItem .colorSwatch {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 17%, transparent);
+  font-size: 16px;
+}
+.blockSubmenu .colorSwatch[data-color="default"],
+.blockSubmenu .colorSwatch[data-color="default_background"],
+.blockMenu[data-block-menu-panel="main"] .colorItem .colorSwatch[data-color="default"],
+.blockMenu[data-block-menu-panel="main"] .colorItem .colorSwatch[data-color="default_background"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-default) 11%, transparent);
+}
+.menuHint {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* A "베타" mark after a row's name, as Notion's "여기에서 발표" (seen 2026-10-12). */
+.menuBadge {
+  display: inline-block;
+  margin-inline-start: 6px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 18px;
+  vertical-align: 1px;
+}
+.menuShortcut {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 400;
+}
+/* The menu's foot: who last edited the blocks, when, and their words and
+   characters, grey 12px lines under the menu, as Notion's (seen 2026-10-01):
+   from the menu's head's left, 8px over and under, 2px between the lines and
+   4px under "최종 편집 일시", the name 4px after its 16px face (measured 2026-11-11). */
+.blockMenuFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+/* "최종 편집 일시" 500 and the name grey as the lines, as Notion's (seen 2026-11-13). */
+.blockMenuFootLabel {
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.blockMenuFootPerson {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.submenuBack {
+  font-weight: 500;
+}
+.menuDivider {
+  flex: none;
+  height: 1px;
+  background: var(--menu-divider);
+  margin: var(--menu-divider-margin);
+}
+.blockMenuFieldHelp {
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.turnItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 5px 6px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-align: start;
+  color: var(--text-default);
+}
+.turnItem:focus-visible {
+  outline: none;
+}
+.turnItem[data-active="true"] {
+  font-weight: 500;
+}
+.turnItem:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.55;
+}
+.turnItem .colorCheck {
+  margin-inline-start: auto;
+}
+/* The chosen type's check and "페이지 위치:"'s mark are the name's color, as Notion's "전환" (seen 2026-11-20 in dark: rgb(240,239,237)). */
+.turnItem .colorCheck,
+.turnItem[data-turn-type="page_in"] .turnGlyph svg {
+  color: var(--text-default);
+}
+.colorList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.colorItem {
+  display: grid;
+  grid-template-columns: 24px 1fr 16px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 13px;
+  text-align: start;
+}
+.colorItem:focus-visible {
+  outline: none;
+}
+.colorItem[aria-checked="true"] {
+  font-weight: 500;
+}
+.colorSwatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+}
+.colorSwatch[data-color="default"] {
+  border-color: var(--border-default);
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+.colorSwatch[data-color="gray"] { color: var(--c-gray); }
+.colorSwatch[data-color="brown"] { color: var(--c-brown); }
+.colorSwatch[data-color="orange"] { color: var(--c-orange); }
+.colorSwatch[data-color="yellow"] { color: var(--c-yellow); }
+.colorSwatch[data-color="green"] { color: var(--c-green); }
+.colorSwatch[data-color="blue"] { color: var(--c-blue); }
+.colorSwatch[data-color="purple"] { color: var(--c-purple); }
+.colorSwatch[data-color="pink"] { color: var(--c-pink); }
+.colorSwatch[data-color="red"] { color: var(--c-red); }
+.colorSwatch[data-color="gray_background"] { background: var(--c-bg-gray); }
+.colorSwatch[data-color="brown_background"] { background: var(--c-bg-brown); }
+.colorSwatch[data-color="orange_background"] { background: var(--c-bg-orange); }
+.colorSwatch[data-color="yellow_background"] { background: var(--c-bg-yellow); }
+.colorSwatch[data-color="green_background"] { background: var(--c-bg-green); }
+.colorSwatch[data-color="blue_background"] { background: var(--c-bg-blue); }
+.colorSwatch[data-color="purple_background"] { background: var(--c-bg-purple); }
+.colorSwatch[data-color="pink_background"] { background: var(--c-bg-pink); }
+.colorSwatch[data-color="red_background"] { background: var(--c-bg-red); }
+.colorCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-secondary);
+  font-size: 12px;
+}
+/* The line a "/" or "+" menu is open over shows no handles or "💬+", the
+   pointer resting on it too (menuLineHandles.ts), nor does an awake handle's
+   row while that menu is open (drawnHandles.ts), as Notion's. */
+.blockRow:is([data-menu-line], [data-caret-menu-open]) > :is(.gutter, .blockCommentAdd) {
+  visibility: hidden;
+}

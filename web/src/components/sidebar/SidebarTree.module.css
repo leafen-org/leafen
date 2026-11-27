@@ -1,0 +1,457 @@
+.rootDropArea {
+  position: relative;
+}
+/* A page held over a teamspace's name goes to the teamspace's top: the
+   4px line under the name, the whole row wide and ending where its first
+   page starts, where that page's own line falls, as Notion's (seen
+   2026-11-13: rgba(35,131,226,.43)). */
+.sectionLabel[data-teamspace-drop="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+.tree,
+.tree [role="group"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+/* A page dropped among the favorites, not on a row, joins them, and one on
+   the private or shared pages' heading goes to their top: the whole section
+   from its heading shows it takes it, square, in the block selection's blue,
+   as Notion's does (seen 2026-11-13 and 2026-11-14: rgba(35,131,226,.14) from
+   the heading's top). */
+.section[data-favorite-drop="true"],
+.section[data-section-drop="true"] {
+  background: var(--bg-block-selected);
+}
+/* "+ 새 페이지 추가", a 30px row as Notion's: the 16px plus 11px in, the words 11px after it,
+   1px below the list's last row (seen 2026-10-31). */
+.emptyTreeAction {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  height: 30px;
+  margin-top: 1px;
+  padding-block: 0;
+  padding-inline: 11px 6px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font: inherit;
+  text-align: start;
+}
+.emptyTreeAction:hover,
+.emptyTreeAction:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+.emptyTreeAction:disabled {
+  cursor: default;
+  opacity: 0.56;
+}
+.emptyTreeAction:disabled:hover {
+  background: transparent;
+  color: var(--text-tertiary);
+}
+.emptyTreeAction svg {
+  flex: 0 0 auto;
+}
+.emptyTreeAction span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.treeRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding-inline-end: 6px;
+  border-radius: var(--radius);
+  color: var(--sidebar-row-text);
+  cursor: pointer;
+  font-size: 16px;
+}
+.treeRow:not([data-hover-stale]):hover,
+.treeRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* The row dragged stays as it is while its picture follows the pointer, and
+   a row taking it inside turns square in the block selection's blue, as
+   Notion's (seen 2026-11-13). */
+.treeRow[data-drop="inside"],
+.treeRow[data-drop="inside"]:hover {
+  border-radius: 0;
+  background: var(--bg-block-selected);
+}
+/* An open row taking it lights the pages under it with it, as one block,
+   the 1px between them too, as Notion's (seen 2026-11-13). */
+.tree [role="group"][data-drop-inside="true"] {
+  background: var(--bg-block-selected);
+  box-shadow: 0 -1px 0 var(--bg-block-selected);
+}
+.treeRow[data-drop-copy="true"][data-drop="inside"] {
+  outline: 1px dashed var(--accent-blue);
+  outline-offset: -2px;
+}
+.treeRow[data-drop-copy="true"][data-drop="inside"]::after {
+  content: "+";
+  position: absolute;
+  inset-inline-end: 6px;
+  top: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+/* Where a drop lands between rows: a 4px line the row's whole width, ending
+   at the lower row's top, as Notion's (seen 2026-11-13: rgba(35,131,226,.43),
+   whatever the rows' depth). */
+.treeRow[data-drop="before"]::before,
+.treeRow[data-drop="after"]::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 4px;
+  background: rgba(35, 131, 226, 0.43);
+  pointer-events: none;
+}
+.treeRow[data-drop="before"]::before {
+  top: -4px;
+}
+.treeRow[data-drop="after"]::after {
+  bottom: -1px;
+}
+.treeRow[data-drop-copy="true"][data-drop="before"]::before,
+.treeRow[data-drop-copy="true"][data-drop="after"]::after {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--accent-blue) 0 12px,
+    transparent 12px 18px
+  );
+}
+/* The page open now, as Notion's (seen 2026-10-28): the pointer's tone, which
+   pointing at it keeps, and its words as the other rows'. */
+.treeRowActive,
+.treeRow[data-opening] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+/* A page opening from a large page: its press shows before the page changes over (lib/openPastPaint.ts). */
+.treeRowActive[data-leaving] {
+  background: transparent;
+}
+.treeDragHandle {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: var(--tree-drag-handle-left, 2px);
+  z-index: 2;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 22px;
+  flex: 0 0 18px;
+  border-radius: 4px;
+  color: var(--sidebar-row-icon);
+  opacity: 0;
+  pointer-events: none;
+  cursor: grab;
+  touch-action: none;
+  transform: translateY(-50%);
+  transition: opacity 0.1s, background 0.1s, color 0.1s;
+}
+.treeDragHandle:hover,
+.treeDragHandle:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  outline: none;
+}
+.treeDragHandle:active {
+  cursor: grabbing;
+}
+/* A row's mark takes 22px and its name starts 8px after, at 38px from the
+   row's edge, as Notion's sidebar (seen 2026-10-17). */
+.treeLeading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 20px;
+  flex: 0 0 22px;
+  margin-inline-end: 8px;
+  color: var(--sidebar-row-icon);
+  pointer-events: none;
+}
+/* Its 20px button stands in the middle of the row's 22px mark, as Notion's
+   (seen 2026-11-14: 9px into a row that starts its mark at 8). */
+.disclosure {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: auto;
+  border-radius: 4px;
+  /* The expanding chevron is Notion's faint icon color (icoTer, seen 2026-10-11). */
+  color: var(--icon-tertiary);
+  opacity: 0;
+  pointer-events: none;
+  /* As Notion's (seen 2026-11-14): it turns in 200ms easing out, takes its
+     pressed ground in 20ms, and stands in for the row's icon at once. */
+  transition: transform 200ms ease-out, background 20ms ease-in;
+}
+button.disclosure {
+  pointer-events: auto;
+}
+/* A row the keys' focus is in says so itself (data-keys-within,
+   lib/lastPress.ts keysFocusHolder), here and below: a ":has()" on every row
+   ran again at each change on the page (2026-11-12), and a bare
+   ":where(:focus-within)" restyled the whole page under every ancestor of
+   each focus change in Safari (iPhone, 38k elements: 95–210 ms a focus,
+   2026-11-13). */
+.treeRow:not([data-hover-stale]):hover .disclosure,
+.treeRow:focus-visible .disclosure,
+.treeRow[data-keys-within] .disclosure {
+  opacity: 1;
+}
+/* A row with pages under it shows its arrow as it takes a drop; one without
+   keeps its icon, as Notion's (seen 2026-11-13). */
+.treeRow[data-has-children="true"][data-drop="inside"] .disclosure {
+  opacity: 1;
+}
+.disclosure:hover,
+.disclosure:focus-visible {
+  background: var(--bg-active);
+  outline: none;
+}
+.disclosureOpen {
+  transform: rotate(calc(90deg * var(--inline-sign, 1)));
+}
+.treeIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--sidebar-row-icon);
+  pointer-events: none;
+}
+/* An emoji draws as Notion's sidebar draws it (seen 2026-11-01): a 14px line
+   3px in from the box's top left, in the emoji fonts at 500, its glyph
+   running a pixel past the box. */
+.treeIcon[data-tree-emoji="true"]:not(:global([data-phone="true"]) *) {
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-block: 3px 0;
+  padding-inline: 3px 0;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 500;
+  line-height: 14px;
+}
+.treeRow[data-has-children="true"]:not([data-hover-stale]):hover .treeIcon,
+.treeRow[data-has-children="true"]:focus-visible .treeIcon,
+.treeRow[data-has-children="true"][data-keys-within] .treeIcon,
+.treeRow[data-has-children="true"][data-drop="inside"] .treeIcon {
+  opacity: 0;
+}
+.treeRow[data-hover-leading="chevron"]:not([data-hover-stale]):hover .treeIcon,
+.treeRow[data-hover-leading="chevron"]:focus-visible .treeIcon,
+.treeRow[data-hover-leading="chevron"][data-keys-within] .treeIcon {
+  opacity: 0;
+}
+.treeTitle {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-end: 0;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: padding-inline-end 0.1s;
+}
+.treeEmptyChildren {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding-inline-end: 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* An archived page's or archived teamspace's row is marked as Notion's
+   recents mark one (measured 2026-11-14, 1440 dark): a filled 16px archive
+   box 6px after the title, centred on its line, in the disabled grey
+   (rgb(95, 94, 89) dark), the same on hover. */
+.treeArchive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 16px;
+  height: 20px;
+  margin-inline-start: 6px;
+  color: var(--text-disabled);
+}
+/* A row's "+" and "⋯" end 8px in from its edge, as Notion's (seen 2026-11-01). */
+.treeActions {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 8px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.treeRow:not([data-hover-stale]):hover .treeActions,
+.treeRow:focus-visible .treeActions,
+.treeRow[data-keys-within] .treeActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+.treeRow:not([data-hover-stale]):hover .treeTitle,
+.treeRow:focus-visible .treeTitle,
+.treeRow[data-keys-within] .treeTitle {
+  padding-inline-end: 50px;
+}
+/* A marked row's title is as long as its words, the mark right after them;
+   the room a hovered row keeps for its "+" and "⋯" comes after the mark. */
+.treeTitle:has(+ .treeArchive) {
+  flex: 0 1 auto;
+}
+.treeRow:not([data-hover-stale]):hover .treeTitle:has(+ .treeArchive),
+.treeRow:focus-visible .treeTitle:has(+ .treeArchive),
+.treeRow[data-keys-within] .treeTitle:has(+ .treeArchive) {
+  padding-inline-end: 0;
+}
+.treeRow:not([data-hover-stale]):hover .treeArchive,
+.treeRow:focus-visible .treeArchive,
+.treeRow[data-keys-within] .treeArchive {
+  margin-inline-end: 50px;
+}
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+.iconBtn:hover,
+.iconBtn:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  outline: none;
+}
+/* ── Footer ────────────────────────────────────────────────── */
+.footer {
+  padding: 6px 8px 10px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* ── Mobile: sidebar occupies a fixed flow lane beside the page ─── */
+.sidebar[data-mobile="true"] {
+  position: relative;
+  height: 100vh;
+  z-index: auto;
+  width: 270px;
+  min-width: 270px;
+  flex-basis: 270px;
+  opacity: 1;
+  transform: translateX(calc(-100% * var(--inline-sign, 1)));
+  transition: transform 0.22s ease;
+}
+.sidebar[data-mobile="true"][data-open="true"] {
+  /* none, not translateX(0): keep the open sidebar transform-free so the
+     fixed workspace-menu backdrop can cover the whole viewport. */
+  transform: none;
+}
+
+/* Touch shows what the desktop reveals on hover; the sizes are the phone
+   drawer's (SidebarPhone.module.css) and the wider touch screen's
+   (SidebarWideTouch.module.css). */
+:global([data-touch="true"]) .disclosure {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Every row shows its "⋯" and, where its page takes a page inside, its "+"
+   (PageTreeItem), every section head its own, the titles ending before them,
+   as Notion's phone drawer and iPad sidebar (seen 2026-11-12/13, 2026-11-16). */
+:global([data-touch="true"]) :is(.treeActions, .sectionActions) {
+  opacity: 1;
+  pointer-events: auto;
+}
+:global([data-touch="true"]) .treeTitle {
+  padding-inline-end: 50px;
+}
+/* The chevron takes its own place before the icon, as Notion's phone
+   sidebar shows chevron, icon and title together (2026-10-16: the chevron
+   covered the icon of a page with sub-pages). */
+:global([data-touch="true"]) .treeLeading {
+  width: 42px;
+  flex-basis: 42px;
+  justify-content: flex-end;
+}
+:global([data-touch="true"]) .disclosure {
+  inset-block: 0;
+  inset-inline: 0 auto;
+  margin: auto 0;
+}
+:global([data-touch="true"]) .treeRow .treeLeading .treeIcon.treeIcon {
+  opacity: 1;
+}
+:global(body[data-touch="true"]) {
+  --tree-leading-extra: 22px;
+}
+
+/* The unread count on the inbox, as Notion's (seen 2026-10-07, placed
+   2026-10-31): a small red badge with the number in white, 1px over the
+   button's top and 3px past its right. */
+.inboxUnreadBadge {
+  position: absolute;
+  top: -1px;
+  inset-inline-end: -3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 12px;
+  height: 12px;
+  padding: 0 3px;
+  border-radius: 6px;
+  background: var(--unread-mark);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 12px;
+  pointer-events: none;
+}

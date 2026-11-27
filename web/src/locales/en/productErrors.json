@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Load account email addresses",
+        "deniedEffect": "Email addresses were not loaded; saved addresses were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current email addresses.",
+        "stateCheckAction": "Reconnect and refresh the email list before making a change."
+      },
+      "update": {
+        "operation": "Manage account email addresses",
+        "deniedEffect": "The email request was not accepted; saved addresses were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the email request completed.",
+        "stateCheckAction": "Refresh the email list and check for the verification message before trying again."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Load notification settings",
+        "deniedEffect": "Your notification settings could not be loaded, and your saved settings were not changed.",
+        "uncertainEffect": "Leafen could not confirm which notifications you get.",
+        "stateCheckAction": "Close and reopen settings to load your notification settings before changing them."
+      },
+      "update": {
+        "operation": "Change notification settings",
+        "deniedEffect": "Your notification settings were not changed, and your previous settings are kept.",
+        "uncertainEffect": "Leafen could not confirm whether your notification settings changed.",
+        "stateCheckAction": "Close and reopen settings to check your notification settings before changing them again."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Load account profile",
+        "deniedEffect": "Your name and photo could not be loaded, and your saved profile was not changed.",
+        "uncertainEffect": "Leafen could not confirm your current name and photo.",
+        "stateCheckAction": "Close and reopen settings to load your profile before changing it."
+      },
+      "update": {
+        "operation": "Save account profile",
+        "deniedEffect": "Your profile was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the account profile was saved.",
+        "stateCheckAction": "Reload the account profile and audit history before trying again."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Change 2-step verification",
+        "deniedEffect": "The requested 2-step verification change was not accepted; the previous setting remains in effect.",
+        "uncertainEffect": "Leafen could not confirm the current 2-step verification state.",
+        "stateCheckAction": "Reload account security before trying another 2-step verification change."
+      },
+      "password": {
+        "operation": "Change account password",
+        "deniedEffect": "The password was not changed, and current sessions remain valid.",
+        "uncertainEffect": "Leafen could not confirm whether the password was changed and other sessions were ended.",
+        "stateCheckAction": "Reload account security and log in again if the current session no longer works."
+      },
+      "read": {
+        "operation": "Load account security",
+        "deniedEffect": "Security settings and sessions were not loaded; saved account state was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current 2-step verification and session state.",
+        "stateCheckAction": "Reload account security before making a change."
+      },
+      "recovery": {
+        "operation": "Replace recovery codes",
+        "deniedEffect": "Replacement recovery codes were not accepted; previously unused codes still work.",
+        "uncertainEffect": "Leafen could not confirm which recovery codes are active.",
+        "stateCheckAction": "Reload account security before deciding whether to replace the codes again."
+      },
+      "sessionRevoke": {
+        "operation": "Revoke account session",
+        "deniedEffect": "The selected session was not confirmed revoked; other sessions were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the selected session was revoked.",
+        "stateCheckAction": "Reload the session list before deciding whether to retry."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Cancel server backup",
+        "deniedEffect": "The backup was not confirmed canceled.",
+        "uncertainEffect": "Leafen could not confirm whether the backup was canceled.",
+        "stateCheckAction": "Check the current backup state before canceling again."
+      },
+      "create": {
+        "operation": "Create server backup",
+        "deniedEffect": "A new backup was not confirmed.",
+        "uncertainEffect": "Leafen could not confirm whether the backup request was accepted.",
+        "stateCheckAction": "Check the current backup before submitting another request."
+      },
+      "download": {
+        "operation": "Download server backup",
+        "deniedEffect": "No verified backup file was downloaded.",
+        "uncertainEffect": "Leafen could not verify or stream the backup file.",
+        "stateCheckAction": "Check the completed backup state before downloading again."
+      },
+      "retry": {
+        "operation": "Retry server backup",
+        "deniedEffect": "The failed backup was not restarted.",
+        "uncertainEffect": "Leafen could not confirm whether the backup restarted.",
+        "stateCheckAction": "Check the current backup state before retrying again."
+      },
+      "status": {
+        "operation": "Load server backup status",
+        "deniedEffect": "The backup status was not loaded; no backup state was changed.",
+        "uncertainEffect": "Leafen could not confirm the current backup state.",
+        "stateCheckAction": "Reload the backup status before taking another action."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Load server report",
+        "deniedEffect": "The report was not loaded; no report state was changed.",
+        "uncertainEffect": "Leafen could not confirm the current report snapshot.",
+        "stateCheckAction": "Reload the current report before refreshing it."
+      },
+      "refresh": {
+        "operation": "Refresh server report",
+        "deniedEffect": "A new report snapshot was not confirmed.",
+        "uncertainEffect": "Leafen could not confirm whether the report snapshot changed.",
+        "stateCheckAction": "Load the current report before refreshing again."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Load the backup schedule",
+        "deniedEffect": "The backup schedule was not loaded; no setting was changed.",
+        "uncertainEffect": "Leafen could not confirm the current backup schedule.",
+        "stateCheckAction": "Reload the backup schedule before changing it."
+      },
+      "restore": {
+        "operation": "Restore the server from a backup",
+        "deniedEffect": "The server’s data was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the restore was set up.",
+        "stateCheckAction": "Reload the backup settings to see whether a restore waits before trying again."
+      },
+      "save": {
+        "operation": "Save the backup schedule",
+        "deniedEffect": "The backup schedule was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the backup schedule was saved.",
+        "stateCheckAction": "Reload the backup schedule to see the settings in effect before saving again."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Load the request log settings",
+        "deniedEffect": "The request log settings were not loaded; no setting was changed.",
+        "uncertainEffect": "Leafen could not confirm the current request log settings.",
+        "stateCheckAction": "Reload the request log settings before changing them."
+      },
+      "save": {
+        "operation": "Save the request log settings",
+        "deniedEffect": "The request log settings were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the request log settings were saved.",
+        "stateCheckAction": "Reload the request log settings to see the ones in effect before saving again."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Load the network proxy",
+        "deniedEffect": "The network proxy was not loaded; no setting was changed.",
+        "uncertainEffect": "Leafen could not confirm the current network proxy.",
+        "stateCheckAction": "Reload the network proxy before changing it."
+      },
+      "save": {
+        "operation": "Save the network proxy",
+        "deniedEffect": "The network proxy was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the network proxy was saved.",
+        "stateCheckAction": "Reload the network proxy to see the one in effect before saving again."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Load server settings",
+        "deniedEffect": "The settings were not loaded, and the saved settings were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current server settings.",
+        "stateCheckAction": "Reload the settings before making changes."
+      },
+      "save": {
+        "operation": "Save server settings",
+        "deniedEffect": "The new settings were not accepted; the previously saved settings remain in effect.",
+        "uncertainEffect": "Leafen could not confirm whether the new settings were saved.",
+        "stateCheckAction": "Reload the settings and compare the current values before trying again."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Check login status",
+        "deniedEffect": "No login session was established, and account data was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current login state.",
+        "stateCheckAction": "Reload the page, then log in again."
+      },
+      "deviceCode": {
+        "operation": "Log in this device",
+        "deniedEffect": "You were not logged in, and no account data was changed.",
+        "uncertainEffect": "Leafen could not confirm whether this device was logged in.",
+        "stateCheckAction": "Log in again with a new code."
+      },
+      "emailVerification": {
+        "operation": "Verify email address",
+        "deniedEffect": "The email address was not verified, and the account was not logged in.",
+        "uncertainEffect": "Leafen could not confirm whether email verification completed.",
+        "stateCheckAction": "Try logging in; if that doesn’t work, open the link in the email again."
+      },
+      "mfa": {
+        "operation": "Complete 2-step verification",
+        "deniedEffect": "You were not logged in, and the MFA challenge remains uncompleted.",
+        "uncertainEffect": "Leafen could not confirm whether 2-step verification completed.",
+        "stateCheckAction": "Start logging in again."
+      },
+      "passwordResetConfirm": {
+        "operation": "Change password",
+        "deniedEffect": "The password was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the password changed.",
+        "stateCheckAction": "Try logging in with the new password; if that doesn’t work, get a new reset link."
+      },
+      "passwordResetRequest": {
+        "operation": "Request a password reset",
+        "deniedEffect": "No password-reset message was accepted for delivery.",
+        "uncertainEffect": "Leafen could not confirm whether the reset request was accepted.",
+        "stateCheckAction": "Wait for the email before making another request."
+      },
+      "providerExchange": {
+        "operation": "Log in with an external account",
+        "deniedEffect": "You were not logged in, and no account data was changed.",
+        "uncertainEffect": "Leafen could not confirm the external login result.",
+        "stateCheckAction": "Log in the same way again."
+      },
+      "serverSetup": {
+        "operation": "Set up the Leafen server",
+        "deniedEffect": "The administrator account was not created.",
+        "uncertainEffect": "Leafen could not confirm whether server setup completed.",
+        "stateCheckAction": "Reload the page and check the setup state before trying again."
+      },
+      "signIn": {
+        "operation": "Log in",
+        "deniedEffect": "You were not logged in, and no account data was changed.",
+        "uncertainEffect": "Leafen could not confirm whether login completed.",
+        "stateCheckAction": "Refresh the page and log in again."
+      },
+      "signUp": {
+        "operation": "Create account",
+        "deniedEffect": "A new account was not created.",
+        "uncertainEffect": "Leafen could not confirm whether the account was created.",
+        "stateCheckAction": "Try logging in; if that doesn’t work, sign up again."
+      },
+      "passkey": {
+        "operation": "Log in with a passkey",
+        "deniedEffect": "The login was not accepted.",
+        "uncertainEffect": "Leafen could not confirm whether the login completed.",
+        "stateCheckAction": "Log in with your passkey again."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Load page content",
+        "deniedEffect": "The page content was not loaded, and saved content was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current page content.",
+        "stateCheckAction": "Reload the page before editing."
+      },
+      "update": {
+        "operation": "Save page content",
+        "deniedEffect": "The change was not accepted; the latest content on the server remains in effect.",
+        "uncertainEffect": "Leafen could not confirm whether the content was saved.",
+        "stateCheckAction": "Reload the latest content and compare it before trying again."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Save database automation",
+        "deniedEffect": "The automation was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the database automation change was saved.",
+        "stateCheckAction": "Reload the automation before trying again."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Save DLP policy",
+        "deniedEffect": "The new DLP policy was not saved; the previous policy remains in effect.",
+        "uncertainEffect": "Leafen could not confirm whether the DLP policy was saved.",
+        "stateCheckAction": "Reload the DLP policy and organization audit history before trying again."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Verify SAML domain",
+        "deniedEffect": "The domain remains pending; the SAML configuration, audit history, and login sessions were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current SAML domain-verification state.",
+        "stateCheckAction": "Reload the SAML domain state before trying again."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Delete file",
+        "deniedEffect": "The file was not deleted and was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the file was deleted.",
+        "stateCheckAction": "Reload the file and its references before deciding whether to retry."
+      },
+      "upload": {
+        "operation": "Upload file",
+        "deniedEffect": "The new file was not saved; existing files were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the file was saved.",
+        "stateCheckAction": "Reload the file list before deciding whether to retry."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Apply people mappings",
+        "deniedEffect": "The new mappings were not accepted.",
+        "uncertainEffect": "Leafen could not confirm which mappings were applied.",
+        "stateCheckAction": "Reload the mapping results before applying them again."
+      },
+      "refresh": {
+        "operation": "Refresh people mappings",
+        "deniedEffect": "The latest mappings were not loaded; saved mappings were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current mapping state.",
+        "stateCheckAction": "Reload the mapping panel before continuing."
+      },
+      "scan": {
+        "operation": "Scan imported people",
+        "deniedEffect": "Imported people were not listed, and existing mappings were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current imported people list.",
+        "stateCheckAction": "Reload the mapping panel before making changes."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Execute button automation",
+        "deniedEffect": "The button’s actions did not run, and page content was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the button automation executed.",
+        "stateCheckAction": "Reload the affected content and execution state before trying again."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Copy organization API token",
+        "deniedEffect": "The token was not confirmed in the clipboard; the token itself was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the clipboard write completed.",
+        "stateCheckAction": "Check the clipboard before copying the token again."
+      },
+      "create": {
+        "operation": "Create organization API token",
+        "deniedEffect": "A new token was not confirmed.",
+        "uncertainEffect": "Leafen could not confirm whether the token was created.",
+        "stateCheckAction": "Reload the token list before creating another token."
+      },
+      "list": {
+        "operation": "Load organization API tokens",
+        "deniedEffect": "Tokens were not loaded, and existing tokens were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current token list.",
+        "stateCheckAction": "Reload the token list before making changes."
+      },
+      "revoke": {
+        "operation": "Revoke organization API token",
+        "deniedEffect": "Token revocation was not confirmed.",
+        "uncertainEffect": "Leafen could not confirm whether the token was revoked.",
+        "stateCheckAction": "Reload the token list before attempting another revocation."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Load workspace pages",
+        "deniedEffect": "The pages were not loaded, and saved workspace data was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current workspace pages.",
+        "stateCheckAction": "Reload the workspace before editing."
+      },
+      "create": {
+        "operation": "Create page",
+        "deniedEffect": "A new page was not created, and existing pages were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the page was created.",
+        "stateCheckAction": "Reload the page list and check for the new page before trying again."
+      },
+      "title": {
+        "update": {
+          "operation": "Save page title",
+          "deniedEffect": "The title change was not accepted; the saved title remains in effect.",
+          "uncertainEffect": "Leafen could not confirm whether the change was saved.",
+          "stateCheckAction": "Reload the page and check the current title."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Load page analytics",
+        "deniedEffect": "Analytics were not loaded, and page data was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current analytics.",
+        "stateCheckAction": "Reload analytics before drawing conclusions."
+      },
+      "policyUpdate": {
+        "operation": "Save analytics policy",
+        "deniedEffect": "The new analytics policy was not accepted.",
+        "uncertainEffect": "Leafen could not confirm whether the policy was saved.",
+        "stateCheckAction": "Reload the policy and compare it before trying again."
+      },
+      "preferencesRead": {
+        "operation": "Load analytics preferences",
+        "deniedEffect": "Analytics preferences were not loaded, and saved settings were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current analytics preferences.",
+        "stateCheckAction": "Reload the preferences before editing them."
+      },
+      "preferencesUpdate": {
+        "operation": "Save analytics preferences",
+        "deniedEffect": "The new preferences were not accepted.",
+        "uncertainEffect": "Leafen could not confirm whether the preferences were saved.",
+        "stateCheckAction": "Reload the preferences and compare them before trying again."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Safely save an offline change",
+        "deniedEffect": "The change was not saved on this device.",
+        "uncertainEffect": "Leafen could not confirm whether the change was saved on this device or on the server.",
+        "stateCheckAction": "Copy the edited content, then reload and compare the saved state."
+      },
+      "legacy": {
+        "operation": "Migrate offline changes",
+        "deniedEffect": "The older offline changes remain where they were stored and were not sent.",
+        "uncertainEffect": "Leafen could not confirm which older offline changes were migrated.",
+        "stateCheckAction": "Keep this tab open and reload before editing again."
+      },
+      "refresh": {
+        "operation": "Reload recovered changes",
+        "deniedEffect": "Recovered changes were not shown, and saved data was not replaced.",
+        "uncertainEffect": "Leafen could not confirm the current page after recovery.",
+        "stateCheckAction": "Reload the page before making another edit."
+      },
+      "replay": {
+        "operation": "Send offline changes",
+        "deniedEffect": "The queued change remains pending and was not confirmed by the server.",
+        "uncertainEffect": "Leafen could not confirm which queued changes reached the server.",
+        "stateCheckAction": "Keep this tab open, reconnect, and reload before editing again."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Search public site",
+        "deniedEffect": "Search results were not loaded, and published content was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current search results.",
+        "stateCheckAction": "Check the site state before searching again."
+      },
+      "sharedPage": {
+        "operation": "Load shared page",
+        "deniedEffect": "The shared page was not loaded, and published content was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current shared page.",
+        "stateCheckAction": "Check the share link before trying again."
+      },
+      "site": {
+        "operation": "Load public site",
+        "deniedEffect": "The public site was not loaded, and published content was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current public site.",
+        "stateCheckAction": "Check the site address before trying again."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Restore form login",
+        "deniedEffect": "The member form was not opened, and no response was submitted.",
+        "uncertainEffect": "Leafen could not confirm the current login state for this form.",
+        "stateCheckAction": "Reload the form and log in again."
+      },
+      "configurationWrite": {
+        "operation": "Save form settings",
+        "deniedEffect": "The form settings were not confirmed as saved.",
+        "uncertainEffect": "Leafen could not confirm the current form configuration.",
+        "stateCheckAction": "Reload the form settings before saving again."
+      },
+      "definitionRead": {
+        "operation": "Load form",
+        "deniedEffect": "The form was not loaded, and no response was submitted.",
+        "uncertainEffect": "Leafen could not confirm the current form definition.",
+        "stateCheckAction": "Reload the form before entering a response."
+      },
+      "optionsRead": {
+        "operation": "Load form choices",
+        "deniedEffect": "The requested choices were not loaded, and the draft response was not submitted.",
+        "uncertainEffect": "Leafen could not confirm the current choices.",
+        "stateCheckAction": "Reload the choices before submitting the form."
+      },
+      "responseSubmit": {
+        "operation": "Submit form response",
+        "deniedEffect": "The response was not accepted.",
+        "uncertainEffect": "Leafen could not confirm whether the response was accepted.",
+        "stateCheckAction": "Check the form result before submitting the response again."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Load runtime configuration",
+        "deniedEffect": "The runtime configuration was not loaded; saved server settings were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current runtime configuration, so safe fallback values are active.",
+        "stateCheckAction": "Reload the page to read the current server configuration."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Sync pending changes",
+        "deniedEffect": "Pending changes remain queued and were not confirmed by the server.",
+        "uncertainEffect": "Leafen could not confirm which pending changes reached the server.",
+        "stateCheckAction": "Keep this tab open, reconnect, and check the saved state before retrying."
+      },
+      "pendingRead": {
+        "operation": "Check pending changes",
+        "deniedEffect": "The pending-change count was not loaded; queued changes were not discarded.",
+        "uncertainEffect": "Leafen could not confirm how many changes are still pending.",
+        "stateCheckAction": "Keep this tab open and check sync status again."
+      },
+      "retry": {
+        "operation": "Retry synchronization",
+        "deniedEffect": "Synchronization was not confirmed; pending changes remain queued.",
+        "uncertainEffect": "Leafen could not confirm the latest synchronization result.",
+        "stateCheckAction": "Check the saved state and connection before retrying again."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Create workspace",
+        "deniedEffect": "A new workspace was not created, and existing data was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the workspace was created.",
+        "stateCheckAction": "Reload the workspace list and check for the new workspace before trying again."
+      },
+      "delete": {
+        "operation": "Permanently delete workspace",
+        "deniedEffect": "The deletion was not accepted; the workspace and existing data were not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the workspace was deleted.",
+        "stateCheckAction": "Reload the workspace list before trying again."
+      },
+      "member": {
+        "add": {
+          "operation": "Add workspace member",
+          "deniedEffect": "The member was not added, and nothing was changed.",
+          "uncertainEffect": "Leafen could not confirm whether the workspace member was added.",
+          "stateCheckAction": "Reload members, activity, and audit history before trying again."
+        },
+        "revoke": {
+          "operation": "Remove workspace member",
+          "deniedEffect": "The member was not removed, and nothing was changed.",
+          "uncertainEffect": "Leafen could not confirm whether the workspace member was removed.",
+          "stateCheckAction": "Reload members, activity, and audit history before trying again."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Save workspace settings",
+          "deniedEffect": "The settings change was not saved; the previous settings remain in effect.",
+          "uncertainEffect": "Leafen could not confirm whether the workspace settings were saved.",
+          "stateCheckAction": "Reload workspace settings, activity, and audit history before trying again."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Cancel workspace export",
+        "deniedEffect": "The export was not canceled and may still be running.",
+        "uncertainEffect": "Leafen could not confirm whether the export was canceled.",
+        "stateCheckAction": "Refresh the export status before canceling again."
+      },
+      "download": {
+        "operation": "Download workspace export",
+        "deniedEffect": "The archive was not downloaded; the server export was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether the archive download completed.",
+        "stateCheckAction": "Check the downloads list before downloading again."
+      },
+      "job": {
+        "operation": "Export workspace",
+        "deniedEffect": "The archive was not created; the source workspace was not changed.",
+        "uncertainEffect": "Leafen could not confirm a usable archive for this job.",
+        "stateCheckAction": "Start a replacement export from the current workspace."
+      },
+      "poll": {
+        "operation": "Wait for workspace export",
+        "deniedEffect": "The latest export status was not loaded; the export job was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current export status.",
+        "stateCheckAction": "Refresh the export status before taking another action."
+      },
+      "retry": {
+        "operation": "Retry workspace export",
+        "deniedEffect": "A retry was not accepted; the existing export job was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether a retry was accepted.",
+        "stateCheckAction": "Refresh the export status before retrying again."
+      },
+      "start": {
+        "operation": "Start workspace export",
+        "deniedEffect": "A new export job was not accepted; the workspace was not changed.",
+        "uncertainEffect": "Leafen could not confirm whether an export job was accepted.",
+        "stateCheckAction": "Refresh the latest export status before starting another job."
+      },
+      "status": {
+        "operation": "Load workspace export status",
+        "deniedEffect": "The latest export status was not loaded; the export job was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current export status.",
+        "stateCheckAction": "Reload the export dialog before taking another action."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Cancel import",
+        "deniedEffect": "The import was not canceled and may still be running.",
+        "uncertainEffect": "Leafen could not confirm whether the import was canceled.",
+        "stateCheckAction": "Refresh the import status before canceling again."
+      },
+      "job": {
+        "operation": "Import a file",
+        "deniedEffect": "No page was created; partially imported content was removed.",
+        "uncertainEffect": "Leafen could not confirm a usable page for this import.",
+        "stateCheckAction": "Keep the diagnostic reference and start a new import from the source file."
+      },
+      "start": {
+        "operation": "Start import",
+        "deniedEffect": "A new import was not accepted and no page was created.",
+        "uncertainEffect": "Leafen could not confirm whether the import was accepted.",
+        "stateCheckAction": "Retry the same file without changing it so Leafen can reconnect to the same request."
+      },
+      "status": {
+        "operation": "Load import status",
+        "deniedEffect": "The latest import status was not loaded; the import job was not changed.",
+        "uncertainEffect": "Leafen could not confirm the current import status.",
+        "stateCheckAction": "Reopen the import dialog to reconnect to the saved job before taking another action."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Load account passkeys",
+        "deniedEffect": "The passkey list was not loaded; saved keys were not changed.",
+        "uncertainEffect": "Leafen could not confirm the current passkey list.",
+        "stateCheckAction": "Reconnect and refresh the passkey list before making a change."
+      },
+      "update": {
+        "operation": "Manage account passkeys",
+        "deniedEffect": "The server did not change the saved passkeys.",
+        "uncertainEffect": "Leafen could not confirm whether the passkey change completed.",
+        "stateCheckAction": "Refresh the passkey list before trying again. Check your device’s key manager if a new key was created but not saved here."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "The current password is incorrect.",
+    "currentPasswordNext": "If you forgot it, log out and reset it from the login page.",
+    "code": "The code is wrong or was already used.",
+    "codeNext": "Enter the code your authenticator app shows now.",
+    "recoveryCode": "The recovery code is wrong or was already used.",
+    "recoveryCodeNext": "Enter a recovery code you haven’t used.",
+    "accountDeactivated": "This account has been disabled by the server’s administrator.",
+    "accountDeactivatedNext": "Ask the administrator to enable it again.",
+    "organizationSSO": "This organization only allows login through single sign-on (SSO).",
+    "organizationSSONext": "Log in with your company account instead.",
+    "organizationPasswordTwoStep": "Your organization requires logging in with a password and 2-step verification, not a device code.",
+    "organizationPasswordTwoStepNext": "Log in with your email and password; if you have none, ask an administrator for a one-time password.",
+    "deviceCode": "The code is wrong, was already used, expired, or the window showing it was closed.",
+    "deviceCodeNext": "Get a new code and enter it again.",
+    "setupCode": "The setup code is incorrect.",
+    "setupCodeNext": "Open the setup link the server printed again, or type the code it was started with.",
+    "setupCodeMissing": "Enter the setup code.",
+    "setupCodeMissingNext": "Opening the setup link the server printed fills it in; the code the server was started with works too.",
+    "sessionCapacity": "This account has reached its device limit.",
+    "sessionCapacityNext": "Log out a device you no longer use in Settings → Account → Devices, then try again.",
+    "signInEnded": "This login request has ended: it timed out or the code was wrong too many times.",
+    "signInEndedNext": "Log in again with your email and password.",
+    "emailNotVerified": "This account’s email isn’t confirmed yet.",
+    "emailNotVerifiedNext": "Open the link in the email you got when you signed up, then log in.",
+    "registrationFailed": "The account couldn’t be created.",
+    "registrationFailedNext": "Try again in a moment. If it keeps failing, tell this server’s administrator."
+  },
+  "labels": {
+    "reference": "Reference"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "This organization doesn’t create new accounts at company login.",
+    "samlAccountCreationOffNext": "Ask your organization’s administrator to invite you.",
+    "samlRetryAfterInvite": "Log in again once you’ve been invited.",
+    "samlIdentityDenied": "This email can’t use this organization’s company login.",
+    "samlIdentityDeniedNext": "Ask your organization’s administrator to check the email domain and your membership.",
+    "samlRetryAfterAdministrator": "Log in again once the administrator has checked.",
+    "samlResponseInvalid": "Couldn’t verify the company login response.",
+    "samlResponseInvalidNext": "Start logging in again. If it keeps happening, ask your organization’s administrator to check the SAML settings.",
+    "accountAlreadyExistsForEmailAddress": "An account already exists for this email address.",
+    "accountEmailCouldNotAdmittedFor": "The account email could not be sent.",
+    "administratorSettingsDoNotMeetServer": "The administrator settings do not meet the server requirements.",
+    "administratorSettingsNotAvailableCurrentAccount": "Administrator settings are not available to the current account.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Another administrator already completed server setup.",
+    "anotherServerOperationTemporarilyLockedAccount": "Another server operation temporarily locked account storage.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Another server operation temporarily locked the database, so the export could not continue.",
+    "anotherServerOperationTemporarilyLockedDlp": "Another server operation temporarily locked DLP policy storage.",
+    "anotherServerOperationTemporarilyLockedFile": "Another server operation temporarily locked file storage.",
+    "anotherServerOperationTemporarilyLockedPage": "Another server operation temporarily locked page content storage.",
+    "anotherServerOperationTemporarilyLockedProduct": "Another server operation temporarily locked product storage.",
+    "askOrganizationAdministratorToAllow": "Ask an organization administrator or the teamspace’s owner to allow it.",
+    "askServerAdministratorCheckEmailDelivery": "Ask the server administrator to check email delivery, then try again.",
+    "backupArtifactNotCompleteYet": "The backup file is not complete yet.",
+    "backupStateNoLongerPermitsControl": "The backup’s current state no longer allows that action.",
+    "causeCouldNotDetermined": "The cause could not be determined.",
+    "changeSaveReceiptAndSynchronizationState": "The change was not saved, and the page content is unchanged.",
+    "checkCurrentBackupBeforeRetrying": "Check the current backup before retrying.",
+    "checkCurrentJobStateBeforeDeciding": "Check the current job state before deciding whether to retry.",
+    "checkCurrentListBeforeTryingDifferent": "Check the current list before trying a different item.",
+    "checkCurrentServerSettingsBeforeTrying": "Check the current server settings before trying again.",
+    "checkCurrentServerSetupStateBefore": "Check the current server setup state before trying again.",
+    "checkCurrentStateAndUseNew": "Check the current state, and start a new backup only if you need one.",
+    "checkEmailAndPassword": "Check the email and password.",
+    "checkServerSecretStorageThenSave": "Check server secret storage, then save the same settings again.",
+    "checkServerStateThenLoadSettings": "Check the server state, then load the settings again.",
+    "createNewBackupAndInspectServer": "Create a new backup and inspect server storage if the error repeats.",
+    "currentAccountNotAuthorizedForOperation": "The current account is not authorized for this operation.",
+    "currentStateMustCheckedBeforeRetry": "The current state must be checked before a retry can be considered safe.",
+    "currentStateMustCheckedBeforeRetrying": "The current state must be checked before retrying.",
+    "dnsVerificationServiceTemporarilyUnavailable": "The DNS verification service is temporarily unavailable.",
+    "doNotAssumeUnchangedRetrySafe": "Don’t assume retrying is safe until server storage is repaired.",
+    "doNotKeepRetryingIdentifierNew": "Don’t keep retrying this request; reload first, then a new attempt is safe.",
+    "doNotResumeFailedJobStart": "Do not resume the failed job; start a new export instead.",
+    "doNotRetryBeforeLoadingLatest": "Do not retry before loading the latest server settings.",
+    "doNotRetryDirectRequestUnchanged": "Don’t retry this upload as is; use resumable upload.",
+    "doNotRetryDirectRequestUnchanged2": "Don’t retry this upload as is; use resumable archive upload.",
+    "doNotRetrySetupRequestSign": "Do not retry this setup request; log in with the existing administrator account.",
+    "doNotReuseInvalidArtifactCreate": "Don’t reuse the invalid backup file; create a new backup.",
+    "doNotReuseLinkNewAction": "Do not reuse this link; a new action is safe.",
+    "emailOrPasswordDidNotMatch": "The email or password did not match.",
+    "externalSignInProviderCouldNot": "The external login provider could not complete the request.",
+    "fileLargerThanOneDirectUpload": "This file is too large for a single direct upload.",
+    "formStorageTemporarilyLockedByAnother": "Form storage was temporarily locked by another server operation.",
+    "leafenArchiveLargerThanOneDirect": "This Leafen archive is too large for a single direct import.",
+    "leafenDidNotReceiveServerResponse": "Leafen did not receive a server response.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen is rebuilding the organization storage usage state.",
+    "leafenServiceCouldNotCompleteOperation": "The Leafen service could not complete the operation.",
+    "isolatedRecordNotAppliedYourRequested": "The incomplete record was set aside, your change was not saved, and the page content is unchanged.",
+    "jobCannotRetriedStartReplacementExport": "This job cannot be retried; start a replacement export.",
+    "jobSArchiveNotPublishedAnd": "This job’s archive was not created, and the source workspace was not changed.",
+    "keepDiagnosticReferenceAndAskServer": "Keep the diagnostic reference and ask the server administrator to repair server storage.",
+    "lastConfirmedSavedStateRestoredSo": "The last confirmed saved state was restored, so it is safe to retry the same change.",
+    "loadCurrentReportAndUseNew": "Load the current report, then refresh again.",
+    "loadCurrentReportBeforeRefreshingAgain": "Load the current report before refreshing again.",
+    "loadCurrentReportBeforeTryingAgain": "Load the current report before trying again.",
+    "newerOrIncompatibleStatePreventedOperation": "A newer or incompatible state prevented this operation.",
+    "noNewArchivePublishedAndSource": "No new archive was created, and the source workspace and earlier archives were unchanged.",
+    "noNewSignInSessionCreated": "No new login session was created and existing sessions were not changed.",
+    "notKnownWhetherRetryingSafeUntil": "It is not known whether retrying is safe until the current state is checked.",
+    "organizationStorageAuthorityInconsistent": "The organization’s storage usage record is inconsistent.",
+    "organizationDlpBlocksOperation": "Your organization’s data loss prevention policy blocks this.",
+    "takeOutTermOrAskAboutDlp": "Take out any sensitive term and try again, or ask an organization administrator if you’re not sure.",
+    "organizationSettingsDoNotAllowOperation": "Your organization’s or teamspace’s settings don’t allow this.",
+    "organizationStorageLimitWouldExceeded": "The organization storage limit would be exceeded.",
+    "serverDiskAlmostFull": "The server’s disk is almost full.",
+    "askServerAdministratorToFreeSpace": "Ask the server’s administrator to free space; it works again once there is room.",
+    "safeRetryOnceServerHasRoom": "It is safe to try the same thing again once the server has room.",
+    "readDoesNotChangeSavedData": "This read does not change saved data, so it is safe to retry.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Reload the current backup before choosing another action.",
+    "reloadCurrentBackupStateBeforeContinuing": "Reload the current backup state before continuing.",
+    "reloadCurrentStateBeforeDecidingWhether": "Reload the current state before deciding whether to retry.",
+    "reloadSignInPageAndStart": "Refresh the login page and log in again.",
+    "removeUnneededFilesOrAskOrganization": "Remove unneeded files or ask an organization billing administrator to raise the limit.",
+    "reportChangedAfterScreenLoaded": "The report changed after this screen loaded.",
+    "requestIdentifierBelongsDifferentOperation": "This request was already used for a different action.",
+    "requestIdentifierBelongsDifferentReportRefresh": "This request was already used for a different report refresh.",
+    "requestedItemNoLongerExistsOr": "The requested item no longer exists or is not visible to this account.",
+    "retryExportAfterOtherServerOperation": "Retry this export after the other server operation finishes.",
+    "retryExportJobAfterServerStorage": "Retry this export job after server storage recovers.",
+    "retryOnlyAfterAccountOrPermission": "Retry only after the account or permission changes.",
+    "retryOnlyAfterOrganizationSettingChanges": "Retry only after that setting changes.",
+    "retrySameContentChangeAfterOther": "Retry the same content change after the other server operation finishes.",
+    "retrySameContentChangeAfterServer": "Retry the same content change after server storage recovers.",
+    "retrySameContentChangeNow": "Retry the same content change now.",
+    "changeTooLargeForOneChange": "This is too large to change at once. One change holds up to 64 MB, text included.",
+    "pageKeepsWhatItHadBefore": "The page is as it was before.",
+    "makeTheChangeInParts": "Make it in parts: delete the blocks inside a large toggle or section in parts first, and paste long text in parts.",
+    "sameSizeIsRefusedAgain": "The same size is rejected again; once split, it is safe to retry.",
+    "linkCannotBeKeptHere": "This change links a page or block that can’t be linked here.",
+    "chooseAnotherPageOrRefresh": "Choose another page, or refresh the page and try again.",
+    "sameLinkIsRefusedAgain": "Linking the same item again is rejected again.",
+    "retrySameDomainVerificationAfterDns": "Retry the same domain verification after the DNS verification service recovers.",
+    "retrySameFileOperationAfterOther": "Retry the same file operation after the other server operation finishes.",
+    "retrySameFileOperationAfterServer": "Retry the same file operation after server storage recovers.",
+    "retrySameFormOperationAfterOther": "Retry the same form operation after the other server operation finishes.",
+    "retrySameFormOperationAfterServer": "Retry the same form operation after server storage recovers.",
+    "retrySameOperationAfterOtherServer": "Retry the same operation after the other server operation finishes.",
+    "retrySameOperationAfterServerStorage": "Retry the same operation after server storage recovers.",
+    "returnSignInWithExistingAccount": "Return to log in with the existing account.",
+    "reviewAndCorrectEnteredServerSettings": "Review and correct the entered server settings.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Review the entered values and correct the highlighted information.",
+    "safeRetryAfterEmailDeliveryRestored": "It is safe to retry after email delivery is restored.",
+    "safeRetryAfterServerResourceChecks": "It is safe to retry after server resource checks recover.",
+    "safeRetryAfterTemporaryLockClears": "It is safe to retry after the temporary lock clears.",
+    "safeRetryRead": "It is safe to retry this read.",
+    "safeRetrySameAuthenticationOperationAfter": "It is safe to retry the same authentication operation after storage recovers.",
+    "safeRetrySameContentChangeAfter": "It is safe to retry the same content change after the temporary lock clears.",
+    "safeRetrySameContentChangeAfter2": "It is safe to retry the same content change after storage recovers.",
+    "safeRetrySameDlpPolicySave": "It is safe to retry the same DLP policy save after storage recovers.",
+    "safeRetrySameDlpPolicySave2": "It is safe to retry the same DLP policy save after the temporary lock clears.",
+    "safeRetrySameDomainVerificationAfter": "It is safe to retry the same domain verification after the service recovers.",
+    "safeRetrySameFileOperationAfter": "It is safe to retry the same file operation after storage becomes available.",
+    "safeRetrySameFileOperationAfter2": "It is safe to retry the same file operation after storage recovers.",
+    "safeRetrySameFileOperationAfter3": "It is safe to retry the same file operation after the temporary lock clears.",
+    "safeRetrySameFormOperationAfter": "It is safe to retry the same form operation after storage recovers.",
+    "safeRetrySameFormOperationAfter2": "It is safe to retry the same form operation after the temporary lock clears.",
+    "safeRetrySameOperationAfterStorage": "It is safe to retry the same operation after storage recovers.",
+    "safeRetrySameOperationAfterTemporary": "It is safe to retry the same operation after the temporary lock clears.",
+    "safeRetrySameSettingsAfterSecret": "It is safe to retry the same settings after secret storage recovers.",
+    "safeRetrySameSettingsSaveAfter": "It is safe to retry the same settings save after correcting the invalid values.",
+    "safeRetryWithSameJobIdentifier": "It is safe to retry the same job.",
+    "safeRetryWithSameJobIdentity": "It is safe to retry the same job.",
+    "safeSignInInsteadCreatingAnother": "It is safe to log in instead of creating another account.",
+    "safeStartNewProviderSignIn": "It is safe to start a new provider login later.",
+    "safeTryAgainAfterCorrectingDetails": "It is safe to try again after correcting the details.",
+    "safeTryAgainAfterCorrectingInput": "It is safe to try again after correcting the input.",
+    "safeTryAgainAfterWait": "It is safe to try again after the wait.",
+    "serverTakesNoChangesNow": "This server can’t reach its backup place, so it isn’t taking changes right now.",
+    "serverDataMovedElsewhere": "This server’s data moved to another server.",
+    "doItOnNewServer": "Do it on the new server.",
+    "serverDataMovedNoRetry": "Trying again here won’t save it.",
+    "sameRequestIdentityCanRetriedSafely": "The same request can be retried safely after a short wait.",
+    "saveSameDlpPolicyAgainAfter": "Save the same DLP policy again after server storage recovers.",
+    "saveSameDlpPolicyAgainAfter2": "Save the same DLP policy again after the other server operation finishes.",
+    "serverAccountStorageTemporarilyUnavailable": "Server account storage is temporarily unavailable.",
+    "serverCannotCurrentlyConfirmResourceState": "The server cannot currently confirm its resource state.",
+    "serverCouldNotCompleteAdministratorSettings": "The server could not complete the administrator settings save.",
+    "serverCouldNotCompleteAdministratorSetup": "The server could not complete the administrator setup request.",
+    "serverCouldNotCompleteBackupLifecycle": "The server could not complete the backup.",
+    "serverCouldNotLoadBackupState": "The server could not load that backup state.",
+    "serverCouldNotProtectAdministratorSecret": "The server could not protect the administrator secret values.",
+    "serverCouldNotReadAdministratorState": "The server could not read administrator state.",
+    "serverCouldNotReadOneExact": "The server could not read a consistent report snapshot.",
+    "serverDetectedAndIsolatedIncompleteContent": "The server found an incomplete content record and set it aside.",
+    "serverFileStorageTemporarilyUnavailable": "Server file storage is temporarily unavailable.",
+    "serverFormStorageTemporarilyUnavailable": "Server form storage is temporarily unavailable.",
+    "serverPageContentStorageTemporarilyUnavailable": "Server page content storage is temporarily unavailable.",
+    "serverSettingsChangedAfterScreenLoaded": "The server settings changed after this screen was loaded.",
+    "serverStorageTemporarilyUnavailable": "Server storage is temporarily unavailable.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Server storage was temporarily unavailable, so the archive could not be created.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Server storage is temporarily unavailable, so the DLP policy could not be saved.",
+    "signInAttemptIdentifierAlreadyBelongs": "This login attempt was already used with different details.",
+    "signInOrAccountActionLink": "The login or account-action link is no longer valid.",
+    "signInWithAuthorizedAccountOr": "Log in with an authorized account or ask an administrator for access.",
+    "signInWithExistingAdministratorAccount": "Log in with the existing administrator account.",
+    "signInWithServerAdministratorAccount": "Log in with a server administrator account or ask another administrator for access.",
+    "startAccountActionAgainGetNew": "Start the account action again to get a new link.",
+    "startReplacementExportFromLatestWorkspace": "Start a replacement export from the latest workspace.",
+    "storedBackupDidNotMatchVerified": "The stored backup did not match the verified file.",
+    "submittedInformationDidNotMeetOperation": "The submitted information did not meet the operation requirements.",
+    "tooManyRequestsLimited": "Too many requests were made, so this operation is limited.",
+    "tooManyRequestsMadeSoOperation": "Too many requests were made, so this operation is temporarily limited.",
+    "tryAgainAfterServerStorageRecovers": "Try again after server storage recovers.",
+    "tryAgainInHours_one": "Try again in about an hour.",
+    "tryAgainInHours_other": "Try again in about {{count}} hours.",
+    "tryAgainInMinutes_one": "Try again in about a minute.",
+    "tryAgainInMinutes_other": "Try again in about {{count}} minutes.",
+    "tryAgainInSeconds_one": "Try again in about {{count}} second.",
+    "tryAgainInSeconds_other": "Try again in about {{count}} seconds.",
+    "useAnotherSignInMethodOr": "Use another login method or try this provider later.",
+    "useResumableArchiveUploadSoProgress": "Use resumable archive upload so progress can continue from saved state.",
+    "useResumableUploadSoProgressCan": "Use resumable upload so progress can continue from saved state.",
+    "waitForCompletionThenRetryDownload": "Wait for completion, then retry the download.",
+    "waitForOtherServerOperationFinish": "Wait for the other server operation to finish, then try again.",
+    "waitForStorageReconciliationAdvanceThen": "Wait a moment for storage to catch up, then retry the same operation.",
+    "waitMomentBeforeTryingAgain": "Wait a moment before trying again.",
+    "workspaceChangedWhileExportRunning": "The workspace changed while the export was running.",
+    "youNotSignedInAndNo": "You were not logged in, and no account data was changed.",
+    "pageIsLocked": "The page is locked, so changes can’t be made.",
+    "unlockPageThenTryAgain": "Unlock the page for yourself or for everyone from the page menu, then try again.",
+    "safeToRetryAfterUnlocking": "It is safe to try again after unlocking the page.",
+    "databaseIsLocked": "The database is locked, so its properties and views can’t be changed.",
+    "unlockDatabaseThenTryAgain": "Unlock the database for yourself or for everyone from its Locked button, then try again.",
+    "databaseEditorsCanUnlock": "Only someone who can edit the database can unlock it.",
+    "safeToRetryAfterDatabaseUnlocked": "It is safe to try again after the database is unlocked.",
+    "rowMoveNeedsFullAccess": "Moving it to another page needs full access to it and edit access to where it goes.",
+    "askFullAccessHolderToMoveIt": "Ask someone with full access to move it, or choose a place you can edit.",
+    "rowMoveRefusedUntilAccess": "Moving it is refused again until you have that access.",
+    "otherWorkspaceCantMoveOrLink": "Things can’t be moved or linked between workspaces.",
+    "makeItAnewInThatWorkspace": "Create it in that workspace and copy its content over. A whole page moves or is copied there from Move to, by choosing the workspace.",
+    "otherWorkspaceRefusedAgain": "Trying again is refused for the same reason.",
+    "signInEndedForThisBrowser": "This browser’s login expired or was ended.",
+    "signInEndedForThisApp": "This app’s login expired or was ended.",
+    "signInAgainToContinue": "Log in again to continue.",
+    "retryAfterSigningInAgain": "Retry after logging in again.",
+    "serverRestoredSinceDeviceCopies": "This server’s data changed, and this device’s copies are from before.",
+    "changeKeptOnThisDeviceOnly": "The change wasn’t saved on the server; it is only on this device.",
+    "takeServerContentAnew": "Choose “Reload from server” to get the server’s current content.",
+    "retryAfterTakingContentAnew": "Try again after reloading from the server.",
+    "propertyUsedByViewOrDependency": "This property can’t be changed now: it is the title, or it is in Deleted properties.",
+    "changeWhatUsesPropertyFirst": "Reload the page to see the property as it is now.",
+    "retryAfterChangingWhatUsesProperty": "Restore a deleted property first to change it.",
+    "workspaceAlreadyHasContentForArchive": "This workspace already has content, so a Leafen archive can’t go into it.",
+    "makeNewWorkspaceToImportArchive": "Create a new workspace and import this archive there.",
+    "retryInNewWorkspace": "You can import it again in a new workspace.",
+    "importFileDoesNotFitFormat": "The file doesn’t fit the format Leafen reads, so nothing was imported.",
+    "exportFileAgainToImport": "Export the file again from where it was made, then import that file.",
+    "sameFileRefusedAgain": "Importing the same file again won’t work.",
+    "pageBusyWithAnotherChange": "This page is busy with another change, so it can’t be edited for a moment.",
+    "tryAgainOnceThatChangeIsDone": "Try again once that change is done.",
+    "importPageInTrash": "The page this goes into is in Trash, so nothing was imported.",
+    "restorePageThenImportAgain": "Restore the page from Trash, then import again.",
+    "importPageDeletedForGood": "The page this goes into was deleted for good, so nothing was imported.",
+    "ownerBringsDeletedPageBack": "Within 30 days the workspace owner can restore it under Security → Data retention; then restore it from Trash and import again.",
+    "importAgainOnceRestored": "Trying again won’t import it until the page is restored.",
+    "pageInTrashCantChange": "A page in Trash can’t be changed until it’s restored.",
+    "restorePageThenTryAgain": "Restore the page from Trash, then try again.",
+    "tryAgainOnceRestored": "Trying again won’t work until the page is restored.",
+    "optionNameHasComma": "An option’s name can’t have a comma (,).",
+    "takeCommaOutOrSplitOption": "Take the comma out, or make it two options.",
+    "optionRefusedUntilRenamed": "Try again once the name is changed.",
+    "optionNameTaken": "This property already has an option with that name.",
+    "useAnotherOptionName": "Use another name, or choose the option that’s already there.",
+    "optionsInUseLeftOut": "This change leaves out options that pages use.",
+    "keepOptionsOrDeleteOneByOne": "Keep those options, or delete them one at a time from each option’s menu.",
+    "optionsRefusedUntilKeptOrDeleted": "Trying it again as it is is refused for the same reason."
+  }
+}

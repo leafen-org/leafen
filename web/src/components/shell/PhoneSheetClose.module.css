@@ -1,0 +1,67 @@
+/* The round ✕ at a sheet head's right, as Notion's phone and iPad sheets
+   ("사용 권한 변경", seen 2026-11-16 at 402pt and 834pt, dark and light):
+   a 32px circle 16px in from the sheet's edge, a shade darker than the sheet
+   (rgb(236,234,232) on 249,248,247; rgb(28,28,28) on 32,32,32), its ✕ 11px
+   across in 2px strokes with round ends, in the text colour. */
+.close {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-inline-end: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(42, 28, 0, 0.063);
+  color: var(--text-default);
+}
+
+:global([data-theme="dark"]) .close {
+  background: rgba(0, 0, 0, 0.125);
+}
+
+/* A finger's 44px. */
+.close::after {
+  position: absolute;
+  inset: -6px;
+  content: "";
+}
+
+/* The discussions' smaller one, as Notion's "모든 토론" (seen 2026-11-16 in
+   iPhone Safari at 402, dark: a 24px circle 12px in from the sheet's edge,
+   in the middle of the 44px head, on rgba(255,255,243,0.082), its 18px ✕
+   rgb(173,169,163)) and "필터" (seen 2026-10-27: the same, the light's tint
+   rgba(42,28,0,0.07)). */
+.small {
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 12px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--icon-secondary);
+}
+
+:global([data-theme="dark"]) .small {
+  background: rgba(255, 255, 243, 0.082);
+}
+
+.small::after {
+  inset: -10px;
+}
+
+.small svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* An even head with it keeps a head's 44px: its title on the head's top
+   24px line, the circle in the head's middle, 6px from its top — the first
+   group 16px under it, 77 under the sheet's top (Notion's "사용 권한 변경",
+   read 2026-11-18 on a Galaxy A90 at 411: head 44 under a 17px grip band,
+   ✕ at 6, group at 77 — a person's, a web link's and the invite's level
+   alike; the iPad's picture of 2026-11-16 agreed, 29 and 39 under the top). */
+.head[data-even="true"][data-close="true"] .title {
+  align-self: start;
+}

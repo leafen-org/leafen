@@ -1,0 +1,153 @@
+/* A wiki page's properties under its title, as Notion's (seen 2026-10-15):
+   columns 80–350px wide, 8px apart, a 24px line of icon and 13px name over
+   a 30px value, a faint line under them, and "⋯" opening a 500px list. */
+.bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  /* 8px under the title — the title's own space under it, as a database
+     page's (it was 32px, which this once pulled up; 2026-11-01). */
+  margin: 0 -8px;
+  padding: 10px 8px 12px;
+  /* The line runs 8px past the words on both sides, as Notion's (seen
+     2026-11-01: 720 wide under a 704 column). */
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Comments under it end the header with their own line, as a wiki
+   template's in Notion (seen 2026-11-01: none under the properties, the
+   comments 24px under the values). */
+.bar[data-lined="false"] {
+  /* "댓글" pulls itself 2px up under a database page's properties. */
+  margin: 0;
+  padding: 10px 0 26px;
+  border-bottom: 0;
+}
+
+/* The columns start 6px out, so the names' icons and the values' text stand
+   at the title's edge, as Notion's (seen 2026-11-01: a person's avatar and
+   "비어 있음" at the title's left, the icon 1px in, the name 20px in). */
+.property:first-child {
+  margin-inline-start: -6px;
+}
+
+.property {
+  display: flex;
+  flex-direction: column;
+  min-width: 80px;
+  max-width: 350px;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.label svg {
+  flex: none;
+  margin-inline-start: 1px;
+  color: var(--icon-secondary);
+}
+
+.label > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.value {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  font-size: 14px;
+}
+
+.value > * {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Every value is the 30px line, a tag's too: the cells keep their padding but
+   3px over and under, not the taller lines of a database page's list (seen 2026-11-01: Notion's
+   "비어 있음" level under each name). */
+.bar .value > * > * {
+  min-height: 30px;
+  padding-block: 3px;
+}
+
+/* "비어 있음" where a value's text starts, 6px into its cell. */
+.bar .value [data-row-property-empty] {
+  inset-inline-start: 6px;
+}
+
+.value:focus-within [data-row-property-empty][aria-hidden="true"] {
+  display: none;
+}
+
+/* "⋯" in a box as tall as the columns, centred over all but its last 8px,
+   as Notion's (measured 2026-11-18 at 1416: 7px under the columns' top
+   beside a name over a one-line value); its list opens at the box's foot. */
+.moreBox {
+  display: flex;
+  flex: none;
+  align-items: center;
+  align-self: stretch;
+  padding-block-end: 8px;
+}
+
+.more {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+
+.more:hover,
+.more[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+/* The list "⋯" opens, as Notion's on a page and in a version preview
+   (measured 2026-11-18 at 1440, two tabs): 500 wide, its lines 10px in at
+   the top, end and bottom and 28px in at the start — the room a page's list
+   keeps for its handles — so a name's icon stands 35px in, the name 58px and
+   its value's text 202px; a scroller that always keeps its scrollbar's room
+   (Notion's overflow-y: scroll, no track drawn). */
+.popover {
+  position: fixed;
+  z-index: 60;
+  width: min(500px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: min(480px, calc(100vh - 2 * var(--popover-edge)));
+  overflow: auto;
+  scrollbar-gutter: stable;
+  padding-block: 10px;
+  padding-inline: 28px 10px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A page's list (RowPagePropertyList) in it starts where its padding does:
+   34px lines 4px apart and 4px under the last, none under "속성 추가". */
+.popover > dl {
+  margin: 0;
+  padding: 0 0 4px;
+}
+
+.popover > dl:has(> :last-child > [data-row-add-property-row]) {
+  padding-block-end: 0;
+}

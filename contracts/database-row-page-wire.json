@@ -1,0 +1,1563 @@
+{
+  "formatVersion": 1,
+  "schemaVersion": 3,
+  "name": "database-row-page",
+  "operations": [
+    {
+      "goName": "databaseRowPageRead",
+      "tsName": "read",
+      "method": "GET",
+      "path": "/database-rows/{rowId}/page"
+    },
+    {
+      "goName": "databaseRowPageFavorite",
+      "tsName": "favorite",
+      "method": "PUT",
+      "path": "/database-rows/{rowId}/page/favorite"
+    },
+    {
+      "goName": "databaseRowPageDuplicate",
+      "tsName": "duplicate",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/duplicate"
+    },
+    {
+      "goName": "databaseRowPageMove",
+      "tsName": "move",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/move"
+    },
+    {
+      "goName": "databaseRowPageTrash",
+      "tsName": "trash",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/trash"
+    },
+    {
+      "goName": "databaseRowPageArchive",
+      "tsName": "archive",
+      "method": "PUT",
+      "path": "/database-rows/{rowId}/page/archive"
+    },
+    {
+      "goName": "databaseRowPagePresentation",
+      "tsName": "presentation",
+      "method": "PUT",
+      "path": "/database-rows/{rowId}/page/presentation"
+    },
+    {
+      "goName": "databaseRowPageLock",
+      "tsName": "lock",
+      "method": "PUT",
+      "path": "/database-rows/{rowId}/page/lock"
+    },
+    {
+      "goName": "databaseRowPageLockForMe",
+      "tsName": "lockForMe",
+      "method": "PUT",
+      "path": "/database-rows/{rowId}/page/lock/me"
+    },
+    {
+      "goName": "databaseRowPageRestore",
+      "tsName": "restore",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/restore"
+    },
+    {
+      "goName": "databaseRowPageDeletePermanently",
+      "tsName": "deletePermanently",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/delete-permanently"
+    },
+    {
+      "goName": "databaseRowTrashList",
+      "tsName": "trashList",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/database-row-trash"
+    },
+    {
+      "goName": "databaseRowPagePermissionList",
+      "tsName": "permissions",
+      "method": "GET",
+      "path": "/database-rows/{rowId}/page/permissions"
+    },
+    {
+      "goName": "databaseRowPagePermissionMutate",
+      "tsName": "mutatePermission",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/permissions"
+    },
+    {
+      "goName": "databaseRowPageValues",
+      "tsName": "writeValues",
+      "method": "POST",
+      "path": "/database-rows/{rowId}/page/values"
+    },
+    {
+      "goName": "databaseRowValuesBatch",
+      "tsName": "writeManyValues",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-row-values"
+    },
+    {
+      "goName": "databaseRowPageFromPage",
+      "tsName": "fromPage",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-row"
+    },
+    {
+      "goName": "databaseRowPageWikiChange",
+      "tsName": "wikiChange",
+      "method": "POST",
+      "path": "/pages/{pageId}/wiki-page"
+    }
+  ],
+  "bounds": [
+    {
+      "goName": "databaseRowPageBodyPageSize",
+      "tsName": "bodyPageSize",
+      "value": 50
+    },
+    {
+      "goName": "databaseRowPageCursorBytes",
+      "tsName": "cursorBytes",
+      "value": 2048
+    },
+    {
+      "goName": "databaseRowPageMaxBodyBytes",
+      "tsName": "maxBodyBytes",
+      "value": 1048576
+    },
+    {
+      "goName": "databaseRowTrashListWindow",
+      "tsName": "trashListWindow",
+      "value": 200
+    },
+    {
+      "goName": "databaseRowPagePermissionWindow",
+      "tsName": "permissionWindow",
+      "value": 100
+    },
+    {
+      "goName": "databaseRowValuesBatchRows",
+      "tsName": "valuesBatchRows",
+      "value": 100
+    }
+  ],
+  "errors": [
+    {
+      "goName": "errorCodeDatabaseRowPageInvalid",
+      "tsName": "invalid",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageNotFound",
+      "tsName": "notFound",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_NOT_FOUND"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageCursorInvalid",
+      "tsName": "cursorInvalid",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_CURSOR_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageRevisionChanged",
+      "tsName": "revisionChanged",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_REVISION_CHANGED"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageConflict",
+      "tsName": "conflict",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_CONFLICT"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageValueChanged",
+      "tsName": "valueChanged",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_VALUE_CHANGED"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageMoveDropsValues",
+      "tsName": "moveDropsValues",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_MOVE_DROPS_VALUES"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageMoveDenied",
+      "tsName": "moveDenied",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_MOVE_DENIED"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageInTrash",
+      "tsName": "inTrash",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_IN_TRASH"
+    },
+    {
+      "goName": "errorCodeDatabaseRowPageFailed",
+      "tsName": "failed",
+      "value": "LEAFEN_DATABASE_ROW_PAGE_FAILED"
+    }
+  ],
+  "records": [
+    {
+      "goName": "databaseRowPageRowWire",
+      "tsName": "DatabaseRowPageRow",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ContainerPageID",
+          "jsonName": "containerPageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SubitemParentID",
+          "jsonName": "subitemParentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Values",
+          "jsonName": "values",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, DatabaseRowPageValue>"
+        },
+        {
+          "goName": "HiddenValues",
+          "jsonName": "hiddenValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ReadOnlyValues",
+          "jsonName": "readOnlyValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "string",
+          "tsType": "\"none\" | \"emoji\" | \"image\" | \"custom_emoji\" | \"icon\""
+        },
+        {
+          "goName": "Cover",
+          "jsonName": "cover",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CoverPosition",
+          "jsonName": "coverPosition",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Font",
+          "jsonName": "font",
+          "goType": "string",
+          "tsType": "\"default\" | \"serif\" | \"mono\""
+        },
+        {
+          "goName": "SmallText",
+          "jsonName": "smallText",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "FullWidth",
+          "jsonName": "fullWidth",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "TableOfContentsDisplay",
+          "jsonName": "tableOfContentsDisplay",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Favorite",
+          "jsonName": "favorite",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Locked",
+          "jsonName": "locked",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "UnlockedForMe",
+          "jsonName": "unlockedForMe",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "ArchivedAt",
+          "jsonName": "archivedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ArchivedBy",
+          "jsonName": "archivedBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "LockedBy",
+          "jsonName": "lockedBy",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "TrashedAt",
+          "jsonName": "trashedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TrashedBy",
+          "jsonName": "trashedBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SourceInTrash",
+          "jsonName": "sourceInTrash",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "CreatedAt",
+          "jsonName": "createdAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CreatedBy",
+          "jsonName": "createdBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "UpdatedAt",
+          "jsonName": "updatedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "LastEditedBy",
+          "jsonName": "lastEditedBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "AuthorityRevision",
+          "jsonName": "authorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageBodyBlockWire",
+      "tsName": "DatabaseRowPageBodyBlock",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ParentID",
+          "jsonName": "parentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Content",
+          "jsonName": "content",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageSnapshot",
+      "tsName": "DatabaseRowPageSnapshot",
+      "fields": [
+        {
+          "goName": "SnapshotIdentity",
+          "jsonName": "snapshotIdentity",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ContainerSnapshotRevision",
+          "jsonName": "containerSnapshotRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "BodySnapshotRevision",
+          "jsonName": "bodySnapshotRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Row",
+          "jsonName": "row",
+          "goType": "databaseRowPageRowWire",
+          "tsType": "DatabaseRowPageRow"
+        },
+        {
+          "goName": "Body",
+          "jsonName": "body",
+          "goType": "[]databaseRowPageBodyBlockWire",
+          "tsType": "DatabaseRowPageBodyBlock[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Properties",
+          "jsonName": "properties",
+          "goType": "[]databaseRowPagePropertyWire",
+          "tsType": "DatabaseRowPageProperty[]"
+        },
+        {
+          "goName": "AccessRole",
+          "jsonName": "accessRole",
+          "goType": "string",
+          "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\""
+        },
+        {
+          "goName": "WorkspaceID",
+          "jsonName": "workspaceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DatabaseWritable",
+          "jsonName": "databaseWritable",
+          "keepsZero": true,
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DatabaseLocked",
+          "jsonName": "databaseLocked",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DatabaseStructureLocked",
+          "jsonName": "databaseStructureLocked",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "HolderLocked",
+          "jsonName": "holderLocked",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "ManageAccess",
+          "jsonName": "manageAccess",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "RelatedPages",
+          "jsonName": "relatedPages",
+          "goType": "[]databaseRowPageRelatedPageWire",
+          "tsType": "DatabaseRowPageRelatedPage[]",
+          "optional": true
+        },
+        {
+          "goName": "Wiki",
+          "jsonName": "wiki",
+          "goType": "*databaseRowPageWikiWire",
+          "tsType": "DatabaseRowPageWiki",
+          "optional": true
+        },
+        {
+          "goName": "Template",
+          "jsonName": "template",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "TaskDatabase",
+          "jsonName": "taskDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "UntitledName",
+          "jsonName": "untitledName",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Person",
+          "jsonName": "person",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageRelatedPageWire",
+      "tsName": "DatabaseRowPageRelatedPage",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "UntitledName",
+          "jsonName": "untitledName",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageWikiWire",
+      "tsName": "DatabaseRowPageWiki",
+      "fields": [
+        {
+          "goName": "BarPropertyIDs",
+          "jsonName": "barPropertyIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "HiddenPropertyIDs",
+          "jsonName": "hiddenPropertyIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "FullPageDatabase",
+          "jsonName": "fullPageDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePropertyWire",
+      "tsName": "DatabaseRowPageProperty",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Config",
+          "jsonName": "config",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Access",
+          "jsonName": "access",
+          "goType": "*graphPropertyAccess",
+          "tsType": "{ restricted: boolean; level: string; editsProperty: boolean; variesByPerson?: boolean }",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageValuesInput",
+      "tsName": "DatabaseRowPageValuesInput",
+      "fields": [
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Values",
+          "jsonName": "values",
+          "goType": "map[string]graphRowValue",
+          "tsType": "Record<string, DatabaseRowPageValue>"
+        },
+        {
+          "goName": "Expected",
+          "jsonName": "expected",
+          "goType": "map[string]graphRowValue",
+          "tsType": "Record<string, DatabaseRowPageValue>",
+          "optional": true
+        },
+        {
+          "goName": "Options",
+          "jsonName": "options",
+          "goType": "map[string][]databaseRowPageNewOption",
+          "tsType": "Record<string, DatabaseRowPageNewOption[]>",
+          "optional": true
+        },
+        {
+          "goName": "RestoreDateCommand",
+          "jsonName": "restoreDateCommand",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Redo",
+          "jsonName": "redo",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowValuesBatchInput",
+      "tsName": "DatabaseRowValuesBatchInput",
+      "fields": [
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Rows",
+          "jsonName": "rows",
+          "goType": "[]databaseRowValuesBatchRow",
+          "tsType": "DatabaseRowValuesBatchRow[]"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowValuesBatchRow",
+      "tsName": "DatabaseRowValuesBatchRow",
+      "fields": [
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Values",
+          "jsonName": "values",
+          "goType": "map[string]graphRowValue",
+          "tsType": "Record<string, DatabaseRowPageValue>"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowValuesBatchResponse",
+      "tsName": "DatabaseRowValuesBatchResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Rows",
+          "jsonName": "rows",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageNewOption",
+      "tsName": "DatabaseRowPageNewOption",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Color",
+          "jsonName": "color",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Group",
+          "jsonName": "group",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageFavoriteInput",
+      "tsName": "DatabaseRowPageFavoriteInput",
+      "fields": [
+        {
+          "goName": "Favorite",
+          "jsonName": "favorite",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "ExpectedAuthorityRevision",
+          "jsonName": "expectedAuthorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageLockInput",
+      "tsName": "DatabaseRowPageLockInput",
+      "fields": [
+        {
+          "goName": "Locked",
+          "jsonName": "locked",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "ExpectedAuthorityRevision",
+          "jsonName": "expectedAuthorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageLockForMeInput",
+      "tsName": "DatabaseRowPageLockForMeInput",
+      "fields": [
+        {
+          "goName": "Unlocked",
+          "jsonName": "unlocked",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageLockState",
+      "tsName": "DatabaseRowPageLockState",
+      "fields": [
+        {
+          "goName": "Locked",
+          "jsonName": "locked",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "UnlockedForMe",
+          "jsonName": "unlockedForMe",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePresentationInput",
+      "tsName": "DatabaseRowPagePresentationInput",
+      "fields": [
+        {
+          "goName": "ExpectedAuthorityRevision",
+          "jsonName": "expectedAuthorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "*string",
+          "tsType": "\"none\" | \"emoji\" | \"image\" | \"custom_emoji\" | \"icon\"",
+          "optional": true
+        },
+        {
+          "goName": "Cover",
+          "jsonName": "cover",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CoverPosition",
+          "jsonName": "coverPosition",
+          "goType": "*int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "Font",
+          "jsonName": "font",
+          "goType": "*string",
+          "tsType": "\"default\" | \"serif\" | \"mono\"",
+          "optional": true
+        },
+        {
+          "goName": "SmallText",
+          "jsonName": "smallText",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "FullWidth",
+          "jsonName": "fullWidth",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "TableOfContentsDisplay",
+          "jsonName": "tableOfContentsDisplay",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageArchiveInput",
+      "tsName": "DatabaseRowPageArchiveInput",
+      "fields": [
+        {
+          "goName": "Archived",
+          "jsonName": "archived",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "ExpectedAuthorityRevision",
+          "jsonName": "expectedAuthorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowTrashItem",
+      "tsName": "DatabaseRowTrashItem",
+      "fields": [
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ContainerPageID",
+          "jsonName": "containerPageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "string",
+          "tsType": "\"none\" | \"emoji\" | \"image\" | \"custom_emoji\" | \"icon\""
+        },
+        {
+          "goName": "TrashedAt",
+          "jsonName": "trashedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TrashedBy",
+          "jsonName": "trashedBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "AuthorityRevision",
+          "jsonName": "authorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "InlineDatabase",
+          "jsonName": "inlineDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DatabaseTitle",
+          "jsonName": "databaseTitle",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Template",
+          "jsonName": "template",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "UntitledName",
+          "jsonName": "untitledName",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SourceInTrash",
+          "jsonName": "sourceInTrash",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SourceTitle",
+          "jsonName": "sourceTitle",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SourceCount",
+          "jsonName": "sourceCount",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "EditedAt",
+          "jsonName": "editedAt",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowTrashListResponse",
+      "tsName": "DatabaseRowTrashListResponse",
+      "fields": [
+        {
+          "goName": "Items",
+          "jsonName": "items",
+          "goType": "[]databaseRowTrashItem",
+          "tsType": "DatabaseRowTrashItem[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageMoveDroppedProperty",
+      "tsName": "DatabaseRowPageMoveDroppedProperty",
+      "fields": [
+        {
+          "goName": "PropertyID",
+          "jsonName": "propertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageActionInput",
+      "tsName": "DatabaseRowPageActionInput",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ExpectedAuthorityRevision",
+          "jsonName": "expectedAuthorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "TargetDataSourceID",
+          "jsonName": "targetDataSourceId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "TargetPageID",
+          "jsonName": "targetPageId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "TargetTopLevel",
+          "jsonName": "targetTopLevel",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "TargetTeamspaceID",
+          "jsonName": "targetTeamspaceId",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Preview",
+          "jsonName": "preview",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "AcceptDroppedPropertyIDs",
+          "jsonName": "acceptDroppedPropertyIds",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "LeaveDatabase",
+          "jsonName": "leaveDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "FromTrash",
+          "jsonName": "fromTrash",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "AsHeld",
+          "jsonName": "asHeld",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageFromPageInput",
+      "tsName": "DatabaseRowPageFromPageInput",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "First",
+          "jsonName": "first",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Checked",
+          "jsonName": "checked",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "CheckedPropertyID",
+          "jsonName": "checkedPropertyId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageWikiChangeInput",
+      "tsName": "DatabaseRowPageWikiChangeInput",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "*string",
+          "tsType": "string | null",
+          "optional": true
+        },
+        {
+          "goName": "TitleSpans",
+          "jsonName": "titleSpans",
+          "goType": "[]graphTextSpan",
+          "tsType": "Array<{ text: string } & Record<string, unknown>>",
+          "optional": true
+        },
+        {
+          "goName": "ExpectedTitle",
+          "jsonName": "expectedTitle",
+          "goType": "*string",
+          "tsType": "string | null",
+          "optional": true
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "*string",
+          "tsType": "string | null",
+          "optional": true
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "*string",
+          "tsType": "string | null",
+          "optional": true
+        },
+        {
+          "goName": "ParentID",
+          "jsonName": "parentId",
+          "goType": "*string",
+          "tsType": "string | null",
+          "optional": true
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "*float64",
+          "tsType": "number | null",
+          "optional": true
+        },
+        {
+          "goName": "InTrash",
+          "jsonName": "inTrash",
+          "goType": "*bool",
+          "tsType": "boolean | null",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPageActionResponse",
+      "tsName": "DatabaseRowPageActionResponse",
+      "fields": [
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ContainerPageID",
+          "jsonName": "containerPageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "AuthorityRevision",
+          "jsonName": "authorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "DateCommand",
+          "jsonName": "dateCommand",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShifts",
+          "jsonName": "dependencyShifts",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShiftTasks",
+          "jsonName": "dependencyShiftTasks",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShiftsDenied",
+          "jsonName": "dependencyShiftsDenied",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "DroppedProperties",
+          "jsonName": "droppedProperties",
+          "goType": "[]databaseRowPageMoveDroppedProperty",
+          "tsType": "DatabaseRowPageMoveDroppedProperty[]",
+          "optional": true
+        },
+        {
+          "goName": "CopyingDatabases",
+          "jsonName": "copyingDatabases",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Warning",
+          "jsonName": "warning",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "JobID",
+          "jsonName": "jobId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Status",
+          "jsonName": "status",
+          "goType": "string",
+          "tsType": "\"pending\" | \"completed\"",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePermissionWire",
+      "tsName": "DatabaseRowPagePermission",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PrincipalID",
+          "jsonName": "principalId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Label",
+          "jsonName": "label",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Email",
+          "jsonName": "email",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Role",
+          "jsonName": "role",
+          "goType": "string",
+          "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\""
+        },
+        {
+          "goName": "CreatedBy",
+          "jsonName": "createdBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CreatedAt",
+          "jsonName": "createdAt",
+          "goType": "int64",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePermissionsResponse",
+      "tsName": "DatabaseRowPagePermissions",
+      "fields": [
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CanManage",
+          "jsonName": "canManage",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Permissions",
+          "jsonName": "permissions",
+          "goType": "[]databaseRowPagePermissionWire",
+          "tsType": "DatabaseRowPagePermission[]"
+        },
+        {
+          "goName": "PrincipalOptions",
+          "jsonName": "principalOptions",
+          "goType": "[]databaseRowPagePrincipalOption",
+          "tsType": "DatabaseRowPagePrincipalOption[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "OptionsNextCursor",
+          "jsonName": "optionsNextCursor",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePrincipalOption",
+      "tsName": "DatabaseRowPagePrincipalOption",
+      "fields": [
+        {
+          "goName": "PrincipalID",
+          "jsonName": "principalId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Label",
+          "jsonName": "label",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "databaseRowPagePermissionInput",
+      "tsName": "DatabaseRowPagePermissionInput",
+      "fields": [
+        {
+          "goName": "Action",
+          "jsonName": "action",
+          "goType": "string",
+          "tsType": "\"grant\" | \"update\" | \"remove\""
+        },
+        {
+          "goName": "PrincipalID",
+          "jsonName": "principalId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "PermissionID",
+          "jsonName": "permissionId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Role",
+          "jsonName": "role",
+          "goType": "string",
+          "tsType": "\"view\" | \"comment\" | \"edit\" | \"full_access\"",
+          "optional": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,529 @@
+/* Notion's feed card (seen 2026-10-17 and 2026-10-20): 12px round, a faint
+   shadow ringing it in place of a border, 16px in (19px under the comment
+   box's face: 12px under its 31px row); the author's face in a 24px column,
+   everything else 8px after it. Up to 752px, centered, an inline database's
+   as wide as it (seen 2026-11-02: 752 on a database's page, 692 inline). */
+.post {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  max-width: 752px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 16px 17px;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 2%), 0 0 0 1px rgb(0 0 0 / 5%);
+}
+
+:global([data-theme="dark"]) .post {
+  box-shadow: 0 0 0 1px var(--border-subtle);
+}
+
+.avatar {
+  margin-top: 2px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Without its author shown, the post has no face column: its title 2px in
+   and its body at the card's inside, as Notion's (seen 2026-11-17). */
+.post:not(:has(> .avatar)) .main {
+  grid-column: 1 / -1;
+  padding-inline-start: 2px;
+  --post-column-end: 0px;
+}
+
+/* On a phone the posts lose their cards and are parted by lines, as
+   Notion's (seen 2026-10-17 at 390px). */
+@media (max-width: 599px) {
+  .post,
+  :global([data-theme="dark"]) .post {
+    padding: 16px 0 12px;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border-default);
+    box-shadow: none;
+    --post-column-end: 0px;
+  }
+}
+
+/* Under the pointer, "리액션" and "⋯" in a small white bar, the buttons 19px
+   from the top and the right, 24px with a 16px glyph in the secondary icon
+   color (Notion's, seen 2026-10-11; both buttons 2026-11-02). */
+.actions {
+  position: absolute;
+  top: 17px;
+  inset-inline-end: 17px;
+  z-index: 1;
+  display: flex;
+  gap: 1px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: 0 2px 12px rgba(29, 27, 22, 0.06);
+  visibility: hidden;
+}
+
+.post:hover:not([data-hover-rest]) .actions,
+.post:focus-within .actions {
+  visibility: visible;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.action:hover,
+.action:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.byline {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  min-width: 0;
+  margin: 4px 0 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 21px;
+}
+
+/* Without a title line the 5px under the byline stays, as Notion's (seen 2026-11-03: 145 against 176). */
+.post[data-untitled="true"] .byline {
+  margin-bottom: 5px;
+}
+.byline strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.header {
+  display: flex;
+  min-width: 0;
+  margin-top: 5px;
+}
+
+/* The title 26px/600 with the page's icon at its start, 5px before it. */
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--text-default);
+  padding: 0;
+  margin-top: 2px;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: start;
+}
+
+.icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.titleText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The values 11px under the title, their 30px boxes' text at 88 as Notion's,
+   and what follows 17px under their text. */
+.main > [data-feed-post-properties] {
+  margin-top: 5px;
+  margin-bottom: -6px;
+}
+
+.body:not(:empty) {
+  margin-top: 7px;
+}
+
+.title:hover .titleText,
+.title:focus-visible .titleText {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.title:focus-visible,
+.more:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* The page's blocks as Notion's feed shows them (seen 2026-11-03): each a
+   box 2px before the title's edge, its 21px lines 8px in all round — a
+   paragraph 37px; at most 500px high (2026-11-17, FeedPostBodyBox). */
+.body {
+  display: flex;
+  flex-direction: column;
+  margin-inline-start: -2px;
+  max-height: 500px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  overflow-wrap: anywhere;
+}
+.body :where(p, blockquote, pre, h3, h4, h5) {
+  padding: 8px;
+}
+
+:where(.body p),
+:where(.body blockquote),
+:where(.body pre),
+:where(.body h3),
+:where(.body h4),
+:where(.body h5) {
+  margin: 0;
+}
+
+/* Headings at the page's sizes for these 14px words — 1.875, 1.5 and 1.25 of them on a 1.3 line, 32, 28 or 24px down — as Notion's feed (seen 2026-11-17). */
+.heading1, .heading2, .heading3 {
+  padding: 32px 8px 8px;
+  font-size: 26.25px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.heading2 {
+  padding-top: 28px;
+  font-size: 21px;
+}
+.heading3 {
+  padding-top: 24px;
+  font-size: 17.5px;
+}
+
+/* A bulleted line: its dot 16px in, its words 38px in, 6px under (35px). */
+.bullet {
+  position: relative;
+  padding-block: 8px 6px;
+  padding-inline: 38px 8px;
+}
+.bullet::before {
+  content: "•";
+  position: absolute;
+  inset-inline-start: 16px;
+}
+
+.marker {
+  display: inline-block;
+  min-width: 1.2em;
+  margin-inline-end: 6px;
+  color: var(--text-secondary);
+}
+
+/* What is inside a block sits under it, as on its page. */
+.children {
+  padding-inline-start: 1.5em;
+}
+
+.pageLink {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  color: var(--text-default);
+  text-align: start;
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 3px;
+}
+
+.database {
+  margin: 4px 0;
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  border-radius: 4px;
+}
+
+/* A picture that couldn't be loaded keeps the page's square, cut by the
+   post's height as Notion's feed cuts it (seen 2026-10-21). */
+.body > [data-image-failed] {
+  flex-shrink: 0;
+}
+
+.databaseTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+/* A to-do: its 16px box 13px in and 8px down, its words 38px in a 35px
+   line that sits 3px down (Notion's, seen 2026-11-03). */
+.todo {
+  position: relative;
+  padding-block: 3px 11px;
+  padding-inline: 38px 8px;
+}
+.todo > input {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 13px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.todo[data-checked] span {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+
+.quote {
+  padding-inline-start: 12px;
+  border-inline-start: 3px solid currentColor;
+}
+
+.code {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.divider {
+  width: 100%;
+  margin: 6px 0;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.muted {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.more {
+  align-self: flex-start;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.more:hover {
+  color: var(--text-default);
+}
+
+/* The reactions 17px under what is above, then the comment box 12px on, 6px
+   into the column, the card 17px past the box (Notion's, seen 2026-10-20 and
+   2026-11-02: a 176px card with no properties). */
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 17px;
+  padding-inline-start: 6px;
+}
+/* Under its author's line the title, values, body and comments end 30px short of the card's inside, as Notion's (seen 2026-11-17 at 1440 and 700); without the author, or on a phone where the post has no card, at its edge. */
+.main > :not(.byline) {
+  margin-inline-end: var(--post-column-end, 30px);
+}
+
+/* The line standing for its comments, as Notion's (seen 2026-10-21): a 32px
+   row 4px in, the writers' 24px faces, "답글 N개" (14px) and when the last
+   came (12px, grey), 8px apart; it opens the discussion. */
+.threadLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.threadLine:is(:hover, :focus-visible, [aria-expanded="true"]):not(:disabled) {
+  outline: none;
+  background: var(--bg-hover);
+}
+
+.threadLine:disabled {
+  cursor: default;
+}
+
+.threadFaces {
+  display: inline-flex;
+}
+
+/* :first-child, not `* + *`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+.threadFaces > :where(:not(:first-child)) {
+  margin-inline-start: -6px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--bg-app);
+}
+
+.threadCount {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.threadTime {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* The page's comment box (CommentComposer, inline), the reader's face 24px
+   beside "댓글 추가" and its attach, mention and send marks at the right. */
+.post .composer {
+  min-width: 0;
+  background: transparent;
+}
+
+.post .composer > [data-comments-composer] {
+  grid-template-columns: 24px minmax(0, 1fr);
+  padding: 0;
+  border-bottom: 0;
+}
+
+.post .composer > [data-comments-composer] > :first-child {
+  width: 24px;
+  height: 24px;
+  margin-top: 0;
+}
+
+/* Its marks 24px, 6px round, 30px apart (seen 2026-11-02). */
+.post .composer [data-comment-mention] {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* The post's reactions over its comments, with "리액션 추가" always there, as
+   Notion's (seen 2026-10-11): a 40×25 pill, 13px round, on the soft
+   background with a 20px icon. */
+.comments .reactions {
+  margin: 0;
+}
+
+.comments .addReaction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 25px;
+  padding: 0;
+  border: 0;
+  border-radius: 13px;
+  background: var(--bg-soft);
+  color: var(--icon-secondary);
+}
+
+.comments .addReaction:hover,
+.comments .addReaction:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A post's viewers, at the right end of its reaction row (seen 2026-10-11):
+   faces 20px overlapping and the count, in a 25px pill. */
+.viewers {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  margin-inline-start: auto;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border-radius: 18px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.viewers:hover,
+.viewers[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+.faces {
+  display: inline-flex;
+}
+
+.faces > .face + .face {
+  margin-inline-start: -6px;
+}
+
+.face {
+  box-shadow: 0 0 0 1.5px var(--bg-app);
+}
+
+.viewersList {
+  display: grid;
+  gap: 2px;
+  min-width: 220px;
+  max-width: min(300px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  font-size: 14px;
+}
+
+.viewersList > strong {
+  padding: 4px 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.viewer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  color: var(--text-default);
+}
+
+.viewer > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewer > time {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}

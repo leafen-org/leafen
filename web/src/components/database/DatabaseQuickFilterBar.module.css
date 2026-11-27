@@ -1,0 +1,753 @@
+/* Its pills 17px under the toolbar's row and 6px over the view, a table's head
+   8px under them, right under the row in a page and on its own page alike, as
+   Notion's (seen 2026-11-02, 2026-11-12; 2026-11-06: a board's and a list's start 6px under the pills). */
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* A 1px line over it 4px under the tabs' row, from 8px before the view's
+     column to 8px past it, its pills where they were (Notion's, seen
+     2026-11-07: rgb(56, 56, 54) at 170 from 96 to 903 over a 104–895
+     column, the row 45 high, on a board and on a table). */
+  margin: 4px -8px 0;
+  padding: 10px 8px 6px;
+  border-top: 1px solid var(--border-default);
+}
+/* In a page the tools end 8px in from the database's edge, and the line ends
+   with the database (Notion's, seen 2026-11-07: 132–840 under tools ending
+   at 832). */
+:global([data-placement="inline"]) .bar {
+  margin-inline-end: 0;
+}
+/* On a database's own page its line and "초기화 · 모두에게 저장 ⌄" reach 8px
+   past the view's column, as Notion's (seen 2026-11-07 at 999 and 1440 wide:
+   the save ending at 903 and 1329 over columns ending at 895 and 1321). */
+:global([data-database-page="true"]) .bar {
+  margin-inline-end: -8px;
+  padding-inline-end: 0;
+}
+
+/* Pills and "+ 필터" on one line scrolling sideways, cut at the line's start
+   and before "초기화 · 모두에게 저장", as Notion's (seen 2026-11-12, 1280/1440:
+   8 in on every side, scrollbar 8 under the pills; the row 45 high with its
+   line, 60 with the scrollbar, pills 13 under the line). */
+.pills {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-block: -6px;
+  margin-inline: -8px -6px;
+  padding: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-color: rgb(125 122 117 / 50%) transparent;
+}
+.pills:last-child { margin-inline-end: -8px; }
+:global([data-database-page="true"]) .pills:last-child { margin-inline-end: 0; }
+
+.pillWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* A pill, as Notion's (seen 2026-10-01): 24px, 8px in, rounded 32px, its
+   words and a small ˅ 6px apart in 14px blue on faint blue once it
+   filters; faint words alone while it waits for its value. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 320px;
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 32px;
+  background: var(--action-mark-blue-bg);
+  color: rgb(39, 131, 222);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.pill[data-locked-filter] { opacity: 0.6; cursor: default; }
+.pill[data-locked-rule] {
+  opacity: 0.4;
+  cursor: default;
+}
+.pill[data-awaits-value="true"] {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+/* Its words cut at 180px, as Notion's (seen 2026-11-12: "소속 프로젝트: 값을
+   포함하는 ..." in a 233px pill, a relation tab's and a set relation filter's alike).
+   Leafen's Korean letters run about 6% wider than Notion's (font decision B),
+   so in Korean the cut comes as many letters in, at 180px × 1.06 (2026-11-15:
+   "이름: 값을 포함하는 데이터 한날" 176.6 of Notion's 180, 187 here). */
+.pill > span {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pill > span:lang(ko) {
+  max-width: calc(180px * 1.06);
+}
+/* Notion's pill (seen 2026-11-05 and 2026-11-22): its property's mark the filter list's, a 16px box 8 in drawn 1.2 times (19.2 from 6.4), its words 30px in, the name in 500, its thin ˅
+   (8.64 by 14) 6px after them, 8px from the end; a sort's or the advanced filter's own mark 8 in, "+ 필터"'s 9.2 plus 5 in (2026-11-22). One still
+   waiting for a value has no ground, its words, mark and ˅ in the secondary text colour and its name in 400 (seen 2026-11-22 at 1440 dark, dpr 1, two tabs). */
+.pill:not([data-quick-sort], [data-quick-advanced-filter]) > :first-child { flex: none; scale: 1.2; }
+.pill:not([data-awaits-value="true"]) .pillName { font-weight: 500; }
+.pillChevron { flex: none; }
+/* The viewer's own, unsaved: Notion's 9px orange dot ringed in the page's
+   ground, over the pill's top right corner (seen 2026-11-05). */
+.pill { position: relative; }
+.pill > .unsaved {
+  position: absolute;
+  top: -2px;
+  inset-inline-end: -2px;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  overflow: visible;
+  border: 1px solid var(--bg-default);
+  border-radius: 50%;
+  background: var(--unsaved-dot);
+}
+
+.pill:hover:not(:disabled),
+.pill:focus-visible,
+.pill[aria-expanded="true"] {
+  background: var(--action-mark-blue-bg-hover);
+  outline: none;
+}
+.pill[data-awaits-value="true"]:hover:not(:disabled),
+.pill[data-awaits-value="true"]:focus-visible,
+.pill[data-awaits-value="true"][aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+.pill button {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-secondary);
+}
+
+/* Between the sort pill and the filters, as Notion's: a 1px line 24px tall. */
+.divider {
+  width: 1px;
+  height: 24px;
+  margin: 0 6px;
+  background: var(--border-default);
+}
+
+/* The sort pill's panel, as Notion's (seen 2026-11-03, 367x107 for one
+   sort): its rule's choices 8px from the top, "정렬 추가" 6px under the rule
+   and the panel 4px under "정렬 제거". */
+/* As wide as its rows' words: 367 for most, 437 for a time's in the library (seen 2026-11-05). */
+.sortPopover {
+  width: max-content;
+  min-width: min(367px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+}
+.popover.sortPopover {
+  padding: 1px 6px 3px;
+}
+.sortPopover [data-add-sort] {
+  margin-top: 3px;
+}
+
+.add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding-block: 0; padding-inline: 5px 9px;
+  border-radius: 32px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* With no pill before it "+ 필터" still stands the pills' 6px gap in, as
+   Notion's: its pills' holder stays in the line empty, 0 wide, before it
+   (seen 2026-11-15 in Chrome at 1440: "+ 필터" alone at 380 where a first
+   pill starts at 374; its picker under it at 380 too). */
+.pills > .pillWrap:first-child:has(> .add) {
+  margin-inline-start: 6px;
+}
+
+.add:hover, .add:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.popover {
+  position: absolute;
+  z-index: 30;
+  /* Under its opener; placed over the page 4px under it (Notion's, seen 2026-11-12). */
+  top: calc(100% + 2px);
+  inset-inline-start: 0;
+  min-width: 220px;
+  max-width: min(520px, calc(100vw - 32px));
+  padding: 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  background: var(--bg-app);
+  box-shadow: 0 8px 24px rgb(15 15 15 / 12%);
+}
+
+.popover:focus {
+  outline: none;
+}
+.popover.placed { position: fixed; top: 0; }
+/* A pill's editor stands at most half the window tall and scrolls inside
+   past that, as Notion's (seen 2026-11-06: a date's, 348 of 368 in a 696
+   window, its last line under the scroll); placed, its placing keeps that cap. */
+.popover[data-quick-filter-editor] {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+/* A date's editor is 260 wide whatever its condition, its scrollbar taking
+   from its inside, as Notion's (seen 2026-11-06; 2026-11-15 at 1440 dark:
+   260 with "비어 있음" too, its width set, a text's 220); with a value its
+   head 1.5px higher and 3px further in, its part and condition 6px apart
+   (seen 2026-11-03, 2026-11-12). */
+.popover[data-quick-filter-dates] {
+  width: 260px;
+}
+.popover:has([data-date-filter-value]) {
+  padding-top: 4.5px;
+}
+.popover [data-date-filter-value] {
+  width: auto;
+}
+.popover:has([data-date-filter-value]) .editorHead {
+  gap: 6px;
+  padding-inline-start: 7px;
+}
+
+/* 28px rows: the words on a 20px line, as the icon, 4px from the row's top
+   and foot (the page's 21px line made them 29). */
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: 20px;
+  text-align: start;
+  min-height: var(--menu-row-height);
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.menuItem + .menuItem {
+  margin-top: var(--menu-row-space);
+}
+
+/* An action's 20px icon in the words' colour, the words 36px in (Notion's filter pill "⋯", seen 2026-11-15 at 1440). */
+.menuItemIcon {
+  display: inline-flex;
+  flex: none;
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A view saved with more filters than a query takes says it shows with its first. */
+.overBound {
+  align-self: center;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* "초기화 · 모두에게 저장 ⌄", as Notion's (seen 2026-11-03): 28px rows 8px
+   in, 14px; "초기화" grey, 6px before "모두에게 저장" in orange 500 on faint
+   orange, whose "⌄" is a 24px end of it 1px after; pointed at, it stays. */
+.ownQuery {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: auto;
+}
+
+.reset,
+.saveForEveryone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.reset {
+  color: var(--icon-secondary);
+}
+
+.ownQuery .pillWrap {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.saveForEveryone:has(+ [data-save-view-options]) {
+  border-start-start-radius: 6px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 6px;
+}
+
+.saveForEveryone[data-save-view-options] {
+  justify-content: center;
+  width: 24px;
+  padding: 0;
+  border-start-start-radius: 0;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+  border-end-start-radius: 0;
+}
+
+/* "새 보기로 저장" under "모두에게 저장 ⌄": a 250px menu of one row (Notion's, seen 2026-10-24). */
+.saveMenu {
+  width: 250px;
+  min-width: 0;
+  padding: 3px;
+}
+
+.saveMenu .menuItem {
+  min-height: 28px;
+}
+
+.saveForEveryone {
+  background: var(--c-bg-orange);
+  color: var(--c-accent-orange);
+  font-weight: 500;
+}
+
+.reset:hover, .reset:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.editorOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 236px;
+}
+.editorOptionSearch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  box-shadow: var(--name-field-ring);
+}
+/* Its chips and typed words top-aligned 2px under the field's padding (Notion's, seen 2026-11-22 in two tabs). */
+.editorOptionPicks {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding-block-start: 2px;
+}
+.editorOptionSearch:has(> .editorOptionPicks) {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0;
+}
+/* Its "ⓧ" a 16px place right after them, 2 down in its 18 (Notion's: 208px of chips and 16 in a 236px field). */
+.editorOptionSearch:has(> .editorOptionPicks) > .editorClearAll {
+  justify-content: center;
+  align-items: flex-start;
+  width: 16px;
+  height: 18px;
+  padding: 2px 0 0;
+}
+.editorOptionSearch input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+/* A person or page chosen in the field, and the field's clearing "ⓧ". */
+.editorPick {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  height: 20px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  border-radius: 3px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+}
+.editorPick > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editorPick > button,
+.editorPickClear {
+  margin-inline-start: auto;
+}
+.editorPickIcon { display: inline-flex; flex: none; }
+/* A page with no icon of its own, chosen or listed, a template's "this page" too, in the secondary icon gray (Notion's, seen 2026-11-16 three times at 1440 dark: #ada9a3). */
+:is(.editorPick, .editorOption)[data-page] > .editorPickIcon { color: var(--icon-secondary); }
+.editorPickLabel {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.editorPickCheck {
+  flex: none;
+  margin-inline-start: auto;
+}
+.editorOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  text-align: start;
+}
+.editorOption[data-nested="true"] {
+  padding-inline-start: 20px;
+}
+/* A status reads with a dot in its color before its name, as Notion's. */
+.editorChip[data-status-chip]::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 5px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+}
+/* "선택 취소" under a status's values, as Notion's (seen 2026-11-08): a line
+   8px in from the rows' edges 4px under the last, the 28px row 4px under it,
+   its words 8px in. */
+.editorClear {
+  position: relative;
+  height: 28px;
+  margin-top: 9px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.editorClear::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  height: 1px;
+  background: var(--border-default);
+}
+.editorClear:hover,
+.editorClear:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.editorOption:hover,
+.editorOption:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.editorOptionBox {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1.5px var(--text-tertiary);
+  color: #fff;
+}
+.editorOptionBox[data-checked="true"] {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+  box-shadow: none;
+}
+.editorChip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-width: 0;
+  height: 20px;
+  padding: 0 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The option's name, which ends in "…" where the chip meets the list's edge, as Notion's. */
+.editorChipText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A select's or status's filter, as Notion's (seen 2026-11-05, dark): a
+   260px panel ringed as a menu, 4px in; its head 12px in and 8px down in
+   12px, the condition in 500; the search a 236×30 field 31px down, 4px 6px
+   in, on a faint ground, ringed blue while typed in; the options from 77px,
+   28px rows a pixel apart, each lit under the pointer or the arrows, its box
+   15px in and its chip 11px after; a card's value list (valuePanel) alike. */
+.popover:has(> .editorOptions) {
+  width: 260px;
+  padding: 0 4px 4px;
+  border: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.popover:has(> .editorOptions) > .editorHead {
+  gap: 2px;
+  min-height: 0;
+  padding: 6px 8px 0;
+}
+.editorOperator button { font-weight: 500; }
+:is(.popover, .valuePanel):has(> .editorOptions) > .editorOptions {
+  gap: 0; min-width: 0;
+  margin-top: var(--value-panel-top, 2px);
+}
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOptionSearch {
+  min-height: 30px;
+  margin: 0 8px;
+  padding: 4px 6px;
+  background: var(--filter-field-bg);
+  box-shadow: var(--filter-field-ring);
+}
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOptionSearch:focus-within {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.editorOptionSearch input { height: 20px; padding: 0; }
+/* The shared 16px "ⓧ" (SearchClearButton) keeps to the field's end. */
+.editorClearAll {
+  margin-inline-start: auto;
+}
+/* In the field a chosen chip is 18px of 12px words and its 18px "×" in gray. */
+.editorChipRemovable { gap: 2px; height: 18px; padding-block: 0; padding-inline: 6px 2px; font-size: 12px; }
+.editorChipRemovable > button { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; color: var(--text-secondary); }
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOptionList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 16px;
+}
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOption {
+  gap: 11px;
+  padding-block: 0;
+  padding-inline: 11px 8px;
+}
+/* People or pages, as Notion's (seen 2026-11-06): their field a 28px box 4px
+   lower than the options' one, the list 16px under it; each row 8px in, its
+   20px picture 6px before the name. */
+:is(.popover, .valuePanel):has(> .editorOptions) > [data-filter-picks] .editorOptionSearch {
+  min-height: 28px;
+  margin-top: 4px;
+}
+/* A chosen person in the field: their 16px picture, the name in 12px 6px
+   after it and its 18px "×" 2px after that, on no ground (Notion's, seen
+   2026-11-06). */
+:is(.popover, .valuePanel):has(> .editorOptions) [data-filter-picks] .editorPick[data-with-icon] {
+  gap: 0;
+  height: 18px;
+  padding: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  line-height: 14.4px;
+}
+.editorPick[data-with-icon] > span:nth-child(2) { margin-inline-start: 6px; }
+/* A page's name 3px after its icon, in 500 (Notion's page chips, seen 2026-11-12: a template's and a page's alike). */
+.editorPick[data-with-icon][data-page] > span:nth-child(2) { margin-inline-start: 3px; font-weight: 500; }
+.editorPick[data-with-icon] > button {
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-inline-start: 2px;
+}
+:is(.popover, .valuePanel):has(> .editorOptions) [data-filter-pick] {
+  gap: 6px;
+  padding: 0 8px;
+}
+/* A page's name 8px after its 20px icon (Notion's, seen 2026-11-12); a person's 6px after their face. */
+:is(.popover, .valuePanel):has(> .editorOptions) [data-filter-pick][data-page] { gap: 8px; }
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOption:hover { background: transparent; }
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOption[data-lit="true"] { background: var(--bg-hover); }
+:is(.popover, .valuePanel):has(> .editorOptions) .editorOptionBox:not([data-checked="true"]) { box-shadow: var(--filter-check-ring); }
+
+/* "+ 필터" opens the toolbar's 290px picker under it, ringed as a menu. */
+.popover.addPicker {
+  width: 290px;
+  padding: 8px 8px 4px;
+  border: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A text-like filter, as Notion's (seen 2026-11-05, dark): a 220px panel
+   ringed as a menu, its head 12px in and 8px down, the condition 4px after
+   the name in 500; the value a 28px field 12px in and 35px down on a faint
+   ground, 3px 6px in, ringed blue while typed in, a gray "ⓧ" clearing it.
+   A checkbox's head is the same, its states' rows 4px in from 34px down
+   and 4px over its foot (seen 2026-11-12: 95 tall, 132 with "지우기"). */
+.popover:has(> :is(.editorValue, .editorChoices)) {
+  padding: 0 4px 8px;
+  border: 0;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.popover:has(> :is(.editorValue, .editorChoices)) > .editorHead {
+  gap: 2px;
+  min-height: 0;
+  padding: 6px 8px 0;
+}
+.popover:has(> .editorValue) > .editorValue {
+  position: relative;
+  margin: 6px 8px 0;
+}
+.popover:has(> .editorChoices) {
+  padding-bottom: 4px;
+}
+.popover:has(> .editorChoices) > .editorChoices {
+  margin-top: 5px;
+}
+.editorValue > input[type="text"],
+.editorValue > input[type="number"],
+.editorValue > input:not([type]) {
+  box-sizing: border-box;
+  height: 28px;
+  padding-block: 3px;
+  padding-inline: 6px 26px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--filter-field-bg);
+  box-shadow: var(--filter-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+.editorValue > input[type="text"]:focus,
+.editorValue > input[type="number"]:focus,
+.editorValue > input:not([type]):focus {
+  box-shadow: var(--filter-text-focus);
+}
+/* The shared "입력 값 지우기" (SearchClearButton), 2px in from the field's end and top. */
+.editorValue > .editorValueClear {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+}
+/* the 220px panel sets it, not the font; the field's own class twice keeps the
+   weight a :has() on the panel gave it, which had every element put in the
+   page work out more of its styles again (AppShell .main) */
+.popover > .editorValue.editorValue > input { flex: 1 1 0; width: 0; min-width: 0; }
+/* A number's sign sits in its field, 6px before the value, and the field is
+   the panel's 196, the panel 4px deeper under it (Notion's, seen 2026-11-12:
+   the gray "=" 6px in, the words at 20.67, the panel 75 tall). */
+.popover:has(> .editorValue > .editorSign) {
+  padding-bottom: 12px;
+}
+.editorValue:has(> .editorSign) {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--filter-field-bg);
+  box-shadow: var(--filter-field-ring);
+}
+.editorValue:has(> .editorSign):focus-within {
+  box-shadow: var(--filter-text-focus);
+}
+.editorValue > input:is([type="text"], [type="number"], :not([type])):has(~ .editorSign),
+.editorValue > .editorSign ~ input:is([type="text"], [type="number"], :not([type])) {
+  height: 20px;
+  padding: 0;
+  padding-inline-end: var(--editor-clear-room, 0px);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+/* Its field's room for "×" comes from the box: a :has() before a bare `input` restyled every input under a :has() that changed (a table's row boxes, at each press in the page, 2026-11-15). */
+.editorValue:has(> .editorSign):has(> .editorValueClear) { --editor-clear-room: 20px; }
+
+/* The condition 4px after the name, its button 2px before its words so its list lines up 2px before them, as Notion's. */
+.popover:has(> .editorOptions) .editorOperatorButton,
+.popover:has(> :is(.editorValue, .editorChoices)) .editorOperatorButton { padding: 0 2px; }
+/* Its list 190 wide whatever the property (menuMinWidth), its start at the condition's button's, right
+   under the condition's words (Notion's: 18px below their top; 2026-11-15 at 1440 dark, a date's and a
+   text's alike: 190 set, the window less 24 at most). */
+.operatorMenu.operatorMenu { margin-top: -6px; }
+/* A condition needing no value ("비어 있음") leaves the head alone: 34px tall, as Notion's (seen 2026-11-05). */
+.popover:has(> .editorHead:only-child) {
+  padding: 0 4px 5px;
+  border: 0;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.popover:has(> .editorHead:only-child) > .editorHead { gap: 2px; min-height: 0; padding: 6px 8px 0; }
+.popover:has(> .editorHead:only-child) .editorOperatorButton { padding: 0 2px; }
+/* A status's values, as Notion's (seen 2026-11-08; 11-12: from 30px down): rows
+   a pixel apart; a group's box 11px in and its 20px mark 14px after it, an
+   option's box 8px further in and its chip 18px after it. */
+:is(.popover, .valuePanel):has(> .editorOptions) > .editorOptions:has(> .editorStatusList) { margin-top: 1px; }
+.editorStatusList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.editorOptions .editorStatusList > .editorOption {
+  gap: 14px;
+  padding-block: 0;
+  padding-inline: 11px 8px;
+}
+.editorOptions .editorStatusList > .editorOption[data-nested="true"] {
+  gap: 18px;
+  padding-inline-start: 19px;
+}
+
+/* An advanced rule's options, as Notion's (seen 2026-11-11): its button
+   holds a line of its chosen options' 20px chips, 6px apart and 6px from its
+   top, the rest out of sight, up to 400 wide; their list opens under it from
+   its start, 260 wide and rounded as a menu, the search 4px from its top. */
+.ruleOptionsButton { max-width: 400px; }
+.ruleOptionChips {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  height: 32px;
+  padding-top: 6px;
+  overflow: hidden;
+}
+.ruleOptionChips > .editorChip { flex: none; margin-block-end: 6px; margin-inline-end: 6px; border-radius: 4px; }
+.popover.rulePopover { padding-top: 4px; border-radius: var(--radius-menu); }
+.popover.rulePopover > .editorOptions { margin-top: 0; }

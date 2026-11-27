@@ -1,0 +1,90 @@
+/* A full-screen sheet over what shows: above the soft keyboard while it is up. */
+.menu { position: fixed !important; inset: var(--visual-viewport-top, 0px) 0 auto 0 !important; width: 100vw !important; min-width: 0 !important;
+  max-width: none !important; height: var(--visual-viewport-height, var(--app-height, 100dvh)) !important;
+  max-height: var(--visual-viewport-height, var(--app-height, 100dvh)) !important;
+  border: 0 !important; border-radius: 0 !important; padding: 0 !important; overflow-y: auto; }
+/* On a touch screen wider than a phone's, the sheet its editing tools open
+   stands in the middle, 10 over the window's centre, 414 wide and 692 high
+   where the window has room, with 12 corners, over the page shaded 60%, as
+   Notion's iPad "블록 삽입" and "전환" (seen 2026-11-13 in iPad Safari at 834,
+   light: 210..624 across, 183..875 down in a 1078 window, rgba(15,15,15,.6)). */
+@media (min-width: 600px) {
+  .menu { inset: 0 0 20px !important; width: min(414px, calc(100vw - 24px)) !important; margin: auto;
+    height: min(692px, calc(var(--visual-viewport-height, 100dvh) - 44px)) !important;
+    max-height: min(692px, calc(var(--visual-viewport-height, 100dvh) - 44px)) !important;
+    border-radius: 12px !important; box-shadow: 0 0 0 100vmax rgba(15, 15, 15, 0.6), var(--shadow-menu) !important; }
+}
+/* Every list the editing tools open over the screen — "블록 삽입", "전환",
+   "블록 색상", chosen words' "텍스트 색" — as Notion's (measured 2026-11-14
+   in iPhone Safari at 402, light and dark): on the soft colour, a 44 head
+   over a line — the list under it never shrinks it —, its name 16px 600 in
+   its middle third from the head's top, "취소" 16px 500 blue in its middle,
+   16 from the end; each group 28 under what is over it (29 with no name),
+   its name 15px 500 grey 16 in and 8 over its rows; the rows white across
+   the screen, 45 each, a line over the first and under every one, a row's
+   mark (a 20px icon, a 26px colour box) 20 in, its 16px name 14 after it,
+   a tick or "›" 16 from the end. */
+.menu.list, .menu[data-phone-insert] { background: var(--bg-soft) !important; color: var(--text-default); }
+.menu.list { display: flex; flex-direction: column; gap: 0; }
+.header { position: sticky; top: 0; z-index: 1; display: grid; flex: none; grid-template-columns: 1fr minmax(0, 1fr) 1fr; height: 44px;
+  box-shadow: 0 1px 0 var(--border-subtle); background: var(--bg-soft); color: var(--text-default); font-size: 16px; line-height: 24px; }
+.header strong { grid-column: 2; overflow: hidden; font-weight: 600; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.header button { grid-column: 3; justify-self: end; height: 44px; padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px)); color: var(--accent-blue);
+  font-size: 16px; font-weight: 500; }
+.menu .section { flex: none; margin-bottom: -1px; padding-top: 28px; }
+.menu .label { margin: 0 0 8px; padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px)); color: var(--text-secondary); font-size: 15px; font-weight: 500; line-height: 17.8px; }
+.menu .rows { margin-top: 1px; box-shadow: 0 -1px 0 var(--border-subtle); }
+.menu :global([data-phone-menu-list]) { max-height: calc(var(--visual-viewport-height, 100dvh) - 44px); height: auto; }
+.menu :global([data-block-menu-item]), .menu :global([data-slash-item]), .menu :global([data-mention-item]) {
+  min-height: 44px; height: auto; padding-block: 10px; padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px)); font-size: 14px; border-radius: 0; border-bottom: 1px solid var(--border-default); }
+.menu .row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: 14px; box-sizing: border-box;
+  width: 100%; height: 45px; min-height: 45px; padding-block: 0; padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px)); border-radius: 0;
+  border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated); color: var(--text-default); font-size: 16px;
+  line-height: 1.2; text-align: start; }
+/* No row is marked or ringed as a list opens or is pressed through, as Notion's. */
+.menu.list .row[data-focused="true"], .menu .row:hover { box-shadow: none; background: var(--bg-elevated); }
+.menu .row:active { background: var(--bg-hover); }
+.menu .row > :first-child:not(.swatch), .menu .row > :first-child svg { color: var(--icon-primary); }
+.menu .row > :nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu .swatch { box-sizing: border-box; width: 26px; height: 26px; border: 0; border-radius: 6px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 17%, transparent); font-size: 16px; }
+.menu .swatch:is([data-color="default"], [data-color="default_background"]) { background: transparent;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-default) 11%, transparent); }
+.menu .check { width: 18px; height: 18px; color: var(--text-default); }
+/* The color the words or the block have is ringed 2px in that color's
+   strong border, as Notion's (its --c-<color>BorStr, read 2026-11-14 in
+   light and dark; the default text's in the text's own color). */
+.menu .swatch[data-chosen] { box-shadow: inset 0 0 0 2px var(--chosen-ring, var(--text-default)); }
+.menu .swatch:is([data-color="gray"], [data-color="gray_background"]) { --chosen-ring: #d4d3cf; }
+.menu .swatch:is([data-color="brown"], [data-color="brown_background"]) { --chosen-ring: #e0cdc0; }
+.menu .swatch:is([data-color="orange"], [data-color="orange_background"]) { --chosen-ring: #eaccb2; }
+.menu .swatch:is([data-color="yellow"], [data-color="yellow_background"]) { --chosen-ring: #e8d497; }
+.menu .swatch:is([data-color="green"], [data-color="green_background"]) { --chosen-ring: #bed9c9; }
+.menu .swatch:is([data-color="blue"], [data-color="blue_background"]) { --chosen-ring: #b6d4f3; }
+.menu .swatch:is([data-color="purple"], [data-color="purple_background"]) { --chosen-ring: #dbc8e8; }
+.menu .swatch:is([data-color="pink"], [data-color="pink_background"]) { --chosen-ring: #eac4d5; }
+.menu .swatch:is([data-color="red"], [data-color="red_background"]) { --chosen-ring: #f0c5be; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="gray"], [data-color="gray_background"], [data-color="default_background"]) { --chosen-ring: #5f5e59; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="brown"], [data-color="brown_background"]) { --chosen-ring: #6d5340; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="orange"], [data-color="orange_background"]) { --chosen-ring: #88522f; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="yellow"], [data-color="yellow_background"]) { --chosen-ring: #836426; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="green"], [data-color="green_background"]) { --chosen-ring: #37674c; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="blue"], [data-color="blue_background"]) { --chosen-ring: #355f8b; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="purple"], [data-color="purple_background"]) { --chosen-ring: #674d7b; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="pink"], [data-color="pink_background"]) { --chosen-ring: #7b4760; }
+:global([data-theme="dark"]) .menu .swatch:is([data-color="red"], [data-color="red_background"]) { --chosen-ring: #924943; }
+/* "블록 삽입"'s groups and rows by the same rule, its Markdown 12px faint 18
+   from the row's end. */
+.menu[data-phone-insert] :global([data-phone-menu-list]) { padding: 0 0 24px; }
+.menu[data-phone-insert] :global([data-phone-insert-section]) { gap: 0; margin: 0 0 -1px; padding: 28px 0 0; }
+.menu[data-phone-insert] :global([data-phone-insert-section])::before { display: none; }
+.menu[data-phone-insert] :global([data-phone-insert-label]) { margin: 0 0 8px; padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary); font-size: 15px; font-weight: 500; line-height: 17.8px; }
+.menu[data-phone-insert] :global([data-phone-insert-row]) { gap: 14px; box-sizing: border-box; min-height: 45px; padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px)); border-radius: 0; border-bottom: 1px solid var(--border-subtle); background: var(--bg-elevated); outline: none; }
+.menu[data-phone-insert] :global([data-phone-insert-label]) + :global([data-phone-insert-row]) { box-shadow: 0 -1px 0 var(--border-subtle); }
+.menu[data-phone-insert] :global([data-phone-insert-row]:active) { background: var(--bg-hover); }
+.menu[data-phone-insert] :global([data-phone-insert-row]) > :first-child { width: 20px; height: 20px; color: var(--icon-primary); }
+.menu[data-phone-insert] :global([data-phone-insert-row]) > :first-child svg { width: 20px; height: 20px; color: var(--icon-primary); }
+.menu[data-phone-insert] :global([data-phone-insert-row] [data-slash-name]) { font-size: 16px; line-height: 19.2px; }
+.menu[data-phone-insert] :global([data-phone-insert-row] [data-slash-shortcut]) { margin-inline-end: 2px; color: var(--text-tertiary); font-size: 12px; }

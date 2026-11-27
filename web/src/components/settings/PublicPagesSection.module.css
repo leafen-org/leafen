@@ -1,0 +1,71 @@
+/* A published page's row, as Notion's: its icon and its title underlined as a link (seen 2026-11-15), its address as a chip, who published it, and a "…" menu. */
+.page { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; }
+.icon { display: inline-flex; flex: none; width: 20px; height: 20px; align-items: center; justify-content: center; color: var(--icon-secondary); font-size: 16px; line-height: 1; }
+.title { min-width: 0; overflow: hidden; color: var(--text-default); font-weight: 500; text-overflow: ellipsis; white-space: nowrap;
+  text-decoration: underline; text-decoration-color: var(--text-tertiary); text-underline-offset: 3px; }
+.chip { display: inline-block; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 8px; border: 0;
+  border-radius: 4px; background: var(--bg-hover); color: var(--text-secondary); font: inherit; font-size: 12px; cursor: pointer; }
+.chip:hover { color: var(--text-default); }
+.person { display: inline-flex; align-items: center; gap: 6px; }
+.actions { position: relative; width: 32px; text-align: end; }
+.more { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border: 0; border-radius: 4px;
+  background: transparent; color: var(--text-secondary); cursor: pointer; }
+.more:hover, .more[aria-expanded="true"] { background: var(--bg-hover); color: var(--text-default); }
+.hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* A moved workspace's note over its public pages: the settings' quiet words, one line or two. */
+.moved { margin: 0 0 12px; color: var(--text-secondary); font-size: 14px; line-height: 20px; }
+/* The tiles over the lists, as Notion's (seen 2026-11-14): each at least
+   200px, growing to fill its row 14px from the next, so three share a wide
+   window and fewer a narrow one; 16px in on its quiet line with an 8px
+   corner, its kind (12px), count (20px) and the last one made public in a
+   28px line on the left, a faint "›" in the middle at the right. Its kind
+   and the line under its count each stay on one line and run on past the
+   "›"'s column to the tile's edge, where the tile cuts them (read
+   2026-11-18 from its own rule, the tile's words unwrapped and cut at its
+   box, and seen on its French screen at 1440: "Toute personne disposant du
+   lien" on one line, 188 wide over a 151 column). */
+.tiles { display: flex; flex-wrap: wrap; gap: 14px; }
+.tile { display: flex; flex: 1 1 200px; min-width: 0; align-items: center; justify-content: space-between; gap: 20px; padding: 16px;
+  border: 1px solid var(--border-secondary); border-radius: 8px; color: var(--text-default); text-align: start; font-size: 14px; line-height: 16.8px;
+  overflow: hidden; white-space: nowrap; }
+.tile:hover:not(:disabled), .tile:focus-visible { background: var(--bg-hover); outline: none; }
+.tileText { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.tileHead { display: flex; flex-direction: column; gap: 8px; }
+.tileHead > span { color: var(--text-secondary); font-size: 12px; line-height: 16px; }
+.tileHead > strong { font-size: 20px; font-weight: 600; line-height: 25px; }
+.tileFoot { display: flex; align-items: center; min-height: 28px; min-width: 0; }
+.tileFoot > small { color: var(--text-tertiary); font-size: 12px; line-height: 16px; }
+.tileChip { display: flex; align-items: center; gap: 4px; min-width: 0; padding: 4px; border-radius: 4px; background: var(--menu-field-bg);
+  font-size: 12px; line-height: 14.4px; }
+.tileChipIcon { display: inline-flex; flex: none; width: 17px; height: 17px; align-items: center; justify-content: center; }
+.tileChip > span:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Notion's "›" is its small chevron (about 7×13 with a 1.75px line) in a 20px box. */
+.tileMore { display: flex; flex: none; width: 20px; height: 20px; align-items: center; justify-content: center; color: var(--icon-primary); opacity: 0.5; }
+/* A list's head, as Notion's (seen 2026-11-15 at 1440 dark): "‹" and the
+   list's name on one 16px line, the way back, its middle 68px under the
+   page's line; the table's top line 29px under that. */
+.back { display: inline-flex; align-items: center; gap: 2px; height: 24px; margin: 0; padding: 0; border: 0; background: none;
+  color: var(--text-default); font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.back > svg { color: var(--icon-secondary); }
+.back:focus-visible { border-radius: 4px; outline: 2px solid var(--accent-blue); }
+/* The table, as Notion's: a line over its 37px head and under each 45px
+   row, each column's words at its start, the page's column widest — its
+   gap above named on its element, over the developer tokens' table it also
+   wears (DeveloperSettings.module.css .tokens). */
+table.table { margin-top: 14px; border-top: 1px solid var(--border-default); table-layout: fixed; }
+.table th, .table td { padding-block: 0; padding-inline: 0 8px; }
+.table th { height: 36px; font-size: 12px; }
+.table td { height: 44px; }
+.table th:nth-child(1) { width: 30%; }
+.table th:nth-child(2) { width: 28%; }
+.table th:nth-child(3) { width: 20%; }
+.table th:nth-child(5) { width: 40px; }
+.sort { display: inline-flex; align-items: center; gap: 4px; }
+/* The head's names at their column's start; the page's icon 8px in and its title 36px in. */
+.table .sort { padding-inline: 0; }
+.table .page { padding-inline: 8px; }
+/* No public page of the kind: one line in the middle under the head. */
+.table td.empty { padding: 28px 0; color: var(--text-secondary); text-align: center; }
+/* The row's menu, 140px wide from the "⋯"'s end 2px under it, its "설정" under a line. */
+.menu.menu { top: calc(50% + 14px); inset-inline-end: 8px; min-width: 140px; }
+.menuLine { height: 1px; margin: 4px 8px; background: var(--menu-divider); }

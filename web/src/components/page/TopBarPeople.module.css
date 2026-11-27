@@ -1,0 +1,332 @@
+/* The invite step's person rows (TopBarShareAccess.module.css .candidate):
+   name 14px on 20px, address 12px on 16px in the second grey, as Notion's. */
+.shareSuggestionAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.shareSuggestionText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.shareSuggestionText > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shareSuggestionText > span:first-child {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.shareSuggestionText > span:last-child:not(:first-child) {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.shareAccessLoadMore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 30px;
+  margin-bottom: 2px;
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.shareAccessLoadMore:hover,
+.shareAccessLoadMore:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.shareAccessLoadMore:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.shareAccessLoadMore:disabled:hover,
+.shareAccessLoadMore:disabled:focus-visible {
+  background: transparent;
+}
+
+/* A person's 48px row, as Notion's (seen 2026-10-28): the face 16px in, the
+   name 10px after it over its address (17px and 15px lines), the role 16px
+   from the right, rows 1px apart. */
+.shareRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 7px 8px;
+  border-radius: 5px;
+}
+
+.shareRow + .shareRow {
+  margin-top: 1px;
+}
+
+.shareAvatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-size: 18px;
+}
+
+.shareText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+/* Its own two lines only: a name's inner span (a guest's badge beside it)
+   took the second line's small grey (2026-10-16). */
+.shareText > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 17px;
+}
+
+.shareText > span:last-child:not(:first-child) {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.shareYou {
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.sharePermission {
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* A role no one changes there, as Notion draws it: its role button disabled,
+   without the chevron, so the words keep the button's place (People's general
+   access rows and the owners' row, seen 2026-11-16 in two tabs). */
+.sharePermissionFixed {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding-inline: 8px;
+}
+
+.sharePermissionWrap {
+  position: relative;
+  justify-self: end;
+}
+
+.sharePermissionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.sharePermissionButton:hover,
+.sharePermissionButton:focus-visible,
+.sharePermissionButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.sharePermissionButton:disabled:hover,
+.sharePermissionButton:disabled:focus-visible {
+  background: transparent;
+  color: var(--text-tertiary);
+}
+
+.sharePermissionMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 128px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.sharePermissionMenu [data-native-menu-item] {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* Notion's share menus (seen 2026-11-07: roles, general access, agent
+   access): rows 1px apart, the chosen one marked by a 16px check in the
+   words' colour that each menu draws (CheckIcon). */
+.sharePermissionMenu [role="menu"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sharePermissionMenu [data-native-menu-item]:hover,
+.sharePermissionMenu [data-native-menu-item]:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.sharePermissionDanger {
+  color: var(--menu-danger) !important;
+}
+
+.copyLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.copyLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.copyLink:hover,
+.copyLink:focus,
+.copyLink:focus-visible {
+  background: var(--bg-active);
+}
+
+.copyLink:focus {
+  outline: none;
+}
+
+.copyLink:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.55;
+}
+
+.copyLink:disabled:hover,
+.copyLink:disabled:focus,
+.copyLink:disabled:focus-visible {
+  background: var(--bg-hover);
+}
+
+/* On a phone these reshape classes the chrome and share modules own on the
+   same elements, so each names its element too: one step more specific, they
+   apply whatever order the stylesheets load in. */
+:global([data-phone="true"]) header.topbar {
+  gap: 4px;
+}
+
+/* A page's phone bar keeps its own padding (TopBarChrome.module.css): the ☰
+   4px in, as Notion's — 8px here put it 4px further in (2026-11-13, iPhone Safari). */
+:global([data-phone="true"]) header.topbar:not([data-phone="true"]) {
+  padding: 0 8px;
+}
+
+:global([data-phone="true"]) .left {
+  flex: 1 1 auto;
+}
+
+:global([data-phone="true"]) div.right {
+  flex: 0 0 auto;
+  gap: 1px;
+}
+
+/* A phone's bar keeps the room of Notion's hidden 30px sync mark before its
+   first icon, and the page's name ends 8px before that mark (seen 2026-11-16
+   in iPhone Safari 402, a page and a row page alike: the name 54–280 and "…",
+   the share icon at 318). Here the share's 40px box starts 7px before its
+   icon, the bar's gap is 4px and the name's piece keeps 6px after it. */
+:global([data-phone="true"]) header.topbar[data-phone="true"] div.right {
+  padding-inline-start: calc(30px + 8px - 7px - 4px - 6px);
+}
+
+/* Nor is the page's name held to 240px there, as Notion's phone bar (seen
+   2026-11-16 turned to 874: names of 414 and 551px whole). */
+:global([data-phone="true"]) .crumbWrap:last-child .crumbLabel {
+  max-width: none;
+}
+
+:global([data-phone="true"]) div.moreMenu,
+:global([data-phone="true"]) div.shareMenu {
+  position: fixed;
+  top: 48px;
+  inset-inline-end: 10px;
+  inset-inline-start: 10px;
+  width: auto;
+  max-height: calc(100vh - 64px);
+}
+
+:global([data-phone="true"]) .menuItem[data-native-export] {
+  align-items: flex-start;
+}
+
+:global([data-phone="true"]) .menuItem[data-native-export] > span:not(.itemHint) {
+  overflow: visible;
+  line-height: 18px;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+:global([data-phone="true"]) .menuItem[data-native-export] .itemHint {
+  padding-top: 1px;
+}
+
+:global([data-phone="true"]) span.shareInvitePermissionWrap {
+  width: 100%;
+}
+
+:global([data-phone="true"]) .shareInvitePermissionButton {
+  width: 100%;
+}

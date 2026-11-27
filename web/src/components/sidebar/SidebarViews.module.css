@@ -1,0 +1,497 @@
+/* A database view as a sidebar section (Notion, seen 2026-10-01): a 12px
+   gray heading "<view> · <database>", the view's rows as 30px page rows,
+   and the 300×380 window that asks for the database. */
+.viewSectionTitle {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A view's row is a page row (2026-10-17: drawn apart, its name 2px short of
+   a page row's and lighter): the mark in 22px 8px in, the name 8px after. */
+.viewRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--sidebar-row-text);
+  font-size: 14px;
+  text-align: start;
+}
+
+.viewRow:hover,
+.viewRow:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.viewRowIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  font-size: 14px;
+}
+
+.viewRowTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The sidebar's pickers' window, one frame for both: as tall as its field and
+   rows, up to 380 (SIDEBAR_PICKER_HEIGHT), one box 4px in that scrolls the
+   field away with the rows and ends 4 under the last — Notion's "데이터베이스
+   보기" and "단축키 추가 › 페이지" alike (seen 2026-11-18 at 1440, two tabs:
+   the field's top at -19 with the list scrolled 27; 102 high with two rows
+   found, 315 with seven, 380 and scrolling past that). */
+.viewPicker {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  /* Pressed open it holds the focus itself, with no ring (SidebarViewPicker). */
+  outline: none;
+}
+
+/* The sidebar's pickers — "섹션 추가 › 데이터베이스 보기" (SidebarViewPicker)
+   and "단축키 추가 › 페이지" (SidebarPagePicker) — share one shape, as
+   Notion's (seen 2026-11-18 at 1440, the two side by side, twice in two
+   tabs; the page list 2026-10-31 and 2026-11-17 too): a filled 28px search
+   8px in without an icon, its words running up to its "입력 값 지우기"
+   (SearchClearButton), rows 1px apart and 4px in, 5 under the field — 28px,
+   or 45px with where the source or page sits under its name: 4px 8px
+   around, the icon in a 20px place, 8 before the 14px name, both lines
+   16.8px high, the place 12px gray 2px under the name. */
+.viewPickerSearch {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  height: 28px;
+  margin: 4px 4px 5px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-tertiary);
+}
+
+.viewPickerSearch:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.viewPickerSearch input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.viewPickerList {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.viewPickerRow {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  text-align: start;
+}
+
+.viewPickerRow[data-described="true"] {
+  min-height: 45px;
+}
+
+/* Two lines high, its icon stands by the name, 1px under the row's top
+   padding (Notion's, both pickers, seen 2026-11-18 twice). */
+.viewPickerRow[data-described="true"] > :first-child {
+  align-self: flex-start;
+  margin-block-start: 1px;
+}
+
+/* The pointer grounds the row under it apart from the one the arrows lit,
+   as Notion's "단축키 추가 › 페이지" and "데이터베이스 보기" (seen 2026-11-14). */
+.viewPickerRow:hover,
+.viewPickerRow[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.viewPickerText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.viewPickerText > span {
+  overflow: hidden;
+  line-height: 16.8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.viewPickerText > span:first-child {
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.viewPickerText) > span:not(span:first-of-type) {
+  margin-block-start: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* A search that finds nothing says "결과 없음" 12px in and 13 under the
+   field, 12px words in the secondary color, the window ending 14 under
+   them — 80 in all, a page's (Notion's, seen twice 2026-11-17 at 1440) and
+   a data source's alike (seen 2026-11-18). */
+.viewPicker .customizeEmpty {
+  padding: 8px 8px 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.pagePickerIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* A tab's shortcuts (Notion, seen 2026-10-01): 30px rows of 14px words
+   above the sections, a new page's in gray. */
+.shortcutList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 8px;
+}
+
+.shortcutRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* The developer section's links (Notion, seen 2026-10-30): a page row's grey
+   words at 46px, 8px after a grey 22px icon. */
+.developerRow {
+  gap: 8px;
+  color: var(--sidebar-row-text);
+}
+
+.developerRow > .viewRowIcon {
+  height: 22px;
+  color: var(--icon-secondary);
+}
+
+.shortcutRow:hover,
+.shortcutRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.shortcutMenuLabel {
+  padding: 6px 8px 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* A shortcut's "…" at the end of its row under the pointer (Notion, seen
+   2026-10-02), and its name's field in its place while renamed. */
+.shortcutItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shortcutItem > .shortcutRow {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.shortcutItem:has(.shortcutItemActions [aria-expanded="true"]) > .shortcutRow {
+  background: var(--bg-hover);
+}
+
+.shortcutItemActions {
+  position: absolute;
+  top: 5px;
+  inset-inline-end: 4px;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shortcutItem:hover .shortcutItemActions,
+.shortcutItem[data-keys-within] .shortcutItemActions,
+.shortcutItemActions:has([aria-expanded="true"]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.shortcutItem[data-renaming="true"] > .shortcutRow {
+  background: var(--bg-hover);
+}
+
+.shortcutNameField {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.shortcutNameField input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* A menu row led by its icon, as Notion's shortcut and view menus have them
+   (seen 2026-10-02): its words take the room the value, in 12px, and the
+   chevron leave. */
+.sectionMenuItem:has(> svg:first-child) {
+  gap: 6px;
+}
+
+/* The words after a first icon: the second child and the first span (an icon is an svg), not `svg:first-child + span`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13). */
+:where(.sectionMenuItem) > span:nth-child(2):nth-child(1 of span) {
+  flex: 1;
+  min-width: 0;
+}
+
+/* A row that starts with an icon, told by the row, not by `svg:first-child ~`
+   (check-css-sibling-invalidation.mjs). */
+.sectionMenuItem:has(> svg:first-child) > .sectionMenuValue {
+  font-size: 12px;
+}
+
+/* A row with a value keeps its words whole and shortens the value (the words
+   told by what follows them, not by a :has() on the row: AppShell .main). */
+:where(.sectionMenuItem) > span:nth-child(2):nth-child(1 of span):is(.sectionMenuValue, :has(~ .sectionMenuValue)) {
+  flex: 0 0 auto;
+}
+
+.sectionMenuItem:has(> svg:first-child) > .sectionMenuValue {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-align: end;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sectionMenuSeparator {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+
+.sectionMenu:focus {
+  outline: none;
+}
+
+/* With the rows' 1px gap, a line still sits 4px from the rows on each side. */
+.sectionMenu > .sectionMenuSeparator {
+  margin: 3px 8px;
+}
+
+/* A view section's "이름 변경" (Notion, seen 2026-10-02): a 220×44 field
+   beside its menu, the name shown as its placeholder. */
+/* The element in the selector outranks SidebarLayout.module.css .sectionMenu on the same element
+   whatever order the stylesheets load in. */
+div.viewRename {
+  padding: 8px;
+}
+
+/* A name typed here is Notion's name field (seen 2026-10-17). */
+.viewRename input {
+  width: 100%;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+.viewRename input:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* "보기"'s "보기 검색…" above the source's views. */
+.viewChoiceSearch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 2px 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--name-field-bg); --menu-search-rest-ring: var(--name-field-ring);
+  box-shadow: var(--menu-search-rest-ring);
+  color: var(--text-tertiary);
+}
+
+.viewChoiceSearch:focus-within {
+  box-shadow: var(--menu-search-ring-now, var(--menu-search-focus-ring)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+
+.viewChoiceSearch input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 20px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* "섹션 추가"'s menu, as Notion's (seen 2026-10-30): a filled 28px search
+   field 12px down and 8px in, without an icon, ringed blue while typed in;
+   each group's name in a menu group's head (seen 2026-11-18 in "섹션 추가"
+   and "단축키 추가") 13px after the rows above it and 8px over its own. */
+.customizeMenu.sectionAddMenu {
+  padding: 8px 4px 4px;
+  /* In a low window it is 70% of the window high at most and scrolls its
+     rows, each at its own height, under its search (Notion's "단축키 추가",
+     seen 2026-11-18 at 1440×383: 268px high, 12px off the window's foot, the
+     rows 28px) — less than the limit its placement sets on itself, the
+     window less its margins. */
+  max-height: 70vh !important;
+  overflow-y: auto;
+}
+
+.sectionAddMenu > * {
+  flex-shrink: 0;
+}
+
+/* Its rows as Notion's standard menu rows (seen 2026-11-18 at 1440, both add
+   menus): each icon 20px, its name 8px after it, at one place in every row,
+   one opening a list beside it ("›") too. */
+.sectionAddMenu .sectionMenuItem:has(> svg:first-child) {
+  gap: 8px;
+}
+
+.sectionAddMenu .viewChoiceSearch {
+  position: sticky;
+  top: 12px;
+  z-index: 1;
+  min-height: 28px;
+  margin: 4px;
+  padding: 3px 6px;
+  /* The rows going up under it show neither through it nor around it, up to the menu's top. */
+  background: linear-gradient(var(--card-field-bg), var(--card-field-bg)), var(--bg-elevated);
+  --menu-search-rest-ring: var(--name-field-ring), 0 -12px 0 8px var(--bg-elevated);
+}
+
+/* The sidebar's customize list, as Notion's (seen 2026-11-18 at 1440, the
+   sidebar 270px): its shortcuts, sections and two add rows 12px in from the
+   sidebar's edges (246px), "완료" at the body's foot 8px in (254px,
+   SidebarCustomizeList.module.css); an add row's "+" in a 22px box 4px in,
+   its words 4px after it, the "+" in Notion's faint icon color (icoTer: #ada9a3,
+   #7d7a75 dark) beside its faint words, both kept under the pointer. */
+.customizeList[data-in-sidebar] > * {
+  margin-inline: 4px;
+}
+
+.customizeAdd > svg {
+  box-sizing: content-box;
+  padding: 3px;
+  color: var(--icon-tertiary);
+}
+
+.sectionAddMenu .viewChoiceSearch:focus-within {
+  box-shadow: var(--menu-search-ring-now, var(--name-field-ring-focus)), var(--menu-search-rest-ring, 0 0 #0000);
+}
+
+.sectionAddMenu .shortcutMenuLabel {
+  margin: 13px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+
+/* A view section's row keeps a page row's "…" and "+" at its end, shown
+   under the pointer. */
+.viewRowItem {
+  position: relative;
+}
+
+.viewRowItem:hover .treeActions,
+.viewRowItem[data-keys-within] .treeActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.viewRowItem:hover .viewRowTitle,
+.viewRowItem[data-keys-within] .viewRowTitle {
+  padding-inline-end: 50px;
+}
+
+/* A view section's "모두 보기" sits right under its last row, 30px on, where a
+   page tree's keeps its 1px (Notion, seen 2026-11-05). */
+.viewShowAll {
+  margin-top: -1px;
+}
+
+/* A view section's customize-list mark while its database is read: the 16px it takes, empty. */
+.viewSectionIconWaiting {
+  display: inline-block;
+  inline-size: 16px;
+  block-size: 16px;
+}

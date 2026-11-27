@@ -1,0 +1,312 @@
+/* A phone's bottom sheet, as Notion's (seen 2026-10-21 at 375px). Its
+   shade, the sheet and a short list are laid on the page, which doesn't
+   scroll on a phone, rather than fixed to the screen: Safari takes a box
+   fixed at the screen's edge for its bars (phoneBarGround.ts). */
+.shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* As tall as the screen but 16px at its top, as Notion's; a menu's placement writes no width or height on it. A whole
+   one rises from the screen's foot as Notion's "토론" and "작업" do (iPhone 402pt, 2026-11-16: 0.5s cubic-bezier(0.32,
+   0.72, 0, 1), its head at 87pt some 190ms in): it grows from 0 rather than sliding (riseWhole), so no part of it stands
+   below the page for a focus inside it to scroll to (slid, the comments panel's focus scrolled the page 208px). */
+.sheet {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0 !important;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-width: none !important;
+  height: calc(var(--app-height, 100dvh) - 16px);
+  max-height: none !important;
+  overflow: hidden !important;
+  border-radius: 12px 12px 0 0;
+  background: var(--bg-soft);
+  color: var(--text-default);
+  outline: none;
+}
+/* Its foot, width and rise; a wide touch screen's window (PhoneSheetWindow) places it, whichever sheet loads last. */
+.sheet:not([data-sheet-window]) { top: auto !important; width: 100% !important; padding-bottom: env(safe-area-inset-bottom); animation: rise 180ms ease-out; }
+
+/* A sheet is a raised surface: what lies on it in the page's white — the settings' groups and rows, a filter's boxes,
+   cards and notes — is the raised white, in dark rgb(37,37,37) on the sheet's rgb(32,32,32), as Notion's (seen 2026-11-11
+   at 402pt); a plain sheet is the page's own. What stays the page's own ground on one reads --bg-page (an automation's "⋯"). */
+:global(:root) { --bg-page: var(--bg-app); }
+.sheet:not([data-plain="true"]) { --bg-app: var(--bg-elevated); }
+
+/* Over another sheet, its top 16px under the screen's middle (Notion's at 812 and 667px high), 10px on an iPhone
+   (seen 2026-11-11 at 402pt: Notion's whole sheet moved down by half the screen). Pushed up it opens out to a whole
+   sheet (PhoneSheet.tsx), and until then the drag is the sheet's, not its rows' scroll. A keyboard that shortens the
+   window (Android Chrome, --keyboard-shortening: softKeyboard.ts) leaves it the height it had, up to a whole sheet's:
+   its search and the rows under it stay over the keyboard, as Notion's do in a window that scrolls (A90, 2026-11-17). */
+.sheet[data-phone-sheet="half"] {
+  height: min(calc((var(--app-height, 100dvh) + var(--keyboard-shortening, 0px)) / 2 - 16px), calc(var(--app-height, 100dvh) - 16px));
+  transition: height 200ms ease-out;
+}
+
+.sheet[data-phone-sheet="half"][data-apple="true"] {
+  height: calc(var(--app-height, 100dvh) / 2 - 10px);
+}
+
+.sheet[data-phone-sheet="half"][data-expanded="true"] {
+  height: calc(var(--app-height, 100dvh) - 16px);
+}
+
+.sheet[data-phone-sheet="half"][data-expanded="true"][data-apple="true"] {
+  height: calc(var(--app-height, 100dvh) - 10px);
+}
+
+.sheet[data-phone-sheet="half"]:not([data-expanded="true"]),
+.sheet[data-phone-sheet="half"]:not([data-expanded="true"]) * {
+  touch-action: none;
+}
+
+/* Notion's own sheets differ by the phone (seen 2026-11-11, "작업" of a block and of a page): Android's Chrome
+   keeps the 16px top, a 44px grip and no shadow, its shade 20% black and 80% in dark; on an iPhone the sheet
+   stands 10px from the top with a 38px grip and the menus' shadow, its shade 12% black and 29% in dark. */
+:global([data-theme="dark"]) .shade[data-apple="false"] {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.shade[data-apple="true"] {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+:global([data-theme="dark"]) .shade[data-apple="true"] {
+  background: rgba(0, 0, 0, 0.29);
+}
+
+/* A short list (PhoneSheetMenu) goes over Notion's darker shade, the same
+   on both phones and in dark (seen 2026-11-11, iOS Safari 402pt and Android
+   Chrome 411: rgba(15,15,15,0.6) behind a filter's "⋯", over the sheets'
+   own shades). */
+.shade.menuShade {
+  background: rgba(15, 15, 15, 0.6);
+}
+
+.sheet[data-phone-sheet="full"][data-apple="true"] {
+  height: calc(var(--app-height, 100dvh) - 10px);
+}
+
+.sheet[data-apple="true"] {
+  box-shadow: var(--shadow-menu);
+}
+
+.sheet[data-apple="true"] > .grip::before {
+  width: 38px;
+}
+
+/* On a touch screen 600 or wider (a tablet's, or a phone's held on its side, as Notion's iPhone at 874: its path sheet,
+   seen 2026-11-16) a sheet stands in the middle, 640pt across, its line the menus' shadow's ring
+   outside it, as Notion's iPad (seen 2026-11-15 in iPad Safari 834 wide: a 640 box from 97pt in, a 1pt ring at 96,
+   rgb(204,203,201) on the light shade and rgb(56,56,54) in dark; its content 27 down). Without that shadow (not an
+   Apple touch screen) the dark keeps the ring; 12pt corners, its shade, grip and heights a phone's. Its heights count
+   from the screen's foot, not the app's, which a tablet ends over the home bar's inset (AppShell.module.css): Notion's
+   "작업" stands 10 from the top whatever its rows (seen 2026-11-16 in iPad Safari 834, a page's and a trashed page's:
+   640×1068 at 10 in 1078; Leafen's stood at 30). */
+@media (min-width: 600px) {
+  .sheet {
+    --app-height: calc(100vh - var(--developer-bar-height, 0px));
+    inset-inline: 0 !important;
+    margin-inline: auto;
+  }
+  .sheet:not([data-sheet-window]) { width: min(100%, 640px) !important; }
+  :global([data-theme="dark"]) .sheet:not([data-apple="true"]) { box-shadow: 0 0 0 1px var(--border-default); }
+}
+
+@keyframes rise { from { transform: translateY(24px); opacity: 0.6; } } @keyframes riseWhole { from { height: 0; } }
+.sheet[data-phone-sheet="full"]:not([data-sheet-window]) { animation: riseWhole 500ms cubic-bezier(0.32, 0.72, 0, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet:not([data-sheet-window]), .sheet[data-phone-sheet="full"]:not([data-sheet-window]) { animation: none; }
+  .sheet[data-phone-sheet="half"] { transition: none; }
+}
+
+/* The grip, 5px high 6px from either edge of a band across the sheet's whole width, all of which takes a drag as Notion's
+   does (seen 2026-11-17 on a Galaxy A90 at 411 in two tabs: a swipe from the strip under the grip, over it or beside
+   it closed the sheet, fast and slow; ours took one on the 44px grip and the head alone). */
+.grip { display: flex; flex: none; justify-content: center; padding-block: 6px; }
+.grip::before { content: ""; width: 44px; height: 5px; border-radius: 5px; background: var(--border-default); }
+
+/* The grip's band and the head take a drag down for the sheet, not the page's scroll. */
+.sheet:not([data-phone-sheet="screen"]) > :is(.grip, .head) {
+  touch-action: none;
+}
+
+/* "‹" and the title and "완료", 44px, in three even parts: a long title is
+   cut short in its third ("데이터베이스 템..."), as Notion's. */
+.head {
+  display: grid;
+  flex: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  height: 44px;
+}
+
+/* An even head keeps its title on a line at its top, as Notion's share sheets (read 2026-11-18 on a Galaxy A90 at
+   411): a whole screen's ("사용자 초대") and a half sheet's ("사용 권한 변경", PhoneSheetClose.module.css) the head's
+   top 24px line; a whole sheet's 54px, 56 with a "‹" (26px), a 22px line — at the top of the line "‹" and "완료"
+   stand on, 15 from either edge ("공유 설정", "고급": padding 15 0), or alone 12 under the top and 20 over the foot
+   ("일반 사용 권한": padding 12 0 20); with its "‹" starting at its third's start ("고급": its title box centres
+   nothing, x 137 of 137–274, in two tabs, a page's and a database's). */
+.sheet[data-phone-sheet="full"] .head[data-even="true"] {
+  height: 54px;
+}
+
+.sheet[data-phone-sheet="full"] .head[data-even="true"][data-back="true"] {
+  height: 56px;
+}
+
+.sheet[data-phone-sheet="full"] .head[data-even="true"] .title {
+  margin-top: 15px;
+  line-height: 22px;
+}
+
+.sheet[data-phone-sheet="full"] .head[data-even="true"]:not(:has(> .headSide > *)) .title {
+  margin-top: 12px;
+}
+
+.sheet[data-phone-sheet="full"] .head[data-even="true"][data-back="true"] .title {
+  text-align: start;
+}
+
+.head[data-title-large="true"] .title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.headSide {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.headEnd {
+  justify-content: flex-end;
+}
+
+/* The title keeps to the head's top line, 10px over "‹" and "완료", as
+   Notion's (seen 2026-10-21). */
+.title {
+  align-self: start;
+  line-height: 24px;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.headButton {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding-block: 0; padding-inline: 16px calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.headButton:disabled { opacity: 0.4; }
+
+/* "‹" is dark and 26px, as Notion's (seen 2026-10-21). */
+.headBack {
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) 16px;
+  color: var(--icon-primary);
+}
+
+.headBack svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* A round ✕ 12px in from the right, as Notion's "모든 토론" and "필터" (seen
+   2026-10-27): 24px on a faint tint, its 18px ✕ grey; pressed a little past
+   its edge. */
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  padding: 16px 16px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.foot {
+  flex: none;
+  margin-top: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+}
+
+/* A desktop editor shown in a sheet keeps to its width: an advanced filter's
+   rule wraps its fields rather than run past the screen. */
+.body :global([data-filter-row]) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.body :global([data-filter-row] > *) {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+
+.body :global([data-filter-row] > button:last-child) {
+  flex: 0 0 28px;
+}
+
+/* A whole screen's pick, as Notion's "속성" and a filter group (seen
+   2026-10-21): the screen's height, a plain head over a line, then flat
+   white rows of 16px words across the width, 28px apart. */
+.sheet[data-phone-sheet="screen"] {
+  height: var(--app-height, 100dvh);
+  border-radius: 0;
+}
+
+/* Its head is 44px over its line, the line apart: Notion's rows under it
+   start at 45 (seen 2026-11-10, its trash and filters at 402pt). */
+.sheet[data-phone-sheet="screen"] .head {
+  box-sizing: content-box;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sheet[data-phone-sheet="screen"] .body,
+.sheet[data-phone-sheet="screen"] .stack {
+  gap: 28px;
+}
+
+.sheet[data-phone-sheet="screen"] .body {
+  padding: 28px 0 24px;
+}
+
+/* A short list at the bottom ("정렬 추가", a filter's "⋯"): white, square,
+   as tall as its rows; its foot and rise as a sheet's. */
+.menu {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.menu:not([data-sheet-window]) { padding-bottom: env(safe-area-inset-bottom); animation: rise 180ms ease-out; }

@@ -1,0 +1,46 @@
+/* A chart's "레이아웃" screen ends in a blue "차트 편집", back to its
+   settings, under its settings rather than among them, as Notion's (read
+   2026-11-18 in Chrome at 1440 dpr 1, a full-page and an inline chart, and
+   at 402pt in iOS Safari, dark, a full-page chart in two workspaces and an
+   inline one): 28 high, its words 14px at 500, 6 round. In the settings
+   panel it runs 4 inside the layout cards' edges — 8 inside the screen's —
+   4 under the cards where nothing is between, 8 under the last setting row
+   ("데이터 소스 제목 표시", "처음 불러오기") where there are rows. In a
+   phone's settings sheet it stands on the sheet's own ground, 8 inside the
+   groups' edges and 16 under the group over it. Notion's "차트에 대해
+   알아보기" under it, to its help, is left out. */
+.layoutEditChart {
+  display: block;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 8px 8px 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.layoutTypeGrid.layoutTypeGridScreen:has(+ .layoutSettings:empty + .layoutEditChart) {
+  margin-bottom: 4px;
+}
+
+.layoutSettings:empty + .layoutEditChart {
+  margin-top: 0;
+}
+
+/* A phone's sheet leaves out a settings group with nothing in it, so the
+   button keeps the sheet's 16 under the cards. */
+:global([data-phone-settings]) .layoutSettings:empty {
+  display: none;
+}
+
+:global([data-phone-settings]) .layoutEditChart {
+  margin-top: 0;
+}
+
+/* Nor do the phone's cards take back the panel's foot over an empty group
+   (DatabaseLayout.module.css), the sheet keeping its own places. */
+:global([data-phone-settings]) .layoutTypeGrid.layoutTypeGridScreen:has(+ .layoutSettings:empty) {
+  margin-bottom: 0;
+}

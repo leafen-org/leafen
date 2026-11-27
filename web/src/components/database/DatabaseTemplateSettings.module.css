@@ -1,0 +1,101 @@
+/* "다음에서 템플릿을 편집 중입니다. 〈database〉 [복제 주기 ⌄]" on Notion's
+   yellow, 44px, the database's icon gray and its name over a faint line. */
+.templateEditorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 16px;
+  gap: 8px;
+  background: var(--c-notice-yellow-bg);
+  color: var(--c-notice-yellow-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* On a touch screen, from its start 20px in (Notion's iPad, DatabaseTemplateEditor). */
+.templateEditorBanner[data-touch-band] {
+  justify-content: flex-start;
+  padding-inline: 20px;
+}
+/* A phone's on one 44px line, in 17px words on 22px lines, the mark 20 in, 4
+   before the name, 8 before "내 템플릿", the name cut short where it runs
+   long (Notion's phone, seen 2026-11-25 on a Galaxy A90's Chrome at 411 in
+   two tabs: computed 17px/22px 500, the name's nowrap, hidden and ellipsis). */
+:global([data-phone="true"]) .templateEditorBanner[data-touch-band] {
+  flex-wrap: nowrap;
+  padding: 0 20px;
+  font-size: 17px;
+  line-height: 22px;
+}
+:global([data-phone="true"]) .templateEditorBanner[data-touch-band] .templateEditorBannerSource {
+  line-height: 22px;
+}
+:global([data-phone="true"]) .templateEditorBanner[data-touch-band] .templateEditorBannerName {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:global([data-phone="true"]) .templateEditorBanner[data-touch-band] > span:not(.templateEditorBannerSource) {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+/* Its 20px icon — the database mark in the secondary icon gray, or its own
+   emoji — 4px before its name, whose 20px line has Notion's faint 1px link
+   line along its foot whether the database has an icon or not (seen
+   2026-11-15, dark: the mark rgb(173, 169, 163), the line rgba(255, 255,
+   235, 0.1), with no icon and with 📘). */
+.templateEditorBannerSource {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  line-height: 20px;
+}
+.templateEditorBannerSource > svg {
+  color: var(--icon-secondary);
+}
+.templateEditorBannerIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.templateEditorBannerName {
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  background-size: 100% 1px;
+}
+/* 56 after the name, as Notion's: 8, its 24 "?" and 24 more — the "?" a
+   Help Center link, left out with its place kept (seen 2026-11-11). */
+.templateBannerRepeat {
+  display: inline-flex;
+  margin-inline-start: 48px;
+}
+.templateBannerDuplicate {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid color-mix(in srgb, var(--c-notice-yellow-text) 41%, transparent);
+  border-radius: 6px;
+  color: var(--c-notice-yellow-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+.templateBannerDuplicate:hover,
+.templateBannerDuplicate:focus-visible,
+.templateBannerDuplicate[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--c-notice-yellow-text) 12%, transparent);
+  outline: none;
+}
+.groupList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}

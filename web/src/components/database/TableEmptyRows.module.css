@@ -1,0 +1,27 @@
+/* "+ 새 페이지" in an empty table's first column runs on over the next
+   columns in one line where that column is narrower than its words (a task
+   database's 39px status box), drawn over their lines, as Notion's (seen
+   2026-11-07: "+ 새 작업" from the status box into 작업 이름). It stands where
+   a table's under its rows does, at its cell's edge over the cell's 2px, so
+   its words are where those are (Notion's, seen 2026-11-16 at 1440: 406 in
+   an empty table and under rows alike). */
+.newRowCell {
+  z-index: 1;
+}
+.newRowCell [data-table-new-row] {
+  max-width: none;
+  margin-inline-start: -2px;
+  white-space: nowrap;
+}
+/* On a touch screen wider than a phone's its words are 17px, 7px after an
+   18px "+", as Notion's iPad's empty table (seen 2026-11-16 at 834 and 1210:
+   a 45px line, "+" 8px in) — where its line under rows has a phone's 16px
+   words 8px after a 20px "+" (DatabaseTableSelection). */
+:global([data-touch="true"]:not([data-phone="true"])) .newRowCell [data-table-new-row] {
+  gap: 7px;
+  font-size: 17px;
+}
+:global([data-touch="true"]:not([data-phone="true"])) .newRowCell [data-table-new-row] svg {
+  width: 18px;
+  height: 18px;
+}

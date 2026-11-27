@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Laai rekening-e-posadresse",
+        "deniedEffect": "E-posadresse is nie gelaai nie; gestoorde adresse is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige e-posadresse bevestig nie.",
+        "stateCheckAction": "Maak weer verbinding en herlaai die e-poslys voordat jy 'n verandering maak."
+      },
+      "update": {
+        "operation": "Bestuur rekening-e-posadresse",
+        "deniedEffect": "Die e-posversoek is nie aanvaar nie; gestoorde adresse is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die e-posversoek voltooi is nie.",
+        "stateCheckAction": "Herlaai die e-poslys en kyk vir die verifikasieboodskap voordat jy weer probeer."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Laai kennisgewinginstellings",
+        "deniedEffect": "Jou kennisgewinginstellings kon nie gelaai word nie, en jou gestoorde instellings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig watter kennisgewings jy ontvang nie.",
+        "stateCheckAction": "Sluit en heropen instellings om jou kennisgewinginstellings te laai voordat jy dit verander."
+      },
+      "update": {
+        "operation": "Verander kennisgewinginstellings",
+        "deniedEffect": "Jou kennisgewinginstellings is nie verander nie, en jou vorige instellings bly behoue.",
+        "uncertainEffect": "Leafen kon nie bevestig of jou kennisgewinginstellings verander het nie.",
+        "stateCheckAction": "Maak die instellings toe en open dit weer om jou kennisgewinginstellings na te gaan voordat jy dit weer verander."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Laai rekeningprofiel",
+        "deniedEffect": "Jou naam en foto kon nie gelaai word nie, en jou gestoorde profiel is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie jou huidige naam en foto bevestig nie.",
+        "stateCheckAction": "Maak die instellings toe en open dit weer om jou profiel te laai voordat jy dit verander."
+      },
+      "update": {
+        "operation": "Stoor rekeningprofiel",
+        "deniedEffect": "Jou profiel is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rekeningprofiel gestoor is nie.",
+        "stateCheckAction": "Herlaai die rekeningprofiel en ouditgeskiedenis voordat jy weer probeer."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Verander tweestap-verifikasie",
+        "deniedEffect": "Die versoekte verandering aan tweestap-verifikasie is nie aanvaar nie; die vorige instelling bly van krag.",
+        "uncertainEffect": "Leafen kon nie die huidige tweestap-verifikasiestatus bevestig nie.",
+        "stateCheckAction": "Herlaai rekeningsekuriteit voordat jy nog 'n verandering aan tweestap-verifikasie probeer."
+      },
+      "password": {
+        "operation": "Verander rekeningwagwoord",
+        "deniedEffect": "Die wagwoord is nie verander nie, en huidige sessies bly geldig.",
+        "uncertainEffect": "Leafen kon nie bevestig of die wagwoord verander is en of ander sessies beëindig is nie.",
+        "stateCheckAction": "Laai rekeningsekuriteit weer en meld weer aan as die huidige sessie nie meer werk nie."
+      },
+      "read": {
+        "operation": "Laai rekeningsekuriteit",
+        "deniedEffect": "Sekuriteitsinstellings en sessies is nie gelaai nie; die gestoorde rekeningstatus is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige tweestap-verifikasie- en sessietoestand bevestig nie.",
+        "stateCheckAction": "Herlaai rekeningsekuriteit voordat jy 'n verandering maak."
+      },
+      "recovery": {
+        "operation": "Vervang herstelkodes",
+        "deniedEffect": "Vervangende herstelkodes is nie aanvaar nie; voorheen ongebruikte kodes werk steeds.",
+        "uncertainEffect": "Leafen kon nie bevestig watter herstelkodes aktief is nie.",
+        "stateCheckAction": "Herlaai rekeningsekuriteit voordat jy besluit of jy die kodes weer moet vervang."
+      },
+      "sessionRevoke": {
+        "operation": "Herroep rekening-sessie",
+        "deniedEffect": "Die gekose sessie se herroeping is nie bevestig nie; ander sessies is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die gekose sessie herroep is nie.",
+        "stateCheckAction": "Laai die sessielis weer voordat jy besluit of jy weer moet probeer."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Kanselleer bedienerrugsteun",
+        "deniedEffect": "Die kansellering van die rugsteun is nie bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rugsteun gekanselleer is nie.",
+        "stateCheckAction": "Kontroleer die huidige rugsteuntoestand voordat jy weer kanselleer."
+      },
+      "create": {
+        "operation": "Skep bedienerrugsteun",
+        "deniedEffect": "'n Nuwe rugsteun is nie bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rugsteunversoek aanvaar is nie.",
+        "stateCheckAction": "Kontroleer die huidige rugsteun voordat jy nog 'n versoek indien."
+      },
+      "download": {
+        "operation": "Laai bedienerrugsteun af",
+        "deniedEffect": "Geen geverifieerde rugsteunlêer is afgelaai nie.",
+        "uncertainEffect": "Leafen kon nie die rugsteunlêer verifieer of stroom nie.",
+        "stateCheckAction": "Kontroleer die voltooide rugsteuntoestand voordat jy weer aflaai."
+      },
+      "retry": {
+        "operation": "Herprobeer bedienerrugsteun",
+        "deniedEffect": "Die mislukte rugsteun is nie herbegin nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rugsteun herbegin het nie.",
+        "stateCheckAction": "Kontroleer die huidige rugsteuntoestand voordat jy weer probeer."
+      },
+      "status": {
+        "operation": "Laai bedienerrugsteunstatus",
+        "deniedEffect": "Die rugsteunstatus is nie gelaai nie; geen rugsteuntoestand is verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige rugsteuntoestand bevestig nie.",
+        "stateCheckAction": "Laai die rugsteunstatus weer voordat jy 'n ander aksie uitvoer."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Laai bedienerverslag",
+        "deniedEffect": "Die verslag is nie gelaai nie; geen verslagtoestand is verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige verslagmomentopname bevestig nie.",
+        "stateCheckAction": "Laai die huidige verslag weer voordat jy dit verfris."
+      },
+      "refresh": {
+        "operation": "Verfris bedienerverslag",
+        "deniedEffect": "'n Nuwe verslagmomentopname is nie bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die verslagmomentopname verander het nie.",
+        "stateCheckAction": "Laai die huidige verslag voordat jy weer verfris."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Laai die rugsteunskedule",
+        "deniedEffect": "Die rugsteunskedule is nie gelaai nie; geen instelling is verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige rugsteunskedule bevestig nie.",
+        "stateCheckAction": "Herlaai die rugsteunskedule voordat dit verander word."
+      },
+      "restore": {
+        "operation": "Herstel die bediener vanaf 'n rugsteun",
+        "deniedEffect": "Die bediener se data is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die herstel opgestel is nie.",
+        "stateCheckAction": "Herlaai die rugsteuninstellings om te sien of daar 'n herstel wag voordat daar weer geprobeer word."
+      },
+      "save": {
+        "operation": "Stoor die rugsteunskedule",
+        "deniedEffect": "Die rugsteunskedule is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rugsteunskedule gestoor is nie.",
+        "stateCheckAction": "Herlaai die rugsteunskedule om die instellings te sien wat tans geld voordat daar weer gestoor word."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Laai die versoekloginstellings",
+        "deniedEffect": "Die versoekloginstellings is nie gelaai nie; geen instelling is verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige versoekloginstellings bevestig nie.",
+        "stateCheckAction": "Herlaai die versoekloginstellings voordat hulle verander word."
+      },
+      "save": {
+        "operation": "Stoor die versoekloginstellings",
+        "deniedEffect": "Die versoekloginstellings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die versoekloginstellings gestoor is nie.",
+        "stateCheckAction": "Herlaai die versoekloginstellings om te sien watter tans geld voordat daar weer gestoor word."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Laai die netwerkproxy",
+        "deniedEffect": "Die netwerkproxy is nie gelaai nie; geen instelling is verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige netwerkproxy bevestig nie.",
+        "stateCheckAction": "Herlaai die netwerkproxy voordat dit verander word."
+      },
+      "save": {
+        "operation": "Stoor die netwerkproxy",
+        "deniedEffect": "Die netwerkproxy is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die netwerkproxy gestoor is nie.",
+        "stateCheckAction": "Herlaai die netwerkproxy om te sien watter een tans geld voordat daar weer gestoor word."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Laai bedienerinstellings",
+        "deniedEffect": "Die instellings is nie gelaai nie, en die gestoorde instellings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige bedienerinstellings bevestig nie.",
+        "stateCheckAction": "Herlaai die instellings voordat jy veranderinge aanbring."
+      },
+      "save": {
+        "operation": "Stoor bedienerinstellings",
+        "deniedEffect": "Die nuwe instellings is nie aanvaar nie; die voorheen gestoorde instellings bly van krag.",
+        "uncertainEffect": "Leafen kon nie bevestig of die nuwe instellings gestoor is nie.",
+        "stateCheckAction": "Herlaai die instellings en vergelyk die huidige waardes voordat jy weer probeer."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Kontroleer aanmeldingstatus",
+        "deniedEffect": "Geen aanmeldsessie is geskep nie, en rekeningdata is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige aanmeldingstatus bevestig nie.",
+        "stateCheckAction": "Laai die bladsy weer, en meld dan weer aan."
+      },
+      "deviceCode": {
+        "operation": "Meld hierdie toestel aan",
+        "deniedEffect": "Jy is nie aangemeld nie, en geen rekeningdata is verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of hierdie toestel aangemeld is nie.",
+        "stateCheckAction": "Meld weer aan met ’n nuwe kode."
+      },
+      "emailVerification": {
+        "operation": "Verifieer e-posadres",
+        "deniedEffect": "Die e-posadres is nie geverifieer nie, en daar is nie by die rekening aangemeld nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of e-posverifiëring voltooi is nie.",
+        "stateCheckAction": "Probeer aanmeld; as dit nie werk nie, maak die skakel in die e-pos weer oop."
+      },
+      "mfa": {
+        "operation": "Voltooi tweestap-verifikasie",
+        "deniedEffect": "Jy is nie aangemeld nie, en die MFA-uitdaging bly onvoltooid.",
+        "uncertainEffect": "Leafen kon nie bevestig of tweestap-verifikasie voltooi is nie.",
+        "stateCheckAction": "Begin weer van vooraf aanmeld."
+      },
+      "passwordResetConfirm": {
+        "operation": "Verander wagwoord",
+        "deniedEffect": "Die wagwoord is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die wagwoord verander is nie.",
+        "stateCheckAction": "Probeer met die nuwe wagwoord aanmeld; as dit nie werk nie, kry ’n nuwe herstelskakel."
+      },
+      "passwordResetRequest": {
+        "operation": "Versoek 'n wagwoordherstel",
+        "deniedEffect": "Geen wagwoordherstelboodskap is vir aflewering aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die herstelversoek aanvaar is nie.",
+        "stateCheckAction": "Wag vir die e-pos voordat jy nog 'n versoek rig."
+      },
+      "providerExchange": {
+        "operation": "Meld aan met ’n eksterne rekening",
+        "deniedEffect": "Jy is nie aangemeld nie, en geen rekeningdata is verander nie.",
+        "uncertainEffect": "Leafen kon nie die uitslag van die eksterne aanmelding bevestig nie.",
+        "stateCheckAction": "Meld weer op dieselfde manier aan."
+      },
+      "serverSetup": {
+        "operation": "Stel die Leafen-bediener op",
+        "deniedEffect": "Die administrateurrekening is nie geskep nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die bedieneropstelling voltooi is nie.",
+        "stateCheckAction": "Herlaai die bladsy en kontroleer die opstellingstatus voordat jy weer probeer."
+      },
+      "signIn": {
+        "operation": "Meld aan",
+        "deniedEffect": "Jy is nie aangemeld nie, en geen rekeningdata is verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die aanmelding voltooi is nie.",
+        "stateCheckAction": "Herlaai die bladsy en meld weer aan."
+      },
+      "signUp": {
+        "operation": "Skep rekening",
+        "deniedEffect": "'n Nuwe rekening is nie geskep nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die rekening geskep is nie.",
+        "stateCheckAction": "Probeer om aan te meld; as dit nie werk nie, registreer weer."
+      },
+      "passkey": {
+        "operation": "Meld aan met ’n toegangssleutel",
+        "deniedEffect": "Die aanmelding is nie aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die aanmelding voltooi is nie.",
+        "stateCheckAction": "Meld weer met jou toegangssleutel aan."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Laai bladsyinhoud",
+        "deniedEffect": "Die bladsyinhoud is nie gelaai nie, en gestoorde inhoud is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige bladsyinhoud bevestig nie.",
+        "stateCheckAction": "Herlaai die bladsy voordat jy dit wysig."
+      },
+      "update": {
+        "operation": "Stoor bladsyinhoud",
+        "deniedEffect": "Die wysiging is nie aanvaar nie; die nuutste inhoud op die bediener bly van krag.",
+        "uncertainEffect": "Leafen kon nie bevestig of die inhoud gestoor is nie.",
+        "stateCheckAction": "Herlaai die nuutste inhoud en vergelyk dit voordat jy weer probeer."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Stoor databasisoutomatisering",
+        "deniedEffect": "Die outomatisering is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die verandering aan die databasis-outomatisering gestoor is nie.",
+        "stateCheckAction": "Herlaai die outomatisering voordat jy weer probeer."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Stoor DLP-beleid",
+        "deniedEffect": "Die nuwe DLP-beleid is nie gestoor nie; die vorige beleid bly van krag.",
+        "uncertainEffect": "Leafen kon nie bevestig of die DLP-beleid gestoor is nie.",
+        "stateCheckAction": "Herlaai die DLP-beleid en organisasie-ouditgeskiedenis voordat jy weer probeer."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Verifieer SAML-domein",
+        "deniedEffect": "Die domein bly hangende; die SAML-konfigurasie, ouditgeskiedenis en aanmeldsessies is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige toestand van SAML-domeinverifikasie bevestig nie.",
+        "stateCheckAction": "Herlaai die SAML-domeintoestand voordat jy weer probeer."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Skrap lêer",
+        "deniedEffect": "Die lêer is nie geskrap of verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die lêer geskrap is nie.",
+        "stateCheckAction": "Herlaai die lêer en sy verwysings voordat jy besluit of jy weer moet probeer."
+      },
+      "upload": {
+        "operation": "Laai lêer op",
+        "deniedEffect": "Die nuwe lêer is nie gestoor nie; bestaande lêers is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die lêer gestoor is nie.",
+        "stateCheckAction": "Herlaai die lêerlys voordat jy besluit of jy weer moet probeer."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Pas persoonskoppelings toe",
+        "deniedEffect": "Die nuwe koppelings is nie aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig watter koppelings toegepas is nie.",
+        "stateCheckAction": "Herlaai die koppelingsresultate voordat jy dit weer toepas."
+      },
+      "refresh": {
+        "operation": "Verfris persoonskoppelings",
+        "deniedEffect": "Die nuutste koppelings is nie gelaai nie; gestoorde koppelings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige koppelingstoestand bevestig nie.",
+        "stateCheckAction": "Herlaai die koppelingspaneel voordat jy voortgaan."
+      },
+      "scan": {
+        "operation": "Skandeer ingevoerde persone",
+        "deniedEffect": "Ingevoerde persone is nie gelys nie, en bestaande koppelings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige lys van ingevoerde persone bevestig nie.",
+        "stateCheckAction": "Herlaai die koppelingspaneel voordat jy veranderinge maak."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Voer knoppie-outomatisering uit",
+        "deniedEffect": "Die knoppie se aksies is nie uitgevoer nie, en die bladsyinhoud is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die knoppie-outomatisering uitgevoer is nie.",
+        "stateCheckAction": "Laai die geaffekteerde inhoud en uitvoerstatus weer voordat jy weer probeer."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopieer organisasie-API-token",
+        "deniedEffect": "Die token is nie in die knipbord bevestig nie; die token self is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die skryf na die knipbord voltooi is nie.",
+        "stateCheckAction": "Kontroleer die knipbord voordat jy die token weer kopieer."
+      },
+      "create": {
+        "operation": "Skep organisasie-API-token",
+        "deniedEffect": "'n Nuwe token is nie bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die token geskep is nie.",
+        "stateCheckAction": "Laai die tokenlys weer voordat jy nog 'n token skep."
+      },
+      "list": {
+        "operation": "Laai organisasie-API-tokens",
+        "deniedEffect": "Tokens is nie gelaai nie, en bestaande tokens is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige tokenlys bevestig nie.",
+        "stateCheckAction": "Laai die tokenlys weer voordat jy veranderinge aanbring."
+      },
+      "revoke": {
+        "operation": "Herroep organisasie-API-token",
+        "deniedEffect": "Tokenherroeping is nie bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die token herroep is nie.",
+        "stateCheckAction": "Laai die tokenlys weer voordat jy nog 'n herroeping probeer."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Laai werkruimte-bladsye",
+        "deniedEffect": "Die bladsye is nie gelaai nie, en gestoorde werkruimtedata is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige werkruimtebladsye bevestig nie.",
+        "stateCheckAction": "Laai die werkruimte weer voordat jy redigeer."
+      },
+      "create": {
+        "operation": "Skep bladsy",
+        "deniedEffect": "'n Nuwe bladsy is nie geskep nie, en bestaande bladsye is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die bladsy geskep is nie.",
+        "stateCheckAction": "Laai die bladsylys weer en kyk of die nuwe bladsy daar is voordat jy weer probeer."
+      },
+      "title": {
+        "update": {
+          "operation": "Stoor bladsytitel",
+          "deniedEffect": "Die titelverandering is nie aanvaar nie; die gestoorde titel bly van krag.",
+          "uncertainEffect": "Leafen kon nie bevestig of die wysiging gestoor is nie.",
+          "stateCheckAction": "Herlaai die bladsy en kontroleer die huidige titel."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Laai bladsyanalise",
+        "deniedEffect": "Analise is nie gelaai nie, en bladsydata is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige analise bevestig nie.",
+        "stateCheckAction": "Herlaai analise voordat jy gevolgtrekkings maak."
+      },
+      "policyUpdate": {
+        "operation": "Stoor analisebeleid",
+        "deniedEffect": "Die nuwe analisebeleid is nie aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die beleid gestoor is nie.",
+        "stateCheckAction": "Herlaai die beleid en vergelyk dit voordat jy weer probeer."
+      },
+      "preferencesRead": {
+        "operation": "Laai analisevoorkeure",
+        "deniedEffect": "Analisevoorkeure is nie gelaai nie, en gestoorde instellings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige analisevoorkeure bevestig nie.",
+        "stateCheckAction": "Herlaai die voorkeure voordat jy dit wysig."
+      },
+      "preferencesUpdate": {
+        "operation": "Stoor analisevoorkeure",
+        "deniedEffect": "Die nuwe voorkeure is nie aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die voorkeure gestoor is nie.",
+        "stateCheckAction": "Herlaai die voorkeure en vergelyk dit voordat jy weer probeer."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Stoor 'n offline wysiging veilig",
+        "deniedEffect": "Die wysiging is nie op hierdie toestel gestoor nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die wysiging op hierdie toestel of op die bediener gestoor is nie.",
+        "stateCheckAction": "Kopieer die gewysigde inhoud, herlaai dan en vergelyk die gestoorde toestand."
+      },
+      "legacy": {
+        "operation": "Migreer offline wysigings",
+        "deniedEffect": "Die ouer offline wysigings bly waar hulle gestoor is en is nie gestuur nie.",
+        "uncertainEffect": "Leafen kon nie bevestig watter ouer offline wysigings gemigreer is nie.",
+        "stateCheckAction": "Hou hierdie oortjie oop en herlaai voordat jy weer wysig."
+      },
+      "refresh": {
+        "operation": "Herlaai herstelde wysigings",
+        "deniedEffect": "Herstelde wysigings is nie gewys nie, en gestoorde data is nie vervang nie.",
+        "uncertainEffect": "Leafen kon nie die huidige bladsy na herstel bevestig nie.",
+        "stateCheckAction": "Herlaai die bladsy voordat jy weer wysig."
+      },
+      "replay": {
+        "operation": "Stuur vanlyn veranderinge",
+        "deniedEffect": "Die verandering in die tou bly hangend en is nie deur die bediener bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig watter veranderinge in die tou die bediener bereik het nie.",
+        "stateCheckAction": "Hou hierdie oortjie oop, verbind weer en herlaai voordat jy weer wysig."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Deursoek openbare webwerf",
+        "deniedEffect": "Soekresultate is nie gelaai nie, en gepubliseerde inhoud is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige soekresultate bevestig nie.",
+        "stateCheckAction": "Kontroleer die webwerf se status voordat jy weer soek."
+      },
+      "sharedPage": {
+        "operation": "Laai gedeelde bladsy",
+        "deniedEffect": "Die gedeelde bladsy is nie gelaai nie, en gepubliseerde inhoud is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige gedeelde bladsy bevestig nie.",
+        "stateCheckAction": "Kontroleer die deel-skakel voordat jy weer probeer."
+      },
+      "site": {
+        "operation": "Laai openbare webwerf",
+        "deniedEffect": "Die openbare webwerf is nie gelaai nie, en gepubliseerde inhoud is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige openbare webwerf bevestig nie.",
+        "stateCheckAction": "Kontroleer die webwerfadres voordat jy weer probeer."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Herstel vormaanmelding",
+        "deniedEffect": "Die lidvorm is nie oopgemaak nie, en geen antwoord is ingedien nie.",
+        "uncertainEffect": "Leafen kon nie die huidige aanmeldingstatus vir hierdie vorm bevestig nie.",
+        "stateCheckAction": "Herlaai die vorm en meld weer aan."
+      },
+      "configurationWrite": {
+        "operation": "Stoor vorminstellings",
+        "deniedEffect": "Dit is nie bevestig dat die vorminstellings gestoor is nie.",
+        "uncertainEffect": "Leafen kon nie die huidige vormkonfigurasie bevestig nie.",
+        "stateCheckAction": "Herlaai die vorminstellings voordat jy weer stoor."
+      },
+      "definitionRead": {
+        "operation": "Laai vorm",
+        "deniedEffect": "Die vorm is nie gelaai nie, en geen antwoord is ingedien nie.",
+        "uncertainEffect": "Leafen kon nie die huidige vormdefinisie bevestig nie.",
+        "stateCheckAction": "Herlaai die vorm voordat jy 'n antwoord invoer."
+      },
+      "optionsRead": {
+        "operation": "Laai vormkeuses",
+        "deniedEffect": "Die versoekte keuses is nie gelaai nie, en die konsepantwoord is nie ingedien nie.",
+        "uncertainEffect": "Leafen kon nie die huidige opsies bevestig nie.",
+        "stateCheckAction": "Laai die opsies weer voordat jy die vorm indien."
+      },
+      "responseSubmit": {
+        "operation": "Dien vormrespons in",
+        "deniedEffect": "Die respons is nie aanvaar nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die respons aanvaar is nie.",
+        "stateCheckAction": "Kontroleer die vormresultaat voordat jy die respons weer indien."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Laai looptydkonfigurasie",
+        "deniedEffect": "Die looptydkonfigurasie is nie gelaai nie; gestoorde bedienerinstellings is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige looptydkonfigurasie bevestig nie, so veilige terugvalwaardes is aktief.",
+        "stateCheckAction": "Laai die bladsy weer om die huidige bedienerkonfigurasie te lees."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Sinchroniseer hangende veranderinge",
+        "deniedEffect": "Hangende veranderinge bly in die tou en is nie deur die bediener bevestig nie.",
+        "uncertainEffect": "Leafen kon nie bevestig watter hangende veranderinge die bediener bereik het nie.",
+        "stateCheckAction": "Hou hierdie oortjie oop, maak weer verbinding en kontroleer die gestoorde toestand voordat jy weer probeer."
+      },
+      "pendingRead": {
+        "operation": "Kontroleer hangende veranderinge",
+        "deniedEffect": "Die aantal hangende veranderinge is nie gelaai nie; veranderinge in die tou is nie weggegooi nie.",
+        "uncertainEffect": "Leafen kon nie bevestig hoeveel veranderinge nog hangende is nie.",
+        "stateCheckAction": "Hou hierdie oortjie oop en kontroleer die sinchroniseringstatus weer."
+      },
+      "retry": {
+        "operation": "Probeer sinchronisering weer",
+        "deniedEffect": "Sinchronisering is nie bevestig nie; hangende veranderinge bly in die tou.",
+        "uncertainEffect": "Leafen kon nie die jongste sinchroniseringsresultaat bevestig nie.",
+        "stateCheckAction": "Kontroleer die gestoorde toestand en verbinding voordat jy weer probeer."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Skep werkruimte",
+        "deniedEffect": "'n Nuwe werkruimte is nie geskep nie, en bestaande data is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die werkruimte geskep is nie.",
+        "stateCheckAction": "Laai die werkruimtelys weer en kyk of die nuwe werkruimte verskyn voordat jy weer probeer."
+      },
+      "delete": {
+        "operation": "Verwyder werkruimte permanent",
+        "deniedEffect": "Die verwydering is nie aanvaar nie; die werkruimte en bestaande data is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die werkruimte verwyder is nie.",
+        "stateCheckAction": "Laai die werkruimtelys weer voordat jy weer probeer."
+      },
+      "member": {
+        "add": {
+          "operation": "Voeg werkruimtelid by",
+          "deniedEffect": "Die lid is nie bygevoeg nie, en niks is verander nie.",
+          "uncertainEffect": "Leafen kon nie bevestig of die werkruimtelid bygevoeg is nie.",
+          "stateCheckAction": "Herlaai lede, aktiwiteit en ouditgeskiedenis voordat jy weer probeer."
+        },
+        "revoke": {
+          "operation": "Verwyder werkruimtelid",
+          "deniedEffect": "Die lid is nie verwyder nie, en niks is verander nie.",
+          "uncertainEffect": "Leafen kon nie bevestig of die werkruimtelid verwyder is nie.",
+          "stateCheckAction": "Herlaai lede, aktiwiteit en ouditgeskiedenis voordat jy weer probeer."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Stoor werkruimte-instellings",
+          "deniedEffect": "Die instellingsverandering is nie gestoor nie; die vorige instellings bly van krag.",
+          "uncertainEffect": "Leafen kon nie bevestig of die werkruimte-instellings gestoor is nie.",
+          "stateCheckAction": "Herlaai werkruimte-instellings, aktiwiteit en ouditgeskiedenis voordat jy weer probeer."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Kanselleer werkruimte-uitvoer",
+        "deniedEffect": "Die uitvoer is nie gekanselleer nie en is moontlik nog aan die gang.",
+        "uncertainEffect": "Leafen kon nie bevestig of die uitvoer gekanselleer is nie.",
+        "stateCheckAction": "Verfris die uitvoerstatus voordat jy weer kanselleer."
+      },
+      "download": {
+        "operation": "Laai werkruimte-uitvoer af",
+        "deniedEffect": "Die argief is nie afgelaai nie; die uitvoer op die bediener is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die aflaai van die argief voltooi is nie.",
+        "stateCheckAction": "Kontroleer die lys van aflaaie voordat jy weer aflaai."
+      },
+      "job": {
+        "operation": "Voer werkruimte uit",
+        "deniedEffect": "Die argief is nie geskep nie; die bronwerkruimte is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie 'n bruikbare argief vir hierdie taak bevestig nie.",
+        "stateCheckAction": "Begin 'n vervangingsuitvoer vanaf die huidige werkruimte."
+      },
+      "poll": {
+        "operation": "Wag vir werkruimte-uitvoer",
+        "deniedEffect": "Die nuutste uitvoerstatus is nie gelaai nie; die uitvoertaak is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige uitvoerstatus bevestig nie.",
+        "stateCheckAction": "Verfris die uitvoerstatus voordat jy enige ander aksie onderneem."
+      },
+      "retry": {
+        "operation": "Probeer werkruimte-uitvoer weer",
+        "deniedEffect": "Die herprobeerslag is nie aanvaar nie; die bestaande uitvoertaak is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of 'n herprobeerslag aanvaar is nie.",
+        "stateCheckAction": "Herlaai die uitvoerstatus voordat jy weer probeer."
+      },
+      "start": {
+        "operation": "Begin werkruimte-uitvoer",
+        "deniedEffect": "'n Nuwe uitvoertaak is nie aanvaar nie; die werkruimte is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of 'n uitvoertaak aanvaar is nie.",
+        "stateCheckAction": "Herlaai die nuutste uitvoerstatus voordat jy nog 'n taak begin."
+      },
+      "status": {
+        "operation": "Laai werkruimte-uitvoerstatus",
+        "deniedEffect": "Die nuutste uitvoerstatus is nie gelaai nie; die uitvoertaak is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige uitvoerstatus bevestig nie.",
+        "stateCheckAction": "Herlaai die uitvoerdialoog voordat jy nog 'n aksie doen."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Kanselleer invoer",
+        "deniedEffect": "Die invoer is nie gekanselleer nie en is moontlik nog aan die gang.",
+        "uncertainEffect": "Leafen kon nie bevestig of die invoer gekanselleer is nie.",
+        "stateCheckAction": "Herlaai die invoerstatus voordat jy weer kanselleer."
+      },
+      "job": {
+        "operation": "Voer 'n lêer in",
+        "deniedEffect": "Geen bladsy is geskep nie; gedeeltelik ingevoerde inhoud is verwyder.",
+        "uncertainEffect": "Leafen kon nie 'n bruikbare bladsy vir hierdie invoer bevestig nie.",
+        "stateCheckAction": "Bewaar die diagnostiese verwysing en begin 'n nuwe invoer vanaf die bronlêer."
+      },
+      "start": {
+        "operation": "Begin invoer",
+        "deniedEffect": "'n Nuwe invoer is nie aanvaar nie en geen bladsy is geskep nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die invoer aanvaar is nie.",
+        "stateCheckAction": "Probeer weer met dieselfde lêer sonder om dit te verander, sodat Leafen weer by dieselfde versoek kan aansluit."
+      },
+      "status": {
+        "operation": "Laai invoerstatus",
+        "deniedEffect": "Die nuutste invoerstatus is nie gelaai nie; die invoertaak is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige invoerstatus bevestig nie.",
+        "stateCheckAction": "Maak die invoerdialoog weer oop om weer by die gestoorde taak aan te sluit voordat jy nog 'n aksie doen."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Laai rekening-passkeys",
+        "deniedEffect": "Die passkey-lys is nie gelaai nie; gestoorde sleutels is nie verander nie.",
+        "uncertainEffect": "Leafen kon nie die huidige passkey-lys bevestig nie.",
+        "stateCheckAction": "Verbind weer en herlaai die passkey-lys voordat jy 'n verandering aanbring."
+      },
+      "update": {
+        "operation": "Bestuur rekeningpasskeys",
+        "deniedEffect": "Die bediener het nie die gestoorde passkeys verander nie.",
+        "uncertainEffect": "Leafen kon nie bevestig of die passkey-verandering voltooi is nie.",
+        "stateCheckAction": "Verfris die passkey-lys voordat jy weer probeer. Gaan jou toestel se sleutelbestuurder na as ’n nuwe sleutel geskep is maar nie hier gestoor is nie."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Die huidige wagwoord is verkeerd.",
+    "currentPasswordNext": "As jy dit vergeet het, meld af en herstel dit vanaf die aanmeldbladsy.",
+    "code": "Die kode is verkeerd of is reeds gebruik.",
+    "codeNext": "Voer die kode in wat jou verifikasiertoepassing nou wys.",
+    "recoveryCode": "Die herstelkode is verkeerd of is reeds gebruik.",
+    "recoveryCodeNext": "Voer ’n herstelkode in wat jy nog nie gebruik het nie.",
+    "accountDeactivated": "Hierdie rekening is deur die bediener se administrateur gedeaktiveer.",
+    "accountDeactivatedNext": "Vra die administrateur om dit weer te aktiveer.",
+    "organizationSSO": "Hierdie organisasie laat slegs aanmelding via enkele aanmelding (SSO) toe.",
+    "organizationSSONext": "Meld in plaas daarvan met jou maatskappyrekening aan.",
+    "organizationPasswordTwoStep": "Jou organisasie vereis aanmelding met ’n wagwoord en tweestapverifikasie, nie ’n toestelkode nie.",
+    "organizationPasswordTwoStepNext": "Meld met jou e-pos en wagwoord aan; as jy nie ’n wagwoord het nie, vra ’n administrateur om ’n eenmalige wagwoord.",
+    "deviceCode": "Die kode is verkeerd, is reeds gebruik, het verval, of die venster wat dit gewys het, is gesluit.",
+    "deviceCodeNext": "Kry ’n nuwe kode en voer dit weer in.",
+    "setupCode": "Die opstellingskode is verkeerd.",
+    "setupCodeNext": "Maak weer die opstellingskakel oop wat die bediener gedruk het, of tik die kode in waarmee dit begin is.",
+    "setupCodeMissing": "Voer die opstelkode in.",
+    "setupCodeMissingNext": "As jy die opstelskakel oopmaak wat die bediener gedruk het, word dit ingevul; die kode waarmee die bediener begin is, werk ook.",
+    "sessionCapacity": "Hierdie rekening het sy toestelperk bereik.",
+    "sessionCapacityNext": "Meld in Instellings → Rekening → Toestelle ’n toestel wat jy nie meer gebruik nie af, en probeer dan weer.",
+    "signInEnded": "Hierdie aanmeldversoek het geëindig: dit het verval of die kode was te veel keer verkeerd.",
+    "signInEndedNext": "Meld weer met jou e-pos en wagwoord aan.",
+    "emailNotVerified": "Hierdie rekening se e-pos is nog nie bevestig nie.",
+    "emailNotVerifiedNext": "Maak die skakel in die e-pos wat jy ontvang het toe jy geregistreer het, oop en meld dan aan.",
+    "registrationFailed": "Die rekening kon nie geskep word nie.",
+    "registrationFailedNext": "Probeer oor ’n oomblik weer. As dit aanhou misluk, laat weet hierdie bediener se administrateur."
+  },
+  "labels": {
+    "reference": "Verwysing"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Hierdie organisasie skep nie nuwe rekeninge by maatskappyaanmelding nie.",
+    "samlAccountCreationOffNext": "Vra jou organisasie se administrateur om jou uit te nooi.",
+    "samlRetryAfterInvite": "Meld weer aan sodra jy genooi is.",
+    "samlIdentityDenied": "Hierdie e-pos kan nie hierdie organisasie se maatskappyaanmelding gebruik nie.",
+    "samlIdentityDeniedNext": "Vra jou organisasie se administrateur om die e-posdomein en jou lidmaatskap na te gaan.",
+    "samlRetryAfterAdministrator": "Meld weer aan sodra die administrateur dit nagegaan het.",
+    "samlResponseInvalid": "Kon nie die antwoord op die maatskappyaanmelding verifieer nie.",
+    "samlResponseInvalidNext": "Begin weer om aan te meld. As dit aanhou gebeur, vra jou organisasie se administrateur om die SAML-instellings na te gaan.",
+    "accountAlreadyExistsForEmailAddress": "Daar is reeds 'n rekening vir hierdie e-posadres.",
+    "accountEmailCouldNotAdmittedFor": "Die rekening-e-pos kon nie gestuur word nie.",
+    "administratorSettingsDoNotMeetServer": "Die administrateurinstellings voldoen nie aan die bediener se vereistes nie.",
+    "administratorSettingsNotAvailableCurrentAccount": "Administrateurinstellings is nie vir die huidige rekening beskikbaar nie.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "'n Ander administrateur het reeds die bedieneropstelling voltooi.",
+    "anotherServerOperationTemporarilyLockedAccount": "'n Ander bedienerbewerking het rekeningberging tydelik gesluit.",
+    "anotherServerOperationTemporarilyLockedDatabase": "'n Ander bedienerbewerking het die databasis tydelik gesluit, so die uitvoer kon nie voortgaan nie.",
+    "anotherServerOperationTemporarilyLockedDlp": "'n Ander bedienerbewerking het DLP-beleidberging tydelik gesluit.",
+    "anotherServerOperationTemporarilyLockedFile": "'n Ander bedienerbewerking het lêerberging tydelik gesluit.",
+    "anotherServerOperationTemporarilyLockedPage": "'n Ander bedienerbewerking het die berging van bladsyinhoud tydelik gesluit.",
+    "anotherServerOperationTemporarilyLockedProduct": "'n Ander bedienerbewerking het produkberging tydelik gesluit.",
+    "askOrganizationAdministratorToAllow": "Vra 'n organisasie-administrateur of die eienaar van die spanruimte om dit toe te laat.",
+    "askServerAdministratorCheckEmailDelivery": "Vra die bedieneradministrateur om e-posaflewering na te gaan en probeer dan weer.",
+    "backupArtifactNotCompleteYet": "Die rugsteunlêer is nog nie voltooi nie.",
+    "backupStateNoLongerPermitsControl": "Die rugsteun se huidige toestand laat daardie aksie nie meer toe nie.",
+    "causeCouldNotDetermined": "Die oorsaak kon nie bepaal word nie.",
+    "changeSaveReceiptAndSynchronizationState": "Die verandering is nie gestoor nie, en die bladsyinhoud is onveranderd.",
+    "checkCurrentBackupBeforeRetrying": "Gaan die huidige rugsteun na voordat jy weer probeer.",
+    "checkCurrentJobStateBeforeDeciding": "Gaan die huidige taaktoestand na voordat jy besluit of jy weer moet probeer.",
+    "checkCurrentListBeforeTryingDifferent": "Gaan die huidige lys na voordat jy 'n ander item probeer.",
+    "checkCurrentServerSettingsBeforeTrying": "Gaan die huidige bedienerinstellings na voordat jy weer probeer.",
+    "checkCurrentServerSetupStateBefore": "Gaan die huidige toestand van die bedieneropstelling na voordat jy weer probeer.",
+    "checkCurrentStateAndUseNew": "Gaan die huidige toestand na en begin net 'n nuwe rugsteun as jy een nodig het.",
+    "checkEmailAndPassword": "Kontroleer die e-pos en wagwoord.",
+    "checkServerSecretStorageThenSave": "Kontroleer die bediener se geheimeberging en stoor dan dieselfde instellings weer.",
+    "checkServerStateThenLoadSettings": "Kontroleer die bedienerstatus en laai dan die instellings weer.",
+    "createNewBackupAndInspectServer": "Skep 'n nuwe rugsteunkopie en ondersoek bedienerberging as die fout weer voorkom.",
+    "currentAccountNotAuthorizedForOperation": "Die huidige rekening is nie vir hierdie bewerking gemagtig nie.",
+    "currentStateMustCheckedBeforeRetry": "Die huidige toestand moet nagegaan word voordat 'n herpoging as veilig beskou kan word.",
+    "currentStateMustCheckedBeforeRetrying": "Die huidige toestand moet nagegaan word voordat daar weer probeer word.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Die DNS-verifikasiediens is tydelik onbeskikbaar.",
+    "doNotAssumeUnchangedRetrySafe": "Moenie aanneem dat weer probeer veilig is voordat bedienerberging herstel is nie.",
+    "doNotKeepRetryingIdentifierNew": "Moenie aanhou om hierdie versoek weer te probeer nie; herlaai eers, dan is 'n nuwe poging veilig.",
+    "doNotResumeFailedJobStart": "Moenie die mislukte taak hervat nie; begin eerder 'n nuwe uitvoer.",
+    "doNotRetryBeforeLoadingLatest": "Moenie weer probeer voordat die nuutste bedienerinstellings gelaai is nie.",
+    "doNotRetryDirectRequestUnchanged": "Moenie hierdie oplaai net so weer probeer nie; gebruik hervatbare oplaai.",
+    "doNotRetryDirectRequestUnchanged2": "Moenie hierdie oplaai net so weer probeer nie; gebruik hervatbare argiefoplaai.",
+    "doNotRetrySetupRequestSign": "Moenie hierdie opstelversoek weer probeer nie; meld met die bestaande administrateurrekening aan.",
+    "doNotReuseInvalidArtifactCreate": "Moenie die ongeldige rugsteunlêer hergebruik nie; skep 'n nuwe rugsteunkopie.",
+    "doNotReuseLinkNewAction": "Moenie hierdie skakel hergebruik nie; 'n nuwe aksie is veilig.",
+    "emailOrPasswordDidNotMatch": "Die e-pos of wagwoord het nie ooreengestem nie.",
+    "externalSignInProviderCouldNot": "Die eksterne aanmeldverskaffer kon nie die versoek voltooi nie.",
+    "fileLargerThanOneDirectUpload": "Hierdie lêer is te groot vir 'n enkele direkte oplaai.",
+    "formStorageTemporarilyLockedByAnother": "Vormberging is tydelik deur 'n ander bedienerbewerking gesluit.",
+    "leafenArchiveLargerThanOneDirect": "Hierdie Leafen-argief is te groot vir 'n enkele direkte invoer.",
+    "leafenDidNotReceiveServerResponse": "Leafen het nie 'n bedienerrespons ontvang nie.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen is besig om die organisasie se berginggebruikstoestand te herbou.",
+    "leafenServiceCouldNotCompleteOperation": "Die Leafen-diens kon nie die bewerking voltooi nie.",
+    "isolatedRecordNotAppliedYourRequested": "Die onvolledige rekord is opsy gesit, jou verandering is nie gestoor nie, en die bladsyinhoud is onveranderd.",
+    "jobCannotRetriedStartReplacementExport": "Hierdie taak kan nie weer probeer word nie; begin 'n vervangende uitvoer.",
+    "jobSArchiveNotPublishedAnd": "Die argief van hierdie taak is nie geskep nie, en die bronwerkruimte is nie verander nie.",
+    "keepDiagnosticReferenceAndAskServer": "Hou die diagnostiese verwysing en vra die bedieneradministrateur om bedienerberging te herstel.",
+    "lastConfirmedSavedStateRestoredSo": "Die laaste bevestigde gestoorde toestand is herstel, so dit is veilig om dieselfde verandering weer te probeer.",
+    "loadCurrentReportAndUseNew": "Laai die huidige verslag en verfris dan weer.",
+    "loadCurrentReportBeforeRefreshingAgain": "Laai die huidige verslag voordat jy weer verfris.",
+    "loadCurrentReportBeforeTryingAgain": "Laai die huidige verslag voordat jy weer probeer.",
+    "newerOrIncompatibleStatePreventedOperation": "'n Nuwer of onversoenbare toestand het hierdie bewerking verhoed.",
+    "noNewArchivePublishedAndSource": "Daar is geen nuwe argief geskep nie, en die bronwerkruimte en vroeëre argiewe is nie verander nie.",
+    "noNewSignInSessionCreated": "Geen nuwe aanmeldsessie is geskep nie, en bestaande sessies is nie verander nie.",
+    "notKnownWhetherRetryingSafeUntil": "Dit is nie bekend of dit veilig is om weer te probeer voordat die huidige toestand nagegaan is nie.",
+    "organizationStorageAuthorityInconsistent": "Die organisasie se bergingsgebruikrekord is inkonsekwent.",
+    "organizationDlpBlocksOperation": "Jou organisasie se dataverliesvoorkomingsbeleid blokkeer dit.",
+    "takeOutTermOrAskAboutDlp": "Haal enige sensitiewe term uit en probeer weer, of vra 'n organisasieadministrateur as jy onseker is.",
+    "organizationSettingsDoNotAllowOperation": "Die instellings van jou organisasie of spanruimte laat dit nie toe nie.",
+    "organizationStorageLimitWouldExceeded": "Die organisasie se bergingslimiet sal oorskry word.",
+    "serverDiskAlmostFull": "Die bediener se skyf is amper vol.",
+    "askServerAdministratorToFreeSpace": "Vra die bediener se administrateur om spasie vry te maak; dit werk weer sodra daar plek is.",
+    "safeRetryOnceServerHasRoom": "Dit is veilig om dieselfde ding weer te probeer sodra die bediener plek het.",
+    "readDoesNotChangeSavedData": "Hierdie leesbewerking verander nie gestoorde data nie, dus is dit veilig om weer te probeer.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Laai die huidige rugsteun weer voordat jy 'n ander aksie kies.",
+    "reloadCurrentBackupStateBeforeContinuing": "Laai die huidige rugsteuntoestand weer voordat jy voortgaan.",
+    "reloadCurrentStateBeforeDecidingWhether": "Laai die huidige toestand weer voordat jy besluit of jy weer moet probeer.",
+    "reloadSignInPageAndStart": "Herlaai die aanmeldbladsy en meld weer aan.",
+    "removeUnneededFilesOrAskOrganization": "Verwyder onnodige lêers of vra 'n organisasie se faktureringsadministrateur om die limiet te verhoog.",
+    "reportChangedAfterScreenLoaded": "Die verslag het verander nadat hierdie skerm gelaai is.",
+    "requestIdentifierBelongsDifferentOperation": "Hierdie versoek is al vir 'n ander aksie gebruik.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Hierdie versoek is al gebruik om 'n ander verslag te verfris.",
+    "requestedItemNoLongerExistsOr": "Die versoekte item bestaan nie meer nie of is nie vir hierdie rekening sigbaar nie.",
+    "retryExportAfterOtherServerOperation": "Probeer hierdie uitvoer weer nadat die ander bedienerbewerking klaar is.",
+    "retryExportJobAfterServerStorage": "Probeer hierdie uitvoertaak weer nadat die bedienerberging herstel het.",
+    "retryOnlyAfterAccountOrPermission": "Probeer eers weer nadat die rekening of toestemming verander het.",
+    "retryOnlyAfterOrganizationSettingChanges": "Probeer eers weer nadat daardie instelling verander het.",
+    "retrySameContentChangeAfterOther": "Probeer dieselfde inhoudswysiging weer nadat die ander bedienerbewerking klaar is.",
+    "retrySameContentChangeAfterServer": "Probeer dieselfde inhoudswysiging weer nadat die bedienerberging herstel het.",
+    "retrySameContentChangeNow": "Probeer dieselfde inhoudswysiging nou weer.",
+    "changeTooLargeForOneChange": "Dit is te groot om alles op een slag te wysig. Een wysiging kan tot 64 MB bevat, teks ingesluit.",
+    "pageKeepsWhatItHadBefore": "Die bladsy is soos dit voorheen was.",
+    "makeTheChangeInParts": "Doen dit in dele: verwyder eers die blokke binne 'n groot wissel of afdeling in dele, en plak lang teks in dele.",
+    "sameSizeIsRefusedAgain": "Dieselfde grootte word weer verwerp; nadat dit verdeel is, is dit veilig om weer te probeer.",
+    "linkCannotBeKeptHere": "Hierdie verandering koppel 'n bladsy of blok wat nie hier gekoppel kan word nie.",
+    "chooseAnotherPageOrRefresh": "Kies 'n ander bladsy, of herlaai die bladsy en probeer weer.",
+    "sameLinkIsRefusedAgain": "Om dieselfde item weer te koppel, word weer verwerp.",
+    "retrySameDomainVerificationAfterDns": "Probeer dieselfde domeinverifikasie weer nadat die DNS-verifikasiediens herstel het.",
+    "retrySameFileOperationAfterOther": "Probeer dieselfde lêerbewerking weer nadat die ander bedienerbewerking klaar is.",
+    "retrySameFileOperationAfterServer": "Probeer dieselfde lêerbewerking weer nadat bedienerberging herstel het.",
+    "retrySameFormOperationAfterOther": "Probeer dieselfde vormbewerking weer nadat die ander bedienerbewerking klaar is.",
+    "retrySameFormOperationAfterServer": "Probeer dieselfde vormbewerking weer nadat bedienerberging herstel het.",
+    "retrySameOperationAfterOtherServer": "Probeer dieselfde bewerking weer nadat die ander bedienerbewerking klaar is.",
+    "retrySameOperationAfterServerStorage": "Probeer dieselfde bewerking weer nadat bedienerberging herstel het.",
+    "returnSignInWithExistingAccount": "Gaan terug om met die bestaande rekening in te teken.",
+    "reviewAndCorrectEnteredServerSettings": "Hersien en korrigeer die ingevoerde bedienerinstellings.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Hersien die ingevoerde waardes en korrigeer die gemerkte inligting.",
+    "safeRetryAfterEmailDeliveryRestored": "Dit is veilig om weer te probeer nadat e-posaflewering herstel is.",
+    "safeRetryAfterServerResourceChecks": "Dit is veilig om weer te probeer nadat bedienerhulpbronkontroles herstel het.",
+    "safeRetryAfterTemporaryLockClears": "Dit is veilig om weer te probeer nadat die tydelike slot opgehef is.",
+    "safeRetryRead": "Dit is veilig om hierdie leesbewerking weer te probeer.",
+    "safeRetrySameAuthenticationOperationAfter": "Dit is veilig om dieselfde verifikasiebewerking weer te probeer nadat berging herstel het.",
+    "safeRetrySameContentChangeAfter": "Dit is veilig om dieselfde inhoudsverandering weer te probeer nadat die tydelike slot opgehef is.",
+    "safeRetrySameContentChangeAfter2": "Dit is veilig om dieselfde inhoudsverandering weer te probeer nadat berging herstel het.",
+    "safeRetrySameDlpPolicySave": "Dit is veilig om dieselfde DLP-beleid weer te stoor nadat berging herstel het.",
+    "safeRetrySameDlpPolicySave2": "Dit is veilig om dieselfde DLP-beleid weer te stoor nadat die tydelike slot opgehef is.",
+    "safeRetrySameDomainVerificationAfter": "Dit is veilig om dieselfde domeinverifikasie weer te probeer nadat die diens herstel het.",
+    "safeRetrySameFileOperationAfter": "Dit is veilig om dieselfde lêerbewerking weer te probeer nadat berging beskikbaar geword het.",
+    "safeRetrySameFileOperationAfter2": "Dit is veilig om dieselfde lêerbewerking weer te probeer nadat berging herstel het.",
+    "safeRetrySameFileOperationAfter3": "Dit is veilig om dieselfde lêerbewerking weer te probeer nadat die tydelike slot opgehef is.",
+    "safeRetrySameFormOperationAfter": "Dit is veilig om dieselfde vormbewerking weer te probeer nadat berging herstel het.",
+    "safeRetrySameFormOperationAfter2": "Dit is veilig om dieselfde vormoperasie weer te probeer nadat die tydelike slot opgehef is.",
+    "safeRetrySameOperationAfterStorage": "Dit is veilig om dieselfde operasie weer te probeer nadat berging herstel het.",
+    "safeRetrySameOperationAfterTemporary": "Dit is veilig om dieselfde operasie weer te probeer nadat die tydelike slot opgehef is.",
+    "safeRetrySameSettingsAfterSecret": "Dit is veilig om dieselfde instellings te stoor nadat geheimeberging herstel het.",
+    "safeRetrySameSettingsSaveAfter": "Dit is veilig om dieselfde instellings weer te stoor nadat die ongeldige waardes reggestel is.",
+    "safeRetryWithSameJobIdentifier": "Dit is veilig om dieselfde taak weer te probeer.",
+    "safeRetryWithSameJobIdentity": "Dit is veilig om dieselfde taak weer te probeer.",
+    "safeSignInInsteadCreatingAnother": "Dit is veilig om in te teken in plaas daarvan om nog 'n rekening te skep.",
+    "safeStartNewProviderSignIn": "Dit is veilig om later 'n nuwe verskafferaanmelding te begin.",
+    "safeTryAgainAfterCorrectingDetails": "Dit is veilig om weer te probeer nadat die besonderhede reggestel is.",
+    "safeTryAgainAfterCorrectingInput": "Dit is veilig om weer te probeer nadat die invoer reggestel is.",
+    "safeTryAgainAfterWait": "Dit is veilig om weer te probeer ná die wagtyd.",
+    "serverTakesNoChangesNow": "Hierdie bediener kan nie sy rugsteunligging bereik nie, so dit aanvaar tans geen wysigings nie.",
+    "serverDataMovedElsewhere": "Die data van hierdie bediener is na 'n ander bediener verskuif.",
+    "doItOnNewServer": "Doen dit op die nuwe bediener.",
+    "serverDataMovedNoRetry": "Dit sal nie gestoor word as jy dit hier weer probeer nie.",
+    "sameRequestIdentityCanRetriedSafely": "Dieselfde versoek kan ná 'n kort wagtyd veilig weer probeer word.",
+    "saveSameDlpPolicyAgainAfter": "Stoor dieselfde DLP-beleid weer nadat bedienerberging herstel het.",
+    "saveSameDlpPolicyAgainAfter2": "Stoor dieselfde DLP-beleid weer nadat die ander bedieneroperasie klaar is.",
+    "serverAccountStorageTemporarilyUnavailable": "Bediener se rekeningberging is tydelik onbeskikbaar.",
+    "serverCannotCurrentlyConfirmResourceState": "Die bediener kan tans nie sy hulpbronstatus bevestig nie.",
+    "serverCouldNotCompleteAdministratorSettings": "Die bediener kon nie die stoor van administrateurinstellings voltooi nie.",
+    "serverCouldNotCompleteAdministratorSetup": "Die bediener kon nie die administrateuropstelversoek voltooi nie.",
+    "serverCouldNotCompleteBackupLifecycle": "Die bediener kon nie die rugsteun voltooi nie.",
+    "serverCouldNotLoadBackupState": "Die bediener kon nie daardie rugsteuntoestand laai nie.",
+    "serverCouldNotProtectAdministratorSecret": "Die bediener kon nie die administrateur se geheime waardes beskerm nie.",
+    "serverCouldNotReadAdministratorState": "Die bediener kon nie die administrateurtoestand lees nie.",
+    "serverCouldNotReadOneExact": "Die bediener kon nie 'n konsekwente verslagmomentopname lees nie.",
+    "serverDetectedAndIsolatedIncompleteContent": "Die bediener het 'n onvolledige inhoudsrekord gevind en dit geïsoleer.",
+    "serverFileStorageTemporarilyUnavailable": "Bedienerlêerberging is tydelik onbeskikbaar.",
+    "serverFormStorageTemporarilyUnavailable": "Bediener se vormberging is tydelik nie beskikbaar nie.",
+    "serverPageContentStorageTemporarilyUnavailable": "Bediener se bladsyinhoudberging is tydelik nie beskikbaar nie.",
+    "serverSettingsChangedAfterScreenLoaded": "Die bedienerinstellings het verander nadat hierdie skerm gelaai is.",
+    "serverStorageTemporarilyUnavailable": "Bedienerberging is tydelik nie beskikbaar nie.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Bedienerberging was tydelik nie beskikbaar nie, so die argief kon nie geskep word nie.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Bedienerberging is tydelik nie beskikbaar nie, so die DLP-beleid kon nie gestoor word nie.",
+    "signInAttemptIdentifierAlreadyBelongs": "Hierdie aanmeldpoging is reeds met ander besonderhede gebruik.",
+    "signInOrAccountActionLink": "Die skakel vir aanmelding of rekeningaksie is nie meer geldig nie.",
+    "signInWithAuthorizedAccountOr": "Teken in met 'n gemagtigde rekening of vra 'n administrateur vir toegang.",
+    "signInWithExistingAdministratorAccount": "Teken in met die bestaande administrateurrekening.",
+    "signInWithServerAdministratorAccount": "Teken in met 'n rekening van 'n bedieneradministrateur of vra 'n ander administrateur vir toegang.",
+    "startAccountActionAgainGetNew": "Begin die rekeningaksie weer om 'n nuwe skakel te kry.",
+    "startReplacementExportFromLatestWorkspace": "Begin 'n vervangende uitvoer vanaf die nuutste werkruimte.",
+    "storedBackupDidNotMatchVerified": "Die gestoorde rugsteun het nie met die geverifieerde lêer ooreengestem nie.",
+    "submittedInformationDidNotMeetOperation": "Die ingediende inligting het nie aan die bewerkingsvereistes voldoen nie.",
+    "tooManyRequestsLimited": "Daar is te veel versoeke gemaak, daarom is hierdie bewerking beperk.",
+    "tooManyRequestsMadeSoOperation": "Te veel versoeke is gemaak, so hierdie bewerking is tydelik beperk.",
+    "tryAgainAfterServerStorageRecovers": "Probeer weer nadat bedienerberging herstel is.",
+    "tryAgainInHours_one": "Probeer weer oor omtrent ’n uur.",
+    "tryAgainInHours_other": "Probeer weer oor omtrent {{count}} uur.",
+    "tryAgainInMinutes_one": "Probeer weer oor omtrent ’n minuut.",
+    "tryAgainInMinutes_other": "Probeer weer oor omtrent {{count}} minute.",
+    "tryAgainInSeconds_one": "Probeer weer oor omtrent {{count}} sekonde.",
+    "tryAgainInSeconds_other": "Probeer weer oor omtrent {{count}} sekondes.",
+    "useAnotherSignInMethodOr": "Gebruik 'n ander aanmeldmetode of probeer hierdie verskaffer later weer.",
+    "useResumableArchiveUploadSoProgress": "Gebruik hervatbare argiefoplaai sodat vordering vanaf die gestoorde toestand kan voortgaan.",
+    "useResumableUploadSoProgressCan": "Gebruik hervatbare oplaai sodat vordering vanaf die gestoorde toestand kan voortgaan.",
+    "waitForCompletionThenRetryDownload": "Wag tot dit voltooi is en probeer dan weer die aflaai.",
+    "waitForOtherServerOperationFinish": "Wag tot die ander bedienerbewerking klaar is en probeer dan weer.",
+    "waitForStorageReconciliationAdvanceThen": "Wag 'n oomblik tot berging bygekom het en probeer dan dieselfde bewerking weer.",
+    "waitMomentBeforeTryingAgain": "Wag 'n oomblik en probeer dan weer.",
+    "workspaceChangedWhileExportRunning": "Die werkruimte het verander terwyl die uitvoer aan die gang was.",
+    "youNotSignedInAndNo": "Jy was nie ingeteken nie, en geen rekeningdata is verander nie.",
+    "pageIsLocked": "Die bladsy is gesluit, so daar kan nie veranderinge aangebring word nie.",
+    "unlockPageThenTryAgain": "Ontsluit die bladsy vir jouself of vir almal vanuit die bladsymenu en probeer dan weer.",
+    "safeToRetryAfterUnlocking": "Dit is veilig om weer te probeer nadat die bladsy ontsluit is.",
+    "databaseIsLocked": "Die databasis is gesluit, daarom kan die eienskappe en aansigte daarvan nie verander word nie.",
+    "unlockDatabaseThenTryAgain": "Ontsluit die databasis vir jouself of vir almal via die Gesluit-knoppie en probeer dan weer.",
+    "databaseEditorsCanUnlock": "Slegs iemand wat die databasis kan redigeer, kan dit ontsluit.",
+    "safeToRetryAfterDatabaseUnlocked": "Dit is veilig om weer te probeer nadat die databasis ontsluit is.",
+    "rowMoveNeedsFullAccess": "Om dit na 'n ander bladsy te skuif, is volle toegang daartoe en wysigtoegang tot die bestemming nodig.",
+    "askFullAccessHolderToMoveIt": "Vra iemand met volle toegang om dit te skuif, of kies 'n plek wat jy kan wysig.",
+    "rowMoveRefusedUntilAccess": "Om dit te skuif word weer geweier totdat jy daardie toegang het.",
+    "otherWorkspaceCantMoveOrLink": "Dinge kan nie tussen werkruimtes geskuif of gekoppel word nie.",
+    "makeItAnewInThatWorkspace": "Skep dit in daardie werkruimte en kopieer die inhoud daarheen. 'n Hele bladsy word daarheen geskuif of gekopieer vanuit Skuif na, deur die werkruimte te kies.",
+    "otherWorkspaceRefusedAgain": "Om weer te probeer word om dieselfde rede geweier.",
+    "signInEndedForThisBrowser": "Hierdie blaaier se aanmelding het verval of is beëindig.",
+    "signInEndedForThisApp": "Hierdie app se aanmelding het verval of is beëindig.",
+    "signInAgainToContinue": "Teken weer in om voort te gaan.",
+    "retryAfterSigningInAgain": "Probeer weer nadat jy weer ingeteken het.",
+    "serverRestoredSinceDeviceCopies": "Hierdie bediener se data het verander, en hierdie toestel se kopieë is van voor die verandering.",
+    "changeKeptOnThisDeviceOnly": "Die verandering is nie op die bediener gestoor nie; dit is net op hierdie toestel.",
+    "takeServerContentAnew": "Kies “Herlaai vanaf bediener” om die bediener se huidige inhoud te kry.",
+    "retryAfterTakingContentAnew": "Probeer weer nadat jy van die bediener herlaai het.",
+    "propertyUsedByViewOrDependency": "Hierdie eienskap kan nie nou verander word nie: dit is die titel, of dit is in Verwyderde eienskappe.",
+    "changeWhatUsesPropertyFirst": "Herlaai die bladsy om die eienskap soos dit nou is te sien.",
+    "retryAfterChangingWhatUsesProperty": "Herstel eers 'n verwyderde eienskap om dit te kan verander.",
+    "workspaceAlreadyHasContentForArchive": "Hierdie werkruimte het reeds inhoud, so 'n Leafen-argief kan nie daarin geplaas word nie.",
+    "makeNewWorkspaceToImportArchive": "Skep 'n nuwe werkruimte en importeer hierdie argief daar.",
+    "retryInNewWorkspace": "Jy kan dit weer in 'n nuwe werkruimte importeer.",
+    "importFileDoesNotFitFormat": "Die lêer pas nie by die formaat wat Leafen lees nie, so niks is geïmporteer nie.",
+    "exportFileAgainToImport": "Voer die lêer weer uit vanaf waar dit gemaak is, en importeer dan daardie lêer.",
+    "sameFileRefusedAgain": "Om dieselfde lêer weer te importeer sal nie werk nie.",
+    "pageBusyWithAnotherChange": "Hierdie bladsy is besig met 'n ander verandering, daarom kan dit vir 'n oomblik nie geredigeer word nie.",
+    "tryAgainOnceThatChangeIsDone": "Probeer weer sodra daardie verandering klaar is.",
+    "importPageInTrash": "Die bladsy waarin dit gaan, is in die asblik, so niks is ingevoer nie.",
+    "restorePageThenImportAgain": "Herstel die bladsy uit die asblik en voer dan weer in.",
+    "importPageDeletedForGood": "Die bladsy waarin dit gaan, is permanent uitgevee, so niks is ingevoer nie.",
+    "ownerBringsDeletedPageBack": "Binne 30 dae kan die werkruimte-eienaar dit onder Sekuriteit → Databewaring herstel; herstel dit dan uit die asblik en voer weer in.",
+    "importAgainOnceRestored": "As jy weer probeer, word dit nie ingevoer voordat die bladsy herstel is nie.",
+    "pageInTrashCantChange": "’n Bladsy in die asblik kan nie verander word voordat dit herstel is nie.",
+    "restorePageThenTryAgain": "Herstel die bladsy uit die asblik en probeer dan weer.",
+    "tryAgainOnceRestored": "Weer probeer sal nie werk voordat die bladsy herstel is nie.",
+    "optionNameHasComma": "'n Opsie se naam kan nie 'n komma (,) hê nie.",
+    "takeCommaOutOrSplitOption": "Haal die komma uit, of maak dit twee opsies.",
+    "optionRefusedUntilRenamed": "Probeer weer sodra die naam verander is.",
+    "optionNameTaken": "Hierdie eienskap het reeds 'n opsie met daardie naam.",
+    "useAnotherOptionName": "Gebruik 'n ander naam, of kies die opsie wat reeds daar is.",
+    "optionsInUseLeftOut": "Hierdie verandering laat opsies weg wat bladsye gebruik.",
+    "keepOptionsOrDeleteOneByOne": "Hou daardie opsies, of verwyder hulle een vir een uit elke opsie se kieslys.",
+    "optionsRefusedUntilKeptOrDeleted": "Om dit weer net so te probeer word om dieselfde rede geweier."
+  }
+}

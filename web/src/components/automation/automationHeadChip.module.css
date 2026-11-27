@@ -1,0 +1,60 @@
+/* A database automation's card head chips (with automationActionEditor's
+   targetButton), as Notion's on the desktop and a phone alike (seen 2026-11-15 at 1440, and at 411 on an A90: an
+   edit card's "페이지 전체 ⌄" and its database, and a new page's "데이터 소스 선택 ⌄"):
+   their words in a box 2px in, 4px in from the chip's side (6 in all), at
+   400; the "⌄" a grey 16px mark 4px after the words — their box's 2px end
+   and the chip's 2px gap, as Notion's box keeps 2 on each side and a 2px gap
+   to an empty column (seen 2026-11-18 at 1440 on "데이터 소스 선택", "페이지
+   전체" and a database's name: words' end to the next word 30) — and 4px
+   from the end; a "⚠" 4px in, its words' box 2px after it. */
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip {
+  gap: 2px;
+  padding: 0 4px;
+}
+
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip > span {
+  padding-inline: 2px;
+}
+
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip > svg:last-child {
+  width: 16px;
+  height: 16px;
+  margin-inline-start: 0;
+  color: var(--icon-secondary);
+}
+
+/* Its words and chips in one sentence, as Notion's (seen 2026-11-15 at 1440,
+   "페이지 전체 ⌄ 편집 w1280 대상 ⌄ 에서"): a word 6px after a chip, and a
+   chip a word's space and 6px after a word — the head's 8px gap less what the
+   word's own 6px sides add. */
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) section > header > .chip + [data-head-word],
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) section > header > [data-head-word] + .chip {
+  margin-inline-start: -2px;
+}
+
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) section > header > .chip + button[data-head-word],
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) section > header > button[data-head-word][data-lead] + .chip {
+  margin-inline-start: -8px;
+}
+
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) section > header > [data-head-word]:has(+ .chip)::after {
+  content: " ";
+  white-space: pre;
+}
+
+/* Nothing chosen yet ("데이터 소스 선택"): its words grey as its "⌄", #ada9a3 on dark, on a phone's sheet too (Notion's,
+   seen 2026-11-15 at 1440 and at 402pt in iOS Safari). */
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip[data-unset] {
+  color: var(--text-secondary);
+}
+
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip[aria-invalid="true"] > svg:first-child:not(:last-child) {
+  margin-inline-start: 0;
+}
+
+/* A head too long for its card: a chip with another after it stays whole and
+   the last gives way, its name cut short ("페이지 전체 ⌄ 편집 〈긴 이름…〉 ⌄
+   에서", Notion's, seen 2026-11-15). */
+:global(:is([data-automation-dialog], [data-phone-automation-editor])) header > .chip:has(~ .chip) {
+  flex-shrink: 0;
+}

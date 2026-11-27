@@ -1,0 +1,75 @@
+/* A toggle in a feed post, as Notion's feed draws it (seen 2026-11-17 at
+   1440, open and shut, a toggle and toggle headings 1–3): its 24px caret 8px
+   in — a toggle's 8px down, a heading's centred on its line — a toggle's
+   words 38px in and 6px short of the end, a heading's 34px in; shut, a
+   toggle 40px (the caret 8px over and under) and a heading its own height;
+   open, its line 2px over what is inside it — 32px in, 6px short of the
+   end — and 6px under that. */
+.toggle {
+  position: relative;
+}
+
+.toggle > :not(.caret) {
+  padding-block-end: 11px;
+  padding-inline: 38px 6px;
+}
+
+.toggle[data-level] > :not(.caret) {
+  padding-block-end: 8px;
+  padding-inline: 34px 8px;
+}
+
+.toggle[data-open] > :not(.caret) {
+  padding-block-end: 2px;
+}
+
+.toggle[data-open] + * {
+  padding-block: 0 6px;
+  padding-inline: 32px 6px;
+}
+
+.caret {
+  position: absolute;
+  top: 8px;
+  inset-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-default);
+}
+
+/* Centred on the heading's line (FeedPost.module.css .heading1–3). */
+.toggle[data-level="1"] > .caret {
+  top: calc(32px + (26.25px * 1.3 - 24px) / 2);
+}
+
+.toggle[data-level="2"] > .caret {
+  top: calc(28px + (21px * 1.3 - 24px) / 2);
+}
+
+.toggle:is([data-level="3"], [data-level="4"]) > .caret {
+  top: calc(24px + (17.5px * 1.3 - 24px) / 2);
+}
+
+.caret:hover,
+.caret:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Notion's caret at 11.2px, pointing the way the text runs; down when open. */
+.caretIcon {
+  width: 11.2px;
+  height: 11.2px;
+  transform: scaleX(var(--inline-sign, 1));
+}
+
+.caret[aria-expanded="true"] > .caretIcon {
+  transform: rotate(calc(90deg * var(--inline-sign, 1)));
+}

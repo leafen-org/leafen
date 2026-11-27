@@ -1,0 +1,52 @@
+/* The two tabs under the search, as Notion's (seen 2026-11-04): a 40px line
+   with the panel's rule under it, 14px words in a 28px box, the chosen one
+   underlined. */
+.tabs {
+  display: flex;
+  margin: 8px -8px 0;
+  padding: 0 8px;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+.tab {
+  position: relative;
+  height: 40px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+}
+.tab > span {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--tab-ground, transparent);
+}
+/* The tab takes the ground its words read: a pointer state over "span"
+   restyled every span on the page at each pointer move (2026-11-12). */
+.tab:hover {
+  --tab-ground: var(--bg-hover);
+}
+.tab[aria-selected="true"] {
+  color: var(--text-default);
+}
+.tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  height: 2px;
+  background: var(--text-default);
+}
+.showTable {
+  margin-top: 8px;
+}
+.showTableName {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}

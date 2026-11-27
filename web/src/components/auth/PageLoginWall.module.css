@@ -1,0 +1,121 @@
+/* The sign-in wall at a page's address (PageLoginWall.tsx), as Notion's:
+   measured from the user's picture of Notion's, signed out (2026-11-15; its
+   56px icon gives the picture's scale). The card stands 36px from the top,
+   440px wide with 40px inside, a 1px line and 18px corners; the icon is a
+   56px square in the embed placeholder's gray, 12px over a 20px title on
+   30px lines, centred. */
+
+.screen {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  justify-items: center;
+  padding-block: max(36px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-bottom));
+  padding-inline: max(16px, env(safe-area-inset-left));
+  overflow-x: hidden;
+  background: var(--bg-app);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  pointer-events: none;
+}
+
+.backdropSidebar {
+  display: grid;
+  align-content: start;
+  gap: 19px;
+  padding: 16px 12px;
+  background: var(--bg-sidebar);
+}
+
+.backdropSidebar > span:empty:not(.bar) {
+  height: 6px;
+}
+
+.backdropPage {
+  display: grid;
+  align-content: start;
+  gap: 0;
+  padding: 16px 12px;
+}
+
+.backdropLines {
+  display: grid;
+  gap: 14px;
+  width: min(708px, 100% - 96px);
+  margin: 220px auto 0;
+}
+
+.bar {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+}
+
+.screen > .card {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 440px);
+  padding: 40px;
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  background: var(--bg-app);
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--bg-embed-placeholder);
+  color: var(--text-secondary);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  overflow-wrap: anywhere;
+}
+
+.title strong {
+  font-weight: 600;
+}
+
+/* A phone keeps the page's rows behind and the card's inside narrower. */
+@media (max-width: 480px) {
+  .backdrop {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .backdropSidebar {
+    display: none;
+  }
+
+  .screen > .card {
+    padding: 32px 24px;
+  }
+}

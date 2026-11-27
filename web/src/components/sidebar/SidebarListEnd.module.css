@@ -1,0 +1,37 @@
+/* "사이드바 사용자 지정" ends the list, as Notion's: its list is a column at
+   least the scroll area's height and the row's place is its last item on an
+   auto margin (seen 2026-11-22 in Chrome at 1440×722, dark, in two workspaces
+   and twice: a short list puts the row's foot 8px over the area's end, 90px
+   under the sections, and a long one 24px under the last row, its foot 8px
+   over the list's end). A phone's drawer and a guest's list have no such row
+   and keep their own ends. */
+.scroll:has(> .customizeFoot) {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+/* In the column margins add up where the block list took the larger: the
+   shortcuts' 8px under them gave way to the section's over them. */
+.scroll:has(> .customizeFoot) > .shortcutList {
+  margin-bottom: 0;
+}
+
+/* The shortcuts stand as Notion's home tab rows: their first 6px under the
+   list's top, as a first section's head, and the first section 12px under
+   their last, the gap between the list's groups (seen 2026-11-22 in Chrome at
+   1440x722, dark, a short and a long list in two tabs: rows at 132, 163 and
+   194 under a list from 126, ending 224, the first head at 236). A wide touch
+   screen keeps its 18 (SidebarWideTouch) and a phone's drawer its own. */
+.sidebar:not([data-phone="true"]) .scroll > .shortcutList:first-child {
+  margin-top: 2px;
+}
+
+.sidebar:not([data-phone="true"]) .shortcutList + .section {
+  margin-top: 12px;
+}
+
+.customizeFoot {
+  margin-top: auto;
+  padding-top: 24px;
+}

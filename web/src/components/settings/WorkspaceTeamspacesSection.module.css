@@ -1,0 +1,110 @@
+/* As Notion's 팀스페이스 settings (seen 2026-10-12): flat rows and a plain table. */
+.section { display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 0; }
+/* "팀스페이스" 25px under the line, its line 4px under it, the filters 16px on (Notion's, seen 2026-11-11). */
+.listHeading { display: flex; flex-direction: column; gap: 4px; padding-top: 25px; border-top: 1px solid var(--border-subtle); }
+.listHeading strong { line-height: 20px; }
+.listHeading span { line-height: 18px; }
+.listHeading strong { color: var(--text-default); font-size: 14px; font-weight: 500; }
+.listHeading span { color: var(--text-secondary); font-size: 12px; }
+.primary { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border-radius: 6px; background: var(--accent-blue); color: var(--accent-blue-text); font-size: 14px; font-weight: 500; white-space: nowrap; }
+/* The table 13px under the filters (Notion's, seen 2026-11-11), where the filters' own 8px and the section's gap would leave 24. */
+.table { min-width: 0; margin-top: -11px; border-top: 1px solid var(--border-subtle); }
+/* Columns as Notion's 800px table (seen 2026-11-07; the "…" 2026-11-11): name 284, owner 200, access 150, date 120, "…" 42. */
+.tableHeader, .row { display: grid; grid-template-columns: minmax(120px, 280fr) minmax(80px, 200fr) minmax(72px, 150fr) minmax(90px, 120fr) 42px; align-items: center; gap: 0; }
+.tableHeader { min-height: 32px; padding: 0 4px; border-bottom: 1px solid var(--border-subtle); color: var(--text-secondary); font-size: 12px; }
+/* A row 57px, its words 14px in the text's own color (Notion's, seen 2026-11-07). */
+.row { min-height: 57px; padding: 0 4px; border-bottom: 1px solid var(--border-subtle); color: var(--text-default); font-size: 14px; }
+/* An active row opens its settings: under the pointer it takes the hover
+   ground across, as Notion's (seen 2026-11-16: each cell rgba(255,255,255,
+   .055) in dark, the pointer cursor; an archived row neither). */
+.row[data-opens="true"] { cursor: pointer; }
+.row[data-opens="true"]:hover { background: var(--bg-hover); }
+
+.nameCell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.nameCell > span:nth-child(2) { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 0; }
+.nameCell strong { overflow: hidden; min-width: 0; color: var(--text-default); font-size: 14px; font-weight: 400; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }
+/* An archived one's name carries Notion's small "보관됨" tag (seen 2026-11-07: 9px, 2px 6px, rounded 4, 5px after the name). */
+.nameLine { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.archivedBadge { flex: none; padding: 2px 6px; border-radius: 4px; background: var(--c-bg-gray); color: var(--text-secondary); font-size: 9px; line-height: 9px; letter-spacing: 0.04em; white-space: nowrap; }
+.nameCell small { overflow: hidden; color: var(--text-secondary); font-size: 12px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }
+/* The teamspace's mark in a 28px gray box, rounded 3.5px. */
+.icon { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 3.5px; background: var(--action-mark-gray-bg); color: var(--text-secondary); font-size: 14px; }
+/* "공개 ⌄" (Notion's, seen 2026-11-11): 28px high, 8px in — its words under the column's head — 14px, a 6px gap to the ⌄;
+   the default teamspace's and one the reader does not own stay dim and closed. */
+.accessButton { display: inline-flex; align-items: center; gap: 6px; height: 28px; margin-inline-start: -8px; padding: 0 8px; border-radius: 6px; color: var(--text-default); font-size: 14px; white-space: nowrap; }
+.accessButton svg { color: var(--icon-secondary, var(--text-secondary)); }
+.accessButton:not(:disabled):hover, .accessButton[aria-expanded="true"] { background: var(--bg-hover); }
+.accessButton:disabled { cursor: default; opacity: 1; }
+.accessButton[data-fixed="true"] { color: var(--text-tertiary); }
+/* The row's "…": a 20px button, rounded 4, its 16px dots in the second text color, at the column's start (Notion's, seen 2026-11-11). */
+.actions .rowMore { display: inline-flex; align-items: center; justify-content: center; width: 20px; min-height: 0; height: 20px; padding: 0; border-radius: 4px; background: transparent; color: var(--text-secondary); }
+.actions .rowMore:hover, .actions .rowMore:focus-visible, .actions .rowMore[aria-expanded="true"] { background: var(--bg-hover); outline: none; }
+/* "기본 팀스페이스" (Notion's, seen 2026-11-11): its name 14/500 and a 13px line, 12px over a 34px field and a 35px "업데이트" 10px after it. */
+.defaultField { display: flex; flex-direction: column; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
+.defaultHeading { display: flex; flex-direction: column; gap: 4px; }
+.defaultHeading strong { color: var(--text-default); font-size: 14px; font-weight: 500; line-height: 20px; }
+.defaultHeading span { color: var(--text-secondary); font-size: 13px; line-height: 18px; }
+.defaultLine { display: flex; align-items: flex-start; gap: 10px; }
+.defaultBoxHolder { position: relative; flex: 1 1 auto; min-width: 0; }
+/* As Notion's: 4px in, 6px on each side of a chip, and the words 2px after it. */
+.defaultBox { display: flex; flex-wrap: wrap; align-items: flex-start; row-gap: 6px; min-height: 34px; padding: 4px; border-radius: 3px; background: var(--name-field-bg); box-shadow: var(--name-field-ring); cursor: text; }
+.defaultBox:focus-within { box-shadow: var(--name-field-ring-focus); }
+.defaultBox[data-open="true"] { border-end-start-radius: 0; border-end-end-radius: 0; }
+.defaultBox input { flex: 1 1 60px; min-width: 60px; height: 20px; margin-top: 3px; padding: 0 2px; margin-inline-start: 2px; border: 0; background: transparent; color: var(--text-default); font-size: 14px; outline: none; }
+/* Its chip: 20px, rounded 4, 6px in, the teamspace's 14px mark, its name 14px in the second text color, a 20px ×. */
+.defaultChip { display: inline-flex; align-items: center; gap: 3px; max-width: 100%; height: 20px; margin-inline: 6px; padding-inline-start: 6px; border-radius: 4px; background: var(--letter-icon-bg); color: var(--text-secondary); font-size: 14px; line-height: 20px; }
+.defaultChipName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.defaultChip button { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 6px; color: var(--text-secondary); }
+.defaultChip button:hover { background: var(--bg-hover); }
+/* The last chip stays: its × is dim. */
+.defaultChip button:disabled { color: var(--text-tertiary); cursor: default; }
+.defaultChip button:disabled:hover { background: none; }
+.defaultChipIcon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 14px; height: 14px; border-radius: 3.5px; background: var(--teamspace-letter-bg); color: var(--text-secondary); font-size: 10px; line-height: 1; }
+/* Its list hangs from the field, as wide, under a "팀스페이스" heading; each line 28px, rounded 6, 8px in. */
+.defaultChoices { position: absolute; z-index: 5; top: 100%; inset-inline: 0; display: flex; flex-direction: column; padding: 4px; border-radius: 0 0 3px 3px; background: var(--bg-elevated); box-shadow: var(--shadow-menu); }
+.defaultChoicesHeading { padding: 6px 8px 4px; color: var(--text-secondary); font-size: 12px; font-weight: 500; line-height: 16px; }
+.defaultChoice { display: flex; align-items: center; gap: 8px; min-height: 28px; padding: 0 8px; border-radius: 6px; color: var(--text-default); font-size: 14px; cursor: pointer; }
+.defaultChoice[data-lit="true"] { background: var(--bg-hover); }
+.defaultUpdate { flex: none; height: 35px; padding: 0 12px; border-radius: 6px; background: var(--accent-blue); color: var(--accent-blue-text); font-size: 14px; font-weight: 500; white-space: nowrap; }
+.defaultUpdate:disabled { cursor: default; opacity: 0.4; }
+.defaultUpdateTip { display: inline-flex; flex: none; }
+.cell { min-width: 0; }
+.sorted { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.ownerName { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.ownerName > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mobileLabel { display: none; }
+.actions { position: relative; display: flex; justify-content: flex-start; gap: 4px; }
+.actions button, .loadMore { min-height: 28px; padding: 0 8px; border-radius: var(--radius); background: var(--bg-hover); color: var(--text-default); font-size: 11px; white-space: nowrap; }
+.actions button:disabled, .loadMore:disabled { cursor: default; opacity: 0.45; }
+.actionMenu { position: relative; }
+.actionMenu summary { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: var(--radius); color: var(--text-secondary); cursor: pointer; list-style: none; }
+.actionMenu summary::-webkit-details-marker { display: none; }
+.actionMenu summary:hover, .actionMenu summary:focus-visible { background: var(--bg-hover); color: var(--text-default); outline: none; }
+.actionMenu > div { position: absolute; z-index: 4; top: calc(100% + 4px); inset-inline-end: 0; display: flex; flex-direction: column; align-items: stretch; min-width: 164px; padding: 4px; border-radius: var(--radius-menu); background: var(--bg-elevated); box-shadow: var(--shadow-menu); }
+/* Its lines as Notion's row menu (seen 2026-11-07): 28px high, 8px in, 14px words after a 20px icon. */
+.actionMenu > div button { display: flex; align-items: center; gap: 8px; justify-content: flex-start; width: 100%; padding: 0 8px; background: transparent; font-size: 14px; text-align: start; }
+.actionMenu > div button:hover, .actionMenu > div button:focus-visible { background: var(--bg-hover); outline: none; }
+/* The one line an archived row's "…" holds sits in Notion's 208px menu; dim, as the sidebar menu's dim rows, where it may not come back now. */
+.restoreMenu > div { min-width: 208px; }
+.actionMenu > div button:disabled { cursor: default; opacity: 0.4; background: transparent; }
+.restoreTip { display: flex; }
+.empty, .notice, .error { margin: 0; color: var(--text-tertiary); font-size: 13px; }
+.table .empty { padding: 10px 0; border-bottom: 1px solid var(--border-subtle); text-align: center; color: var(--text-secondary); }
+/* A failed read stands in the empty line's place, centred as it is. */
+.table .empty > [data-read-failed] { justify-content: center; }
+.error { color: var(--danger); }
+.loadMore { align-self: flex-start; }
+@media (max-width: 980px) {
+  .table { overflow-x: auto; }
+}
+@media (max-width: 640px) {
+  .table { overflow: visible; border: 0; }
+  .tableHeader { display: none; }
+  .row { grid-template-columns: 1fr auto; gap: 8px 12px; min-width: 0; margin-bottom: 10px; padding: 12px; border: 1px solid var(--border-default); border-radius: 8px; }
+  .nameCell { grid-column: 1 / -1; }
+  .cell { display: flex; flex-direction: column; gap: 3px; }
+  .mobileLabel { display: block; color: var(--text-tertiary); font-size: 9px; font-weight: 650; text-transform: uppercase; }
+  .actions { grid-column: 1 / -1; flex-wrap: wrap; justify-content: flex-start; padding-top: 4px; }
+}
+/* The line between a workspace owner's own ways in and an archived one's way back, as Notion's two sections. */
+.menuLine { margin: 4px 0; border: 0; border-top: 1px solid var(--border-subtle); }

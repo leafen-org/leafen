@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 1,
+  "name": "database-data-source",
+  "operations": [
+    {
+      "goName": "databaseDataSourceMove",
+      "tsName": "move",
+      "method": "POST",
+      "path": "/pages/{pageId}/data-sources/{dataSourceId}/move"
+    },
+    {
+      "goName": "databaseDataSourceMoveBack",
+      "tsName": "moveBack",
+      "method": "POST",
+      "path": "/pages/{pageId}/data-sources/{dataSourceId}/move-back"
+    },
+    {
+      "goName": "databaseDataSourceTrash",
+      "tsName": "trash",
+      "method": "POST",
+      "path": "/pages/{pageId}/data-sources/{dataSourceId}/trash"
+    },
+    {
+      "goName": "databaseDataSourceRestore",
+      "tsName": "restore",
+      "method": "POST",
+      "path": "/pages/{pageId}/data-sources/{dataSourceId}/restore"
+    },
+    {
+      "goName": "databaseDeletedPropertyList",
+      "tsName": "deletedProperties",
+      "method": "GET",
+      "path": "/pages/{pageId}/data-sources/{dataSourceId}/deleted-properties"
+    },
+    {
+      "goName": "databaseUniqueIDState",
+      "tsName": "uniqueIdState",
+      "method": "GET",
+      "path": "/data-sources/{dataSourceId}/unique-id"
+    },
+    {
+      "goName": "databasePropertyTrash",
+      "tsName": "trashProperty",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-properties/{propertyId}/trash"
+    },
+    {
+      "goName": "databasePropertyRestore",
+      "tsName": "restoreProperty",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-properties/{propertyId}/restore"
+    },
+    {
+      "goName": "databasePropertyDeletePermanently",
+      "tsName": "deletePropertyPermanently",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-properties/{propertyId}/delete-permanently"
+    },
+    {
+      "goName": "databaseViewShown",
+      "tsName": "viewShown",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-views/{viewId}/shown"
+    },
+    {
+      "goName": "deletedDatabaseList",
+      "tsName": "deletedDatabases",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/deleted-databases"
+    },
+    {
+      "goName": "deletedDatabaseRestore",
+      "tsName": "restoreDeletedDatabase",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/deleted-databases/{blockId}/restore"
+    },
+    {
+      "goName": "deletedDatabaseDelete",
+      "tsName": "deleteDeletedDatabase",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/deleted-databases/{blockId}/delete"
+    }
+  ],
+  "bounds": [
+    {
+      "goName": "databaseDataSourceMaxBodyBytes",
+      "tsName": "maxBodyBytes",
+      "value": 1024
+    },
+    {
+      "goName": "databaseDeletedPropertiesWindow",
+      "tsName": "deletedPropertiesWindow",
+      "value": 100
+    }
+  ],
+  "errors": [
+    {
+      "goName": "errorCodeDatabaseDataSourceInvalid",
+      "tsName": "invalid",
+      "value": "LEAFEN_DATABASE_DATA_SOURCE_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseDataSourceNotFound",
+      "tsName": "notFound",
+      "value": "LEAFEN_DATABASE_DATA_SOURCE_NOT_FOUND"
+    },
+    {
+      "goName": "errorCodeDatabaseDataSourceConflict",
+      "tsName": "conflict",
+      "value": "LEAFEN_DATABASE_DATA_SOURCE_CONFLICT"
+    },
+    {
+      "goName": "errorCodeDatabasePropertyInUse",
+      "tsName": "propertyInUse",
+      "value": "LEAFEN_DATABASE_PROPERTY_IN_USE"
+    },
+    {
+      "goName": "errorCodeDeletedDatabaseRelated",
+      "tsName": "deletedDatabaseRelated",
+      "value": "LEAFEN_DELETED_DATABASE_RELATED"
+    }
+  ],
+  "records": [
+    {
+      "goName": "databaseDataSourceMoveRequest",
+      "tsName": "DatabaseDataSourceMoveRequest",
+      "fields": [
+        {
+          "goName": "DatabaseID",
+          "jsonName": "databaseId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "MoveViews",
+          "jsonName": "moveViews",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseDataSourceMoveBackRequest",
+      "tsName": "DatabaseDataSourceMoveBackRequest",
+      "fields": [
+        {
+          "goName": "DatabaseID",
+          "jsonName": "databaseId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "FromDatabaseID",
+          "jsonName": "fromDatabaseId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Index",
+          "jsonName": "index",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "ViewID",
+          "jsonName": "viewId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseDataSourceResponse",
+      "tsName": "DatabaseDataSourceResponse",
+      "fields": [
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Status",
+          "jsonName": "status",
+          "goType": "string",
+          "tsType": "\"moved\" | \"moving\" | \"trashed\" | \"restored\""
+        },
+        {
+          "goName": "DatabaseID",
+          "jsonName": "databaseId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ViewID",
+          "jsonName": "viewId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "JobID",
+          "jsonName": "jobId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databasePropertyTrashRequest",
+      "tsName": "DatabasePropertyTrashRequest",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "RelatedProperty",
+          "jsonName": "relatedProperty",
+          "goType": "string",
+          "tsType": "\"delete\" | \"keep\"",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databasePropertyTrashResponse",
+      "tsName": "DatabasePropertyTrashResponse",
+      "fields": [
+        {
+          "goName": "PropertyID",
+          "jsonName": "propertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Status",
+          "jsonName": "status",
+          "goType": "string",
+          "tsType": "\"deleting\""
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "JobID",
+          "jsonName": "jobId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseViewShownResponse",
+      "tsName": "DatabaseViewShownResponse",
+      "fields": [
+        {
+          "goName": "Changed",
+          "jsonName": "changed",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDeletedProperty",
+      "tsName": "DatabaseDeletedProperty",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DeletedAt",
+          "jsonName": "deletedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DeletedBy",
+          "jsonName": "deletedBy",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDeletedPropertyList",
+      "tsName": "DatabaseDeletedPropertyList",
+      "fields": [
+        {
+          "goName": "Items",
+          "jsonName": "items",
+          "goType": "[]databaseDeletedProperty",
+          "tsType": "DatabaseDeletedProperty[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseUniqueIDStateResponse",
+      "tsName": "DatabaseUniqueIDState",
+      "fields": [
+        {
+          "goName": "OtherUniqueID",
+          "jsonName": "otherUniqueId",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "PrefixTaken",
+          "jsonName": "prefixTaken",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "deletedDatabase",
+      "tsName": "DeletedDatabase",
+      "fields": [
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DeletedAt",
+          "jsonName": "deletedAt",
+          "goType": "int64",
+          "tsType": "number"
+        },
+        {
+          "goName": "ExpiresAt",
+          "jsonName": "expiresAt",
+          "goType": "int64",
+          "tsType": "number"
+        },
+        {
+          "goName": "InPlace",
+          "jsonName": "inPlace",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DatabaseTitle",
+          "jsonName": "databaseTitle",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SourceTitles",
+          "jsonName": "sourceTitles",
+          "goType": "[]databaseSourceTitle",
+          "tsType": "Array<string | { title: string; linked: true }>",
+          "optional": true
+        },
+        {
+          "goName": "InTrashedPage",
+          "jsonName": "inTrashedPage",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "EditedAt",
+          "jsonName": "editedAt",
+          "goType": "int64",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "HolderRow",
+          "jsonName": "holderRow",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "HolderTitle",
+          "jsonName": "holderTitle",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "deletedDatabaseList",
+      "tsName": "DeletedDatabaseList",
+      "fields": [
+        {
+          "goName": "Items",
+          "jsonName": "items",
+          "goType": "[]deletedDatabase",
+          "tsType": "DeletedDatabase[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "deletedDatabaseRestored",
+      "tsName": "DeletedDatabaseRestored",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ViewID",
+          "jsonName": "viewId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    }
+  ]
+}

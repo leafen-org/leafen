@@ -1,0 +1,155 @@
+/* Notion's switch (seen 2026-10-28): a 30×18 track round at the ends, 2px
+   around a white 14px knob, var(--switch-off) off and blue on, the knob 12px
+   across in 200ms. */
+.mark,
+.input {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  box-sizing: border-box;
+  width: 30px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 44px;
+  background: var(--switch-off);
+  transition: background 200ms ease;
+}
+
+.input {
+  appearance: none;
+  cursor: inherit;
+}
+
+.mark > span,
+.input::after {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 200ms ease-out;
+}
+
+.input::after {
+  content: "";
+}
+
+.mark[data-on="true"],
+.input:checked {
+  background: var(--accent-blue);
+}
+
+.mark[data-on="true"] > span,
+.input:checked::after {
+  transform: translateX(calc(12px * var(--inline-sign, 1)));
+}
+
+/* A touch phone's, as Notion's sheets ("페이지 잠금", seen 2026-10-28): 51×31
+   on var(--switch-off-phone), a 27px knob with two soft shadows, 20px across. */
+.mark[data-size="phone"],
+.input[data-size="phone"] {
+  width: 51px;
+  height: 31px;
+  border-radius: 51px;
+  background: var(--switch-off-phone);
+}
+
+.mark[data-size="phone"] > span,
+.input[data-size="phone"]::after {
+  width: 27px;
+  height: 27px;
+  box-shadow: 0 3px 1px rgba(15, 15, 15, 0.1), 0 3px 8px rgba(15, 15, 15, 0.1);
+}
+
+.mark[data-size="phone"][data-on="true"],
+.input[data-size="phone"]:checked {
+  background: var(--accent-blue);
+}
+
+.mark[data-size="phone"][data-on="true"] > span,
+.input[data-size="phone"]:checked::after {
+  transform: translateX(calc(20px * var(--inline-sign, 1)));
+}
+
+.input:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.button {
+  display: inline-flex;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 44px;
+  background: none;
+}
+
+.button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.input:focus-visible,
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A button that holds only the switch (a settings row's own) is as wide as
+   the track, so the track meets the row's end as Notion's does (seen
+   2026-10-30); the browser's button padding had set it 6px in. It is as tall
+   as the track too, so the track sits on the row's middle as Notion's (seen
+   2026-11-21 in 요청 › 제어: the 18-tall track 12 down a 42-tall row); the
+   button's line box had made it 24 tall with the track at its top, 3px high. */
+:global(button[role="switch"]):has(> .mark:only-child) {
+  display: inline-flex;
+  padding: 0;
+  border-radius: 44px;
+  vertical-align: middle;
+}
+
+/* A switch that can't be changed shows its mark dimmed as the lone Switch
+   does, wherever it is drawn: a row or menu item that is the switch
+   (SettingsSwitchRow, menu rows: an email setting a server without mail keeps
+   looked on and working) or a bare switch button (2026-11-05: 신원's 계정 자동
+   생성 stayed bright blue with SAML SSO off), and the pointer says so. */
+:disabled:not(.button) .mark,
+[aria-disabled="true"] .mark {
+  opacity: 0.4;
+}
+
+:global(button[role="switch"]:disabled) {
+  cursor: default;
+}
+
+/* A switch pressed while its screen waits for the answer shows where it is
+   going, dimmed as a locked control (lib/switchTurns.ts). */
+:global([data-turning="on"]) .mark {
+  background: var(--accent-blue);
+}
+
+:global([data-turning="on"]) .mark > span {
+  transform: translateX(calc(12px * var(--inline-sign, 1)));
+}
+
+:global([data-turning="on"]) .mark[data-size="phone"] > span {
+  transform: translateX(calc(20px * var(--inline-sign, 1)));
+}
+
+:global([data-turning="off"]) .mark {
+  background: var(--switch-off);
+}
+
+:global([data-turning="off"]) .mark[data-size="phone"] {
+  background: var(--switch-off-phone);
+}
+
+:global([data-turning="off"]) .mark > span,
+:global([data-turning="off"]) .mark[data-size="phone"] > span {
+  transform: none;
+}

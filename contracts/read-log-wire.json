@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "name": "read-log",
+  "operations": [
+    { "goName": "readLogList", "tsName": "list", "method": "GET", "path": "/workspaces/{workspaceId}/read-log" },
+    { "goName": "readLogReaders", "tsName": "readers", "method": "PUT", "path": "/workspaces/{workspaceId}/read-log/readers" }
+  ],
+  "errors": [
+    { "goName": "errorCodeReadLogInvalid", "tsName": "invalid", "value": "LEAFEN_READ_LOG_INVALID" },
+    { "goName": "errorCodeReadLogNotFound", "tsName": "notFound", "value": "LEAFEN_READ_LOG_NOT_FOUND" },
+    { "goName": "errorCodeReadLogComplianceOnly", "tsName": "complianceOnly", "value": "LEAFEN_READ_LOG_COMPLIANCE_ONLY" },
+    { "goName": "errorCodeReadLogFailed", "tsName": "failed", "value": "LEAFEN_READ_LOG_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "readLogEventWire",
+      "tsName": "ReadLogEvent",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"read\" | \"viewedLog\" | \"watchOn\" | \"watchOff\" | \"readersCompliance\" | \"readersFullAccess\"" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" },
+        { "goName": "LastAt", "jsonName": "lastAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" },
+        { "goName": "ReaderID", "jsonName": "readerId", "goType": "string", "tsType": "string" },
+        { "goName": "ReaderName", "jsonName": "readerName", "goType": "string", "tsType": "string" },
+        { "goName": "Via", "jsonName": "via", "goType": "string", "tsType": "\"app\" | \"api\" | \"mcp\" | \"share\" | \"export\" | \"fileLink\" | \"\"" },
+        { "goName": "Client", "jsonName": "client", "goType": "string", "tsType": "string" },
+        { "goName": "How", "jsonName": "how", "goType": "string", "tsType": "\"open\" | \"list\" | \"\"" },
+        { "goName": "TargetKind", "jsonName": "targetKind", "goType": "string", "tsType": "\"page\" | \"row\" | \"file\" | \"scope\"" },
+        { "goName": "TargetID", "jsonName": "targetId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "readLogResponse",
+      "tsName": "ReadLog",
+      "fields": [
+        { "goName": "Scope", "jsonName": "scope", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "NameSpans", "jsonName": "nameSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Recording", "jsonName": "recording", "goType": "bool", "tsType": "boolean" },
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number", "zeroMeans": "0 keeps every read, with no limit by age." },
+        { "goName": "Readers", "jsonName": "readers", "goType": "string", "tsType": "\"fullAccess\" | \"compliance\"" },
+        { "goName": "ReadersFrom", "jsonName": "readersFrom", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CanChooseReaders", "jsonName": "canChooseReaders", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Events", "jsonName": "events", "goType": "[]readLogEventWire", "tsType": "ReadLogEvent[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "readLogReadersRequest",
+      "tsName": "ReadLogReadersRequest",
+      "fields": [
+        { "goName": "Scope", "jsonName": "scope", "goType": "string", "tsType": "string" },
+        { "goName": "Readers", "jsonName": "readers", "goType": "string", "tsType": "\"fullAccess\" | \"compliance\"" }
+      ]
+    }
+  ]
+}

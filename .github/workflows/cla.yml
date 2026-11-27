@@ -1,0 +1,107 @@
+# The contributor license agreement check (CLA.md, CONTRIBUTING.md). On a pull
+# request, CLA Assistant Lite asks each committer who has not accepted the
+# agreement yet to accept it once, with their GitHub account, by posting the
+# sentence it gives as a comment. The record stays in this repository, on its
+# own branch, so no outside service holds it. Bots and the repository's
+# maintainers are not asked.
+#
+# It runs on pull_request_target so that it can comment on pull requests from
+# forks: GitHub runs it with this repository's workflow and token, and it
+# never checks out or runs the pull request's code. The action's repository
+# has been archived (read-only) since March 2026; the release pinned below
+# keeps working.
+name: CLA Assistant
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, closed]
+  issue_comment:
+    types: [created]
+
+# The record is committed to its branch (contents), the request and the lock
+# after the pull request closes are on the pull request (pull-requests), and
+# a signing comment re-runs the failed check (actions).
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  cla:
+    name: CLA Assistant
+    # A comment wakes the check only on a pull request, and only when it is
+    # the signing sentence (the action's own, which it matches ignoring case)
+    # or "recheck".
+    if: >-
+      github.event_name == 'pull_request_target' ||
+      (github.event.issue.pull_request &&
+      (github.event.comment.body == 'recheck' ||
+      contains(github.event.comment.body, 'I have read the CLA Document and I hereby sign the CLA')))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      CLA_DOCUMENT: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.repository.default_branch }}/CLA.md
+      SIGNATURES_BRANCH: cla-signatures
+      SIGNATURES: signatures/version1/cla.json
+    steps:
+      # The action cannot start the record itself: on a missing file it stops
+      # with "Could not retrieve repository contents. Status: 404". So the
+      # first run makes the branch, holding only the empty record.
+      - name: Start the signatures branch
+        if: github.event.action != 'closed'
+        run: |
+          if gh api "repos/$REPO/contents/$SIGNATURES?ref=$SIGNATURES_BRANCH" --silent 2>/dev/null; then
+            exit 0
+          fi
+          empty='{"signedContributors": []}'
+          if gh api "repos/$REPO/git/ref/heads/$SIGNATURES_BRANCH" --silent 2>/dev/null; then
+            gh api -X PUT "repos/$REPO/contents/$SIGNATURES" --silent \
+              -f message="Start the CLA signatures record" \
+              -f content="$(printf '%s\n' "$empty" | base64 -w0)" \
+              -f branch="$SIGNATURES_BRANCH"
+            exit 0
+          fi
+          tree=$(jq -n --arg path "$SIGNATURES" --arg content "$empty" \
+            '{tree: [{path: $path, mode: "100644", type: "blob", content: ($content + "\n")}]}' |
+            gh api "repos/$REPO/git/trees" --input - --jq .sha)
+          commit=$(gh api "repos/$REPO/git/commits" \
+            -f message="Start the CLA signatures record" -f tree="$tree" --jq .sha)
+          # Two first runs at once: the second finds the branch already made.
+          gh api "repos/$REPO/git/refs" --silent -f ref="refs/heads/$SIGNATURES_BRANCH" -f sha="$commit" ||
+            gh api "repos/$REPO/contents/$SIGNATURES?ref=$SIGNATURES_BRANCH" --silent
+
+      # A committer with admin or maintain access to this repository joins the
+      # allowlist for this run, so no maintainer's account is written here.
+      - name: Find the maintainers among the committers
+        id: maintainers
+        if: github.event.action != 'closed'
+        env:
+          PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+        run: |
+          allow=""
+          while read -r login; do
+            case "$login" in '' | *'[bot]') continue ;; esac
+            role=$(gh api "repos/$REPO/collaborators/$login/permission" --jq .role_name 2>/dev/null) || continue
+            case "$role" in admin | maintain) allow="$allow,$login" ;; esac
+          done < <(gh api --paginate "repos/$REPO/pulls/$PR/commits" \
+            --jq '.[] | .author.login // .committer.login // empty' | sort -u)
+          echo "logins=$allow" >> "$GITHUB_OUTPUT"
+
+      - name: Ask for the agreement
+        uses: contributor-assistant/github-action@ca4a40a7d1004f18d9960b404b97e5f30a505a08 # v2.6.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path-to-document: ${{ env.CLA_DOCUMENT }}
+          branch: ${{ env.SIGNATURES_BRANCH }}
+          path-to-signatures: ${{ env.SIGNATURES }}
+          allowlist: '*[bot]${{ steps.maintainers.outputs.logins }}'
+          custom-notsigned-prcomment: >-
+            Thank you for your pull request. Before it can be merged, $you
+            need to accept the [Leafen Individual Contributor License
+            Agreement](${{ env.CLA_DOCUMENT }}) once, with your GitHub account,
+            by posting the sentence below as a comment on this pull request.
+            You keep the copyright in your work; the agreement gives Leafen a
+            license to it.<br/>

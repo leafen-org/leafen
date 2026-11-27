@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "id": "app.leafen.vault",
+  "slug": "vault",
+  "version": "1.2.19",
+  "name": { "en": "Vault", "ko": "금고" },
+  "description": {
+    "en": "A password vault Bitwarden's apps use as their server: encrypted on your devices, so not even Leafen can read it. Shared vaults (beta) follow your organization's groups.",
+    "ko": "Bitwarden 앱이 서버로 쓰는 비밀번호 금고입니다. 내 기기에서 암호화되어 리펜도 읽지 못합니다. 공유 금고(베타)는 조직의 그룹을 따라갑니다."
+  },
+  "developer": { "name": "Leafen" },
+  "agent": {
+    "summary": { "en": "The person's password vault for Bitwarden's apps: status, setup and shared vaults; the items stay encrypted.", "ko": "Bitwarden 앱이 쓰는 사람의 비밀번호 금고: 상태, 설정, 공유 금고. 항목은 암호화된 채로 둡니다." },
+    "instructions": {
+      "en": "Use status to see whether the vault is set up and which devices use it. Items are encrypted on the person's devices; no tool reads them. reset deletes the person's vault for good — call it only when the person asks to start over.",
+      "ko": "status로 금고가 설정됐는지와 쓰는 기기를 봅니다. 항목은 사람의 기기에서 암호화되어 어떤 도구도 읽지 못합니다. reset은 사람의 금고를 아주 지웁니다 — 사람이 처음부터 다시 하겠다고 할 때만 부릅니다."
+    }
+  },
+  "icon": "ui/icon.svg",
+  "category": "personal",
+  "tags": ["passwords", "bitwarden", "security"],
+  "surfaces": { "fullPage": { "entry": "ui/index.html" } },
+  "personAccess": "read",
+  "device": ["clipboard-write"],
+  "data": [
+    { "key": "accounts", "file": "data/setup.json", "hidden": true },
+    { "key": "devices", "file": "data/setup.json", "hidden": true },
+    { "key": "folders", "file": "data/setup.json", "hidden": true },
+    { "key": "organizations", "file": "data/setup.json", "hidden": true },
+    { "key": "members", "file": "data/setup.json", "hidden": true },
+    { "key": "collections", "file": "data/setup.json", "hidden": true },
+    { "key": "ciphers", "file": "data/setup.json", "hidden": true },
+    { "key": "config", "file": "data/setup.json", "hidden": true }
+  ],
+  "network": {},
+  "kv": { "maxBytes": 1048576, "maxTtlSeconds": 3600 },
+  "notifications": true,
+  "groups": true,
+  "workers": [
+    { "name": "vault", "module": "workers/main.wasm", "functions": ["api", "status", "prepare", "signout", "reset", "tidy", "shared", "link", "unlink", "follow", "orgVaults"], "memoryMb": 256, "timeoutSeconds": 30, "resident": true }
+  ],
+  "endpoints": [
+    { "key": "bw", "name": { "en": "Server for Bitwarden apps", "ko": "Bitwarden 앱의 서버" }, "worker": "vault", "function": "api", "methods": ["GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"], "public": true, "pages": true }
+  ],
+  "schedules": [
+    { "key": "tidy", "name": { "en": "Nightly tidy of closed and unused vaults", "ko": "닫히거나 쓰지 않는 금고 밤마다 정리" }, "cron": "40 3 * * *", "worker": "vault", "function": "tidy" },
+    { "key": "follow", "name": { "en": "Shared vaults follow their groups", "ko": "공유 금고가 그룹 따라가기" }, "cron": "*/10 * * * *", "worker": "vault", "function": "follow" }
+  ],
+  "actions": [
+    {
+      "key": "status",
+      "name": { "en": "My vault", "ko": "내 금고" },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "app", "worker": "vault", "function": "status", "risk": "low"
+    },
+    {
+      "key": "prepare",
+      "name": { "en": "Prepare my vault", "ko": "금고 준비" },
+      "inputLabels": { "email": { "en": "Email for Bitwarden", "ko": "Bitwarden에서 쓸 이메일" } },
+      "input": {
+        "type": "object",
+        "properties": { "email": { "type": "string", "minLength": 3, "maxLength": 254 } },
+        "required": ["email"], "additionalProperties": false
+      },
+      "runAs": "app", "worker": "vault", "function": "prepare", "risk": "low"
+    },
+    {
+      "key": "signout",
+      "name": { "en": "Log out every device", "ko": "모든 기기 로그아웃" },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "app", "worker": "vault", "function": "signout", "risk": "medium"
+    },
+    {
+      "key": "reset",
+      "name": { "en": "Delete my vault and start over", "ko": "금고 지우고 새로 시작" },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "app", "worker": "vault", "function": "reset", "risk": "high"
+    },
+    {
+      "key": "shared",
+      "name": { "en": "My shared vaults", "ko": "내 공유 금고" },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "app", "worker": "vault", "function": "shared", "risk": "low"
+    },
+    {
+      "key": "orgVaults",
+      "name": { "en": "The organization's shared vaults", "ko": "조직의 공유 금고" },
+      "input": { "type": "object", "additionalProperties": false },
+      "runAs": "app", "worker": "vault", "function": "orgVaults", "risk": "low"
+    },
+    {
+      "key": "link",
+      "name": { "en": "Link a group to a shared vault", "ko": "공유 금고에 그룹 연결" },
+      "inputLabels": { "vault": { "en": "Shared vault", "ko": "공유 금고" }, "group": { "en": "Group", "ko": "그룹" } },
+      "input": {
+        "type": "object",
+        "properties": { "vault": { "type": "string", "minLength": 1, "maxLength": 40 }, "group": { "type": "string", "minLength": 1, "maxLength": 100 } },
+        "required": ["vault", "group"], "additionalProperties": false
+      },
+      "runAs": "app", "worker": "vault", "function": "link", "risk": "medium"
+    },
+    {
+      "key": "unlink",
+      "name": { "en": "Unlink a group from a shared vault", "ko": "공유 금고에서 그룹 연결 끊기" },
+      "inputLabels": { "vault": { "en": "Shared vault", "ko": "공유 금고" }, "link": { "en": "Group", "ko": "그룹" } },
+      "input": {
+        "type": "object",
+        "properties": { "vault": { "type": "string", "minLength": 1, "maxLength": 40 }, "link": { "type": "string", "minLength": 1, "maxLength": 40 } },
+        "required": ["vault", "link"], "additionalProperties": false
+      },
+      "runAs": "app", "worker": "vault", "function": "unlink", "risk": "medium"
+    }
+  ]
+}

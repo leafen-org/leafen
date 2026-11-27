@@ -1,0 +1,64 @@
+/* A page's column of blocks, a page's and a database page's opened as a full
+   page alike (PageView .doc, DatabaseRowPeekBody .rowPeekDoc), as Notion's
+   (seen 2026-11-12 at 1024–1920, on a page and a database page): its top
+   blocks (EditorBlocks --page-block-max) keep 96px from each edge of the page
+   as if its scrollbar stood, whether one does or not, while its title takes
+   what the page has; with discussions beside the text they also give up
+   twice what the text moved left of the middle (--doc-start, where the
+   document stands); a full-width page with them ends its blocks 468px short
+   of the page. usePageColumn marks the document (.column) and tells
+   it --page-width and --page-scrollbar-room; each document sets its own
+   --content-pad and --doc-max. None of these weigh anything, so a document's
+   own rule wins over them. The page's width is the document's alone (not
+   inherited, styles.css), and what is worked out from it stops at its top
+   blocks (EditorBlocks), so a change of width restyles little else. */
+:where(.column) {
+  --page-block-max: calc(var(--page-width) - 2 * var(--content-pad) + 12px - var(--page-scrollbar-room, 0px));
+  /* Its blocks stand 6px inside the page's column, their words 2px more; its
+     title's box is the column itself, the words 8px in where the blocks'
+     are (PageHeader .titleHeading), as Notion's h1 at every width (seen
+     2026-11-16 in Chrome dark, two tabs: 720 wide at 1440, 693 at 900 and
+     561 at 768 with a scroll bar, 96px from the page's edge; its words and a
+     text block's at 104, both wrapping by 649 at 768). So the bar a page
+     shows while its body is read (PageBodyReading) starts at the column. */
+  --page-column-inset: 6px;
+  /* How wide an uploaded video's or PDF's box may grow (EditorMediaBlocks):
+     the page as if its scrollbar stood, Notion's scroller inside its bar
+     (read 2026-11-15 at 1440: 1155). A touch screen's keeps to its column. */
+  --page-room: calc(var(--page-width) - var(--page-scrollbar-room, 0px));
+}
+:where([data-touch="true"] .column) {
+  --page-room: initial;
+}
+/* A touch screen's column of text is its own (PageView .doc); a database's
+   own head keeps its name beside its icon (PageHeader). */
+:where(:is([data-touch="true"], [data-phone="true"]) .column, .column [data-database-head="true"]) {
+  --page-column-inset: 0px;
+}
+:where(.column[data-margin-discussions="true"]) {
+  --doc-start: max(calc(40px - var(--content-pad)),
+    min(calc((var(--page-width) - var(--doc-max, 912px)) / 2),
+      calc(var(--page-width) - var(--doc-max, 912px) - 396px + var(--content-pad) + var(--page-scrollbar, 0px) / 2)));
+  --page-block-max: calc(var(--doc-max, 912px) - 2 * var(--content-pad) + 12px + 2 * var(--doc-start) - var(--page-scrollbar-room, 0px));
+}
+:where(.column[data-full-width="true"][data-margin-discussions="true"]) {
+  --page-block-max: calc(var(--page-width) - var(--content-pad) - 474px + 12px - var(--page-scrollbar-room, 0px));
+}
+/* A phone's page keeps its blocks to its column. */
+:where([data-phone="true"] .column) {
+  --page-block-max: calc(100% + 12px);
+}
+/* Behind a side peek a page keeps its own column, a page's and a database
+   page's opened whole alike, as Notion's (seen 2026-11-09 at 1054: scroll
+   width 900 = 708 + 96×2; 2026-11-17 at 1416, a wiki's page opened whole:
+   its text 708 wide from 96, the page 696 wide scrolling to 900, its title
+   cut by the peek): it isn't laid out again into what the peek leaves (at
+   768 a page's title stacked a letter a line; a page opened whole stood in
+   438, its title in two lines). Its top blocks keep to the column too,
+   through --page-block-max (EditorBlocks), until a closing peek has slid out
+   (usePeekRoom); its page scrolls sideways (PageView .scroll,
+   DatabaseRowPeekBody .rowPeekScroll). */
+:where([data-side-row-peek-room="true"]:not([data-phone="true"]) .column) {
+  min-width: var(--doc-max, 912px);
+  --page-block-max: calc(100% + 12px);
+}

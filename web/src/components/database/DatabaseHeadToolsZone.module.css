@@ -1,0 +1,77 @@
+/* A views' row splits its spare room ten to one between its tabs and its
+   tools, the tools' buttons standing at the end of their share, as Notion's
+   (seen 2026-11-16 at 1440, table and chart views of a two-view inline
+   database: tabs flex-grow 10, tools flex-grow 1 with justify-content end —
+   13px before the first tool in a table view, 24px in a chart view, 39px
+   before a folded toolbar's ⚙). That whole share is where "»" and a folded
+   "«" answer the pointer (DatabaseToolbar.module.css), never the tabs or the
+   gap after them. A one-view title row and a dashboard keep their own
+   measured zones (below). */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:not([data-title-row="true"], [data-active-view="dashboard"]) > .viewTabs {
+  flex-grow: 10;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:not([data-title-row="true"], [data-active-view="dashboard"]) > .dbToolbar {
+  flex-grow: 1;
+  max-width: none;
+  justify-content: flex-end;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:not([data-title-row="true"], [data-active-view="dashboard"]) > .dbToolbar .dbToolbarSpacer {
+  flex-grow: 0;
+}
+
+/* A one-view database's header answers the pointer in two parts, as
+   Notion's (seen 2026-11-02 at 1280px): its title's side shows "+ ⋯" after
+   the title, its tools' side — from 89px before "»" (Notion's 684 to 773) —
+   shows "»" and puts "+ ⋯" away; a dashboard's from 12px before "»" (11-15). */
+[data-database-chrome][data-active-view="dashboard"]:not([data-title-row="true"]) > .dbToolbar::before { width: 12px; }
+[data-database-chrome]:is([data-title-row="true"], [data-active-view="dashboard"]) > .dbToolbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-end: 100%;
+  width: 89px;
+}
+/* The zone answers only in the room the row leaves free before the tools:
+   what a title row holds besides them — a title and its "+ ⋯", a phone's
+   tab pill — and a dashboard's views and "+", though not their row's empty
+   end, are drawn over it (a flex item's z-index needs no position), each
+   pointed at and pressed as itself, as Notion's long title keeps its "+ ⋯"
+   over the zone (seen 2026-11-02). */
+[data-database-chrome][data-title-row="true"] > :not(.dbToolbar),
+[data-database-chrome][data-active-view="dashboard"] > .viewTabs > * {
+  z-index: 6;
+}
+
+/* A data tab's title row, a page layout's tabs (LayoutTabStrip) before the
+   tab's tools, splits as a views' row does, as Notion's row page and layout
+   builder (seen 2026-11-24 at 1440, a row page in two tabs at two times:
+   its tabs flex 10 1 auto from the row's start, the tools' share flex 1 1
+   auto to its end, the buttons at the share's end): a row page's "»" answers
+   in that whole share and nowhere before it, its last tab included. */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has(> [data-layout-tab-strip]) {
+  gap: 0;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has(> [data-layout-tab-strip]) > [data-layout-tab-strip] {
+  flex: 10 1 auto;
+  min-width: 0;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has(> [data-layout-tab-strip]) > .dbToolbar {
+  flex-grow: 1;
+  max-width: none;
+  justify-content: flex-end;
+}
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has(> [data-layout-tab-strip]) > .dbToolbar .dbToolbarSpacer {
+  flex-grow: 0;
+}
+[data-database-chrome]:has(> [data-layout-tab-strip]) > .dbToolbar::before {
+  content: none;
+}
+/* Folded, its "«" stays in sight at the row's end wherever the pointer is
+   (Notion's row page, seen 2026-11-24 twice: the pointer on the title or the
+   rows), its tabs taking the room the tools gave up. */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome:has(> [data-layout-tab-strip]) > .dbToolbar [data-toolbar-unfold] {
+  width: 28px;
+  opacity: 1;
+  visibility: visible;
+}

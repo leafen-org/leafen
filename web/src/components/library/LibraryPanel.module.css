@@ -1,0 +1,461 @@
+/* The library's view settings, search and row disclosure (Notion, seen
+   2026-10-02): a 290px panel at the table's right with 28px rows, 28px
+   buttons at the tab row's right, and "열기" in the names' gutter. */
+
+/* The table runs on to the window's edge; the settings beside it stop at the page's. */
+.body {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  margin-inline-end: calc(-1 * var(--library-side, 0px));
+}
+
+.body > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* It ends where the page's head and tabs end, the table's scroller giving
+   way at its line, as Notion's (seen 2026-11-14 at 1440: its line at 1038,
+   then 290 to 1329 under the tabs' row, the head's button ending there). */
+.panel {
+  overflow-x: auto;
+  display: flex;
+  flex: 0 0 291px;
+  flex-direction: column;
+  gap: 1px;
+  width: 291px;
+  margin-inline-end: var(--library-side, 0px);
+  padding: 8px;
+  border-inline-start: 1px solid var(--border-default);
+  background: var(--bg-app);
+}
+
+/* Its head is 33px, the round × 16px from the panel's end, as Notion's
+   (seen 2026-11-14: "설정 보기" 12px/500 in the secondary color 16px in, the
+   rows from 42px down). */
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 33px;
+  padding-inline: 4px 8px;
+}
+
+/* A sub page's head, as Notion's (seen 2026-11-14 at 1440: "←" 16px in a
+   24×22 button 11 from the panel's line, 6 before the root head's words,
+   its name 14px/600 on 21px lines 8 after it). */
+.panelHeader:not([data-root]) {
+  gap: 8px;
+}
+
+.panelHeader:not([data-root]) [data-library-settings-back] {
+  width: 24px;
+  margin-inline-start: -2px;
+}
+
+.panelHeader[data-root] .panelTitle {
+  padding-inline-start: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.panelClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--round-close-bg);
+  color: var(--text-secondary);
+}
+
+.panelClose svg {
+  width: 14px;
+  height: 14px;
+}
+
+.panelTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.panelIconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius);
+  color: var(--icon-secondary);
+}
+
+.panelIconButton:hover:not(:disabled),
+.panelIconButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.panelIconButton:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.panelItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.panelItem:hover,
+.panelItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.panelItemLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.panelItemValue {
+  color: var(--text-tertiary);
+}
+
+.panelSearch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  margin: 2px 0 6px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-tertiary);
+  box-shadow: var(--name-field-ring);
+}
+
+.panelSearch input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.propertyGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.groupAction {
+  height: 22px;
+  padding: 0 4px;
+  border-radius: var(--radius);
+  color: var(--accent-blue);
+  font-size: 12px;
+}
+
+.groupAction:hover:not(:disabled),
+.groupAction:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.groupAction:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+}
+
+.propertyRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.propertyRow:hover {
+  background: var(--bg-hover);
+}
+
+.propertyRow[data-shown="false"] {
+  color: var(--text-secondary);
+}
+
+.propertyIcon {
+  display: inline-flex;
+  color: var(--text-secondary);
+}
+
+.propertyName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The tab row's right: "검색" and "설정". */
+.tabActions {
+  display: flex;
+  align-items: center;
+  margin-inline-start: auto;
+}
+
+.tabAction {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+}
+
+.tabAction:hover,
+.tabAction:focus-visible,
+.tabAction[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  color: var(--text-tertiary);
+}
+
+/* A touch screen's buttons are 32px squares side by side, as Notion's
+   (seen 2026-11-14 in Safari: 🔍 pressed 282–314 × 32 at 402, 필터·정렬·
+   검색·설정 at 602, 634, 666 and 698 at 834, the last ending at the row's
+   end); a phone's row gives its field what the pill and the marks leave. */
+:global([data-phone="true"]) .tabActions {
+  min-width: 0;
+}
+
+:global([data-touch="true"]) .tabAction {
+  width: 32px;
+  height: 32px;
+}
+
+:global([data-phone="true"]) .searchBox {
+  min-width: 0;
+}
+
+.searchBox input {
+  width: 146px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* "열기" sits in the gutter left of a name. */
+/* A row's ▶ is Notion's caret by 16px words (12.8px), dark where the row
+   has pages of its own and grey on a row without, under the pointer, as
+   Notion's library (seen 2026-11-14 at 1440: rgb(230, 229, 227) and
+   rgb(173, 169, 163) dark). */
+.rowToggle {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius);
+  color: var(--icon-primary);
+  font-size: 16px;
+  transform: translateY(-50%);
+}
+
+.rowToggle svg {
+  transition: transform 0.12s;
+}
+
+.rowToggle[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+/* A page without pages of its own shows its toggle under the pointer, as Notion's library. */
+.rowToggle[data-empty="true"] {
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+
+[data-library-row]:hover .rowToggle[data-empty="true"],
+.rowToggle[data-empty="true"]:focus-visible {
+  opacity: 1;
+}
+
+/* A touch screen has no pointer to bring it out: every row shows its ▶,
+   dark, 4px into the gutter and 10px down, level with the row's "열기", as
+   Notion's library on an iPhone and an iPad (seen 2026-11-14: every row's ▶
+   rgb(56, 56, 54), 36–60 by a column at 32 at 402, 108–132 by one at 104
+   and 10 under a 37px row's top at 834). */
+:global([data-touch="true"]) .rowToggle[data-empty="true"] {
+  opacity: 1;
+}
+
+:global([data-touch="true"]) .rowToggle {
+  top: 10px;
+  margin-inline-start: 4px;
+  color: var(--icon-primary);
+  transform: none;
+}
+
+.rowToggle:hover,
+.rowToggle:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.addInside {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  margin-inline-start: 2px;
+  padding: 0 6px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* An open page's "새 페이지 추가하기" sits its "+" 8px before its pages' icons,
+   the words 7px after it, as Notion's library (seen 2026-11-13: + at 423, words
+   at 446 under pages whose icons start at 431). */
+[data-library-add-row] .addInside {
+  gap: 7px;
+  margin-inline-start: -5px;
+  padding-inline-end: 8px;
+}
+
+.addInside:hover,
+.addInside:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+/* "필터" asks which column to filter by under itself. */
+.filterWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tabAction[data-active="true"] {
+  color: var(--accent-blue);
+}
+
+.menuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.filterMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 40;
+  /* The advanced filter's rules are wider than the columns' list. */
+  width: max-content;
+  min-width: 290px;
+  max-width: calc(100vw - 32px);
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A group's head row: its name and, in gray, how many pages it holds. */
+/* The element in the selector outranks LibraryView.module.css .row on the same element
+   whatever order the stylesheets load in. */
+div.groupRow {
+  border-bottom: 0;
+}
+
+/* A group's ▶ stands by its 14px name, as a database table's group:
+   11.2px in the words' own colour (Notion's library, seen 2026-11-14). */
+.groupRow .rowToggle {
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.groupLabel {
+  margin-inline-start: 2px;
+  padding: 0 6px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupCount {
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+
+/* Where a dragged column lands: a blue line before or after the header or row. */
+[data-library-drop="before"] {
+  box-shadow: inset calc(2px * var(--inline-sign, 1)) 0 0 var(--accent-blue);
+}
+
+[data-library-drop="after"] {
+  box-shadow: inset calc(-2px * var(--inline-sign, 1)) 0 0 var(--accent-blue);
+}
+
+.propertyHandle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 14px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}

@@ -1,0 +1,331 @@
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"flag"
+	"log/slog"
+	"os"
+	"path/filepath"
+	"reflect"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/reearth/ygo/crdt"
+	"github.com/reearth/ygo/persistence"
+	"github.com/reearth/ygo/persistence/sqlite"
+)
+
+// TestParseOrigins locks in the whitespace-trimming + drop-empties behavior of
+// the -origins flag. A naive strings.Split (no TrimSpace) would leave a
+// " https://b.com" entry that never matches an Origin header — the spaced cases
+// below fail against that naive version and pass only with parseOrigins.
+func TestParseOrigins(t *testing.T) {
+	cases := []struct {
+		name string
+		in   string
+		want []string
+	}{
+		{"empty", "", nil},
+		{"whitespace only", "   ", nil},
+		{"single", "https://a.com", []string{"https://a.com"}},
+		{"space after comma", "https://a.com, https://b.com", []string{"https://a.com", "https://b.com"}},
+		{"surrounding spaces and tab", "  https://a.com ,\thttps://b.com  ", []string{"https://a.com", "https://b.com"}},
+		{"empty entries dropped", "https://a.com,,https://b.com,", []string{"https://a.com", "https://b.com"}},
+		{"commas and spaces only", " , , ", nil},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			if got := parseOrigins(c.in); !reflect.DeepEqual(got, c.want) {
+				t.Fatalf("parseOrigins(%q) = %#v, want %#v", c.in, got, c.want)
+			}
+		})
+	}
+}
+
+// TestParseFlags_DefaultAddrIsLoopback locks in the secure-by-default bind
+// (S-2): a fresh ygo-server, wiring no authentication, must listen only on
+// loopback so it is not silently exposed to the network. An operator who wants
+// a public bind has to opt in explicitly via -addr.
+func TestParseFlags_DefaultAddrIsLoopback(t *testing.T) {
+	cfg, err := parseFlags(nil)
+	if err != nil {
+		t.Fatalf("parseFlags: %v", err)
+	}
+	if cfg.Addr != "127.0.0.1:1234" {
+		t.Fatalf("default -addr = %q, want %q (secure-by-default loopback bind)", cfg.Addr, "127.0.0.1:1234")
+	}
+}
+
+// TestIsPublicBindAddr classifies listen addresses: a wildcard/empty host or a
+// non-loopback IP/hostname is "public" (network-reachable); loopback is not.
+func TestIsPublicBindAddr(t *testing.T) {
+	cases := []struct {
+		addr string
+		want bool
+	}{
+		{":1234", true},             // empty host = all interfaces
+		{"0.0.0.0:1234", true},      // IPv4 wildcard
+		{"[::]:1234", true},         // IPv6 wildcard
+		{"192.168.1.10:1234", true}, // LAN IP
+		{"example.com:1234", true},  // hostname — cannot prove loopback
+		{"127.0.0.1:1234", false},   // IPv4 loopback
+		{"[::1]:1234", false},       // IPv6 loopback
+		{"localhost:1234", false},   // loopback name
+	}
+	for _, c := range cases {
+		if got := isPublicBindAddr(c.addr); got != c.want {
+			t.Errorf("isPublicBindAddr(%q) = %v, want %v", c.addr, got, c.want)
+		}
+	}
+}
+
+// TestWarnIfInsecureBind_FiresOnlyWhenPublic verifies the loud SECURITY warning
+// is emitted for a public bind and stays silent for the loopback default.
+func TestWarnIfInsecureBind_FiresOnlyWhenPublic(t *testing.T) {
+	var pub bytes.Buffer
+	warnIfInsecureBind(newLoggerTo(&pub, "text"), "0.0.0.0:1234")
+	if !strings.Contains(pub.String(), "SECURITY") {
+		t.Fatalf("expected a SECURITY warning for a public bind, got: %q", pub.String())
+	}
+
+	var loop bytes.Buffer
+	warnIfInsecureBind(newLoggerTo(&loop, "text"), "127.0.0.1:1234")
+	if loop.Len() != 0 {
+		t.Fatalf("expected no warning for the loopback bind, got: %q", loop.String())
+	}
+}
+
+// TestNewLogger_FormatSelection verifies the -log flag actually changes the
+// handler: "json" emits JSON; "text" and unknown values emit text. This is the
+// primitive the fatal-exit path relies on via slog.SetDefault(newLogger(cfg.Log)).
+func TestNewLogger_FormatSelection(t *testing.T) {
+	var jbuf bytes.Buffer
+	newLoggerTo(&jbuf, "json").Info("hello", "k", "v")
+	if !json.Valid(bytes.TrimSpace(jbuf.Bytes())) {
+		t.Fatalf("json format: output is not valid JSON: %q", jbuf.String())
+	}
+	for _, format := range []string{"text", "weird-unknown"} {
+		var tbuf bytes.Buffer
+		newLoggerTo(&tbuf, format).Info("hello", "k", "v")
+		out := tbuf.String()
+		if json.Valid(bytes.TrimSpace(tbuf.Bytes())) {
+			t.Fatalf("format %q: expected text handler, got JSON: %q", format, out)
+		}
+		if !strings.Contains(out, "msg=hello") || !strings.Contains(out, "k=v") {
+			t.Fatalf("format %q: text output missing key=value: %q", format, out)
+		}
+	}
+}
+
+// TestDefaultLogger_HonorsFormat covers the Fix-4 wiring directly: main() does
+// slog.SetDefault(newLogger(cfg.Log)), so the fatal-exit slog.Error must emit in
+// the chosen format. Asserting SetDefault(json logger) makes the package-default
+// slog.Error output JSON proves the fatal path honors -log.
+func TestDefaultLogger_HonorsFormat(t *testing.T) {
+	orig := slog.Default()
+	t.Cleanup(func() { slog.SetDefault(orig) })
+
+	var buf bytes.Buffer
+	slog.SetDefault(newLoggerTo(&buf, "json"))
+	slog.Error("boom", "err", "x") // mirrors main()'s fatal-exit log
+	if !json.Valid(bytes.TrimSpace(buf.Bytes())) {
+		t.Fatalf("default logger after SetDefault(json) not JSON: %q", buf.String())
+	}
+}
+
+// TestRealMain_ExitCodes verifies argument-parsing exit codes: -h/--help is an
+// explicit request (exit 0), an unknown flag is bad usage (exit 2). Both return
+// before run(), so they don't block. (The success path is covered by TestRun_*.)
+func TestRealMain_ExitCodes(t *testing.T) {
+	if code := realMain([]string{"-h"}); code != 0 {
+		t.Fatalf("realMain(-h) = %d, want 0", code)
+	}
+	if code := realMain([]string{"--help"}); code != 0 {
+		t.Fatalf("realMain(--help) = %d, want 0", code)
+	}
+	if code := realMain([]string{"--definitely-not-a-flag"}); code != 2 {
+		t.Fatalf("realMain(bad flag) = %d, want 2", code)
+	}
+}
+
+// Persistence survives a simulated restart: store an update via the same
+// LegacyAdapter+sqlite the binary wires, close, reopen, and load it back.
+func TestServer_PersistenceAcrossRestart(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "srv.db")
+	// Build a valid V1 update for room "doc".
+	d := crdt.New(crdt.WithClientID(1))
+	txt := d.GetText("t")
+	d.Transact(func(tx *crdt.Transaction) { txt.Insert(tx, 0, "hi", nil) })
+	upd := crdt.EncodeStateAsUpdateV1(d, nil)
+
+	s1, err := sqlite.Open(path)
+	if err != nil {
+		t.Fatalf("open: %v", err)
+	}
+	a1 := persistence.NewLegacyAdapter(s1)
+	if err := a1.StoreUpdate("doc", upd); err != nil {
+		t.Fatalf("store: %v", err)
+	}
+	if err := s1.Close(); err != nil {
+		t.Fatalf("close: %v", err)
+	}
+
+	// Reopen (simulated restart) and load.
+	s2, err := sqlite.Open(path)
+	if err != nil {
+		t.Fatalf("reopen: %v", err)
+	}
+	defer s2.Close()
+	a2 := persistence.NewLegacyAdapter(s2)
+	loaded, err := a2.LoadDoc("doc")
+	if err != nil || loaded == nil {
+		t.Fatalf("loaddoc: blob=%v err=%v", loaded, err)
+	}
+	dd := crdt.New()
+	if err := crdt.ApplyUpdateV1(dd, loaded, nil); err != nil {
+		t.Fatalf("apply: %v", err)
+	}
+	if got := dd.GetText("t").ToString(); got != "hi" {
+		t.Fatalf("restored text = %q want %q", got, "hi")
+	}
+}
+
+// run() must start, serve, and shut down cleanly on context cancel.
+func TestRun_StartsAndShutsDown(t *testing.T) {
+	cfg := Config{Addr: "127.0.0.1:0", Store: filepath.Join(t.TempDir(), "s.db"), MaxMessageBytes: 1 << 20}
+	ctx, cancel := context.WithCancel(context.Background())
+	errCh := make(chan error, 1)
+	ready := make(chan struct{})
+	go func() { errCh <- run(ctx, cfg, ready) }()
+	select {
+	case <-ready:
+	case <-time.After(5 * time.Second):
+		t.Fatal("server did not become ready")
+	}
+	cancel()
+	select {
+	case err := <-errCh:
+		if err != nil {
+			t.Fatalf("run returned error: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("run did not shut down")
+	}
+}
+
+// run() with an empty Store opens the ephemeral in-memory backend (no
+// NewServer/no-persistence branch): it must wire, become ready, and close the
+// store cleanly on cancel.
+func TestRun_InMemoryStore_StartsAndShutsDown(t *testing.T) {
+	cfg := Config{Addr: "127.0.0.1:0", Store: "", MaxMessageBytes: 1 << 20}
+	ctx, cancel := context.WithCancel(context.Background())
+	errCh := make(chan error, 1)
+	ready := make(chan struct{})
+	go func() { errCh <- run(ctx, cfg, ready) }()
+	select {
+	case <-ready:
+	case <-time.After(5 * time.Second):
+		t.Fatal("server did not become ready")
+	}
+	cancel()
+	select {
+	case err := <-errCh:
+		if err != nil {
+			t.Fatalf("run returned error: %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("run did not shut down")
+	}
+}
+
+// Auto-versioning is off unless asked for: both flags default to zero, which is
+// what keeps a default run from writing periodic versions nobody requested.
+func TestUnit_ParseFlags_AutoVersioningDefaultsOff(t *testing.T) {
+	cfg, err := parseFlags(nil)
+	if err != nil {
+		t.Fatalf("parseFlags(nil): %v", err)
+	}
+	if cfg.VersionInterval != 0 {
+		t.Errorf("VersionInterval = %v, want 0 (disabled)", cfg.VersionInterval)
+	}
+	if cfg.KeepSnapshots != 0 {
+		t.Errorf("KeepSnapshots = %d, want 0 (keep all)", cfg.KeepSnapshots)
+	}
+}
+
+func TestUnit_ParseFlags_AutoVersioningFlags(t *testing.T) {
+	cfg, err := parseFlags([]string{"-version-interval", "15m", "-keep-snapshots", "50"})
+	if err != nil {
+		t.Fatalf("parseFlags: %v", err)
+	}
+	if cfg.VersionInterval != 15*time.Minute {
+		t.Errorf("VersionInterval = %v, want 15m", cfg.VersionInterval)
+	}
+	if cfg.KeepSnapshots != 50 {
+		t.Errorf("KeepSnapshots = %d, want 50", cfg.KeepSnapshots)
+	}
+}
+
+// -keep-snapshots without -version-interval is inert, because retention runs
+// only when a version is captured. The operator must be told, or they will
+// believe a bound is being enforced that is not.
+func TestUnit_KeepSnapshotsWithoutInterval_Warns(t *testing.T) {
+	cases := []struct {
+		name       string
+		args       []string
+		wantWarned bool
+	}{
+		{"retention without capture", []string{"-keep-snapshots", "50"}, true},
+		{"both set", []string{"-keep-snapshots", "50", "-version-interval", "15m"}, false},
+		{"neither set", nil, false},
+		{"capture without retention", []string{"-version-interval", "15m"}, false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg, err := parseFlags(tc.args)
+			if err != nil {
+				t.Fatalf("parseFlags: %v", err)
+			}
+			var buf bytes.Buffer
+			// Exercises the production function run() calls, not a restatement
+			// of its condition.
+			warnIfInertRetention(newLoggerTo(&buf, "text"), cfg)
+			warned := strings.Contains(buf.String(), "-keep-snapshots has no effect")
+			if warned != tc.wantWarned {
+				t.Fatalf("warned = %v, want %v (log: %q)", warned, tc.wantWarned, buf.String())
+			}
+		})
+	}
+}
+
+// Every flag must appear in the package doc's "# Usage" block. This is not
+// ceremony: -awareness-expiry and -max-awareness-clients had both shipped
+// without ever being added there, and nothing noticed until someone read the
+// two lists side by side.
+func TestUnit_PackageDocUsage_ListsEveryFlag(t *testing.T) {
+	src, err := os.ReadFile("main.go")
+	if err != nil {
+		t.Fatalf("read main.go: %v", err)
+	}
+	// The Usage block runs from "# Usage" to the end of the doc comment.
+	doc := string(src)
+	start := strings.Index(doc, "// # Usage")
+	end := strings.Index(doc, "\npackage main")
+	if start < 0 || end < 0 || end < start {
+		t.Fatalf("could not locate the package doc Usage block (start=%d end=%d)", start, end)
+	}
+	usage := doc[start:end]
+
+	var missing []string
+	newFlagSet(&Config{}).VisitAll(func(f *flag.Flag) {
+		if !strings.Contains(usage, "-"+f.Name) {
+			missing = append(missing, f.Name)
+		}
+	})
+	if len(missing) > 0 {
+		t.Fatalf("flags declared but absent from the package doc Usage block: %v", missing)
+	}
+}

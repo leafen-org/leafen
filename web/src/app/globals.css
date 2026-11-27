@@ -1,0 +1,747 @@
+/* ============================================================
+   Design tokens — a Notion-inspired visual language (own implementation)
+   ============================================================ */
+/* A part drawn light inside a dark window (a light published site, its
+   preview in the site editor) takes these again. */
+:root,
+[data-theme="light"] {
+  /* The window's height for the app, less the developer bar's while it
+     shows (developerMode.ts). */
+  --app-height: calc(100vh - var(--developer-bar-height, 0px));
+  /* Text and icon colors: Notion's tokens (seen 2026-10-11) — text texPri,
+     texSec, texTer (faint: placeholders, section labels, meta, "+ 새
+     페이지"), texDis and texAccPri (the sidebar's page names); icons icoPri
+     (the top bar's), icoSec (toolbars, chrome) and icoTer (block handles,
+     "+" beside faint text). */
+  --text-default: #2c2c2b;
+  --text-secondary: #7d7a75;
+  --file-kind-word: rgb(56, 125, 201);
+  --file-kind-sheet: rgb(80, 148, 110);
+  --file-kind-slides: rgb(210, 123, 45);
+  --file-kind-pdf: rgb(229, 100, 88);
+  /* Hangul's own sky blue beside Word's blue; dark keeps its hue at Word's dark lightness. */
+  --file-kind-hwp: rgb(26, 155, 215);
+  --text-tertiary: #a19e99;
+  --text-accent-secondary: #5f5e59;
+  --icon-primary: #383836;
+  --icon-secondary: #8e8b86;
+  --icon-tertiary: #ada9a3;
+  --text-placeholder: rgb(112, 110, 107);
+  /* An empty title's hint — a page's "새 페이지", a database's "새 데이터베이스",
+     a template's or form's name — as Notion's page title placeholder color
+     (#37352f26, dark #373737; read 2026-11-08). */
+  --text-title-placeholder: rgba(55, 53, 47, 0.15);
+  --text-on-dark: rgba(255, 255, 255, 0.9);
+  /* Compatibility aliases used by component modules. Keep every global
+     semantic token defined so an unsupported var() never invalidates an
+     entire declaration in either theme. */
+  --text-primary: var(--text-default);
+  --text-disabled: #bcbab6;
+
+  /* Surfaces */
+  /* Surfaces and borders: Notion's tokens (seen 2026-10-11) — bacPri #fff,
+     bacSec #f9f8f7 (the sidebar), bacEle (menus), hover rgba(33,27,23,.05)
+     (bacInt over white), borPri #e6e5e3, borSec (table lines, its .07
+     alpha), borStr #d4d3cf; menus shaOutLg. */
+  --bg-app: #ffffff;
+  --bg-sidebar: #f9f8f7;
+  --bg-elevated: #ffffff;
+  --media-tools-bg: #ffffff;
+  /* Notion's butGroBac: a small group of buttons over a row, as the inbox's
+     (seen 2026-11-06; dark #2f2f2f). */
+  --bg-button-group: #ffffff;
+  --media-tools-shadow: 0 8px 12px rgba(25, 25, 25, 0.027), 0 2px 6px rgba(25, 25, 25, 0.027), 0 0 0 1px rgba(42, 28, 0, 0.07);
+  /* Notion's bacEle: what its workspace switcher lays inside the popover, the
+     same as a menu's in light, #202020 in dark (seen 2026-10-27). */
+  --bg-element: #ffffff;
+  --bg-hover: rgba(33, 27, 23, 0.05);
+  /* A chosen view tab's pill, Notion's rgba(33, 27, 23, 0.05) (seen 2026-10-11). */
+  --bg-tab-selected: rgba(33, 27, 23, 0.05);
+  /* An empty media or link block's row and link field, and the dashed edge
+     of its drop area: Notion's rgba(66, 35, 3, 0.03) and borSec (seen
+     2026-10-18, light). */
+  --bg-block-empty: rgba(66, 35, 3, 0.03);
+  /* Where an image or embed couldn't be loaded: Notion's embed placeholder
+     (seen 2026-10-20, light). */
+  --bg-embed-placeholder: rgb(242, 241, 238);
+  --border-secondary: #f0efed;
+  --bg-active: var(--bg-selected);
+  --bg-selected: #e7e6e2;
+  /* Chosen text, as Notion's light theme draws it (seen 2026-10-31). */
+  --text-selection: rgba(35, 131, 226, 0.28);
+  --bg-block-selected: rgba(35, 131, 226, 0.14);
+  --bg-overlay: rgba(15, 15, 15, 0.6);
+  --bg-soft: #f9f8f7;
+  --bg-muted: rgba(247, 246, 243, 0.55);
+  --bg-muted-strong: rgba(247, 246, 243, 0.7);
+  --bg-floating-control: rgba(255, 255, 255, 0.94);
+  --bg-floating-control-hover: #ffffff;
+  --bg-table-header: rgb(247, 246, 243);
+  --bg-default: var(--bg-app);
+  --bg-secondary: var(--bg-soft);
+  --surface-default: var(--bg-app);
+  --surface-hover: var(--bg-hover);
+
+  /* Borders / dividers */
+  --border-default: #e6e5e3;
+  --border-strong: #d4d3cf;
+  --border-subtle: rgba(42, 28, 0, 0.07);
+  /* A workspace's letter or mark sits on this, as Notion's (its bacTerTra, seen
+     2026-11-10: #2a1c0012, dark #fffff315); a teamspace's on iconPalette.css's. */
+  --letter-icon-bg: var(--border-subtle);
+  /* A round close's ground (Notion's settings panel: seen 2026-11-03 light, 2026-11-05 dark). */
+  --round-close-bg: var(--border-subtle);
+  /* The orange dot on what the viewer changed and has not saved for everyone: the same in dark (Notion's, seen 2026-11-05). */
+  --unsaved-dot: rgb(213, 128, 59);
+  /* A filter's search field and its options' boxes (Notion's dark values seen 2026-11-05; light as before). */
+  --filter-field-bg: var(--bg-secondary);
+  --filter-field-ring: inset 0 0 0 1px var(--border-default);
+  --filter-check-ring: inset 0 0 0 1.5px var(--text-tertiary);
+  --filter-text-focus: var(--name-field-ring-focus);
+  /* A view search's matches (Notion's: seen 2026-11-03; rgb(68, 65, 55) in dark, 2026-11-05). */
+  --view-search-mark: rgba(255, 205, 56, 0.4);
+  /* A field in a menu or panel, as Notion's (dark seen 2026-11-05; light 2026-11-22, a board's "새 그룹"): bacSecTra, no ring. */
+  --menu-field-bg: rgba(66, 35, 3, 0.03);
+  --menu-field-ring: none;
+  /* People's pictures on Notion's circle (seen 2026-10-07, again 2026-11-09):
+     white with a faint ring, a first letter in gray; a line icon a person
+     picked on the same. */
+  --avatar-bg: #ffffff;
+  --avatar-ring: rgba(42, 28, 0, 0.07);
+  --avatar-letter-fg: rgb(142, 139, 134);
+  --avatar-icon-fg: #55534e;
+  /* One's own picture on 설정 › 계정, Notion's photo button (seen 2026-11-09):
+     a tinted circle in a hairline, the letter in the text's color. */
+  --avatar-profile-bg: rgba(55, 53, 47, 0.06);
+  --avatar-profile-ring: 0 0 0 1px rgba(84, 72, 49, 0.15);
+  --avatar-profile-letter-fg: rgb(56, 56, 54);
+
+  /* Accent; a blue button's hover and press as Notion's (app/buttonPress.css). */
+  --accent-blue: rgb(39, 131, 222);
+  --accent-blue-hover: rgb(31, 118, 204);
+  /* A blue mark's hover tint, as Notion's caBluBacIntTra (a comment's send). */
+  --accent-blue-tint: rgba(0, 121, 228, 0.075);
+  /* Text suggested in, as Notion's palUiBlu700 (#105fad light, #4fa7ff dark, seen 2026-11-14). */
+  --suggestion-insert-text: #105fad;
+  /* A suggested edit's tint and the line under it, closed and with its card
+     open, as Notion's (seen 2026-11-15): light .036 over .1, open .07 over .4;
+     dark .054 over .15, open .11 over .6 — blue for words suggested in or
+     restyled, gray for words suggested away. */
+  --suggestion-insert-tint: rgba(35, 131, 226, 0.036);
+  --suggestion-insert-line: rgba(35, 131, 226, 0.1);
+  --suggestion-insert-open-tint: rgba(35, 131, 226, 0.07);
+  --suggestion-insert-open-line: rgba(35, 131, 226, 0.4);
+  --suggestion-delete-tint: rgba(120, 119, 116, 0.036);
+  --suggestion-delete-line: rgba(120, 119, 116, 0.1);
+  --suggestion-delete-open-tint: rgba(120, 119, 116, 0.07);
+  --suggestion-delete-open-line: rgba(120, 119, 116, 0.4);
+  /* Words and icons on a blue button, as Notion's bluTexInvPri and bluIcoInvPri
+     (#f3f9fd in light and dark, seen 2026-10-27). */
+  --accent-blue-text: #f3f9fd;
+  /* Notion's bluTexTer (#83abe1 light, #355f8b dark, seen 2026-11-12): a form question's ring. */
+  --blue-text-tertiary: #83abe1;
+  --danger: var(--c-accent-red); /* A failure: Notion's redTexAccPri, #e56458 in both themes (2026-11-24). */
+  /* A menu's delete row under the pointer (block, page, view, comment menus) or a row Notion reds at
+     rest (a settings table's "팀스페이스 보관", "권한 규칙 삭제"): its redTexAccPri, #e56458 in both themes
+     (2026-11-06; theme rules read 2026-11-24). Errors keep --danger. */
+  --menu-danger: rgb(229, 100, 88);
+  --focus-ring: rgba(35, 131, 226, 0.38);
+  /* A control the keyboard reached, as Notion's butBluFocRin (seen
+     2026-10-29): 2px of the page, 2px of blue and a faint 2px edge. */
+  --keyboard-focus-ring: 0 0 0 2px #f8f8f7, 0 0 0 4px #2383e2, 0 0 0 6px rgba(255, 255, 255, 0.25);
+  /* A menu's search being typed in: 1px of blue inside and 1px outside, as
+     Notion's page and block menus (seen 2026-11-01). */
+  --menu-search-focus-ring: var(--name-field-ring-focus);
+  --page-find-match-bg: rgba(255, 212, 0, 0.38);
+  --page-find-active-bg: rgba(255, 176, 0, 0.72);
+  /* A page named in text: the underline under its title, the ground it takes
+     under the pointer, and the small arrow on its icon (#383836 in white,
+     dark #e6e5e3 in #202020 — Notion's, measured 2026-11-02). The underline
+     is Notion's link decoration color, the same in body text and in a
+     caption: #37352f40, dark #373737 (read 2026-11-07). */
+  --mention-underline: rgba(55, 53, 47, 0.25);
+  --link-underline: rgba(55, 53, 47, 0.4);
+  --mention-hover: rgba(148, 148, 148, 0.15);
+  --mention-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5.5h3.5V9M10.5 5.5l-5 5' stroke='%23ffffff' stroke-width='4'/%3E%3Cpath d='M7 5.5h3.5V9M10.5 5.5l-5 5' stroke='%23383836' stroke-width='1.5'/%3E%3C/svg%3E");
+  /* A backlink popover's page title line, as Notion's (seen 2026-10-29). */
+  --backlink-underline: rgba(28, 19, 1, 0.11);
+  /* A divider block's line, as Notion's (seen 2026-10-31). */
+  --block-divider: rgba(28, 19, 1, 0.11);
+  /* The line under a page's discussion under its title or a database
+     page's properties, Notion's layout divider (seen 2026-11-12). */
+  --title-discussion-divider: rgba(55, 53, 47, 0.09);
+  /* A to-do's box under the pointer (Notion, seen 2026-10-31). */
+  --bg-check-hover: rgba(66, 35, 3, 0.047);
+  /* A permanent delete's answer: red words on a faint red outline (Notion, 2026-10-29). */
+  --danger-outline-text: rgb(229, 100, 88);
+  --danger-outline-border: rgba(206, 24, 0, 0.165);
+  --danger-outline-hover: var(--bg-hover);
+  --board-card-shadow: 0 4px 12px rgba(25, 25, 25, 0.027), 0 1px 2px rgba(25, 25, 25, 0.02);
+
+  /* Block / callout palette: Notion's text colors, the same in light and dark
+     (seen 2026-10-25, a colored line's text and the "/" menu's color "A"). */
+  --c-default: rgb(44, 44, 43);
+  --c-gray: rgb(125, 122, 117);
+  --c-brown: rgb(159, 118, 90);
+  --c-orange: rgb(210, 123, 45);
+  --c-yellow: rgb(203, 148, 52);
+  --c-green: rgb(80, 148, 110);
+  --c-blue: rgb(56, 125, 201);
+  --c-purple: rgb(154, 107, 180);
+  --c-pink: rgb(193, 76, 138);
+  --c-red: rgb(207, 81, 72);
+  /* A chart's one-color "회색" theme, dark gray on a light page (Notion's, seen 2026-11-12). */
+  --chart-gray-theme: 98, 97, 93;
+  /* A chart's reference lines by their color, and their swatches: Notion's own tones for them on a light page
+     ("검정색" first, then "옅은 회색"; seen 2026-11-12 in its chart code, the dark ones drawn). */
+  --chart-line-default: #55534e;
+  --chart-line-gray: #a6a299;
+  --chart-line-brown: #9f6b53;
+  --chart-line-yellow: #cb912f;
+  --chart-line-orange: #d9730d;
+  --chart-line-green: #448361;
+  --chart-line-blue: #337ea9;
+  --chart-line-purple: #9065b0;
+  --chart-line-pink: #c14c8a;
+  --chart-line-red: #d44c47;
+  /* The red of an unread mark (the inbox's, a workspace's), as Notion's (seen 2026-10-07). */
+  --unread-mark: rgb(229, 100, 88);
+  /* A phone page's ☰ count, a gray pill, as Notion's (seen 2026-11-12/13). */
+  --phone-menu-badge-bg: #e6e5e3;
+  --phone-menu-badge-fg: rgb(142, 139, 134);
+
+  /* A number's bar and ring, in Notion's accent colors (seen 2026-09-30),
+     the same in the dark theme (Notion's *AccPri tokens, seen 2026-11-11:
+     a status's dot rgb(142, 139, 134), rgb(39, 131, 222), rgb(70, 161, 113)). */
+  --c-accent-default: rgb(56, 56, 54);
+  --c-accent-gray: rgb(142, 139, 134);
+  --c-accent-brown: rgb(182, 137, 101);
+  --c-accent-orange: rgb(213, 128, 59);
+  --c-accent-yellow: rgb(216, 163, 47);
+  --c-accent-green: rgb(70, 161, 113);
+  --c-accent-blue: rgb(39, 131, 222);
+  --c-accent-purple: rgb(181, 119, 214);
+  --c-accent-pink: rgb(219, 105, 153);
+  --c-accent-red: rgb(229, 100, 88);
+  --danger-fill: #e56458; /* Any filled destructive answer: Notion's redBacAccPri and, on it, */
+  --danger-fill-text: rgb(253, 246, 246); /* its redTexInvPri, the same in both themes (2026-11-24). */
+  /* Notion's soft red button, as its settings' "팀스페이스 보관" and a member's "팀스페이스 나가기"
+     (redBacSecTra with redTexAccPri, 2026-11-11): half again as strong hovered, twice pressed. */
+  --danger-soft-bg: rgba(223, 22, 0, 0.094);
+  --danger-soft-bg-hover: rgba(223, 22, 0, 0.141);
+  --danger-soft-bg-active: rgba(223, 22, 0, 0.188);
+  --danger-soft-text: rgb(229, 100, 88);
+  /* The day that is today, the same red in both themes (Notion's, seen 2026-11-04). */
+  --today-circle-bg: rgb(229, 100, 88);
+  --today-circle-text: #fff;
+  /* A raised card or button, Notion's shaOutSm (its sidebar card, seen 2026-11-24), and a calendar card lifted so in the dark. */
+  --calendar-card-bg: var(--bg-app); --calendar-card-shadow: var(--shadow-outline-small);
+  --shadow-outline-small: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 0 1px var(--border-subtle);
+  /* An automation field and its mention chips, as Notion's (seen 2026-10-25): bacSecTra behind the field, palGra100
+     behind what a run gives, bluBacSecTra and bluTexAccPri for a variable an earlier action defines. */
+  --automation-field-bg: rgba(66, 35, 3, 0.03);
+  /* A person value's "다음으로 교체… ⌄", Notion's palGra500 (seen 2026-11-11). */
+  --automation-mode-text: #73726e;
+  /* An action's mark box in an automation's or a button's card, as Notion's gray, blue and red bacSecTra (seen 2026-10-31). */
+  --action-mark-gray-bg: rgba(42, 28, 0, 0.07);
+  --action-mark-blue-bg: rgba(0, 124, 215, 0.094);
+  /* The same blue mark under the pointer, as Notion's filter pill (seen 2026-10-01). */
+  --action-mark-blue-bg-hover: rgba(0, 124, 215, 0.141);
+  --action-mark-red-bg: rgba(223, 22, 0, 0.094);
+  /* A trigger or action card's drop under its ring, as Notion's (seen 2026-11-15: light A90 .04, dark desktop .08). */
+  --automation-card-drop: rgba(0, 0, 0, 0.04);
+  /* A closed form's notice: red words on a red wash (Notion's dark, seen 2026-11-05; light not measured). */
+  --form-closed-bg: rgba(223, 22, 0, 0.094);
+  --form-closed-text: rgb(207, 81, 72);
+  /* A field in an account card, as Notion's (bacSecTra, seen 2026-10-30). */
+  --card-field-bg: rgba(66, 35, 3, 0.03);
+  /* A layout card's settings' search, as Notion's (bacSecTra, seen 2026-11-01). */
+  --layout-search-bg: rgba(66, 35, 3, 0.03);
+  /* A new relation's search and name, as Notion's (bacSecTra, seen 2026-11-02). */
+  --relation-field-bg: rgba(66, 35, 3, 0.03);
+  /* A value picker over its cell — a select's, a status's, a person's, a
+     relation's, a date's, a place's — as Notion's (seen 2026-11-12 at 1440,
+     both themes): rounded 6, not a menu's 10; the field across its top a
+     faint strip with a faint line along its foot. */
+  --picker-radius: 6px;
+  --picker-field-bg: rgba(242, 241, 238, 0.6);
+  --picker-field-line: rgba(28, 19, 1, 0.11);
+  /* A board column's wash under "열 배경색", by its option's color, as
+     Notion's (seen 2026-11-02, light): default, gray and no value alike. */
+  /* A date picker's days of the months either side, as Notion's (seen 2026-11-02). */
+  --date-outside-text: rgb(139, 152, 152);
+  --board-col-bg: rgba(66, 35, 3, 0.03);
+  --board-col-bg-brown: rgba(115, 59, 3, 0.035);
+  --board-col-bg-orange: rgba(186, 72, 3, 0.043);
+  --board-col-bg-yellow: rgba(207, 175, 0, 0.063);
+  --board-col-bg-green: rgba(3, 87, 31, 0.035);
+  --board-col-bg-blue: rgba(0, 128, 213, 0.047);
+  --board-col-bg-purple: rgba(98, 3, 161, 0.03);
+  --board-col-bg-pink: rgba(161, 3, 66, 0.03);
+  --board-col-bg-red: rgba(199, 3, 3, 0.035);
+  /* Notion's gray accent text, the same in both themes (its graTexAccPri,
+     seen 2026-11-01): a tab block's other tabs, a code block's toolbar. */
+  --text-gray-accent: rgb(142, 139, 134);
+  /* A code block's box (Notion's bacSecTra) and the toolbar group over it
+     (seen 2026-10-29, light; dark below). */
+  --bg-code-block: rgba(66, 35, 3, 0.03);
+  /* Its language, copy, wrap and "⋯". */
+  --fg-code-toolbar: var(--text-gray-accent);
+  --shadow-block-toolbar: rgba(25, 25, 25, 0.027) 0px 8px 12px 0px, rgba(25, 25, 25, 0.027) 0px 2px 6px 0px,
+    rgba(42, 28, 0, 0.07) 0px 0px 0px 1px;
+  /* A synced block's frame while the caret is in it, as Notion's (2026-10-31). */
+  --synced-block-frame: rgb(243, 221, 203);
+  --automation-chip-bg: rgba(84, 72, 49, 0.15);
+  --automation-variable-chip-bg: rgba(0, 124, 215, 0.094);
+  --automation-variable-chip-text: rgb(39, 131, 222);
+  --number-display-track: rgba(42, 28, 0, 0.07);
+  /* A switch turned off, as Notion's settings switches (seen 2026-09-30). */
+  --switch-off: rgba(135, 131, 120, 0.3);
+  --switch-off-phone: rgba(28, 19, 1, 0.11);
+  /* An outlined button's or box's 1px edge, Notion's borPriTra (seen 2026-10-30, 2026-11-18, 2026-11-24; high contrast in contrast.css), its white
+     button's ground whiButBac, a raised tool group's line borSecTra, a page button's ground under the pointer (2026-10-31), a choice tile's edge borPri and a chosen one's bluBorAccPri, a form file question's bar palTraGra100 (2026-11-24). */
+  --button-outline: rgba(28, 19, 1, 0.11); --white-button-bg: var(--bg-elevated); --tool-group-line: var(--border-subtle); --form-file-bar-bg: rgba(0, 0, 0, 0.06);
+  --button-outline-hover: rgb(239, 239, 238); --choice-tile-edge: var(--border-default); --choice-tile-chosen-edge: var(--accent-blue);
+
+  /* Notion's block, conditional color and callout backgrounds (2026-10-24), a gray callout's lighter here (2026-11-16). */
+  --c-bg-gray: rgb(240, 239, 237);
+  --c-callout-bg-gray: rgb(249, 248, 247);
+  --c-bg-brown: rgb(245, 237, 233);
+  --c-bg-orange: rgb(251, 235, 222);
+  --c-bg-yellow: rgb(249, 243, 220);
+  /* A notice line over a page, as Notion's template banner (seen 2026-10-10). */
+  --c-notice-yellow-bg: #f9f3dc;
+  --c-notice-yellow-text: #cb9434;
+  /* Its icon and a button's outline on it, as Notion's archived-teamspace band (yelIcoSec, yelBorStrTra, seen 2026-11-13). */
+  --c-notice-yellow-icon: #cb9434;
+  --c-notice-yellow-border: #c7960068;
+  /* The palette's yellow a warning box reads in, as Notion's inbox warns of an outside person (palYel50/500, seen 2026-11-09). */
+  --c-pal-yellow-bg: #fbf3db;
+  --c-pal-yellow-text: #cb912f;
+  /* A comment an address or an update points to: a yellow wash its text, mentions and links read on. */
+  --comment-active-bg: var(--c-bg-yellow);
+  --c-bg-green: rgb(232, 241, 236);
+  --c-bg-blue: rgb(229, 242, 252);
+  --c-bg-purple: rgb(243, 235, 249);
+  --c-bg-pink: rgb(250, 233, 241);
+  --c-bg-red: rgb(252, 233, 231);
+
+  /* Shadows */
+  /* A raised surface over the page, Notion's shaOutMd: a peek, a cover's controls (seen 2026-11-05), a timeline's bar, a card's tools, a history change's author (2026-11-24). */
+  --shadow-raised: rgba(25, 25, 25, 0.027) 0 8px 12px, rgba(25, 25, 25, 0.027) 0 2px 6px, rgba(42, 28, 0, 0.07) 0 0 0 1px;
+  --shadow-menu: 0px 20px 24px 0px rgba(25, 25, 25, 0.05), 0px 5px 8px 0px rgba(25, 25, 25, 0.027),
+    0px 0px 0px 1px rgba(42, 28, 0, 0.07);
+  --shadow-sm: 0 1px 2px rgb(15 15 15 / 4%);
+  --shadow-small: var(--shadow-sm);
+  --shadow-popover: var(--shadow-menu);
+  /* A window in the middle of the page — a dialog, a confirmation, an add,
+     settings or history window — and the shade behind it, as Notion draws
+     every one (its token sheet and dialogs, read 2026-11-08: the bookmark,
+     add-members and settings windows): bacEle white, shaOutScr, 12px round,
+     modUndBac over everything under it; dark below. Not a menu's: menus and
+     popovers keep --bg-elevated, --shadow-menu and --radius-menu. */
+  --modal-bg: #ffffff;
+  --modal-radius: 12px;
+  --shadow-modal: 0px 24px 48px 0px rgba(25, 25, 25, 0.24), 0px 4px 12px 0px rgba(25, 25, 25, 0.14),
+    0px 0px 0px 1px rgba(42, 28, 0, 0.07);
+  --modal-shade: rgba(15, 15, 15, 0.6);
+
+  /* Layout metrics */
+  --sidebar-width: 270px;
+  --sidebar-effective-width: 0px;
+  --content-max: 900px;
+  --content-pad: 96px;
+  --topbar-height: 44px;
+  /* A panel docked beside the page, as Notion's "All discussions". */
+  --page-side-panel-width: 385px;
+  /* A panel docked beside the page or the sidebar — the page's updates, its
+     discussions, an app, the pinned inbox — is the page's own layer: over the
+     page and its top bar's own level, under every menu, popover, tip and
+     window drawn over the page, whatever level each keeps (2026-11-11: the
+     page's "…" opened behind its docked updates). */
+  --layer-docked-panel: 19;
+  --radius: 6px;
+  /* Menus and popovers, as Notion's (seen 2026-10-11: row, page and sort menus 10px). */
+  --radius-menu: 10px;
+  /* A menu's row as Notion draws every standard menu's (seen 2026-10-17:
+     the page, block, sidebar row, mention and property menus): 28px, 4px 8px
+     in, round 6px, a 20px mark 8px in and the name at 36px, 14px on 20px,
+     regular weight. Menus with rows of their own (the slash menu's 32px,
+     two-line choices) say so where they draw them. */
+  --menu-row-height: 28px;
+  --menu-row-padding: 4px 8px;
+  --menu-row-radius: 6px;
+  --menu-row-gap: 8px;
+  --menu-row-font-size: 14px;
+  --menu-row-line-height: 20px;
+  /* Between a menu's rows, and the line between its groups (seen 2026-10-27:
+     the "/", "@" and block menus). */
+  --menu-row-space: 1px;
+  --menu-divider: var(--border-subtle);
+  /* A group's name and the line between groups, as Notion's menus, pickers and icon picker draw them (seen 2026-10-27,
+     2026-11-18): the name 12px/500 in the secondary gray, 6px under what is above and 8px over its first row, in a head
+     as high as the hidden 12px mark Notion stands on its baseline in the Mac system face — 14.9px on a 2x screen, 15.4px
+     on a 1x one, where Chrome rounds that face's metrics (the media rule after this block); the line 4px from the rows, 8px in. */
+  --menu-label-margin: 6px 0 8px;
+  --menu-label-padding: 0 8px;
+  --menu-label-line-height: 14.9px;
+  --menu-divider-margin: 4px 8px;
+  /* How far a menu or popover keeps from the window's edges when it would
+     run past them, as Notion's (seen 2026-11-01: the share popover, the "/"
+     menu and the block menu stop 12px in, wide and narrow windows alike). */
+  --popover-edge: 12px;
+  /* A text field as Notion's TextInput (seen 2026-11-21; 2026-11-24 its link, emoji, property name, share and menu fields): 28px, 3px 6px in, bacSecTra, 1px of
+     borPriTra outside at rest and under the pointer; typed in, inpBluFocRin (--focus, #2383e2 both themes, not the buttons' #2783de) 1px in and out, refusing
+     its words the same in red; one with its own 1px border, that and 1px out; an invite box or a select by keys, 2px clear (check-css-token-roles.mjs).
+     A form's answer as its respondents see it (typed, dated or dropped down) is rung inside in borStr instead (seen 2026-11-24). */
+  --name-field-height: 28px; --name-field-padding: 3px 6px;
+  --name-field-bg: rgba(66, 35, 3, 0.03); --name-field-ring: 0 0 0 1px var(--button-outline);
+  --name-field-ring-focus: inset 0 0 0 1px var(--focus), 0 0 0 1px var(--focus);
+  --name-field-ring-focus-out: 0 0 0 1px var(--focus); --name-field-ring-danger: inset 0 0 0 1px var(--danger), 0 0 0 1px var(--danger);
+  --name-field-ring-focus-apart: 0 0 0 2px var(--bg-app), 0 0 0 4px var(--focus), 0 0 0 6px var(--bg-app); --form-answer-ring: inset 0 0 0 1px var(--border-strong);
+  /* A floating outline's marks, as Notion's (seen 2026-11-14): faint, the
+     heading read now in the text's near color with a 3px glow of it. */
+  --outline-mark: rgba(28, 19, 1, 0.11);
+  --outline-mark-current: #32302c;
+}
+@media (max-resolution: 1dppx) { :root, [data-theme="light"] { --menu-label-line-height: 15.4px; } }
+
+/* ============================================================
+   Dark theme — Notion-accurate token overrides. Applied via
+   <html data-theme="dark"> (set by the inline pre-paint script in index.html).
+   ============================================================ */
+[data-theme="dark"] {
+  --keyboard-focus-ring: 0 0 0 2px #191919, 0 0 0 4px #2383e2, 0 0 0 6px #191919;
+  --phone-menu-badge-bg: #5f5e59;
+  --avatar-bg: rgb(37, 37, 37);
+  --avatar-ring: rgba(255, 255, 243, 0.082);
+  --menu-divider: rgba(255, 255, 243, 0.082);
+  --avatar-letter-fg: rgb(173, 169, 163);
+  --avatar-icon-fg: rgb(207, 207, 207);
+  --avatar-profile-bg: rgba(255, 255, 255, 0.055);
+  --avatar-profile-ring: 0 0 0 0 transparent;
+  --avatar-profile-letter-fg: rgb(230, 229, 227);
+  --text-default: #f0efed;
+  --text-secondary: #ada9a3;
+  --file-kind-word: rgb(131, 171, 225);
+  --file-kind-sheet: rgb(139, 183, 157);
+  --file-kind-slides: rgb(203, 162, 125);
+  --file-kind-pdf: rgb(229, 100, 88);
+  --file-kind-hwp: rgb(114, 201, 242);
+  --text-tertiary: #7d7a75;
+  --text-accent-secondary: #bcbab6;
+  --icon-primary: #e6e5e3;
+  --icon-secondary: #ada9a3;
+  --icon-tertiary: #7d7a75;
+  --text-placeholder: rgb(154, 150, 143);
+  --text-title-placeholder: #373737;
+  --text-disabled: #5f5e59;
+  --text-on-dark: rgb(240, 239, 237);
+
+  --bg-app: #191919;
+  --bg-sidebar: #202020;
+  /* Notion's popBac, every menu and popover's ground in dark (seen 2026-10-27). */
+  --bg-elevated: #252525;
+  --media-tools-bg: #202020;
+  --bg-button-group: #2f2f2f;
+  --media-tools-shadow: 0 0 0 1px rgb(56, 56, 54), 0 4px 12px -2px rgba(25, 25, 25, 0.08);
+  --bg-element: #202020;
+  --bg-hover: rgba(255, 255, 255, 0.055);
+  /* The dark values of the Notion tokens the light ones are (its token
+     sheet's .notion-dark-theme, read 2026-10-31): bacIntTra, bacSecTra,
+     borSec, borSecTra, borPriTra, whiButHovBac and oraBorPri below. */
+  --bg-tab-selected: rgba(255, 255, 255, 0.055);
+  --bg-block-empty: rgba(252, 252, 252, 0.03);
+  /* Notion's embed placeholder, its token sheet's dark embPlaBac #ffffff08
+     (read 2026-11-13, an image that couldn't be loaded). */
+  --bg-embed-placeholder: rgba(255, 255, 255, 0.03);
+  --border-secondary: #2c2c2b;
+  --bg-active: rgba(255, 255, 255, 0.105);
+  --bg-selected: rgba(35, 131, 226, 0.26);
+  --text-selection: rgba(35, 131, 226, 0.28); /* deeper than a chosen row: Notion's dark, 2026-11-15 */
+  --bg-block-selected: rgba(35, 131, 226, 0.14);
+  --bg-overlay: rgba(15, 15, 15, 0.8);
+  --bg-soft: #202020;
+  --bg-muted: rgba(255, 255, 255, 0.045);
+  --bg-muted-strong: rgba(255, 255, 255, 0.06);
+  --bg-floating-control: rgba(37, 37, 37, 0.96);
+  --bg-floating-control-hover: rgb(47, 47, 47);
+  --bg-table-header: rgba(255, 255, 255, 0.03);
+
+  --border-default: #383836;
+  --border-strong: #5f5e59;
+  --border-subtle: rgba(255, 255, 243, 0.082);
+  --letter-icon-bg: var(--border-subtle);
+  --round-close-bg: rgba(255, 255, 235, 0.1);
+  --filter-field-bg: rgba(252, 252, 252, 0.03);
+  --filter-field-ring: none;
+  --filter-check-ring: inset 0 0 0 1px rgba(255, 252, 235, 0.306);
+  --view-search-mark: rgb(68, 65, 55);
+  --menu-field-bg: rgba(252, 252, 252, 0.03); --name-field-bg: rgba(252, 252, 252, 0.03);
+  --menu-field-ring: none;
+
+  --accent-blue: rgb(39, 131, 222);
+  --accent-blue-hover: rgb(61, 144, 225);
+  --accent-blue-tint: rgba(68, 153, 255, 0.118);
+  --suggestion-insert-text: #4fa7ff;
+  --suggestion-insert-tint: rgba(35, 131, 226, 0.054);
+  --suggestion-insert-line: rgba(35, 131, 226, 0.15);
+  --suggestion-insert-open-tint: rgba(35, 131, 226, 0.11);
+  --suggestion-insert-open-line: rgba(35, 131, 226, 0.6);
+  --suggestion-delete-tint: rgba(120, 119, 116, 0.054);
+  --suggestion-delete-line: rgba(120, 119, 116, 0.15);
+  --suggestion-delete-open-tint: rgba(120, 119, 116, 0.11);
+  --suggestion-delete-open-line: rgba(120, 119, 116, 0.6);
+  --blue-text-tertiary: #355f8b;
+  --page-find-match-bg: rgba(255, 212, 0, 0.32);
+  --page-find-active-bg: rgba(255, 176, 0, 0.62);
+  --mention-underline: #373737;
+  --link-underline: rgba(255, 255, 255, 0.282);
+  --backlink-underline: rgba(255, 255, 235, 0.1);
+  --block-divider: rgba(255, 255, 235, 0.1);
+  --title-discussion-divider: rgba(255, 255, 255, 0.094);
+  --bg-check-hover: rgba(252, 252, 252, 0.047);
+  --danger-outline-text: rgb(229, 100, 88);
+  --danger-outline-border: rgba(255, 104, 92, 0.24);
+  --danger-outline-hover: rgba(255, 105, 96, 0.114);
+  --board-card-shadow: 0 2px 4px rgba(25, 25, 25, 0.08);
+  --mention-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5.5h3.5V9M10.5 5.5l-5 5' stroke='%23202020' stroke-width='4'/%3E%3Cpath d='M7 5.5h3.5V9M10.5 5.5l-5 5' stroke='%23e6e5e3' stroke-width='1.5'/%3E%3C/svg%3E");
+
+  --c-default: rgb(240, 239, 237);
+  --c-gray: rgb(125, 122, 117);
+  --c-brown: rgb(159, 118, 90);
+  --c-orange: rgb(210, 123, 45);
+  --c-yellow: rgb(203, 148, 52);
+  --c-green: rgb(80, 148, 110);
+  --c-blue: rgb(56, 125, 201);
+  --c-purple: rgb(154, 107, 180);
+  --c-pink: rgb(193, 76, 138);
+  --c-red: rgb(207, 81, 72);
+  /* A chart's one-color "회색" theme, near white on a dark page (Notion's, seen 2026-11-12). */
+  --chart-gray-theme: 227, 226, 224;
+  /* A chart's reference lines on a dark page (Notion's, seen 2026-11-12: #D3D3D3 for "검정색"). */
+  --chart-line-default: #d3d3d3;
+  --outline-mark: rgba(255, 252, 235, 0.306);
+  --outline-mark-current: #d3d3d3;
+  --chart-line-gray: #7f7f7f;
+  --chart-line-brown: #aa755f;
+  --chart-line-yellow: #ca8e1b;
+  --chart-line-orange: #d87620;
+  --chart-line-green: #2d9964;
+  --chart-line-blue: #2e7cd1;
+  --chart-line-purple: #8d5bc1;
+  --chart-line-pink: #c94079;
+  --chart-line-red: #cd4945;
+
+  /* The other accents are the light theme's, as Notion's are the same in both. */
+  --c-accent-default: var(--c-default);
+  /* Notion's dark red for warnings, errors and red marks (seen 2026-11-08,
+     automation warnings, a form's required error, red marks). */
+  --c-accent-red: rgb(229, 100, 88);
+  --danger-soft-bg: rgba(255, 104, 92, 0.239);
+  --danger-soft-bg-hover: rgba(255, 104, 92, 0.359);
+  --danger-soft-bg-active: rgba(255, 104, 92, 0.478);
+  --today-circle-text: #000;
+  --calendar-card-bg: rgb(47, 47, 47);
+  --shadow-outline-small: 0 0 0 1px rgb(56, 56, 54), 0 2px 4px rgba(25, 25, 25, 0.08); --calendar-card-shadow: var(--shadow-outline-small);
+  /* Notion's dark values of the same tokens (seen 2026-10-25 in its dark theme). */
+  --automation-field-bg: rgba(252, 252, 252, 0.03);
+  --automation-mode-text: #5a5a5a;
+  --action-mark-gray-bg: rgba(255, 255, 235, 0.102);
+  --action-mark-blue-bg: rgba(67, 155, 255, 0.239);
+  /* Notion's dark filter pill and own reaction under the pointer (seen 2026-11-06). */
+  --action-mark-blue-bg-hover: rgba(67, 155, 255, 0.359);
+  --action-mark-red-bg: rgba(255, 104, 92, 0.239);
+  --automation-card-drop: rgba(0, 0, 0, 0.08);
+  --form-closed-bg: rgba(222, 85, 85, 0.25);
+  --form-closed-text: rgba(222, 85, 81, 0.8);
+  --card-field-bg: rgba(252, 252, 252, 0.03);
+  --layout-search-bg: rgba(252, 252, 252, 0.03);
+  --relation-field-bg: rgba(252, 252, 252, 0.03);
+  /* A value picker's field and the line along its foot, as Notion's (seen 2026-11-12). */
+  --picker-field-bg: rgba(255, 255, 255, 0.03);
+  --picker-field-line: rgba(255, 255, 235, 0.1);
+  /* A date picker's days of the months either side, as light (Notion's, seen 2026-11-12). */
+  --date-outside-text: rgb(139, 152, 152);
+  /* A board column's wash, as Notion's dark *BacPriTra (seen 2026-11-16). */
+  --board-col-bg: rgba(252, 252, 252, 0.03);
+  --board-col-bg-brown: rgba(253, 158, 101, 0.05);
+  --board-col-bg-orange: rgba(254, 139, 71, 0.043);
+  --board-col-bg-yellow: rgba(255, 232, 48, 0.043);
+  --board-col-bg-green: rgba(83, 255, 140, 0.035);
+  --board-col-bg-blue: rgba(41, 139, 253, 0.063);
+  --board-col-bg-purple: rgba(196, 101, 253, 0.05);
+  --board-col-bg-pink: rgba(255, 78, 149, 0.055);
+  --board-col-bg-red: rgba(251, 107, 107, 0.047);
+  --bg-code-block: rgba(252, 252, 252, 0.03);
+  --shadow-block-toolbar: rgb(56, 56, 54) 0px 0px 0px 1px, rgba(25, 25, 25, 0.08) 0px 4px 12px -2px;
+  --synced-block-frame: #53361f;
+  --automation-chip-bg: rgb(32, 32, 32);
+  --automation-variable-chip-bg: rgba(67, 155, 255, 0.24);
+  --automation-variable-chip-text: rgb(39, 131, 222);
+  --number-display-track: rgba(255, 255, 243, 0.082);
+  --switch-off: rgba(202, 204, 206, 0.3);
+  --switch-off-phone: rgba(202, 204, 206, 0.3);
+  --button-outline: rgba(255, 255, 235, 0.1); --white-button-bg: var(--bg-elevated); --tool-group-line: var(--border-subtle); --form-file-bar-bg: rgba(255, 255, 255, 0.03);
+  --button-outline-hover: #2f2f2f; --choice-tile-edge: var(--border-default); --choice-tile-chosen-edge: var(--accent-blue);
+  --c-callout-bg-gray: rgb(56, 56, 54);
+  --c-bg-gray: rgb(56, 56, 54);
+  --c-bg-brown: rgb(69, 54, 45);
+  --c-bg-orange: rgb(83, 54, 31);
+  --c-bg-yellow: rgb(80, 68, 37);
+  --c-notice-yellow-bg: #504425;
+  --c-notice-yellow-text: #cb9434;
+  --c-notice-yellow-icon: #d8c283;
+  --c-notice-yellow-border: #ffbc3575;
+  --c-pal-yellow-bg: rgba(162, 105, 50, 0.1);
+  --c-pal-yellow-text: rgba(240, 166, 51, 0.6);
+  --comment-active-bg: rgba(255, 212, 0, 0.12);
+  --c-bg-green: rgb(38, 61, 48);
+  --c-bg-blue: rgb(35, 56, 80);
+  --c-bg-purple: rgb(60, 45, 71);
+  --c-bg-pink: rgb(78, 43, 60);
+  --c-bg-red: rgb(80, 44, 41);
+
+  --shadow-raised: rgb(56, 56, 54) 0 0 0 1px, rgba(25, 25, 25, 0.08) 0 4px 12px -2px;
+  --shadow-menu: 0px 0px 0px 1px #383836, 0px 14px 28px -6px rgba(25, 25, 25, 0.2),
+    0px 2px 4px -1px rgba(25, 25, 25, 0.118);
+  /* A window's ground is Notion's bacEle #202020, not the menus' #252525. */
+  --modal-bg: #202020;
+  --shadow-modal: 0px 0px 0px 1px #383836, 0px 24px 48px 0px rgba(25, 25, 25, 0.64),
+    0px 4px 12px 0px rgba(25, 25, 25, 0.56);
+  --modal-shade: rgba(15, 15, 15, 0.8);
+  --shadow-sm: rgba(0, 0, 0, 0.16) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.22) 0px 2px 5px;
+
+  color-scheme: dark;
+}
+
+:root {
+  --font-sans: var(--font-ui);
+}
+
+/* ============================================================
+   Base reset
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden; /* app owns its own scroll areas */
+}
+/* A phone's body takes the soft ground, under the app that covers it: Safari
+   colors the status bar and the toolbar at the screen's foot from the body
+   when no short fixed or sticky box stands at that edge, and Notion's are
+   the soft ground in every screen (index.html, .bar-ground). It is drawn
+   before the script that marks the body a phone's (screenKind.ts), so it
+   asks the screen by the same queries itself. */
+@media (hover: none) and (pointer: coarse) and (max-width: 599px), (hover: none) and (pointer: coarse) and (max-device-width: 599px), (hover: none) and (pointer: coarse) and (max-device-height: 599px) {
+  html body { background: var(--bg-soft); }
+}
+/* The skip link's target takes focus to move on from, not to be shown as chosen. */
+#app-main-content:focus { outline: none; }
+
+::selection {
+  background: var(--text-selection);
+}
+.blockLinkTarget {
+  border-radius: 4px;
+  animation: block-link-target 1.8s ease;
+}
+@keyframes block-link-target {
+  0%,
+  65% {
+    background: rgba(35, 131, 226, 0.12);
+    box-shadow: 0 0 0 3px rgba(35, 131, 226, 0.08);
+  }
+  100% {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+/* An error line reads in the error colour wherever it sits, as the sign-in
+   screen's and settings' do (2026-10-25: the password and 2-step dialogs'
+   errors took the description's gray): an alert with no look of its own, or
+   one marked data-error. A screen or banner that tells a state keeps its own. */
+:where(p, span, small, strong, li, div)[role="alert"]:not([class]),
+[role="alert"][data-error] {
+  color: var(--danger);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+/* On a touch screen a finger held on a button presses it: its words are not
+   chosen for the system's copy menu, however long the press reads, as
+   Notion's tools and their cells (seen 2026-11-14 in iPhone Safari: user
+   select none from the bar down). A button's own class may still say otherwise. */
+:where([data-touch="true"]) button {
+  -webkit-user-select: none;
+  user-select: none;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+input,
+textarea {
+  font-family: inherit;
+}
+/* A search field shows no browser clear mark, as none of Notion's do (seen
+   2026-11-12: its person, select and relation pickers); one that wants it
+   asks for it back. */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Every scrollbar as Notion's (seen 2026-10-29): the platform's own width, its
+   thumb the tertiary text at half strength over no track. */
+* {
+  scrollbar-color: color-mix(in srgb, var(--text-tertiary) 50%, transparent) transparent;
+}
+.nscroll {
+  overflow-y: auto;
+}
+
+/* A view search's matches in the rows' titles, as Notion's (seen 2026-11-03). */
+::highlight(leafen-view-search) {
+  background-color: var(--view-search-mark);
+}
+
+/* The desktop app's command search window holds the search alone
+   (lib/quickSearchWindow.ts): the app behind it is not drawn. */
+:root[data-quick-search-window] #root {
+  visibility: hidden;
+}
+:root[data-quick-search-window] [data-search-overlay] {
+  visibility: visible;
+}

@@ -1,0 +1,100 @@
+/* A database page's property menu, as Notion's: under the property's name,
+   its items one to a line, a panel for the property's settings. */
+.menu {
+  position: fixed;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  max-width: 300px;
+  max-height: min(480px, calc(100vh - 24px));
+  overflow: auto;
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.menu[data-panel="rename"],
+.menu[data-panel="edit"],
+.menu[data-panel="new"] {
+  width: 290px;
+}
+.item,
+.back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.item:hover,
+.item:focus-visible,
+.back:hover,
+.back:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.item[data-danger="true"]:hover,
+.item[data-danger="true"]:focus-visible {
+  color: var(--menu-danger);
+}
+.back {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+}
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.next {
+  flex: 0 0 auto;
+  color: var(--text-tertiary);
+}
+/* A rollup's small form from its value: as wide as the form, as its cell's (Notion's 195, seen 2026-11-06). */
+.menu[data-panel="rollupForm"] {
+  min-width: 0;
+  padding: 3px;
+}
+
+/* The menu itself as Notion's (seen 2026-11-06 at 1280px): 4px in, 28px
+   rows 1px apart, groups parted by a line 4px clear of them. */
+.menu[data-panel="main"] {
+  gap: 1px;
+  padding: 4px;
+}
+.menu[data-panel="main"] .item {
+  padding: 0 8px;
+}
+.separator {
+  flex: none;
+  height: 1px;
+  margin: 3px 4px;
+  background: var(--border-default);
+}
+.menu:focus,
+.menu:focus-visible {
+  outline: none;
+}
+/* Its "유형" list, its head and rows 4px in, as Notion's (seen 2026-11-14 at 1440). */
+.menu[data-panel="edit"] [data-property-type-choices],
+.menu[data-panel="rename"] [data-property-type-choices],
+.menu[data-panel="new"] [data-property-type-choices] {
+  margin-inline: -2px;
+}

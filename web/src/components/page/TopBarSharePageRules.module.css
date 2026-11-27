@@ -1,0 +1,274 @@
+/* "페이지 수준 사용 권한": a rule's line (48px) and "새 규칙 추가" (44px, an
+   example under it while there is none), 8px around inside: "새 규칙 추가"
+   is as wide as its words with a blue 32px tile, its words 10px after it, as
+   Notion's (seen 2026-11-14). */
+.ruleRow,
+.ruleAdd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.ruleRow {
+  min-height: 48px;
+}
+
+.ruleRow > svg,
+.ruleAdd > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.ruleName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ruleAdd {
+  align-self: flex-start;
+  width: auto;
+  max-width: 100%;
+  min-height: 44px;
+  line-height: 16.8px;
+}
+
+.ruleTile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+}
+
+.ruleText {
+  display: grid;
+  min-width: 0;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.ruleAdd) > span > span:not(span:first-of-type) {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 14.4px;
+}
+
+.ruleAdd:hover:not(:disabled),
+.ruleAdd:focus-visible,
+.ruleAdd[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.ruleAdd:disabled {
+  opacity: 0.55;
+}
+
+.ruleCreator {
+  width: 308px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 6px 0;
+}
+
+/* The window holds the focus itself while no property is lit, edged by nothing. */
+.ruleCreator:focus { outline: none; }
+
+.ruleCreatorHeading {
+  padding: 6px 14px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.ruleProperty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 8px);
+  height: 28px;
+  margin: 0 4px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.ruleProperty > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ruleProperty:hover,
+.ruleProperty:focus-visible,
+.ruleProperty[data-lit="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.ruleCreatorText {
+  margin: 8px 14px 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ruleCreatorRole {
+  margin: 0 10px 6px;
+}
+
+.ruleCreate {
+  display: block;
+  width: calc(100% - 20px);
+  height: 28px;
+  margin: 0 10px 4px;
+  border-radius: 6px;
+  background: var(--c-accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ruleCreate:disabled {
+  opacity: 0.4;
+}
+
+/* "속성 사용 권한": a rule's line opens it — its level after the name, then ›. */
+.ruleOpen {
+  cursor: pointer;
+}
+
+.ruleOpen:hover:not(:disabled),
+.ruleOpen:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.ruleOpen > svg:last-child {
+  color: var(--icon-tertiary);
+}
+
+.ruleLevel {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* On a phone, as Notion's "고급" sheet (seen 2026-11-15 at 402pt, dark): the
+   heading 15px/500 grey 8px in, in the 28px line its help mark makes (Leafen
+   leaves the mark out, the line stays); "새 규칙 추가" 52px, its 40px blue
+   tile at the section's edge and its words 14px 12px after it, with no
+   example; a property rule's line the same with its icon in the sheet's
+   grey tile (.phoneProperty sizes them), a page-level rule's a person's
+   line (.phoneRule). */
+.phoneLabel {
+  box-sizing: border-box;
+  min-height: 28px;
+  padding: 5px 8px 3px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.phoneRow,
+.phoneAdd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 16.8px;
+  text-align: start;
+}
+
+.phoneAdd:disabled {
+  opacity: 0.55;
+}
+
+.phoneAdd > .ruleTile,
+.phoneTile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+}
+
+.phoneTile {
+  background: var(--share-tint);
+  color: var(--icon-secondary);
+}
+
+.phoneNote {
+  margin: 4px 0 0;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* A rule's mark fills its tile, 31.2px (Notion's, 4.4px in from the 40px
+   tile's edge; read 2026-11-18 on a Galaxy A90's Chrome at 411, w1949). */
+.phoneTile > svg {
+  width: 31.2px;
+  height: 31.2px;
+}
+
+/* A page-level rule on a phone, as a person's line: 66px (12 over and
+   under), the 40px tile, 12 on the name 16px over its role 14px grey, "⋯"
+   8px after them at the section's end. */
+.phoneRule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.phoneRule > button:last-child {
+  margin-inline-start: -4px;
+}
+
+/* The property section's lines: 40px, 6px over and under, 10 between the
+   tile and the 17px/22 words; a rule's level 17px grey 4 before its 18px "›". */
+.phoneProperty {
+  gap: 10px;
+  min-height: 40px;
+  margin: 6px 0;
+  padding: 0;
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.phoneProperty .ruleLevel {
+  font-size: inherit;
+}
+
+.phoneProperty > svg:last-child {
+  width: 18px;
+  height: 18px;
+  margin-inline-start: -6px;
+}

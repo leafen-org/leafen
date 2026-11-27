@@ -1,0 +1,350 @@
+.propertyOptionConfig {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 2px;
+}
+.propertyOptionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 24px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.propertyOptionList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.propertyOptionRow {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 2px;
+  border-radius: 5px;
+}
+.propertyOptionRow:hover,
+.propertyOptionRow:focus-within {
+  background: var(--bg-hover);
+}
+.propertyOptionDrag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 28px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+.propertyOptionDrag:active {
+  cursor: grabbing;
+}
+/* No box and the same gray under the pointer, its row lighting instead
+   (Notion's ⠿ in its database menu lists, seen 2026-11-18). */
+.propertyOptionDrag:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* Notion's option rows (seen 2026-10-05): "옵션" with its "+", each option
+   a handle, its chip and ›, which opens its editor; a new option's name in
+   a field under them. */
+/* The head's "+" in the icons' grey, as its rows' handles (Notion's icoSec,
+   seen 2026-11-17 in Chrome 1440: rgb(142,139,134) light,
+   rgb(173,169,163) dark). */
+.propertyOptionPlus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+.propertyOptionPlus:hover,
+.propertyOptionPlus:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.propertyOptionOpen {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 2px 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  text-align: start;
+}
+.propertyOptionOpen:hover,
+.propertyOptionOpen:focus-visible,
+.propertyOptionOpen[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* Its "›" in the faintest icon grey, as a setting row's (PropertySettingRow;
+   Notion's icoTer, seen 2026-11-17 in Chrome 1440: rgb(173,169,163) light,
+   rgb(125,122,117) dark), turned down while the option's editor is open, as
+   Notion's (seen 2026-11-06). */
+.propertyOptionOpen > svg:last-child { color: var(--icon-tertiary); }
+.propertyOptionOpen[aria-expanded="true"] > svg:last-child { transform: rotate(90deg); }
+.propertyOptionChip {
+  max-width: calc(100% - 24px);
+  overflow: hidden;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 22px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A status's default option says "기본" before its chevron, as Notion's. */
+.propertyOptionDefault {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+/* A status's, as Notion's (seen 2026-11-02 at 1280px; 2026-11-14 at 1440
+   and 1024): each group's name 12px/500 in gray 12px in with its 20px "+"
+   at the end, 10px under the panel's 4px edge or the last group and 8px
+   over its options — the first group's 9px, Notion's list of options
+   starting 1px under its first name; 28px rows touching, the handle 10px
+   in, the chip 8px on — round, its 8px dot 7px in — and "기본" 6px before
+   the "›". Lower than a phone's sheet, which keeps its own. */
+.propertyOptionConfig:where([data-status-options]) {
+  gap: 0;
+  padding-top: 0;
+}
+:where([data-status-options]) .propertyOptionHead {
+  min-height: 20px;
+  margin: 10px 0 8px;
+  padding: 0 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+:where([data-status-options]) .propertyOptionHead:first-child {
+  margin-bottom: 9px;
+}
+:where([data-status-options]) .propertyOptionPlus {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+}
+:where([data-status-options]) .propertyOptionList {
+  gap: 0;
+}
+:where([data-status-options]) .propertyOptionRow {
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 10px 0;
+  border-radius: 6px;
+}
+:where([data-status-options]) .propertyOptionDrag {
+  width: 16px;
+}
+:where([data-status-options]) .propertyOptionOpen {
+  padding-block: 0;
+  padding-inline: 0 8px;
+}
+:where([data-status-options]) .propertyOptionDefault {
+  margin-inline-end: 6px;
+  font-weight: 500;
+}
+.propertyOptionChip[data-status-chip] {
+  padding-block: 0;
+  padding-inline: 7px 9px;
+  border-radius: 10px;
+  line-height: 20px;
+}
+.propertyOptionChip[data-status-chip]::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-inline-end: 5px;
+  border-radius: 50%;
+  background: var(--chip-accent, currentColor);
+  vertical-align: 1px;
+}
+.propertyOptionNew {
+  margin: 2px 0;
+  padding: 3px 8px;
+  border: 1px solid var(--accent-blue);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+/* A phone's settings sheet, as Notion's options in "속성 편집" (seen
+   2026-10-23 at 375px): "옵션" in 15px/500 gray 16px in with its "+" at the
+   end, then the options in a white 12px-round group of 45px rows parted by a
+   1px line — the handle at the group's edge, the chip in 16px, an 18px "›". */
+:global([data-phone-settings]) .propertyOptionConfig {
+  gap: 0;
+  padding: 0;
+}
+:global([data-phone-settings]) .propertyOptionHead {
+  min-height: 22px;
+  margin: 16px 0 10px;
+  padding-block: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(13px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+}
+:global([data-phone-settings]) .propertyOptionPlus {
+  color: var(--icon-primary);
+}
+:global([data-phone-settings]) .propertyOptionPlus svg {
+  width: 22px;
+  height: 22px;
+}
+:global([data-phone-settings]) .propertyOptionList {
+  gap: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+:global([data-phone-settings]) .propertyOptionRow {
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 22px;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: 0 calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+}
+:global([data-phone-settings]) .propertyOptionRow:last-child {
+  border-bottom: 0;
+}
+:global([data-phone-settings]) .propertyOptionRow:hover,
+:global([data-phone-settings]) .propertyOptionRow:focus-within {
+  background: transparent;
+}
+:global([data-phone-settings]) .propertyOptionDrag {
+  width: 22px;
+  height: 22px;
+  margin-inline-start: -2px;
+  color: var(--icon-tertiary);
+}
+:global([data-phone-settings]) .propertyOptionDrag svg {
+  width: 22px;
+  height: 22px;
+}
+:global([data-phone-settings]) .propertyOptionOpen {
+  min-height: 45px;
+  padding: 0;
+}
+:global([data-phone-settings]) .propertyOptionOpen > svg {
+  width: 18px;
+  height: 18px;
+  color: var(--icon-tertiary);
+}
+:global([data-phone-settings]) .propertyOptionChip {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* A status's new option, as Notion's (seen 2026-11-14 at 1440): a 28px field
+   from the handles' place, 12px in from each end of the rows, 15px under its
+   group's name and 13px over its first option; the groups' "+" hide while
+   it is open (PropertySelectOptionsConfig). */
+:where([data-status-options]:not([data-phone-settings] *)) .propertyOptionNew {
+  box-sizing: border-box;
+  height: 28px;
+  margin: 7px 12px 12px;
+  padding: 3px 6px;
+  border: 0;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+/* A select's or multi-select's, as Notion's (seen 2026-11-06 at 1280px): the
+   line under "정렬" 4px down and 8px in; "옵션" 12px/500 in gray 8px in, 12px
+   under the line and 9px over the options, its 20px "+" at the end; 28px rows
+   touching, the handle's glyph 6px in, the 20px chip 30px in, the "›" 8px from
+   the end; a new option named in a 28px field 8px in, 15px under "옵션" and
+   13px over the options. A phone's sheet keeps its own. */
+.propertyOptionConfig:where([data-select-options]:not([data-phone-settings] *)) {
+  gap: 0;
+  padding-top: 0;
+}
+/* 3px under the "정렬" row's own 1px. */
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionRule { margin: 3px 8px 0; }
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionHead {
+  min-height: 20px;
+  margin: 12px 0 9px;
+  padding-block: 0;
+  padding-inline: 8px 6px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: 1.2;
+}
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionPlus {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+}
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionList { gap: 0; }
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionRow {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 6px;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 4px 0;
+  border-radius: 6px;
+}
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionDrag {
+  width: 20px;
+  height: 28px;
+}
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionOpen { padding-block: 0; padding-inline: 0 8px; }
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionChip { line-height: 20px; }
+:where([data-select-options]:not([data-phone-settings] *)) .propertyOptionNew {
+  box-sizing: border-box;
+  height: 28px;
+  margin: 6px 8px 13px;
+  padding: 3px 6px;
+  border: 0;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+.propertyOptionRule {
+  flex: none;
+  height: 1px;
+  background: var(--border-default);
+}
+/* "+ 옵션 추가" while there are none, a menu row as Notion's (seen 2026-11-06),
+   its "+" in the words' colour, as "옵션 추가" (seen 2026-11-17 in Chrome 1440
+   in two tabs: rgb(240,239,237) dark, rgb(44,44,43) light). */
+.propertyOptionAddRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.propertyOptionAddRow > svg { flex: none; color: inherit; }
+.propertyOptionAddRow:hover,
+.propertyOptionAddRow:focus-visible { background: var(--bg-hover); outline: none; }

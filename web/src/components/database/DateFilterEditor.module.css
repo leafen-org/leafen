@@ -1,0 +1,500 @@
+/* A date filter's value, as Notion's (seen 2026-10-01): 28px fields (two
+   side by side for a range, or the relative date's three controls), then a
+   224px month of 28px days on a 32px grid, Sunday first, the chosen first
+   and last days filled blue and those between tinted, and under a relative
+   date a faint 12px note. */
+.value {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 246px;
+  padding: 0 5px 5.5px;
+}
+.value :global(input),
+.field {
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  outline: none;
+  /* bacSecTra under the day, range and count fields alike (Notion's, seen 2026-11-22 at 1440 dark, dpr 2). */
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+}
+.value :global(input):focus,
+.field:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+/* A day's field with its choices' ⌄ at its end, a 20px box 6px from it
+   with a 12px ⌄, and a set day's "ⓧ" right before it, a 24px box with a
+   20px circle; the words 6px in (Notion's, seen 2026-11-12 at 1440: the
+   words 200 wide, 180 with the ⓧ). A day named from today fills the field
+   with its words, the ⌄ still at the end (seen 2026-11-11). The ⌄'s box is
+   round 6 and 3.5 under the field's top, as Notion's sits in a 21px line
+   centred in the 28px field, its ⌄ the filled one in the secondary icon
+   colour (DateFilterDayChoice; seen 2026-11-22 at 1440 dark, dpr 2). */
+.dayField {
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+.dayField > input {
+  padding-inline: 6px 30px;
+}
+/* Told by the clear button beside it, not by a :has() on the field (AppShell .main). */
+.dayField > input:has(~ .dayClear),
+.dayField > .dayClear ~ input {
+  padding-inline-end: 50px;
+}
+/* The shared "입력 값 지우기" (SearchClearButton), placed before the ⌄. */
+.dayClear {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 26px;
+  margin-block: auto;
+}
+.dayField .dayChoice {
+  position: absolute;
+  inset-block: 3.5px 4.5px;
+  inset-inline-end: 6px;
+  display: flex;
+  width: auto;
+}
+.dayField .dayChoiceButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--icon-secondary);
+}
+.dayField .dayChoiceButton > svg {
+  flex: none;
+}
+.dayField .dayChoiceButton > span {
+  display: none;
+}
+/* A named day's words in the same field, in the text's own colour though it
+   takes no typing; its words take 87% of the field's inside and the ⌄ comes 4
+   after them, not at the end (Notion's disabled input, width 87%, seen
+   2026-11-22 at 1440 dark, dpr 2: the ⌄ 11.1 from the end of a 236 field, 9.2
+   of a 221 one under the scroll bar). */
+.dayField > input:disabled {
+  padding-inline-end: calc(13% + 4.44px);
+  opacity: 1;
+  color: var(--text-default);
+  -webkit-text-fill-color: var(--text-default);
+  cursor: default;
+}
+.value[data-named="true"] .dayField .dayChoice {
+  inset-inline-start: calc(10px + 0.87 * (100% - 12px));
+  inset-inline-end: auto;
+}
+.range {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+/* Under a pill's head, as Notion's (seen 2026-11-12 at 1440 dark, 35 under
+   the window's top for a day, 34 for a range and a relative date): a day's
+   field 2.5px lower, its month 20 under it and 20 under the last week; a
+   range's two 108px fields 6px in and 4 from the end, its month 8 under
+   them and 12 under the last week. */
+[data-quick-filter-editor] .value[data-date-filter-value="day"] {
+  padding-bottom: 13px;
+}
+[data-quick-filter-editor] .value[data-date-filter-value="day"] > .dayField {
+  margin-block: 2.5px 12px;
+}
+/* A named day's note under the month, as Notion's (seen 2026-11-22 at 1440
+   dark, dpr 2): a line 20 under the last week as wide as the field, the words
+   8 under it in the secondary text colour (a relative date's are tertiary) and
+   12 over the editor's outer edge — 389 tall in all, just the half-window cap
+   of a 778 window. */
+[data-quick-filter-editor] .value[data-date-filter-value="day"][data-named="true"] {
+  padding-bottom: 5px;
+}
+:is([data-quick-filter-editor], [data-filter-value-panel]) .value[data-named="true"] > .note {
+  margin-top: 12px;
+  padding-top: 8px;
+  color: var(--text-secondary);
+}
+[data-quick-filter-editor] .value[data-date-filter-value="range"] {
+  padding-bottom: 5px;
+}
+[data-quick-filter-editor] .value[data-date-filter-value="range"] > .range {
+  margin-top: 1.5px;
+  padding-inline: 6px 4px;
+}
+/* In a conditional colour card's value list (240 wide, 4 in all round), as Notion's (seen 2026-11-22 at 1440 dark, dpr 1):
+   a pill's with no head — a day's field, a range's two (18 in, 16 from the end) or the relative row 12 in and 12 down,
+   the month 20 under a day, 8 under the others; the edge 20 under the last week, 12 under a range's, or the note's
+   line 12 under it (20 under a named day's), its words 8 under that and 12 over the edge. */
+[data-filter-value-panel] > .value { width: auto; padding: 8px 8px 16px; }
+[data-filter-value-panel] > .value[data-date-filter-value="day"] > .dayField { margin-bottom: 12px; }
+[data-filter-value-panel] > .value:is([data-named="true"], [data-date-filter-value="range"], [data-date-filter-value="relative"]) { padding-bottom: 8px; }
+[data-filter-value-panel] > .value[data-date-filter-value="range"] > .range { padding-inline: 6px 4px; }
+[data-filter-value-panel] > .value[data-date-filter-value="relative"] > [data-direction] { margin-top: 0; }
+[data-filter-value-panel] > .value[data-date-filter-value="relative"] > .note { margin-top: 4px; padding-top: 8px; }
+.calendar {
+  display: flex;
+  flex-direction: column;
+  width: 224px;
+  /* In the middle, past its box's padding where a scrollbar leaves less, as Notion's. */
+  margin: 0 calc((100% - 224px) / 2);
+}
+/* Its month 3.5px in from the days' edge and its 24px ‹ › 4px short of
+   their other edge, rounded 3, as Notion's filter (seen 2026-11-16 at 1440
+   dark: head 384.5..608.5, ‹ 556.5 and › 580.5..604.5). */
+.calendarHead {
+  display: flex;
+  align-items: center;
+  height: 25px;
+  margin-bottom: 4px;
+  padding-inline-end: 4px;
+}
+.calendarHead > .shift {
+  border-radius: 3px;
+}
+/* Its mark 12 wide in a box 16 high in the 24px button, as Notion's filter
+   window's (seen 2026-11-16 at 1440: 6px in, 4px down; a cell's is 11). */
+.calendarHead > .shift > svg {
+  width: 12px;
+  height: 16px;
+}
+.month {
+  flex: 1 1 auto;
+  padding-inline-start: 3.5px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+/* "‹ ›" in Notion's older text color, which a cell's window doesn't share
+   (app/olderInk.css). */
+.shift {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--calendar-shift-text);
+}
+.shift:hover,
+.shift:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.weekdays,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 32px);
+}
+/* Notion's panel (seen 2026-11-03, 260 wide): the days 4px under their
+   names, the note 21px under the days with a line 11.5px under them
+   (seen 2026-11-06). */
+.weekdays {
+  margin-bottom: 4px;
+}
+.value > .note {
+  margin-top: 3.5px;
+  padding: 8.5px 0 0;
+  border-top: 1px solid var(--menu-divider);
+}
+.weekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+.day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 0;
+  background-clip: content-box;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.day:disabled {
+  cursor: default;
+}
+/* The day under the pointer is its 28px box ringed 2px in the blue, 6px
+   round: on the blue at 15% where it has no fill of its own, over its fill
+   or its range's band where it has (Notion's, seen 2026-11-12 at 1440 dark:
+   a chosen day and a range's ends keep their blue, the end set last its
+   43%, the days between their band; today its circle on the 15%). */
+.day:not(:disabled):hover {
+  border-radius: 8px;
+  outline: 2px solid rgb(39, 131, 222);
+  outline-offset: -4px;
+}
+.day:not(:disabled):not([data-mark]):hover {
+  background-color: rgb(35 131 226 / 15%);
+}
+.day:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--bg-app), inset 0 0 0 16px var(--bg-hover), var(--keyboard-focus-ring);
+  border-radius: 6px;
+}
+
+/* The months either side in Notion's gray for them, either theme. */
+.day[data-outside="true"] {
+  color: var(--date-outside-text);
+}
+.day[data-after-range="true"] {
+  color: var(--text-tertiary);
+}
+/* Today in its red circle with white words, either theme (Notion's, seen
+   2026-11-12 at 1440 dark: rgb(255, 255, 255), as on a phone). */
+.day[data-today="true"]:not([data-mark="start"]):not([data-mark="end"]) {
+  background-image: radial-gradient(circle at center, var(--today-circle-bg) 11.5px, transparent 12px);
+  color: #fff;
+}
+/* A range's days on one band of the blue at 21%, 28px tall, across each
+   week it covers: 2px in and 6px round where it starts and ends and at the
+   week's ends, each end's box and today's circle over it (Notion's, seen
+   2026-11-12 at 1440 dark, a filter's month and a date value's alike). */
+.days {
+  isolation: isolate;
+}
+.days .day[data-mark] {
+  position: relative;
+}
+.days .day[data-mark]::before {
+  position: absolute;
+  z-index: -1;
+  inset-block: 2px;
+  inset-inline: 0;
+  background: rgb(35 131 226 / 21%);
+}
+.days .day[data-mark]:not([data-single], [data-lone])::before {
+  content: "";
+}
+.days .day[data-mark="start"]::before,
+.days > [role="row"] > :first-child > .day[data-mark]::before {
+  inset-inline-start: 2px;
+  border-start-start-radius: 6px;
+  border-end-start-radius: 6px;
+}
+.days .day[data-mark="end"]::before,
+.days > [role="row"] > :last-child > .day[data-mark]::before {
+  inset-inline-end: 2px;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+}
+/* Its 28px box 6px round inside the day's 2px (Notion's). */
+.day[data-mark="start"],
+.day[data-mark="end"] {
+  border-radius: 8px;
+  background-color: rgb(39, 131, 222);
+  color: #fff;
+}
+/* A range's end set last is the blue at 43% in the words' own colour, white
+   while it stands alone; the days past the end set next are dim and take no
+   press (Notion's, seen 2026-11-12, desktop and phone). */
+.day[data-picked="true"] {
+  background-color: rgb(35 131 226 / 43%);
+  color: var(--text-default);
+}
+.day[data-picked="true"][data-lone="true"] {
+  color: #fff;
+}
+.day[data-unavailable="true"] {
+  pointer-events: none;
+}
+.day[data-unavailable="true"]:not([data-today="true"]) {
+  color: var(--text-tertiary);
+}
+.note {
+  margin: 0;
+  padding: 0 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* The month in a phone's card, as Notion's (seen 2026-10-23 at 375px): the
+   month 16px/500 and ‹ ›, weekdays 14px, 36px days 16px on a 44px grid,
+   today a red circle. */
+.phoneCalendar {
+  display: flex;
+  flex-direction: column;
+  width: 308px;
+  margin: 0 auto;
+}
+.phoneCalendarHead {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  margin-bottom: 12px;
+}
+.phoneMonth {
+  flex: 1 1 auto;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+}
+.phoneWeekdays,
+.phoneDays {
+  display: grid;
+  grid-template-columns: repeat(7, 44px);
+  row-gap: 8px;
+}
+.phoneWeekdays span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 21px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* A filter's month on a phone, as Notion's (seen 2026-11-11 at 402pt): its
+   head 32px, the month 12px in and ‹ › 4px from the end, the weekdays in a
+   44px row and each week 44px with its 36px days in the middle, so the card
+   holding it is 364px (376 under a day's field). An automation's schedule
+   keeps its own (PhoneAutomationSchedule). */
+.phoneCalendarHead.filterHead {
+  height: 32px;
+  margin-bottom: 0;
+  padding-inline: 12px 4px;
+}
+.phoneWeekdays.filterWeekdays span {
+  height: 44px;
+}
+.phoneDays.filterDays {
+  padding-block: 4px;
+}
+.day.phoneDay {
+  width: 44px;
+  height: 36px;
+  padding: 0 4px;
+  font-size: 16px;
+}
+.day.phoneDay[data-mark="start"],
+.day.phoneDay[data-mark="end"] {
+  border-radius: 8px;
+}
+.day.phoneDay[data-today="true"]:not([data-mark="start"]):not([data-mark="end"]) {
+  background-image: radial-gradient(circle at center, var(--today-circle-bg) 17px, transparent 17.5px);
+  color: #fff;
+}
+/* A filter's days on a phone, as Notion's (seen 2026-11-11 and 2026-11-12
+   at 402pt, light and dark): a range is one 36px band of the blue at 21%
+   across each week it covers, 6px round where it starts and ends and at the
+   week's ends; each end a 6px-round 36px box over it, the end set next the
+   blue with white words, the end set last (data-picked) the blue at 43% in
+   the words' own colour. A day alone is the blue box; a range's first day
+   before its last is picked is the 43% box, its words white. Today is a 32px
+   red circle with white words, over the band, unless it starts or ends the
+   range; then only its words stay white. Each part is drawn under the day's
+   number. */
+.filterDays .day.phoneDay:is([data-mark], [data-today="true"], :focus) {
+  position: relative;
+  isolation: isolate;
+  background-color: transparent;
+}
+.filterDays .day.phoneDay[data-today="true"]:not([data-mark="start"]):not([data-mark="end"]) {
+  background-image: none;
+}
+.filterDays .day.phoneDay:is([data-today="true"], [data-mark="start"], [data-mark="end"]) {
+  color: #fff;
+}
+.filterDays .day.phoneDay[data-picked]:not([data-today="true"], [data-lone]) {
+  color: var(--text-default);
+}
+.filterDays .day.phoneDay:is([data-mark], [data-today="true"], :focus)::before,
+.filterDays .day.phoneDay:is([data-mark], [data-today="true"], :focus)::after {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: -1;
+}
+.filterDays .day.phoneDay[data-mark]:not([data-single], [data-lone])::before,
+.filterDays .day.phoneDay:is([data-mark="start"], [data-mark="end"])::after,
+.filterDays .day.phoneDay[data-today="true"]:not([data-mark="start"], [data-mark="end"])::after {
+  content: "";
+}
+.filterDays .day.phoneDay[data-mark]::before {
+  background: rgb(35 131 226 / 21%);
+}
+.filterDays .day.phoneDay:is([data-mark="start"], [data-mark="end"])::after {
+  inset-inline: 4px;
+  border-radius: 6px;
+  background: rgb(35 131 226 / 43%);
+}
+.filterDays .day.phoneDay:is([data-mark="start"], [data-mark="end"]):not([data-picked], [data-lone])::after {
+  background: rgb(39, 131, 222);
+}
+.filterDays .day.phoneDay[data-mark="start"]::before,
+.filterDays > [role="row"] > :first-child > .day.phoneDay[data-mark]::before {
+  inset-inline-start: 4px;
+  border-start-start-radius: 6px;
+  border-end-start-radius: 6px;
+}
+.filterDays .day.phoneDay[data-mark="end"]::before,
+.filterDays > [role="row"] > :last-child > .day.phoneDay[data-mark]::before {
+  inset-inline-end: 4px;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+}
+.filterDays .day.phoneDay[data-today="true"]:not([data-mark="start"], [data-mark="end"])::after {
+  inset-block: 2px;
+  inset-inline: 6px;
+  border-radius: 50%;
+  background: var(--today-circle-bg);
+}
+/* The day last pressed keeps a 2px ring of the blue round its 36px box,
+   over its fill, until something else is pressed; no hover tint (Notion's,
+   seen 2026-11-12 at 402pt, light and dark). Today's circle keeps none. */
+.filterDays .day.phoneDay:is(:hover, :focus-visible) {
+  box-shadow: none;
+}
+.filterDays .day.phoneDay:focus:not([data-today="true"]:not([data-mark="start"], [data-mark="end"]))::after {
+  content: "";
+  inset-inline: 4px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px rgb(39, 131, 222);
+}
+
+
+/* The relative date's row (its own rule, DatabaseRules.module.css .relativeDateValue)
+   4px in from the value's sides, its count taking the rest (Notion's, seen
+   2026-11-06; 2026-11-22: 228 for the row in a 260 window). */
+.value[data-date-filter-value="relative"] > [data-direction] {
+  margin-top: 1.5px;
+  padding: 0 4px;
+}
+.value[data-date-filter-value="relative"] > [data-direction] > * > button {
+  width: auto;
+  height: 28px;
+}
+/* Its choices: the words 11px in, the "⌄" 6px after them and 5px from
+   the edge, in a 6px-round box (Notion's, seen 2026-11-06) — Notion's small
+   outlined buttons, 1px of borPriTra round bacPri, 14px/500 words; the ⌄
+   is the row's own (DatabaseRules.module.css .relativeDateValue). */
+.value[data-date-filter-value="relative"] > [data-direction] > * > button {
+  grid-template-columns: minmax(0, 1fr) auto; gap: 6px;
+  padding-block: 0;
+  padding-inline: 10px 4px;
+  border-color: var(--button-outline);
+  border-radius: 6px;
+  background-color: var(--bg-app);
+  font-weight: 500;
+}
+.value[data-date-filter-value="relative"] > [data-direction="this"] > * > button {
+  width: 100%;
+}

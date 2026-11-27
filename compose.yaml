@@ -1,0 +1,47 @@
+# Leafen in Docker (docs/self-hosting.md, "Docker Compose"): the server
+# alone (cmd/leafen), for hosting or a company server.
+#
+#   docker compose up -d
+#
+# One container runs Leafen's published image and keeps its data in the
+# "leafen-data" volume, and the backups written to /backups in the
+# "leafen-backups" volume beside it (docs/self-hosting.md, "Backup").
+# LEAFEN_IMAGE names another image or a release's tag
+# (ghcr.io/leafen-org/leafen:0.1.0), LEAFEN_PORT the port it is served on.
+# Write them in a .env file beside this one, one NAME=value a line: Compose
+# reads it each time, under sudo too, which drops what the shell set. After
+# `docker compose up -d`, `docker compose images` shows the image that runs,
+# and the log's "leafen: build" line its build and the data's schema.
+# To build the image from this source tree instead:
+#
+#   docker compose -f compose.yaml -f compose.source.yaml up -d --build
+
+services:
+  leafen:
+    image: ${LEAFEN_IMAGE:-ghcr.io/leafen-org/leafen:latest}
+    restart: unless-stopped
+    ports:
+      - "${LEAFEN_PORT:-8090}:8090"
+    environment:
+      # Where the port is published, so the first-run setup address printed
+      # in the logs opens from this machine.
+      LEAFEN_PUBLISHED_PORT: "${LEAFEN_PORT:-8090}"
+      # The server's first address, for a server people reach at a fixed one
+      # (its domain behind a reverse proxy): the logs, links and codes then
+      # name it, until another way is chosen in the settings (Tailscale,
+      # another domain), which takes over with no new container. Empty, the
+      # server finds its address as the guide says.
+      LEAFEN_PUBLIC_URL: "${LEAFEN_PUBLIC_URL:-}"
+    volumes:
+      - leafen-data:/data
+      # Backups go here, outside the data and the container: a path
+      # elsewhere in it, such as /tmp, is gone when it is made again.
+      - leafen-backups:/backups
+    # The server sizes itself by its container's memory, which must be
+    # finite.
+    mem_limit: ${LEAFEN_MEMORY_LIMIT:-2g}
+    memswap_limit: ${LEAFEN_MEMORY_LIMIT:-2g}
+
+volumes:
+  leafen-data:
+  leafen-backups:

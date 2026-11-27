@@ -1,0 +1,296 @@
+/* "새 그룹 생성", the window that makes a group, as Notion's (seen 2026-11-08,
+   dark, at 768): its overlay, its fields — the icon and name, the members
+   with their chips and choices — and its blue "그룹 생성" over grey "취소".
+   Moved out of WorkspaceGroups.module.css, which keeps the 그룹 tab. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  /* A member picked by pointer rests the focus here, ringless as Notion's. */
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(432px, calc(100vw - 32px));
+  padding: 24px 18px 18px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--icon-secondary);
+}
+
+.dialog h2 {
+  margin: 8px 0 4px;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dialogLead {
+  margin: 0 0 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}
+
+.dialogForm {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 6px;
+}
+
+.dialogForm > label {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.nameRow {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.nameIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.nameRow > input,
+.memberField {
+  flex: 1;
+  min-width: 0;
+  min-height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.memberField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 7px;
+}
+
+.memberField:focus-within,
+.nameRow > input:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.memberField input {
+  flex: 1;
+  min-width: 80px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 13px;
+}
+
+.chip button {
+  display: inline-flex;
+  color: var(--text-secondary);
+}
+
+.choices {
+  max-height: 200px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.choices > li > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 30px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.choices > li > button:hover,
+.choices > li > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.choiceEmail {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.create {
+  height: 32px;
+  margin-top: 14px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.create:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Grey words across the card's foot, not the windows' outlined "취소", as
+   Notion's "새 그룹 생성" (seen 2026-11-08: 440×32, 0 12px, 14/500,
+   rgb(173,169,163) in dark, no outline). */
+.cancel {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cancel:hover,
+.cancel:focus-visible {
+  color: var(--text-default);
+  outline: none;
+}
+
+/* "새 그룹 생성", as Notion's (seen 2026-11-08, dark, at 768): 480 wide,
+   20px in all round; a 32px mark, the title 17/22 8px under it, its line
+   14/20 8px under that; each field name 4px over its field, the name row
+   32px (mark, 8px, field) 20px over the next name, the members field 28px;
+   "그룹 생성" 26px under it and "취소" 8px under that, both 440 wide. */
+.createDialog {
+  width: min(480px, calc(100vw - 32px));
+  padding: 20px;
+}
+
+.createDialog > svg {
+  width: 32px;
+  height: 32px;
+}
+
+.createDialog h2 {
+  margin: 8px 0 0;
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.createDialog .dialogLead {
+  margin: 8px 0 26px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.createDialog .dialogForm {
+  gap: 4px;
+}
+
+.createDialog .dialogForm > label {
+  line-height: 16px;
+}
+
+.createDialog .nameRow {
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.createDialog .nameIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.createDialog .nameRow > input {
+  min-height: 32px;
+  padding: 1px 11px;
+}
+
+.createDialog .memberField {
+  min-height: 28px;
+  padding: 3px 5px;
+}
+
+.createDialog .memberField input {
+  padding: 0;
+  line-height: 20px;
+}
+
+.createDialog .create {
+  margin-top: 22px;
+}
+
+.createDialog .cancel {
+  margin-top: 4px;
+}
+
+/* The icon field of "새 그룹 생성": a 32px button holding the group's mark,
+   its picker opening under it. */
+.iconSlot {
+  position: relative;
+  display: inline-flex;
+}
+
+.iconSlot > .nameIcon {
+  cursor: pointer;
+}
+
+.iconSlot > .nameIcon:hover,
+.iconSlot > .nameIcon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

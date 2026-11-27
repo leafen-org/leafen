@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 3,
+  "name": "file-usage-report",
+  "operations": [
+    {
+      "goName": "workspaceFileUsageReport",
+      "tsName": "workspaceFileUsageReport",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/file-usage-report"
+    },
+    {
+      "goName": "organizationFileUsageReport",
+      "tsName": "organizationFileUsageReport",
+      "method": "POST",
+      "path": "/organizations/{organizationId}/file-usage-report"
+    },
+    {
+      "goName": "workspaceFileManualCleanupStart",
+      "tsName": "workspaceFileManualCleanupStart",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/file-cleanup"
+    },
+    {
+      "goName": "workspaceFileManualCleanupRead",
+      "tsName": "workspaceFileManualCleanupRead",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/file-cleanup/{jobId}"
+    }
+  ],
+  "bounds": [
+    { "goName": "fileUsageReportUploadWindow", "tsName": "uploadWindow", "value": 100 },
+    { "goName": "fileUsageReportBatchWorkspaceWindow", "tsName": "batchWorkspaceWindow", "value": 4 },
+    { "goName": "fileUsageReportBatchUploadWindow", "tsName": "batchUploadWindow", "value": 19 },
+    { "goName": "fileUsageReportWorkspaceResultWindow", "tsName": "workspaceResultWindow", "value": 100 },
+    { "goName": "fileUsageReportMaxBuckets", "tsName": "maxBuckets", "value": 100 },
+    { "goName": "fileUsageReportRecentUploads", "tsName": "recentUploads", "value": 20 },
+    { "goName": "fileUsageReportLargestUploads", "tsName": "largestUploads", "value": 10 },
+    { "goName": "fileUsageReportTransactionOperationLimit", "tsName": "transactionOperationLimit", "value": 6 },
+    { "goName": "fileUsageReportRetainedCompletedPerLifecycle", "tsName": "retainedCompletedPerLifecycle", "value": 3 },
+    { "goName": "fileMaintenanceCombinedTurnLimit", "tsName": "maintenanceCombinedTurnLimit", "value": 64 },
+    { "goName": "fileMaintenanceRunRetentionPerWorkspace", "tsName": "maintenanceRunRetentionPerWorkspace", "value": 50 },
+    { "goName": "fileMaintenanceRunnerRetrySeconds", "tsName": "maintenanceRunnerRetrySeconds", "value": 5 },
+    { "goName": "fileManualCleanupJobsPerTurn", "tsName": "manualCleanupJobsPerTurn", "value": 8 },
+    { "goName": "fileManualCleanupRetentionPerWorkspace", "tsName": "manualCleanupRetentionPerWorkspace", "value": 50 },
+    { "goName": "fileManualCleanupMaxAttempts", "tsName": "manualCleanupMaxAttempts", "value": 5 }
+  ],
+  "errors": [
+    { "goName": "errorCodeFileUsageReportInvalid", "tsName": "invalid", "value": "LEAFEN_FILE_USAGE_REPORT_INVALID" },
+    { "goName": "errorCodeFileUsageReportContinuationInvalid", "tsName": "continuationInvalid", "value": "LEAFEN_FILE_USAGE_REPORT_CONTINUATION_INVALID" },
+    { "goName": "errorCodeFileUsageReportStateInvalid", "tsName": "stateInvalid", "value": "LEAFEN_FILE_USAGE_REPORT_STATE_INVALID" },
+    { "goName": "errorCodeFileUsageReportUnavailable", "tsName": "unavailable", "value": "LEAFEN_FILE_USAGE_REPORT_UNAVAILABLE" },
+    { "goName": "errorCodeFileUsageReportDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_FILE_USAGE_REPORT_DATABASE_BUSY" },
+    { "goName": "errorCodeFileMaintenanceFailed", "tsName": "maintenanceFailed", "value": "LEAFEN_FILE_MAINTENANCE_FAILED" },
+    { "goName": "errorCodeFileMaintenanceStateInvalid", "tsName": "maintenanceStateInvalid", "value": "LEAFEN_FILE_MAINTENANCE_STATE_INVALID" },
+    { "goName": "errorCodeFileManualCleanupInvalid", "tsName": "manualCleanupInvalid", "value": "LEAFEN_FILE_MANUAL_CLEANUP_INVALID" },
+    { "goName": "errorCodeFileManualCleanupNotFound", "tsName": "manualCleanupNotFound", "value": "LEAFEN_FILE_MANUAL_CLEANUP_NOT_FOUND" },
+    { "goName": "errorCodeFileManualCleanupRequestIDReused", "tsName": "manualCleanupRequestIdReused", "value": "LEAFEN_FILE_MANUAL_CLEANUP_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeFileManualCleanupUnavailable", "tsName": "manualCleanupUnavailable", "value": "LEAFEN_FILE_MANUAL_CLEANUP_UNAVAILABLE" },
+    { "goName": "errorCodeFileManualCleanupDatabaseBusy", "tsName": "manualCleanupDatabaseBusy", "value": "LEAFEN_FILE_MANUAL_CLEANUP_DATABASE_BUSY" },
+    { "goName": "errorCodeFileManualCleanupStorageUnavailable", "tsName": "manualCleanupStorageUnavailable", "value": "LEAFEN_FILE_MANUAL_CLEANUP_STORAGE_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "FileUsageReportType",
+      "tsValuesName": "fileUsageReportTypes",
+      "values": [
+        { "goName": "fileUsageReportTypeWorkspace", "tsName": "workspace", "value": "workspace" },
+        { "goName": "fileUsageReportTypeOrganization", "tsName": "organization", "value": "organization" }
+      ]
+    },
+    {
+      "tsName": "FileUsageReportStatus",
+      "tsValuesName": "fileUsageReportStatuses",
+      "values": [
+        { "goName": "fileUsageReportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "fileUsageReportStatusCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "FileUsageReportPhase",
+      "tsValuesName": "fileUsageReportPhases",
+      "values": [
+        { "goName": "fileUsageReportPhaseWorkspaceSelect", "tsName": "workspaceSelect", "value": "workspace_select" },
+        { "goName": "fileUsageReportPhaseUploads", "tsName": "uploads", "value": "uploads" },
+        { "goName": "fileUsageReportPhaseMaintenance", "tsName": "maintenance", "value": "maintenance" },
+        { "goName": "fileUsageReportPhaseCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "FileMaintenanceRunStatus",
+      "tsValuesName": "fileMaintenanceRunStatuses",
+      "values": [
+        { "goName": "fileMaintenanceRunStatusSuccess", "tsName": "success", "value": "success" },
+        { "goName": "fileMaintenanceRunStatusPartialFailure", "tsName": "partialFailure", "value": "partial_failure" },
+        { "goName": "fileMaintenanceRunStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "FileManualCleanupStatus",
+      "tsValuesName": "fileManualCleanupStatuses",
+      "values": [
+        { "goName": "fileManualCleanupStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "fileManualCleanupStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "fileManualCleanupStatusPartialFailure", "tsName": "partialFailure", "value": "partial_failure" },
+        { "goName": "fileManualCleanupStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "fileManualCleanupInput",
+      "tsName": "FileManualCleanupInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileManualCleanupJob",
+      "tsName": "FileManualCleanupJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileManualCleanupStatus" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Scanned", "jsonName": "scanned", "goType": "int", "tsType": "number" },
+        { "goName": "Expired", "jsonName": "expired", "goType": "int", "tsType": "number" },
+        { "goName": "DeletedObjects", "jsonName": "deletedObjects", "goType": "int", "tsType": "number" },
+        { "goName": "FailedObjects", "jsonName": "failedObjects", "goType": "int", "tsType": "number" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "KeptFiles", "jsonName": "keptFiles", "goType": "int", "tsType": "number" },
+        { "goName": "KeptUntil", "jsonName": "keptUntil", "goType": "int64", "tsType": "number" },
+        { "goName": "KeptFileIDs", "jsonName": "keptFileIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "fileManualCleanupResponse",
+      "tsName": "FileManualCleanupResponse",
+      "fields": [
+        { "goName": "Job", "jsonName": "job", "goType": "fileManualCleanupJob", "tsType": "FileManualCleanupJob" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportInput",
+      "tsName": "FileUsageReportInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "FileUsageReportJobID", "jsonName": "fileUsageReportJobId", "goType": "string", "tsType": "string" },
+        { "goName": "ByWorkspaceAfter", "jsonName": "byWorkspaceAfter", "goType": "string", "tsType": "string" },
+        { "goName": "MaintenanceLimit", "jsonName": "maintenanceLimit", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportTotals",
+      "tsName": "FileUsageReportTotals",
+      "fields": [
+        { "goName": "Files", "jsonName": "files", "goType": "int", "tsType": "number" },
+        { "goName": "Bytes", "jsonName": "bytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ActiveStorageBytes", "jsonName": "activeStorageBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "UploadedBytes", "jsonName": "uploadedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "PendingBytes", "jsonName": "pendingBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "DeletedBytes", "jsonName": "deletedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ExpiredBytes", "jsonName": "expiredBytes", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportPending",
+      "tsName": "FileUsageReportPending",
+      "fields": [
+        { "goName": "Active", "jsonName": "active", "goType": "int", "tsType": "number" },
+        { "goName": "Expired", "jsonName": "expired", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportBucket",
+      "tsName": "FileUsageReportBucket",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Count", "jsonName": "count", "goType": "int", "tsType": "number" },
+        { "goName": "Bytes", "jsonName": "bytes", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportFile",
+      "tsName": "FileUsageReportFile",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportJob",
+      "tsName": "FileUsageReportJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ReportType", "jsonName": "reportType", "goType": "string", "tsType": "FileUsageReportType" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileUsageReportStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "FileUsageReportPhase" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportWorkspaceResult",
+      "tsName": "FileUsageReportWorkspaceResult",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Domain", "jsonName": "domain", "goType": "string", "tsType": "string" },
+        { "goName": "ActiveStorageBytes", "jsonName": "activeStorageBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Totals", "jsonName": "totals", "goType": "fileUsageReportTotals", "tsType": "FileUsageReportTotals" },
+        { "goName": "Pending", "jsonName": "pending", "goType": "fileUsageReportPending", "tsType": "FileUsageReportPending" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportMaintenanceRun",
+      "tsName": "FileUsageReportMaintenanceRun",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "string" },
+        { "goName": "ScheduledAt", "jsonName": "scheduledAt", "goType": "int64", "tsType": "number" },
+        { "goName": "StartedAt", "jsonName": "startedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "FinishedAt", "jsonName": "finishedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Scanned", "jsonName": "scanned", "goType": "int", "tsType": "number" },
+        { "goName": "Expired", "jsonName": "expired", "goType": "int", "tsType": "number" },
+        { "goName": "DeletedObjects", "jsonName": "deletedObjects", "goType": "int", "tsType": "number" },
+        { "goName": "FailedObjects", "jsonName": "failedObjects", "goType": "int", "tsType": "number" },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileUsageReportResponse",
+      "tsName": "FileUsageReportResponse",
+      "fields": [
+        { "goName": "Partial", "jsonName": "partial", "goType": "bool", "tsType": "boolean" },
+        { "goName": "FileUsageReportJob", "jsonName": "fileUsageReportJob", "goType": "fileUsageReportJob", "tsType": "FileUsageReportJob" },
+        { "goName": "Totals", "jsonName": "totals", "goType": "fileUsageReportTotals", "tsType": "FileUsageReportTotals" },
+        { "goName": "Pending", "jsonName": "pending", "goType": "fileUsageReportPending", "tsType": "FileUsageReportPending" },
+        { "goName": "ByStatus", "jsonName": "byStatus", "goType": "[]fileUsageReportBucket", "tsType": "FileUsageReportBucket[]" },
+        { "goName": "ByScope", "jsonName": "byScope", "goType": "[]fileUsageReportBucket", "tsType": "FileUsageReportBucket[]" },
+        { "goName": "ByContentType", "jsonName": "byContentType", "goType": "[]fileUsageReportBucket", "tsType": "FileUsageReportBucket[]" },
+        { "goName": "LargestUploads", "jsonName": "largestUploads", "goType": "[]fileUsageReportFile", "tsType": "FileUsageReportFile[]" },
+        { "goName": "RecentUploads", "jsonName": "recentUploads", "goType": "[]fileUsageReportFile", "tsType": "FileUsageReportFile[]" },
+        { "goName": "StorageLimitBytes", "jsonName": "storageLimitBytes", "goType": "*int64", "tsType": "number | null" },
+        { "goName": "MaintenanceRuns", "jsonName": "maintenanceRuns", "goType": "[]fileUsageReportMaintenanceRun", "tsType": "FileUsageReportMaintenanceRun[]" },
+        { "goName": "WorkspaceCount", "jsonName": "workspaceCount", "goType": "int", "tsType": "number" },
+        { "goName": "ByWorkspace", "jsonName": "byWorkspace", "goType": "[]fileUsageReportWorkspaceResult", "tsType": "FileUsageReportWorkspaceResult[]" },
+        { "goName": "ByWorkspaceHasMore", "jsonName": "byWorkspaceHasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ByWorkspaceNextCursor", "jsonName": "byWorkspaceNextCursor", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

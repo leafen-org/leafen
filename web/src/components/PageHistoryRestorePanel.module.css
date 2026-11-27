@@ -1,0 +1,449 @@
+/* What "복원 시작" opens over the version history, as Notion's (seen
+   2026-09-30): what the restore brings back beside the version. */
+.historyRestoreLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.historyRestoreBackdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--modal-shade);
+}
+
+.historyRestorePanel {
+  position: relative;
+  display: grid;
+  grid-template-columns: 360px minmax(0, 1fr);
+  /* 2.5% of the window in from each side, as Notion's restore (measured
+     2026-11-07: 20 and 14 in an 800×546 window, 32 and 22 at 1280×880). */
+  width: 95%;
+  height: 95%;
+  overflow: hidden;
+  /* Not a dialog card: the page's ground, 16px round and no shadow, over
+     the window shade (Notion's, measured 2026-11-08 light and dark). */
+  border-radius: 16px;
+  background: var(--bg-default);
+  box-shadow: none;
+}
+
+.historyRestoreSide {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-inline-end: 1px solid var(--border-default);
+}
+
+/* Notion's restore column (measured 2026-11-07, 800×546): the page and
+   time 24 in, 17px on 22px lines, their names in the text's color and the
+   rest grey; under them what scrolls, 16 down and 24 in, its headings 40
+   after what goes before and 12 over their items (6 over a list box). */
+.historyRestoreHead {
+  flex: 0 0 auto;
+  padding: 24px;
+}
+
+.historyRestoreScroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 24px 24px;
+}
+
+.historyRestoreTitle,
+.historyRestoreTime {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.historyRestoreTitle strong,
+.historyRestoreTime strong {
+  color: var(--text-default);
+  font-weight: 600;
+}
+
+.historyRestoreHeading {
+  margin: 40px 0 12px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.historyRestoreHeadingFirst {
+  margin-top: 0;
+}
+
+section > .historyRestoreHeading {
+  margin-bottom: 6px;
+}
+
+/* What stays lists the comments and reactions as "복원될 항목" lists its
+   items, under its heading as far as the first list, and the databases kept
+   under them as far as one item from the next. */
+section > .historyRestoreHeading:has(+ .historyRestoreItems) {
+  margin-bottom: 12px;
+}
+
+.historyRestoreItems + .historyRestoreDatabases {
+  margin-top: 16px;
+}
+
+/* The option to restore the version's databases too (seen 2026-10-01):
+   the question and its hint beside a 30px switch, off at first. */
+.historyRestoreOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.historyRestoreOptionText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.historyRestoreOptionQuestion {
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.historyRestoreSwitch {
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.historyRestoreRowPagesNote {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.historyRestoreOptionHint {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.historyRestoreItems {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.historyRestoreItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--text-secondary);
+}
+
+.historyRestoreItem svg {
+  flex: 0 0 auto;
+}
+
+.historyRestoreItemName {
+  display: block;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.historyRestoreItemHint {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.historyRestoreDatabases {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+  list-style: none;
+}
+
+.historyRestoreDatabases li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.historyRestoreDatabases svg {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+}
+
+.historyRestoreScrollBody {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.historyRestoreCardsSlot {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.historyRestoreFooter {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+/* The cards above "이 버전 복원" (Notion's, measured 2026-11-12 at 1440
+   dark): a 166×158 stack centred in the column, 40px under what is over it,
+   cut at the column's sides. Four 166×123 cards with a 12px corner and a
+   hairline lie back 27° under a 180px perspective about their centre, each
+   8px below the one in front; the version to restore lies flat on top. */
+.historyRestoreCards {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  padding-top: 24px;
+  overflow-x: clip;
+  pointer-events: none;
+  user-select: none;
+}
+
+.historyRestoreCardStack {
+  position: relative;
+  isolation: isolate;
+  width: 166px;
+  height: 158px;
+}
+
+.historyRestoreCard {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 166px;
+  height: 123px;
+  padding: 8px 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--bg-element);
+  transform: translateY(var(--restore-card-offset)) perspective(180px) rotateX(27deg);
+  will-change: transform;
+}
+
+/* Over and over (6.85s, Notion's): the restored card and its name fade
+   (0.55s) as the page as it is now takes the name, it drops behind the
+   stack (0.2s), slides out to the right (0.53s), rises (0.5s), slides back
+   in on top (0.57s) and takes the name again (0.43s), then rests (4.07s). */
+.historyRestoreCard[data-place="restored"] {
+  z-index: 20;
+  transform: none;
+  animation: historyRestoreCardRestored 6.85s infinite;
+}
+
+.historyRestoreCardTag {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 10px;
+  z-index: 1;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  transform: scale(0.72);
+  transform-origin: calc(50% + 50% * var(--inline-sign, 1)) 0;
+  opacity: 0;
+}
+
+.historyRestoreCard[data-place="restored"] .historyRestoreCardTag {
+  opacity: 1;
+  animation: historyRestoreTagRestored 6.85s infinite;
+}
+
+.historyRestoreCard[data-place="now"] .historyRestoreCardTag {
+  animation: historyRestoreTagNow 6.85s infinite;
+}
+
+@keyframes historyRestoreCardRestored {
+  0%, 59.42% { opacity: 1; transform: translate(0, 0); z-index: 20; animation-timing-function: ease-in-out; }
+  67.46% { opacity: 0; transform: translate(0, 0); z-index: 20; animation-timing-function: ease-in-out; }
+  68.33% { z-index: 20; }
+  68.34% { z-index: 3; }
+  70.36% { opacity: 0; transform: translate(0, 16px); z-index: 3; }
+  70.37% { opacity: 0.5; transform: translate(0, 16px); z-index: 3; animation-timing-function: ease-in-out; }
+  78.12% { opacity: 1; transform: translate(calc(195px * var(--inline-sign, 1)), 16px); z-index: 3; }
+  78.13% { opacity: 1; transform: translate(calc(195px * var(--inline-sign, 1)), 16px); z-index: 20; animation-timing-function: ease-in-out; }
+  85.42% { transform: translate(calc(195px * var(--inline-sign, 1)), 0); z-index: 20; animation-timing-function: ease-in-out; }
+  93.66%, 100% { opacity: 1; transform: translate(0, 0); z-index: 20; }
+}
+
+@keyframes historyRestoreTagRestored {
+  0%, 59.42% { opacity: 1; animation-timing-function: ease-in-out; }
+  67.46%, 93.66% { opacity: 0; animation-timing-function: ease-in-out; }
+  100% { opacity: 1; }
+}
+
+@keyframes historyRestoreTagNow {
+  0%, 59.42% { opacity: 0; animation-timing-function: ease-in-out; }
+  67.46%, 93.66% { opacity: 1; animation-timing-function: ease-in-out; }
+  100% { opacity: 0; }
+}
+
+/* The page's icon in a 28px box that eats 4px of the gap under it, empty
+   for a page with none. */
+.historyRestoreCardIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-block-end: -4px;
+  line-height: 1;
+}
+
+.historyRestoreCardHead {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.historyRestoreCardTime {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyRestoreCardTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.historyRestoreCardLines {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 0;
+  padding-top: 4px;
+}
+
+.historyRestoreCardLines > span {
+  flex-shrink: 0;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border-default);
+}
+
+.historyRestoreCardLines > span:nth-child(1) { width: 80%; }
+.historyRestoreCardLines > span:nth-child(2) { width: 70%; opacity: 0.9; }
+.historyRestoreCardLines > span:nth-child(3) { width: 90%; opacity: 0.8; }
+
+.historyRestoreError {
+  margin: 0;
+  color: var(--danger);
+  font-size: 12px;
+}
+
+.historyRestoreButton {
+  width: 100%;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.historyRestoreButton:hover,
+.historyRestoreButton:focus-visible {
+  filter: brightness(1.06);
+  outline: none;
+}
+
+.historyRestoreButton:disabled {
+  cursor: default;
+  opacity: 0.6;
+  filter: none;
+}
+
+.historyRestoreNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* The version reads in the column the history's preview uses, 20px from
+   the sides and its title's line 84 down as the history's (Notion's
+   restore, measured 2026-11-07), measured against it. */
+.historyRestorePreview {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 80px 20px 96px;
+  container-type: inline-size;
+}
+
+.historyRestoreClose {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-default);
+}
+
+.historyRestoreClose:hover,
+.historyRestoreClose:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

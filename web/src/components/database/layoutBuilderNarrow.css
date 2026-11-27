@@ -1,0 +1,32 @@
+/* The layout builder by its window, as Notion's (seen 2026-11-24 in two
+   Chrome tabs at dpr 2, from 900 to 1440 wide): over 1200px the panel's
+   column is 380 and its line (1201: 380), from 901 to 1200 300 (920:
+   330..630, 1100: 510..810, 1200: 300), and at 900 or less it folds,
+   its "«" laying it over the page's end (900: 310..610 over a page on
+   24..595, useLayoutBuilderPanel). The page's cards stand 40 in from its
+   column over 1040px and 24 in at 1040 or less (1041: 40 | 331 | 40; 1040:
+   24 | 362 | 24; folded at 900: 24 | 523 | 24), up to 720 wide. A touch
+   screen's keeps its column (no "«" or "»" to fold it). The settings stay
+   beside the canvas down to 700 (740: the page 24..435, the settings on
+   450..740); under it Notion keeps a 700 row and cuts the settings off at
+   the window's edge (650), where this one puts them under the canvas
+   (DatabasePageLayoutBuilder.module.css, max-width 699px). */
+@media (max-width: 1200px) {
+  [data-layout-canvas] > div[data-panel="true"] { grid-template-columns: minmax(0, 1fr) 301px; }
+}
+@media (max-width: 1040px) {
+  [data-layout-canvas] [data-layout-page-column] > div { width: min(720px, calc(100% - 48px)); }
+}
+@media (max-width: 900px) {
+  [data-layout-canvas] > div[data-panel="true"]:not([data-touch]) { grid-template-columns: minmax(0, 1fr); }
+  /* The page's own layers (its tabs' band among them) stay under the column laid over it. */
+  [data-layout-canvas] > div[data-panel="true"]:not([data-touch]) > [data-layout-page-column] { isolation: isolate; }
+  [data-layout-canvas] > div[data-panel="true"]:not([data-touch]) > [data-layout-panel] {
+    position: absolute;
+    z-index: 2;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 301px;
+    background: var(--bg-default);
+  }
+}

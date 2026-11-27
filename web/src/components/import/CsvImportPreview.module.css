@@ -1,0 +1,248 @@
+/* The table an import makes, at the right of the CSV window, as Notion's
+   (seen 2026-10-01): its name, its "표" view and the CSV's rows as the import
+   reads them. */
+.preview {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  margin-block: 8px;
+  margin-inline: 0 8px;
+  padding-block: 38px 0;
+  padding-inline: 36px 0;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+
+/* The table's name stays gray, its file's name too, until the columns are
+   set, as Notion's (seen 2026-11-15, 1440 dark: rgb(173, 169, 163) over
+   the blank table, the words' white over the set one). */
+.previewTitle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 26px;
+  white-space: nowrap;
+}
+
+.previewTitle span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.previewTitle svg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-inline-start: 3px;
+}
+
+/* The set table stands as Notion's (measured 2026-11-15, 1440 dark): the
+   pane 36px in at its top, the name in a 32px row 4px under that and 12px
+   over the views' bar, a 40px bar whose "표" pill (32px) stands in its middle,
+   and the table's heads right under the bar. */
+.preview[data-set="true"] {
+  padding-block-start: 36px;
+}
+
+.previewTitle[data-set="true"] {
+  flex: none;
+  height: 32px;
+  margin-block: 4px 12px;
+  color: var(--text-default);
+  font-size: 20px;
+}
+
+.previewViews {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 40px;
+  margin-inline: 8px 0;
+}
+
+.previewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 14px 12px;
+  border-radius: 16px;
+  background: var(--bg-hover);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.previewTable {
+  flex: 1;
+  margin-inline: 8px 0;
+  overflow: auto;
+}
+
+.previewTable table {
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.previewTable th,
+.previewTable td {
+  min-width: 250px;
+  max-width: 260px;
+  padding: 8px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-default);
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Rows as Notion's preview table's (measured 2026-11-15, 1440 dark): a cell
+   37px with a 1px line under it, so the rows stand 38px apart, its words'
+   line 21px in its middle; the heads 36px, 8px in. A table cell's height
+   here is its box's, its line under it included; its words keep no padding
+   over and under them, as their fonts' baselines can stand a line of
+   Korean and Latin words 24px high (2026-11-15: 40px rows). */
+.previewTable td {
+  border-inline-end: 1px solid var(--border-default);
+  height: 38px;
+  padding-block: 0;
+  line-height: 21px;
+}
+
+.previewTable th {
+  height: 36px;
+  padding-block: 0;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.previewHead,
+.previewRowTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.previewHead svg,
+.previewRowTitle svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.previewTable td[data-title="true"] {
+  font-weight: 500;
+}
+
+/* A new table no column is the title of, as Notion's (seen 2026-11-12): the
+   whole pane holds a struck eye (32px, graIcoDis) over "미리보기 사용 불가"
+   (14/500) and why (14/400), both texSec, 9px apart, a little above its
+   middle. */
+.preview[data-unavailable="true"] {
+  padding-block-start: 36px;
+  padding-inline: 0;
+}
+
+.unavailable {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-block-end: 60px;
+  padding-inline: 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.unavailable svg {
+  color: #bcbab6;
+}
+
+:global([data-theme="dark"]) .unavailable svg {
+  color: #494846;
+}
+
+.unavailable strong {
+  font-weight: 500;
+}
+
+.skeleton {
+  display: grid;
+  grid-template-columns: 196px 131px 131px;
+  column-gap: 45px;
+  row-gap: 25px;
+  margin-top: 25px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border-default);
+  margin-inline-end: 36px;
+}
+
+.skeleton span {
+  height: 9px;
+  border-radius: 5px;
+  background: var(--bg-muted-strong);
+}
+
+.skeleton span[data-head="true"] {
+  width: 50%;
+}
+
+/* A number reads right-aligned, a checkbox as its box and a select's names as
+   chips in colors of their own, as Notion's preview draws them. */
+.previewTable td[data-type="number"] {
+  text-align: end;
+}
+
+.chips {
+  display: flex;
+  gap: 6px;
+  overflow: hidden;
+}
+
+/* A URL's path, dimmed after its host as the table shows it. */
+.urlPath {
+  color: var(--text-tertiary);
+}
+
+.chip {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 4px;
+  line-height: 19px;
+}
+
+.checkbox {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+  color: #ffffff;
+  vertical-align: -3px;
+}
+
+.checkbox[data-checked="true"] {
+  background: var(--accent-blue);
+  box-shadow: none;
+}
+
+@media (max-width: 599px) {
+  .preview,
+  .preview[data-set="true"] {
+    min-height: 240px;
+    padding: 24px;
+  }
+}

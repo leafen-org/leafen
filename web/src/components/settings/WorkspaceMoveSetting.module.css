@@ -1,0 +1,80 @@
+/* Sending or receiving a workspace: the code in the app's own field across the
+   section, what to do with it directly under it. */
+.row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+/* Settings' rows keep their text beside their button; these stack. */
+:global([data-settings-content]) .row.row.row.row.row > :first-child,
+:global([data-settings-content]) .row.row.row.row.row > * {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: none;
+  margin-inline-end: 0;
+}
+
+.row > :last-child:not(:first-child) {
+  justify-content: flex-start;
+  margin: 0;
+}
+
+.code {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.code > span {
+  width: auto;
+}
+
+.code textarea {
+  display: block;
+  width: 100%;
+  height: 72px;
+  padding: 7px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  line-height: 18px;
+  outline: none;
+  resize: none;
+  overflow-wrap: anywhere;
+}
+
+.code textarea:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.code textarea[aria-invalid="true"] {
+  box-shadow: var(--name-field-ring-danger);
+}
+
+.pair {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 32px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.pair > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}

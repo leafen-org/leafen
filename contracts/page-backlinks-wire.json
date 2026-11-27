@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "name": "page-backlinks",
+  "operations": [
+    {
+      "goName": "pageBacklinksRead",
+      "tsName": "read",
+      "method": "GET",
+      "path": "/pages/{pageId}/backlinks"
+    }
+  ],
+  "bounds": [
+    { "goName": "pageBacklinksPageSize", "tsName": "pageSize", "value": 50 },
+    { "goName": "pageBacklinksCursorBytes", "tsName": "cursorBytes", "value": 2048 }
+  ],
+  "errors": [
+    { "goName": "errorCodePageBacklinksInvalid", "tsName": "invalid", "value": "LEAFEN_PAGE_BACKLINKS_INVALID" },
+    { "goName": "errorCodePageBacklinksCursorInvalid", "tsName": "cursorInvalid", "value": "LEAFEN_PAGE_BACKLINKS_CURSOR_INVALID" },
+    { "goName": "errorCodePageBacklinksRevisionChanged", "tsName": "revisionChanged", "value": "LEAFEN_PAGE_BACKLINKS_REVISION_CHANGED" },
+    { "goName": "errorCodePageBacklinksFailed", "tsName": "failed", "value": "LEAFEN_PAGE_BACKLINKS_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "pageBacklinksSourceRowWire",
+      "tsName": "PageBacklinksSourceRow",
+      "fields": [
+        { "goName": "ContainerPageID", "jsonName": "containerPageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "InlineDatabase", "jsonName": "inlineDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "DatabaseTitle", "jsonName": "databaseTitle", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageBacklinksBlockWire",
+      "tsName": "PageBacklinksBlock",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Position", "jsonName": "position", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Content", "jsonName": "content", "goType": "json.RawMessage", "tsType": "Record<string, unknown>" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "SourceRow", "jsonName": "sourceRow", "goType": "*pageBacklinksSourceRowWire", "tsType": "PageBacklinksSourceRow", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageBacklinksResponse",
+      "tsName": "PageBacklinksResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetPageID", "jsonName": "targetPageId", "goType": "string", "tsType": "string" },
+        { "goName": "SnapshotRevision", "jsonName": "snapshotRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "[]pageBacklinksBlockWire", "tsType": "PageBacklinksBlock[]" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]pageResponse", "tsType": "Page[]" },
+        { "goName": "PrivateSources", "jsonName": "privateSources", "goType": "int", "tsType": "number" },
+        { "goName": "PreviousCursor", "jsonName": "previousCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasPrevious", "jsonName": "hasPrevious", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ]
+}

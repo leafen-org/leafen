@@ -1,0 +1,899 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "アカウントのメールアドレスを読み込む",
+        "deniedEffect": "メールアドレスを読み込めませんでした。保存済みのアドレスは変更されていません。",
+        "uncertainEffect": "Leafenは現在のメールアドレスを確認できませんでした。",
+        "stateCheckAction": "変更する前に、再接続してメール一覧を更新してください。"
+      },
+      "update": {
+        "operation": "アカウントのメールアドレスを管理",
+        "deniedEffect": "メールのリクエストは受け付けられませんでした。保存済みのアドレスは変更されていません。",
+        "uncertainEffect": "Leafenはメールのリクエストが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度お試しになる前に、メール一覧を更新して認証メールを確認してください。"
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "通知設定を読み込む",
+        "deniedEffect": "通知設定を読み込めませんでした。保存済みの設定は変更されていません。",
+        "uncertainEffect": "Leafenはどの通知を受信しているかを確認できませんでした。",
+        "stateCheckAction": "変更する前に、設定を閉じて再度開き、通知設定を読み込んでください。"
+      },
+      "update": {
+        "operation": "通知設定を変更",
+        "deniedEffect": "通知設定は変更されていません。以前の設定が維持されます。",
+        "uncertainEffect": "Leafenは通知設定が変更されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再度変更する前に、設定を閉じて再度開き、通知設定を確認してください。"
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "アカウントプロフィールを読み込む",
+        "deniedEffect": "名前と写真を読み込めませんでした。保存されたプロフィールは変更されていません。",
+        "uncertainEffect": "Leafenは現在の名前と写真を確認できませんでした。",
+        "stateCheckAction": "プロフィールを変更する前に、設定を閉じて再度開き、プロフィールを読み込んでください。"
+      },
+      "update": {
+        "operation": "アカウントプロフィールを保存",
+        "deniedEffect": "プロフィールは変更されていません。",
+        "uncertainEffect": "Leafenはアカウントプロフィールが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行する前に、アカウントプロフィールと監査履歴を再読み込みしてください。"
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "二段階認証を変更",
+        "deniedEffect": "要求された二段階認証の変更は受け付けられませんでした。以前の設定が引き続き有効です。",
+        "uncertainEffect": "Leafenは現在の二段階認証の状態を確認できませんでした。",
+        "stateCheckAction": "別の二段階認証の変更を試す前に、アカウントのセキュリティを再読み込みしてください。"
+      },
+      "password": {
+        "operation": "アカウントのパスワード変更",
+        "deniedEffect": "パスワードは変更されていません。現在のセッションは引き続き有効です。",
+        "uncertainEffect": "Leafenはパスワードが変更されたかどうか、また他のセッションが終了したかどうかを確認できませんでした。",
+        "stateCheckAction": "アカウントのセキュリティを再読み込みし、現在のセッションが機能しない場合はもう一度ログインしてください。"
+      },
+      "read": {
+        "operation": "アカウントのセキュリティを読み込む",
+        "deniedEffect": "セキュリティ設定とセッションを読み込めませんでした。保存されたアカウントの状態は変更されていません。",
+        "uncertainEffect": "Leafenは現在の二段階認証とセッションの状態を確認できませんでした。",
+        "stateCheckAction": "変更する前に、アカウントのセキュリティを再読み込みしてください。"
+      },
+      "recovery": {
+        "operation": "リカバリーコードを置き換える",
+        "deniedEffect": "新しいリカバリーコードは受け付けられませんでした。以前の未使用のコードは引き続き使用できます。",
+        "uncertainEffect": "Leafenはどのリカバリーコードが有効かを確認できませんでした。",
+        "stateCheckAction": "コードを再度置換するかどうかを決める前に、アカウントのセキュリティを再読み込みしてください。"
+      },
+      "sessionRevoke": {
+        "operation": "アカウントのセッションを取り消す",
+        "deniedEffect": "選択したセッションの取り消しは確認されませんでした。他のセッションは変更されていません。",
+        "uncertainEffect": "Leafenは選択したセッションが取り消されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行するかどうかを決める前に、セッション一覧を再読み込みしてください。"
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "サーバーのバックアップをキャンセル",
+        "deniedEffect": "バックアップのキャンセルは確認されませんでした。",
+        "uncertainEffect": "Leafenは、バックアップがキャンセルされたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度キャンセルする前に、現在のバックアップ状態を確認してください。"
+      },
+      "create": {
+        "operation": "サーバーのバックアップを作成",
+        "deniedEffect": "新しいバックアップの作成は確認されませんでした。",
+        "uncertainEffect": "Leafenは、バックアップリクエストが受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "別のリクエストを送信する前に、現在のバックアップを確認してください。"
+      },
+      "download": {
+        "operation": "サーバーのバックアップをダウンロード",
+        "deniedEffect": "検証済みのバックアップファイルはダウンロードされませんでした。",
+        "uncertainEffect": "Leafenは、バックアップファイルを検証できず、ストリーミングもできませんでした。",
+        "stateCheckAction": "もう一度ダウンロードする前に、完了したバックアップの状態を確認してください。"
+      },
+      "retry": {
+        "operation": "サーバーのバックアップを再試行",
+        "deniedEffect": "失敗したバックアップは再開されませんでした。",
+        "uncertainEffect": "Leafenは、バックアップが再開されたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度試す前に、現在のバックアップ状態を確認してください。"
+      },
+      "status": {
+        "operation": "サーバーのバックアップ状態を読み込む",
+        "deniedEffect": "バックアップ状態を読み込めませんでした。バックアップの状態は変更されていません。",
+        "uncertainEffect": "Leafenは、現在のバックアップ状態を確認できませんでした。",
+        "stateCheckAction": "別の操作を行う前に、バックアップ状態を再読み込みしてください。"
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "サーバーレポートを読み込む",
+        "deniedEffect": "レポートを読み込めませんでした。レポートの状態は変更されていません。",
+        "uncertainEffect": "Leafenは、現在のレポートスナップショットを確認できませんでした。",
+        "stateCheckAction": "更新する前に、現在のレポートを再読み込みしてください。"
+      },
+      "refresh": {
+        "operation": "サーバーレポートを更新",
+        "deniedEffect": "新しいレポートスナップショットは確認されませんでした。",
+        "uncertainEffect": "Leafenは、レポートスナップショットが変更されたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度更新する前に、現在のレポートを読み込んでください。"
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "バックアップスケジュールを読み込む",
+        "deniedEffect": "バックアップスケジュールを読み込めませんでした。設定は変更されていません。",
+        "uncertainEffect": "Leafenは、現在のバックアップスケジュールを確認できませんでした。",
+        "stateCheckAction": "変更する前に、バックアップスケジュールを再読み込みしてください。"
+      },
+      "restore": {
+        "operation": "バックアップからサーバーを復元",
+        "deniedEffect": "サーバーのデータは変更されませんでした。",
+        "uncertainEffect": "Leafenは復元の準備が整ったかどうかを確認できませんでした。",
+        "stateCheckAction": "再度実行する前に、バックアップ設定を再読み込みして、待機中の復元があるかどうかを確認してください。"
+      },
+      "save": {
+        "operation": "バックアップスケジュールを保存",
+        "deniedEffect": "バックアップスケジュールは変更されませんでした。",
+        "uncertainEffect": "Leafenはバックアップスケジュールが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再度保存する前に、バックアップスケジュールを再読み込みして、現在適用されている設定を確認してください。"
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "リクエストログ設定を読み込む",
+        "deniedEffect": "リクエストログ設定を読み込めませんでした。設定は変更されていません。",
+        "uncertainEffect": "Leafenは現在のリクエストログ設定を確認できませんでした。",
+        "stateCheckAction": "変更を行う前に、リクエストログ設定を再読み込みしてください。"
+      },
+      "save": {
+        "operation": "リクエストログ設定を保存",
+        "deniedEffect": "リクエストログ設定は変更されませんでした。",
+        "uncertainEffect": "Leafenはリクエストログ設定が保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再度保存する前に、リクエストログ設定を再読み込みして、現在適用されている設定を確認してください。"
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "ネットワークプロキシを読み込む",
+        "deniedEffect": "ネットワークプロキシを読み込めませんでした。設定は変更されていません。",
+        "uncertainEffect": "Leafenは現在のネットワークプロキシを確認できませんでした。",
+        "stateCheckAction": "ネットワークプロキシを変更する前に、再読み込みしてください。"
+      },
+      "save": {
+        "operation": "ネットワークプロキシを保存",
+        "deniedEffect": "ネットワークプロキシは変更されませんでした。",
+        "uncertainEffect": "Leafenはネットワークプロキシが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再度保存する前に、ネットワークプロキシを再読み込みして、現在適用されている内容を確認してください。"
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "サーバー設定を読み込む",
+        "deniedEffect": "設定を読み込めませんでした。保存済みの設定は変更されていません。",
+        "uncertainEffect": "Leafenは現在のサーバー設定を確認できませんでした。",
+        "stateCheckAction": "変更を行う前に、設定を再読み込みしてください。"
+      },
+      "save": {
+        "operation": "サーバー設定を保存",
+        "deniedEffect": "新しい設定は受け付けられませんでした。以前に保存された設定が引き続き適用されます。",
+        "uncertainEffect": "Leafenでは、新しい設定が保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "設定を再読み込みし、現在の値を確認してから、もう一度お試しください。"
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "ログイン状態を確認する",
+        "deniedEffect": "ログインセッションは作成されておらず、アカウントデータも変更されていません。",
+        "uncertainEffect": "現在のログイン状態を確認できませんでした。",
+        "stateCheckAction": "ページを再読み込みしてから、もう一度ログインしてください。"
+      },
+      "deviceCode": {
+        "operation": "このデバイスでログイン",
+        "deniedEffect": "ログインは行われず、アカウントデータも変更されていません。",
+        "uncertainEffect": "このデバイスがログインされたかどうかを確認できませんでした。",
+        "stateCheckAction": "新しいコードでもう一度ログインしてください。"
+      },
+      "emailVerification": {
+        "operation": "メールアドレスを検証する",
+        "deniedEffect": "メールアドレスは検証されておらず、アカウントにもログインしていません。",
+        "uncertainEffect": "Leafenでは、メールアドレスの検証が完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "ログインしてみてください。うまくいかない場合は、メールのリンクをもう一度開いてください。"
+      },
+      "mfa": {
+        "operation": "二段階認証を完了",
+        "deniedEffect": "ログインは行われず、MFAの認証も完了していません。",
+        "uncertainEffect": "Leafenでは、二段階認証が完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "最初からもう一度ログインしてください。"
+      },
+      "passwordResetConfirm": {
+        "operation": "パスワードを変更",
+        "deniedEffect": "パスワードは変更されていません。",
+        "uncertainEffect": "Leafenでは、パスワードが変更されたかどうかを確認できませんでした。",
+        "stateCheckAction": "新しいパスワードでログインしてみてください。うまくいかない場合は、パスワードリセットのリンクを新しく取得してください。"
+      },
+      "passwordResetRequest": {
+        "operation": "パスワードのリセットをリクエスト",
+        "deniedEffect": "パスワードリセットのメッセージは送信受付されませんでした。",
+        "uncertainEffect": "Leafenでは、リセットのリクエストが受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "メールが届くのを待ってから、もう一度リクエストしてください。"
+      },
+      "providerExchange": {
+        "operation": "外部アカウントでログイン",
+        "deniedEffect": "ログインは行われず、アカウントデータも変更されていません。",
+        "uncertainEffect": "外部アカウントのログイン結果を確認できませんでした。",
+        "stateCheckAction": "同じ方法でもう一度ログインしてください。"
+      },
+      "serverSetup": {
+        "operation": "Leafenサーバーを設定する",
+        "deniedEffect": "管理者アカウントは作成されていません。",
+        "uncertainEffect": "Leafenでは、サーバーのセットアップが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "ページを再読み込みしてセットアップの状態を確認してから、もう一度お試しください。"
+      },
+      "signIn": {
+        "operation": "ログイン",
+        "deniedEffect": "ログインは行われず、アカウントデータも変更されていません。",
+        "uncertainEffect": "ログインが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "ページを更新して、もう一度ログインしてください。"
+      },
+      "signUp": {
+        "operation": "アカウントを作成",
+        "deniedEffect": "新しいアカウントは作成されませんでした。",
+        "uncertainEffect": "Leafenでは、アカウントが作成されたかどうかを確認できませんでした。",
+        "stateCheckAction": "ログインを試してください。うまくいかない場合は、もう一度サインアップしてください。"
+      },
+      "passkey": {
+        "operation": "パスキーでログイン",
+        "deniedEffect": "ログインが承認されませんでした。",
+        "uncertainEffect": "Leafenは、ログインが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "パスキーでもう一度ログインしてください。"
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "ページコンテンツを読み込む",
+        "deniedEffect": "ページコンテンツは読み込まれず、保存済みのコンテンツは変更されませんでした。",
+        "uncertainEffect": "Leafenでは、現在のページコンテンツを確認できませんでした。",
+        "stateCheckAction": "編集する前に、ページを再読み込みしてください。"
+      },
+      "update": {
+        "operation": "ページコンテンツを保存",
+        "deniedEffect": "変更は反映されず、サーバー上の最新コンテンツが引き続き有効です。",
+        "uncertainEffect": "Leafenでは、コンテンツが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "最新のコンテンツを再読み込みして比較してから、もう一度お試しください。"
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "データベースオートメーションを保存",
+        "deniedEffect": "オートメーションは変更されませんでした。",
+        "uncertainEffect": "Leafenでは、データベースオートメーションの変更が保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行する前に、オートメーションを再読み込みしてください。"
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "DLPポリシーを保存",
+        "deniedEffect": "新しいDLPポリシーは保存されず、以前のポリシーが引き続き有効です。",
+        "uncertainEffect": "Leafenでは、DLPポリシーが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行する前に、DLPポリシーと組織の監査履歴を再読み込みしてください。"
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "SAMLドメインを検証",
+        "deniedEffect": "ドメインは保留中のままです。SAML構成、監査履歴、ログインセッションは変更されていません。",
+        "uncertainEffect": "Leafenは現在のSAMLドメイン検証の状態を確認できませんでした。",
+        "stateCheckAction": "再試行する前に、SAMLドメインの状態を再読み込みしてください。"
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "ファイルを削除",
+        "deniedEffect": "ファイルは削除されず、変更もされていません。",
+        "uncertainEffect": "Leafenはファイルが削除されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行するかどうかを決める前に、ファイルとその参照を再読み込みしてください。"
+      },
+      "upload": {
+        "operation": "ファイルをアップロード",
+        "deniedEffect": "新しいファイルは保存されず、既存のファイルは変更されていません。",
+        "uncertainEffect": "Leafenはファイルが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行するかどうかを決める前に、ファイル一覧を再読み込みしてください。"
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "ユーザーマッピングを適用",
+        "deniedEffect": "新しいマッピングは受け付けられませんでした。",
+        "uncertainEffect": "Leafenはどのマッピングが適用されたかを確認できませんでした。",
+        "stateCheckAction": "もう一度適用する前に、マッピング結果を再読み込みしてください。"
+      },
+      "refresh": {
+        "operation": "ユーザーマッピングを更新",
+        "deniedEffect": "最新のマッピングは読み込まれず、保存済みのマッピングは変更されていません。",
+        "uncertainEffect": "Leafenは現在のマッピング状態を確認できませんでした。",
+        "stateCheckAction": "続行する前に、マッピングパネルを再読み込みしてください。"
+      },
+      "scan": {
+        "operation": "インポートしたユーザーをスキャン",
+        "deniedEffect": "インポートしたユーザーは一覧表示されず、既存のマッピングは変更されていません。",
+        "uncertainEffect": "Leafenは現在のインポート済みユーザー一覧を確認できませんでした。",
+        "stateCheckAction": "変更する前に、マッピングパネルを再読み込みしてください。"
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "ボタンオートメーションを実行",
+        "deniedEffect": "ボタンのアクションは実行されず、ページのコンテンツは変更されていません。",
+        "uncertainEffect": "Leafenはボタンオートメーションが実行されたかどうかを確認できませんでした。",
+        "stateCheckAction": "再試行する前に、影響を受けたコンテンツと実行状態を再読み込みしてください。"
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "組織のAPIトークンをコピー",
+        "deniedEffect": "クリップボード内のトークンを確認できませんでした。トークン自体は変更されていません。",
+        "uncertainEffect": "Leafenはクリップボードへの書き込みが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "トークンをもう一度コピーする前に、クリップボードを確認してください。"
+      },
+      "create": {
+        "operation": "組織APIトークンを作成",
+        "deniedEffect": "新しいトークンの作成は確認されませんでした。",
+        "uncertainEffect": "Leafenは、トークンが作成されたかどうかを確認できませんでした。",
+        "stateCheckAction": "別のトークンを作成する前に、トークンリストを再読み込みしてください。"
+      },
+      "list": {
+        "operation": "組織APIトークンを読み込む",
+        "deniedEffect": "トークンは読み込まれず、既存のトークンは変更されませんでした。",
+        "uncertainEffect": "Leafenは、現在のトークンリストを確認できませんでした。",
+        "stateCheckAction": "変更を加える前に、トークンリストを再読み込みしてください。"
+      },
+      "revoke": {
+        "operation": "組織APIトークンを取り消す",
+        "deniedEffect": "トークンの取り消しは確認されませんでした。",
+        "uncertainEffect": "Leafenは、トークンが取り消されたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度取り消しを試みる前に、トークンリストを再読み込みしてください。"
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "ワークスペースページを読み込む",
+        "deniedEffect": "ページは読み込まれず、保存されたワークスペースデータは変更されませんでした。",
+        "uncertainEffect": "Leafenは、現在のワークスペースページを確認できませんでした。",
+        "stateCheckAction": "編集する前に、ワークスペースを再読み込みしてください。"
+      },
+      "create": {
+        "operation": "ページを作成",
+        "deniedEffect": "新しいページは作成されず、既存のページは変更されませんでした。",
+        "uncertainEffect": "Leafenは、ページが作成されたかどうかを確認できませんでした。",
+        "stateCheckAction": "ページリストを再読み込みして新しいページがあるか確認してから、もう一度お試しください。"
+      },
+      "title": {
+        "update": {
+          "operation": "ページタイトルを保存",
+          "deniedEffect": "タイトルの変更は適用されず、保存済みのタイトルが引き続き適用されます。",
+          "uncertainEffect": "Leafenは、変更が保存されたかどうかを確認できませんでした。",
+          "stateCheckAction": "ページを再読み込みして、現在のタイトルを確認してください。"
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "ページアナリティクスを読み込む",
+        "deniedEffect": "アナリティクスは読み込まれず、ページデータは変更されませんでした。",
+        "uncertainEffect": "Leafenは、現在のアナリティクスを確認できませんでした。",
+        "stateCheckAction": "結論を出す前に、アナリティクスを再読み込みしてください。"
+      },
+      "policyUpdate": {
+        "operation": "アナリティクスポリシーを保存",
+        "deniedEffect": "新しいアナリティクスポリシーは適用されませんでした。",
+        "uncertainEffect": "Leafenは、ポリシーが保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "ポリシーを再読み込みして比較してから、もう一度お試しください。"
+      },
+      "preferencesRead": {
+        "operation": "アナリティクス設定を読み込む",
+        "deniedEffect": "アナリティクス設定を読み込めず、保存された設定は変更されませんでした。",
+        "uncertainEffect": "Leafenは現在のアナリティクス設定を確認できませんでした。",
+        "stateCheckAction": "アナリティクス設定を編集する前に、再読み込みしてください。"
+      },
+      "preferencesUpdate": {
+        "operation": "アナリティクス設定を保存",
+        "deniedEffect": "新しい設定は受け付けられませんでした。",
+        "uncertainEffect": "Leafenは設定が保存されたかどうかを確認できませんでした。",
+        "stateCheckAction": "設定を再読み込みして比較してから、もう一度お試しください。"
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "オフラインの変更を安全に保存",
+        "deniedEffect": "変更はこのデバイスに保存されませんでした。",
+        "uncertainEffect": "Leafenは、変更がこのデバイスとサーバーのどちらに保存されたかを確認できませんでした。",
+        "stateCheckAction": "編集した内容をコピーしてから再読み込みし、保存状態を比較してください。"
+      },
+      "legacy": {
+        "operation": "オフラインの変更を移行",
+        "deniedEffect": "以前のオフライン変更は保存されていた場所に残ったままで、送信されませんでした。",
+        "uncertainEffect": "Leafenは、以前のオフライン変更のうちどれが移行されたかを確認できませんでした。",
+        "stateCheckAction": "このタブを開いたまま再読み込みしてから、もう一度編集してください。"
+      },
+      "refresh": {
+        "operation": "復元された変更を再読み込み",
+        "deniedEffect": "復元された変更は表示されず、保存されたデータも置き換えられませんでした。",
+        "uncertainEffect": "Leafenは、復元後の現在のページを確認できませんでした。",
+        "stateCheckAction": "再度編集する前に、このページを再読み込みしてください。"
+      },
+      "replay": {
+        "operation": "オフラインの変更を送信",
+        "deniedEffect": "キューに追加された変更は保留中のままで、サーバーによって確認されませんでした。",
+        "uncertainEffect": "Leafenは、キューに追加された変更のうちどれがサーバーに到達したかを確認できませんでした。",
+        "stateCheckAction": "このタブを開いたまま再接続し、再読み込みしてから、もう一度編集してください。"
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "公開サイトを検索",
+        "deniedEffect": "検索結果を読み込めず、公開済みのコンテンツは変更されませんでした。",
+        "uncertainEffect": "Leafenは現在の検索結果を確認できませんでした。",
+        "stateCheckAction": "もう一度検索する前に、サイトの状態を確認してください。"
+      },
+      "sharedPage": {
+        "operation": "共有ページを読み込む",
+        "deniedEffect": "共有ページを読み込めませんでした。公開コンテンツは変更されていません。",
+        "uncertainEffect": "Leafenは現在の共有ページを確認できませんでした。",
+        "stateCheckAction": "共有リンクを確認してから、もう一度お試しください。"
+      },
+      "site": {
+        "operation": "公開サイトを読み込む",
+        "deniedEffect": "公開サイトを読み込めませんでした。公開コンテンツは変更されていません。",
+        "uncertainEffect": "Leafenは現在の公開サイトを確認できませんでした。",
+        "stateCheckAction": "サイトのアドレスを確認してから、もう一度お試しください。"
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "フォームログインを復元",
+        "deniedEffect": "メンバー用フォームを開けませんでした。回答は送信されていません。",
+        "uncertainEffect": "Leafenは、このフォームの現在のログイン状態を確認できませんでした。",
+        "stateCheckAction": "フォームを再読み込みして、もう一度ログインしてください。"
+      },
+      "configurationWrite": {
+        "operation": "フォームの設定を保存",
+        "deniedEffect": "フォームの設定が保存されたことを確認できませんでした。",
+        "uncertainEffect": "Leafenは現在のフォーム設定を確認できませんでした。",
+        "stateCheckAction": "再度保存する前に、フォームの設定を再読み込みしてください。"
+      },
+      "definitionRead": {
+        "operation": "フォームを読み込む",
+        "deniedEffect": "フォームを読み込めませんでした。回答は送信されていません。",
+        "uncertainEffect": "Leafenは現在のフォーム定義を確認できませんでした。",
+        "stateCheckAction": "回答を入力する前に、フォームを再読み込みしてください。"
+      },
+      "optionsRead": {
+        "operation": "フォームの選択肢を読み込む",
+        "deniedEffect": "リクエストされた選択肢を読み込めませんでした。下書きの回答は送信されていません。",
+        "uncertainEffect": "Leafenは現在の選択肢を確認できませんでした。",
+        "stateCheckAction": "フォームを送信する前に、選択肢を再読み込みしてください。"
+      },
+      "responseSubmit": {
+        "operation": "フォームの回答を送信",
+        "deniedEffect": "回答は受け付けられませんでした。",
+        "uncertainEffect": "Leafenは回答が受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "回答を再度送信する前に、フォームの結果を確認してください。"
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "ランタイム設定を読み込む",
+        "deniedEffect": "ランタイム設定を読み込めませんでした。保存済みのサーバー設定は変更されていません。",
+        "uncertainEffect": "Leafenは現在のランタイム設定を確認できなかったため、安全なフォールバック値が有効になっています。",
+        "stateCheckAction": "現在のサーバー設定を読み込むには、ページを再読み込みしてください。"
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "保留中の変更を同期",
+        "deniedEffect": "保留中の変更はキューのままですが、サーバーで確定されませんでした。",
+        "uncertainEffect": "Leafenは、どの保留中の変更がサーバーに届いたかを確認できませんでした。",
+        "stateCheckAction": "このタブを開いたまま再接続し、もう一度試す前に保存された状態を確認してください。"
+      },
+      "pendingRead": {
+        "operation": "保留中の変更を確認",
+        "deniedEffect": "保留中の変更数を読み込めませんでした。キューの変更は破棄されていません。",
+        "uncertainEffect": "Leafenは、まだ保留中の変更がいくつあるかを確認できませんでした。",
+        "stateCheckAction": "このタブを開いたまま、同期ステータスをもう一度確認してください。"
+      },
+      "retry": {
+        "operation": "同期を再試行",
+        "deniedEffect": "同期は確定されませんでした。保留中の変更はキューのままです。",
+        "uncertainEffect": "Leafenは、最新の同期結果を確認できませんでした。",
+        "stateCheckAction": "もう一度試す前に、保存された状態と接続を確認してください。"
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "ワークスペースを作成する",
+        "deniedEffect": "新しいワークスペースは作成されず、既存のデータも変更されていません。",
+        "uncertainEffect": "Leafenは、ワークスペースが作成されたかどうかを確認できませんでした。",
+        "stateCheckAction": "ワークスペース一覧を再読み込みし、新しいワークスペースがあるか確認してから、もう一度お試しください。"
+      },
+      "delete": {
+        "operation": "ワークスペースを完全に削除する",
+        "deniedEffect": "削除は受け付けられませんでした。ワークスペースと既存のデータは変更されていません。",
+        "uncertainEffect": "Leafenは、ワークスペースが削除されたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度試す前に、ワークスペース一覧を再読み込みしてください。"
+      },
+      "member": {
+        "add": {
+          "operation": "ワークスペースメンバーを追加",
+          "deniedEffect": "メンバーは追加されず、何も変更されていません。",
+          "uncertainEffect": "Leafenは、ワークスペースメンバーが追加されたかどうかを確認できませんでした。",
+          "stateCheckAction": "もう一度試す前に、メンバー、アクティビティ、監査履歴を再読み込みしてください。"
+        },
+        "revoke": {
+          "operation": "ワークスペースメンバーを削除",
+          "deniedEffect": "メンバーは削除されず、何も変更されていません。",
+          "uncertainEffect": "Leafenは、ワークスペースメンバーが削除されたかどうかを確認できませんでした。",
+          "stateCheckAction": "もう一度試す前に、メンバー、アクティビティ、監査履歴を再読み込みしてください。"
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "ワークスペース設定を保存",
+          "deniedEffect": "設定の変更は保存されず、以前の設定が引き続き有効です。",
+          "uncertainEffect": "Leafenは、ワークスペースの設定が保存されたかどうかを確認できませんでした。",
+          "stateCheckAction": "もう一度試す前に、ワークスペースの設定、アクティビティ、監査履歴を再読み込みしてください。"
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "ワークスペースのエクスポートをキャンセル",
+        "deniedEffect": "エクスポートはキャンセルされておらず、まだ実行中の可能性があります。",
+        "uncertainEffect": "Leafenでは、エクスポートがキャンセルされたかどうかを確認できませんでした。",
+        "stateCheckAction": "再度キャンセルする前に、エクスポートステータスを更新してください。"
+      },
+      "download": {
+        "operation": "ワークスペースのエクスポートをダウンロード",
+        "deniedEffect": "アーカイブはダウンロードされておらず、サーバーのエクスポートは変更されていません。",
+        "uncertainEffect": "Leafenでは、アーカイブのダウンロードが完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "再度ダウンロードする前に、ダウンロード一覧を確認してください。"
+      },
+      "job": {
+        "operation": "ワークスペースをエクスポート",
+        "deniedEffect": "アーカイブは作成されておらず、元のワークスペースは変更されていません。",
+        "uncertainEffect": "Leafenでは、このジョブで使用できるアーカイブを確認できませんでした。",
+        "stateCheckAction": "現在のワークスペースから代替のエクスポートを開始してください。"
+      },
+      "poll": {
+        "operation": "ワークスペースのエクスポートを待機",
+        "deniedEffect": "最新のエクスポートステータスは読み込まれておらず、エクスポートジョブは変更されていません。",
+        "uncertainEffect": "Leafenでは、現在のエクスポートステータスを確認できませんでした。",
+        "stateCheckAction": "別の操作を行う前に、エクスポートステータスを更新してください。"
+      },
+      "retry": {
+        "operation": "ワークスペースのエクスポートを再試行",
+        "deniedEffect": "再試行は受け付けられておらず、既存のエクスポートジョブは変更されていません。",
+        "uncertainEffect": "Leafenでは、再試行が受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度再試行する前に、エクスポートステータスを更新してください。"
+      },
+      "start": {
+        "operation": "ワークスペースのエクスポートを開始",
+        "deniedEffect": "新しいエクスポートジョブは受け付けられておらず、ワークスペースは変更されていません。",
+        "uncertainEffect": "Leafenでは、エクスポートジョブが受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "別のジョブを開始する前に、最新のエクスポートステータスを更新してください。"
+      },
+      "status": {
+        "operation": "ワークスペースのエクスポートステータスを読み込む",
+        "deniedEffect": "最新のエクスポートステータスは読み込まれておらず、エクスポートジョブは変更されていません。",
+        "uncertainEffect": "Leafenでは、現在のエクスポートステータスを確認できませんでした。",
+        "stateCheckAction": "別の操作を行う前に、エクスポートダイアログを再読み込みしてください。"
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "インポートをキャンセル",
+        "deniedEffect": "インポートはキャンセルされておらず、まだ実行中の可能性があります。",
+        "uncertainEffect": "Leafenはインポートがキャンセルされたかどうかを確認できませんでした。",
+        "stateCheckAction": "もう一度キャンセルする前に、インポートのステータスを更新してください。"
+      },
+      "job": {
+        "operation": "ファイルをインポート",
+        "deniedEffect": "ページは作成されず、部分的にインポートされたコンテンツは削除されました。",
+        "uncertainEffect": "Leafenはこのインポートで使用できるページを確認できませんでした。",
+        "stateCheckAction": "診断用のリファレンスを保管し、元のファイルから新しいインポートを開始してください。"
+      },
+      "start": {
+        "operation": "インポートを開始",
+        "deniedEffect": "新しいインポートは受け付けられず、ページは作成されませんでした。",
+        "uncertainEffect": "Leafenはインポートが受け付けられたかどうかを確認できませんでした。",
+        "stateCheckAction": "Leafenが同じリクエストに再接続できるよう、ファイルを変更せずに同じファイルでもう一度お試しください。"
+      },
+      "status": {
+        "operation": "インポートステータスを読み込む",
+        "deniedEffect": "最新のインポートステータスを読み込めませんでした。インポートジョブは変更されていません。",
+        "uncertainEffect": "Leafenは現在のインポートステータスを確認できませんでした。",
+        "stateCheckAction": "別の操作を行う前に、インポートダイアログを再度開いて保存されたジョブに再接続してください。"
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "アカウントのパスキーを読み込む",
+        "deniedEffect": "パスキーリストを読み込めませんでした。保存済みのキーは変更されていません。",
+        "uncertainEffect": "Leafenは現在のパスキーリストを確認できませんでした。",
+        "stateCheckAction": "変更する前に、再接続してパスキーリストを更新してください。"
+      },
+      "update": {
+        "operation": "アカウントのパスキーを管理する",
+        "deniedEffect": "サーバー側で保存済みのパスキーは変更されていません。",
+        "uncertainEffect": "Leafenはパスキーの変更が完了したかどうかを確認できませんでした。",
+        "stateCheckAction": "パスキーリストを更新してから、もう一度お試しください。新しいキーを作成したのにここに保存されていない場合は、デバイスのキー管理ツールを確認してください。"
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "現在のパスワードが正しくありません。",
+    "currentPasswordNext": "忘れた場合は、ログアウトしてログイン画面からリセットしてください。",
+    "code": "コードが正しくないか、すでに使用されています。",
+    "codeNext": "認証システムに現在表示されているコードを入力してください。",
+    "recoveryCode": "リカバリーコードが正しくないか、すでに使用されています。",
+    "recoveryCodeNext": "まだ使用していないリカバリーコードを入力してください。",
+    "accountDeactivated": "このアカウントはサーバーの管理者によって無効にされました。",
+    "accountDeactivatedNext": "再度有効にしてもらうよう、管理者に依頼してください。",
+    "organizationSSO": "この組織では、シングルサインオン（SSO）によるログインのみが許可されています。",
+    "organizationSSONext": "代わりに会社のアカウントでログインしてください。",
+    "organizationPasswordTwoStep": "組織では、デバイスコードではなく、パスワードと二段階認証によるログインが必要です。",
+    "organizationPasswordTwoStepNext": "メールアドレスとパスワードでログインしてください。パスワードがない場合は、管理者にワンタイムパスワードを依頼してください。",
+    "deviceCode": "コードが間違っているか、すでに使用されているか、期限切れか、コードを表示していたウィンドウが閉じられています。",
+    "deviceCodeNext": "新しいコードを取得し、もう一度入力してください。",
+    "setupCode": "セットアップコードが正しくありません。",
+    "setupCodeNext": "サーバーが出力したセットアップリンクをもう一度開くか、サーバーの起動時に使用したコードを入力してください。",
+    "setupCodeMissing": "セットアップコードを入力してください。",
+    "setupCodeMissingNext": "サーバーが出力したセットアップリンクを開くと自動で入力されます。サーバーの起動時に指定したコードでもかまいません。",
+    "sessionCapacity": "このアカウントはデバイス数の上限に達しています。",
+    "sessionCapacityNext": "使用していないデバイスを設定 → アカウント → デバイスからログアウトして、もう一度お試しください。",
+    "signInEnded": "このログインリクエストは終了しました。タイムアウトしたか、コードを何度も間違えたためです。",
+    "signInEndedNext": "メールアドレスとパスワードでもう一度ログインしてください。",
+    "emailNotVerified": "このアカウントのメールアドレスはまだ確認されていません。",
+    "emailNotVerifiedNext": "サインアップ時に受け取ったメールのリンクを開いてから、ログインしてください。",
+    "registrationFailed": "アカウントを作成できませんでした。",
+    "registrationFailedNext": "しばらくしてから、もう一度お試しください。それでも失敗する場合は、このサーバーの管理者に伝えてください。"
+  },
+  "labels": {
+    "reference": "リファレンス"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "この組織では、会社のログインで新しいアカウントは作成されません。",
+    "samlAccountCreationOffNext": "組織の管理者に招待を依頼してください。",
+    "samlRetryAfterInvite": "招待されたら、もう一度ログインしてください。",
+    "samlIdentityDenied": "このメールアドレスでは、この組織の会社ログインを使用できません。",
+    "samlIdentityDeniedNext": "組織の管理者に、メールドメインとあなたのメンバーシップを確認するよう依頼してください。",
+    "samlRetryAfterAdministrator": "管理者が確認したら、もう一度ログインしてください。",
+    "samlResponseInvalid": "会社のログイン応答を確認できませんでした。",
+    "samlResponseInvalidNext": "もう一度ログインをやり直してください。解決しない場合は、組織の管理者にSAML設定の確認を依頼してください。",
+    "accountAlreadyExistsForEmailAddress": "このメールアドレスのアカウントはすでに存在します。",
+    "accountEmailCouldNotAdmittedFor": "アカウントのメールを送信できませんでした。",
+    "administratorSettingsDoNotMeetServer": "管理者設定がサーバーの要件を満たしていません。",
+    "administratorSettingsNotAvailableCurrentAccount": "現在のアカウントでは管理者設定を利用できません。",
+    "anotherAdministratorAlreadyCompletedServerSetup": "別の管理者がすでにサーバーのセットアップを完了しています。",
+    "anotherServerOperationTemporarilyLockedAccount": "別のサーバー操作により、アカウントのストレージが一時的にロックされました。",
+    "anotherServerOperationTemporarilyLockedDatabase": "別のサーバー操作によりデータベースが一時的にロックされたため、エクスポートを続行できませんでした。",
+    "anotherServerOperationTemporarilyLockedDlp": "別のサーバー操作により、DLPポリシーのストレージが一時的にロックされました。",
+    "anotherServerOperationTemporarilyLockedFile": "別のサーバー操作により、ファイルストレージが一時的にロックされました。",
+    "anotherServerOperationTemporarilyLockedPage": "別のサーバー操作により、ページコンテンツのストレージが一時的にロックされました。",
+    "anotherServerOperationTemporarilyLockedProduct": "別のサーバー操作により、プロダクトのストレージが一時的にロックされました。",
+    "askOrganizationAdministratorToAllow": "組織の管理者またはチームスペースのオーナーに、許可するよう依頼してください。",
+    "askServerAdministratorCheckEmailDelivery": "サーバー管理者にメール配信を確認するよう依頼してから、もう一度お試しください。",
+    "backupArtifactNotCompleteYet": "バックアップファイルはまだ完成していません。",
+    "backupStateNoLongerPermitsControl": "バックアップの現在の状態では、この操作を実行できません。",
+    "causeCouldNotDetermined": "原因を特定できませんでした。",
+    "changeSaveReceiptAndSynchronizationState": "変更は保存されず、ページのコンテンツも変更されていません。",
+    "checkCurrentBackupBeforeRetrying": "再試行する前に、現在のバックアップを確認してください。",
+    "checkCurrentJobStateBeforeDeciding": "再試行するかどうかを決める前に、現在のジョブステータスを確認してください。",
+    "checkCurrentListBeforeTryingDifferent": "現在のリストを確認してから、別のアイテムで試してください。",
+    "checkCurrentServerSettingsBeforeTrying": "現在のサーバー設定を確認してから、もう一度お試しください。",
+    "checkCurrentServerSetupStateBefore": "現在のサーバーのセットアップ状態を確認してから、もう一度お試しください。",
+    "checkCurrentStateAndUseNew": "現在の状態を確認し、必要な場合にのみ新しいバックアップを開始してください。",
+    "checkEmailAndPassword": "メールアドレスとパスワードを確認してください。",
+    "checkServerSecretStorageThenSave": "サーバーのシークレットストレージを確認してから、同じ設定をもう一度保存してください。",
+    "checkServerStateThenLoadSettings": "サーバーの状態を確認してから、設定を再度読み込んでください。",
+    "createNewBackupAndInspectServer": "新しいバックアップを作成し、エラーが繰り返される場合はサーバーストレージを点検してください。",
+    "currentAccountNotAuthorizedForOperation": "現在のアカウントには、この操作を行う権限がありません。",
+    "currentStateMustCheckedBeforeRetry": "再試行しても安全だと判断するには、事前に現在の状態を確認する必要があります。",
+    "currentStateMustCheckedBeforeRetrying": "再試行する前に、現在の状態を確認する必要があります。",
+    "dnsVerificationServiceTemporarilyUnavailable": "DNS認証サービスは一時的にご利用いただけません。",
+    "doNotAssumeUnchangedRetrySafe": "サーバーストレージが修復されるまで、再試行しても安全だとは判断しないでください。",
+    "doNotKeepRetryingIdentifierNew": "このリクエストの再試行を繰り返さず、まず再読み込みしてください。その後なら新しい試行は安全です。",
+    "doNotResumeFailedJobStart": "失敗したジョブを再開せず、代わりに新しいエクスポートを開始してください。",
+    "doNotRetryBeforeLoadingLatest": "最新のサーバー設定を読み込む前に再試行しないでください。",
+    "doNotRetryDirectRequestUnchanged": "このアップロードをそのまま再試行せず、再開可能なアップロードを使用してください。",
+    "doNotRetryDirectRequestUnchanged2": "このアップロードをそのまま再試行せず、再開可能なアーカイブアップロードを使用してください。",
+    "doNotRetrySetupRequestSign": "この設定リクエストを再試行せず、既存の管理者アカウントでログインしてください。",
+    "doNotReuseInvalidArtifactCreate": "無効なバックアップファイルを再利用しないでください。新しいバックアップを作成してください。",
+    "doNotReuseLinkNewAction": "このリンクを再利用しないでください。新しいアクションを実行しても安全です。",
+    "emailOrPasswordDidNotMatch": "メールアドレスまたはパスワードが一致しません。",
+    "externalSignInProviderCouldNot": "外部のログインプロバイダーがリクエストを完了できませんでした。",
+    "fileLargerThanOneDirectUpload": "このファイルはサイズが大きすぎるため、1回の直接アップロードでは送信できません。",
+    "formStorageTemporarilyLockedByAnother": "別のサーバー操作により、フォームのストレージが一時的にロックされました。",
+    "leafenArchiveLargerThanOneDirect": "このLeafenアーカイブはサイズが大きすぎるため、1回の直接インポートではインポートできません。",
+    "leafenDidNotReceiveServerResponse": "Leafenはサーバーからの応答を受信できませんでした。",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafenが組織のストレージ使用状況を再構築しています。",
+    "leafenServiceCouldNotCompleteOperation": "Leafenサービスが操作を完了できませんでした。",
+    "isolatedRecordNotAppliedYourRequested": "未完了のレコードは除外され、変更は保存されず、ページの内容は変更されていません。",
+    "jobCannotRetriedStartReplacementExport": "このジョブは再試行できません。代わりに新しいエクスポートを開始してください。",
+    "jobSArchiveNotPublishedAnd": "このジョブのアーカイブは作成されず、元のワークスペースも変更されていません。",
+    "keepDiagnosticReferenceAndAskServer": "診断用のリファレンスを控えておき、サーバー管理者にサーバーストレージの修復を依頼してください。",
+    "lastConfirmedSavedStateRestoredSo": "最後に確認された保存状態が復元されたため、同じ変更を安全に再試行できます。",
+    "loadCurrentReportAndUseNew": "現在のレポートを読み込んでから、もう一度更新してください。",
+    "loadCurrentReportBeforeRefreshingAgain": "もう一度更新する前に、現在のレポートを読み込んでください。",
+    "loadCurrentReportBeforeTryingAgain": "もう一度試す前に、現在のレポートを読み込んでください。",
+    "newerOrIncompatibleStatePreventedOperation": "より新しい状態または互換性のない状態のため、この操作を実行できませんでした。",
+    "noNewArchivePublishedAndSource": "新しいアーカイブは作成されず、元のワークスペースと以前のアーカイブは変更されていません。",
+    "noNewSignInSessionCreated": "新しいログインセッションは作成されず、既存のセッションも変更されていません。",
+    "notKnownWhetherRetryingSafeUntil": "現在の状態を確認するまで、再試行しても安全かどうかはわかりません。",
+    "organizationStorageAuthorityInconsistent": "組織のストレージ使用量の記録に不整合があります。",
+    "organizationDlpBlocksOperation": "組織のデータ損失防止ポリシーにより、この操作はブロックされています。",
+    "takeOutTermOrAskAboutDlp": "機密性の高い用語があれば削除してからもう一度お試しください。わからない場合は、組織の管理者に確認してください。",
+    "organizationSettingsDoNotAllowOperation": "組織またはチームスペースの設定では、この操作は許可されていません。",
+    "organizationStorageLimitWouldExceeded": "組織のストレージ上限を超えることになります。",
+    "serverDiskAlmostFull": "サーバーのディスクがほぼいっぱいです。",
+    "askServerAdministratorToFreeSpace": "サーバー管理者に空き容量を確保するよう依頼してください。空きができれば再び動作します。",
+    "safeRetryOnceServerHasRoom": "サーバーに空きができたら、同じ操作をもう一度試しても問題ありません。",
+    "readDoesNotChangeSavedData": "この読み取りは保存済みデータを変更しないため、安全に再試行できます。",
+    "reloadCurrentBackupBeforeChoosingAnother": "別の操作を選択する前に、現在のバックアップを再読み込みしてください。",
+    "reloadCurrentBackupStateBeforeContinuing": "続行する前に、現在のバックアップ状態を再読み込みしてください。",
+    "reloadCurrentStateBeforeDecidingWhether": "再試行するかどうかを決める前に、現在の状態を再読み込みしてください。",
+    "reloadSignInPageAndStart": "ログインページを更新して、もう一度ログインしてください。",
+    "removeUnneededFilesOrAskOrganization": "不要なファイルを削除するか、組織の請求管理者に上限の引き上げを依頼してください。",
+    "reportChangedAfterScreenLoaded": "この画面を読み込んだ後にレポートが変更されました。",
+    "requestIdentifierBelongsDifferentOperation": "このリクエストはすでに別の操作に使用されています。",
+    "requestIdentifierBelongsDifferentReportRefresh": "このリクエストはすでに別のレポート更新に使用されています。",
+    "requestedItemNoLongerExistsOr": "リクエストした項目は存在しないか、このアカウントには表示されません。",
+    "retryExportAfterOtherServerOperation": "他のサーバー操作が完了してから、このエクスポートを再試行してください。",
+    "retryExportJobAfterServerStorage": "サーバーストレージが復旧してから、このエクスポートジョブを再試行してください。",
+    "retryOnlyAfterAccountOrPermission": "アカウントまたは権限が変更された後にのみ再試行してください。",
+    "retryOnlyAfterOrganizationSettingChanges": "その設定が変更された後にのみ再試行してください。",
+    "retrySameContentChangeAfterOther": "他のサーバー操作が完了してから、同じコンテンツ変更を再試行してください。",
+    "retrySameContentChangeAfterServer": "サーバーストレージが復旧してから、同じコンテンツ変更を再試行してください。",
+    "retrySameContentChangeNow": "同じコンテンツ変更を今すぐ再試行してください。",
+    "changeTooLargeForOneChange": "一度に変更するには大きすぎます。1回の変更の上限は、テキストを含めて64MBです。",
+    "pageKeepsWhatItHadBefore": "ページは変更前のままです。",
+    "makeTheChangeInParts": "分割して行ってください。大きなトグルやセクションは、内側のブロックを先に分割して削除し、長いテキストは分割して貼り付けてください。",
+    "sameSizeIsRefusedAgain": "同じサイズでは再び拒否されます。分割した後なら、安全に再試行できます。",
+    "linkCannotBeKeptHere": "この変更でリンクするページまたはブロックは、ここではリンクできません。",
+    "chooseAnotherPageOrRefresh": "別のページを選択するか、ページを再読み込みして、もう一度お試しください。",
+    "sameLinkIsRefusedAgain": "同じ項目を再度リンクしても、また拒否されます。",
+    "retrySameDomainVerificationAfterDns": "DNS検証サービスが復旧してから、同じドメイン検証を再試行してください。",
+    "retrySameFileOperationAfterOther": "他のサーバー操作が完了してから、同じファイル操作を再試行してください。",
+    "retrySameFileOperationAfterServer": "サーバーストレージが復旧してから、同じファイル操作を再試行してください。",
+    "retrySameFormOperationAfterOther": "他のサーバー操作が完了してから、同じフォーム操作を再試行してください。",
+    "retrySameFormOperationAfterServer": "サーバーストレージが復旧してから、同じフォーム操作を再試行してください。",
+    "retrySameOperationAfterOtherServer": "他のサーバー操作が完了してから、同じ操作を再試行してください。",
+    "retrySameOperationAfterServerStorage": "サーバーストレージが復旧してから、同じ操作を再試行してください。",
+    "returnSignInWithExistingAccount": "ログイン画面に戻り、既存のアカウントでログインしてください。",
+    "reviewAndCorrectEnteredServerSettings": "入力したサーバー設定を確認して修正してください。",
+    "reviewEnteredValuesAndCorrectHighlighted": "入力した値を確認し、ハイライトされている情報を修正してください。",
+    "safeRetryAfterEmailDeliveryRestored": "メール配信が復旧した後で、安全に再試行できます。",
+    "safeRetryAfterServerResourceChecks": "サーバーのリソースチェックが復旧した後で、安全に再試行できます。",
+    "safeRetryAfterTemporaryLockClears": "一時的なロックが解除された後で、安全に再試行できます。",
+    "safeRetryRead": "この読み取りは安全に再試行できます。",
+    "safeRetrySameAuthenticationOperationAfter": "ストレージが復旧した後で、同じ認証操作を安全に再試行できます。",
+    "safeRetrySameContentChangeAfter": "一時的なロックが解除された後で、同じコンテンツ変更を安全に再試行できます。",
+    "safeRetrySameContentChangeAfter2": "ストレージが復旧した後で、同じコンテンツ変更を安全に再試行できます。",
+    "safeRetrySameDlpPolicySave": "ストレージが復旧した後で、同じDLPポリシーの保存を安全に再試行できます。",
+    "safeRetrySameDlpPolicySave2": "一時的なロックが解除された後で、同じDLPポリシーの保存を安全に再試行できます。",
+    "safeRetrySameDomainVerificationAfter": "サービスが復旧した後で、同じドメイン検証を安全に再試行できます。",
+    "safeRetrySameFileOperationAfter": "ストレージが利用可能になった後で、同じファイル操作を安全に再試行できます。",
+    "safeRetrySameFileOperationAfter2": "ストレージが復旧した後で、同じファイル操作を安全に再試行できます。",
+    "safeRetrySameFileOperationAfter3": "一時的なロックが解除された後で、同じファイル操作を安全に再試行できます。",
+    "safeRetrySameFormOperationAfter": "ストレージが復旧した後で、同じフォーム操作を安全に再試行できます。",
+    "safeRetrySameFormOperationAfter2": "一時的なロックが解除された後で、同じフォーム操作を安全に再試行できます。",
+    "safeRetrySameOperationAfterStorage": "ストレージが復旧した後で、同じ操作を安全に再試行できます。",
+    "safeRetrySameOperationAfterTemporary": "一時的なロックが解除された後で、同じ操作を安全に再試行できます。",
+    "safeRetrySameSettingsAfterSecret": "シークレットストレージが復旧した後で、同じ設定を安全に再試行できます。",
+    "safeRetrySameSettingsSaveAfter": "無効な値を修正した後で、同じ設定の保存を安全に再試行できます。",
+    "safeRetryWithSameJobIdentifier": "同じジョブを安全に再試行できます。",
+    "safeRetryWithSameJobIdentity": "同じジョブを安全に再試行できます。",
+    "safeSignInInsteadCreatingAnother": "別のアカウントを作成しなくても、安全にログインできます。",
+    "safeStartNewProviderSignIn": "後で新しいプロバイダーのログインを開始しても問題ありません。",
+    "safeTryAgainAfterCorrectingDetails": "詳細を修正した後で、安全に再試行できます。",
+    "safeTryAgainAfterCorrectingInput": "入力を修正した後で、安全に再試行できます。",
+    "safeTryAgainAfterWait": "しばらく待ってから、安全に再試行できます。",
+    "serverTakesNoChangesNow": "このサーバーはバックアップ先に接続できないため、現在変更を受け付けていません。",
+    "serverDataMovedElsewhere": "このサーバーのデータは別のサーバーに移動しました。",
+    "doItOnNewServer": "新しいサーバーで実行してください。",
+    "serverDataMovedNoRetry": "ここでやり直しても保存されません。",
+    "sameRequestIdentityCanRetriedSafely": "しばらく待ってから、同じリクエストを安全に再試行できます。",
+    "saveSameDlpPolicyAgainAfter": "サーバーストレージが復旧したら、同じDLPポリシーをもう一度保存してください。",
+    "saveSameDlpPolicyAgainAfter2": "他のサーバー操作が完了したら、同じDLPポリシーをもう一度保存してください。",
+    "serverAccountStorageTemporarilyUnavailable": "サーバーのアカウントストレージは一時的にご利用いただけません。",
+    "serverCannotCurrentlyConfirmResourceState": "サーバーは現在、リソースの状態を確認できません。",
+    "serverCouldNotCompleteAdministratorSettings": "サーバーが管理者設定の保存を完了できませんでした。",
+    "serverCouldNotCompleteAdministratorSetup": "サーバーが管理者セットアップのリクエストを完了できませんでした。",
+    "serverCouldNotCompleteBackupLifecycle": "サーバーがバックアップを完了できませんでした。",
+    "serverCouldNotLoadBackupState": "サーバーがそのバックアップ状態を読み込めませんでした。",
+    "serverCouldNotProtectAdministratorSecret": "サーバーが管理者のシークレット値を保護できませんでした。",
+    "serverCouldNotReadAdministratorState": "サーバーが管理者の状態を読み取れませんでした。",
+    "serverCouldNotReadOneExact": "サーバーが一貫したレポートのスナップショットを読み取れませんでした。",
+    "serverDetectedAndIsolatedIncompleteContent": "サーバーが不完全なコンテンツレコードを検出し、隔離しました。",
+    "serverFileStorageTemporarilyUnavailable": "サーバーのファイルストレージは一時的にご利用いただけません。",
+    "serverFormStorageTemporarilyUnavailable": "サーバーのフォームストレージは一時的にご利用いただけません。",
+    "serverPageContentStorageTemporarilyUnavailable": "サーバーのページコンテンツストレージは一時的にご利用いただけません。",
+    "serverSettingsChangedAfterScreenLoaded": "この画面を読み込んだ後にサーバー設定が変更されました。",
+    "serverStorageTemporarilyUnavailable": "サーバーストレージは一時的にご利用いただけません。",
+    "serverStorageTemporarilyUnavailableSoArchive": "サーバーストレージを一時的に利用できなかったため、アーカイブを作成できませんでした。",
+    "serverStorageTemporarilyUnavailableSoDlp": "サーバーストレージを一時的に利用できなかったため、DLPポリシーを保存できませんでした。",
+    "signInAttemptIdentifierAlreadyBelongs": "このログイン試行は、すでに別の情報で使用されています。",
+    "signInOrAccountActionLink": "ログインまたはアカウントのアクションのリンクは無効になりました。",
+    "signInWithAuthorizedAccountOr": "権限のあるアカウントでログインするか、管理者にアクセスを依頼してください。",
+    "signInWithExistingAdministratorAccount": "既存の管理者アカウントでログインしてください。",
+    "signInWithServerAdministratorAccount": "サーバー管理者アカウントでログインするか、別の管理者にアクセスを依頼してください。",
+    "startAccountActionAgainGetNew": "新しいリンクを取得するには、アカウント操作をもう一度開始してください。",
+    "startReplacementExportFromLatestWorkspace": "最新のワークスペースから代替エクスポートを開始してください。",
+    "storedBackupDidNotMatchVerified": "保存されたバックアップが検証済みのファイルと一致しませんでした。",
+    "submittedInformationDidNotMeetOperation": "送信された情報が操作の要件を満たしていませんでした。",
+    "tooManyRequestsLimited": "リクエストが多すぎるため、この操作は制限されています。",
+    "tooManyRequestsMadeSoOperation": "リクエストが多すぎるため、この操作は一時的に制限されています。",
+    "tryAgainAfterServerStorageRecovers": "サーバーのストレージが復旧してから、やり直してください。",
+    "tryAgainInHours_other": "約{{count}}時間後にもう一度お試しください。",
+    "tryAgainInMinutes_other": "約{{count}}分後にもう一度お試しください。",
+    "tryAgainInSeconds_other": "約{{count}}秒後にもう一度お試しください。",
+    "useAnotherSignInMethodOr": "別のログイン方法を使用するか、後でこのプロバイダーを試してください。",
+    "useResumableArchiveUploadSoProgress": "保存された状態から続行できるよう、再開可能なアーカイブアップロードを使用してください。",
+    "useResumableUploadSoProgressCan": "保存された状態から続行できるよう、再開可能なアップロードを使用してください。",
+    "waitForCompletionThenRetryDownload": "完了するまで待ってから、ダウンロードを再試行してください。",
+    "waitForOtherServerOperationFinish": "他のサーバー操作が完了するまで待ってから、もう一度お試しください。",
+    "waitForStorageReconciliationAdvanceThen": "ストレージが最新の状態になるまでしばらく待ってから、同じ操作を再試行してください。",
+    "waitMomentBeforeTryingAgain": "しばらくしてから、もう一度お試しください。",
+    "workspaceChangedWhileExportRunning": "エクスポートの実行中にワークスペースが変更されました。",
+    "youNotSignedInAndNo": "ログインしていないため、アカウントデータは変更されていません。",
+    "pageIsLocked": "ページがロックされているため、変更できません。",
+    "unlockPageThenTryAgain": "ページメニューから自分だけ、または全員のロックを解除してから、もう一度お試しください。",
+    "safeToRetryAfterUnlocking": "ページのロックを解除した後なら、安全に再試行できます。",
+    "databaseIsLocked": "データベースがロックされているため、プロパティとビューを変更できません。",
+    "unlockDatabaseThenTryAgain": "データベースの「ロック」ボタンから自分のみ、または全員のロックを解除してから、やり直してください。",
+    "databaseEditorsCanUnlock": "データベースを編集できる人のみがロックを解除できます。",
+    "safeToRetryAfterDatabaseUnlocked": "データベースのロックが解除された後であれば、安全にやり直せます。",
+    "rowMoveNeedsFullAccess": "別のページに移動するには、その項目へのフルアクセス権限と、移動先への編集権限が必要です。",
+    "askFullAccessHolderToMoveIt": "フルアクセス権限を持つ人に移動を依頼するか、編集できる場所を選択してください。",
+    "rowMoveRefusedUntilAccess": "その権限が付与されるまで、再度移動しても拒否されます。",
+    "otherWorkspaceCantMoveOrLink": "ワークスペース間でアイテムを移動したりリンクしたりすることはできません。",
+    "makeItAnewInThatWorkspace": "そのワークスペースで新しく作成し、コンテンツをコピーしてください。ページ全体は「別ページへ移動」でワークスペースを選択すると、そこへ移動またはコピーできます。",
+    "otherWorkspaceRefusedAgain": "もう一度試しても、同じ理由で拒否されます。",
+    "signInEndedForThisBrowser": "このブラウザのログインは期限切れになったか、終了しました。",
+    "signInEndedForThisApp": "このアプリのログインは期限切れになったか、終了しました。",
+    "signInAgainToContinue": "続行するには、もう一度ログインしてください。",
+    "retryAfterSigningInAgain": "もう一度ログインしてからやり直してください。",
+    "serverRestoredSinceDeviceCopies": "このサーバーのデータが変更されたため、このデバイスのコピーは変更前のものです。",
+    "changeKeptOnThisDeviceOnly": "変更はサーバーに保存されていません。このデバイスにのみあります。",
+    "takeServerContentAnew": "「サーバーから再読み込み」を選択して、サーバーの現在の内容を取得してください。",
+    "retryAfterTakingContentAnew": "サーバーから再読み込みしてから、もう一度お試しください。",
+    "propertyUsedByViewOrDependency": "このプロパティは現在変更できません。タイトルプロパティであるか、削除されたプロパティに含まれています。",
+    "changeWhatUsesPropertyFirst": "ページを再読み込みして、現在のプロパティを確認してください。",
+    "retryAfterChangingWhatUsesProperty": "削除されたプロパティを変更するには、先に復元してください。",
+    "workspaceAlreadyHasContentForArchive": "このワークスペースにはすでにコンテンツがあるため、Leafenのアーカイブはインポートできません。",
+    "makeNewWorkspaceToImportArchive": "新しいワークスペースを作成し、そこでこのアーカイブをインポートしてください。",
+    "retryInNewWorkspace": "新しいワークスペースで再度インポートできます。",
+    "importFileDoesNotFitFormat": "ファイルがLeafenの読み取れる形式に合っていないため、何もインポートされませんでした。",
+    "exportFileAgainToImport": "ファイルを作成した場所でもう一度エクスポートしてから、そのファイルをインポートしてください。",
+    "sameFileRefusedAgain": "同じファイルを再度インポートしても、うまくいきません。",
+    "pageBusyWithAnotherChange": "このページは別の変更を処理中のため、しばらく編集できません。",
+    "tryAgainOnceThatChangeIsDone": "その変更が完了してから、もう一度お試しください。",
+    "importPageInTrash": "インポート先のページがごみ箱にあるため、何もインポートされませんでした。",
+    "restorePageThenImportAgain": "ページをごみ箱から復元してから、もう一度インポートしてください。",
+    "importPageDeletedForGood": "インポート先のページが完全に削除されているため、何もインポートされませんでした。",
+    "ownerBringsDeletedPageBack": "30日以内であれば、ワークスペースのオーナーが「セキュリティ」→「データ保持」で復元できます。その後、ごみ箱から復元して、もう一度インポートしてください。",
+    "importAgainOnceRestored": "ページを復元するまで、やり直してもインポートされません。",
+    "pageInTrashCantChange": "ごみ箱にあるページは、復元するまで変更できません。",
+    "restorePageThenTryAgain": "ページをごみ箱から復元してから、もう一度お試しください。",
+    "tryAgainOnceRestored": "ページを復元するまで、やり直しても成功しません。",
+    "optionNameHasComma": "オプション名にカンマ（,）は使用できません。",
+    "takeCommaOutOrSplitOption": "カンマを削除するか、2つのオプションに分けてください。",
+    "optionRefusedUntilRenamed": "名前を変更してから、もう一度お試しください。",
+    "optionNameTaken": "このプロパティには、すでに同じ名前のオプションがあります。",
+    "useAnotherOptionName": "別の名前を使用するか、すでに存在するオプションを選択してください。",
+    "optionsInUseLeftOut": "この変更では、ページで使用されているオプションが除外されます。",
+    "keepOptionsOrDeleteOneByOne": "それらのオプションを残すか、各オプションのメニューから1つずつ削除してください。",
+    "optionsRefusedUntilKeptOrDeleted": "そのままもう一度試しても、同じ理由で拒否されます。"
+  }
+}

@@ -1,0 +1,108 @@
+/* Dependency connections use the theme's yellow accent, as the native
+   Notion timeline observed with dependencies enabled. */
+
+/* Overlay sits on top of the lanes grid but must never eat pointer events.
+   Its arrows are drawn along the reading direction (TimelineCanvas
+   measureBars), so it turns over where the days run from the right. */
+.depOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+  scale: var(--inline-sign, 1) 1;
+  --dep-delete-ground: #fff;
+}
+
+:global([data-theme="dark"]) .depOverlay {
+  --dep-delete-ground: #000;
+}
+
+/* A connection is 2px, owner's and reader's alike (Notion's, read
+   2026-11-24 on a public timeline and its owner's: rgb(216,163,47), 2px);
+   its arrowhead stays 9px (TimelineCanvas DependencyArrows). */
+.depPath {
+  fill: none;
+  stroke: rgb(216, 163, 47);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.depArrowFill {
+  fill: rgb(216, 163, 47);
+}
+
+/* For one who may change the timeline, a 16px band along each line takes
+   the pointer (Notion's, read 2026-11-24: stroke none, pointer-events
+   stroke, the arrow cursor) and shows the line's ✕ (TimelineDependencyArrows). */
+.depHit {
+  fill: none;
+  stroke: none;
+  stroke-width: 16;
+  pointer-events: stroke;
+  cursor: default;
+}
+
+/* The ✕ in place of the arrowhead: a 12px red circle with its cross cut
+   out, on a 16px square rounded 5 — Notion's xMarkCircleFillSmall in its
+   redIcoAccPri, #e56458 in both themes, on its whi token, #fff light and
+   #000 dark (read 2026-11-24 from its page in dark and its theme rules). */
+.depDelete {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.depDeleteGround {
+  fill: var(--dep-delete-ground);
+}
+
+.depDeleteMark {
+  fill: var(--danger-fill);
+}
+
+.depDeleteCross {
+  fill: none;
+  stroke: var(--dep-delete-ground);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.depSourceHandle,
+.depTargetHandle {
+  position: absolute;
+  top: 50%;
+  z-index: 7;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 2px solid var(--bg-app);
+  border-radius: 999px;
+  background: var(--c-accent-yellow);
+  box-shadow: 0 0 0 1px var(--border-default);
+  opacity: 0;
+  cursor: crosshair;
+  transform: translateY(-50%);
+}
+
+.depSourceHandle {
+  inset-inline-end: -7px;
+}
+
+.depTargetHandle {
+  inset-inline-start: -7px;
+  background: var(--c-accent-yellow);
+  opacity: 1;
+}
+
+:global([data-timeline-row-id]):hover .depSourceHandle,
+:global([data-timeline-row-id]):focus-within .depSourceHandle,
+.depSourceHandle[data-active="true"] {
+  opacity: 1;
+}
+
+.depSourceHandle:focus-visible,
+.depTargetHandle:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+  opacity: 1;
+}

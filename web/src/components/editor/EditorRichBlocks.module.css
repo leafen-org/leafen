@@ -1,0 +1,388 @@
+
+/* Quote */
+/* Its line 2px into the block and its text 25px past the line's start,
+   as Notion's (measured 2026-10-24). */
+.quote {
+  display: flex;
+  border-inline-start: 3px solid var(--text-default);
+  padding-inline-start: 14px;
+  margin-block: 0;
+  margin-inline: 2px 0;
+}
+/* Its text is the page's size, as Notion's "기본" (measured 2026-10-31: 16px/24px). */
+.quote .editable {
+  padding-inline-start: 8px;
+}
+/* "인용 크기 › 크게": 1.2 times the page's text, as Notion's (seen 2026-10-12). */
+.quote[data-size="large"] .editable {
+  font-size: 1.2em;
+}
+
+/* Callout */
+/* A callout is a box round its line and its children, as Notion's (seen
+   2026-10-14, 2026-11-04): 10px round, a 1px line, 12px in; its line is a
+   block of its own with the others' 5px over and under, so what follows it
+   stands as it does anywhere; a background fills it instead of the line. A
+   new callout is gray with the light bulb (blockDefaults newCalloutLook).
+   Its children line up with its text. Its box stands where a line's text
+   does, 704px wide in a 720px column, as Notion's (seen 2026-11-09). */
+.blockGroup[data-block-type="callout"] {
+  padding-block: 8px;
+}
+.blockRow[data-type="callout"] > .blockBody {
+  margin-inline: 2px;
+  padding: 12px;
+  /* The divider's faint line, in both themes as Notion's (seen 2026-10-31). */
+  border: 1px solid var(--block-divider);
+  border-radius: 10px;
+}
+.blockRow[data-type="callout"] > .blockBody[data-block-color$="_background"] {
+  border-color: transparent;
+}
+/* A gray callout's ground is lighter than a gray line's in the light theme
+   alone, rgb(249, 248, 247) to rgb(240, 239, 237); in the dark theme both
+   are rgb(56, 56, 54), and every other color is a line's (Notion's, measured
+   2026-11-16 in Chrome in three tabs, the nine colors light and dark). A
+   database in it covers what scrolls under its kept parts with it. */
+.blockRow[data-type="callout"] > .blockBody[data-block-color="gray_background"] {
+  --table-surface: var(--c-callout-bg-gray);
+  background: var(--c-callout-bg-gray);
+}
+.callout {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  padding-block: 5px;
+}
+/* With its icon taken away, its holder takes no place. */
+.callout > span:empty {
+  display: none;
+}
+/* Its icon alone, beside the first of the lines it holds: its 24px place 13
+   in from its box's edge and the lines' words 45 in, where a callout's own
+   words stand beside its icon, as Notion's (seen 2026-11-12, one line and
+   two, made with "/콜아웃" and through its API alike). */
+.callout[data-icon-only="true"] {
+  height: 0;
+  padding-block: 0;
+}
+.callout[data-icon-only="true"] .calloutIcon {
+  margin-top: var(--callout-icon-top);
+}
+/* Beside a heading as its first line (without its room over it,
+   EditorText), the icon stands beside that line: 17, 13 and 10.5px under the
+   box's inside top beside a heading 1, 2 or 3 (a toggle heading as its
+   heading), 7.5px beside a heading 4 or any other line, as Notion's (seen
+   2026-11-12, made with "/콜아웃" and through its API alike). */
+.blockRow[data-type="callout"] > .blockBody {
+  --callout-icon-top: 7.5px;
+}
+.blockRow[data-type="callout"] > .blockBody:has(> * > * > :global(.node-nativeChildren) > .calloutChildren > * > * > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_1"], [data-type="toggle_heading_1"])) {
+  --callout-icon-top: 17px;
+}
+.blockRow[data-type="callout"] > .blockBody:has(> * > * > :global(.node-nativeChildren) > .calloutChildren > * > * > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_2"], [data-type="toggle_heading_2"])) {
+  --callout-icon-top: 13px;
+}
+.blockRow[data-type="callout"] > .blockBody:has(> * > * > :global(.node-nativeChildren) > .calloutChildren > * > * > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:is([data-type="heading_3"], [data-type="toggle_heading_3"])) {
+  --callout-icon-top: 10.5px;
+}
+/* Each looks at its own icon and lines, not those of a callout inside it
+   (2026-11-14: one with no icon inside took the words of the one holding it
+   under that one's icon). Its icon is asked beside its lines, and its first
+   line by its handle, not by the callout's box above both: a ":has()" there
+   had each row put in a database in the callout go through all it holds
+   again (2026-11-15). */
+.blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-icon-only="true"]) ~ :global(.node-nativeChildren) > .calloutChildren {
+  margin-inline-start: 30px;
+}
+/* Its first line, beside its icon, shows no handle of its own; hovered, the
+   callout's shows, as Notion's (seen 2026-11-05: here it covered the icon,
+   whose press then chose the line instead of opening the icon picker). */
+.blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-icon-only="true"]) ~ :global(.node-nativeChildren) > .calloutChildren > div > div > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow > .gutter {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .blockRow[data-type="callout"] > .gutter:has(~ .blockBody > * > * > :global(.node-nativeWidget) > * > .callout[data-icon-only="true"]):has(~ .blockBody > * > * > :global(.node-nativeChildren) > .calloutChildren > div > div > :global(.node-nativeBlock):first-child > * > .blockGroup > .blockRow:hover) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+/* With its icon taken away, its lines start 21 in from its box, as Notion's
+   (seen 2026-11-05). */
+.blockRow[data-type="callout"] > .blockBody > * > * > :global(.node-nativeWidget):has(> * > .callout[data-no-icon="true"]) ~ :global(.node-nativeChildren) > .calloutChildren {
+  margin-inline-start: 6px;
+}
+/* The icon as Notion's (seen 2026-11-12): a 24px button 2.7px over the
+   words' top, the words 32px from its edge. */
+.calloutIconWrap {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin-inline-end: 2px;
+}
+.calloutIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2.3px;
+  padding: 0;
+  border-radius: 4px;
+  font-size: 16.8px;
+  line-height: 16.8px;
+}
+/* An emoji draws as Notion's (measured 2026-11-14 and 2026-11-15): a 21.6px
+   line in the button's middle, 1.2px in from its edges, in the page's font,
+   the emoji on it in the emoji fonts and standing on its baseline. */
+.calloutIcon[data-emoji="true"] {
+  display: block;
+  padding: 1.2px;
+  font-size: 21.6px;
+  line-height: 21.6px;
+  text-align: start;
+}
+.calloutIcon[data-emoji="true"] > * {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+/* Notion's icon isn't tinted under the pointer (seen 2026-10-31); a key's focus still shows. */
+.calloutIcon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.calloutContent {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-direction: column;
+}
+.calloutChildren {
+  margin-inline-start: 30px;
+}
+
+/* Code, as Notion's (seen 2026-10-29, light and dark): a 10px box in its
+   translucent ground, the text 36px from its top and bottom and 22px in; on
+   hover, one 28px group at its top right (4px in) holding the language,
+   copy, wrap and the block's "⋯" — hover being the pointer moved onto it
+   (CodeBlock's data-pointed), not one resting where it came up; :hover too,
+   as the page scrolling it away from a still pointer tells no pointer leave. */
+/* Its text is 0.85 of the page's on 1.5 lines: 13.6/20.4, and 11.9/17.85
+   in small text, 8px over and under it in its block, as Notion's (seen
+   2026-10-31: 92.4 in 108.4). */
+.codeBlock {
+  --code-block-font-size: calc(var(--page-font-size, 16px) * 0.85);
+  position: relative;
+  width: calc(100% - 4px);
+  margin: 3px 2px;
+  border-radius: 10px;
+  background: var(--bg-code-block);
+}
+.codeToolbar {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-block-toolbar);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.codeBlock[data-pointed="true"]:hover .codeToolbar,
+.codeToolbar:has([aria-expanded="true"]),
+.codeToolbar:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+.editorSelectBackdrop {
+  z-index: 73;
+}
+/* The group's controls keep their own sizes over the select's form styles. */
+/* Holds the language select only to hear the press that opens it, laid out as if not there. */
+.codeLanguageHold { display: contents; }
+.codeToolbar .codeLanguageSelect {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+}
+.codeToolbarDivider {
+  flex: 0 0 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--c-bg-gray);
+}
+.codeToolbar .codeLanguageButton {
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  min-height: 24px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg-code-toolbar);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+.codeToolbar .codeLanguageButton svg {
+  width: 10px;
+  height: 10px;
+}
+
+.codeLanguageOption {
+  min-height: 28px;
+}
+.codeToolbar .codeOption {
+  display: inline-flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg-code-toolbar);
+  cursor: pointer;
+}
+.codeToolbar .codeLanguageButton:hover,
+.codeToolbar .codeLanguageButton:focus-visible,
+.codeToolbar .codeLanguageButton[aria-expanded="true"],
+.codeToolbar .codeOption:hover,
+.codeToolbar .codeOption:focus-visible {
+  border: 0;
+  background: var(--bg-hover);
+  outline: none;
+}
+.codeOption[data-active="true"] {
+  color: var(--text-default);
+}
+.codeBody {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.codeStack {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* The text field fills the whole box, its room around the code included, so a
+   click anywhere in the box puts the caret on the line beside it, as Notion's
+   (seen 2026-11-07: a click right of the text chose the block while the caret
+   went in too, and the next Backspace took the whole block). */
+.code {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--code-block-font-size);
+  line-height: var(--page-line-height, 1.5);
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+}
+.code .editable {
+  display: block;
+  box-sizing: border-box;
+  min-height: 48px;
+  font-family: var(--font-mono);
+  white-space: inherit;
+  padding: 36px 22px;
+}
+/* The editor's own `code` holding the text takes the block's font, not the browser's. */
+.code .editable code {
+  font: inherit;
+}
+/* A link the code's words keep is not drawn: they read as code, with no
+   underline, card or press of their own, as Notion's (codeHighlightPrismHtml.ts). */
+.code .editable a {
+  color: inherit;
+  opacity: 1;
+  text-decoration: none;
+  cursor: text;
+}
+/* On a phone its lines are 22px, as Notion's: 94 in a 110 block (seen 2026-10-31). */
+:global([data-phone="true"]) :is(.code, .codeHighlighted) {
+  line-height: 22px;
+}
+/* A touch screen has no pointer to bring the bar: Notion's iPad keeps it, its
+   language, copy, wrap and "⋯" over the block's top right as a pointer
+   brings them on a desktop (seen 2026-11-12 at 834). */
+:global([data-touch="true"]) .codeToolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch phone has no pointer to bring the bar, so Notion's phone keeps it
+   (seen 2026-11-13 on iOS Safari at 402 and 2026-11-15 on Android Chrome at
+   411): the desktop's pill where the desktop puts it, 4px in from the box's
+   top and end, its ground, shadow and line, holding the language (15px,
+   grey), the line and the block's "⋯", the code 36px in above and below as
+   on a desktop; copying and wrapping are in the block's menu there, and a
+   Mermaid block's pill keeps only its format choice beside them, no large
+   view or download (seen 2026-11-14 on iOS Safari at 402). */
+:global([data-phone="true"]) .codeToolbar {
+  opacity: 1;
+  pointer-events: auto;
+}
+:global([data-phone="true"]) .codeToolbar :is([data-code-copy], [data-code-wrap], [data-mermaid-expand], [data-mermaid-download]) {
+  display: none;
+}
+:global([data-phone="true"]) .codeToolbar .codeLanguageButton {
+  font-size: 15px;
+  line-height: 20px;
+}
+/* Soft-wrap toggle: wrap long lines instead of horizontal scroll. */
+.codeBlock[data-wrap="true"] .code,
+.codeBlock[data-wrap="true"] .code .editable,
+.codeBlock[data-wrap="true"] .codeHighlighted {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: hidden;
+}
+/* When the highlighted overlay is shown, keep the editable present (focusable)
+   but invisible and stacked beneath the overlay (it still drives layout height
+   via the overlay, which sits in normal flow). */
+.code[data-hidden="true"] {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  color: transparent;
+  overflow: auto;
+}
+.codeHighlighted {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 36px 22px;
+  font-family: var(--font-mono);
+  font-size: var(--code-block-font-size);
+  line-height: var(--page-line-height, 1.5);
+  tab-size: 2;
+  white-space: pre;
+  overflow-x: auto;
+  cursor: text;
+}
+/* Laid out as the editable text under it, so the two stay on top of each
+   other. */
+.codeHighlighted code:global(.code-highlight) {
+  display: inline;
+  padding: 0;
+  overflow: visible;
+  font-family: var(--font-mono);
+  white-space: inherit;
+}

@@ -1,0 +1,618 @@
+/* Selected rows' bar, as Notion's (seen 2026-10-06): a 32px strip
+   floating over the view's toolbar, 8px above the table — or above its filter bar — and 10px left of
+   it, staying in sight as the page scrolls. Its parts are split by thin
+   lines: the count (blue, clears the selection), up to five property
+   buttons, "move to trash" and "…". */
+.selectionAnchor {
+  position: sticky;
+  top: calc(48px + var(--selection-bar-over, 0px));
+  z-index: 20;
+  height: 0;
+}
+/* Drawn ahead with no row chosen (TableSelectionToolbar): laid out, unseen. */
+.selectionAnchor[data-selection-ahead] {
+  visibility: hidden;
+  pointer-events: none;
+}
+.selectionBar {
+  position: absolute;
+  bottom: calc(8px + var(--selection-bar-over, 0px));
+  inset-inline-start: -10px;
+  display: inline-flex;
+  align-items: stretch;
+  max-width: calc(100% + 10px);
+  height: 32px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+/* Over an inline database's title row: the anchor sticks that much lower,
+   so the bar stays in sight as the page scrolls (TableSelectionToolbar). */
+.selectionAnchor[data-title-row] {
+  top: calc(48px + var(--selection-bar-rise));
+}
+.selectionAnchor[data-title-row] .selectionBar {
+  top: calc(-1 * var(--selection-bar-rise));
+  bottom: auto;
+  inset-inline-start: var(--selection-bar-left);
+}
+.selectionCount,
+.selectionPropertyButton,
+.selectionIconAction,
+.selectionMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: inherit;
+  box-shadow: calc(1px * var(--inline-sign, 1)) 0 0 var(--border-default);
+}
+.selectionCount {
+  padding: 0 10px;
+  border-start-start-radius: 6px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 6px;
+  color: var(--accent-blue);
+}
+.selectionProperties {
+  display: contents;
+}
+.selectionProperty {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+}
+.selectionProperty[hidden] {
+  display: none;
+}
+.selectionPropertyButton {
+  gap: 6px;
+  min-width: 0;
+  max-width: 148px;
+  padding: 0 8px;
+}
+/* Its icon is 16px in an 18px box, 6px before the name (Notion's, 2026-11-03). */
+.selectionPropertyButton svg {
+  flex: 0 0 auto;
+  margin: 0 1px;
+  color: var(--text-secondary);
+}
+.selectionPropertyButton > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* A property's own cell, unseen under its button, whose picker opens there. */
+.selectionPropertyCell {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+.selectionTypedMenu {
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* A card's property slot's field: 14px words on a 21px line, 9px in and 8px
+   over, 9px under it in its box rounded 6px, not a menu's 10, no ring of its
+   own (Notion's, seen 2026-11-06: 375×38; 2026-11-08: 249×38, round 6). */
+.slotTypedMenu {
+  padding: 8px 9px 9px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.slotTypedField {
+  display: block;
+  width: 100%;
+  height: 21px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 21px;
+  outline: none;
+}
+.selectionTypedField {
+  width: 100%;
+  height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 4px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+.selectionIconAction {
+  width: 28px;
+  color: var(--text-secondary);
+}
+.selectionMore {
+  width: 30px;
+  border-start-start-radius: 0;
+  border-start-end-radius: 6px;
+  border-end-end-radius: 6px;
+  border-end-start-radius: 0;
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+.selectionMoreWrap {
+  position: relative;
+  display: inline-flex;
+}
+.selectionCount:hover,
+.selectionCount:focus-visible,
+.selectionPropertyButton:hover,
+.selectionPropertyButton:focus-visible,
+.selectionPropertyButton[aria-expanded="true"],
+.selectionIconAction:hover:not(:disabled),
+.selectionIconAction:focus-visible:not(:disabled),
+.selectionMore:hover,
+.selectionMore:focus-visible,
+.selectionMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.selectionIconAction:disabled {
+  opacity: 0.4;
+}
+.selectionMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 55;
+  width: 220px;
+  padding: 6px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.selectionMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.selectionMenuItem + .selectionMenuItem {
+  margin-top: var(--menu-row-space);
+}
+.selectionMenuItem:hover:not(:disabled),
+.selectionMenuItem:focus-visible:not(:disabled),
+.selectionMenuItem[data-focused="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.selectionMenuItem:disabled,
+.selectionMenuItem[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}
+.selectionMenuShortcut {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 12px;
+}
+.selectionIconAction svg,
+.selectionMenuItem svg,
+.subitemToggle svg,
+.summaryMenuItem .check svg,
+.peopleOption .check svg,
+.filesMenuItem button svg,
+.relationOption .check svg,
+.selectOptMain .check svg,
+.propertyHeaderItem svg {
+  flex: 0 0 auto;
+}
+.rowDragHandle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: inherit;
+  cursor: grab;
+}
+.rowDragHandle:hover {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+.rowDragHandle:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.rowDragHandle[draggable="false"] {
+  cursor: pointer;
+}
+/* "열기" hangs from its cell's top, in a one-line row and a tall one alike,
+   as Notion's (seen 2026-11-08 at 1303px, dark: its 55×24 plate 6px down
+   and 5px in from the cell's end), in the rows' shared look
+   (RowOpenButton.module.css). */
+.openRow {
+  composes: button from "../RowOpenButton.module.css";
+  position: absolute;
+  inset-inline-end: 4px;
+  top: 6px;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+/* "열기" answers the pointer, as Notion's: a chosen or written cell doesn't keep it (seen 2026-11-02); a title cell
+   holding the focus for its row does (chosenItemFocus.ts, seen 2026-11-24 in four tabs, the pointer away). */
+:is(.tableRow, .timelineTableTreeRow):hover .openRow,
+.cell[data-title="true"]:hover .openRow,
+.cell[data-title="true"][data-selected="true"] .openRow, .cell[data-title="true"][data-row-focus="true"]:focus .openRow,
+.openRow:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.subitemAdd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  opacity: 0;
+}
+/* Shown only on the row under the pointer, as Notion's row controls are. */
+.tableRow:hover .subitemAdd,
+.subitemAdd:focus-visible {
+  opacity: 1;
+}
+.subitemAdd:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+/* Beside a title they stand on its first line (a cell's `--cell-line`). */
+.cell > :is(.subitemToggle, .subitemAdd) {
+  margin-top: calc((var(--cell-line) - 20px) / 2);
+}
+/* Sub-item (nested row) toggle + indentation in the title column. */
+.subitemIndent {
+  flex: 0 0 auto;
+}
+.subitemToggle {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  /* Notion's sub-item triangle is dark, in the table and the list alike (seen 2026-10-11). */
+  color: var(--text-default);
+  font-size: 10px;
+  visibility: hidden;
+}
+/* Its caret stands by 16px words, 12.8px in the table and the list alike
+   (Notion, seen 2026-11-14). */
+.subitemToggle > svg {
+  font-size: 16px;
+}
+.subitemToggle[data-visible="true"],
+.tableRow:hover button.subitemToggle,
+button.subitemToggle:focus-visible {
+  visibility: visible;
+}
+.subitemToggle[data-visible="true"]:hover {
+  background: var(--bg-hover);
+}
+/* A touch screen has no pointer to bring them out: every row keeps its
+   "열기" and its sub-item triangle, faint where it has none (Notion's
+   phone, seen 2026-11-02). */
+:global([data-touch="true"]) .openRow {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Its words alone, 12px/500 grey, 4px in, on a 2px raised plate rounded
+   6, 10px down and 9px in from the cell's end (Notion's phone, seen
+   2026-11-03 at 375px: a 34×24 plate holding a 30×20 "열기", ending at
+   297 in a cell ending at 306). It stands in the cell's line after the
+   title, which keeps out of its room: the words end where it starts,
+   wrapped onto more lines or cut there (Notion's, seen 2026-11-12 at 402
+   and 834: a long title in three lines and in two before "열기", none
+   under it). */
+:global([data-touch="true"]) .openRow {
+  position: relative;
+  top: 0;
+  inset-inline-end: auto;
+  order: 3;
+  flex: none;
+  margin-block-start: 10px;
+  margin-inline: auto 6px;
+  height: 24px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-block-toolbar);
+  line-height: 20px;
+  transform: none;
+}
+/* A phone's cell is 2px down already (DatabaseTableRows.module.css). */
+:global([data-phone="true"]) .openRow {
+  margin-block-start: 8px;
+}
+:global([data-touch="true"]) .openRow svg,
+:global([data-touch="true"]) .openRow::before {
+  display: none;
+}
+:global([data-touch="true"]) .subitemToggle {
+  visibility: visible;
+}
+:global([data-touch="true"]) .subitemToggle:not([data-visible="true"]) {
+  color: var(--icon-tertiary);
+}
+/* Notion's filled triangle, turned down while open. */
+.subitemToggle[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+.subitemParentIndicator,
+.subitemCount {
+  order: 2;
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-inline-start: 6px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.newRowRail {
+  display: grid;
+  width: 100%;
+  border-bottom: 0;
+}
+.table[data-inline-empty-preview="true"] .newRowRail {
+  border-bottom: 0;
+}
+/* "+ 새 페이지" is a 37px line under the rows, its 28px pill in the middle,
+   as Notion's (measured 2026-11-08: the line 37, the pill 4.5 into it). */
+.newRowGutterCell {
+  min-height: 37px;
+}
+.newRowCell {
+  display: flex;
+  align-items: center;
+  height: 37px;
+  min-width: 0;
+}
+/* "New page" stays where it stands as the table scrolls sideways, as
+   Notion's (seen 2026-10-21; DatabaseTableGroups.module.css). */
+.newRow {
+  position: sticky;
+  inset-inline-start: calc(var(--table-scroll-pad) + var(--table-gutter-width));
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* Its words 8px past its 16px icon, 32px into it, as Notion's (seen 2026-11-16 at 1440, with rows and empty). */
+  width: max-content;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* "+ 새 페이지" as Notion's: faint text after a faint icon (seen 2026-10-11). */
+.newRow svg {
+  color: var(--icon-tertiary);
+}
+.newRow:hover {
+  background: var(--bg-hover);
+}
+/* An empty table's line under the pointer, which holds its "+ 새 페이지"
+   (TableEmptyRows), answers it as one line, faintly, and its "+ 새 페이지"
+   takes no pill, as Notion's (seen 2026-11-02: the whole 700px line
+   rgba(55,53,47,.024); dark, 2026-11-11: rgba(255,255,255,.055)); a table
+   with rows keeps the pill. The line takes the ground its cells read: a
+   pointer state over ".cell" restyled every cell of every table at each
+   pointer move across a page (2026-11-12). */
+.tableRow[data-table-new-row-here="true"]:hover {
+  --new-row-here-ground: color-mix(in srgb, var(--text-default) 2.4%, transparent);
+}
+:global([data-theme="dark"]) .tableRow[data-table-new-row-here="true"]:hover {
+  --new-row-here-ground: var(--bg-hover);
+}
+.tableRow[data-table-new-row-here="true"] > .cell {
+  background: var(--new-row-here-ground, transparent);
+}
+.tableRow[data-table-empty-row] .newRow:hover {
+  background: transparent;
+}
+/* There "+ 새 페이지" is as tall as its line, its words in the line's middle
+   (Notion's, seen 2026-11-14 in dark: a 37px line, its words 9.5px down). */
+.tableRow[data-table-empty-row] .newRow {
+  align-self: stretch;
+  height: auto;
+}
+.newRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* The table's foot, as Notion's table and timeline table (seen 2026-11-15, 1440 dark): a 35px row, each calculation
+   a button as wide as its words ("개수 6" 44×21, 6px in, rounded 6px) 4px before its column's end, tinted alone under
+   the pointer; its name 10px/500 tertiary 4px before its value 14px secondary; "계산" 36×26 under the cell pointed at. */
+.tableSummary {
+  display: grid;
+  min-height: 35px;
+  color: var(--text-tertiary);
+}
+.summaryCell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 35px;
+  min-width: 0;
+  padding-inline-end: 4px;
+  color: var(--text-tertiary);
+}
+.summaryButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-width: 0;
+  height: 21px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  transition: opacity 120ms ease, background 120ms ease;
+}
+.summaryButton[data-empty="true"] {
+  height: 26px;
+}
+.summaryCell:not(:hover) > .summaryButton[data-empty="true"]:not(:focus-visible):not([aria-expanded="true"]) {
+  opacity: 0;
+}
+.summaryButton:hover,
+.summaryButton:focus-visible,
+.summaryButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.summaryButton span,
+.summaryButton strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.summaryButton span {
+  font-size: 10px;
+  font-weight: 500;
+}
+.summaryButton strong {
+  color: var(--text-secondary);
+  font-weight: 400;
+  text-transform: none;
+}
+.summaryMenu {
+  position: fixed;
+  z-index: 53;
+  width: 220px;
+  padding: 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.summaryMenuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 7px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: start;
+}
+.summaryMenuItem:hover,
+.summaryMenuItem:focus-visible,
+.summaryMenuItem[data-active="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.rowCount {
+  padding: 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+/* "+ 신규 그룹"'s name field right under the button, as Notion's (seen
+   2026-10-30): a 300x36 card with 10px corners and a faint fill 6px around
+   a bare 14px field and the blue "완료 ↵", kept inside the window. */
+.newGroupName {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  width: 300px;
+  height: 36px;
+  padding: 6px;
+  border-radius: 10px;
+  background: linear-gradient(var(--card-field-bg), var(--card-field-bg)), var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.newGroupName input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+.newGroupName button {
+  flex: 0 0 auto;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 5px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* A touch screen's "+ 새 페이지" is a 45px line of a 20px "+" and 16px words 8px on, as Notion's phone (375px,
+   2026-10-25) and iPad (834 and 1210, 2026-11-16); a wider one's empty table has its own (TableEmptyRows). */
+:global([data-touch="true"]) .newRowGutterCell {
+  min-height: 45px;
+}
+:global([data-touch="true"]) .newRowCell {
+  height: 45px;
+}
+:global([data-touch="true"]) .newRow {
+  gap: 8px;
+  font-size: 16px;
+}
+:global([data-touch="true"]) .newRow svg {
+  width: 20px;
+  height: 20px;
+}
+/* The selected rows' "⋯ › 속성 편집" editor, where the menu was (Notion's,
+   seen 2026-11-02); its field or picker opens over this unseen spot. */
+.selectionPointHost {
+  position: fixed;
+  z-index: 30;
+  width: 240px;
+  height: 32px;
+  pointer-events: none;
+}
+.selectionPointButton {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}

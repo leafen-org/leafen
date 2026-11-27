@@ -1,0 +1,46 @@
+/* A flattened list's sub-item marks right after a table title, in the faint
+   13px medium text, as Notion's (seen 2026-10-11): a parent's ↳ count, and
+   a sub-item's ↰ parent as a 20px button rounded 6px. */
+.count,
+.parent {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 2px;
+  /* 5px after the title's text, past the 6px its editor keeps at its end. */
+  margin-inline-start: -1px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.count > svg,
+.parent > svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+.parent {
+  min-width: 0;
+  max-width: 50%;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 6px;
+}
+.parent > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* In a table cell, on the title's first line (the cell's `--cell-line`). */
+:global([data-table-cell]) > .count {
+  margin-top: calc((var(--cell-line, 36px) - 18px) / 2);
+}
+:global([data-table-cell]) > .parent {
+  margin-top: calc((var(--cell-line, 36px) - 20px) / 2);
+}
+.parent:hover,
+.parent:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

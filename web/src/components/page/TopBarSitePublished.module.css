@@ -1,0 +1,419 @@
+/* Notion's "게시" tab once published (seen 2026-10-11; measured on its
+   456px window 2026-11-13): 12px in from the window's sides and foot (the
+   window's own 6px 8px taken off here), the address in a bordered 32px field at
+   the tab's top with its copy button, 6px under it 36px rows with their
+   20px icon 10px in, 14px words 6px after it, a grey value and ›, and 10px
+   under them "게시 취소" and the blue "사이트 보기". */
+.published {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 4px 6px;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+/* Every outlined thing on the published tab and its screens — the address
+   field, "게시 취소", "코드 복사" and each social button — draws its 1px line
+   in Notion's borPriTra, the line of its outlined buttons (dark
+   rgba(255,255,235,.1), light rgba(28,19,1,.11); read 2026-11-18 in both
+   themes, 1440 dpr 1), as the code box's ring does. */
+.address,
+.unpublish,
+.copyCode,
+.service {
+  border: 1px solid var(--block-divider);
+}
+
+.addressText {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.addressText > span { overflow: hidden; text-overflow: ellipsis; }
+.slash { flex: 0 0 auto; padding: 0 4px; color: var(--text-tertiary); }
+
+/* The page's path is pressed to be typed over, as Notion's (seen 2026-11-07):
+   the row takes a blue frame and "저장" stands where the copy button was —
+   the input ring every bordered field takes, its edge #2383e2 and 1px more
+   outside (inpBluFocRin), not the button blue. */
+.address[data-editing="true"] {
+  border-color: var(--focus);
+  box-shadow: var(--name-field-ring-focus-out);
+}
+
+.path {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  color: var(--text-secondary);
+  font: inherit;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.path:hover:not(:disabled) { color: var(--text-default); }
+.pathPrefix { flex: 0 0 auto; color: var(--text-secondary); }
+
+.pathField {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  outline: none;
+}
+
+.saveAddress {
+  flex: 0 0 auto;
+  height: 24px;
+  padding: 0 4px;
+  border-radius: 4px;
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.saveAddress:hover:not(:disabled) { background: var(--bg-hover); }
+
+.addressError {
+  margin: 6px 2px 0;
+}
+
+.copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.copy:hover:not(:disabled) { background: var(--bg-hover); }
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.row > span:first-of-type {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--text-default);
+}
+
+.row:hover,
+.row:focus-visible { background: var(--bg-hover); outline: none; }
+
+.value { color: var(--text-secondary); }
+
+/* A touch screen's rows, as Notion's phone and iPad (seen 2026-11-13 at
+   402pt and 834pt, the same there): 48px over a 1px line, the lines 24px in
+   from the sheet's sides, the 17px icon 3px into its row, the 17px words 30px
+   in; 22px under the address and 14px over the buttons. */
+.rows[data-touch="true"] {
+  margin-block: 14px 6px;
+  margin-inline: 12px;
+}
+
+.rows[data-touch="true"] .row {
+  box-sizing: border-box;
+  min-height: 49px;
+  padding-block: 0;
+  padding-inline: 2px 4px;
+  border-bottom: 1px solid var(--border-secondary);
+  border-radius: 0;
+  font-size: 17px;
+}
+
+.rows[data-touch="true"] .row:hover { background: transparent; }
+
+/* As Notion's (seen 2026-11-05, measured 2026-11-18 at 1x): no line over
+   them, the two side by side in halves of the row, 8px apart, 4px further
+   under the rows. */
+.footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* A screen's own button ("변경 사항 저장", "코드 복사") sits at the screen's
+   gap under what it holds, with nothing more, as Notion's (2026-11-18). */
+.screenBody > .footer,
+.embed > .footer {
+  margin-top: 0;
+}
+
+/* A line before "이 페이지 임베드", 8px from the window's sides, 8px under the
+   row above and 7px over the one below (Notion's, 2026-11-13), in its faint
+   borSecTra as the screen head's line (dark rgba(255,255,243,.082), light
+   rgba(42,28,0,.07); read 2026-11-18). */
+.divider {
+  height: 1px;
+  margin: 8px -4px 7px;
+  background: var(--border-subtle);
+}
+
+/* A phone's sheet keeps its own: 12px round, 32px rows, a line across. */
+:global([data-share-phone-sheet]) .published {
+  gap: 8px;
+  padding: 12px;
+}
+
+:global([data-share-phone-sheet]) .row {
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 8px;
+}
+
+:global([data-share-phone-sheet]) .footer {
+  gap: 8px;
+  margin-top: 0;
+}
+
+:global([data-share-phone-sheet]) .divider {
+  margin: 4px -12px;
+}
+
+.unpublish,
+.view {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.unpublish {
+  color: var(--text-default);
+}
+
+.unpublish:hover:not(:disabled) { background: var(--bg-hover); }
+
+.view {
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  text-decoration: none;
+}
+
+.view[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+
+/* A screen the publish tab's rows open, as Notion's (measured 2026-11-12 on
+   a 456px window): the window's whole width with no "공유 | 게시" strip over
+   it; a 40px head with a line under it, "‹" 24px 8 in, its name 14/500 6
+   after it; what it holds 16 in, 14 under the line, 16 from the foot. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  margin: -6px -8px;
+}
+
+:global(:has(> [role="tabpanel"] [data-site-screen]):not([data-share-phone-sheet] *)) > :global([data-share-tabs]) {
+  display: none;
+}
+
+:global([data-share-phone-sheet]) .screen {
+  margin: 0;
+}
+
+.screenBody {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 14px 16px 16px;
+}
+
+/* A switch line the screen holds: its icon at the screen's edge, its words 6 after it. */
+.screenBody > .setting,
+.embed > .setting {
+  gap: 6px;
+  min-height: 32px;
+  padding: 0;
+}
+
+/* A line that is a button, as "Aa 페이지 제목 표시": 8 in on its own hover. */
+.screenBody > .screenRow,
+.embed > .screenRow {
+  padding: 0 8px;
+  border-radius: 6px;
+}
+
+.header {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding-block: 0;
+  padding-inline: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.header button:hover,
+.header button:focus-visible { background: var(--bg-hover); }
+
+.setting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px;
+}
+
+.settingText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.settingText > span {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.switch {
+  flex: 0 0 auto;
+}
+
+.settingIcon {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+
+/* "이 페이지 임베드": its title switch, the code in its box and the
+   outlined "코드 복사", 14 apart inside the screen's body, as Notion's
+   (measured 2026-11-18, 1440 dark dpr 1). */
+.embed {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* The code's box: a faint ground with a hairline ring, the code 4 under its
+   top and over its foot and 10 in from its sides, as Notion's. */
+.codeBox {
+  display: flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--bg-block-empty);
+  box-shadow: 0 0 0 1px var(--block-divider);
+}
+
+/* The code in the page's own letters, 14 on 20px lines, half faded as a
+   field that is only read; the field grows to its lines and is never under
+   50px, as Notion's (its autosizing field, at least 50). */
+.code {
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 50px;
+  margin: 0;
+  padding: 0;
+  resize: none;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  opacity: 0.5;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  field-sizing: content;
+}
+
+/* Fit to its words: its line, 12 in, a small copy mark 8 before its words. */
+.copyCode {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin-inline-start: auto;
+  padding: 0 12px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.copyCode:hover:not(:disabled) { background: var(--bg-hover); }
+
+.copyCode:disabled {
+  opacity: 0.5;
+}
+
+/* "소셜 미디어로 공유": one outlined button a service, across the screen,
+   16 apart, as Notion's (measured 2026-11-12). */
+.services {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block-end: 8px;
+}
+
+.service {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.service:hover,
+.service:focus-visible { background: var(--bg-hover); outline: none; }

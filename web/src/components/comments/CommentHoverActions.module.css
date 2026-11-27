@@ -1,0 +1,177 @@
+/* A comment's buttons as Notion shows them (seen 2026-09-30): a small
+   bordered group at the comment's top right while it is hovered or holds
+   focus, and the menu its "…" opens. */
+.host {
+  position: relative;
+}
+
+.pill {
+  position: absolute;
+  z-index: 2;
+  top: var(--comment-pill-top, 2px);
+  inset-inline-end: var(--comment-pill-right, 4px);
+  display: flex;
+  align-items: center;
+  /* Notion's bacEle on its shaOutMd, 2px in, buttons side by side (seen
+     2026-11-06: 76×28 for three). */
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-raised);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* Only while that comment itself is hovered: over one of its replies or its
+   thread's reply box, or with the caret in that box, the thread's first
+   comment shows none, as Notion's in a block's card and under a page's title
+   (seen 2026-11-06); nor after the reaction picker opened from it closes,
+   until the pointer moves on it again (data-hover-rest, lib/hoverRest.ts).
+   A focus the keys brought into its buttons keeps them (data-keys-in);
+   focus given back after a pointer's pick does not, as Notion's leaves none
+   up once the pointer goes (seen 2026-11-06 and 2026-11-26). */
+.host:hover:not([data-hover-rest]):not(:has(.host:hover, [data-comment-reply-box]:hover)) > .pill,
+.pill[data-keys-in],
+.pill[data-open="true"] {
+  opacity: 1;
+}
+
+/* In a block's card its buttons stay up while one holds the focus however it
+   came back — after a pointer's pick or a cancelled delete — as Notion's card
+   keeps them (seen 2026-11-06); under a page's title they go with the pointer. */
+[data-comments-mode="block-card"] .pill:has(:focus) {
+  opacity: 1;
+}
+
+/* A touch screen has no pointer to hover with: every comment shows its
+   buttons, as Notion's on a phone and an iPad (seen 2026-11-12 in iPhone and
+   iPad Safari: [😊 ✓ ⋯] on a thread's first comment and [😊 ⋯] on its
+   replies, under a page's title and in a block's discussion, unpressed).
+   The touch screen is the app's (screenKind.ts). */
+:global([data-touch="true"]) .pill {
+  opacity: 1;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--text-gray-accent);
+}
+
+/* Its marks keep Notion's grey, the same in both themes, in every state;
+   only the pointer gives a button its hover ground, the keyboard its ring
+   (styles.css), and none stays while its menu is open (seen 2026-11-22 in
+   two tabs at 1440, dpr 1, on "모든 토론" threads and replies and the cards
+   beside the page: rgb(142, 139, 134) dark and light, at rest, hovered,
+   reached by ⇧Tab and with "⋯" open). */
+.button:hover {
+  background: var(--bg-hover);
+}
+
+/* "▯ 열기": its mark 12px across and its word — 12px/16px, 500, in the
+   second text colour — 6px apart, 6px in, and a 16px line 4px either side
+   before the rest (Notion's, seen 2026-11-25 at 1440, dpr 2, two tabs: 52
+   wide, the group 161 with [↩ 😊 ✓ ⋯]). The mark's frame stands 4px inside
+   its 20px box. */
+.openButton {
+  gap: 6px;
+  width: auto;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+.openButton > svg {
+  margin-inline: -4px;
+}
+
+.openLabel {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.divider {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--border-secondary);
+}
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.menu {
+  position: fixed;
+  z-index: 141;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.separator {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  min-height: 0;
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.item > svg {
+  flex: none;
+  color: currentColor;
+}
+
+/* "삭제하기" reads as the other rows and turns the menus' danger red, its bin
+   too, under the pointer or the keys, as Notion's (seen 2026-11-24 twice). */
+.item[data-danger="true"]:is(:hover, :focus-visible, [data-focused="true"]) {
+  color: var(--menu-danger);
+}
+
+/* Notion's blue dot for a thread marked unread (seen 2026-09-30), at the end
+   of its first comment's header, where the buttons show on hover. */
+.unread {
+  flex: none;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  margin-inline-start: auto;
+  margin-inline-end: 6px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+}

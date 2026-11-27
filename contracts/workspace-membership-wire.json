@@ -1,0 +1,1144 @@
+{
+  "schemaVersion": 1,
+  "name": "workspace-membership",
+  "operations": [
+    { "goName": "workspaceChangeProbe", "tsName": "changeProbe", "method": "POST", "path": "/workspaces/{workspaceId}/change-probe" },
+    { "goName": "workspaceMemberList", "tsName": "listMembers", "method": "GET", "path": "/workspaces/{workspaceId}/members" },
+    { "goName": "workspaceGuestList", "tsName": "listGuests", "method": "GET", "path": "/workspaces/{workspaceId}/guests" },
+    { "goName": "workspaceMemberCandidateList", "tsName": "listMemberCandidates", "method": "GET", "path": "/workspaces/{workspaceId}/member-candidates" },
+    { "goName": "workspaceGuestPagesList", "tsName": "listGuestPages", "method": "GET", "path": "/workspaces/{workspaceId}/guests/pages" },
+    { "goName": "workspaceGuestRemove", "tsName": "removeGuests", "method": "POST", "path": "/workspaces/{workspaceId}/guests/remove" },
+    { "goName": "workspaceMemberAdd", "tsName": "addMemberByEmail", "method": "POST", "path": "/workspaces/{workspaceId}/members" },
+    { "goName": "workspaceMemberInvitationCancel", "tsName": "cancelMemberInvitation", "method": "DELETE", "path": "/workspaces/{workspaceId}/invitations/{invitationId}" },
+    { "goName": "workspaceOwnerTransferStart", "tsName": "startOwnerTransfer", "method": "POST", "path": "/workspaces/{workspaceId}/owner-transfer" },
+    { "goName": "workspaceOwnerTransferRead", "tsName": "readOwnerTransfer", "method": "GET", "path": "/workspaces/{workspaceId}/owner-transfer/{jobId}" },
+    { "goName": "workspaceSettingsUpdate", "tsName": "updateSettings", "method": "PATCH", "path": "/workspaces/{workspaceId}" },
+    { "goName": "pageCreate", "tsName": "createPage", "method": "POST", "path": "/pages" },
+    { "goName": "pageFavoriteUpdate", "tsName": "updatePageFavorite", "method": "PUT", "path": "/pages/{pageId}/favorite" },
+    { "goName": "databaseFavoriteUpdate", "tsName": "updateDatabaseFavorite", "method": "PUT", "path": "/database-containers/{containerId}/favorite" },
+    { "goName": "workspaceDelete", "tsName": "deleteWorkspace", "method": "DELETE", "path": "/workspaces/{workspaceId}" },
+    { "goName": "workspaceDeletionPreview", "tsName": "readDeletionPreview", "method": "GET", "path": "/workspaces/{workspaceId}/deletion-preview" },
+    { "goName": "workspaceSidebarLayoutRead", "tsName": "readSidebarLayout", "method": "GET", "path": "/workspaces/{workspaceId}/sidebar-layout" },
+    { "goName": "workspaceSidebarLayoutSave", "tsName": "saveSidebarLayout", "method": "PUT", "path": "/workspaces/{workspaceId}/sidebar-layout" },
+    { "goName": "pageVisitRecord", "tsName": "recordPageVisit", "method": "POST", "path": "/pages/{pageId}/visit" },
+    { "goName": "workspacePageVisitsRead", "tsName": "readPageVisits", "method": "GET", "path": "/workspaces/{workspaceId}/page-visits" },
+    { "goName": "workspaceLibraryPagesRead", "tsName": "readLibraryPages", "method": "POST", "path": "/workspaces/{workspaceId}/library-pages" },
+    { "goName": "workspacePageVisitsRemove", "tsName": "removePageVisits", "method": "POST", "path": "/workspaces/{workspaceId}/page-visits/remove" },
+    { "goName": "workspaceRecentEditsRead", "tsName": "readRecentEdits", "method": "GET", "path": "/workspaces/{workspaceId}/recent-edits" },
+    { "goName": "workspaceDocumentsList", "tsName": "listWorkspaceDocuments", "method": "GET", "path": "/workspaces/{workspaceId}/documents" },
+    { "goName": "workspaceDocumentCreate", "tsName": "createWorkspaceDocument", "method": "POST", "path": "/workspaces/{workspaceId}/documents" }
+  ],
+  "bounds": [
+    { "goName": "maxBootstrapWorkspaces", "tsName": "bootstrapWorkspaces", "value": 100 },
+    { "goName": "maxBootstrapPages", "tsName": "bootstrapPages", "value": 1000 },
+    { "goName": "maxBootstrapCursorSize", "tsName": "bootstrapCursorBytes", "value": 2048 },
+    { "goName": "maxBootstrapSnapshotRestarts", "tsName": "bootstrapSnapshotRestarts", "value": 2 },
+    { "goName": "maxWorkspacePermissionIdentifierLength", "tsName": "permissionIdentifierLength", "value": 255 },
+    { "goName": "maxWorkspaceMemberEmailLength", "tsName": "memberEmailLength", "value": 254 },
+    { "goName": "workspaceMemberListDefaultPageSize", "tsName": "memberDirectoryDefaultPageSize", "value": 16 },
+    { "goName": "workspaceMemberListMaximumPageSize", "tsName": "memberDirectoryMaximumPageSize", "value": 32 },
+    { "goName": "workspaceMemberListCursorBytes", "tsName": "memberDirectoryCursorBytes", "value": 2048 },
+    { "goName": "maxWorkspaceGuestDirectoryGuests", "tsName": "guestDirectoryGuests", "value": 100 },
+    { "goName": "maxWorkspaceGuestRemovals", "tsName": "guestRemovals", "value": 100 },
+    { "goName": "workspaceGuestRemoveMaxBodyBytes", "tsName": "guestRemoveBodyBytes", "value": 65536 },
+    { "goName": "maxWorkspaceMemberCandidates", "tsName": "memberCandidates", "value": 8 },
+    { "goName": "maxWorkspaceMemberCandidateQueryRunes", "tsName": "memberCandidateQueryRunes", "value": 80 },
+    { "goName": "maxWorkspaceMemberDirectoryMemberships", "tsName": "memberDirectoryMembershipsPerMember", "value": 20 },
+    { "goName": "maxWorkspaceMemberInvitations", "tsName": "memberInvitations", "value": 100 },
+    { "goName": "maxWorkspaceInvitationMessageRunes", "tsName": "invitationMessageCharacters", "value": 2000 },
+    { "goName": "maxWorkspaceOwnerTransferRequestIDLength", "tsName": "ownerTransferRequestIdLength", "value": 255 },
+    { "goName": "workspaceOwnerTransferMaxBodyBytes", "tsName": "ownerTransferBodyBytes", "value": 4096 },
+    { "goName": "workspaceOwnerTransferPayloadFormat", "tsName": "ownerTransferPayloadFormat", "value": 1 },
+    { "goName": "maxWorkspaceCreationRequestIDLength", "tsName": "creationRequestIdLength", "value": 255 },
+    { "goName": "maxWorkspaceCreationNameRunes", "tsName": "creationNameRunes", "value": 65 },
+    { "goName": "maxPageCreationRequestIDLength", "tsName": "pageCreationRequestIdLength", "value": 255 },
+    { "goName": "pageCreationMaxBodyBytes", "tsName": "pageCreationBodyBytes", "value": 1048576 },
+    { "goName": "maxWorkspaceSettingsRequestIDLength", "tsName": "settingsRequestIdLength", "value": 255 },
+    { "goName": "maxWorkspaceSettingsIconRunes", "tsName": "settingsIconRunes", "value": 4096 },
+    { "goName": "maxWorkspaceSettingsDomainRunes", "tsName": "settingsDomainRunes", "value": 63 },
+    { "goName": "workspaceSettingsMaxBodyBytes", "tsName": "settingsBodyBytes", "value": 8192 },
+    { "goName": "maxWorkspaceDeletionRequestIDLength", "tsName": "deletionRequestIdLength", "value": 255 },
+    { "goName": "maxWorkspaceDeletionStepsPerRequest", "tsName": "deletionStepsPerRequest", "value": 32 },
+    { "goName": "maxWorkspaceDeletionRowsPerStep", "tsName": "deletionRowsPerStep", "value": 32 },
+    { "goName": "maxWorkspaceDeletionObjectsPerStep", "tsName": "deletionObjectsPerStep", "value": 8 },
+    { "goName": "workspaceDeletionMaxBodyBytes", "tsName": "deletionBodyBytes", "value": 4096 },
+    { "goName": "workspaceRefreshTokenFormatVersion", "tsName": "refreshTokenFormatVersion", "value": 1 },
+    { "goName": "maxWorkspaceRefreshTokenBytes", "tsName": "refreshTokenBytes", "value": 4096 },
+    { "goName": "workspaceChangeProbeMaxBodyBytes", "tsName": "changeProbeBodyBytes", "value": 8192 },
+    { "goName": "pageFavoriteRequestIdBytes", "tsName": "pageFavoriteRequestIdBytes", "value": 128 },
+    { "goName": "pageFavoriteMaxBodyBytes", "tsName": "pageFavoriteBodyBytes", "value": 1024 },
+    { "goName": "pageVisitsListed", "tsName": "pageVisitsListed", "value": 100 },
+    { "goName": "recentEditsListed", "tsName": "recentEditsListed", "value": 20 },
+    { "goName": "pageVisitsKept", "tsName": "pageVisitsKept", "value": 200 },
+    { "goName": "sidebarTabsLimit", "tsName": "sidebarTabs", "value": 10 },
+    { "goName": "sidebarTabNameRunes", "tsName": "sidebarTabNameRunes", "value": 40 },
+    { "goName": "sidebarViewsPerTab", "tsName": "sidebarViewsPerTab", "value": 10 },
+    { "goName": "sidebarShortcutsPerTab", "tsName": "sidebarShortcutsPerTab", "value": 25 },
+    { "goName": "sidebarViewNameRunes", "tsName": "sidebarViewNameRunes", "value": 100 },
+    { "goName": "libraryPagesLimit", "tsName": "libraryPagesLimit", "value": 100 },
+    { "goName": "libraryPagesMaxBodyBytes", "tsName": "libraryPagesBodyBytes", "value": 8192 },
+    { "goName": "pageVisitsRemoveLimit", "tsName": "pageVisitsRemoveLimit", "value": 100 },
+    { "goName": "pageVisitsRemoveMaxBodyBytes", "tsName": "pageVisitsRemoveBodyBytes", "value": 8192 },
+    { "goName": "workspaceDocumentsDefaultLimit", "tsName": "documentsDefaultLimit", "value": 50 },
+    { "goName": "workspaceDocumentsMaxLimit", "tsName": "documentsMaxLimit", "value": 100 },
+    { "goName": "workspaceDocumentsQueryRunes", "tsName": "documentsQueryRunes", "value": 200 },
+    { "goName": "workspaceDocumentsCursorBytes", "tsName": "documentsCursorBytes", "value": 2048 },
+    { "goName": "workspaceDocumentsPreviewRunes", "tsName": "documentsPreviewRunes", "value": 240 },
+    { "goName": "workspaceDocumentCreateMaxBodyBytes", "tsName": "documentCreateBodyBytes", "value": 4096 },
+    { "goName": "workspaceDocumentNameRunes", "tsName": "documentNameRunes", "value": 255 },
+    { "goName": "workspaceDocumentHomeTitleRunes", "tsName": "documentHomeTitleRunes", "value": 100 },
+    { "goName": "workspaceDocumentTemplateMaxBytes", "tsName": "documentTemplateBytes", "value": 10485760 }
+  ],
+  "errors": [
+    { "goName": "errorCodeBootstrapCursorInvalid", "tsName": "bootstrapCursorInvalid", "value": "LEAFEN_BOOTSTRAP_CURSOR_INVALID" },
+    { "goName": "errorCodeDataEpochChanged", "tsName": "dataEpochChanged", "value": "LEAFEN_DATA_EPOCH_CHANGED" },
+    { "goName": "errorCodeWorkspaceMemberLeaveManaged", "tsName": "memberLeaveManaged", "value": "LEAFEN_WORKSPACE_MEMBER_LEAVE_MANAGED" },
+    { "goName": "errorCodeWorkspaceMemberMutationFailed", "tsName": "memberMutationFailed", "value": "LEAFEN_WORKSPACE_MEMBER_MUTATION_FAILED" },
+    { "goName": "errorCodeWorkspaceMemberMutationStorageUnavailable", "tsName": "memberMutationStorageUnavailable", "value": "LEAFEN_WORKSPACE_MEMBER_MUTATION_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceMemberMutationDatabaseBusy", "tsName": "memberMutationDatabaseBusy", "value": "LEAFEN_WORKSPACE_MEMBER_MUTATION_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceMemberConflict", "tsName": "memberConflict", "value": "LEAFEN_WORKSPACE_MEMBER_CONFLICT" },
+    { "goName": "errorCodeWorkspaceMemberListInvalid", "tsName": "memberListInvalid", "value": "LEAFEN_WORKSPACE_MEMBER_LIST_INVALID" },
+    { "goName": "errorCodeWorkspaceMemberListCursorInvalid", "tsName": "memberListCursorInvalid", "value": "LEAFEN_WORKSPACE_MEMBER_LIST_CURSOR_INVALID" },
+    { "goName": "errorCodeWorkspaceMemberListRevisionChanged", "tsName": "memberListRevisionChanged", "value": "LEAFEN_WORKSPACE_MEMBER_LIST_REVISION_CHANGED" },
+    { "goName": "errorCodeWorkspaceMemberListFailed", "tsName": "memberListFailed", "value": "LEAFEN_WORKSPACE_MEMBER_LIST_FAILED" },
+    { "goName": "errorCodeWorkspaceGuestListFailed", "tsName": "guestListFailed", "value": "LEAFEN_WORKSPACE_GUEST_LIST_FAILED" },
+    { "goName": "errorCodeWorkspaceGuestRemoveInvalid", "tsName": "guestRemoveInvalid", "value": "LEAFEN_WORKSPACE_GUEST_REMOVE_INVALID" },
+    { "goName": "errorCodeWorkspaceGuestRemoveFailed", "tsName": "guestRemoveFailed", "value": "LEAFEN_WORKSPACE_GUEST_REMOVE_FAILED" },
+    { "goName": "errorCodeWorkspaceMemberAddInvalid", "tsName": "memberAddInvalid", "value": "LEAFEN_WORKSPACE_MEMBER_ADD_INVALID" },
+    { "goName": "errorCodeWorkspaceMemberAddDisabled", "tsName": "memberAddDisabled", "value": "LEAFEN_WORKSPACE_MEMBER_ADD_DISABLED" },
+    { "goName": "errorCodeWorkspaceMemberAddFailed", "tsName": "memberAddFailed", "value": "LEAFEN_WORKSPACE_MEMBER_ADD_FAILED" },
+    { "goName": "errorCodeWorkspaceMemberDeactivated", "tsName": "memberDeactivated", "value": "LEAFEN_WORKSPACE_MEMBER_DEACTIVATED" },
+    { "goName": "errorCodeWorkspaceMemberAddStorageUnavailable", "tsName": "memberAddStorageUnavailable", "value": "LEAFEN_WORKSPACE_MEMBER_ADD_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceMemberAddDatabaseBusy", "tsName": "memberAddDatabaseBusy", "value": "LEAFEN_WORKSPACE_MEMBER_ADD_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceMemberInvitationsFull", "tsName": "memberInvitationsFull", "value": "LEAFEN_WORKSPACE_MEMBER_INVITATIONS_FULL" },
+    { "goName": "errorCodeWorkspaceOwnerTransferInvalid", "tsName": "ownerTransferInvalid", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_INVALID" },
+    { "goName": "errorCodeWorkspaceOwnerTransferTargetInvalid", "tsName": "ownerTransferTargetInvalid", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_TARGET_INVALID" },
+    { "goName": "errorCodeWorkspaceOwnerTransferIdentityReused", "tsName": "ownerTransferIdentityReused", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_IDENTITY_REUSED" },
+    { "goName": "errorCodeWorkspaceOwnerTransferRevisionConflict", "tsName": "ownerTransferRevisionConflict", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_REVISION_CONFLICT" },
+    { "goName": "errorCodeWorkspaceOwnerTransferFailed", "tsName": "ownerTransferFailed", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_FAILED" },
+    { "goName": "errorCodeWorkspaceOwnerTransferStorageUnavailable", "tsName": "ownerTransferStorageUnavailable", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceOwnerTransferDatabaseBusy", "tsName": "ownerTransferDatabaseBusy", "value": "LEAFEN_WORKSPACE_OWNER_TRANSFER_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceCreateIdentityReused", "tsName": "createIdentityReused", "value": "LEAFEN_WORKSPACE_CREATE_IDENTITY_REUSED" },
+    { "goName": "errorCodeWorkspaceCreateStorageUnavailable", "tsName": "createStorageUnavailable", "value": "LEAFEN_WORKSPACE_CREATE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceCreateDatabaseBusy", "tsName": "createDatabaseBusy", "value": "LEAFEN_WORKSPACE_CREATE_DATABASE_BUSY" },
+    { "goName": "errorCodePageCreateParentConflict", "tsName": "pageCreateParentConflict", "value": "LEAFEN_PAGE_CREATE_PARENT_CONFLICT" },
+    { "goName": "errorCodePageCreateIdentityReused", "tsName": "pageCreateIdentityReused", "value": "LEAFEN_PAGE_CREATE_IDENTITY_REUSED" },
+    { "goName": "errorCodeWorkspaceSettingsInvalid", "tsName": "settingsInvalid", "value": "LEAFEN_WORKSPACE_SETTINGS_INVALID" },
+    { "goName": "errorCodeWorkspaceSettingsIdentityReused", "tsName": "settingsIdentityReused", "value": "LEAFEN_WORKSPACE_SETTINGS_IDENTITY_REUSED" },
+    { "goName": "errorCodeWorkspaceSettingsRevisionConflict", "tsName": "settingsRevisionConflict", "value": "LEAFEN_WORKSPACE_SETTINGS_REVISION_CONFLICT" },
+    { "goName": "errorCodeWorkspaceSettingsDomainInUse", "tsName": "settingsDomainInUse", "value": "LEAFEN_WORKSPACE_SETTINGS_DOMAIN_IN_USE" },
+    { "goName": "errorCodeWorkspaceLandingPageHidden", "tsName": "landingPageHidden", "value": "LEAFEN_WORKSPACE_LANDING_PAGE_HIDDEN" },
+    { "goName": "errorCodeWorkspaceSettingsFailed", "tsName": "settingsFailed", "value": "LEAFEN_WORKSPACE_SETTINGS_FAILED" },
+    { "goName": "errorCodeWorkspaceSettingsStorageUnavailable", "tsName": "settingsStorageUnavailable", "value": "LEAFEN_WORKSPACE_SETTINGS_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceSettingsDatabaseBusy", "tsName": "settingsDatabaseBusy", "value": "LEAFEN_WORKSPACE_SETTINGS_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceDeleteInvalid", "tsName": "deleteInvalid", "value": "LEAFEN_WORKSPACE_DELETE_INVALID" },
+    { "goName": "errorCodeWorkspaceDeleteConfirmationMismatch", "tsName": "deleteConfirmationMismatch", "value": "LEAFEN_WORKSPACE_DELETE_CONFIRMATION_MISMATCH" },
+    { "goName": "errorCodeWorkspaceDeleteRequestIDReused", "tsName": "deleteRequestIdReused", "value": "LEAFEN_WORKSPACE_DELETE_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeWorkspaceDeleteConflict", "tsName": "deleteConflict", "value": "LEAFEN_WORKSPACE_DELETE_CONFLICT" },
+    { "goName": "errorCodeWorkspaceDeleteUnavailable", "tsName": "deleteUnavailable", "value": "LEAFEN_WORKSPACE_DELETE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceDeleteStorageUnavailable", "tsName": "deleteStorageUnavailable", "value": "LEAFEN_WORKSPACE_DELETE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceDeleteDatabaseBusy", "tsName": "deleteDatabaseBusy", "value": "LEAFEN_WORKSPACE_DELETE_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceChangeProbeInvalid", "tsName": "changeProbeInvalid", "value": "LEAFEN_WORKSPACE_CHANGE_PROBE_INVALID" },
+    { "goName": "errorCodeWorkspaceChangeProbeFailed", "tsName": "changeProbeFailed", "value": "LEAFEN_WORKSPACE_CHANGE_PROBE_FAILED" },
+    { "goName": "errorCodePageFavoriteInvalid", "tsName": "pageFavoriteInvalid", "value": "LEAFEN_PAGE_FAVORITE_INVALID" },
+    { "goName": "errorCodePageFavoriteNotFound", "tsName": "pageFavoriteNotFound", "value": "LEAFEN_PAGE_FAVORITE_NOT_FOUND" },
+    { "goName": "errorCodePageFavoriteConflict", "tsName": "pageFavoriteConflict", "value": "LEAFEN_PAGE_FAVORITE_CONFLICT" },
+    { "goName": "errorCodePageFavoriteIdentityReused", "tsName": "pageFavoriteIdentityReused", "value": "LEAFEN_PAGE_FAVORITE_IDENTITY_REUSED" },
+    { "goName": "errorCodePageFavoriteFailed", "tsName": "pageFavoriteFailed", "value": "LEAFEN_PAGE_FAVORITE_FAILED" },
+    { "goName": "errorCodeSidebarLayoutInvalid", "tsName": "sidebarLayoutInvalid", "value": "LEAFEN_SIDEBAR_LAYOUT_INVALID" },
+    { "goName": "errorCodeSidebarLayoutFailed", "tsName": "sidebarLayoutFailed", "value": "LEAFEN_SIDEBAR_LAYOUT_FAILED" },
+    { "goName": "errorCodeSidebarLayoutTooLarge", "tsName": "sidebarLayoutTooLarge", "value": "LEAFEN_SIDEBAR_LAYOUT_TOO_LARGE" },
+    { "goName": "errorCodeSidebarLayoutRevisionConflict", "tsName": "sidebarLayoutRevisionConflict", "value": "LEAFEN_SIDEBAR_LAYOUT_REVISION_CONFLICT" },
+    { "goName": "errorCodeSidebarPresetsRevisionConflict", "tsName": "sidebarPresetsRevisionConflict", "value": "LEAFEN_SIDEBAR_PRESETS_REVISION_CONFLICT" },
+    { "goName": "errorCodePageVisitNotFound", "tsName": "pageVisitNotFound", "value": "LEAFEN_PAGE_VISIT_NOT_FOUND" },
+    { "goName": "errorCodePageVisitFailed", "tsName": "pageVisitFailed", "value": "LEAFEN_PAGE_VISIT_FAILED" },
+    { "goName": "errorCodeLibraryPagesInvalid", "tsName": "libraryPagesInvalid", "value": "LEAFEN_LIBRARY_PAGES_INVALID" },
+    { "goName": "errorCodePageVisitsRemoveInvalid", "tsName": "pageVisitsRemoveInvalid", "value": "LEAFEN_PAGE_VISITS_REMOVE_INVALID" },
+    { "goName": "errorCodeWorkspaceDocumentsInvalid", "tsName": "documentsInvalid", "value": "LEAFEN_WORKSPACE_DOCUMENTS_INVALID" },
+    { "goName": "errorCodeWorkspaceDocumentsFailed", "tsName": "documentsFailed", "value": "LEAFEN_WORKSPACE_DOCUMENTS_FAILED" },
+    { "goName": "errorCodeWorkspaceDocumentCreateInvalid", "tsName": "documentCreateInvalid", "value": "LEAFEN_WORKSPACE_DOCUMENT_CREATE_INVALID" },
+    { "goName": "errorCodeWorkspaceDocumentPageConflict", "tsName": "documentPageConflict", "value": "LEAFEN_WORKSPACE_DOCUMENT_PAGE_CONFLICT" }
+  ],
+  "enums": [
+    {
+      "tsName": "PageFont",
+      "tsValuesName": "pageFonts",
+      "values": [
+        { "goName": "pageFontDefault", "tsName": "default", "value": "default" },
+        { "goName": "pageFontSerif", "tsName": "serif", "value": "serif" },
+        { "goName": "pageFontMono", "tsName": "mono", "value": "mono" }
+      ]
+    },
+    {
+      "tsName": "BacklinksDisplay",
+      "tsValuesName": "backlinksDisplays",
+      "values": [
+        { "goName": "pageBacklinksDisplayDefault", "tsName": "default", "value": "default" },
+        { "goName": "pageBacklinksDisplayExpanded", "tsName": "expanded", "value": "expanded" },
+        { "goName": "pageBacklinksDisplayOff", "tsName": "off", "value": "off" }
+      ]
+    },
+    {
+      "tsName": "PageTableOfContentsDisplay",
+      "tsValuesName": "tableOfContentsDisplays",
+      "values": [
+        { "goName": "pageTableOfContentsDisplayDefault", "tsName": "default", "value": "default" },
+        { "goName": "pageTableOfContentsDisplayOff", "tsName": "off", "value": "off" }
+      ]
+    },
+    {
+      "tsName": "PageInlineCommentsDisplay",
+      "tsValuesName": "inlineCommentsDisplays",
+      "values": [
+        { "goName": "pageInlineCommentsDisplayDefault", "tsName": "default", "value": "default" },
+        { "goName": "pageInlineCommentsDisplayMinimal", "tsName": "minimal", "value": "minimal" }
+      ]
+    },
+    {
+      "tsName": "PageCommentsDisplay",
+      "tsValuesName": "pageCommentsDisplays",
+      "values": [
+        { "goName": "pageCommentsDisplayDefault", "tsName": "default", "value": "default" },
+        { "goName": "pageCommentsDisplayExpanded", "tsName": "expanded", "value": "expanded" },
+        { "goName": "pageCommentsDisplayOff", "tsName": "off", "value": "off" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceMemberRole",
+      "tsValuesName": "workspaceMemberRoles",
+      "values": [
+        { "goName": "workspaceRoleMember", "tsName": "member", "value": "member" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceOwnerTransferStatus",
+      "tsValuesName": "workspaceOwnerTransferStatuses",
+      "values": [
+        { "goName": "workspaceOwnerTransferStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "workspaceOwnerTransferStatusCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceChangeDecision",
+      "tsValuesName": "workspaceChangeDecisions",
+      "values": [
+        { "goName": "workspaceChangeDecisionUnchanged", "tsName": "unchanged", "value": "unchanged" },
+        { "goName": "workspaceChangeDecisionBootstrapRequired", "tsName": "bootstrapRequired", "value": "bootstrap_required" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceChangeReason",
+      "tsValuesName": "workspaceChangeReasons",
+      "values": [
+        { "goName": "workspaceChangeReasonUnchanged", "tsName": "unchanged", "value": "unchanged" },
+        { "goName": "workspaceChangeReasonContentChanged", "tsName": "contentChanged", "value": "content_changed" },
+        { "goName": "workspaceChangeReasonAuthorityChanged", "tsName": "authorityChanged", "value": "authority_changed" },
+        { "goName": "workspaceChangeReasonRefreshTokenInvalid", "tsName": "refreshTokenInvalid", "value": "refresh_token_invalid" },
+        { "goName": "workspaceChangeReasonRefreshBaselineAmbiguous", "tsName": "refreshBaselineAmbiguous", "value": "refresh_baseline_ambiguous" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceDeletionStatus",
+      "tsValuesName": "workspaceDeletionStatuses",
+      "values": [
+        { "goName": "workspaceDeletionStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "workspaceDeletionStatusCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceDeletionPhase",
+      "tsValuesName": "workspaceDeletionPhases",
+      "values": [
+        { "goName": "workspaceDeletionPhasePages", "tsName": "pages", "value": "pages" },
+        { "goName": "workspaceDeletionPhaseFiles", "tsName": "files", "value": "files" },
+        { "goName": "workspaceDeletionPhaseResidue", "tsName": "residue", "value": "residue" },
+        { "goName": "workspaceDeletionPhaseFinal", "tsName": "final", "value": "final" },
+        { "goName": "workspaceDeletionPhaseCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "SidebarSectionId",
+      "tsValuesName": "sidebarSectionIds",
+      "values": [
+        { "goName": "sidebarSectionFavorites", "tsName": "favorites", "value": "favorites" },
+        { "goName": "sidebarSectionTeamspaces", "tsName": "teamspaces", "value": "teamspaces" },
+        { "goName": "sidebarSectionPrivate", "tsName": "private", "value": "private" },
+        { "goName": "sidebarSectionShared", "tsName": "shared", "value": "shared" },
+        { "goName": "sidebarSectionRecents", "tsName": "recents", "value": "recents" },
+        { "goName": "sidebarSectionDeveloper", "tsName": "developer", "value": "developer" },
+        { "goName": "sidebarSectionView", "tsName": "view", "value": "view" },
+        { "goName": "sidebarSectionTeamspace", "tsName": "teamspace", "value": "teamspace" }
+      ]
+    },
+    {
+      "goName": "sidebarShortcutKind",
+      "tsName": "SidebarShortcutKind",
+      "tsValuesName": "sidebarShortcutKinds",
+      "values": [
+        { "goName": "sidebarShortcutNewPage", "tsName": "newPage", "value": "new_page" },
+        { "goName": "sidebarShortcutPage", "tsName": "page", "value": "page" },
+        { "goName": "sidebarShortcutSettings", "tsName": "settings", "value": "settings" },
+        { "goName": "sidebarShortcutLibrary", "tsName": "library", "value": "library" },
+        { "goName": "sidebarShortcutMyTasks", "tsName": "myTasks", "value": "my_tasks" },
+        { "goName": "sidebarShortcutNewDatabase", "tsName": "newDatabase", "value": "new_database" },
+        { "goName": "sidebarShortcutNewDatabasePage", "tsName": "newDatabasePage", "value": "new_database_page" },
+        { "goName": "sidebarShortcutDocuments", "tsName": "documents", "value": "documents" },
+        { "goName": "sidebarShortcutApp", "tsName": "app", "value": "app" }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentKind",
+      "tsName": "WorkspaceDocumentKind",
+      "tsValuesName": "workspaceDocumentKinds",
+      "values": [
+        { "goName": "workspaceDocumentWord", "tsName": "docx", "value": "docx" },
+        { "goName": "workspaceDocumentSheet", "tsName": "xlsx", "value": "xlsx" },
+        { "goName": "workspaceDocumentSlides", "tsName": "pptx", "value": "pptx" },
+        { "goName": "workspaceDocumentPDF", "tsName": "pdf", "value": "pdf" },
+        { "goName": "workspaceDocumentHWP", "tsName": "hwp", "value": "hwp" },
+        { "goName": "workspaceDocumentHWPX", "tsName": "hwpx", "value": "hwpx" }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentSort",
+      "tsName": "WorkspaceDocumentSort",
+      "tsValuesName": "workspaceDocumentSorts",
+      "values": [
+        { "goName": "workspaceDocumentSortRecent", "tsName": "recent", "value": "recent" },
+        { "goName": "workspaceDocumentSortName", "tsName": "name", "value": "name" }
+      ]
+    },
+    {
+      "tsName": "SidebarOpenMode",
+      "tsValuesName": "sidebarOpenModes",
+      "values": [
+        { "goName": "sidebarOpenSide", "tsName": "side", "value": "side" },
+        { "goName": "sidebarOpenCenter", "tsName": "center", "value": "center" },
+        { "goName": "sidebarOpenFull", "tsName": "full", "value": "full" }
+      ]
+    },
+    {
+      "tsName": "SidebarSectionSort",
+      "tsValuesName": "sidebarSectionSorts",
+      "values": [
+        { "goName": "sidebarSectionSortManual", "tsName": "manual", "value": "manual" },
+        { "goName": "sidebarSectionSortEdited", "tsName": "edited", "value": "edited" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "workspaceDeletionPreviewResponse",
+      "tsName": "WorkspaceDeletionPreview",
+      "fields": [
+        { "goName": "LegalHold", "jsonName": "legalHold", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceResponse",
+      "tsName": "Workspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Domain", "jsonName": "domain", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "SettingsRevision", "jsonName": "settingsRevision", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole", "optional": true },
+        { "goName": "Guest", "jsonName": "guest", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PendingPrivatePages", "jsonName": "pendingPrivatePages", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "NoPrivatePages", "jsonName": "noPrivatePages", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true },
+        { "goName": "LandingPageID", "jsonName": "landingPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AppInstallID", "jsonName": "appInstallId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AppSlug", "jsonName": "appSlug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Staging", "jsonName": "staging", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PageAnalyticsEnabled", "jsonName": "pageAnalyticsEnabled", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "PageAnalyticsAnonymousTrackingEnabled", "jsonName": "pageAnalyticsAnonymousTrackingEnabled", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "TeamspaceRevision", "jsonName": "teamspaceRevision", "goType": "*int", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageResponse",
+      "tsName": "Page",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Content", "jsonName": "content", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "int", "tsType": "number" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Position", "jsonName": "position", "goType": "float64", "tsType": "number" },
+        { "goName": "IsLocked", "jsonName": "isLocked", "goType": "bool", "tsType": "boolean" },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TrashedAt", "jsonName": "trashedAt", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "ArchivedAt", "jsonName": "archivedAt", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "ArchivedBy", "jsonName": "archivedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "LockedBy", "jsonName": "lockedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "Cover", "jsonName": "cover", "goType": "string", "tsType": "string" },
+        { "goName": "CoverPosition", "jsonName": "coverPosition", "goType": "int", "tsType": "number" },
+        { "goName": "Font", "jsonName": "font", "goType": "string", "tsType": "PageFont" },
+        { "goName": "SmallText", "jsonName": "smallText", "goType": "bool", "tsType": "boolean" },
+        { "goName": "FullWidth", "jsonName": "fullWidth", "goType": "bool", "tsType": "boolean" },
+        { "goName": "BacklinksDisplay", "jsonName": "backlinksDisplay", "goType": "string", "tsType": "BacklinksDisplay" },
+        { "goName": "PageCommentsDisplay", "jsonName": "pageCommentsDisplay", "goType": "string", "tsType": "PageCommentsDisplay" },
+        { "goName": "TableOfContentsDisplay", "jsonName": "tableOfContentsDisplay", "goType": "string", "tsType": "PageTableOfContentsDisplay" },
+        { "goName": "InlineCommentsDisplay", "jsonName": "inlineCommentsDisplay", "goType": "string", "tsType": "PageInlineCommentsDisplay" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"page\" | \"database\"", "optional": true },
+        { "goName": "MovedDatabase", "jsonName": "movedDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "ButtonTemplate", "jsonName": "buttonTemplate", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "FieldAnchored", "jsonName": "fieldAnchored", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "AnchorUnmentioned", "jsonName": "anchorUnmentioned", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "HasContent", "jsonName": "hasContent", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "LastEditedBy", "jsonName": "lastEditedBy", "goType": "string", "tsType": "string" },
+        { "goName": "ImportedCreatedBy", "jsonName": "importedCreatedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ImportedLastEditedBy", "jsonName": "importedLastEditedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IsWiki", "jsonName": "isWiki", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WikiRootID", "jsonName": "wikiRootId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "VerifiedAt", "jsonName": "verifiedAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "VerifiedBy", "jsonName": "verifiedBy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "VerificationExpiresAt", "jsonName": "verificationExpiresAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "WikiRevision", "jsonName": "wikiRevision", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "WikiDataSourceID", "jsonName": "wikiDataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UntitledName", "jsonName": "untitledName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "DatabaseContainerID", "jsonName": "databaseContainerId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DatabaseBlockID", "jsonName": "databaseBlockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DatabaseRow", "jsonName": "databaseRow", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageActionAccessResponse",
+      "tsName": "PageActionAccess",
+      "fields": [
+        { "goName": "CanEdit", "jsonName": "canEdit", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CanManage", "jsonName": "canManage", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true },
+        { "goName": "CanSuggest", "jsonName": "canSuggest", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Busy", "jsonName": "busy", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CopyPercent", "jsonName": "copyPercent", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "CopyTopWritten", "jsonName": "copyTopWritten", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceCreateInput",
+      "tsName": "WorkspaceCreateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "SkipDefaultPages", "jsonName": "skipDefaultPages", "goType": "bool", "tsType": "boolean" },
+        { "goName": "EnsureInitialWorkspace", "jsonName": "ensureInitialWorkspace", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WelcomePage", "jsonName": "welcomePage", "goType": "*workspaceWelcomePageInput", "tsType": "WorkspaceWelcomePageInput", "optional": true },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceWelcomePageInput",
+      "tsName": "WorkspaceWelcomePageInput",
+      "fields": [
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Markdown", "jsonName": "markdown", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceCreateResponse",
+      "tsName": "WorkspaceCreateResponse",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole", "optional": true },
+        { "goName": "Page", "jsonName": "page", "goType": "*pageResponse", "tsType": "Page", "optional": true },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageCreateInput",
+      "tsName": "PageCreateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AnchorBlockID", "jsonName": "anchorBlockId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageCreateResponse",
+      "tsName": "PageCreateResponse",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageFavoriteProjection",
+      "tsName": "PageFavoriteProjection",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Favorite", "jsonName": "favorite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "pageFavoriteMutationInput",
+      "tsName": "PageFavoriteMutationInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Favorite", "jsonName": "favorite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ExpectedRevision", "jsonName": "expectedRevision", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "databaseFavoriteProjection",
+      "tsName": "DatabaseFavoriteProjection",
+      "fields": [
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Favorite", "jsonName": "favorite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "inlineDatabaseProjection",
+      "tsName": "InlineDatabaseProjection",
+      "fields": [
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "AfterPageID", "jsonName": "afterPageId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "databaseFavoriteMutationResponse",
+      "tsName": "DatabaseFavoriteMutationResponse",
+      "fields": [
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string" },
+        { "goName": "Favorite", "jsonName": "favorite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageFavoriteMutationResponse",
+      "tsName": "PageFavoriteMutationResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Favorite", "jsonName": "favorite", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "bootstrapResponse",
+      "tsName": "Bootstrap",
+      "fields": [
+        { "goName": "SnapshotRevision", "jsonName": "snapshotRevision", "goType": "int", "tsType": "number" },
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Workspaces", "jsonName": "workspaces", "goType": "[]workspaceResponse", "tsType": "Workspace[]" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]pageResponse", "tsType": "Page[]" },
+        { "goName": "PageFavorites", "jsonName": "pageFavorites", "goType": "[]pageFavoriteProjection", "tsType": "PageFavoriteProjection[]" },
+        { "goName": "DatabaseFavorites", "jsonName": "databaseFavorites", "goType": "[]databaseFavoriteProjection", "tsType": "DatabaseFavoriteProjection[]", "optional": true },
+        { "goName": "InlineDatabases", "jsonName": "inlineDatabases", "goType": "[]inlineDatabaseProjection", "tsType": "InlineDatabaseProjection[]", "optional": true },
+        { "goName": "SharedPageIDs", "jsonName": "sharedPageIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "WorkspaceWidePageIDs", "jsonName": "workspaceWidePageIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "WorkspaceRefreshTokens", "jsonName": "workspaceRefreshTokens", "goType": "[]workspaceRefreshTokenResponse", "tsType": "WorkspaceRefreshToken[]" },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "DataEpoch", "jsonName": "dataEpoch", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DeletingWorkspaces", "jsonName": "deletingWorkspaces", "goType": "[]deletingWorkspaceResponse", "tsType": "DeletingWorkspace[]", "optional": true },
+        { "goName": "PageChangeSeq", "jsonName": "pageChangeSeq", "goType": "int64", "tsType": "number", "optional": true, "keepsZero": true },
+        { "goName": "RemovedPageIDs", "jsonName": "removedPageIds", "goType": "[]string", "tsType": "string[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "deletingWorkspaceResponse",
+      "tsName": "DeletingWorkspace",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceRefreshTokenResponse",
+      "tsName": "WorkspaceRefreshToken",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "RefreshToken", "jsonName": "refreshToken", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceChangeProbeInput",
+      "tsName": "WorkspaceChangeProbeInput",
+      "fields": [
+        { "goName": "WorkspaceRefreshToken", "jsonName": "workspaceRefreshToken", "goType": "string", "tsType": "string" },
+        { "goName": "Wait", "jsonName": "wait", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "PagesChangedSince", "jsonName": "pagesChangedSince", "goType": "int64", "tsType": "number", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceChangeProbeResponse",
+      "tsName": "WorkspaceChangeProbeResponse",
+      "fields": [
+        { "goName": "Decision", "jsonName": "decision", "goType": "string", "tsType": "WorkspaceChangeDecision" },
+        { "goName": "Reason", "jsonName": "reason", "goType": "string", "tsType": "WorkspaceChangeReason" },
+        { "goName": "WorkspaceRefreshToken", "jsonName": "workspaceRefreshToken", "goType": "string", "tsType": "string" },
+        { "goName": "Notified", "jsonName": "notified", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Changes", "jsonName": "changes", "goType": "*bootstrapResponse", "tsType": "Bootstrap", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSettingsPatch",
+      "tsName": "WorkspaceSettingsPatch",
+      "fields": [
+        { "goName": "Name", "jsonName": "name", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Domain", "jsonName": "domain", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "LandingPageID", "jsonName": "landingPageId", "goType": "*string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSettingsInput",
+      "tsName": "WorkspaceSettingsInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "BaseRevision", "jsonName": "baseRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Patch", "jsonName": "patch", "goType": "workspaceSettingsPatch", "tsType": "WorkspaceSettingsPatch" }
+      ]
+    },
+    {
+      "goName": "workspaceSettingsReceipt",
+      "tsName": "WorkspaceSettingsReceipt",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceSettingsMutationResponse",
+      "tsName": "WorkspaceSettingsMutationResponse",
+      "fields": [
+        { "goName": "Workspace", "jsonName": "workspace", "goType": "workspaceResponse", "tsType": "Workspace" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "workspaceSettingsReceipt", "tsType": "WorkspaceSettingsReceipt" }
+      ]
+    },
+    {
+      "goName": "workspaceDeletionInput",
+      "tsName": "WorkspaceDeletionInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "ConfirmationName", "jsonName": "confirmationName", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceDeletionProgress",
+      "tsName": "WorkspaceDeletionProgress",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "int", "tsType": "number" },
+        { "goName": "Files", "jsonName": "files", "goType": "int", "tsType": "number" },
+        { "goName": "ResidueLane", "jsonName": "residueLane", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceDeletionResponse",
+      "tsName": "WorkspaceDeletionResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "WorkspaceDeletionStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "WorkspaceDeletionPhase" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "workspaceDeletionProgress", "tsType": "WorkspaceDeletionProgress" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AlreadyDeleted", "jsonName": "alreadyDeleted", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceMemberDirectoryItem",
+      "tsName": "WorkspaceMemberDirectoryItem",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "App", "jsonName": "app", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "IdentityManaged", "jsonName": "identityManaged", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TeamspaceCount", "jsonName": "teamspaceCount", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Teamspaces", "jsonName": "teamspaces", "goType": "[]workspaceMemberTeamspace", "tsType": "WorkspaceMemberTeamspace[]", "optional": true },
+        { "goName": "GroupCount", "jsonName": "groupCount", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "Groups", "jsonName": "groups", "goType": "[]workspaceMemberGroup", "tsType": "WorkspaceMemberGroup[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberTeamspace",
+      "tsName": "WorkspaceMemberTeamspace",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberGroup",
+      "tsName": "WorkspaceMemberGroup",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "MemberCount", "jsonName": "memberCount", "goType": "int", "tsType": "number", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberInvitation",
+      "tsName": "WorkspaceMemberInvitation",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "SignupToken", "jsonName": "signupToken", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "MailFailed", "jsonName": "mailFailed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberDirectoryResponse",
+      "tsName": "WorkspaceMemberDirectoryResponse",
+      "fields": [
+        { "goName": "AuthorityRevision", "jsonName": "authorityRevision", "goType": "int", "tsType": "number" },
+        { "goName": "MemberAddPolicy", "jsonName": "memberAddPolicy", "goType": "string", "tsType": "string" },
+        { "goName": "MemberAddPolicyRevision", "jsonName": "memberAddPolicyRevision", "goType": "int", "tsType": "number" },
+        { "goName": "CurrentMember", "jsonName": "currentMember", "goType": "workspaceMemberDirectoryItem", "tsType": "WorkspaceMemberDirectoryItem" },
+        { "goName": "Members", "jsonName": "members", "goType": "[]workspaceMemberDirectoryItem", "tsType": "WorkspaceMemberDirectoryItem[]" },
+        { "goName": "Invitations", "jsonName": "invitations", "goType": "[]workspaceMemberInvitation", "tsType": "WorkspaceMemberInvitation[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        {"goName": "MemberRequests", "jsonName": "memberRequests", "goType": "bool", "tsType": "boolean", "optional": true}
+      ]
+    },
+    {
+      "goName": "workspaceGuestPage",
+      "tsName": "WorkspaceGuestPage",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceGuestDirectoryItem",
+      "tsName": "WorkspaceGuestDirectoryItem",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "*string", "tsType": "string | null" },
+        { "goName": "PageCount", "jsonName": "pageCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceGuestDirectoryResponse",
+      "tsName": "WorkspaceGuestDirectoryResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Guests", "jsonName": "guests", "goType": "[]workspaceGuestDirectoryItem", "tsType": "WorkspaceGuestDirectoryItem[]" },
+        { "goName": "Total", "jsonName": "total", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceGuestPagesResponse",
+      "tsName": "WorkspaceGuestPagesResponse",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]workspaceGuestPage", "tsType": "WorkspaceGuestPage[]" },
+        { "goName": "NoAccess", "jsonName": "noAccess", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceGuestRemoveInput",
+      "tsName": "WorkspaceGuestRemoveInput",
+      "fields": [
+        { "goName": "Guests", "jsonName": "guests", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "workspaceGuestRemoveResponse",
+      "tsName": "WorkspaceGuestRemoveResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Removed", "jsonName": "removed", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceMemberCandidate",
+      "tsName": "WorkspaceMemberCandidate",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "*string", "tsType": "string | null" },
+        { "goName": "JoinedAt", "jsonName": "joinedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceMemberCandidatesResponse",
+      "tsName": "WorkspaceMemberCandidatesResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Candidates", "jsonName": "candidates", "goType": "[]workspaceMemberCandidate", "tsType": "WorkspaceMemberCandidate[]" }
+      ]
+    },
+    {
+      "goName": "workspaceMemberAddInput",
+      "tsName": "WorkspaceMemberAddInput",
+      "fields": [
+        { "goName": "Email", "jsonName": "email", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole" },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberAddAcceptedResponse",
+      "tsName": "WorkspaceMemberAddAcceptedResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Accepted", "jsonName": "accepted", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Invited", "jsonName": "invited", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true },
+        { "goName": "InviteEmail", "jsonName": "inviteEmail", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "workspaceMemberInvitationCancelResponse",
+      "tsName": "WorkspaceMemberInvitationCancelResponse",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "InvitationID", "jsonName": "invitationId", "goType": "string", "tsType": "string" },
+        { "goName": "Cancelled", "jsonName": "cancelled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceOwnerTransferInput",
+      "tsName": "WorkspaceOwnerTransferInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetUserID", "jsonName": "targetUserId", "goType": "string", "tsType": "string" },
+        { "goName": "BasePermissionCursor", "jsonName": "basePermissionCursor", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceOwnerTransferResponse",
+      "tsName": "WorkspaceOwnerTransferResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "PreviousOwnerID", "jsonName": "previousOwnerId", "goType": "string", "tsType": "string" },
+        { "goName": "OwnerID", "jsonName": "ownerId", "goType": "string", "tsType": "string" },
+        { "goName": "PermissionCursor", "jsonName": "permissionCursor", "goType": "int", "tsType": "number" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "WorkspaceOwnerTransferStatus" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceMembershipInput",
+      "tsName": "WorkspaceMembershipInput",
+      "fields": [
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole" },
+        { "goName": "Restricted", "jsonName": "restricted", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceMembershipResponse",
+      "tsName": "WorkspaceMembership",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole" },
+        { "goName": "PermissionCursor", "jsonName": "permissionCursor", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceMembershipRevocationResponse",
+      "tsName": "WorkspaceMembershipRevocation",
+      "fields": [
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Role", "jsonName": "role", "goType": "string", "tsType": "WorkspaceMemberRole" },
+        { "goName": "PermissionCursor", "jsonName": "permissionCursor", "goType": "int", "tsType": "number" },
+        { "goName": "Revoked", "jsonName": "revoked", "goType": "bool", "tsType": "boolean" },
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "sidebarLayoutSectionWire",
+      "tsName": "SidebarLayoutSection",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "SidebarSectionId" },
+        { "goName": "Sort", "jsonName": "sort", "goType": "string", "tsType": "SidebarSectionSort" },
+        { "goName": "Limit", "jsonName": "limit", "goType": "int", "tsType": "number" },
+        { "goName": "Hidden", "jsonName": "hidden", "goType": "bool", "tsType": "boolean" },
+        { "goName": "View", "jsonName": "view", "goType": "*sidebarLayoutViewWire", "tsType": "SidebarLayoutView", "optional": true },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "sidebarLayoutViewWire",
+      "tsName": "SidebarLayoutView",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ShowIcons", "jsonName": "showIcons", "goType": "bool", "tsType": "boolean" },
+        { "goName": "OpenIn", "jsonName": "openIn", "goType": "string", "tsType": "SidebarOpenMode", "optional": true },
+        { "goName": "TemplateID", "jsonName": "templateId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "sidebarLayoutShortcutWire",
+      "tsName": "SidebarLayoutShortcut",
+      "fields": [
+        { "goName": "Key", "jsonName": "key", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "SidebarShortcutKind" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "OpenIn", "jsonName": "openIn", "goType": "string", "tsType": "SidebarOpenMode", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TemplateID", "jsonName": "templateId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "sidebarLayoutTabWire",
+      "tsName": "SidebarLayoutTab",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "NameHidden", "jsonName": "nameHidden", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Sections", "jsonName": "sections", "goType": "[]sidebarLayoutSectionWire", "tsType": "SidebarLayoutSection[]" },
+        { "goName": "Shortcuts", "jsonName": "shortcuts", "goType": "[]sidebarLayoutShortcutWire", "tsType": "SidebarLayoutShortcut[]", "optional": true }
+      ]
+    },
+    {
+      "goName": "sidebarLayoutWire",
+      "tsName": "SidebarLayout",
+      "fields": [
+        { "goName": "Sections", "jsonName": "sections", "goType": "[]sidebarLayoutSectionWire", "tsType": "SidebarLayoutSection[]" },
+        { "goName": "HomeName", "jsonName": "homeName", "goType": "string", "tsType": "string" },
+        { "goName": "HomeNameHidden", "jsonName": "homeNameHidden", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Tabs", "jsonName": "tabs", "goType": "[]sidebarLayoutTabWire", "tsType": "SidebarLayoutTab[]" },
+        { "goName": "Shortcuts", "jsonName": "shortcuts", "goType": "[]sidebarLayoutShortcutWire", "tsType": "SidebarLayoutShortcut[]", "optional": true },
+        { "goName": "TeamspaceOrder", "jsonName": "teamspaceOrder", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "FavoriteOrder", "jsonName": "favoriteOrder", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int64", "tsType": "number", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "pageVisitWire",
+      "tsName": "PageVisit",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "VisitedAt", "jsonName": "visitedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "pageVisitsWire",
+      "tsName": "PageVisits",
+      "fields": [
+        { "goName": "Visits", "jsonName": "visits", "goType": "[]pageVisitWire", "tsType": "PageVisit[]" }
+      ]
+    },
+    {
+      "goName": "recentEditWire",
+      "tsName": "RecentEdit",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "EditedAt", "jsonName": "editedAt", "goType": "string", "tsType": "string" },
+        { "goName": "EditorID", "jsonName": "editorId", "goType": "string", "tsType": "string" },
+        { "goName": "EditorName", "jsonName": "editorName", "goType": "string", "tsType": "string" },
+        { "goName": "UntitledName", "jsonName": "untitledName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true }
+      ]
+    },
+    {
+      "goName": "recentEditsWire",
+      "tsName": "RecentEdits",
+      "fields": [
+        { "goName": "Edits", "jsonName": "edits", "goType": "[]recentEditWire", "tsType": "RecentEdit[]" }
+      ]
+    },
+    {
+      "goName": "libraryPagesInput",
+      "tsName": "LibraryPagesInput",
+      "fields": [
+        { "goName": "PageIDs", "jsonName": "pageIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "libraryPageWire",
+      "tsName": "LibraryPage",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "CreatorName", "jsonName": "creatorName", "goType": "string", "tsType": "string" },
+        { "goName": "LastEditorName", "jsonName": "lastEditorName", "goType": "string", "tsType": "string" },
+        { "goName": "VisitedAt", "jsonName": "visitedAt", "goType": "string", "tsType": "string" },
+        { "goName": "Row", "jsonName": "row", "goType": "*libraryRowPageWire", "tsType": "LibraryRowPage", "optional": true },
+        { "goName": "PeopleDatabase", "jsonName": "peopleDatabase", "goType": "*libraryRowPageWire", "tsType": "LibraryRowPage", "optional": true }
+      ]
+    },
+    {
+      "goName": "libraryRowPageWire",
+      "tsName": "LibraryRowPage",
+      "fields": [
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "ContainerPageID", "jsonName": "containerPageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "LastEditedBy", "jsonName": "lastEditedBy", "goType": "string", "tsType": "string" },
+        { "goName": "Template", "jsonName": "template", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "UntitledName", "jsonName": "untitledName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "HasContent", "jsonName": "hasContent", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Person", "jsonName": "person", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "libraryPagesWire",
+      "tsName": "LibraryPages",
+      "fields": [
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]libraryPageWire", "tsType": "LibraryPage[]" }
+      ]
+    },
+    {
+      "goName": "pageVisitsRemoveInput",
+      "tsName": "PageVisitsRemoveInput",
+      "fields": [
+        { "goName": "PageIDs", "jsonName": "pageIds", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "pageVisitsRemovedWire",
+      "tsName": "PageVisitsRemoved",
+      "fields": [
+        { "goName": "RemovedCount", "jsonName": "removedCount", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentWire",
+      "tsName": "WorkspaceDocument",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "FileID", "jsonName": "fileId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "Version", "jsonName": "version", "goType": "string", "tsType": "string" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "WorkspaceDocumentKind" },
+        { "goName": "Preview", "jsonName": "preview", "goType": "string", "tsType": "string" },
+        { "goName": "CanEdit", "jsonName": "canEdit", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" },
+        { "goName": "PageIcon", "jsonName": "pageIcon", "goType": "string", "tsType": "string" },
+        { "goName": "PageIconType", "jsonName": "pageIconType", "goType": "string", "tsType": "string" },
+        { "goName": "ContainerPageID", "jsonName": "containerPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Partial", "jsonName": "partial", "goType": "string", "tsType": "\"length\" | \"size\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentActorWire",
+      "tsName": "WorkspaceDocumentActor",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentsWire",
+      "tsName": "WorkspaceDocuments",
+      "fields": [
+        { "goName": "Documents", "jsonName": "documents", "goType": "[]workspaceDocumentWire", "tsType": "WorkspaceDocument[]" },
+        { "goName": "Actors", "jsonName": "actors", "goType": "[]workspaceDocumentActorWire", "tsType": "WorkspaceDocumentActor[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentCreateInput",
+      "tsName": "WorkspaceDocumentCreateInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "InstallID", "jsonName": "installId", "goType": "string", "tsType": "string" },
+        { "goName": "Opener", "jsonName": "opener", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "HomeTitle", "jsonName": "homeTitle", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceDocumentCreatedWire",
+      "tsName": "WorkspaceDocumentCreated",
+      "fields": [
+        { "goName": "Document", "jsonName": "document", "goType": "workspaceDocumentWire", "tsType": "WorkspaceDocument" }
+      ]
+    }
+  ]
+}

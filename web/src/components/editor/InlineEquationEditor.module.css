@@ -1,0 +1,147 @@
+/* Notion's inline equation field: a 400px panel with a monospace TeX field
+   and a blue "Done ↵" (seen 2026-09-30). A piece of a line's and a math
+   block's take one rule, as Notion's (measured 2026-11-15 in Chrome at 1440):
+   8px 10px in on a faint field tint, 14px/21px TeX, 8px before a 14px/500
+   button 0 6px in with 6px to its 12px return mark, which stands at the top
+   of a 16px/24px line (1.4px under the panel's 8px) — a piece's panel is
+   that line's 41.4px tall, its field centred in it. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.panel {
+  position: fixed;
+  z-index: 90;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  background-image: linear-gradient(var(--bg-block-empty), var(--bg-block-empty));
+  box-shadow: var(--shadow-menu);
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  height: 21px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 21px;
+  outline: none;
+  /* TeX takes the direction of its first letter, as Notion's field
+     (unicode-bidi: plaintext): "x^2" from the left in a right-to-left screen. */
+  unicode-bidi: plaintext;
+}
+
+/* Empty, its caret stands at the screen's start — at the right in Arabic and
+   Hebrew, the inline field and a math block's alike — while its sample reads
+   from its own first letter, "E = mc^2" at the left beside Done, as Notion's
+   (seen 2026-11-19 in Arabic, after emptying the field: the caret at the
+   right, one letter typed landing at the left). A textarea with nothing in it
+   takes plaintext's left-to-right fallback, so the empty field keeps the
+   screen's direction until a letter comes. */
+.field:placeholder-shown {
+  unicode-bidi: isolate;
+}
+
+/* Its sample in the tertiary text colour, a piece of a line's and a math
+   block's alike, as Notion's (measured 2026-11-19 in Chrome 1440: rgb(125,
+   122,117) dark, rgb(161,158,153) light). */
+.field::placeholder {
+  unicode-bidi: plaintext;
+  color: var(--text-tertiary);
+  opacity: 1;
+}
+
+.field:focus,
+.field:focus-visible {
+  outline: none;
+}
+
+/* A math block's field, the done button at its top (seen 2026-11-01). It is
+   as high as what it holds — its sample's three rows when empty, a 400×79
+   panel — from 60px up to half the window, then scrolls, as Notion's
+   (measured 2026-11-19 in Chrome 1440: min-height 60px, max-height 50vh). */
+.blockPanel {
+  align-items: flex-start;
+}
+
+.blockField {
+  height: auto;
+  min-height: 60px;
+  max-height: 50vh;
+  overflow-y: auto;
+  field-sizing: content;
+  resize: none;
+}
+
+/* The line the done button stands in, at the panel's top. */
+.doneLine {
+  flex: none;
+  align-self: flex-start;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/* Notion's return mark is a 12px glyph beside the 14px word. */
+.done > span {
+  font-size: 12px;
+}
+
+.done:hover,
+.done:focus-visible {
+  filter: brightness(0.95);
+  outline: none;
+}
+
+.done:disabled {
+  cursor: default;
+  opacity: 0.4;
+  filter: none;
+}
+
+/* KaTeX's reason under the field, with where its functions are listed. */
+.error {
+  display: grid;
+  flex-basis: 100%;
+  gap: 2px;
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--border-default);
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.error a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}

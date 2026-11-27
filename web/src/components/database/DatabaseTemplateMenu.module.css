@@ -1,0 +1,316 @@
+.toolbarMenu {
+  position: absolute;
+  z-index: 1001;
+  top: 30px;
+  inset-inline-start: 0;
+  width: 520px;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  overscroll-behavior: contain;
+}
+/* A filter's or sort's property list ends 4px under its last row, as Notion's (seen 2026-11-03). */
+.toolbarMenu:has(> [data-property-picker]) {
+  padding-bottom: 4px;
+}
+.toolbarMenuLabel {
+  padding: 6px 6px 5px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.layoutMenu {
+  width: 560px;
+}
+.groupMenu {
+  width: 320px;
+}
+/* Its top 4px under the "새로 만들기 ▾" it opens from, as Notion's (seen
+   2026-11-16 at 1440: 164 under a button ending at 160). */
+.templateMenu {
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  inset-inline-start: auto;
+  width: 360px;
+}
+/* A template's mark in a 20px box, its name 8px after, as Notion's menu
+   rows (seen 2026-11-15, 1440: a picked icon 19.2, a page's document 18,
+   centred in the box 36px into the row, the name at 64). */
+.templateIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  overflow: hidden;
+}
+.templateIcon svg {
+  flex: 0 0 auto;
+}
+.templateSectionDivider {
+  flex: none;
+  height: 1px;
+  margin: 8px -2px 2px;
+  background: var(--border-subtle);
+}
+.templateNewItem {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  min-height: 32px;
+  margin-top: 2px;
+  padding: 0 6px;
+  border-radius: 5px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: start;
+}
+.templateNewItem:hover,
+.templateNewItem:focus-visible,
+.templateNewItem[data-lit="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* The template menu, as Notion's (seen 2026-10-30): 360px, 4px in, a head
+   "템플릿 〈database〉" in 14px gray, 28px rows 1px apart — the icon 36px in
+   and the name 8px after it, "기본" before the row's "⋯" — and a 1px line
+   4px from the rows on each side before "+ 새 템플릿". */
+.templateMenu.templateMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+}
+/* "템플릿 〈database〉" one space apart, 16px into the menu (Notion, seen 2026-10-30). */
+/* Its name 2 lower than its 30 alone would set it: Notion's row is 28 under
+   6, its "?" Help Center link left out (seen 2026-11-11). */
+.templateMenuHead {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  margin-bottom: 3px;
+  padding: 2px 12px 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.templateMenuHead span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.templateMenuRow {
+  position: relative;
+  flex: none;
+}
+.templateMenuUse {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 36px 0 36px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.templateMenuUse:hover,
+.templateMenuUse:focus-visible,
+.templateMenuRow[data-lit="true"] .templateMenuUse,
+.templateMenuRow[data-open="true"] .templateMenuUse {
+  background: var(--bg-hover);
+  outline: none;
+}
+.templateMenuName {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.templateMenuBadge {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+.templateMenuMore {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+/* A repeating template's mark, blue, 28px wide 2px before the "⋯", as Notion's (seen 2026-11-03). */
+.templateMenuRepeat {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--c-accent-blue);
+}
+.templateMenuRow[data-bare="true"] .templateMenuUse {
+  padding-inline-start: 8px;
+}
+.templateMenuRow[data-repeating="true"] .templateMenuUse {
+  padding-inline-end: 64px;
+}
+.templateMenuRepeat:hover,
+.templateMenuRepeat:focus-visible,
+.templateMenuRepeat[aria-expanded="true"],
+.templateMenuMore:hover,
+.templateMenuMore:focus-visible,
+.templateMenuMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.templateMenuActions {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 250px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.templateMenuAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.templateMenuAction[data-focused="true"],
+.templateMenuAction:hover {
+  background: var(--bg-hover);
+}
+.templateMenuActionIcon {
+  display: inline-flex;
+  flex: none;
+  width: 20px;
+  justify-content: center;
+  color: var(--icon-primary);
+}
+.templateMenuActionValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: auto;
+  color: var(--text-secondary);
+}
+.templateMenu .templateSectionDivider {
+  margin: 3px 8px;
+}
+.templateMenu .templateNewItem {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 28px;
+  margin-top: 0;
+  padding: 0 8px;
+  font-size: 14px;
+}
+/* "사이드바에 단축키 추가" reads in the menu's own ink, its mark too; "+ 새 템플릿" stays gray (Notion's, seen 2026-11-15). */
+.templateMenu .templateNewItem[data-template-menu-add-shortcut] {
+  color: var(--text-default);
+}
+/* The handle stands left of every template, as Notion's ⠿ (seen 2026-10-30:
+   a 20×24 box 8px into the row, its 16px grip gray, no fill, shown with the
+   pointer away too); the empty page has none. A line marks where a dragged
+   template lands. */
+.templateMenuHandle {
+  position: absolute;
+  z-index: 1;
+  top: 2px;
+  inset-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+.templateMenuHandle:focus-visible {
+  border-radius: 4px;
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* What templates are for, in the menu's gray, while there are none (seen 2026-11-02: 14px, two lines in a 352px box). */
+.templateMenuHint {
+  margin: 0;
+  padding: 6px 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 17px;
+}
+/* The menu's "필터…" from seven templates (TemplateMenuContent): a 28px field 8px in from the menu's
+   sides, 14px under its head and 18px over its first template, its 16px magnifier 6px in and its words
+   6px on, a text field (--name-field-ring), ringed blue while it holds the caret, as Notion's (seen
+   2026-11-16 at 1440: 344 by 28 in a 360 menu, its top 48 under the menu's, its first row 94). */
+.templateMenuFilter {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 28px;
+  margin: 10px 4px 17px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--menu-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+.templateMenuFilter:focus-within {
+  box-shadow: var(--menu-search-focus-ring);
+}
+.templateMenuFilter > svg {
+  flex: 0 0 16px;
+  margin-inline-end: 6px;
+  color: var(--icon-secondary);
+}
+.templateMenuFilter > input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}

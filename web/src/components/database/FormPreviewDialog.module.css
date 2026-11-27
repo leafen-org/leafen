@@ -1,0 +1,63 @@
+/* A form's preview: the respondent's page in a window over the builder,
+   with its tools in one pill at the page's corner, as Notion's. */
+.previewBackdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* 72px on every side, the page at most 975 wide (Notion's, seen 2026-11-04 at 981 and 1280). */
+  padding: 72px;
+  background: var(--modal-shade);
+  box-sizing: border-box;
+}
+
+.previewPage {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 975px);
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-raised);
+}
+
+.previewScroll {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  /* The form's own head room under the page's top, as Notion's (its respondent line 84 down, seen 2026-11-04). */
+  padding: 0 48px 48px;
+  /* A form's cover spans the window over this margin (FormSurface.module.css .cover). */
+  --form-page-bleed: 48px;
+}
+
+.previewActions {
+  position: absolute;
+  z-index: 1;
+  /* One pill 10px in from the page's corner, Notion's (seen 2026-11-05). */
+  top: 10px;
+  inset-inline-end: 10px;
+  display: flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--media-tools-bg);
+  box-shadow: var(--media-tools-shadow);
+}
+
+.previewAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.previewAction:hover { background: var(--bg-hover); }
+
+/* On a phone, as the respondent's page there. */
+:global([data-phone="true"]) .previewBackdrop { padding: 16px 8px; }
+:global([data-phone="true"]) .previewScroll { --form-page-bleed: 16px; padding: 48px 16px 32px; }

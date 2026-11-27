@@ -1,0 +1,237 @@
+.menuDivider {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+
+/* As Notion's (seen 2026-10-28): plain words 28px high and 8px in along a
+   40px strip across the window's top with a line under it, the chosen one
+   underlined 2px at the strip's foot, the other tertiary. */
+.shareTabs {
+  display: flex;
+  height: 41px;
+  margin: -6px -8px 16px;
+  padding: 6px 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.shareTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 8px 6px;
+  border-radius: 0;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* "게시 •" on a published page: Notion's tab grows from 44 to 60px with it,
+   a 6px blue dot inside a 12px ring of the blue at half (seen 2026-11-15 at
+   1440 dark), 4px after the word's box. */
+.shareTabDot {
+  flex: none;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  margin-inline-start: 4px;
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 50%, transparent);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-blue) 3px, transparent 3.5px);
+}
+
+.shareTab:hover,
+.shareTab:focus-visible {
+  color: var(--text-default);
+  outline: none;
+}
+
+.shareTab[data-active="true"] {
+  color: var(--text-default);
+  box-shadow: inset 0 -2px 0 var(--text-default);
+}
+
+/* A phone's "공유 설정" sheet switches its tabs as Notion's two-part control
+   (seen 2026-10-27): a grey pill holding two halves, the chosen one raised. */
+:global([data-share-phone-sheet]) .shareTabs {
+  gap: 0;
+  height: auto;
+  margin: 0 0 12px;
+  padding: 2px;
+  border-bottom: 0;
+  border-radius: 9px;
+  background: var(--bg-hover);
+}
+
+:global([data-share-phone-sheet]) .shareTab {
+  flex: 1 1 0;
+  height: 32px;
+  padding: 0 6px;
+  border-radius: 7px;
+  color: var(--text-secondary);
+}
+
+:global([data-share-phone-sheet]) .shareTab[data-active="true"] {
+  background: var(--bg-elevated);
+  box-shadow: 0 1px 3px rgba(15, 15, 15, 0.1);
+}
+
+.sharePanel {
+  display: flex;
+  flex-direction: column;
+}
+
+.shareInvitePermissionWrap {
+  position: relative;
+  justify-self: start;
+  min-width: 0;
+  max-width: 100%;
+  width: max-content;
+}
+
+.shareInvitePermissionWrap .sharePermissionMenu {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+}
+
+.shareInvitePermissionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 5px;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Inside the invite field: small and plain beside the typed names, in the
+   secondary text of the field's rows (Notion's, 14px, seen 2026-11-11). Like
+   the form-width one below, its element in the selector outranks the picker
+   button's own rule (TopBarPeople.module.css) whatever order the stylesheets
+   load in. */
+button.sharePermissionInline {
+  height: 24px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* In a mention's invite field, 20 tall with 4px corners. */
+button.sharePermissionInline.sharePermissionMention {
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* Across a form's width, its chevron at the end. */
+.sharePermissionFull,
+button.sharePermissionFullButton {
+  display: flex;
+  width: 100%;
+}
+button.sharePermissionFullButton {
+  justify-content: space-between;
+}
+
+.shareInvitePermissionButton:hover,
+.shareInvitePermissionButton:focus-visible,
+.shareInvitePermissionButton[aria-expanded="true"] {
+  background: var(--bg-active);
+  color: var(--text-default);
+  outline: none;
+}
+
+.shareInvitePermissionButton:disabled,
+.sharePermissionButton:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.55;
+}
+
+.shareInvitePermissionButton:disabled:hover,
+.shareInvitePermissionButton:disabled:focus-visible,
+.sharePermissionButton:disabled:hover,
+.sharePermissionButton:disabled:focus-visible {
+  background: transparent;
+  outline: none;
+}
+
+/* A refused share says so in line with the share window's notes (ShareErrorLine). */
+.shareError {
+  margin: 2px 10px 6px;
+}
+
+/* Why the organization's sharing security settings hold a choice back. */
+.shareSecurityNote {
+  margin: 2px 8px 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* The note a refused share points back to: it says the refusal, once. */
+.shareSecurityNote.shareSecurityNoteRefused {
+  color: var(--danger);
+}
+
+/* "게시" for a page in the trash, as Notion's (seen 2026-11-13: the window
+   333px tall): a 32px globe struck through 106px under its top, then 13px
+   under it two 14px lines in the secondary color, the first 500 and broken
+   where the line runs out, as Notion's, and a 28px "복원" 16px under them, 74px
+   over the window's foot. The lines are 240px, as Notion's 235px hold in its
+   narrower letters: the first breaks, the second fits. */
+.publishInTrash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 49px 24px 68px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* The struck-through globe in Notion's icoTer (read 2026-11-24, dark
+   rgb(125,122,117)). */
+.publishInTrash svg {
+  margin-bottom: 13px;
+  color: var(--icon-tertiary);
+}
+
+.publishInTrash p {
+  max-width: 240px;
+  margin: 0;
+}
+
+.publishInTrash p:first-of-type {
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* "복원" is Notion's outlined button (read 2026-11-24): 28 tall, 8 in, 1px
+   of borPriTra (dark rgba(255,255,235,.1), light rgba(28,19,1,.11)),
+   rounded 6, 12/500, 16 under the words. */
+.publishInTrashRestore {
+  height: 28px;
+  margin-top: 16px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.publishInTrashRestore:hover,
+.publishInTrashRestore:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

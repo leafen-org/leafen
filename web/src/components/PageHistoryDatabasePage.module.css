@@ -1,0 +1,79 @@
+/* A full-page database in a version's preview, as Notion's (seen
+   2026-11-05): from 8px inside the preview's left edge to 8px inside its
+   right, wider than the page's column the title stands in; 4px under the
+   title, a 40px bar of view tabs (the open one a 28px pill) and the
+   database's tools, muted, at its end, which is the database's block a
+   change outlines (measured 2026-11-15); then the table at that width. The
+   preview's canvas is the size it measures against
+   (UpdatesPanelHistory.module.css). */
+.frame {
+  width: calc(100cqi + 24px);
+  margin-inline-start: calc((100% - 100cqi) / 2 - 12px);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  margin-block-start: 4px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tab {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.tab[data-open="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.tabName {
+  white-space: nowrap;
+}
+
+.tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding-inline-end: 4px;
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+/* A row under 480px (the frame is the canvas and 24px) keeps only its
+   settings, as Notion's preview (seen 2026-11-07, an 800px window). */
+@container (width < 456px) {
+  .tools > :not(:last-child) {
+    display: none;
+  }
+}
+
+/* Its bar sits right under the page's title, as Notion's. */
+:global([data-history-preview-blocks]):has(> .frame:first-child) {
+  margin-top: 0;
+}
+
+.frame :global([data-page-history-database-table]) {
+  margin-top: 0;
+}

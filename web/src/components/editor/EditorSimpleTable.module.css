@@ -1,0 +1,340 @@
+/* Simple table */
+/* Its table's edge 16px into the block and its rows' text on Notion's
+   baselines, the block 154px for three rows (measured 2026-11-08 under a
+   title, under a line, in a toggle and in a column). */
+.simpleTableWrap {
+  width: 100%;
+  margin: 11px 0 2px;
+}
+/* One without width is the table block's own 8px above and below (the
+   block's 5px and 3px here), as Notion's draws one: 16px, nothing in it
+   (seen 2026-11-14). */
+.simpleTableWrap[data-table-without-width="true"] {
+  margin: 0;
+  padding-block: 3px;
+}
+/* Its table 8px into the block's box, whose text is 6px in; a top block's has
+   the text's own edge, so 8px past that while the text has its whole 720px
+   column, 10px on a full-width page, and 2px where the page's edges hold its
+   text narrower, as Notion's (measured 2026-10-24 at 1280 and 900px: its
+   scroller keeps 96px where the text keeps 102px; 2026-11-04 in a toggle, a
+   list and under a line, at both widths; 2026-11-12: first column 374 by
+   text at 372 at 1024, text + 8 at 1200, 1210 and 1440). The block's handle
+   stands by the table wherever that is (EditorBlockHandles), so the inset is
+   the block's: its percent is of the block's row (708 at its whole width),
+   which the scroller's box spans too. */
+.blockGroup[data-block-type="table"] {
+  --simple-table-inset: 2px;
+}
+.blockGroup[data-depth="0"][data-block-type="table"] {
+  --simple-table-inset: clamp(2px, calc((100% - 707px) * 1000), 8px);
+}
+:global([data-full-width="true"]) .blockGroup[data-depth="0"][data-block-type="table"] {
+  --simple-table-inset: 10px;
+}
+/* A phone's keeps the whole 8px though its screen holds the text narrower,
+   as Notion's (seen 2026-11-14 and 2026-11-15 on iOS Safari at 402: the
+   table's edge at 32.7 by the text's words at 26.7, its block's 24 in). */
+:global([data-phone="true"]) .blockGroup[data-depth="0"][data-block-type="table"] {
+  --simple-table-inset: 8px;
+}
+.simpleTableScroller {
+  width: 100%;
+  padding-inline-start: var(--simple-table-inset, 2px);
+  overflow-x: auto;
+}
+/* Inside another block, one wider than its place is cut 2px short of the
+   block's row, where a code block's box ends, and scrolls in a box 18px
+   before it, beside its handles, as Notion's (seen 2026-11-13: in a column
+   337 wide a box of 475.5..816.5 under a code box of 495.5..816.5, the
+   table at 495.5; in a toggle 507.5..1193.5). */
+.blockGroup:not([data-depth="0"])[data-block-type="table"] .simpleTableScroller {
+  width: calc(100% + 16px);
+  margin-inline-start: -18px;
+  padding-inline-start: calc(var(--simple-table-inset, 2px) + 18px);
+}
+/* A top block's may run on past the text before it scrolls, so a new table
+   fills it, 20px past the text, with no scrollbar. */
+.blockGroup[data-depth="0"][data-block-type="table"] .simpleTableScroller {
+  width: calc(100% + 46px);
+  margin-inline-end: -46px;
+}
+:global([data-phone="true"]) .blockGroup[data-depth="0"][data-block-type="table"] .simpleTableScroller {
+  width: 100%;
+  margin-inline-end: 0;
+}
+/* One whose columns don't fit scrolls across the page, its first column
+   where it was (usePageWideSimpleTable). */
+.blockGroup[data-depth="0"][data-block-type="table"] .simpleTableScroller[data-page-wide="true"] {
+  width: var(--page-wide-width);
+  margin-inline-start: calc(var(--page-wide-reach) * -1);
+  margin-inline-end: 0;
+  padding-inline-start: calc(var(--page-wide-reach) + var(--simple-table-inset, 2px));
+}
+.simpleTableScroller:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+.simpleTableCanvas {
+  position: relative;
+  display: inline-block;
+  /* On the scroller's top, not its line's baseline, whatever the page's text. */
+  vertical-align: top;
+  padding-inline-end: 25px;
+  padding-bottom: 25px;
+}
+/* A column's edge under the pointer or being dragged: Notion's blue grip
+   line and the resize cursor over the whole table (seen 2026-10-11). */
+.simpleTableColumnEdge {
+  position: absolute;
+  z-index: 2;
+  width: 3px;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+.simpleTableCanvas[data-column-edge="true"],
+.simpleTableCanvas[data-column-edge="true"] * {
+  cursor: col-resize !important;
+}
+/* A cell's 14px text sits 7px by 9px in on 20px lines, so a one-line row is
+   35px with its line, as Notion's (seen 2026-10-11); small text makes it
+   12px on the same lines (seen 2026-10-31). */
+.simpleTableCell {
+  min-height: 34px;
+  padding: 7px 9px;
+  font-size: calc(var(--page-font-size, 16px) - 2px);
+  line-height: 20px;
+  outline: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.simpleTableCell:focus {
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
+}
+.simpleTableCell[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  color: var(--text-tertiary);
+  pointer-events: none;
+}
+.blockRow .editable[aria-readonly="true"][data-empty="true"]::before,
+.editable[aria-readonly="true"][data-empty="true"]::before,
+.caption[aria-readonly="true"][data-empty="true"]::before,
+.simpleTableCell[aria-readonly="true"][data-empty="true"]::before {
+  content: none;
+}
+/* The "+" bars, as Notion's (seen 2026-10-31): 16px, 8px off the table's
+   right edge and its foot, a 1px border rounded 4px around a 12px plus, in
+   borPri; the corner's in its buttons' own borPriTra (seen 2026-11-24 twice,
+   1685 dark). A cell of the last column shows the right one, of the last row
+   the foot's (SimpleTableHandles), and a bar under the pointer shows itself.
+   The 16px "+" over the table's corner adds a row and a column; Notion's
+   stayed unseen under every pointer tried. */
+.simpleTableAdd {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+  opacity: 0;
+  transition:
+    background 0.12s,
+    opacity 0.15s 0.05s;
+}
+/* Their cursors say they drag, as Notion's (seen 2026-10-31). */
+.simpleTableAdd[data-table-add="right"] {
+  top: 0;
+  inset-inline-end: 1px;
+  bottom: 25px;
+  width: 16px;
+  cursor: col-resize;
+}
+.simpleTableAdd[data-table-add="bottom"] {
+  inset-inline-end: 25px;
+  bottom: 1px;
+  inset-inline-start: 0;
+  height: 16px;
+  cursor: row-resize;
+}
+.simpleTableAdd[data-table-add="corner"] {
+  inset-inline-end: 17px;
+  bottom: 17px;
+  width: 16px;
+  height: 16px;
+  border-color: var(--button-outline);
+  cursor: nwse-resize;
+}
+/* Read from the right, the table's end corner is its bottom left. */
+:root[dir="rtl"] .simpleTableAdd[data-table-add="corner"] {
+  cursor: nesw-resize;
+}
+/* A dragged "+" bar's cells to come and the lines it would take away. */
+.simpleTableGrowCell {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  border-inline-end: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  pointer-events: none;
+}
+.simpleTableGrowCell[data-first="true"] {
+  border-inline-start: 1px solid var(--border-default);
+}
+.simpleTableGrowCover {
+  position: absolute;
+  z-index: 2;
+  background: var(--bg-app);
+  pointer-events: none;
+}
+.simpleTableAdd[data-shown="true"],
+.simpleTableAdd:not([data-table-add="corner"]):hover,
+.simpleTableAdd:focus-visible {
+  opacity: 1;
+}
+.simpleTableAdd:hover,
+.simpleTableAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A row's and a column's handle over a cell, as Notion's (seen 2026-10-29):
+   a 6×18 grip across the row's left edge and an 18×6 one across the
+   column's top edge; the chosen row or column is outlined blue while its
+   menu is open, and a drag shows a blue line where it goes. */
+/* Grey in a 2px ring of the page's colour (Notion, seen 2026-10-31). */
+/* A row's or column's grip, as Notion's (seen 2026-11-07): a 14×22 button
+   (22×14 on a column) across the edge's middle, drawn at rest as a 6×18 bar
+   (18×6) with the page's ground around it; over it, its 16px six dots on the
+   raised ground with a 1px line; its whole row or column chosen, blue with
+   white dots. */
+.simpleTableHandle {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-tertiary);
+  cursor: grab;
+  /* At rest only the bar takes the pointer, so a press just inside the cell stays the cell's. */
+  clip-path: inset(2px 4px);
+}
+.simpleTableHandle[data-table-handle="column"] {
+  clip-path: inset(4px 2px);
+}
+.simpleTableHandle:is(:hover, :focus-visible, [aria-expanded="true"], [data-chosen="true"]) {
+  clip-path: none;
+}
+.simpleTableHandle::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%; /* physical: centred on its own box in either direction */
+  box-sizing: border-box;
+  width: 6px;
+  height: 18px;
+  border: 2px solid var(--bg-app);
+  border-radius: 4px;
+  background: var(--icon-tertiary);
+  transform: translate(-50%, -50%);
+}
+.simpleTableHandle[data-table-handle="column"]::before {
+  width: 18px;
+  height: 6px;
+}
+.simpleTableHandle > svg {
+  visibility: var(--table-handle-mark, hidden);
+}
+.simpleTableHandle[data-table-handle="column"] > svg {
+  transform: rotate(90deg);
+}
+.simpleTableHandle:is(:hover, :focus-visible, [aria-expanded="true"], [data-chosen="true"])::before {
+  display: none;
+}
+/* The grip takes the state its mark reads: a pointer, focus or open state
+   over "svg" restyled every icon on the page at each pointer move
+   (2026-11-12). */
+.simpleTableHandle:is(:hover, :focus-visible, [aria-expanded="true"], [data-chosen="true"]) {
+  --table-handle-mark: visible;
+}
+.simpleTableHandle:is(:hover, :focus-visible) {
+  border-color: var(--border-default);
+  background: var(--bg-elevated);
+  outline: none;
+}
+.simpleTableHandle:is([aria-expanded="true"], [data-chosen="true"]) {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+  color: #fff;
+  outline: none;
+}
+.simpleTableSelection {
+  position: absolute;
+  z-index: 2;
+  border: 2px solid var(--accent-blue);
+  border-radius: 2px;
+  pointer-events: none;
+}
+/* The caret's cell's or the range's grip, 6×12 across its right edge's
+   middle: drag it to select cells, press it to select the table (Notion,
+   seen 2026-10-31). */
+.simpleTableRangeGrip {
+  position: absolute;
+  z-index: 4;
+  width: 6px;
+  height: 12px;
+  border: 2px solid var(--bg-app);
+  border-radius: 3px;
+  background: var(--accent-blue);
+  cursor: pointer;
+}
+/* A key puts the grips and the "+" bars away until the mouse moves but a
+   chosen row's grip: the one list of what a key hides is with the block
+   handles' (EditorBlocks). */
+/* A range's corners, 15×15 over each corner, drag it larger or smaller. */
+.simpleTableRangeCorner {
+  position: absolute;
+  z-index: 3;
+  width: 15px;
+  height: 15px;
+}
+.simpleTableRangeCorner:is([data-table-range-corner="tl"], [data-table-range-corner="br"]) {
+  cursor: nwse-resize;
+}
+.simpleTableRangeCorner:is([data-table-range-corner="tr"], [data-table-range-corner="bl"]) {
+  cursor: nesw-resize;
+}
+/* While cells are being selected, their text isn't. */
+.simpleTableCanvas[data-cell-range="dragging"] [data-native-table-cell] {
+  user-select: none;
+}
+.simpleTableDropLine {
+  position: absolute;
+  z-index: 3;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+/* A dragged row's or column's cells following the pointer, over the page's
+   ground with their own color on it (SimpleTableHandles). */
+.simpleTableDragCell {
+  position: absolute;
+  z-index: 2;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 7px 9px;
+  border: 1px solid var(--border-default);
+  background-color: var(--bg-app);
+  font-size: calc(var(--page-font-size, 16px) - 2px);
+  line-height: 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  pointer-events: none;
+}

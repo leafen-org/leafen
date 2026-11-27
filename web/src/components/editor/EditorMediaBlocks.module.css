@@ -1,0 +1,441 @@
+
+/* Video / audio */
+/* A frame keeps 2px in from its column each side, at the text's first
+   letter, as Notion's (seen 2026-10-31: 704 of 708), a full width page's
+   column too (seen 2026-11-27 at 1440: a linked or block API video and a
+   linked or uploaded audio 1217 of its 1233 page). */
+/* 8px over and under it in its block, as Notion's video, audio and embed
+   (seen 2026-11-01: 166 for a 150px video, 336 for a 320px embed). */
+.videoBlock,
+.audioBlock {
+  width: calc(100% - 4px);
+  margin: 3px 2px;
+}
+/* An uploaded video stands in Notion's 708px box, 8px in round it (692 of
+   708; measured 2026-11-01: 692×389 in a 405px block), the box no wider than
+   the page as if its scrollbar stood (--page-room, pageColumn.module.css;
+   inside another block, its column). In the middle of its column
+   (data-upload-box "page", uploadedFrameBox) a window narrower than the box
+   shows it past the column into the page's sides, as Notion's (read
+   2026-11-15 at 1440: "width: 708px; max-width: 1155px; align-self: center",
+   the page 1155 wide inside its scrollbar; measured 2026-11-15 at 640: the
+   column 421, the video 609 in the middle). One the block API made has no
+   box and spans the column 2px in, as a linked one (data-upload-box "column"). */
+.videoBlock[data-file-source="managed"]:not([data-upload-box="column"]) {
+  width: min(692px, calc(var(--page-room, 100%) - 16px));
+  margin: 3px 8px;
+}
+/* Its sides dragged in, it stands where it is aligned, as any other's (2026-11-05: an uploaded one stayed left). */
+.videoBlock[data-file-source="managed"][data-align="center"] {
+  margin-inline: auto;
+}
+.videoBlock[data-file-source="managed"][data-align="right"] {
+  margin-inline-end: 8px;
+  margin-inline-start: auto;
+}
+.videoBlock[data-file-source="managed"][data-upload-box="page"] {
+  margin-inline: calc((100% - min(692px, calc(var(--page-room, 100%) - 16px))) / 2);
+}
+/* A touch screen's keeps that 692 only while its column has room for it, as
+   Notion's mobile layout (read 2026-11-15 in iPhone Safari at 402): the
+   uploaded video's box keeps its 708 width, no wider than 6px past the column
+   each side, 8px in round the video, in the middle. So a phone's video stands
+   2px in from its column (350 of 354) and a wide column's 8px in. */
+:global([data-touch="true"]) .videoBlock[data-file-source="managed"]:not([data-upload-box="column"]) {
+  width: min(692px, calc(100% - 4px));
+  margin-inline: max(2px, (100% - 692px) / 2);
+}
+.videoFrame,
+.audioFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--bg-soft);
+}
+/* A video as Notion's (seen 2026-10-31): no line, its gray fill showing
+   until the picture comes. Square: Notion's 10px is on a box that clips
+   nothing, the video under it has none (measured 2026-11-01). */
+.videoFrame {
+  width: 100%;
+  border-radius: 0;
+  background: var(--bg-embed-placeholder);
+}
+/* Audio is the browser's player alone across the column, 8px under and over
+   in a 70px block, as Notion's (seen 2026-10-31: 704×54, no box). */
+.audioBlock {
+  margin: 3px 2px;
+}
+.audioFrame {
+  border-radius: 0;
+  background: transparent;
+}
+/* Tall as its shape asks, past the window if need be, as Notion's (seen 2026-11-05: 692×1230). */
+.videoPlayer {
+  display: block;
+  width: 100%;
+  background: var(--bg-embed-placeholder);
+}
+/* Until its own shape comes, and when it will not play, a video is 150 high,
+   as Notion's (seen 2026-11-09: 561×150 while its file was on its way, and
+   for one that would not play), in every engine: WebKit (Safari, the Mac app)
+   gave a video it had not read its default 2:1 (seen 2026-11-08: 704×352). */
+.videoPlayer[data-shape="unknown"],
+.videoFrame[data-playback-error="true"] .videoPlayer {
+  height: 150px;
+}
+.audioPlaceholder {
+  height: 54px;
+}
+iframe.videoPlayer[data-web-page] {
+  aspect-ratio: 4 / 3;
+}
+/* Notion's ring over a video not yet played (seen 2026-10-31): 70px, a 3px
+   dark line round a dark triangle, in the middle. */
+.videoPlay {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 50%;
+  z-index: 1;
+  width: 70px;
+  height: 70px;
+  margin-block: -35px 0;
+  margin-inline: -35px 0;
+  padding: 0;
+  border: 3px solid rgb(51, 51, 51);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+/* A touch screen has none: its browser's own controls show before it plays,
+   as Notion's iPhone and iPad (seen 2026-11-12/13 in Safari; Notion draws
+   its ring only off a mobile device, read 2026-11-15). */
+:global([data-touch="true"]) .videoPlay {
+  display: none;
+}
+.videoPlay::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  inset-inline-start: 24.7px;
+  border-style: solid;
+  border-block-width: 16px;
+  border-inline-width: 24.5px 0;
+  border-block-color: transparent;
+  border-inline-color: rgb(51, 51, 51) transparent;
+}
+/* A video that will not play, on Notion's plate (seen 2026-10-31): the
+   frame's gray, a 48px mark 17px down and the words 14px under it, 14/20 in
+   the secondary color, in the middle. */
+.videoUnplayable {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 16px 0;
+  background: var(--bg-embed-placeholder);
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+.videoUnplayableMark {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  color: var(--icon-secondary);
+}
+.videoUnplayableMark svg:first-child {
+  width: 48px;
+  height: 48px;
+}
+.videoUnplayableMark svg:last-child {
+  position: absolute;
+  bottom: 1px;
+  inset-inline-start: 1px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--bg-embed-placeholder);
+}
+iframe.videoPlayer {
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+}
+/* The player as high as the browser draws it, as Notion's: Chrome's 54
+   (seen 2026-10-31), Safari's 31 on an iPhone and an iPad (seen 2026-11-13,
+   the block 47). The desktop app keeps 54, Notion's app being Chrome's where
+   its WebKit draws 31 (seen 2026-11-08 in the app). */
+.audioPlayer {
+  display: block;
+  width: 100%;
+}
+.audioPlayer[data-app-player] {
+  height: 54px;
+}
+.mediaPlaybackError {
+  padding: 9px 10px;
+  border-top: 1px solid color-mix(in srgb, var(--danger) 28%, var(--border-default));
+  background: color-mix(in srgb, var(--danger) 8%, var(--bg-app));
+  color: var(--danger);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.mediaActions {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.videoFrame:hover .mediaActions,
+.audioFrame:hover .mediaActions,
+.videoFrame[data-playback-error="true"] .mediaActions,
+.audioFrame[data-playback-error="true"] .mediaActions,
+.mediaActions:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mediaActions button,
+.mediaActions a {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--bg-floating-control);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-default);
+  font-size: 12px;
+}
+.mediaActions button:hover,
+.mediaActions button:focus-visible,
+.mediaActions a:hover,
+.mediaActions a:focus-visible {
+  background: var(--bg-floating-control-hover);
+  outline: none;
+}
+.mediaEmpty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(100%, 520px);
+  margin: 4px 0;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+
+/* Embed: across its column 2px in, a full width page's too (Notion's, seen
+   2026-11-27 at 1440: one made in the editor 1217 of its 1233 page). */
+.embedBlock {
+  width: calc(100% - 4px);
+  margin: 3px 2px;
+}
+.embedFrame {
+  position: relative;
+  width: 100%;
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 1px;
+  background: var(--bg-soft);
+}
+.embedFrame iframe {
+  display: block;
+  width: 100%;
+  height: 420px;
+  border: 0;
+  background: #fff;
+}
+/* A Word, Excel or PowerPoint embed, as Notion's (measured 2026-11-06, -07):
+   its name in a 34px head above, the document drawn by Leafen's document
+   preview in a frame the block's height high (ManagedEmbedBlock). */
+.documentEmbedHead {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 2px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.embedFrame iframe.documentEmbedFrame {
+  background: transparent;
+}
+/* A document that will not draw keeps the frame the block's height inside
+   its line, as Notion's (seen 2026-11-15 at 1440, w1186: the block 372 for a
+   Word file that would not draw, as for one drawn: 34 head, 320 + 2 frame),
+   and says so as Notion's PDF view does for a document it can't draw (seen
+   2026-11-15, w1297, a .doc of random bytes: the frame on its element ground,
+   one 16/24 line 8px down and 16px in). A plain-table sheet's embed shows
+   Notion's card instead (DocumentPreviewFailedCard). */
+.documentEmbedFailed {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px 16px;
+  background: var(--bg-element);
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+}
+/* Its frame, as Notion's for a CSV, an Excel, a Word and a PowerPoint file
+   (measured 2026-11-12 at 1440 dark: 6px round, on the page's own ground,
+   rgb(25, 25, 25) in dark, inside the 1px line): the document is cut to that
+   round (Notion's inner 10px box clips nothing). */
+.documentEmbedBox {
+  border-radius: 6px;
+  background: var(--bg-default);
+}
+/* A Word or PowerPoint file's view runs 2px past the frame's inside, under
+   its line, as Notion's (its view is the block's width): its bar shows 13px
+   of 15 and its pages 2px wider (the preview's style.css). */
+[data-managed-embed="docx"] .documentEmbedBox iframe.documentEmbedFrame,
+[data-managed-embed="pptx"] .documentEmbedBox iframe.documentEmbedFrame {
+  width: calc(100% + 2px);
+}
+/* A link's embed, as Notion's (seen 2026-10-31): no line, its height set on
+   the frame (320px until resized), the page white inside, cut 1px round as
+   Notion's frame is (its 10px box clips nothing — measured 2026-11-01). */
+.webEmbedFrame {
+  min-height: 0;
+  border: 0;
+  border-radius: 1px;
+  background: transparent;
+}
+.webEmbedFrame iframe {
+  height: 100%;
+}
+/* A picture's address framed as Notion's embed service frames it
+   (LinkedPictureFrame): the picture over the whole frame, cut to it from its
+   middle, on no ground of its own, a link to the address. */
+.linkedPicture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.linkedPicture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+/* An uploaded text or other file's embed stands 8px in each side, 692 of
+   708, as Notion's uploaded embed, video and PDF (seen 2026-11-12), in that
+   708 box in a full width page too (seen 2026-11-27 at 1440: 692 in the
+   middle of its 1233 page, as an uploaded video's). */
+.embedBlock[data-managed-embed="text"],
+.embedBlock[data-managed-embed="file"] {
+  width: min(calc(100% - 16px), 692px);
+  margin: 3px 8px;
+}
+.embedBlock:is([data-managed-embed="text"], [data-managed-embed="file"])[data-align="center"] {
+  margin-inline: auto;
+}
+.embedBlock:is([data-managed-embed="text"], [data-managed-embed="file"])[data-align="right"] {
+  margin-inline-end: 8px;
+  margin-inline-start: auto;
+}
+/* A text file's embed shows its words as the browser's plain text does in
+   Notion's frame of one (seen 2026-11-12): 13px monospace on 15px lines,
+   8px in, wrapped, scrolled in the frame, drawn as a frame's text is. */
+.textEmbed {
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  color: var(--text-default);
+  font-family: monospace;
+  font-size: 13px;
+  line-height: normal;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  -webkit-font-smoothing: auto;
+}
+/* Another file's embed is its row at the frame's top, as Notion's (seen
+   2026-11-12: its mark 3.5px in and 6px down). */
+.fileEmbedRow {
+  padding: 2px;
+}
+/* The frame lets the pointer go while a handle is dragged over it. */
+.embedBlock[data-resizing] :is(iframe, .linkedPicture),
+.videoBlock[data-resizing] .videoPlayer {
+  pointer-events: none;
+}
+.videoFrame[data-pressed="true"] :is([data-image-tools], .imageResizeHandle) {
+  visibility: hidden;
+}
+.codeBlock[data-pointed="true"]:hover > .imageResizeHandle,
+.codeBlock[data-resizing] > .imageResizeHandle,
+.videoFrame:hover .imageResizeHandle,
+.videoBlock[data-resizing] .imageResizeHandle,
+.webEmbedFrame:hover .imageResizeHandle,
+.embedBlock[data-resizing] .imageResizeHandle,
+.embedBlock:hover .cornerHandle,
+.embedBlock[data-resizing] .cornerHandle,
+.webEmbedFrame:hover .bottomHandle,
+.embedBlock[data-resizing] .bottomHandle {
+  opacity: 1;
+}
+/* Inside another block a framed block's handles stand at its end side
+   alone (BlockCornerHandles), as Notion's (seen 2026-11-27 at 1440). */
+:global([data-block-id]:not([data-depth="0"])) :is(.imageResizeHandle, .cornerHandle)[data-grip-start] {
+  display: none;
+}
+/* Notion's foot handle (seen 2026-10-31): 15px across the frame's foot, on
+   hover a dark 48 × 6 pill with a white edge 5px above the foot. */
+.bottomHandle {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  z-index: 2;
+  height: 15px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: row-resize;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.bottomHandle::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  width: min(48px, 50%);
+  height: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  background: rgba(15, 15, 15, 0.6);
+  transform: translateX(-50%);
+}
+
+/* Under WebKit's sound control at a video's top right (MediaBlockContent WEBKIT_MEDIA_CONTROLS). */
+.videoFrame[data-native-controls="top"] [data-image-tools] {
+  top: 48px;
+}
+/* A selection of text running through an embed washes its frame blue, over
+   the page it shows, as a chosen block's (Notion's, seen 2026-11-06). */
+[data-text-selected-through="true"] .embedFrame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bg-block-selected);
+  pointer-events: none;
+}

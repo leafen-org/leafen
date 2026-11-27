@@ -1,0 +1,419 @@
+/* Its height is a share of the window the page is laid in (100vh), or of
+   the screen a view link's frame stands for while it loads in a wider window
+   (--page-window-height, SharedPageLoading), as the page in the frame takes. */
+.cover {
+  position: relative;
+  width: 100%;
+  height: calc(var(--page-window-height, 100vh) * 0.3);
+  min-height: 140px;
+  max-height: 280px;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+/* In a peek 20vh up to 280px, side or center, as Notion's (seen 2026-11-03, 2026-11-05). */
+.cover[data-compact="true"] {
+  height: calc(var(--page-window-height, 100vh) * 0.2);
+  min-height: 0;
+  max-height: 280px;
+}
+/* A database's own page — a full-page database, an inline one opened alone,
+   a wiki — takes 20% of the window, as Notion's (seen 2026-11-11 at 1191×679:
+   135.8px over a full-page database and a wiki alike). */
+.cover[data-database="true"] {
+  height: calc(var(--page-window-height, 100vh) * 0.2);
+  min-height: 0;
+}
+/* A touch screen's page cover is 200px, as Notion's phone's and iPad's
+   (seen 2026-11-10, iPhone Safari 402pt; 2026-11-13, iPad Safari at 834 and
+   1210: 44..244, its icon from 202 and "댓글 추가" at 304). */
+:global([data-touch="true"]) .cover:not([data-compact="true"]) {
+  height: 200px;
+  min-height: 0;
+}
+:global([data-phone="true"]) .cover[data-compact="true"] {
+  height: calc(var(--page-window-height, 100vh) * 0.28);
+  min-height: 128px;
+  max-height: 240px;
+}
+.cover[data-repositioning="true"] {
+  cursor: ns-resize;
+}
+.cover[data-repositioning="true"]:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--accent-blue);
+}
+.actions {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-raised);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+.cover:hover .actions,
+.cover:focus-within .actions,
+.cover[data-menu-open="true"] .actions,
+.cover[data-repositioning="true"] .actions {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen's cover shows "변경하기" alone once tapped, as Notion's
+   iPad (seen 2026-11-13 in iPad Safari at 834: 14 in from the cover's top
+   and end, no "위치 변경" or download; the tap focuses the cover). */
+:global([data-touch="true"]) .actions > :is(.actionDivider, button:not(:first-child)) {
+  display: none;
+}
+.actions > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: #8e8b86;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.actions > button:hover,
+.actions > button:focus-visible {
+  background: var(--bg-hover);
+}
+.actionDivider {
+  flex: 0 0 1px;
+  height: 16px;
+  background: var(--border-default);
+}
+.actions > .iconAction {
+  width: 24px;
+  padding: 0;
+}
+.menuScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.menu {
+  position: absolute;
+  inset-inline-end: 0;
+  bottom: 38px;
+  z-index: 4;
+  width: 540px;
+  max-width: calc(100vw - 24px);
+  padding: 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+}
+/* The tabs stand side by side in the head's 40px, each 6px under its top (on
+   a phone card's 44px row 8px, TouchPickerCard's --tab-line-drop), so the
+   chosen one's line stays inside the row's scroll. */
+.tabs {
+  display: flex;
+  align-items: center;
+  height: calc(28px + 2 * var(--tab-line-drop, 6px));
+  margin-bottom: 0;
+}
+/* A source's tab, as an image's window's (BlockEmptyPopover's .tab) — Notion draws both alike (measured
+   2026-11-15 at 1440 dark, the cover picker's: its graTexAccPri, one #8e8b86 for both themes, on a tab not
+   chosen; under the pointer or the keyboard's focus the hover wash fading in over 0.1s and rounded 6, the
+   words keeping their grey, the keyboard's ring round it too; the chosen tab's words in the text color and its
+   2px line 8px in from its sides on the head's bottom line). Its words and Unsplash's mark sit in the middle
+   of its 28px, the mark 4px before the words (the words 5.6px under the tab's top, the 12px mark 8px in). */
+.coverTab {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  line-height: 16.8px;
+  font-weight: 400;
+  white-space: nowrap;
+  transition: background 100ms ease-in-out;
+}
+.coverTab:hover,
+.coverTab:focus-visible {
+  background: var(--bg-hover);
+}
+.coverTab:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+.coverTab[aria-selected="true"] {
+  color: var(--text-default);
+}
+.coverTab[aria-selected="true"]::after {
+  position: absolute;
+  inset-inline: 8px;
+  /* On the head's bottom line, 6px under the tab; a phone card's row says how far (TouchPickerCard). */
+  bottom: calc(-1 * var(--tab-line-drop, 6px));
+  border-bottom: 2px solid var(--text-default);
+  content: "";
+}
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 3px 12px;
+}
+.coverTile {
+  padding: 0;
+  overflow: hidden;
+  height: 64px;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
+}
+.coverTile:hover,
+.coverTile:focus-visible,
+.coverTile[aria-selected="true"],
+.coverTile[data-active="true"] {
+  border-color: var(--accent-blue);
+  outline: none;
+}
+.uploadPane,
+.linkPane {
+  padding: 4px 0 0;
+}
+.uploadPane input {
+  display: none;
+}
+.uploadPane button,
+.linkPane button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--text-default);
+  color: var(--bg-app);
+  font-size: 13px;
+  font-weight: 500;
+}
+.uploadPane button:hover,
+.uploadPane button:focus-visible,
+.linkPane button:hover,
+.linkPane button:focus-visible {
+  opacity: 0.88;
+  outline: none;
+}
+.uploadPane button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+.uploadPane p {
+  margin: 8px 0 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.uploadProgress {
+  display: grid;
+  gap: 5px;
+  margin-top: 9px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.uploadProgressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+.uploadProgressHeader strong {
+  overflow: hidden;
+  color: var(--text-default);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uploadProgressName {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.uploadProgressTrack {
+  position: relative;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--bg-hover);
+}
+.uploadProgressTrack span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-blue);
+  transition: width 0.16s ease;
+}
+.linkPane {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+.linkPane input {
+  min-width: 0;
+  height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 4px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+}
+.linkPane input:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+}
+.linkError {
+  grid-column: 1 / -1;
+  color: var(--danger);
+  font-size: 12px;
+}
+.repositionHint {
+  position: absolute;
+  left: 50%; /* physical: centred on its own box in either direction */
+  top: 50%;
+  padding: 5px 16px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 12px;
+  line-height: 15px;
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  .actions {
+    inset-inline-end: 12px;
+    top: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: calc(100% - 24px);
+  }
+  .menu {
+    inset-inline-end: -4px;
+    width: min(540px, calc(100vw - 24px));
+  }
+}
+
+.coverTilePaint {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+
+.menuHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  padding: 0 8px;
+  /* Notion's line under the tabs, its borSecTra (both themes, 2026-11-15), drawn inside the 40px so the tabs
+     stand 6px under its top and the chosen one's line lies on it. */
+  box-shadow: inset 0 -1px 0 var(--border-subtle);
+}
+.menuHeader > div { min-width: 0; }
+.tabs { overflow-x: auto; }
+.removeButton { flex: 0 0 auto; padding: 6px 8px; color: var(--icon-secondary); font-size: 14px; }
+.removeButton:hover, .removeButton:focus-visible { background: var(--bg-hover); color: var(--text-default); outline: none; border-radius: 4px; }
+.panel { overflow-y: auto; max-height: min(445px, calc(100dvh - 100px)); padding: 12px; }
+/* The gallery lists its groups as Notion's (seen 2026-11-17 in Chrome at
+   1440 dark and in iPad Safari at 834, the touch card alike): from the
+   panel's top, each group a box 4 round its name and covers, 8 under the
+   last; the name 12px in the grey accent on a 20px line, 6 under the box's
+   top, 16 in (its row 8 in, its words 8 more) and 9 over the covers; the
+   covers 16 in too, four a row 6 apart, 3 over and under them. */
+.panel:has(> .gallery) { padding: 0 0 8px; }
+.galleryGroup { display: flex; flex-direction: column; gap: 1px; padding: 4px; }
+.galleryGroup h3 { margin: 6px 0 8px; padding-inline: 12px; font-size: 12px; line-height: 20px; font-weight: 400; color: var(--text-gray-accent); }
+/* "파일 업로드" is Notion's outlined button with no ground of its own, the menu's showing through (seen 2026-11-24). */
+.uploadPane > button { width: 100%; background: transparent; border: 1px solid var(--button-outline); color: var(--text-default); }
+.uploadPane > p { text-align: center; margin-top: 12px; }
+.linkPane > button { width: min(300px, 100%); justify-self: center; background: var(--accent-blue); color: var(--accent-blue-text); }
+.linkHint { margin: 0; text-align: center; font-size: 12px; color: var(--text-tertiary); }
+.unsplashPane > input { width: 100%; height: 28px; margin-bottom: 16px; padding: 1px 9px; border: 0; box-shadow: var(--name-field-ring); border-radius: 4px; background: var(--name-field-bg); color: var(--text-default); font-size: 14px; outline: none; }
+.unsplashPane > input:focus-visible { box-shadow: var(--name-field-ring-focus); }
+.unsplashGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 6px; }
+.unsplashPhoto { min-width: 0; }
+.unsplashPhoto button { display: block; width: 100%; height: 64px; padding: 0; border-radius: 3px; overflow: hidden; }
+.unsplashPhoto button:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+.unsplashPhoto img { width: 100%; height: 100%; object-fit: cover; }
+.unsplashPhoto span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: var(--text-tertiary); }
+.unsplashPhoto a, .providerCredit > a { color: inherit; text-decoration: underline; }
+.unsplashPane > p { margin: 12px 0 0; font-size: 12px; color: var(--text-tertiary); }
+.unsplashPane > button, .linkError button { margin-top: 8px; padding: 4px 8px; border-radius: 4px; background: var(--bg-hover); font-size: 12px; }
+
+/* The panel owns scrolling; placement only caps the whole dialog. */
+.menu { display: flex; flex-direction: column; overflow: hidden !important; }
+.sources { display: flex; flex-direction: column; min-height: 0; flex: 1 1 auto; }
+.menuHeader { flex: 0 0 40px; }
+.panel { flex: 1 1 auto; min-height: 0; }
+
+.unsplashPhoto button[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--accent-blue); }
+
+/* An image's Unsplash on a phone's sheet, as Notion's (measured 2026-11-15 on a Galaxy A90 at 411, light): the
+   search is the sheet's white row (BlockEmptyPhoneSheet's row and field: 45px, its 16px words 16px in); under it
+   the photos three to a row in 12px and 14px of room, each a third with 3px round it, 64px high and rounded 4,
+   its "저자:" line 14px on 20px, 2px under it and 4px over the next row; the photos' room starts on the search
+   row's line, 1px up. Notes and buttons keep 16px in. */
+.unsplashPane[data-sheet] .unsplashGrid { display: flex; flex-wrap: wrap; gap: 0; margin-top: -1px; padding: 12px 14px; }
+.unsplashPane[data-sheet] .unsplashPhoto { box-sizing: border-box; width: 33%; padding: 3px; }
+.unsplashPane[data-sheet] .unsplashPhoto button { border-radius: 4px; }
+.unsplashPane[data-sheet] .unsplashPhoto span { margin: 2px 0 4px; font-size: 14px; line-height: 20px; }
+.unsplashPane[data-sheet] > p,
+.unsplashPane[data-sheet] > button,
+.unsplashPane[data-sheet] > .linkError { margin-inline: 16px; }
+
+/* In a touch screen's card (TouchPickerCard) the panel takes the card's height under its tabs. */
+.menu[data-touch-card="true"] .panel { max-height: none; }
+
+/* A phone's card lists each gallery group as Notion's iPhone (seen 2026-11-17
+   in Safari at 402, dark and light): from 28 under the band before, the
+   group's name 12px in the grey accent on a 20px line, 20 in and 8 over its
+   band; its covers on the card's white between lines of the faint border, 15
+   over and under them and 17 in, four a row 6 apart (each 87.5 × 64 at 402,
+   a quarter of the band's 374 less 3 round it); 8 under the last band. */
+:global([data-phone="true"]) .menu[data-touch-card="true"] .galleryGroup {
+  gap: 0;
+  padding: 28px 0 0;
+}
+:global([data-phone="true"]) .menu[data-touch-card="true"] .galleryGroup h3 {
+  margin: 0 0 8px;
+  padding-inline: 20px;
+}
+:global([data-phone="true"]) .menu[data-touch-card="true"] .galleryGrid {
+  padding: 15px 17px;
+  background: var(--bg-app);
+  box-shadow: 0 -1px 0 var(--border-subtle), 0 1px 0 var(--border-subtle);
+}

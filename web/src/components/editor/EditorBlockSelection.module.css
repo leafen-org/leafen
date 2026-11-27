@@ -1,0 +1,252 @@
+/* ── Selected blocks ───────────────────────────────────────── */
+/* A selected block's wash: its halo, and the one layer drawn over a
+   database view's or a table's own frame instead. It follows EditorBlocks
+   in the editor's sheet (scripts/generate-editor-styles.mjs). */
+/* A selected block is washed blue, its menu open or not, and shows its
+   handle only on hover, as Notion's (seen 2026-10-02): over the whole block,
+   its children too, 2px inside it top and bottom and 4px out past its column
+   each side — 6px round its text or its frame (seen 2026-10-31). */
+.selectionHalo {
+  position: absolute;
+  inset: 2px;
+  z-index: 2;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  pointer-events: none;
+}
+/* A block a margin card was pressed open for washes so for a moment, nothing
+   chosen: fading in over 0.2s, held, gone by 0.95s, as Notion's
+   (lib/blockFlash.ts). */
+.flashHalo {
+  animation: blockFlash 950ms ease both;
+}
+@keyframes blockFlash {
+  0% { opacity: 0; }
+  21% { opacity: 1; }
+  79% { opacity: 1; }
+  100% { opacity: 0; }
+}
+/* Inside a selected block, a selected child adds no wash of its own: one
+   layer over both, as Notion's (seen 2026-11-01). */
+.blockGroup[data-selected="true"] .blockGroup[data-selected="true"] > .selectionHalo,
+.blockGroup[data-selected="true"] .blockGroup[data-selected="true"] :is([data-database-view] > :is([data-database-chrome], [data-view-type]), [data-structured-table] [role="table"])::after {
+  display: none;
+}
+/* A run block's is 1px inside where another of its run runs on above or
+   below it. As a run block's own child it reaches its box's edge where none
+   does, and its own line's run as that block's first or last child — Notion's
+   rule (measured 2026-11-11 under list items, toggles and link lines: 1 next
+   to one of its run, else 0 under a run block, else 2), drawn on this box. */
+:where(.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer)) > * > .blockGroup[data-run] > .selectionHalo {
+  top: 0;
+  bottom: 0;
+}
+:global(.react-renderer[data-run-above]) > * > .blockGroup[data-run] > .selectionHalo {
+  top: 1px;
+}
+:global(.react-renderer[data-run-below]) > * > .blockGroup[data-run] > .selectionHalo {
+  bottom: 1px;
+}
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):first-child > * > .blockGroup[data-run] > .selectionHalo {
+  top: -1px;
+}
+.blockGroup[data-run] > .blockRow > .blockBody > [data-node-view-content] > * > :global(.react-renderer) > .children
+  > * > * > :global(.react-renderer):last-child > * > .blockGroup[data-run] > .selectionHalo {
+  bottom: 1px;
+}
+/* An inline database's is two pieces, as Notion's (seen 2026-10-31; edges
+   2026-11-11 at 1440px): over its title row or its views' tabs and over its
+   view, each 2px inside its box, from 6px before the text to 2px short of
+   the column's end (6px past its toolbar's). */
+.blockGroup:is([data-block-type="image"], [data-block-type="video"], [data-block-type="pdf"], [data-block-type="embed"]) > .selectionHalo {
+  inset-inline-start: calc(var(--picture-left, 0px) + 2px);
+  inset-inline-end: calc(var(--picture-right, 0px) + 2px);
+}
+.blockGroup[data-block-type="inline_database"] > .selectionHalo {
+  display: none;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > :is([data-database-chrome], [data-view-type]) {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > :is([data-database-chrome], [data-view-type])::after {
+  position: absolute;
+  inset-block: 2px;
+  inset-inline: -6px 2px;
+  /* Over the view's held toolbar and its heads too (a table's head row, a
+     board's column heads, held at 7: DatabaseStickyHeads), as Notion's (seen
+     2026-11-15 at 1440: a table's from its head row's top). */
+  z-index: 8;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A table's ends 2px over its last row, not over the 27px room under it
+   (EditorDatabaseBlocks): Notion's over an empty table ends 2px over its
+   third filler row, over one with rows 2px over its "+ 새 페이지". */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="table"]::after {
+  inset-block-end: 29px;
+}
+/* A view held to the toolbar's end keeps to its own box, 2px inside it:
+   Notion's list from 2px into the text to 2px short of the toolbar's end. */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type]:not([data-view-type="table"], [data-view-type="board"], [data-view-type="timeline"], [data-view-type="dashboard"])::after {
+  inset-inline: 2px calc(var(--database-view-end, 0px) + 2px);
+}
+/* A feed, a map and a form have none over their view, only over the tabs'
+   or title row, as Notion's (seen 2026-11-14 and 2026-11-15 at 1440). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > :is([data-view-type="feed"], [data-view-type="map"], [data-view-type="form"])::after {
+  display: none;
+}
+/* A calendar's box runs into the page's margins (DatabaseViewTabs): its
+   piece keeps to its days, from 1px past their start to 2px short of the
+   toolbar's end, and ends 17px over the box's end, as Notion's (seen
+   2026-11-14 and 2026-11-15 at 1440: 688×685 in a 704px box, from 2px
+   into the text). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="calendar"]:not(:global([data-phone="true"]) *)::after {
+  inset-block-end: 17px;
+  inset-inline: calc(var(--content-pad, 96px) + 2px) calc(var(--content-pad, 96px) - 10px + var(--database-view-end, 0px));
+}
+/* A chart's is over its picture alone, 2px inside it: 8px under the tabs'
+   row, a horizontal bar chart's right under it (chartView), as Notion's
+   (seen 2026-11-14 and 2026-11-15 at 1440: 497.5,250 688×396 for a 692×400
+   picture 8px under a 40px row). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="chart"]::after {
+  display: none;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="chart"] :is([data-chart-picture], [data-chart-number]) {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="chart"] :is([data-chart-picture], [data-chart-number])::after {
+  position: absolute;
+  inset: 2px;
+  z-index: 8;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A timeline's is over its months, days and bars, from 2px under its top to
+   2px over its bars' last lane, "+ 새로 만들기" and the sideways bar under it
+   out (DatabaseTimelineControls), scrolling with the days and cut where they
+   are, as Notion's (seen 2026-11-14 and 2026-11-15 at 1440: 172 tall for
+   three bars, from 488 to 1196). Its months' 36px and days' 32px stand over
+   the lanes. */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="timeline"]:not(:global([data-phone="true"]) *)::after {
+  display: none;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="timeline"]:not(:global([data-phone="true"]) *) [data-timeline-lanes]::after {
+  position: absolute;
+  inset-block: calc(2px - 68px) 2px;
+  inset-inline: 2px;
+  z-index: 8;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A board's is over its columns, from 2px into the text to 2px short of
+   where they end (--board-span, useBoardSpan), its room under them in and
+   its sideways bar out, scrolling with them (Notion's, seen 2026-11-11: 864px
+   of columns from the text's start, over a 700px column). A view looks into
+   itself (":has()") only while its block is chosen: matched from the view
+   first, the look ran through the whole table at each row it put in or took
+   out (2026-11-13). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="board"]:where(.blockGroup[data-selected="true"] *):has([data-board-scroll])::after {
+  display: none;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="board"] [data-board-scroll] {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type="board"] [data-board-scroll]::after {
+  /* Its board's room across the page is the board's own (not inherited). */
+  --page-wide-reach: inherit;
+  --page-wide-offset: inherit;
+  position: absolute;
+  inset-block: 2px;
+  inset-inline-start: calc(var(--page-wide-reach, var(--page-wide-offset, 0px)) + 2px);
+  width: calc(var(--board-span, 100%) - 4px);
+  z-index: 8;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A table wider than the page's text has its view's piece over the table
+   itself, from 6px before its first column to its end, scrolling with it and
+   cut at the page's edges where its scroller is (Notion's, seen 2026-11-11 at
+   1191px: from 368 to the scroller's end at 1173, from its edge at 267 once
+   scrolled sideways). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-view] > [data-view-type]:where(.blockGroup[data-selected="true"] *):has([data-table-scroll][data-page-wide="true"])::after {
+  display: none;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-table-scroll][data-page-wide="true"] > [role="grid"] {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-table-scroll][data-page-wide="true"] > [role="grid"]::after {
+  position: absolute;
+  inset-block: 2px 0;
+  inset-inline: calc(var(--table-gutter-width) - 6px) 0;
+  z-index: 8;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A database the page can't show, its one line, is chosen as a line of
+   text is (.selectionHalo): its database pieces aren't there to take the
+   blue, which stands as a text block's does, 2px inside the block's box
+   (the line 6px inside it) and 1px over and under the line. */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-inline-database-missing] {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-inline-database-missing]::after {
+  position: absolute;
+  inset-block: -1px;
+  inset-inline: -4px;
+  z-index: 2;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* A linked view still waiting for its source is selected as it is made, its
+   whole frame under the blue, as Notion's (seen 2026-11-02). */
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-link-pending] {
+  position: relative;
+}
+.blockGroup[data-block-type="inline_database"][data-selected="true"] [data-database-link-pending]::after {
+  position: absolute;
+  inset-block: 2px;
+  inset-inline: -6px 8px;
+  z-index: 6;
+  border-radius: 4px;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}
+/* Round as its frame, 6px out: a callout's, a code block's (Mermaid's too,
+   Notion's 16px, read 2026-11-14 and 2026-11-15) and a tab block's. */
+.blockGroup[data-block-type="callout"] > .selectionHalo,
+.blockGroup[data-block-type="code"] > .selectionHalo {
+  border-radius: 16px;
+}
+.blockGroup[data-block-type="tab"] > .selectionHalo {
+  border-radius: 22px;
+}
+/* A table's is over its cells alone, square. */
+.blockGroup[data-block-type="table"] > .selectionHalo {
+  display: none;
+}
+.blockGroup[data-block-type="table"][data-selected="true"] [data-structured-table] [role="table"] {
+  position: relative;
+}
+.blockGroup[data-block-type="table"][data-selected="true"] [data-structured-table] [role="table"]::after {
+  position: absolute;
+  inset: 1.5px;
+  z-index: 2;
+  background: var(--bg-block-selected);
+  content: "";
+  pointer-events: none;
+}

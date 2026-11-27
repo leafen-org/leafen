@@ -1,0 +1,46 @@
+/* A page section's line and what it brings out at its start under the
+   pointer, as Notion's (seen 2026-11-15 at 1440, dark): "+" in a 24px box
+   44px before the line, its 16px mark in the secondary icon grey, round 6;
+   ⠿ in a 22×24 box right before the line, its 14px mark in the tertiary
+   grey; both 4px down the 32px line and out of its flow, so the page's icon
+   stays 6px in. The handle's rules are doubled to stand over the ones that
+   put it in the line's flow (DatabaseRelationCells.module.css). */
+.line { position: relative; }
+
+.add,
+.line.line > [data-relation-drag-handle][data-relation-drag-handle] {
+  position: absolute;
+  top: 4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.add {
+  inset-inline-start: -44px;
+  width: 24px;
+  color: var(--icon-secondary);
+}
+
+.line.line > [data-relation-drag-handle][data-relation-drag-handle] {
+  inset-inline-start: -22px;
+  width: 22px;
+  color: var(--icon-tertiary);
+  cursor: grab;
+}
+
+.line.line > [data-relation-drag-handle][data-relation-drag-handle] > svg { width: 14px; height: 14px; }
+
+.line:hover > .add,
+.line.line:hover > [data-relation-drag-handle][data-relation-drag-handle],
+.add:focus-visible { display: inline-flex; }
+
+.add:hover,
+.line.line > [data-relation-drag-handle][data-relation-drag-handle]:hover { background: var(--bg-hover); }

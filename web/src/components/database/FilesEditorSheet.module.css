@@ -1,0 +1,74 @@
+/* A files property's editor on a touch screen (FilesEditorFrame), as
+   Notion's phone screen "파일 속성" (seen 2026-11-15 at 402pt in iOS Safari,
+   dark, with none, one and two files): every line is a group of its own
+   across the whole screen between faint lines on the raised ground, a line
+   74 under the one before and the first 28 under the head's line. A file's
+   line is 45 high (46 with its line under it): its 22px icon 20 in, its 16px
+   name 56 in and its "⋯" a 45px square 8 from the end around an 18px glyph;
+   there is no ⠿ (a long press and drag moved nothing). The adding line is 44
+   high, its 22px "+" 20 in and its 16px grey words 56 in. There is no "모두
+   다운로드하기" line, uploaded files or not (seen 2026-11-15 at 411 on the
+   A90, twice in two tabs, with an uploaded file alone); each file's "⋯"
+   downloads it (PropertyFilesCellView). */
+.sheet > [data-file-drop-zone],
+.sheet [data-file-drop-zone] > :not([role="separator"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 27px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+.sheet > [data-file-drop-zone] {
+  margin-top: -1px;
+}
+.sheet [data-file-drop-zone] > [role="separator"],
+.sheet [data-file-drop-zone] [data-file-drag-handle],
+.sheet [data-files-download-all] {
+  display: none;
+}
+.sheet [data-file-drop-zone] [role="listitem"],
+.sheet [data-files-add-line] {
+  border-block: 1px solid var(--border-subtle);
+  border-radius: 0;
+  background: var(--bg-elevated);
+}
+.sheet [data-file-drop-zone] [role="listitem"] {
+  grid-template-columns: 22px minmax(0, 1fr) 45px;
+  gap: 14px;
+  height: 47px;
+  padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+}
+.sheet [data-file-drop-zone] [role="listitem"] > [data-file-drag-handle] + *,
+.sheet [data-file-drop-zone] [role="listitem"] > [data-file-drag-handle] + * svg {
+  width: 22px;
+  height: 22px;
+  color: var(--icon-primary);
+}
+.sheet [data-file-drop-zone] [role="listitem"] span {
+  font-size: 16px;
+}
+.sheet [data-file-drop-zone] [role="listitem"] > [aria-haspopup="menu"] {
+  width: 45px;
+  height: 45px;
+  margin: 0;
+}
+/* Its "⋯" stays plain while its sheet "파일 작업" is up, as Notion's. */
+.sheet [data-file-drop-zone] [role="listitem"] > [aria-haspopup="menu"]:is(:hover, [aria-expanded="true"]) {
+  background: transparent;
+}
+.sheet [data-file-drop-zone] [role="listitem"] > [aria-haspopup="menu"] svg {
+  width: 18px;
+  height: 18px;
+}
+.sheet [data-files-add-line] {
+  gap: 14px;
+  height: 46px;
+  padding-block: 0; padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px));
+  font-size: 16px;
+}
+.sheet [data-files-add-line] > svg {
+  width: 22px;
+  height: 22px;
+}

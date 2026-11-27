@@ -1,0 +1,453 @@
+/* ChatGPT's screens in the connector guide (chatgptConnectorScreens.tsx), at
+ * the guide frame's scale. Colors and shapes follow chatgpt.com seen signed
+ * out on 2026-11-08 (dark: black page and sidebar, white text, #cdcdcd
+ * placeholders, pill buttons; light: white page, near-black text) and follow
+ * the app's theme. Times in the animations match the cursor paths. */
+
+.chatgpt {
+  --cg-bg: #ffffff;
+  --cg-side: #f9f9f9;
+  --cg-text: #0d0d0d;
+  --cg-muted: #5d5d5d;
+  --cg-faint: #8f8f8f;
+  --cg-line: rgba(0, 0, 0, 0.1);
+  --cg-pill: rgba(0, 0, 0, 0.06);
+  --cg-surface: #ffffff;
+  --cg-skeleton: rgba(0, 0, 0, 0.06);
+  --cg-primary-bg: #0d0d0d;
+  --cg-primary-text: #ffffff;
+  --cg-backdrop: rgba(0, 0, 0, 0.25);
+  --cg-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  --cg-focus: #3b82f6;
+  --rec-text: var(--cg-text);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--cg-bg);
+  color: var(--cg-text);
+  font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", sans-serif;
+}
+
+:global(:root[data-theme="dark"]) .chatgpt {
+  --cg-bg: #000000;
+  --cg-side: #000000;
+  --cg-text: #ffffff;
+  --cg-muted: #cdcdcd;
+  --cg-faint: #8f8f8f;
+  --cg-line: rgba(255, 255, 255, 0.12);
+  --cg-pill: rgba(255, 255, 255, 0.16);
+  --cg-surface: #212121;
+  --cg-skeleton: rgba(255, 255, 255, 0.1);
+  --cg-primary-bg: #ffffff;
+  --cg-primary-text: #0d0d0d;
+  --cg-backdrop: rgba(0, 0, 0, 0.6);
+  --cg-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+}
+
+.app {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.side {
+  display: flex;
+  flex: 0 0 104px;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 6px;
+  border-inline-end: 1px solid var(--cg-line);
+  background: var(--cg-side);
+  font-size: 10px;
+}
+
+.logo {
+  padding: 2px 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sideItem {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+
+.sideItem[data-on] {
+  background: var(--cg-pill);
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 16px 18px;
+}
+
+/* ---- Plugins ---- */
+
+.pluginsHead {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.title {
+  margin-inline-end: auto;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.search {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  width: 112px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--cg-line);
+  border-radius: 999px;
+  font-size: 9.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.faint {
+  color: var(--cg-faint);
+}
+
+.plus {
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--cg-line);
+  border-radius: 50%;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  inset-inline-end: 0;
+  z-index: 4;
+  padding: 4px;
+  border: 1px solid var(--cg-line);
+  border-radius: 10px;
+  background: var(--cg-surface);
+  box-shadow: var(--cg-shadow);
+  font-size: 10px;
+  white-space: nowrap;
+  animation: cgAppear 0.15s ease-out 1100ms both;
+}
+
+.menuItem {
+  position: relative;
+  display: block;
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--cg-pill);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.card {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cardIcon {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--cg-skeleton);
+}
+
+.cardLines {
+  flex: 1;
+  height: 16px;
+  border-radius: 4px;
+  background: linear-gradient(var(--cg-skeleton), var(--cg-skeleton)) 0 0 / 70% 6px no-repeat,
+    linear-gradient(var(--cg-skeleton), var(--cg-skeleton)) 0 100% / 100% 6px no-repeat;
+}
+
+/* ---- "Add custom MCP server" ---- */
+
+.backdrop {
+  position: absolute;
+  inset: 26px 0 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  background: var(--cg-backdrop);
+}
+
+.dialog {
+  display: grid;
+  gap: 4px;
+  width: min(100%, 280px);
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cg-surface);
+  box-shadow: var(--cg-shadow);
+  font-size: 10px;
+}
+
+.dialogHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  font-size: 12px;
+}
+
+.dialogHead strong {
+  font-weight: 600;
+}
+
+.label {
+  margin-top: 2px;
+  color: var(--cg-muted);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--cg-line);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.fieldFocus {
+  border-color: var(--cg-focus);
+}
+
+.chevron {
+  display: flex;
+  margin-inline-start: auto;
+}
+
+.typedName {
+  animation: cgType 0.4s steps(4, end) 150ms both;
+}
+
+.placeholder {
+  position: absolute;
+  inset-inline-start: 8px;
+  color: var(--cg-faint);
+  opacity: 0;
+  animation: cgVanish 0.05s linear 900ms both;
+}
+
+.pasted {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  animation: cgAppear 0.08s linear 900ms both;
+}
+
+.check {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 9.5px;
+}
+
+.box {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--cg-primary-bg);
+  color: var(--cg-primary-text);
+  animation: cgCheck 0.1s linear 2000ms both;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.primary {
+  position: relative;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--cg-primary-bg);
+  color: var(--cg-primary-text);
+  font-weight: 500;
+  animation: cgEnable 0.1s linear 2000ms both;
+}
+
+/* ---- a chat, with @ ---- */
+
+.chat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.mentions {
+  align-self: flex-start;
+  min-width: 120px;
+  padding: 4px;
+  border: 1px solid var(--cg-line);
+  border-radius: 10px;
+  background: var(--cg-surface);
+  box-shadow: var(--cg-shadow);
+  font-size: 10px;
+  animation: cgAppear 0.15s ease-out 200ms both;
+}
+
+.mention {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: var(--cg-pill);
+}
+
+.mentionIcon {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--cg-line);
+  border-radius: 4px;
+}
+
+.composer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 12px 6px;
+  border: 1px solid var(--cg-line);
+  border-radius: 999px;
+  background: var(--cg-surface);
+  font-size: 11px;
+}
+
+.typedAt {
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  margin-inline-start: 4px;
+}
+
+.send {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-inline-start: auto;
+  border-radius: 50%;
+  background: var(--cg-primary-bg);
+  color: var(--cg-primary-text);
+}
+
+@keyframes cgAppear {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes cgVanish {
+  from {
+    opacity: 1;
+  }
+}
+
+@keyframes cgEnable {
+  from {
+    opacity: 0.4;
+  }
+}
+
+@keyframes cgCheck {
+  from {
+    background: transparent;
+    color: transparent;
+    box-shadow: inset 0 0 0 1px var(--cg-faint);
+  }
+}
+
+@keyframes cgType {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* A narrow frame (a phone): ChatGPT's sidebar steps aside, as it does there. */
+@container (max-width: 460px) {
+  .side {
+    display: none;
+  }
+
+  .main {
+    padding: 12px;
+  }
+
+  .search {
+    width: 84px;
+  }
+}
+
+/* A phone's shorter frame (276px): the dialog keeps its button in. */
+@media (max-width: 640px) {
+  .dialog {
+    gap: 3px;
+    padding: 10px 12px;
+  }
+
+  .field {
+    height: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu,
+  .typedName,
+  .placeholder,
+  .pasted,
+  .box,
+  .primary,
+  .mentions {
+    animation: none;
+  }
+}

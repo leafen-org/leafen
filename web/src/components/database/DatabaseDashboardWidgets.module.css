@@ -1,0 +1,682 @@
+/* A dashboard's rows of widgets, as Notion's (seen 2026-11-03, 1280 wide):
+   rows 16 apart, widgets 12 apart; a widget is its 44px name line over a
+   white card (rounded 12, a faint ring and shadow), 320 tall with its 6px
+   foot. In Edit mode the widget's frame (rounded 16) turns pale blue, its
+   name blue, its card ring blue, and round blue buttons appear around rows. */
+.dashboard {
+  --dashboard-blue-wash: color-mix(in srgb, var(--accent-blue) 9.4%, transparent);
+  /* Notion's bluBacPriTra and bluBacTerTra (read 2026-11-15; dark values
+     seen on its Edit mode frame and width handle 2026-11-12): the frame of a
+     widget's place in Edit mode, and the handle between two widgets. */
+  --dashboard-frame-wash: rgba(0, 128, 213, 0.047);
+  --dashboard-handle-blue: rgba(0, 118, 217, 0.204);
+  /* Its round buttons' icons (dark seen 2026-11-15 on Notion's rgb(131, 171, 225)). */
+  --dashboard-button-icon: var(--c-blue);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 6px 0 0;
+}
+:global(:root[data-theme="dark"]) .dashboard {
+  --dashboard-frame-wash: rgba(41, 139, 253, 0.063);
+  --dashboard-handle-blue: rgba(81, 166, 255, 0.494);
+  --dashboard-button-icon: rgb(131, 171, 225);
+}
+/* A database block's own dashboard keeps 30px under its frame, in a page's
+   text and on its own page alike, as Notion's (seen 2026-11-08 at 1303×873). */
+:global([data-inline-database-wrapper] > section > [data-view-type="dashboard"]) .dashboard {
+  padding-bottom: 30px;
+}
+
+.modeBar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* "편집하기" outlined, "완료" filled blue, 28 tall, 6 after the settings. */
+.modeButton {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  margin-inline-start: 6px;
+  padding: 0 8px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.modeButton:hover {
+  background: var(--bg-hover);
+}
+
+.modeButton[aria-pressed="true"] {
+  background: var(--accent-blue);
+  box-shadow: none;
+  color: var(--accent-blue-text);
+}
+
+.modeButton[aria-pressed="true"]:hover {
+  background: var(--accent-blue-hover);
+}
+
+/* A row with its side buttons 22 out from the content on either side; the
+   pointer anywhere over them shows them. */
+.rowFrame {
+  position: relative;
+  margin: 0 -46px;
+  padding: 0 46px;
+}
+
+/* The widgets' frames reach 6 past the content on either side, wrapping 16 apart (dashboardWidgetBox). */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -6px;
+  gap: 16px 12px;
+}
+
+.widget {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1 1 0;
+  flex-direction: column;
+  padding: 0 6px 6px;
+  border-radius: 16px;
+}
+
+/* A row fitted to its widgets' content ("화면 높이에 맞게 조정") is as tall
+   as its tallest widget's view, each widget 240–2140 high with its card
+   scrolling past that, as Notion's (read 2026-11-15: a "content" row's
+   panels min 240, max 2140, height 100%). */
+.row[data-dashboard-row-fits] .widget {
+  min-height: 240px;
+  max-height: 2140px;
+}
+/* A chart, drawn to its frame, keeps the default card there: Notion's chart
+   row kept its height when fitted (seen 2026-11-05). */
+.row[data-dashboard-row-fits] .widget[data-dashboard-widget-type="chart"] > .card {
+  min-height: 270px;
+}
+
+[data-dashboard-mode="edit"] .widget {
+  background: var(--dashboard-frame-wash);
+}
+
+.widget[data-selected] {
+  box-shadow: 0 0 0 2px var(--bg-app), 0 0 0 4px var(--accent-blue), 0 0 0 6px rgb(255 255 255 / 25%);
+}
+
+.widget[data-dragging] {
+  opacity: 0.5;
+}
+
+.widget[data-drop-side="before"] {
+  box-shadow: inset calc(3px * var(--inline-sign, 1)) 0 0 var(--accent-blue);
+}
+
+.widget[data-drop-side="after"] {
+  box-shadow: inset calc(-3px * var(--inline-sign, 1)) 0 0 var(--accent-blue);
+}
+
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 44px;
+  min-width: 0;
+  padding-block: 2px;
+  padding-inline: 10px 0;
+}
+
+[data-dashboard-mode="edit"] .head {
+  cursor: grab;
+}
+
+/* The widget's name: 12px/500 secondary; in Edit mode a blue button of its options. */
+.title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 24px;
+  margin-block: 2px 0;
+  margin-inline: -10px 0;
+  padding: 4px 10px;
+  overflow: hidden;
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+button.title {
+  cursor: pointer;
+}
+
+/* Out of Edit mode its name stays secondary however it opens its menu, as
+   Notion's (seen 2026-11-07, dark: rgb(173,169,163) after "완료"). */
+button.title:hover,
+button.title[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+[data-dashboard-mode="edit"] button.title {
+  color: var(--c-blue);
+}
+
+[data-dashboard-mode="edit"] button.title:hover,
+[data-dashboard-mode="edit"] button.title[aria-expanded="true"] {
+  background: var(--dashboard-blue-wash);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: 0 12px 32px rgb(25 25 25 / 2.7%), 0 0 0 1px var(--border-subtle);
+}
+
+[data-dashboard-mode="edit"] .card {
+  box-shadow: 0 0 0 1px var(--dashboard-blue-wash);
+}
+
+/* In Edit mode a widget's rows show no "+ ⋮⋮" as they are pointed at, as
+   Notion's (its table, list and timeline rows' hover menu is off in a
+   dashboard's build mode, read 2026-11-12). */
+[data-dashboard-mode="edit"] .card :global(:is([data-table-row-add], [data-row-menu-handle])) {
+  display: none;
+}
+
+/* Nor does its table end with "+ 새 페이지" after its last row: Notion's ends
+   at its last row in Edit mode and shows "+ 새 〈행〉" again out of it (seen
+   2026-11-12 in two dashboards). A board's, list's and gallery's are kept,
+   not seen in Notion's Edit mode. */
+[data-dashboard-mode="edit"] .card :global([data-table-new-row-rail]) {
+  display: none;
+}
+
+.embedded {
+  min-width: 0;
+  padding: 0 12px;
+}
+
+/* A widget's table stays inside its card, 8 in from its edge as Notion's
+   (seen 2026-11-03: cells from 20 in): no row-handle margin, nor the
+   database page's room after its last column. */
+.dashboard .widget .card :global([data-table-scroll]) {
+  --table-gutter-width: 0px;
+  margin-block: 0;
+  margin-inline: 8px 0;
+  padding-inline-end: 0;
+}
+
+/* A widget's table its filters leave empty reaches its card's foot, its
+   sideways scrollbar there, and shows "필터 편집하기 · + 새 페이지" 22 under
+   its head, over the table (Notion's, seen 2026-11-11 at 1440: in a 270
+   card the head at 0–36, the buttons at 58, the scrollbar at the foot). */
+.dashboard .widget .card > .embedded:has(:global([data-table-scroll] ~ [data-view-no-results])) {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+.dashboard .widget .card > .embedded > * > :has(> :global([data-table-scroll] ~ [data-view-no-results])) {
+  position: relative;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+.dashboard .widget .card :global([data-table-scroll]:has(~ [data-view-no-results])) {
+  flex: 1 0 auto;
+}
+.dashboard .widget .card :global([data-table-scroll] ~ [data-view-no-results]) {
+  position: absolute;
+  inset-block-start: 36px;
+  inset-inline: 0;
+  height: 72px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.card > .empty {
+  padding: 12px;
+}
+
+/* An empty dashboard out of Edit mode: its hint 14px secondary on a 21px
+   line, "대시보드 편집" 16px under it and a faint picture under that,
+   centered, as Notion's (seen 2026-11-07 at 1440: the hint's words at
+   222–239, the button 257–289; 2026-11-11: the hint's line 21 high, the
+   button 12 in at each side). */
+.emptyView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* It and the 6px under it end 326px under its top, where Notion's 320
+     frame 12px under the tabs ends (seen 2026-11-08 at 1303×873: the hint 48
+     under the box's top, the frame's end 278 under the hint): with the
+     dashboard's 30 under it the block is 402 high, as Notion's (2026-11-12). */
+  min-height: 320px;
+  margin-bottom: 6px;
+  padding-top: 48px;
+  color: var(--text-secondary);
+}
+
+.emptyView > p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.emptyView .modeButton {
+  height: 32px;
+  margin-inline-start: 0;
+  padding: 0 12px;
+}
+
+.emptyPicture {
+  margin-top: 60px;
+  color: var(--text-tertiary);
+  opacity: 0.28;
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 95%);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 95%);
+}
+
+/* Notion's empty dashboard: a 320 frame of faint blue around a card of five
+   pale layout marks over "+ 조회수 보기". */
+.emptyFrame {
+  display: flex;
+  height: 320px;
+  flex-direction: column;
+  margin: 0 -6px;
+  padding: 0 6px 6px;
+  border-radius: 16px;
+  background: var(--dashboard-frame-wash);
+}
+
+.emptyCard {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 44px;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: 0 0 0 1px var(--dashboard-blue-wash);
+}
+
+/* Its marks are a pale blue in both themes, as Notion's bluIcoInvSec
+   (#b6d4f3 in both, read 2026-11-15; seen dark 2026-11-07). */
+.emptyIcons {
+  display: flex;
+  gap: 24px;
+  color: #b6d4f3;
+}
+
+.emptyAdd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  /* Notion's bluBacSecTra (dark rgba(67,155,255,.24), seen 2026-11-12). */
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.emptyFrame:hover .emptyAdd {
+  background: var(--action-mark-blue-bg-hover);
+}
+
+/* Round 24px blue buttons on Notion's bluBacSecTra (seen 2026-11-15, dark
+   rgba(67, 155, 255, .24)): a row's moves at its left (DashboardRowSide),
+   "행에 추가하기" at its right (shown while the row is under the pointer),
+   "새 행에 추가하기" below. */
+.roundButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--action-mark-blue-bg);
+  color: var(--dashboard-button-icon);
+}
+
+.roundButton:hover,
+.roundButton:focus-visible {
+  background: var(--action-mark-blue-bg-hover);
+  outline: none;
+}
+
+.addBeside {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
+  transform: translateY(-50%);
+}
+
+.addBeside {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.rowFrame:hover .addBeside,
+.addBeside:focus-visible {
+  opacity: 1;
+}
+
+.addRow {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 20px;
+}
+
+/* Between two widgets, in the middle of their 12px gap: a 40 wide zone over
+   the cards whose 4×64 blue pill shows under the pointer. */
+.widthHolder {
+  position: relative;
+  flex: 0 0 0;
+  margin: 0 -6px;
+}
+
+.widthHandle {
+  position: absolute;
+  top: 40px;
+  bottom: 6px;
+  inset-inline-start: -20px;
+  width: 40px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.widthHandle::after {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 18px;
+  width: 4px;
+  height: 64px;
+  border-radius: 10px;
+  background: var(--dashboard-handle-blue);
+  content: "";
+  opacity: 0;
+  transform: translateY(-50%);
+}
+
+.widthHandle:hover::after,
+.widthHandle:focus-visible::after {
+  opacity: 1;
+}
+
+.widthHandle:focus-visible {
+  outline: none;
+}
+
+/* The row's foot: 30 tall over its last 24px and the 6 below. */
+.heightHandle {
+  position: absolute;
+  inset-inline-end: 46px;
+  bottom: -6px;
+  inset-inline-start: 46px;
+  height: 30px;
+  cursor: row-resize;
+  touch-action: none;
+}
+
+.heightHandle:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 var(--accent-blue);
+}
+
+.rowGap {
+  height: 16px;
+  margin: -16px 0;
+  border-radius: 4px;
+}
+
+.rowGap[data-drop-target] {
+  background: var(--accent-blue);
+  opacity: 0.4;
+}
+
+/* Under a widget's name, as Notion's menus: 220 wide, groups split by a line. */
+.menu {
+  position: fixed;
+  display: flex;
+  width: 220px;
+  flex-direction: column;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.rowsMenu {
+  width: 200px;
+  padding: 4px;
+  gap: 1px;
+}
+
+.menuGroup {
+  display: grid;
+  gap: 1px;
+  padding: 4px;
+}
+
+.menuGroup + .menuGroup { border-top: 1px solid var(--menu-divider); }
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.menuItem > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuItem[data-focused="true"],
+.menuItem:hover {
+  background: var(--bg-hover);
+}
+
+/* A row it can't take faded, as Notion's (seen 2026-11-15: opacity .4). */
+.menuItem:disabled {
+  background: transparent;
+  cursor: default;
+  opacity: 0.4;
+}
+
+.menuChevron {
+  color: var(--icon-secondary);
+}
+
+/* "새 보기" beside a new widget: 290 wide at the window's right edge. */
+.panel {
+  position: fixed;
+  display: flex;
+  width: 290px;
+  max-height: calc(100vh - 24px);
+  flex-direction: column;
+  overflow: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 6px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.panelHead > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+}
+
+/* "←" before "새 보기" where the widget's source was asked first, as the start panel's. */
+.panelTitle {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 2px;
+}
+
+.panelBack {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 22px;
+  margin-inline-start: -6px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.panelBack:hover {
+  background: var(--bg-hover);
+}
+
+.panelSearch {
+  height: 28px;
+  margin: 4px 12px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  box-shadow: var(--menu-search-focus-ring);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* Between two rows in Edit mode, a 13px strip the widgets' width in their 16
+   gap, adding none (seen 2026-11-15): a 2px line in the accent's light tint
+   and a round "+" at its end under the pointer (Notion's, seen 2026-11-05). */
+.rowInsert {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 13px;
+  margin-block: -14.5px;
+  padding: 0;
+  z-index: 1;
+}
+.rowInsertLine {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+  background: transparent;
+}
+.rowInsertPlus {
+  position: absolute;
+  inset-inline-end: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+}
+.rowInsert:hover .rowInsertLine,
+.rowInsert:focus-visible .rowInsertLine {
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+}
+.rowInsert:hover .rowInsertPlus,
+.rowInsert:focus-visible .rowInsertPlus {
+  opacity: 1;
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+}
+.rowInsert:focus-visible {
+  outline: none;
+}
+
+/* A widget's own tools at the end of its head, as Notion's (seen 2026-11-05):
+   24px buttons, shown under the pointer outside Edit mode, always and blue in it, on the head's own ground (2026-11-15) over an inline database's sticky toolbar ground. */
+.headTools {
+  display: flex;
+  align-items: center;
+  margin-inline-start: auto;
+}
+.headTools.headTools.headTools.headTools [role="toolbar"] {
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.headTools.headTools.headTools [role="toolbar"] button,
+.headTools.headTools.headTools [role="toolbar"] a {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  padding: 0;
+  justify-content: center;
+}
+[data-dashboard-mode="view"] .headTools {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+[data-dashboard-mode="view"] .widget:hover .headTools,
+[data-dashboard-mode="view"] .headTools:focus-within {
+  opacity: 1;
+}
+[data-dashboard-mode="edit"] .headTools button {
+  color: var(--accent-blue);
+}
+/* Its New is a 24px "+" and "⌄", the words kept for screen readers only. */
+.headTools.headTools.headTools [role="toolbar"] [data-database-new-row] > button:first-child {
+  justify-content: center;
+  width: 24px;
+  padding: 0;
+  gap: 0;
+  font-size: 0;
+}
+.headTools.headTools.headTools [role="toolbar"] [data-database-new-row] > button:last-child {
+  width: 24px;
+  padding: 0;
+  justify-content: center;
+}
+.headTools.headTools.headTools [data-database-new-row] > button:first-child svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}

@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 3,
+  "name": "workspace-import",
+  "operations": [
+    { "goName": "workspaceImportCreate", "tsName": "create", "method": "POST", "path": "/workspaces/{workspaceId}/imports" },
+    { "goName": "workspaceMarkdownAppendCreate", "tsName": "markdownAppend", "method": "POST", "path": "/workspaces/{workspaceId}/pages/{pageId}/imports/markdown" },
+    { "goName": "workspaceMarkdownReplaceCreate", "tsName": "markdownReplace", "method": "PUT", "path": "/workspaces/{workspaceId}/pages/{pageId}/imports/markdown/replace" },
+    { "goName": "workspaceCSVMergeCreate", "tsName": "csvMerge", "method": "POST", "path": "/workspaces/{workspaceId}/data-sources/{dataSourceId}/imports/csv" },
+    { "goName": "workspaceCSVMergeTargetRead", "tsName": "csvMergeTarget", "method": "GET", "path": "/workspaces/{workspaceId}/data-sources/{dataSourceId}/imports/csv" },
+    { "goName": "workspaceCSVMergeTargetsList", "tsName": "csvMergeTargets", "method": "GET", "path": "/workspaces/{workspaceId}/imports/csv/targets" },
+    { "goName": "workspaceImportArchiveCreate", "tsName": "archiveCreate", "method": "POST", "path": "/workspaces/{workspaceId}/imports/archive" },
+    { "goName": "workspaceArchiveUploadPrepare", "tsName": "archiveUploadPrepare", "method": "POST", "path": "/workspaces/{workspaceId}/imports/archive/uploads" },
+    { "goName": "workspaceArchiveUploadPart", "tsName": "archiveUploadPart", "method": "PUT", "path": "/workspaces/{workspaceId}/imports/archive/uploads/{uploadId}/parts/{partNumber}" },
+    { "goName": "workspaceArchiveUploadComplete", "tsName": "archiveUploadComplete", "method": "POST", "path": "/workspaces/{workspaceId}/imports/archive/uploads/{uploadId}/complete" },
+    { "goName": "workspaceArchiveUploadCancel", "tsName": "archiveUploadCancel", "method": "POST", "path": "/workspaces/{workspaceId}/imports/archive/uploads/{uploadId}/cancel" },
+    { "goName": "workspaceImportBatchCreate", "tsName": "batchCreate", "method": "POST", "path": "/workspaces/{workspaceId}/imports/batches" },
+    { "goName": "workspaceImportBatchItemsDeclare", "tsName": "batchItemsDeclare", "method": "POST", "path": "/workspaces/{workspaceId}/imports/batches/{jobId}/items" },
+    { "goName": "workspaceImportBatchItemsList", "tsName": "batchItemsList", "method": "GET", "path": "/workspaces/{workspaceId}/imports/batches/{jobId}/items" },
+    { "goName": "workspaceImportBatchDocuments", "tsName": "batchDocuments", "method": "POST", "path": "/workspaces/{workspaceId}/imports/batches/{jobId}/documents" },
+    { "goName": "workspaceImportBatchStart", "tsName": "batchStart", "method": "POST", "path": "/workspaces/{workspaceId}/imports/batches/{jobId}/start" },
+    { "goName": "workspaceImportList", "tsName": "list", "method": "GET", "path": "/workspaces/{workspaceId}/imports" },
+    { "goName": "workspaceImportRead", "tsName": "read", "method": "GET", "path": "/workspaces/{workspaceId}/imports/{jobId}" },
+    { "goName": "workspaceImportCancel", "tsName": "cancel", "method": "POST", "path": "/workspaces/{workspaceId}/imports/{jobId}/cancel" }
+  ],
+  "bounds": [
+    { "goName": "workspaceImportArchiveDirectBytes", "tsName": "archiveDirectBytes", "value": 8388608 },
+    { "goName": "workspaceImportArchiveEntityJSONBytes", "tsName": "archiveEntityJSONBytes", "value": 4194304 },
+    { "goName": "workspaceImportRequestBytes", "tsName": "requestBytes", "value": 52494336 },
+    { "goName": "workspaceImportRawTextBytes", "tsName": "rawTextBytes", "value": 52428800 },
+    { "goName": "workspaceImportStagedRecordsPerChunk", "tsName": "stagedRecordsPerChunk", "value": 100 },
+    { "goName": "workspaceImportStagedChunkBytes", "tsName": "stagedChunkBytes", "value": 1048576 },
+    { "goName": "workspaceImportMutationTurnItems", "tsName": "mutationTurnItems", "value": 50 },
+    { "goName": "workspaceImportCleanupTurnItems", "tsName": "cleanupTurnItems", "value": 50 },
+    { "goName": "workspaceImportTerminalRetentionPerWorkspace", "tsName": "terminalRetentionPerWorkspace", "value": 50 },
+    { "goName": "workspaceImportBatchItemsPerRequest", "tsName": "batchItemsPerRequest", "value": 500 },
+    { "goName": "workspaceImportBatchUploadWindowBytes", "tsName": "batchUploadWindowBytes", "value": 4194304 },
+    { "goName": "workspaceImportBatchNameRunes", "tsName": "batchNameRunes", "value": 4096 },
+    { "goName": "workspaceImportBatchNoteRunes", "tsName": "batchNoteRunes", "value": 8192 }
+  ],
+  "errors": [
+    { "goName": "errorCodeWorkspaceImportArchiveResumableRequired", "tsName": "archiveResumableRequired", "value": "LEAFEN_WORKSPACE_IMPORT_ARCHIVE_RESUMABLE_REQUIRED" },
+    { "goName": "errorCodeWorkspaceImportInvalid", "tsName": "invalid", "value": "LEAFEN_WORKSPACE_IMPORT_INVALID" },
+    { "goName": "errorCodeWorkspaceImportRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_WORKSPACE_IMPORT_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeWorkspaceImportStateInvalid", "tsName": "stateInvalid", "value": "LEAFEN_WORKSPACE_IMPORT_STATE_INVALID" },
+    { "goName": "errorCodeWorkspaceImportUnavailable", "tsName": "unavailable", "value": "LEAFEN_WORKSPACE_IMPORT_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceImportTargetNotFresh", "tsName": "targetNotFresh", "value": "LEAFEN_WORKSPACE_IMPORT_TARGET_NOT_FRESH" },
+    { "goName": "errorCodeWorkspaceImportDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_WORKSPACE_IMPORT_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceImportStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_WORKSPACE_IMPORT_STORAGE_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "WorkspaceArchiveInputFormat",
+      "tsValuesName": "workspaceArchiveInputFormats",
+      "values": [
+        { "goName": "workspaceArchiveInputFormatV2", "tsName": "nativeArchiveV2", "value": "native_archive_v2" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceArchiveImportUploadStatus",
+      "tsValuesName": "workspaceArchiveImportUploadStatuses",
+      "values": [
+        { "goName": "workspaceArchiveImportUploadStatusUploading", "tsName": "uploading", "value": "uploading" },
+        { "goName": "workspaceArchiveImportUploadStatusImporting", "tsName": "importing", "value": "importing" },
+        { "goName": "workspaceArchiveImportUploadStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "workspaceArchiveImportUploadStatusCancelled", "tsName": "cancelled", "value": "cancelled" },
+        { "goName": "workspaceArchiveImportUploadStatusFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "workspaceArchiveImportUploadStatusExpired", "tsName": "expired", "value": "expired" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportFormat",
+      "tsValuesName": "workspaceImportFormats",
+      "values": [
+        { "goName": "workspaceImportFormatMarkdown", "tsName": "markdown", "value": "markdown" },
+        { "goName": "workspaceImportFormatCSV", "tsName": "csv", "value": "csv" },
+        { "goName": "workspaceImportFormatNativeArchiveV2", "tsName": "nativeArchiveV2", "value": "native_archive_v2" },
+        { "goName": "workspaceImportFormatFileBatch", "tsName": "fileBatch", "value": "file_batch" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportBatchItemKind",
+      "tsValuesName": "workspaceImportBatchItemKinds",
+      "values": [
+        { "goName": "workspaceImportBatchItemKindFolder", "tsName": "folder", "value": "folder" },
+        { "goName": "workspaceImportBatchItemKindDocument", "tsName": "document", "value": "document" },
+        { "goName": "workspaceImportBatchItemKindDatabase", "tsName": "database", "value": "database" },
+        { "goName": "workspaceImportBatchItemKindFile", "tsName": "file", "value": "file" },
+        { "goName": "workspaceImportBatchItemKindSkipped", "tsName": "skipped", "value": "skipped" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportBatchItemState",
+      "tsValuesName": "workspaceImportBatchItemStates",
+      "values": [
+        { "goName": "workspaceImportBatchItemPending", "tsName": "pending", "value": "pending" },
+        { "goName": "workspaceImportBatchItemReceived", "tsName": "received", "value": "received" },
+        { "goName": "workspaceImportBatchItemImporting", "tsName": "importing", "value": "importing" },
+        { "goName": "workspaceImportBatchItemImported", "tsName": "imported", "value": "imported" },
+        { "goName": "workspaceImportBatchItemFailed", "tsName": "failed", "value": "failed" },
+        { "goName": "workspaceImportBatchItemCancelled", "tsName": "cancelled", "value": "cancelled" },
+        { "goName": "workspaceImportBatchItemSkipped", "tsName": "skipped", "value": "skipped" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportLocale",
+      "tsValuesName": "workspaceImportLocales",
+      "values": [
+        { "goName": "workspaceImportLocaleEnglish", "tsName": "en", "value": "en" },
+        { "goName": "workspaceImportLocaleKorean", "tsName": "ko", "value": "ko" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportStatus",
+      "tsValuesName": "workspaceImportStatuses",
+      "values": [
+        { "goName": "workspaceImportStatusQueued", "tsName": "queued", "value": "queued" },
+        { "goName": "workspaceImportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "workspaceImportStatusCancelling", "tsName": "cancelling", "value": "cancelling" },
+        { "goName": "workspaceImportStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "workspaceImportStatusCancelled", "tsName": "cancelled", "value": "cancelled" },
+        { "goName": "workspaceImportStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "WorkspaceImportPhase",
+      "tsValuesName": "workspaceImportPhases",
+      "values": [
+        { "goName": "workspaceImportPhaseBatchUpload", "tsName": "batchUpload", "value": "batch_upload" },
+        { "goName": "workspaceImportPhaseBatchPages", "tsName": "batchPages", "value": "batch_pages" },
+        { "goName": "workspaceImportPhaseBatchDocuments", "tsName": "batchDocuments", "value": "batch_documents" },
+        { "goName": "workspaceImportPhaseArchivePrepare", "tsName": "archivePrepare", "value": "archive_prepare" },
+        { "goName": "workspaceImportPhaseStaged", "tsName": "staged", "value": "staged" },
+        { "goName": "workspaceImportPhaseApply", "tsName": "apply", "value": "apply" },
+        { "goName": "workspaceImportPhaseReplaceDelete", "tsName": "replaceDelete", "value": "replace_delete" },
+        { "goName": "workspaceImportPhasePublishCleanup", "tsName": "publishCleanup", "value": "publish_cleanup" },
+        { "goName": "workspaceImportPhaseCleanup", "tsName": "cleanup", "value": "cleanup" },
+        { "goName": "workspaceImportPhaseCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "workspaceImportPhaseCancelled", "tsName": "cancelled", "value": "cancelled" },
+        { "goName": "workspaceImportPhaseFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "workspaceArchiveImportUploadPrepareInput",
+      "tsName": "WorkspaceArchiveImportUploadPrepareInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Filename", "jsonName": "filename", "goType": "string", "tsType": "string" },
+        { "goName": "Bytes", "jsonName": "bytes", "goType": "int64", "tsType": "number" },
+        { "goName": "SHA256", "jsonName": "sha256", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceArchiveImportUploadCompleteInput",
+      "tsName": "WorkspaceArchiveImportUploadCompleteInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceArchiveImportUploadState",
+      "tsName": "WorkspaceArchiveImportUpload",
+      "fields": [
+        { "goName": "UploadID", "jsonName": "uploadId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "WorkspaceArchiveImportUploadStatus" },
+        { "goName": "ReceivedBytes", "jsonName": "receivedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "NextPart", "jsonName": "nextPart", "goType": "int", "tsType": "number" },
+        { "goName": "PartBytes", "jsonName": "partBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ArchiveBytes", "jsonName": "archiveBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "ArchiveSHA256", "jsonName": "archiveSha256", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Job", "jsonName": "job", "goType": "*workspaceImportJob", "tsType": "WorkspaceImportJob | null" }
+      ]
+    },
+    {
+      "goName": "workspaceMarkdownAppendInput",
+      "tsName": "WorkspaceMarkdownAppendInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Markdown", "jsonName": "markdown", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeInput",
+      "tsName": "WorkspaceCSVMergeInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "CSV", "jsonName": "csv", "goType": "string", "tsType": "string" },
+        { "goName": "ColumnPropertyIDs", "jsonName": "columnPropertyIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "NewProperties", "jsonName": "newProperties", "goType": "[]workspaceCSVMergeNewProperty", "tsType": "WorkspaceCSVMergeNewProperty[]" },
+        { "goName": "KeepFirstRow", "jsonName": "keepFirstRow", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeNewProperty",
+      "tsName": "WorkspaceCSVMergeNewProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Config", "jsonName": "config", "goType": "map[string]any", "tsType": "Record<string, unknown>" }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeTargetProperty",
+      "tsName": "WorkspaceCSVMergeTargetProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeTargetSummary",
+      "tsName": "WorkspaceCSVMergeTargetSummary",
+      "fields": [
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "PageTitle", "jsonName": "pageTitle", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeTargetList",
+      "tsName": "WorkspaceCSVMergeTargetList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]workspaceCSVMergeTargetSummary", "tsType": "WorkspaceCSVMergeTargetSummary[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceCSVMergeTarget",
+      "tsName": "WorkspaceCSVMergeTarget",
+      "fields": [
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]workspaceCSVMergeTargetProperty", "tsType": "WorkspaceCSVMergeTargetProperty[]" }
+      ]
+    },
+    {
+      "goName": "workspaceMarkdownReplaceInput",
+      "tsName": "WorkspaceMarkdownReplaceInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Markdown", "jsonName": "markdown", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceImportInput",
+      "tsName": "WorkspaceImportInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "WorkspaceImportFormat" },
+        { "goName": "Locale", "jsonName": "locale", "goType": "string", "tsType": "WorkspaceImportLocale" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Markdown", "jsonName": "markdown", "goType": "string", "tsType": "string" },
+        { "goName": "CSV", "jsonName": "csv", "goType": "string", "tsType": "string" },
+        { "goName": "ParentPageID", "jsonName": "parentPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "CSVColumnTypes", "jsonName": "csvColumnTypes", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "CSVKeepFirstRow", "jsonName": "csvKeepFirstRow", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "FillEmptyPage", "jsonName": "fillEmptyPage", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportJob",
+      "tsName": "WorkspaceImportJob",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "WorkspaceImportFormat" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "WorkspaceImportStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "WorkspaceImportPhase" },
+        { "goName": "ProcessedItems", "jsonName": "processedItems", "goType": "int", "tsType": "number" },
+        { "goName": "TotalItems", "jsonName": "totalItems", "goType": "int", "tsType": "number" },
+        { "goName": "PageCount", "jsonName": "pageCount", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "RootPageID", "jsonName": "rootPageId", "goType": "*string", "tsType": "string | null" },
+        { "goName": "RootPageIDs", "jsonName": "rootPageIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "*string", "tsType": "string | null" },
+        { "goName": "ErrorDetail", "jsonName": "errorDetail", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Created", "jsonName": "created", "goType": "int64", "tsType": "number" },
+        { "goName": "Updated", "jsonName": "updated", "goType": "int64", "tsType": "number" },
+        { "goName": "RootPageTitle", "jsonName": "rootPageTitle", "goType": "*string", "tsType": "string | null", "optional": true },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Warning", "jsonName": "warning", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchInput",
+      "tsName": "WorkspaceImportBatchInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Total", "jsonName": "total", "goType": "int", "tsType": "number" },
+        { "goName": "Locale", "jsonName": "locale", "goType": "string", "tsType": "WorkspaceImportLocale" },
+        { "goName": "ParentPageID", "jsonName": "parentPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FillEmptyPage", "jsonName": "fillEmptyPage", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchItemInput",
+      "tsName": "WorkspaceImportBatchItemInput",
+      "fields": [
+        { "goName": "Position", "jsonName": "position", "goType": "int", "tsType": "number" },
+        { "goName": "ParentPosition", "jsonName": "parentPosition", "goType": "int", "tsType": "number" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "WorkspaceImportBatchItemKind" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "FileID", "jsonName": "fileId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchItemsInput",
+      "tsName": "WorkspaceImportBatchItemsInput",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]workspaceImportBatchItemInput", "tsType": "WorkspaceImportBatchItemInput[]" }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchItem",
+      "tsName": "WorkspaceImportBatchItem",
+      "fields": [
+        { "goName": "Position", "jsonName": "position", "goType": "int", "tsType": "number" },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "WorkspaceImportBatchItemKind" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "State", "jsonName": "state", "goType": "string", "tsType": "WorkspaceImportBatchItemState" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Details", "jsonName": "details", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchItemList",
+      "tsName": "WorkspaceImportBatchItemList",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]workspaceImportBatchItem", "tsType": "WorkspaceImportBatchItem[]" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchDocumentInput",
+      "tsName": "WorkspaceImportBatchDocumentInput",
+      "fields": [
+        { "goName": "Position", "jsonName": "position", "goType": "int", "tsType": "number" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "WorkspaceImportFormat", "optional": true },
+        { "goName": "Content", "jsonName": "content", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Failed", "jsonName": "failed", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Message", "jsonName": "message", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Details", "jsonName": "details", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceImportBatchDocumentsInput",
+      "tsName": "WorkspaceImportBatchDocumentsInput",
+      "fields": [
+        { "goName": "Documents", "jsonName": "documents", "goType": "[]workspaceImportBatchDocumentInput", "tsType": "WorkspaceImportBatchDocumentInput[]" }
+      ]
+    },
+    {
+      "goName": "workspaceImportJobList",
+      "tsName": "WorkspaceImportJobList",
+      "fields": [
+        { "goName": "Jobs", "jsonName": "jobs", "goType": "[]workspaceImportJob", "tsType": "WorkspaceImportJob[]" }
+      ]
+    }
+  ]
+}

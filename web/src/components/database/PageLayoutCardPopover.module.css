@@ -1,0 +1,339 @@
+/* A layout card's settings beside it, as Notion's (seen 2026-11-01 at
+   1280px): 290px, its top on the card's and 8px right of it, kept 12px in
+   the window; a 12px grey name, the search 258 wide 40px down, then 28px
+   rows 274 wide under 12px names. */
+.popover {
+  position: fixed;
+  z-index: 120;
+  width: 290px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 0 8px 8px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.popover:focus {
+  outline: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  margin-top: 6px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.head:has(button) {
+  min-height: 32px;
+}
+
+/* A property card's type, as Notion's (seen 2026-11-12 at 1440): 12px down
+   and 16 in, its icon and name 12px under it, 6px in from the rows' edge. */
+.typeHead {
+  align-items: flex-end;
+  margin-top: 0;
+}
+
+.popover [data-property-edit-head] {
+  padding-inline: 6px;
+}
+
+.head button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  margin-inline-end: -6px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.head button:hover,
+.head button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: calc(100% - 16px);
+  height: 28px;
+  margin: 6px 8px 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--layout-search-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--icon-tertiary);
+}
+
+.search:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.label {
+  margin: 30px 8px 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.search + .label {
+  margin-top: 27px;
+}
+
+.label:has(+ [data-layout-option]) {
+  margin-top: 23px;
+}
+
+/* The title's: rows 29px apart and 15px under its options; the group's
+   "속성 추가" 34px tall. */
+.popover:has([data-layout-side="heading"]) {
+  padding-bottom: 15px;
+}
+
+[data-layout-side="heading"] [data-layout-list-property] + [data-layout-list-property] {
+  margin-top: 1px;
+}
+
+[data-layout-side="properties"] [data-layout-new-property-button] {
+  min-height: 34px;
+}
+
+/* The property group's rows start 20px under its search. */
+.search + :not(.label) {
+  margin-top: 20px;
+}
+
+.divider {
+  margin: 8px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* A card without settings of its own: its moves and actions, as a menu's. */
+.actions {
+  padding-top: 8px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* Its marks in the name's colour, as Notion's (seen 2026-11-12: every move's, a property's card's too). */
+.action > svg {
+  flex: none;
+  color: inherit;
+}
+
+.action:hover,
+.action:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The move the keyboard is on, ringed as Notion's. */
+.action:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* Its rows as Notion's: the mark 16px in and the name 28px after, the
+   drag handle showing at the row's edge as the pointer is on it. */
+.popover [data-layout-list-property],
+.popover [data-layout-list-section] {
+  position: relative;
+  padding: 0 8px;
+}
+
+.popover [data-layout-list-property] > [role="button"],
+.popover [data-layout-list-section] > [role="button"] {
+  position: absolute;
+  inset-inline-start: -8px;
+  flex: none;
+  opacity: var(--layout-row-handle-shown, 0);
+}
+
+/* The row takes the state its handle reads: a pointer state over
+   "[role=button]" restyled every element with a role on the page at each
+   pointer move (2026-11-12: about 1,900 of them on a page with a table). */
+.popover [data-layout-list-property]:hover,
+.popover [data-layout-list-section]:hover {
+  --layout-row-handle-shown: 1;
+}
+.popover [role="button"]:focus-visible {
+  opacity: 1;
+}
+
+.action + .action {
+  margin-top: 1px;
+}
+
+/* The content tab's line 36px down and 8px over the popover's foot, as Notion's. */
+.popover [data-content-tab-row] {
+  margin-top: 2px;
+  margin-bottom: 0;
+}
+
+.popover [data-content-tab-description] {
+  display: block;
+  width: calc(100% + 2px);
+  margin: 6px -1px 0;
+}
+
+/* A relations group's card: what it is for, in the gray, over its relations
+   (Notion's, seen 2026-11-07: 13/18, 14px under the name, 20px over the first). */
+.relationsHint {
+  margin: 8px 8px 20px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* A relations group's card, as Notion's (seen 2026-11-07): its relations a
+   line apart from its moves, each mark turning to "⠿" under the pointer. */
+.relationsCard {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.relationRow {
+  position: relative;
+}
+
+.relationRow .relationHandle {
+  position: absolute;
+  top: 4px;
+  inset-inline-start: 8px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+  opacity: 0;
+}
+
+.relationRow:hover .relationHandle,
+.relationRow[data-open] .relationHandle {
+  opacity: 1;
+}
+
+/* Where a dragged relation would land, as the layout's rows show it. */
+.relationRow[data-drop="before"] { box-shadow: inset 0 2px 0 var(--accent-blue); }
+.relationRow[data-drop="after"] { box-shadow: inset 0 -2px 0 var(--accent-blue); }
+
+/* The row takes the state its mark reads: a pointer state over "svg"
+   restyled every icon on the page at each pointer move (2026-11-12). */
+.relationRow:hover,
+.relationRow[data-open] {
+  --relation-mark-shown: 0;
+}
+.relationRow > .action > svg {
+  opacity: var(--relation-mark-shown, 1);
+}
+
+.relationRow:hover > .action,
+.relationRow[data-open] > .action {
+  background: var(--bg-hover);
+}
+
+/* A relation card's "고급 ›" (PageLayoutCardAdvanced), as Notion's (seen
+   2026-11-14 at 1440): a move's row, its "›" 16px at its end 8 in, in the
+   icons' grey, the row lit while its menu is open. */
+.action > .advancedMark {
+  margin-inline-start: auto;
+  color: var(--icon-secondary);
+}
+
+.advanced[data-open] {
+  background: var(--bg-hover);
+}
+
+/* Back from its menu by Escape after the pointer opened it: lit, no ring. */
+.advanced[data-quiet-ring] {
+  --keyboard-focus-ring: 0 0 0 0 transparent;
+}
+
+/* Its menu beside the row, level with the row's middle: a menu's ground,
+   4px round its one choice — a 20px mark 8 in, its name 8 after it in 14px
+   and what it does 2 under that in 12px grey, 4.5 over and under them. */
+.advancedMenu {
+  position: fixed;
+  z-index: 121;
+  width: max-content;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.advancedMenu:focus {
+  outline: none;
+}
+
+.advancedChoice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 45px;
+  padding: 4.5px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+  text-align: start;
+}
+
+.advancedChoice > svg {
+  flex: none;
+}
+
+.advancedChoice > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.advancedChoice small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16.8px;
+}
+
+.advancedChoice:hover,
+.advancedChoice:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

@@ -1,0 +1,209 @@
+/* The preview beside the results, as Notion's (seen 2026-10-31, light, 1006px
+   window): a 406px side whose card, 34px down and 16px and 14px in, scrolls
+   whole. It keeps its 406px whatever it shows, the results their 600 (seen
+   2026-11-12: a long place over the title, its titles cut, where it had
+   widened the side to 558 and left the results 448). The card is 520px
+   high in any window, as Notion's (seen 2026-11-14 at 723 and 823 high): in
+   a low one the side cuts it at the foot's line, its own foot unseen (157 to
+   677 under the foot at 665), in a tall one it ends above it (8px with no
+   words, 42px with words, at 823). */
+.highlightPanel {
+  display: flex;
+  flex: 0 0 406px;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding-block: 34px 0;
+  padding-inline: 16px 14px;
+  overflow: hidden;
+}
+
+.highlightPanel[data-searching] {
+  padding-top: 0;
+}
+
+/* The card is the page's own ground under its band, as Notion's (seen
+   2026-11-14, dark: rgb(25, 25, 25) under rgb(32, 32, 32)). */
+.highlightCard {
+  position: relative;
+  flex: none;
+  height: 520px;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-menu);
+}
+
+/* The copy-link and open buttons, 8px in from the card's corner, stay as it
+   scrolls, in a raised box ringed as Notion's (seen 2026-11-14). */
+.highlightButtons {
+  position: sticky;
+  z-index: 1;
+  top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  height: 0;
+  padding-inline-end: 8px;
+}
+
+.highlightButtons::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-end: 8px;
+  width: 52px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-raised);
+}
+
+.highlightButtons button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-tertiary);
+}
+
+.highlightButtons button:last-child {
+  margin-inline-end: 2px;
+}
+
+.highlightButtons button:hover,
+.highlightButtons button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.highlightBand {
+  position: relative;
+  height: 80px;
+  margin-top: 1px;
+  background: var(--bg-soft);
+}
+.highlightBand[data-cover="true"] {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.highlightIcon {
+  position: absolute;
+  top: 52px;
+  inset-inline-start: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  line-height: 48px;
+}
+
+.highlightBody {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 24px;
+}
+
+/* "데이터베이스" above a database's place, as the result's mark (SearchDialog.module.css resultBadge); its
+   foot 14px over the place, as Notion's (seen 2026-11-11). */
+.highlightKind {
+  display: flex;
+  margin-block-end: 14px;
+}
+
+.highlightKind > span {
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--action-mark-gray-bg);
+  color: var(--text-gray-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+}
+
+.highlightPath {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.highlightTitle {
+  margin-top: 6px;
+  color: var(--text-default);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  overflow-wrap: anywhere;
+}
+/* "제목 없음" for no title is drawn faint, as Notion's (seen 2026-11-18 in two tabs, dark rgb(125, 122, 117):
+   an untitled database's source row found by its words and an untitled full-page database among the recent pages). */
+.highlightTitle[data-untitled] {
+  color: var(--text-tertiary);
+}
+
+.highlightBody > :first-child {
+  margin-top: 0;
+}
+
+.highlightBody > [data-search-page-preview] {
+  margin-top: 6px;
+}
+
+/* The file whose document holds the result's line. */
+.highlightFile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.highlightLine {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+/* The first highlight 6px under the title, the others 8px apart, as Notion's (seen 2026-11-14). */
+.highlightTitle + .highlightLine {
+  margin-top: 6px;
+}
+
+/* A highlight's keywords are bolder than a result's line's, as Notion's (seen 2026-11-14: 600, the line's 500). */
+.highlightLine mark {
+  font-weight: 600;
+}
+
+/* A narrow screen keeps only the results. */
+@media (max-width: 1029px) {
+  .highlightPanel {
+    display: none;
+  }
+}
+
+/* The gray lines under the "새 페이지" card's words, where a page's would show (Notion's, seen 2026-11-12). */
+.highlightSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 24px;
+}
+
+.highlightSkeleton > span {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-soft);
+}

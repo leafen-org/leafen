@@ -1,0 +1,554 @@
+/* A row page's properties, as Notion's (seen 2026-10-06): 34px lines, 4px
+   apart, the name in 160px and its value beside it, 4px over; an empty
+   value says "비어 있음". */
+/* The lines start 6px out of the page's words and end 8px past them, at the
+   title block's edge, as Notion's (seen 2026-10-25: the rows at 409.5 under
+   the title's words at 415.5, 1280px; 2026-11-08: the values to the title
+   block's right edge in side, center, full and template views). */
+.rowProperties {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-block: 0 18px;
+  margin-inline: -6px -8px;
+  padding: 0 0 4px;
+}
+/* The lines start 8px lower once there are enough, fewer staying 8px under the title as "속성 추가" alone does,
+   as Notion's: a side peek's from five (2026-11-14 at 1440: the first of five at 134.4, of four or one at 126.4;
+   center and full views 8px under whatever the count), a phone's from three (2026-11-15 at 402pt and 411: one or
+   two lines 8px under the title, three or four 16). */
+:global([data-row-peek-panel][data-mode="side"]:not([data-phone="true"])) :global([data-row-page-mode="side"]) > .rowProperties:has(> [data-row-property-id] ~ [data-row-property-id] ~ [data-row-property-id] ~ [data-row-property-id] ~ [data-row-property-id]),
+:global([data-phone="true"]) .rowProperties:has(> [data-row-property-id] ~ [data-row-property-id] ~ [data-row-property-id]) {
+  padding-block-start: 8px;
+}
+
+.rowProperty {
+  display: grid;
+  grid-template-columns: var(--row-property-name-width, 160px) minmax(0, 1fr);
+  gap: 4px;
+  align-items: start;
+  min-height: 34px;
+}
+
+.rowPropertyName,
+.rowPropertyValue {
+  min-width: 0;
+  min-height: 34px;
+  margin: 0;
+  padding: 0;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* A property's name is texSec and its icon icoSec, as Notion's (seen
+   2026-10-11); its cell is the 160×34 target, 6px in, an 18px slot for the
+   icon and the name 6px after it (seen 2026-10-17). */
+.rowPropertyName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+.rowPropertyName:has(> .rowPropertyNameButton) { padding: 0; }
+/* Its icon is Notion's 16px box at the slot's start drawn 1.2 times, 19.2 about the slot's 8px (seen 2026-11-17
+   at 1440 in two tabs, a page's and a side peek's): the 20px mark at the slot's end, drawn 0.96 (propertyMarkClass). */
+.rowPropertyGlyph { display: inline-flex; flex: none; align-items: center; justify-content: flex-end; width: 18px; height: 1.4em; color: var(--icon-secondary); }
+/* A property that may move turns its icon into its drag handle while its
+   line is under the pointer, in the icon's 18px slot (Notion's, seen
+   2026-11-11); dragged, its line goes with the pointer, its name lit and its
+   icon the handle, the others making way (Notion's, seen 2026-11-16). */
+.rowPropertyName:has(> .rowPropertyHandle) { position: relative; }
+.rowPropertyHandle {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  inset-inline-start: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  color: var(--icon-secondary);
+  cursor: grab;
+  opacity: 0;
+}
+:global(:root:not([data-pointer-still])) .rowProperty:hover .rowPropertyHandle, /* not after a wheel under a still pointer (pointerHover.ts) */
+.rowProperty[data-dragging="live"] .rowPropertyHandle { opacity: 1; }
+:global(:root:not([data-pointer-still])) .rowProperty:hover .rowPropertyName:has(> .rowPropertyHandle) .rowPropertyGlyph,
+.rowProperty[data-dragging="live"] .rowPropertyGlyph { opacity: 0; }
+/* While its value is written in the box over the line (DatabaseCellBasics,
+   .rowPropertyValue > .cellInput) the line keeps its icon, as Notion's under
+   its box. Marked by the list as the focus comes and goes: a :has() asking
+   after the focus worked out the page's styles again at every press in it,
+   16ms more to the press's frame on a NAS (seen 2026-11-14). */
+.rowProperty[data-value-editing="true"] .rowPropertyHandle { opacity: 0; }
+.rowProperty[data-value-editing="true"] .rowPropertyName:has(> .rowPropertyHandle) .rowPropertyGlyph { opacity: 1; }
+.rowProperty[data-dragging="live"] { background: none; }
+.rowProperty[data-dragging="live"] .rowPropertyNameButton { background: var(--bg-hover); }
+/* A page layout's section over its properties, folding them away, and its
+   option that leaves the properties' icons out (Notion's, seen 2026-10-12). */
+.rowPropertySection button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  margin-inline-start: -6px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.rowPropertySection button:hover,
+.rowPropertySection button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.rowProperties[data-property-icons="false"] .rowPropertyGlyph { display: none; }
+.rowPropertyValue {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: var(--text-default);
+}
+/* An empty value's "비어 있음" where a value's text starts, 10px in (Notion's,
+   seen 2026-10-17: the value 4px into its cell, its text 6px further). */
+.rowPropertyEmptyHint {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: 10px;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+.rowPropertyValue:focus-within .rowPropertyEmptyHint { display: none; }
+/* An empty relation stands in its 34px line as any empty value: its unseen
+   edit button beside its empty room, not under it in the column its pages
+   take (it made a 48px line, "비어 있음" 7px low; Notion's line is 34 with
+   the words 7 down at every peek, seen 2026-11-14). */
+.rowPropertyValue [role="group"][data-empty="true"]:not([data-relation-section]) {
+  flex-direction: row;
+  align-items: center;
+}
+/* A formula's or rollup's "비어 있음" stays only where it shows nothing: its
+   value drew nothing before it, or its cell says it is empty. */
+.rowPropertyEmptyHint[data-computed-hint]:not(:first-child),
+.rowPropertyEmpty[data-computed-hint]:not(:first-child) { display: none; }
+[data-computed-empty] + .rowPropertyEmptyHint[data-computed-hint] { display: inline; }
+/* A value's text 10px into its cell and 6px short of its end, as Notion's (seen 2026-10-17, 2026-11-16 at
+   1440 and 606: "memo1" stacked a letter a line at 606); not "속성 추가" or the hidden properties' toggle. */
+.rowPropertyValueInset { --row-value-inset: 10px; padding-inline: var(--row-value-inset) 6px; }
+/* A property with open threads: "댓글 N개" ends its line and its value is
+   marked as commented text is (Notion's, seen 2026-10-01). */
+.rowProperty[data-property-comments="true"] {
+  grid-template-columns: var(--row-property-name-width, 160px) minmax(0, 1fr) auto;
+}
+.rowPropertyValue[data-property-commented="true"] > * {
+  border-bottom: 2px solid rgba(255, 203, 0, 0.35);
+  background: rgba(255, 203, 0, 0.12);
+}
+
+.block {
+  margin: 0;
+  padding: 3px 2px;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* An empty body's way into a database template, as Notion's gray line with an underlined action. */
+.templatePrompt {
+  margin: 0;
+  padding: 3px 2px;
+  color: var(--text-tertiary);
+  font-size: var(--page-font-size, 16px);
+  line-height: var(--page-line-height, 1.5);
+}
+/* On a computer its words stand 43px under the comments' line, 20px lower
+   than a first block's, as Notion's (seen 2026-11-01). */
+:global([data-row-peek-panel]:not([data-phone="true"])) .templatePrompt {
+  margin-top: 20px;
+}
+/* Under a wiki page's own line its words stand 52px under the line, as
+   Notion's (seen 2026-11-01) — 20px under the body's own top there. */
+:global([data-row-peek-panel]:not([data-phone="true"])) [data-under-wiki-line="true"] > .templatePrompt {
+  margin-top: 20px;
+}
+.templatePromptAction {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.templatePromptAction:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); border-radius: 2px; }
+/* The templates to choose: 32px lines 2px apart 24 under the words over them (its hint's 24px foot), the pointed one
+   shaded, as Notion's (seen 2026-10-12; 2026-11-16 at 1440, peeks and whole); none looks chosen until ↑ or ↓ chooses
+   one, every line's words the secondary gray and its mark the tertiary, under the tertiary words over them — Notion's
+   in Chrome at 1440 (seen 2026-11-16 by address, with the title's caret, and in a new row's side peek: #ada9a3, #7d7a75 in dark) and its iPad at 834. */
+.templateList { display: flex; flex-direction: column; gap: 2px; margin-top: 21px; }
+.templateRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 16px;
+  text-align: start;
+}
+.templateRow > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.templateRow:hover, .templateRow:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* Once ↑ or ↓ is pressed in the body, the chosen line is shaded. */
+.templateList[data-engaged] .templateRow[aria-selected="true"] { background: var(--bg-hover); color: var(--text-default); }
+.templateRowIcon { display: inline-flex; flex: none; justify-content: center; width: 20px; color: var(--icon-tertiary); }
+/* A template line's "···", at its right end under the pointer (Notion's, seen 2026-10-13). */
+.templateRowMore {
+  display: inline-flex;
+  align-self: flex-end;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin-block: -30px 4px;
+  margin-inline: 0 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-tertiary);
+  opacity: 0;
+}
+.templateRow:hover + .templateRowMore, .templateRowMore:hover, .templateRowMore:focus-visible, .templateRowMore[aria-expanded="true"] { opacity: 1; }
+/* A touch screen shows it on every line, 6 in from the end, no pointer bringing it (Notion's iPad and iPhone, seen 2026-11-13). */
+:global([data-touch="true"]) .templateRowMore { margin-inline-end: 6px; opacity: 1; }
+.templateRowMore:hover { background: var(--bg-hover); }
+.templateList .templateRow:has(+ .templateRowMore:hover), .templateList .templateRow:has(+ .templateRowMore[aria-expanded="true"]) { background: var(--bg-hover); color: var(--text-default); }
+
+/* A read property without a value, as Notion shows it. */
+.rowPropertyEmpty { color: var(--text-tertiary); }
+
+/* A side peek's details panel, too narrow for two columns, stands each
+   property's name over its value, as Notion's (seen 2026-11-06). */
+:global([data-row-layout-panel][data-place="side"]) .rowProperty {
+  grid-template-columns: 1fr;
+  gap: 1px;
+  padding: 6px 0;
+}
+
+:global([data-row-layout-panel][data-place="side"]) .rowPropertyName { padding: 0; }
+
+/* A phone's properties and comments, as Notion's at 375px (seen 2026-10-25):
+   34px lines 4px apart, the name cell 120px, its mark a computer's (Notion's
+   16px box drawn 1.2 times at its slot's start, 2026-11-17 at 411 and 402pt;
+   propertyMarkClass leaves a phone's marks alone, so it is set here), the value's words
+   at 154; the "토론" head on a 24px line 20px under them, the comment line 8px on. A
+   name's mark stands under the title's first letter, a name that opens no menu
+   as one that does, 6px into its cell (Notion's at 402pt, seen 2026-11-12:
+   title, mark and the body's words at 26, the name at 50, the value at 154).
+   The lines end where the page's column does, 8px past its words (Notion's,
+   seen 2026-11-14 at 402pt: the lines 20 to 384, every value's cell to 384,
+   a relation's "−" at 356). */
+:global([data-phone="true"]) .rowProperties {
+  margin-block: 8px 0;
+  margin-inline: -6px -8px;
+}
+:global([data-phone="true"]) .rowProperty {
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 4px;
+  padding: 0;
+}
+:global([data-phone="true"]) .rowPageCommentsHeading {
+  margin-top: 16px;
+}
+:global([data-phone="true"]) .rowPropertyGlyph > * { scale: 0.96; }
+:global([data-phone="true"]) .rowAddProperty > svg {
+  width: 18px;
+  height: 18px;
+}
+/* A database page's properties — its list, its pinned line with "세부 정보 보기", a wiki page's under its title — its comments and their field keep the interface's
+   font whatever the page's, which is its title's, blocks' and empty body hint's alone (Notion's, seen 2026-11-16 on serif and mono pages, side peeks and full pages:
+   the title and hint Lyon-Text or iawriter-mono; names, values, pills, the "토론" head ui-sans-serif). The head 13px on a 24px line 16px under them, 8px over the comment line (10-25). */
+.rowProperties, .rowPageCommentsHeading, .rowPageComments, :global(:is([data-row-pinned-properties], [data-row-details-toggle], [data-row-wiki-properties])) { font-family: var(--font-ui); }
+.rowPageCommentsHeading {
+  margin: -2px 0 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 24px;
+}
+.rowPageComments {
+  margin: 0 0 8px;
+}
+
+/* A property's name that opens its menu, as Notion's database page does:
+   the whole name cell. */
+.rowPropertyNameButton {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  min-height: 34px;
+  margin: 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.rowPropertyNameButton:hover,
+.rowPropertyNameButton:focus-visible,
+.rowPropertyNameButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* Keyed to, its menu open on it or not, it rings as Notion's name does
+   (measured 2026-11-14 at 1440 dark: 0 0 0 2px #191919, 4px #2383e2, 6px
+   #191919, radius 6px — the keyboard's ring). */
+.rowPropertyNameButton:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* "속성 추가" closing the list, as Notion's (seen 2026-10-17): a quiet 34px
+   line from the names' edge — the 16px "+" 6px in, the words 6px after it,
+   in the tertiary gray — as wide as its words. */
+.rowAddProperty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.rowAddProperty:hover,
+.rowAddProperty:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.rowAddProperty svg { flex: none; }
+
+/* A relations group's relation on one line, "↗ 작업 추가" or "↗ 작업 1개", as
+   Notion's (seen 2026-11-06): no name column, its icon at the line's start,
+   its pages not shown, the line pressed anywhere to choose pages. */
+:global([data-relation-line="minimized"]) .rowProperty:has([data-row-property-empty], [data-row-relation-summary]) {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 28px;
+}
+
+:global([data-relation-line="minimized"]) .rowProperty:has([data-row-property-empty], [data-row-relation-summary]) .rowPropertyName { display: none; }
+/* The value tells its pages it holds the summary, rather than a :has() on it
+   before them choosing them: such a rule had every element put anywhere in
+   the page work out its every style again (AppShell .main). */
+:global([data-relation-line="minimized"]) .rowPropertyValue:has([data-row-relation-summary]) { --relation-pages-shown: hidden; }
+:global([data-relation-line="minimized"]) .rowPropertyValue [role="group"] > *,
+:global([data-relation-line="minimized"]) .rowPropertyValue [data-row-property-typed-value] { visibility: var(--relation-pages-shown); }
+
+/* Notion's line (seen 2026-11-07): 28px, its mark 2px in, 31px after the
+   last one to the next module's heading. */
+:global([data-relation-line="minimized"]) .rowPropertyValue { min-height: 28px; }
+:global([data-relation-line="minimized"]) .rowPropertyValue [role="group"] { min-height: 0; padding-block: 2px; }
+:global([data-relation-line="minimized"]:last-child) .rowProperties { margin-bottom: 25px; }
+
+:global([data-relation-line="minimized"]) .rowPropertyEmptyHint {
+  inset-inline-start: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Read only, as the layout builder's canvas previews it, the same line. */
+:global([data-relation-line="minimized"]) .rowPropertyValueInset:has(> [data-row-property-typed-value] > [data-row-property-empty]) { padding-inline-start: 2px; }
+:global([data-relation-line="minimized"]) [data-row-property-typed-value] > .rowPropertyEmpty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A relation drawn as a page section, as Notion's (seen 2026-11-06): its
+   name over it as a heading (13px/500 in gray, its icon first), its pages one
+   to a line (32px, an 18px page icon, the title 14px/500), then "↗ 기존 항목
+   연결" and "+ 새 페이지 추가하기" (32px, 0 12px, round 6, 14px in the faint gray). */
+:global([data-relation-line="section"]) .rowProperty { grid-template-columns: minmax(0, 1fr); gap: 5px 0; }
+:global([data-relation-line="section"]) .rowPropertyName,
+:global([data-relation-line="section"]) .rowPropertyNameButton { min-height: 24px; height: 24px; font-size: 13px; font-weight: 500; }
+/* Measured on Notion's page (2026-11-07): the section 2px further out than a
+   property's line, its name 2px after its mark, 5px over its pages, its last
+   action 28px over the next module's heading. */
+:global([data-relation-line="section"]) .rowProperties { margin: -2px -8px 18px; }
+:global([data-relation-line="section"]:last-child) .rowProperties { margin-bottom: 22px; }
+:global([data-relation-line="section"]) .rowPropertyName,
+:global([data-relation-line="section"]) .rowPropertyNameButton { gap: 2px; }
+:global([data-relation-line="section"]) [data-row-property-empty] { display: none; }
+:global([data-relation-line="section"]) .rowPropertyValue { display: block; min-height: 0; padding: 0; }
+:global([data-relation-line="section"] [data-relation-section="true"]),
+:global([data-relation-line="section"] [data-readonly="true"]) { display: flex; flex-direction: column; align-items: stretch; gap: 0; padding: 0; }
+:global([data-relation-section="true"]) [data-row-relation-chip],
+:global([data-relation-line="section"] [data-readonly="true"]) [data-row-relation-chip],
+:global([data-relation-section-new]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: none;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 6px 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+:global([data-relation-section="true"]) [data-row-relation-chip]:hover { background: var(--bg-hover); }
+:global([data-relation-section-new]) input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  outline: none;
+}
+:global([data-relation-section-foot]) { display: flex; flex-wrap: wrap; margin-inline-start: -4px; }
+:global([data-relation-section-action]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+:global([data-relation-section-action]):hover { background: var(--bg-hover); }
+/* Notion's marks are narrower than their 16px boxes: "↗" 9px, "+" 11px. */
+:global([data-relation-section-action]) > svg { margin-inline: -3.5px; }
+:global([data-relation-section-action] + [data-relation-section-action]) > svg { margin-inline: -2.5px; }
+
+/* Notion's box at a page line's end (seen 2026-11-07): 2px round its 20px
+   buttons, 1px apart, raised over the line, 2px in from its end. */
+:global([data-relation-section-row-actions]) {
+  display: none;
+  gap: 1px;
+  margin-block: 0;
+  margin-inline: auto 2px;
+  padding: 2px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-raised);
+}
+/* The properties its "⋯" picks, 16px after the page's name (Notion's, seen 2026-11-07). */
+:global([data-relation-section-values]) { display: inline-flex; min-width: 0; margin-inline-start: 6px; }
+:global([data-relation-section-values]:empty) { display: none; }
+:global([data-relation-section="true"]) [data-row-relation-chip]:hover [data-relation-section-row-actions],
+:global([data-relation-section="true"]) [data-row-relation-chip]:focus-within [data-relation-section-row-actions] { display: inline-flex; }
+:global([data-relation-section-row-actions]) > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+:global([data-relation-section-row-actions]) > *:hover { background: var(--bg-hover); }
+/* "페이지 이름 바꾸기" types the name where it stands. */
+:global([data-relation-section-rename]) {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-weight: 500;
+  outline: none;
+}
+
+/* The section's name keeps "+", 🔍 and "⋯" at its end while the pointer is over the section, and while "⋯" is open. */
+:global([data-relation-line="section"]) .rowPropertyValue { position: relative; }
+:global([data-relation-section-head-actions]) { position: absolute; top: -29px; inset-inline-end: 8px; display: none; gap: 2px; }
+:global([data-relation-line="section"]):hover [data-relation-section-head-actions],
+:global([data-relation-line="section"]):focus-within [data-relation-section-head-actions],
+:global([data-relation-section-head-actions]):has([aria-expanded="true"]),
+/* A touch screen keeps them, there being no pointer to bring them (Notion's iPad, seen 2026-11-13). */
+:global([data-touch="true"] [data-relation-section-head-actions]) { display: inline-flex; }
+:global([data-relation-section-head-actions]) > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-tertiary);
+}
+:global([data-relation-section-head-actions]) > button:hover { background: var(--bg-hover); }
+
+/* A layout's module of one property, as Notion's (seen 2026-11-12 on a
+   member's page and a published page's, on the page and in the details
+   panel): its name over its value — the 16px icon in an 18px slot, the name
+   2px after it in 13px/500 grey on a 24px line as wide as its words, 6px in —
+   then the value on its 34px line, its words 6px in. 24px part it from the
+   modules around it on the page, 20px in the panel. The layout builder shows
+   its value alone, as far in, under the module's name. */
+:global([data-row-layout-module="property"]) .rowProperties { margin-block: 0 20px; }
+:global([data-row-layout-module] + [data-row-layout-module="property"]) .rowProperties { margin-block-start: 20px; }
+:global([data-row-layout-panel] [data-row-layout-module="property"]) .rowProperties { margin-block-end: 16px; }
+:global([data-row-layout-panel] [data-row-layout-module] + [data-row-layout-module="property"]) .rowProperties { margin-block-start: 16px; }
+:global([data-row-layout-module="property"] + [data-row-layout-module="comments"]) .rowPageCommentsHeading { margin-block-start: 0; }
+:global([data-row-layout-module="property"]) .rowProperties > .rowProperty {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0;
+  padding: 0;
+}
+:global([data-row-layout-module="property"]) .rowProperties > .rowProperty > .rowPropertyName {
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 24px;
+  gap: 2px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+:global([data-row-layout-module="property"]) .rowProperties > .rowProperty > .rowPropertyName:not(:has(> .rowPropertyNameButton)) { padding: 0 6px; }
+:global([data-row-layout-module="property"]) .rowPropertyNameButton { min-height: 24px; gap: 2px; }
+:global([data-row-layout-module="property"]) .rowPropertyGlyph { justify-content: center; }
+:global([data-row-layout-module="property"]) .rowPropertyGlyph svg { width: 16px; height: 16px; }
+:global([data-row-layout-module="property"]) .rowPropertyGlyph > * { scale: none; }
+:global([data-row-layout-module="property"]) .rowPropertyValueInset,
+.rowPropertyValueInset:global([data-layout-preview-value]) { --row-value-inset: 6px; }
+:global([data-row-layout-module="property"]) .rowPropertyEmptyHint { inset-inline-start: 6px; }

@@ -1,0 +1,268 @@
+/* A chart's range and reference lines menus, as Notion's (seen
+   2026-10-05): small gray names over fields, a card for each line, and a
+   blue "+ 기준선 추가" until there is one. */
+.range,
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px;
+}
+
+/* The range (Notion's, read 2026-11-18: a menu as wide as its row and 78
+   high): its name a menu label, then the two fields 28 high, 14 in from the
+   menu's inside with "-" 8 from each, their words 10 in, 16 over the menu's
+   foot. */
+.range {
+  gap: 1px;
+  padding: 0 0 12px;
+}
+
+/* The lines 12 inside the menu's edges, each card 12 over what follows it
+   (Notion's, seen 2026-11-12: a 280 menu, cards and "+ 기준선 추가" 256
+   across). */
+.lines {
+  padding: 8px;
+}
+
+.rangeHead,
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.rangeHead {
+  margin: var(--menu-label-margin);
+  padding: var(--menu-label-padding);
+  color: var(--text-secondary);
+  font-weight: 500;
+  line-height: var(--menu-label-line-height);
+}
+
+.rangeFields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 14px;
+  color: var(--text-tertiary);
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+.input:focus {
+  box-shadow: var(--name-field-ring-focus);
+  outline: none;
+}
+
+/* A range field on the page's own ground, its edge a faint line just
+   outside it and its words 10 in; typed in, its edge 2 of blue across the
+   edge (Notion's, read 2026-11-18 at 1440 in dark: rgb(25,25,25) under a
+   1px rgba(255,255,235,0.1) ring, then 1px of #2383e2 inside and out). */
+.rangeFields .input {
+  padding-inline: 10px;
+  border: 0;
+  background: var(--bg-app);
+  box-shadow: var(--name-field-ring);
+}
+
+.rangeFields .input:focus {
+  box-shadow: var(--filter-text-focus);
+}
+
+.link {
+  color: var(--accent-blue);
+  font-size: 12px;
+}
+
+/* With no line yet: the note in lines 16 high, 12 over "+ 기준선 추가"
+   (Notion's, seen 2026-11-12: a 280 by 96 menu). */
+.note {
+  margin: 0;
+  margin-block-end: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* A line's card, 4 inside its edges in the element ground: its names'
+   rows 24 high with the words 8 in, each field 8 in and 232 across with a
+   hairline around it and its words 10 in, 3 under the field before it
+   (Notion's, seen 2026-11-12: 256 by 175 for one line). */
+.card {
+  display: flex;
+  flex-direction: column;
+  margin-block-end: 6px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--bg-element);
+}
+
+.card .cardHead {
+  height: 24px;
+  padding-inline: 8px;
+}
+
+.card .input {
+  width: auto;
+  margin-inline: 8px;
+  padding-inline: 10px;
+  background: var(--bg-element);
+}
+
+.cardLabel {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin-block-start: 3px;
+  padding-inline: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* A line's 🗑, a 24 square at the end of its name's row, its 16 mark 4 in
+   (Notion's, seen 2026-11-12: the mark 16 in from the card's edge). */
+.icon {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.icon:hover {
+  background: var(--bg-active);
+}
+
+/* "스타일" and "색상": 28 high, 4 in from the card's edges, their words 8 in,
+   the first 3 under the field over it and the next 1 under it (Notion's,
+   seen 2026-11-12), their choices opening flush under them. */
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  margin-block-start: 1px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.input + .choice {
+  margin-block-start: 3px;
+}
+
+.choice:hover {
+  background: var(--bg-active);
+}
+
+/* What is set, 8 after its swatch and 4 before its › (Notion's, seen 2026-11-12). */
+.value {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+}
+
+/* The line's color beside its name, 16 square with corners of 4 (Notion's, seen 2026-11-12). */
+.swatch {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 4px;
+  border-radius: 4px;
+}
+
+/* "+ 기준선 추가": its words 14 and medium right after a 20 "+", rimmed in
+   the secondary line under the cards, 2 over the menu's 14 foot, and blue
+   with no rim while there is no line (Notion's, seen 2026-11-12). */
+.add,
+.addPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.add {
+  margin-block-end: 2px;
+}
+
+.addPrimary {
+  border: 0;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+}
+
+/* At ten lines it adds no more: dim, its tip above it saying why. */
+.addTip {
+  display: flex;
+  flex-direction: column;
+}
+
+.add[aria-disabled="true"] {
+  color: var(--text-tertiary);
+  cursor: default;
+}
+
+/* The colors under their row: ten chips in two rows of five, 8 apart inside
+   the menu's 10 (Notion's, seen 2026-11-12). */
+.colors {
+  display: grid;
+  grid-template-columns: repeat(5, 30px);
+  gap: 8px;
+  padding: 6px;
+}
+
+.colorTip {
+  display: inline-flex;
+}
+
+/* A 30×24 button with a 20px chip 2 in from its start, in its color rimmed
+   1px in itself; the one set rimmed 2px with a white ✓. */
+.colorButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 30px;
+  height: 24px;
+  padding: 2px;
+  border-radius: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.chip svg {
+  color: #fff;
+}
+
+.colorButton[aria-pressed="true"] .chip {
+  box-shadow: inset 0 0 0 2px currentColor;
+}

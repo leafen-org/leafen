@@ -1,0 +1,65 @@
+/* A link's edit on a phone's "링크" sheet, as the Notion Android app's
+   (measured 2026-11-25 on a Galaxy A90 at 411, light, the app's pixels and
+   its Android Chrome page's rules): each field under its name in the
+   secondary grey, 15px/500, 16 in, the name on the sheet's heading line
+   (--phone-sheet-head-line) 16 under the box before and 8 over its field's
+   frame, the field's white a pixel down in that frame (--link-frame-above:
+   the sheet's group's, NativePhoneToolbar.module.css .linkField); "링크
+   제거" a white row 44 high in its own frame 16 under the last field, 16 in
+   from the sheet's sides, its bin and words laid as a found page's row
+   (.linkRow). So a name's middle stands 18.08 over its field's white and
+   25.08 under the white before. */
+.edit,
+.edit .clearable {
+  --link-frame-above: var(--phone-sheet-group-top, 1px);
+}
+
+.edit > div:not(.label) {
+  padding-block: var(--link-frame-above) 0;
+}
+
+.label {
+  display: block;
+  padding-block: 16px 8px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: var(--phone-sheet-head-line, 18.17px);
+}
+
+.label:first-child {
+  padding-block-start: 0;
+}
+
+.remove {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  margin-block-start: calc(16px + var(--link-frame-above));
+  border-radius: 0;
+  clip-path: inset(calc(-1 * var(--link-frame-above)) 0 0 round 12px);
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  text-align: start;
+}
+
+/* "입력 값 지우기" (SearchClearButton) at the end of a field holding words, as
+   the app's link fields (measured 2026-11-25 on a Galaxy A90 at 411, the
+   search field and the edit's two, light): its ⓧ about 15.5 across in the icons' quietest
+   grey, in the middle of the 44 field, its middle 24 in from the field's end
+   — the 24 button 12 in; the words stop short of it. The field's white stands
+   --link-frame-above down in its place (NativePhoneToolbar.module.css .linkField). */
+.clearable {
+  position: relative;
+}
+
+.clearable.clearable > input {
+  padding-inline-end: 40px;
+}
+
+.clear {
+  position: absolute;
+  inset-block-start: calc(var(--link-frame-above) + 10px);
+  inset-inline-end: 12px;
+}

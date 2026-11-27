@@ -1,0 +1,835 @@
+{
+  "schemaVersion": 2,
+  "name": "database-query",
+  "operations": [
+    {
+      "goName": "databaseQuery",
+      "tsName": "query",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-query"
+    },
+    {
+      "goName": "databaseDependencyEdges",
+      "tsName": "dependencyEdges",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-dependency-edges"
+    },
+    {
+      "goName": "databaseDependencyGraph",
+      "tsName": "dependencyGraph",
+      "method": "POST",
+      "path": "/pages/{pageId}/database-dependency-graph"
+    }
+  ],
+  "bounds": [
+    {
+      "goName": "databaseQuerySourceRowsPerTurn",
+      "tsName": "sourceRowsPerTurn",
+      "value": 100
+    },
+    {
+      "goName": "databaseQuerySourceWindowRowsPerTurn",
+      "tsName": "sourceWindowRowsPerTurn",
+      "value": 5000
+    },
+    {
+      "goName": "maxDatabaseQueryResultRows",
+      "tsName": "resultRows",
+      "value": 100
+    },
+    {
+      "goName": "maxDatabaseQueryCursorBytes",
+      "tsName": "cursorBytes",
+      "value": 4096
+    },
+    {
+      "goName": "maxDatabaseQueryFilterDepth",
+      "tsName": "filterDepth",
+      "value": 3
+    },
+    {
+      "goName": "maxDatabaseQuerySearchRunes",
+      "tsName": "searchRunes",
+      "value": 256
+    },
+    {
+      "goName": "maxDatabaseQueryProperties",
+      "tsName": "properties",
+      "value": 1000
+    },
+    {
+      "goName": "maxDatabaseQueryComputedStringBytes",
+      "tsName": "computedStringBytes",
+      "value": 33554432
+    },
+    {
+      "goName": "databaseQueryFormulaEvaluationsPerTurn",
+      "tsName": "formulaEvaluationsPerTurn",
+      "value": 100
+    },
+    {
+      "goName": "databaseQueryDependencyRowsPerTurn",
+      "tsName": "dependencyRowsPerTurn",
+      "value": 100
+    },
+    {
+      "goName": "maxDatabaseDependencyVisibleRows",
+      "tsName": "dependencyVisibleRows",
+      "value": 100
+    },
+    {
+      "goName": "maxDatabaseDependencyReadItems",
+      "tsName": "dependencyReadItems",
+      "value": 100
+    }
+  ],
+  "errors": [
+    {
+      "goName": "errorCodeDatabaseQueryInvalid",
+      "tsName": "invalid",
+      "value": "LEAFEN_DATABASE_QUERY_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryCursorInvalid",
+      "tsName": "cursorInvalid",
+      "value": "LEAFEN_DATABASE_QUERY_CURSOR_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryNotFound",
+      "tsName": "notFound",
+      "value": "LEAFEN_DATABASE_QUERY_NOT_FOUND"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryDependencyLimit",
+      "tsName": "dependencyLimit",
+      "value": "LEAFEN_DATABASE_QUERY_DEPENDENCY_LIMIT"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryDatabaseBusy",
+      "tsName": "databaseBusy",
+      "value": "LEAFEN_DATABASE_QUERY_DATABASE_BUSY"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryStorageUnavailable",
+      "tsName": "storageUnavailable",
+      "value": "LEAFEN_DATABASE_QUERY_STORAGE_UNAVAILABLE"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryFailed",
+      "tsName": "failed",
+      "value": "LEAFEN_DATABASE_QUERY_FAILED"
+    },
+    {
+      "goName": "errorCodeDatabaseDependencyInvalid",
+      "tsName": "dependencyInvalid",
+      "value": "LEAFEN_DATABASE_DEPENDENCY_INVALID"
+    },
+    {
+      "goName": "errorCodeDatabaseDependencyStale",
+      "tsName": "dependencyStale",
+      "value": "LEAFEN_DATABASE_DEPENDENCY_STALE"
+    },
+    {
+      "goName": "errorCodeDatabaseDependencyNotFound",
+      "tsName": "dependencyNotFound",
+      "value": "LEAFEN_DATABASE_DEPENDENCY_NOT_FOUND"
+    },
+    {
+      "goName": "errorCodeDatabaseDependencyFailed",
+      "tsName": "dependencyFailed",
+      "value": "LEAFEN_DATABASE_DEPENDENCY_FAILED"
+    },
+    {
+      "goName": "errorCodeDatabaseQueryPropertyHidden",
+      "tsName": "propertyHidden",
+      "value": "LEAFEN_DATABASE_QUERY_PROPERTY_HIDDEN"
+    }
+  ],
+  "enums": [
+    {
+      "tsName": "DatabaseQueryState",
+      "tsValuesName": "databaseQueryStates",
+      "values": [
+        {
+          "goName": "databaseQueryStatePending",
+          "tsName": "pending",
+          "value": "pending"
+        },
+        {
+          "goName": "databaseQueryStateReady",
+          "tsName": "ready",
+          "value": "ready"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseQuerySortDirection",
+      "tsValuesName": "databaseQuerySortDirections",
+      "values": [
+        {
+          "goName": "databaseQuerySortAscending",
+          "tsName": "ascending",
+          "value": "ascending"
+        },
+        {
+          "goName": "databaseQuerySortDescending",
+          "tsName": "descending",
+          "value": "descending"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseQueryConjunction",
+      "tsValuesName": "databaseQueryConjunctions",
+      "values": [
+        {
+          "goName": "databaseQueryConjunctionAnd",
+          "tsName": "and",
+          "value": "and"
+        },
+        {
+          "goName": "databaseQueryConjunctionOr",
+          "tsName": "or",
+          "value": "or"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseQueryFilterTerm",
+      "tsValuesName": "databaseQueryFilterTerms",
+      "values": [
+        {
+          "goName": "databaseQueryFilterTermFilter",
+          "tsName": "filter",
+          "value": "filter"
+        },
+        {
+          "goName": "databaseQueryFilterTermGroup",
+          "tsName": "group",
+          "value": "group"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseArchiveScope",
+      "tsValuesName": "databaseArchiveScopes",
+      "values": [
+        {
+          "goName": "databaseArchiveScopeActive",
+          "tsName": "active",
+          "value": "active"
+        },
+        {
+          "goName": "databaseArchiveScopeArchived",
+          "tsName": "archived",
+          "value": "archived"
+        },
+        {
+          "goName": "databaseArchiveScopeAll",
+          "tsName": "all",
+          "value": "all"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseSubitemScope",
+      "tsValuesName": "databaseSubitemScopes",
+      "values": [
+        {
+          "goName": "databaseSubitemScopeAll",
+          "tsName": "all",
+          "value": "all"
+        },
+        {
+          "goName": "databaseSubitemScopeParents",
+          "tsName": "parents",
+          "value": "parents"
+        },
+        {
+          "goName": "databaseSubitemScopeChildren",
+          "tsName": "children",
+          "value": "children"
+        }
+      ]
+    },
+    {
+      "tsName": "DatabaseDependencyDirection",
+      "tsValuesName": "databaseDependencyDirections",
+      "values": [
+        {
+          "goName": "databaseDependencyDirectionPredecessors",
+          "tsName": "predecessors",
+          "value": "predecessors"
+        },
+        {
+          "goName": "databaseDependencyDirectionSuccessors",
+          "tsName": "successors",
+          "value": "successors"
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "databaseQueryFilter",
+      "tsName": "DatabaseQueryFilter",
+      "fields": [
+        {
+          "goName": "PropertyID",
+          "jsonName": "propertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Operator",
+          "jsonName": "operator",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Value",
+          "jsonName": "value",
+          "goType": "json.RawMessage",
+          "tsType": "unknown"
+        },
+        {
+          "goName": "DatePart",
+          "jsonName": "datePart",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "RollupMatch",
+          "jsonName": "rollupMatch",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "RollupKind",
+          "jsonName": "rollupKind",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseQueryFilterGroup",
+      "tsName": "DatabaseQueryFilterGroup",
+      "fields": [
+        {
+          "goName": "Conjunction",
+          "jsonName": "conjunction",
+          "goType": "string",
+          "tsType": "DatabaseQueryConjunction"
+        },
+        {
+          "goName": "Filters",
+          "jsonName": "filters",
+          "goType": "[]databaseQueryFilter",
+          "tsType": "DatabaseQueryFilter[]"
+        },
+        {
+          "goName": "Groups",
+          "jsonName": "groups",
+          "goType": "[]databaseQueryFilterGroup",
+          "tsType": "DatabaseQueryFilterGroup[]"
+        },
+        {
+          "goName": "Order",
+          "jsonName": "order",
+          "goType": "[]string",
+          "tsType": "DatabaseQueryFilterTerm[]",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseQuerySort",
+      "tsName": "DatabaseQuerySort",
+      "fields": [
+        {
+          "goName": "PropertyID",
+          "jsonName": "propertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Direction",
+          "jsonName": "direction",
+          "goType": "string",
+          "tsType": "DatabaseQuerySortDirection"
+        }
+      ]
+    },
+    {
+      "goName": "databaseQueryRequest",
+      "tsName": "DatabaseQueryRequest",
+      "fields": [
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ViewID",
+          "jsonName": "viewId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Search",
+          "jsonName": "search",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "FilterGroup",
+          "jsonName": "filterGroup",
+          "goType": "*databaseQueryFilterGroup",
+          "tsType": "DatabaseQueryFilterGroup | null"
+        },
+        {
+          "goName": "Sorts",
+          "jsonName": "sorts",
+          "goType": "[]databaseQuerySort",
+          "tsType": "DatabaseQuerySort[]"
+        },
+        {
+          "goName": "SubitemScope",
+          "jsonName": "subitemScope",
+          "goType": "string",
+          "tsType": "DatabaseSubitemScope"
+        },
+        {
+          "goName": "SubitemParentID",
+          "jsonName": "subitemParentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "ArchiveScope",
+          "jsonName": "archiveScope",
+          "goType": "string",
+          "tsType": "DatabaseArchiveScope"
+        },
+        {
+          "goName": "TimeZone",
+          "jsonName": "timeZone",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ReferenceTime",
+          "jsonName": "referenceTime",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Limit",
+          "jsonName": "limit",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Cursor",
+          "jsonName": "cursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "CountOnly",
+          "jsonName": "countOnly",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseComputedValue",
+      "tsName": "DatabaseComputedValue",
+      "fields": [
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Value",
+          "jsonName": "value",
+          "goType": "json.RawMessage",
+          "tsType": "unknown"
+        },
+        {
+          "goName": "Text",
+          "jsonName": "text",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Leaves",
+          "jsonName": "leaves",
+          "goType": "json.RawMessage",
+          "tsType": "unknown",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "databaseQueryRow",
+      "tsName": "DatabaseQueryRow",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SubitemParentID",
+          "jsonName": "subitemParentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "SubitemChildCount",
+          "jsonName": "subitemChildCount",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Values",
+          "jsonName": "values",
+          "goType": "map[string]graphRowValue",
+          "tsType": "Record<string, GraphRowValue>"
+        },
+        {
+          "goName": "Computed",
+          "jsonName": "computed",
+          "goType": "map[string]databaseComputedValue",
+          "tsType": "Record<string, DatabaseComputedValue>"
+        },
+        {
+          "goName": "HiddenValues",
+          "jsonName": "hiddenValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ReadOnlyValues",
+          "jsonName": "readOnlyValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ReadOnlyForMe",
+          "jsonName": "readOnlyForMe",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "CreatedAt",
+          "jsonName": "createdAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "CreatedBy",
+          "jsonName": "createdBy",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "UpdatedAt",
+          "jsonName": "updatedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "LastEditedBy",
+          "jsonName": "lastEditedBy",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "databaseQueryResponse",
+      "tsName": "DatabaseQueryResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "State",
+          "jsonName": "state",
+          "goType": "string",
+          "tsType": "DatabaseQueryState"
+        },
+        {
+          "goName": "Rows",
+          "jsonName": "rows",
+          "goType": "[]databaseQueryRow",
+          "tsType": "DatabaseQueryRow[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Scanned",
+          "jsonName": "scanned",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Total",
+          "jsonName": "total",
+          "goType": "*int",
+          "tsType": "number | null"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDependencyEdgeRequest",
+      "tsName": "DatabaseDependencyEdgeRequest",
+      "fields": [
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Direction",
+          "jsonName": "direction",
+          "goType": "string",
+          "tsType": "DatabaseDependencyDirection"
+        },
+        {
+          "goName": "ExpectedRevision",
+          "jsonName": "expectedRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Limit",
+          "jsonName": "limit",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Cursor",
+          "jsonName": "cursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDependencyEdgeResponse",
+      "tsName": "DatabaseDependencyEdgeResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Direction",
+          "jsonName": "direction",
+          "goType": "string",
+          "tsType": "DatabaseDependencyDirection"
+        },
+        {
+          "goName": "PropertyID",
+          "jsonName": "propertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DependencyRevision",
+          "jsonName": "dependencyRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "RelatedRowIDs",
+          "jsonName": "relatedRowIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDependencyGraphRequest",
+      "tsName": "DatabaseDependencyGraphRequest",
+      "fields": [
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "VisibleRowIDs",
+          "jsonName": "visibleRowIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "ExpectedRevision",
+          "jsonName": "expectedRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Limit",
+          "jsonName": "limit",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Cursor",
+          "jsonName": "cursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDependencyGraphEdge",
+      "tsName": "DatabaseDependencyGraphEdge",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PredecessorRowID",
+          "jsonName": "predecessorRowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SuccessorRowID",
+          "jsonName": "successorRowId",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "databaseDependencyGraphResponse",
+      "tsName": "DatabaseDependencyGraphResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DependencyRevision",
+          "jsonName": "dependencyRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Edges",
+          "jsonName": "edges",
+          "goType": "[]databaseDependencyGraphEdge",
+          "tsType": "DatabaseDependencyGraphEdge[]"
+        },
+        {
+          "goName": "VisibleRowIDs",
+          "jsonName": "visibleRowIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    }
+  ]
+}

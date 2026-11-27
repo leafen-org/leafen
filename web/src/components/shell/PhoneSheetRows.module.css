@@ -1,0 +1,191 @@
+/* A phone sheet's groups and rows (PhoneSheet.tsx merges this with
+   PhoneSheet.module.css, the sheet's frame — its shade, card, head, body and
+   foot — so a rule here that names the frame's classes still reaches its
+   elements): white groups and their rows, a whole screen's and a bottom
+   list's rows. */
+/* Groups 16px apart, as the body sets them, inside a menu of its own. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* A list of a database's properties — a filter's, with its "정렬" and "고급 필터", a sort's, a grouping's, a
+   colour rule's — gives each icon a 26px box 12 in and 10 before its name, the 22px icon 14 in and the name 48
+   (Notion's, measured 2026-11-14 at 402: icon x30, name x64), where a sheet's other rows keep the 24px box
+   (icon x29, name x62, as its view settings). The box reaches a pixel past either side of the row's own. */
+.propertyRows .rowIcon {
+  width: 26px;
+  margin-inline: -1px;
+}
+
+/* White 12px-round groups, their 45px rows parted by a 1px line: a 22px icon 13px in, the 17px label 11px on, an 18px "›"
+   at the end (Notion's, seen 2026-10-23); in dark #252525 on the sheet's #202020 (seen 2026-10-27). A group keeps its
+   rows; a sheet too short for them scrolls. */
+.group { flex: none; overflow: hidden; border-radius: 12px; background: var(--bg-elevated); }
+
+/* Its white starts 1px under its place and its last row is 44px, so a group of n rows takes n×45px and the next one starts
+   16px on, as Notion's (seen 2026-11-11 at 402pt in "속성 편집", "설정" and "필터"); its own padding counts from that white
+   (a "작업" sheet's foot, "최종 편집 일시" 12 under it in a round card: Notion's white margin 1px 0 -1px, A90 411, 2026-11-25).
+   So the pixel is a margin weighing nothing (--group-frame-above), not a padding a foot or panel sets, nor a border a 2.625
+   screen draws 0.76; an own margin keeps its place. A whole screen's, a plain sheet's and a window's groups keep theirs.
+   Its white is cut by a 12-round frame from that pixel over it, the feet the frame's, so its top corners are a little
+   flatter (Notion's overflow-hidden frame round a white row 1 down: "작업", "속성 편집" and "필터", A90 411, Chrome's rules
+   and the app's pixels, 2026-11-25); the fonts' card stands at its frame's top, "제거" under its heading squares its top. */
+:where(.sheet:not([data-phone-sheet="screen"], [data-plain="true"], [data-sheet-window]) .group) {
+  --group-frame-above: var(--phone-sheet-group-top);
+  margin-top: var(--group-frame-above);
+}
+.sheet:not([data-phone-sheet="screen"], [data-plain="true"], [data-sheet-window]) .group { border-start-start-radius: 0; border-start-end-radius: 0;
+  clip-path: inset(calc(-1 * var(--group-frame-above)) 0 0 round var(--group-frame-round, 12px) var(--group-frame-round, 12px) 0 0); }
+
+.sheet:not([data-phone-sheet="screen"], [data-plain="true"]) .group > .row:last-child,
+.sheet:not([data-phone-sheet="screen"], [data-plain="true"]) .group > :last-child > .row:last-child,
+.sheet:not([data-phone-sheet="screen"], [data-plain="true"]) .group [data-window-line-last] > .row {
+  min-height: 44px;
+}
+
+/* A white sheet of flat rows (PhoneSheet's plain). */
+.sheet[data-plain="true"] {
+  background: var(--bg-app);
+}
+
+/* Rows parted by Notion's solid line: rgb(240,239,237), in dark
+   rgb(44,44,43) (seen 2026-11-11, "작업" of a block and of a page). */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-secondary);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+/* A group's last row has no line under it, one a long group draws in a line of its own too (usePickerWindow). */
+.group > .row:last-child,
+.group > :last-child > .row:last-child,
+.group [data-window-line-last] > .row {
+  border-bottom: 0;
+}
+
+.row[data-small="true"] {
+  font-size: 16px;
+}
+
+/* A row without an icon starts its label 16px in, as Notion's choices. */
+.row[data-bare="true"] {
+  padding-inline-start: calc(16px + var(--phone-safe-start, 0px));
+}
+
+.row:active {
+  background: var(--bg-hover);
+}
+
+.rowIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  /* Dark, as Notion's sheet icons (seen 2026-10-21); "›" and an adding row's grey. */
+  color: var(--icon-primary);
+}
+
+/* A database's settings and filters draw their icons in the words' colour (PhoneSheet's tone), rgb(44,44,43), dark rgb(240,239,237), as
+   "보기 옵션", "데이터 소스 작업" (2026-11-15, A90, iPhone); an applied row its blue, a property or search its own (DatabasePropertyPicker). */
+.sheet:is([data-tone="settings"], [data-tone="views"]) :where(.row:not([data-applied="true"])) .rowIcon:where(:not([data-icon-own])) {
+  color: var(--text-default);
+}
+
+.row[data-sub="true"] {
+  padding-inline-start: calc(21px + var(--phone-safe-start, 0px));
+}
+
+.row[role="checkbox"] .rowIcon {
+  margin-inline-end: 5px;
+  color: var(--icon-secondary);
+}
+
+.rowLabel {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.2; /* 20.4px at 17px, as Notion's ("작업", the agent choice, pickers: A90 411, 2026-11-18). */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row[data-muted="true"] {
+  color: var(--text-secondary);
+}
+
+.row[data-muted="true"] .rowIcon {
+  color: var(--icon-secondary);
+}
+
+/* A removing row, red as Notion's "삭제" and "제거" (seen 2026-10-21). */
+.row[data-danger="true"],
+.row[data-danger="true"] .rowIcon {
+  color: var(--menu-danger);
+}
+
+/* One that can't be used fades whole, its mark, words and end alike, at 0.4,
+   as Notion's (seen 2026-11-16 twice on the A90's Chrome at 411, light: "레이아웃
+   사용자 지정" under a locked database, a locked page's "휴지통으로 이동"); a
+   removing row in the words' colour, not red. */
+.row:disabled { opacity: 0.4; }
+.row[data-danger="true"]:disabled { color: var(--text-default); }
+.row[data-danger="true"]:disabled .rowIcon { color: var(--icon-primary); }
+
+/* A row that says more under its label ("필터 그룹 추가"), 65px. */
+.row[data-described="true"] {
+  align-items: flex-start;
+}
+
+.row[data-described="true"] .rowIcon {
+  margin-top: 11px;
+}
+
+.sheet[data-phone-sheet="screen"] .group {
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  border-radius: 0;
+}
+
+.sheet[data-phone-sheet="screen"] .row,
+.menu .row {
+  gap: 14px;
+  min-height: 46px;
+  padding-block: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 16px;
+}
+
+/* A bottom list's rows 46px apart: a 1px parting of the page's ground, the row's 43px, then a 2px line of the
+   faint border, the last row's too (Notion's "⋯", relative date and day lists, seen 2026-11-12 at 402pt: 44px
+   white and a 2px rgb(240,239,237) line on light; on dark a 1px #191919 parting, 43px #252525 and a 2px
+   rgb(55,55,54) line). */
+.menu .row {
+  border-top: 1px solid var(--bg-app);
+  border-bottom: 2px solid var(--border-subtle);
+}
+
+.menu .row[data-bare="true"] {
+  padding-inline-start: calc(16px + var(--phone-safe-start, 0px));
+}
+
+/* A bottom list's marks are its words' colour, their box and other colours by what the list holds
+   (PhoneSheetMarks.module.css). */
+.menu .rowIcon {
+  color: inherit;
+}

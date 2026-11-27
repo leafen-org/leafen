@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "name": "deadline",
+  "operations": [
+    { "goName": "deadlineNoticeList", "tsName": "list", "method": "GET", "path": "/database-rows/{rowId}/deadline-notices" },
+    { "goName": "deadlineNoticeAcknowledge", "tsName": "acknowledge", "method": "POST", "path": "/deadline-notices/{noticeId}/acknowledge" },
+    { "goName": "deadlineNoticeStates", "tsName": "states", "method": "POST", "path": "/deadline-notices/states" }
+  ],
+  "errors": [
+    { "goName": "errorCodeDeadlineInvalid", "tsName": "invalid", "value": "LEAFEN_DEADLINE_INVALID" },
+    { "goName": "errorCodeDeadlineNotFound", "tsName": "notFound", "value": "LEAFEN_DEADLINE_NOT_FOUND" },
+    { "goName": "errorCodeDeadlineFailed", "tsName": "failed", "value": "LEAFEN_DEADLINE_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "deadlineAcknowledgementWire",
+      "tsName": "DeadlineAcknowledgement",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "At", "jsonName": "at", "goType": "int64", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "deadlineNoticeWire",
+      "tsName": "DeadlineNotice",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Days", "jsonName": "days", "goType": "int", "tsType": "number" },
+        { "goName": "DueAt", "jsonName": "dueAt", "goType": "int64", "tsType": "number" },
+        { "goName": "DeadlineAt", "jsonName": "deadlineAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "\"pending\" | \"active\" | \"done\" | \"past\"" },
+        { "goName": "Rounds", "jsonName": "rounds", "goType": "int", "tsType": "number" },
+        { "goName": "Recipient", "jsonName": "recipient", "goType": "bool", "tsType": "boolean" },
+        { "goName": "AcknowledgedAt", "jsonName": "acknowledgedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Acknowledgements", "jsonName": "acknowledgements", "goType": "[]deadlineAcknowledgementWire", "tsType": "DeadlineAcknowledgement[]" }
+      ]
+    },
+    {
+      "goName": "deadlineNoticeListResponse",
+      "tsName": "DeadlineNoticeList",
+      "fields": [
+        { "goName": "Notices", "jsonName": "notices", "goType": "[]deadlineNoticeWire", "tsType": "DeadlineNotice[]" }
+      ]
+    },
+    {
+      "goName": "deadlineNoticeAcknowledgeResponse",
+      "tsName": "DeadlineNoticeAcknowledged",
+      "fields": [
+        { "goName": "Notice", "jsonName": "notice", "goType": "deadlineNoticeWire", "tsType": "DeadlineNotice" }
+      ]
+    },
+    {
+      "goName": "deadlineNoticeStatesRequest",
+      "tsName": "DeadlineNoticeStatesRequest",
+      "fields": [
+        { "goName": "IDs", "jsonName": "ids", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "deadlineNoticeStatesResponse",
+      "tsName": "DeadlineNoticeStates",
+      "fields": [
+        { "goName": "Acknowledged", "jsonName": "acknowledged", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Gone", "jsonName": "gone", "goType": "[]string", "tsType": "string[]" }
+      ]
+    }
+  ]
+}

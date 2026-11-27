@@ -1,0 +1,423 @@
+/* The agent paste guide's screens (agentPasteGuideScreens.tsx): Leafen's own
+ * agents step and settings page on the player's --rec-* palette, and Claude
+ * Code in a dark terminal, as it draws itself with its "Dark mode" theme
+ * (seen 2026-11-08, Claude Code 2.1.280 in xterm-256color; its ask to run the text's
+ * one command seen 2026-11-19, the same version). */
+
+/* ---- what comes and goes within a scene: --at / --until ms in ----
+ * A part that comes takes no room until it does; one that goes gives its room
+ * back. Each keyframe holds one value from its start to its end, so where an
+ * animation ends a hair short of its last frame (1ms ones do) nothing
+ * flickers back. People who ask for reduced motion see what a scene ends on:
+ * what comes stays, what comes and goes does not show. */
+
+.appear {
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  animation: agentGuideShow 1ms linear var(--at, 0ms) forwards;
+}
+
+.fadeIn {
+  visibility: hidden;
+  animation: agentGuideFade 180ms ease-out var(--at, 0ms) forwards;
+}
+
+.vanish {
+  animation: agentGuideHide 1ms linear var(--until, 0ms) forwards;
+}
+
+.flash {
+  visibility: hidden;
+  animation:
+    agentGuideShow 1ms linear var(--at, 0ms) forwards,
+    agentGuideHide 1ms linear var(--until, 0ms) forwards;
+}
+
+@keyframes agentGuideShow {
+  from,
+  to {
+    max-height: none;
+    visibility: visible;
+  }
+}
+
+@keyframes agentGuideFade {
+  from {
+    visibility: visible;
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes agentGuideHide {
+  from,
+  to {
+    max-height: 0;
+    visibility: hidden;
+  }
+}
+
+/* Parts that take turns in one place sit in one grid cell. */
+.stack {
+  display: grid;
+  min-width: 0;
+}
+
+.stack > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* ---- Leafen: the first run's agents step ---- */
+
+.leafen {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  height: calc(100% - 26px);
+  padding: 22px 16px 0;
+  background: var(--rec-bg);
+}
+
+.panel {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  width: min(100%, 330px);
+  text-align: center;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* The mark as the first run's own agents step draws it: its rounded square
+   plate, uncut. */
+.brand img {
+  width: 20px;
+  height: 20px;
+}
+
+.title {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.body {
+  color: var(--rec-text2);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+/* The step's own primary, as wide as a step with a field. */
+.copyWide {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 220px);
+  height: 26px;
+  margin-top: 6px;
+  border-radius: 5px;
+  background: var(--rec-text);
+  color: var(--rec-bg);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.fold {
+  justify-self: start;
+  margin-top: 4px;
+  color: var(--rec-text2);
+  font-size: 9.5px;
+}
+
+.later {
+  margin-top: 4px;
+  color: var(--rec-text2);
+  font-size: 10px;
+}
+
+/* The app's toast, at the bottom of the window. */
+.toast {
+  position: absolute;
+  bottom: 14px;
+  inset-inline-start: 50%;
+  margin-inline-start: -60px;
+  width: 120px;
+  padding: 6px 0;
+  border-radius: 6px;
+  background: var(--rec-tooltip-bg);
+  color: var(--rec-tooltip-text);
+  font-size: 9.5px;
+  text-align: center;
+  box-shadow: var(--rec-menu-shadow);
+}
+
+/* ---- Leafen: Settings › Agents ---- */
+
+.settings {
+  position: relative;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  height: calc(100% - 26px);
+  background: var(--rec-bg);
+}
+
+.settingsNav {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: 14px 10px;
+  background: var(--rec-sidebar);
+}
+
+.settingsNav i {
+  display: block;
+  width: 70%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rec-skeleton);
+}
+
+.settingsNav span {
+  margin: -3px -6px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  background: var(--rec-hover);
+  font-size: 9.5px;
+}
+
+.settingsMain {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px 18px 0;
+}
+
+.settingsTitle {
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.settingsLead,
+.settingsHint {
+  color: var(--rec-text2);
+  font-size: 9.5px;
+  line-height: 1.45;
+}
+
+.settingsRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.copyBlue {
+  position: relative;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: var(--rec-blue);
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.connectedNow {
+  display: grid;
+  gap: 2px;
+  font-size: 10px;
+}
+
+.connectedNow span {
+  color: var(--rec-text2);
+  font-size: 9.5px;
+}
+
+.listTitle {
+  margin-top: 12px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--rec-border);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.listRow {
+  display: grid;
+  gap: 2px;
+  font-size: 10px;
+}
+
+.listRow span {
+  color: var(--rec-text2);
+  font-size: 9px;
+}
+
+@container (max-width: 420px) {
+  .settings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .settingsNav {
+    display: none;
+  }
+
+  .settingsRow {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+}
+
+/* ---- Claude Code in a terminal ----
+ * Its colors are xterm-256's it draws with: 174 for its mark and spinner,
+ * 244/246 for rules and dim lines, 237 behind what the person sent, 153 for
+ * a permission question, 114 for a command that ran. A terminal reads left
+ * to right in every language, so it keeps that in a right-to-left screen. */
+
+.terminal {
+  direction: ltr;
+  --term-bg: #1c1c1c;
+  --term-text: #e4e4e4;
+  --term-dim: #949494;
+  --term-rule: #808080;
+  --term-claude: #d78787;
+  --term-sent: #3a3a3a;
+  --term-ask: #afd7ff;
+  --term-ok: #87d787;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: calc(100% - 26px);
+  padding: 8px 10px;
+  overflow: hidden;
+  background: var(--term-bg);
+  color: var(--term-text);
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  line-height: 13px;
+}
+
+.line {
+  display: block;
+  min-width: 0;
+  min-height: 13px;
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+.wrap {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  white-space: pre-wrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.gap {
+  height: 13px;
+  flex: 0 0 auto;
+}
+
+.dim {
+  color: var(--term-dim);
+}
+
+.claude {
+  color: var(--term-claude);
+}
+
+.ask {
+  color: var(--term-ask);
+}
+
+.ok {
+  color: var(--term-ok);
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.welcome {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 12px;
+}
+
+.welcome > span:nth-child(odd) {
+  color: var(--term-claude);
+}
+
+.sent {
+  display: grid;
+  background: var(--term-sent);
+}
+
+.rule {
+  height: 13px;
+  flex: 0 0 auto;
+  background: linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+  color: var(--term-rule);
+}
+
+.askRule {
+  color: var(--term-ask);
+}
+
+.quoted {
+  padding-inline-start: 2ch;
+}
+
+.quoted::before {
+  content: "│ ";
+  color: var(--term-dim);
+}
+
+/* A key pressed, over the terminal for a moment. */
+.keycap {
+  position: absolute;
+  inset-inline-end: 14px;
+  z-index: 4;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 5px;
+  background: rgba(60, 60, 60, 0.92);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appear,
+  .fadeIn {
+    max-height: none;
+    visibility: visible;
+    animation: none;
+  }
+
+  .vanish,
+  .flash {
+    display: none;
+  }
+}

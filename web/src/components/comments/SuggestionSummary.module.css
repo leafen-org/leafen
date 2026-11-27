@@ -1,0 +1,118 @@
+/* What a suggestion does, faint, then the text it quotes (SuggestionSummary):
+   words suggested in or restyled in blue, words suggested away in gray; each
+   part a block of its own with 4px under it, its lines as high as the card's
+   own, the label's 18px and the quote's 1.29 within them (Notion's, seen
+   2026-11-22 twice at 1440 dpr 1: 21px lines beside the page, 18.05px in
+   "모든 토론", where the card's 1.2 is lower than its words'). */
+.part {
+  display: block;
+  margin-block-end: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.label {
+  line-height: 18px;
+}
+.quote {
+  line-height: 1.29;
+}
+.label[data-kind="insert"],
+.label[data-kind="format"] {
+  color: var(--blue-text-tertiary);
+}
+.quote[data-kind="insert"],
+.quote[data-kind="format"] {
+  color: var(--accent-blue);
+}
+.label[data-kind="delete"] {
+  color: var(--text-tertiary);
+}
+.quote[data-kind="delete"] {
+  color: var(--text-secondary);
+}
+
+/* In one line, the top bar's "토론" list (SuggestionLine): the labels and
+   quote marks fainter than a card's, as Notion's (seen 2026-11-22 at 1440
+   dpr 1, twice in dark and once in light: an addition's "추가: "
+   rgba(35, 131, 226, 0.57) in both, its marks the words' blue; a removal's
+   "삭제: " rgb(172, 169, 169) light, rgb(90, 90, 90) dark, its marks
+   rgb(199, 198, 196) light, rgba(255, 255, 255, 0.13) dark). The words take
+   the page's marks. */
+.lineLabel[data-kind="insert"],
+.lineLabel[data-kind="format"] {
+  color: rgba(35, 131, 226, 0.57);
+}
+.lineMark[data-kind="insert"],
+.lineMark[data-kind="format"] {
+  color: var(--suggestion-insert-text);
+}
+.lineLabel[data-kind="delete"] {
+  color: rgb(172, 169, 169);
+}
+.lineMark[data-kind="delete"] {
+  color: rgb(199, 198, 196);
+}
+:global([data-theme="dark"]) .lineLabel[data-kind="delete"] {
+  color: rgb(90, 90, 90);
+}
+:global([data-theme="dark"]) .lineMark[data-kind="delete"] {
+  color: rgba(255, 255, 255, 0.13);
+}
+
+/* On an open card (SuggestionCardSummary): 14px, 2px under the name where a
+   comment's words stand 4px under it, at the card's 1.5 — 21px — beside the
+   page and 1.2 in "모든 토론", the last part's 4px kept inside (Notion's, seen
+   2026-11-22 twice). */
+.box {
+  display: flow-root;
+  padding-block-start: 2px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.box.listed {
+  line-height: 1.2;
+}
+
+/* The author's face holding the suggestion's mark (SuggestionFace), the face
+   at its top as a comment's stands, not on a line of words (an inline face sat
+   1.16px lower, its buttons then 0.84px under its top where Notion's are 2 in
+   every row of "모든 토론", seen 2026-11-25 at 1440, dpr 2, two tabs). */
+.face {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-self: start;
+  width: 24px;
+  height: 24px;
+}
+.badge {
+  position: absolute;
+  inset-block-start: 12px;
+  inset-inline-start: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid rgba(35, 131, 226, 0.14);
+  border-radius: 100px;
+  /* Black under the tint in dark (seen 2026-11-15); light not seen, white. */
+  background: #fff;
+  color: rgb(35, 131, 226);
+}
+:global([data-theme="dark"]) .badge {
+  background: #000;
+}
+.badge::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(35, 131, 226, 0.07);
+  content: "";
+}
+.badge > svg {
+  position: relative;
+}

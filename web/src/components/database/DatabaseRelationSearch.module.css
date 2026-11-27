@@ -1,0 +1,88 @@
+/* The relation picker while a search is typed (PropertyRelationCellView), as
+   Notion's (seen 2026-11-12): its chosen lines as the rest, the search's
+   clear button, and the new page the words name. One sheet with the
+   relation cells' (databaseSheet.ts), whose classes these rules name. */
+
+/* While a search is typed the chosen lines stand 1 apart, as the rest, and
+   "추가 선택" keeps its place under them (7 above it, not 8). */
+.relationList[data-searching="true"] .relationGroupLine {
+  padding-top: 7px;
+}
+/* "결과 없음" with its new page 4 under it and 8 under that, as Notion's
+   (seen 2026-11-12): the line 4 in from the window's edges. */
+.relationList[data-unfound="true"] > .relationGroup {
+  margin-bottom: 3px;
+}
+.relationList[data-unfound="true"] > .relationCreate {
+  width: calc(100% + 8px);
+  margin-inline: -4px;
+}
+/* The new page's strip under found pages: a line 4 in from every side, a
+   rule above it. */
+.relationCreateStrip {
+  flex: none;
+  padding: 4px;
+  border-top: 1px solid var(--border-subtle);
+}
+/* The shared "입력 값 지우기" (SearchClearButton) at the search's end, its
+   ring meeting the filter (the box 4 over it). */
+.relationSearchClear {
+  margin-inline-end: -8px;
+}
+.relationCreate > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+/* "⛁ T에 새 〈words〉 페이지 생성" (English "New 〈words〉 in ⛁ T"): its
+   parts side by side, the spaces between them dropped, the words 4 from
+   either side and the database 4 after what comes before, its name 4 after
+   its icon; "에 새" ("New", "in") quieter, as Notion's (seen 2026-11-12). */
+.relationCreateText {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.relationCreateQuiet {
+  color: var(--text-secondary);
+}
+.relationCreateName {
+  min-width: 0;
+  margin-inline: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.relationCreateDatabase {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: 4px;
+}
+/* Its ⛁ in the icons' quieter color, its name not (Notion's, seen 2026-11-12). */
+.relationCreateDatabase .relationScopeIcon {
+  color: var(--icon-secondary);
+}
+/* A phone's: its ⛁ 24 across, the name 2 after it (Notion's, seen 2026-11-17 on iPhone Safari at 402). */
+.relationCreateDatabase[data-phone="true"] {
+  gap: 2px;
+}
+.relationCreateDatabase[data-phone="true"] .relationScopeIcon {
+  width: 24px;
+  height: 24px;
+}
+/* A relation group's "+ 신규 그룹" names the same new page on a menu row of
+   its own, the list's last (RelationGroupAdd): the ⊕ 20 in a quieter color,
+   the words 8 after it, as Notion's (seen 2026-11-12). */
+.relationGroupCreate {
+  grid-template-columns: 20px minmax(0, 1fr);
+}
+.relationGroupCreate > svg {
+  color: var(--icon-secondary);
+}
+/* After "입력 값 지우기" the window itself holds the focus, unringed. */
+.relationPanel:focus {
+  outline: none;
+}

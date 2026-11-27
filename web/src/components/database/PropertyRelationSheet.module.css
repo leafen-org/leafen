@@ -1,0 +1,80 @@
+/* A relation's picker on a touch screen (PropertyRelationCellView), as
+   Notion's phone sheet "관계형" (seen 2026-11-15 at 402pt in iOS Safari,
+   dark): the search alone in a 45px group, its white 1px down in it as a
+   sheet group's, what is typed 16px 8 in; then "페이지 선택" 15px/500 on a
+   16.5 line (no hidden mark beside it, as other sheets' headings have) 16
+   in over the pages' group, 16 under the search's place and 25 over the
+   rows (its own 8, the list's 16, the rows 1px down in their group: seen
+   twice at 411 on the A90, in two tabs; 2026-11-18 the search's white at
+   484.5 under its place at 483.5, the heading 544.5–561, the rows from
+   586), each page a 45px row of its 22px icon 13 in and
+   its 17px title 11 after it, parted by the sheet's line. "페이지 선택" has
+   no "⋯" for the pages' shown properties there, as the desktop window has. */
+.sheet [data-relation-search-bar] ~ *,
+.sheet > * {
+  max-height: none;
+  overflow: visible;
+}
+.sheet > div {
+  gap: 16px;
+}
+.sheet [data-relation-search-bar] {
+  height: 45px;
+  padding-block: 1px 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: linear-gradient(transparent 1px, var(--bg-elevated) 1px);
+  box-shadow: none;
+}
+.sheet [data-relation-search-bar] input {
+  height: 44px;
+  padding: 0;
+  font-size: 16px;
+}
+.sheet [data-relation-list] {
+  gap: 0;
+  padding: 0;
+}
+.sheet [data-relation-group] > [data-relation-properties] {
+  display: none;
+}
+.sheet [data-relation-group] {
+  height: 16.5px;
+  margin-bottom: 25px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  font-size: 15px;
+  line-height: 16.5px;
+}
+.sheet [data-relation-list] [data-relation-index] {
+  gap: 11px;
+  height: 45px;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(13px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  background: var(--bg-elevated);
+  box-shadow: inset 0 -1px 0 var(--border-secondary);
+  font-size: 17px;
+}
+.sheet [data-relation-list] [data-relation-index] > span:nth-child(2) {
+  font-weight: 400;
+}
+.sheet [data-relation-list] [data-relation-index] [title] {
+  display: none;
+}
+.sheet [data-relation-group] + [data-relation-index],
+.sheet [data-relation-group] + * > [data-relation-index]:first-child {
+  border-start-start-radius: 12px;
+  border-start-end-radius: 12px;
+}
+.sheet [data-relation-list] [data-relation-index]:last-child,
+.sheet [data-relation-list] > :last-child > [data-relation-index]:last-child {
+  border-end-start-radius: 12px;
+  border-end-end-radius: 12px;
+  box-shadow: none;
+}
+.sheet [data-relation-list] [data-relation-index]:is(:focus-visible, [data-active="true"]) {
+  background: var(--bg-elevated);
+}
+.sheet [data-relation-list] [data-relation-index] > span:first-child {
+  width: 22px;
+  height: 22px;
+  color: var(--text-default);
+}

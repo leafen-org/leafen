@@ -1,0 +1,486 @@
+/* A database's automations in a phone's sheet, as Notion's (seen 2026-10-24
+   at 375px). The list: a white 45px search, white 10px cards 12px from the
+   screen's sides (marks 28px, name 16px/500, a grey two-line sentence, "⋯"
+   26px at the top right) and a blue 28px "+ 새 자동화" 28px in. */
+.search {
+  display: flex;
+  align-items: center;
+  min-height: 45px;
+  margin-top: 13px;
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  border-radius: 10px;
+  background: var(--bg-app);
+}
+
+.search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 16px;
+  outline: none;
+}
+
+.note {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.listCard {
+  position: relative;
+  margin: 0 -4px;
+  border-radius: 10px;
+  background: var(--bg-element); /* white, #202020 in dark, ringed #e6e5e3 / #383836 (Notion's, 2026-11-15 A90 and iPhone) */
+  border: 1px solid var(--border-default); /* inside its box 12px from the sheet's side, as the desktop's card (A90, 2026-11-15) */
+}
+
+.listOpen {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding-block: 16px 13px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  text-align: start;
+}
+
+/* Its marks 11px over its name, the "→" 18px (seen 2026-10-24, 2026-11-15 at 402pt: the card 110 high); the first
+   card 32px under the search's band (Notion's empty row and 12px gaps; its box 1px low in the band, so 31 under it). */
+.marks {
+  margin-bottom: 7px;
+}
+
+.listCard:first-of-type {
+  margin-top: 15px;
+}
+
+.marks [data-automation-mark-arrow] {
+  width: 18px;
+  height: 18px;
+}
+
+/* The name and its pill 4px apart, as Notion's (seen 2026-11-11 at 402px). */
+.listHead {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.listName {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* "⏸ 중단됨" after the name, as Notion's (seen 2026-10-24): an 18px chip, its grey the same in both themes (2026-11-15). */
+.listStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 18px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--action-mark-gray-bg);
+  color: rgb(142, 139, 134);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.listStatus svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* "⚠ 유효하지 않음" red on red, its 14px mark 3px before the words, as Notion's
+   (seen 2026-11-11 at 402px: rgb(229, 100, 88) on rgba(223, 22, 0, 0.094)). */
+.listStatus[data-invalid] {
+  background: var(--action-mark-red-bg);
+  color: var(--danger);
+}
+
+/* It breaks between syllables, as Notion's ("설정되었습니 / 다.의 경우"). */
+.listSummary {
+  display: -webkit-box;
+  word-break: normal;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 16px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* A condition card's "⋯" in the action cards' 28px ringed group 8px in from the card's end, on the page's ground
+   (Notion's, seen 2026-11-15 on an A90 at 411). */
+.dots {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg-page);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px rgba(0, 0, 0, 0.04);
+  color: var(--icon-secondary);
+}
+
+/* A list card's, 26px in a thin line inside it, 8px in from the card's line (Notion's, the same A90). */
+.listCard > .dots {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: none;
+}
+
+.newButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  margin: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.newButton:disabled {
+  opacity: 0.4;
+}
+
+.switchRow {
+  cursor: pointer;
+}
+
+.switchRow > input[role="switch"],
+.activeRow > input[role="switch"] {
+  margin-block: 0;
+  margin-inline: auto 0;
+}
+
+/* The editor on the page's ground to the sheet's bottom: its head (name band, "활성", where it applies) raised, then
+   the sections — a 14/500 grey label, 44px raised 10px cards ringed with "⋯" 28px, a ringed 46px "+ 새 조건" — in
+   both themes Notion's (white on white; seen 2026-11-15 at 402pt dark: #191919 under #202020 cards and head). */
+:global([data-phone-automation-editor]) > div:last-child {
+  flex: 1 1 auto;
+}
+
+.editor {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-height: 100%;
+  margin: -16px -16px -24px;
+  padding: 0 16px 24px;
+  background: var(--bg-app);
+}
+
+/* Its name a band across the sheet, 45 tall and 9 under the head, its words 12 in and its ⓧ 8 from the end, a
+   line under it (Notion's phone, seen 2026-11-09 in the app and 2026-11-15 at 411 on the web). */
+.name {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  min-height: 45px;
+  margin: 9px -16px 0;
+  padding-inline: 12px 8px;
+  border-bottom: 1px solid var(--border-secondary);
+  box-shadow: 0 -9px var(--bg-element);
+  background: var(--bg-elevated);
+}
+
+.name input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+}
+
+.clear svg {
+  width: 20px;
+  height: 20px;
+}
+
+.clear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--icon-tertiary, var(--text-tertiary));
+}
+
+/* An open one's "활성": its switch 5px under the band's top, the word grey on a 24px line beside it (Notion's, 2026-11-15 at 411). */
+.activeRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 38px;
+  margin: 0 -16px;
+  padding: 12px 13px 0;
+  background: var(--bg-element);
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.activeRow > input[role="switch"] {
+  margin: 5px 0 0;
+}
+
+.activeRow span {
+  margin-top: 0;
+}
+
+/* The database's name a 500 pill 1px in, its words 6px in and its ⌄ (a 9px
+   place) 6px after them; it gives way, cut short with "…", while the words
+   after it stay whole (Notion's, seen 2026-11-15 at 402pt in iOS Safari). */
+.scopeButton {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-block: 0;
+  margin-inline: 1px 0;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+}
+
+.scopeButton svg {
+  margin-inline: -2.5px;
+  color: var(--icon-secondary);
+}
+
+.scopeName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* "Every" 6px before the chip in English, none in Korean, as the desktop dialog's (Notion's, seen 2026-11-19). */
+.scheduleTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* A recurring trigger's "주기 ⌄" chip, as Notion's: the head chips' tint, 20px, 14px words. */
+.scheduleChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  font-weight: 400;
+}
+
+/* Where it applies: one line across the sheet over a line, 12px in, grey
+   16/24 words (Notion's, seen 2026-11-15 at 402pt in iOS Safari: a 49px band). */
+.scope {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin: 0 -16px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-element);
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
+  margin: 0 0 -4px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Conditions and actions 1px in from the sheet's 16 (Notion's, seen
+   2026-11-15 at 402pt in iOS Safari: cards and "+ 새 조건" 17/368, "+ 새
+   작업" 16/370), the "+" of an adding row 14px in from its edge. */
+.card {
+  display: flex;
+  flex-direction: column;
+  margin-inline: 1px;
+  border-radius: 10px;
+  background: var(--bg-element);
+  box-shadow: 0 0 0 1px var(--border-secondary), 0 2px 4px var(--automation-card-drop);
+}
+
+/* A condition's mark in a 20px place 12px in, its words 40px in and 76px short of its end, "⋯" laid over
+   that room (AutomationConditionCard.module.css), as Notion's
+   (seen 2026-11-11 at 402px, a deleted property's red 20px ground filling the place); the mark,
+   the first line and "⋯" in a 32px band at its top, wrapped words and a relation's pages growing
+   it downwards (Notion's, seen 2026-11-17 on a Galaxy A90 at 411). */
+.cardHead {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 44px;
+  padding-block: 6px;
+  padding-inline: 12px;
+}
+
+
+/* A condition card's mark in Notion's secondary grey, #ada9a3 on dark (seen 2026-11-15, its "단계" select card). */
+.cardIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 32px;
+  color: var(--icon-secondary);
+}
+
+.cardLabel {
+  composes: room from "./AutomationConditionCard.module.css";
+  flex: 1 1 auto;
+  min-width: 0;
+  padding-block: 6px;
+  padding-inline-start: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: start;
+}
+
+/* A deleted property's words, red and 400 as the desktop's (Notion's, seen
+   2026-11-11 at 402px: 14/20 rgb(229, 100, 88)). */
+.cardLabel[data-gone] {
+  color: var(--danger);
+  font-weight: 400;
+}
+
+/* A condition's mark in the list it is added from, grey as Notion's, at the sheet row's 22px; a property's
+   16px, its name 50px in, its box its own (PhoneSheetMarks.module.css; Notion's, seen 2026-11-15 at 402pt). */
+.choiceMark {
+  display: inline-flex;
+  color: var(--icon-secondary);
+}
+
+.choiceMark > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.choiceMark[data-property] > svg {
+  width: 16px;
+  height: 16px;
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+  margin-inline: 1px;
+  padding: 0 13px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.add svg {
+  width: 18px;
+  height: 18px;
+}
+
+.line + .section {
+  padding-top: 5px;
+}
+
+/* "←" grey and 22px, as Notion's editor head. */
+:global([data-phone-automation-editor]) :global([data-phone-sheet-start]) {
+  color: var(--icon-secondary);
+}
+
+:global([data-phone-automation-editor]) :global([data-phone-sheet-start]) svg {
+  width: 22px;
+  height: 22px;
+}
+
+.line {
+  width: 2px;
+  height: 56px;
+  margin: 16px auto 0;
+  border-radius: 2px;
+  background: var(--border-default);
+}
+
+.actions {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.actions :global([data-automation-action]) {
+  margin-inline: 1px;
+}
+
+/* The action list's marks in a 20px place 20 in, their words 54 in (Notion's, seen 2026-11-15 at 402pt). */
+:global(button[data-automation-action-type] > span:first-child) {
+  width: 20px;
+}

@@ -1,0 +1,185 @@
+/* A view's sorts, as Notion's sort screen (seen 2026-09-30, 2026-11-04):
+   rows of a 20x24 drag handle 12px in (its glyph 16px, 2026-11-18), the
+   property and the direction each as wide as its words, 8px apart, and the
+   × 14px in from the window's edge (Due 85 and 180 to 313, a longer name
+   147.5 and "A → Z로 정렬" 113.5), then grey 28px action rows ("정렬 추가",
+   "정렬 제거"). */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 4px;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding-block: 0;
+  padding-inline: 5px 7px;
+  border-radius: 6px;
+}
+
+/* Rules 40px apart, as Notion's. */
+.row + .row {
+  margin-top: 3px;
+}
+
+/* In the view settings panel, whose screens sit 8px in from its line, the
+   sorts keep the window's measure they have in the pill's window: Notion's
+   sort screen is one block 4px in at the start and none at the end, its rows
+   8px in with the × 6px more, "정렬 추가" 4px in (seen 2026-11-18 in Chrome
+   1440, dpr 1, the docked panel and the pill's window alike: the handle 12
+   and the × 14 from the panel's line, the first row's buttons 8 under the
+   head, "정렬 추가" 6 under the last). So here the list runs 1px out at each
+   side, 2px lower, "정렬 추가" 3px further down, as in the pill's window
+   (DatabaseQuickFilterBar's sortPopover). */
+:global([data-view-settings-screen="sort"]) .list {
+  margin-inline: -1px;
+  padding-top: 6px;
+}
+:global([data-view-settings-screen="sort"]) .addWrap {
+  margin-top: 3px;
+}
+
+.handle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+
+/* No box under the pointer, as Notion's ⠿ in its database menu lists (seen
+   2026-11-18). */
+.handle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* Its property and direction each up to 180px, cut past it, in 500 —
+   Notion's rule, not its words' widths (seen 2026-11-17 at 1440: both
+   buttons max-width 180px, 14px 500, 8px in; "주소" 83, "A → Z로 정렬" 113;
+   the audit's "낮은 항목 → 높은 항목으로" 180, cut). */
+.row .property {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: 180px;
+  min-width: 0;
+}
+.row .property button.choice {
+  grid-template-columns: 18px minmax(0, max-content) 10.64px;
+  width: auto;
+  max-width: 100%;
+}
+.row .direction button.choice {
+  grid-template-columns: minmax(0, max-content) 10.64px;
+  width: auto;
+  max-width: 100%;
+}
+/* Each ⌄ 8.64px wide and 8px after the words, its icon 6px after the
+   property's mark — Notion's thin chevron (arrowChevronSingleDownSmall, 14px
+   tall, trimmed to its glyph; SORT_CARET), as an advanced filter rule's
+   choices take it (seen 2026-11-17 at 1440: "상태 ⌄" 82.9 and "오름차순으로
+   정렬 ⌄" 135.2, the ⌄ 8 after the words and 9 from the edge), in the
+   tertiary icon colour (seen 2026-11-22 at 1440 dark, dpr 2: #7d7a75). */
+.row .choice > svg:last-child {
+  justify-self: end;
+  color: var(--icon-tertiary);
+}
+
+/* Where the two don't fit, the direction gives way before the name; no
+   wider, however long a time's words run (seen 2026-11-05). */
+.row .direction {
+  flex: 0 100 auto;
+  width: auto;
+  max-width: 180px;
+  min-width: 0;
+  margin-inline-end: 8px;
+}
+
+.row .choice {
+  height: 32px;
+  border-color: var(--button-outline);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+/* Its property and direction keep their faint edge and only shade while lit or open (Notion's, seen 2026-11-05). */
+.row .choice:hover,
+.row .choice:focus-visible,
+.row .choice[aria-expanded="true"] {
+  border-color: var(--button-outline);
+  background-image: linear-gradient(var(--bg-hover), var(--bg-hover));
+}
+
+.remove {
+  display: inline-flex;
+  flex: none;
+  margin-inline-start: auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.remove:hover,
+.remove:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* "정렬 추가" and "정렬 제거" run 4px in from the window's sides, their
+   mark 8px into the row (Notion's, seen 2026-11-15: the window 374..727, the
+   rows 378..723, the "+" at 386) — the list under "정렬 추가" starts where
+   its row does. */
+.action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  margin-inline: -3px;
+  padding-block: 0;
+  padding-inline: 8px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.action:hover,
+.action:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.actionIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* "정렬 추가"'s list, a window of its own placed under the row
+   (DatabaseSortSettings), ringed as a menu (Notion's, seen 2026-11-05;
+   280 wide, 2026-11-15); its height stops at 287px (DatabaseSortSettings). */
+.addWrap { display: flex; flex-direction: column; }
+.addList {
+  width: 280px;
+  overflow-y: auto;
+  padding: 8px 8px 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}

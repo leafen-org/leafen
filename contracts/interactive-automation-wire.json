@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "name": "interactive-automation",
+  "notificationRecipientKinds": ["execution_actor", "page_creator", "person_property", "formula"],
+  "formulaContextNames": ["executionActor", "pageCreator", "executionTime", "executionDate", "triggerPage"],
+  "bounds": {
+    "documentBytes": 65536,
+    "resultBytes": 262144,
+    "targetRows": 100,
+    "identifierRunes": 160,
+    "labelRunes": 100,
+    "messageRunes": 2000
+  },
+  "errors": {
+    "invalid": "LEAFEN_INTERACTIVE_AUTOMATION_INVALID",
+    "notFound": "LEAFEN_INTERACTIVE_AUTOMATION_NOT_FOUND",
+    "unsupported": "LEAFEN_INTERACTIVE_AUTOMATION_UNSUPPORTED",
+    "conflict": "LEAFEN_INTERACTIVE_AUTOMATION_CONFLICT",
+    "storageUnavailable": "LEAFEN_INTERACTIVE_AUTOMATION_STORAGE_UNAVAILABLE",
+    "databaseBusy": "LEAFEN_INTERACTIVE_AUTOMATION_DATABASE_BUSY",
+    "unavailable": "LEAFEN_INTERACTIVE_AUTOMATION_UNAVAILABLE"
+  },
+  "actionTypes": [
+    "define_variables",
+    "edit_property",
+    "insert_blocks",
+    "add_page",
+    "edit_pages",
+    "set_page_icon",
+    "archive_pages",
+    "show_confirmation",
+    "open_page",
+    "open_form",
+    "open_url",
+    "send_notification",
+    "send_email",
+    "send_webhook",
+    "send_slack",
+    "run_app_action"
+  ],
+  "operations": [
+    {
+      "name": "pageButtonExecute",
+      "method": "POST",
+      "path": "/pages/{pageId}/buttons/{blockId}/execute"
+    },
+    {
+      "name": "databaseButtonExecute",
+      "method": "POST",
+      "path": "/pages/{pageId}/databases/{databaseId}/rows/{rowId}/buttons/{propertyId}/execute"
+    },
+    {
+      "name": "legacyTemplateExecute",
+      "method": "POST",
+      "path": "/pages/{pageId}/templates/{blockId}/execute"
+    },
+    {
+      "name": "targetDatabaseRead",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/automation-targets/{dataSourceId}"
+    }
+  ],
+  "blockInsertionPositions": [
+    "button_above",
+    "button_below",
+    "page_top",
+    "page_bottom"
+  ]
+}

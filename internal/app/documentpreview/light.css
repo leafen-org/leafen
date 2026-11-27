@@ -1,0 +1,110 @@
+/* The light view (light.js) on the page's own colors (--ink, --muted, --line, --back, --bar): docx-preview's pages,
+   a sheet's grid or pptx-renderer's slides, to read. Leafen's document preview gets a copy
+   (scripts/generate-document-preview-assets.mjs), so the Office app and the preview draw a file alike. */
+/* Office's own faces, where a computer lacks them, drawn in the nearest one it has, as Notion's preview draws
+   Cambria in a serif and Calibri in a sans (seen 2026-11-06); a computer that has them uses its own. */
+@font-face { font-family: "Cambria"; src: local("Cambria"), local("Caladea"), local("Times New Roman"), local("Georgia"); }
+@font-face { font-family: "Calibri"; src: local("Calibri"), local("Carlito"), local("Helvetica Neue"), local("Arial"); }
+@font-face { font-family: "Calibri Light"; src: local("Calibri Light"), local("Carlito"), local("Helvetica Neue Light"), local("Arial"); }
+/* Their Hangul in Word's East Asian default, a sans (Malgun Gothic), as Notion's preview draws it in a sans; without
+   it WebKit falls back from a serif face to a serif Hangul (iOS and the desktop app, 2026-11-06). */
+@font-face { font-family: "Cambria"; src: local("Malgun Gothic"), local("Apple SD Gothic Neo"), local("Noto Sans CJK KR"), local("Noto Sans KR"); unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7AF, U+D7B0-D7FF; }
+@font-face { font-family: "Calibri"; src: local("Malgun Gothic"), local("Apple SD Gothic Neo"), local("Noto Sans CJK KR"), local("Noto Sans KR"); unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7AF, U+D7B0-D7FF; }
+@font-face { font-family: "Calibri Light"; src: local("Malgun Gothic"), local("Apple SD Gothic Neo"), local("Noto Sans CJK KR"), local("Noto Sans KR"); unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7AF, U+D7B0-D7FF; }
+.light { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 24px 16px 48px; }
+/* Hidden whatever its look's own display says: an Excel file's flex (.light.xlsx) kept a hidden
+   preview drawn under the editor that took its place, sharing the frame's height with it
+   (2026-11-19: a sheet opened in the editor from the preview on an Android tablet ended at
+   row 10, and at one row once the keyboard rose). */
+.light[hidden] { display: none !important; }
+.note { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+.light.docx .docx-wrapper { background: transparent; padding: 0; }
+/* Notion's preview starts the first page 8px under its head (2026-11-06). */
+.light.docx { padding-top: 8px; }
+.light.docx .docx-wrapper > section.docx { margin: 0 auto 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, .15); }
+/* docx-preview gives a page its white only as the wrapper's own child; a scaled page sits in a box. */
+.light.docx .fit { flex: none; margin: 0 auto 16px; }
+.light.docx .fit > section.docx { margin: 0; transform-origin: top left; background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, .15); }
+/* A sheet (light-sheet.js showXLSX), as Notion's preview (measured 2026-11-07 in both themes):
+   the bar, the letters and the numbers on the page's color with lines a step lighter, white cells with gray lines in
+   the file's own face (Calibri 11pt), the chosen cell's letter and number lit, and under them the sheet bar. */
+.light.xlsx, .sheets { --sheet-chrome: #ffffff; --sheet-line: #f0efed; --sheet-bar: #f9f8f7; --sheet-lit: #e5f2fc; --sheet-faint: #a19e99; --sheet-ink: var(--ink); }
+:root[data-theme="dark"] .light.xlsx, :root[data-theme="dark"] .sheets { --sheet-chrome: #191919; --sheet-line: #2c2c2b; --sheet-bar: #202020; --sheet-lit: #233850; --sheet-faint: #7d7a75; --sheet-ink: #f0efed; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) .light.xlsx, :root:not([data-theme]) .sheets { --sheet-chrome: #191919; --sheet-line: #2c2c2b; --sheet-bar: #202020; --sheet-lit: #233850; --sheet-faint: #7d7a75; --sheet-ink: #f0efed; } }
+.light.xlsx { display: flex; flex-direction: column; padding: 0; overflow: hidden; background: var(--sheet-chrome); }
+.formula { flex: none; display: flex; align-items: center; height: 40px; box-sizing: border-box; border-bottom: 1px solid var(--sheet-line); }
+.formula input { min-width: 0; height: 20px; padding: 0; border: 0; outline: none; background: none; font: inherit; font-size: 14px; }
+.cellName { flex: none; width: 80px; height: 100% !important; box-sizing: border-box; padding: 0 12px !important; border-inline-end: 1px solid var(--sheet-line) !important; color: var(--muted); }
+.fx { flex: none; margin: 0 12px; color: var(--sheet-faint); font-size: 16px; line-height: 24px; }
+.cellValue { flex: 1; margin-inline-end: 12px; color: var(--ink); }
+.cellValue::placeholder { color: var(--sheet-faint); }
+.cellValue.formulaText { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; }
+.light.xlsx .note { flex: none; margin: 0; padding: 8px 12px; background: var(--sheet-chrome); }
+/* Notion strokes a sheet's lines half a pixel wide, which a 1x screen shows as a pixel of the color half mixed with
+   what is under it (measured 2026-11-12 at 1440 dark: the cells' #d0d0d0 as #e8e8e8, the letters' and numbers'
+   #2c2c2b as #232322). A cell's line runs along its top and its start; the letters' bar has its line under it and
+   at each letter's start, the numbers' column at its end and at each number's top — the cells' size, 22px and 50px. */
+.grid { flex: 1; min-height: 0; overflow: auto; background: #fff; outline: none;
+  --grid-line: 1px; --cell-line: #e8e8e8; --head-line: color-mix(in srgb, var(--sheet-line) 50%, var(--sheet-chrome)); }
+@media (min-resolution: 2dppx) { .grid { --grid-line: .5px; --cell-line: #d0d0d0; --head-line: var(--sheet-line); } }
+/* A sheet that can't be drawn (light-sheet.js showUnreadable), as Notion's canvas draws it in any theme: for s the
+   grid's shorter side, a #b23b3b ⚠ of max(20px, s/10) centred 32% down, the words in 600 max(13px, .035s) #333
+   centred 46% down, and the reason in max(10px, .022s) #666, at most four lines 1.4 high and min(80%, 640px)
+   wide, its first line centred 1.4 lines under 52% down; each in the computer's sans-serif. */
+.grid.unreadable { container-type: size; position: relative; overflow: hidden; background: #f7f7f8; }
+.grid.unreadable p { position: absolute; inset-inline: 0; width: fit-content; max-width: min(80%, 640px); margin: 0 auto;
+  font-family: sans-serif; line-height: 1; text-align: center; translate: 0 -50%; }
+.grid.unreadable .mark { top: 32%; color: #b23b3b; font-size: max(20px, 10cqmin); }
+.grid.unreadable .title { top: 46%; max-width: none; white-space: nowrap; color: #333; font-size: max(13px, 3.5cqmin); font-weight: 600; }
+.grid.unreadable .why { --size: max(10px, 2.2cqmin); top: calc(52% + 0.7 * var(--size)); display: -webkit-box; overflow: hidden;
+  color: #666; font-size: var(--size); line-height: 1.4; translate: none; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
+.grid table { border-collapse: separate; border-spacing: 0; table-layout: fixed; color: #000; font-family: Calibri, sans-serif; font-size: 11pt; }
+.grid td { box-sizing: border-box; padding: 0 2px; border: 0 solid var(--cell-line); border-block-start-width: var(--grid-line);
+  border-inline-start-width: var(--grid-line); background: #fff; line-height: 1.2; white-space: nowrap; overflow: hidden; vertical-align: bottom; }
+/* A cell's words at its foot, cut to its size (light-sheet.js sheetGrid sets the height), a number's end kept in view;
+   words that run on over the empty cells after theirs (.spill) cover those cells' lines, and a click there is
+   still the empty cell's. */
+.grid td > span { display: flex; align-items: flex-end; box-sizing: border-box; padding-block-end: 2px; overflow: hidden; pointer-events: none; }
+.grid td[data-t="n"] > span { justify-content: flex-end; }
+.grid td[data-t="b"] > span, .grid td[data-t="e"] > span { justify-content: center; }
+.grid td.spill { overflow: visible; }
+.grid td.spill > span { width: max-content; }
+.grid td.chosen { outline: 2px solid #2383e2; outline-offset: -2px; }
+.grid th { position: sticky; z-index: 1; box-sizing: border-box; padding: 0 5px; border: 0 solid var(--head-line); background: var(--sheet-chrome);
+  color: var(--sheet-ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; font-size: 11px; font-weight: 400; overflow: hidden; }
+.grid th.lit { background: var(--sheet-lit); }
+.grid thead th { top: 0; height: 22px; padding-block-end: 2px; text-align: center; border-block-end-width: var(--grid-line); border-inline-start-width: var(--grid-line); }
+.grid tbody th { inset-inline-start: 0; padding-inline-end: 3px; padding-block-end: 4px; text-align: end; line-height: 0; border-block-start-width: var(--grid-line); border-inline-end-width: var(--grid-line); }
+.grid thead th:first-child { inset-inline-start: 0; z-index: 2; border-inline-start-width: 0; border-inline-end-width: var(--grid-line); }
+.sheets[hidden] { display: none; }
+.sheets { flex: none; display: flex; align-items: flex-end; height: 30px; box-sizing: border-box; padding-inline-end: 10px; background: var(--sheet-bar); }
+.sheets button { font: inherit; background: none; border: 0; padding: 0; cursor: pointer; white-space: nowrap; color: var(--muted); }
+.sheets button:disabled { cursor: default; opacity: .5; }
+.sheets .step { align-self: stretch; width: 25px; font-size: 9px; }
+.sheets .tabs { display: flex; align-items: flex-end; gap: 1px; min-width: 0; overflow-x: auto; margin-inline-start: 1px; }
+.sheets [role="tab"] { height: 25px; box-sizing: border-box; padding: 0 14px; border: 1px solid var(--sheet-line); border-bottom: 0; border-radius: 3px 3px 0 0; background: var(--sheet-lit); font-size: 11px; }
+.sheets [role="tab"][aria-selected="true"] { height: 28px; background: var(--sheet-chrome); color: var(--ink); font-size: 13px; font-weight: 600; }
+.sheetZoom { display: flex; align-items: center; gap: 2px; margin-inline-start: auto; align-self: center; color: var(--muted); }
+.sheetZoom .zoomStep { width: 18px; height: 18px; font-size: 14px; line-height: 18px; }
+.zoomSlider { -webkit-appearance: none; appearance: none; width: 90px; height: 15px; margin: 0 1px; background: none; cursor: pointer; }
+.zoomSlider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--sheet-line); }
+.zoomSlider::-moz-range-track { height: 4px; border-radius: 2px; background: var(--sheet-line); }
+.zoomSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -4px; border: 1px solid var(--sheet-line); border-radius: 50%; background: var(--sheet-chrome); }
+.zoomSlider::-moz-range-thumb { width: 10px; height: 10px; border: 1px solid var(--sheet-line); border-radius: 50%; background: var(--sheet-chrome); }
+.zoomSlider:hover::-webkit-slider-thumb { background: var(--muted); }
+.zoomSlider:hover::-moz-range-thumb { background: var(--muted); }
+.zoomPercent { width: 42px; font-size: 12px; text-align: end; }
+/* A CSV file's bar (Notion's, seen 2026-11-12 at 1440 dark): its name 12px in, and − 100% + at its end, the percent
+   in the bar's ink between the steps 45px apart. */
+.sheets.csv { align-items: center; padding-inline: 12px 16px; }
+.sheetName { min-width: 0; overflow: hidden; color: var(--ink); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.sheets.csv .zoomPercent { width: 68px; color: var(--ink); font-size: 14px; font-weight: 500; text-align: center; }
+/* A PowerPoint file's slides (light.js showPPTX), as Notion's embed draws them (measured 2026-11-12 at 1440 dark, a
+   382px frame): 8px above the first, 16px at the sides, 8px between and 16px under the last, flat on the page's color
+   with no shadow; pptx-renderer sets each slide's own gap and shadow inline. */
+.light.pptx { padding: 8px 16px; }
+.light.pptx [data-slide-index] { margin-block-end: 8px !important; }
+.light.pptx [data-slide-index] > div { box-shadow: none !important; }
+@media (max-width: 640px) { .light { padding: 8px 0 24px; } .light.xlsx { padding: 0; } }
+/* A phone's browser enlarges text it finds small, and lines laid out for the first size overlap (seen in iOS Safari, 2026-11-05). */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }

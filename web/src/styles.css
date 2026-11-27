@@ -1,0 +1,333 @@
+:root {
+  font-family: var(--font-ui);
+  color: var(--text-default);
+  background: var(--bg-app);
+  /* Weights are the faces' own; a face with no italic (the CJK ones) slants,
+     as Notion's system faces do (seen 2026-10-30). */
+  font-synthesis: style;
+  --ink: var(--text-default);
+  --secondary: var(--text-secondary);
+  --muted: var(--text-tertiary);
+  --line: var(--border-default);
+  --soft-line: #efede9;
+  --sidebar: var(--bg-sidebar);
+  --hover: var(--bg-hover);
+  --selected: var(--bg-selected);
+  --focus: #2383e2; /* a field's ring, Notion's inpBluFocRin — not the buttons' blue (2026-11-21) */
+  --page-font-size: 16px;
+  /* A settings item's parts — its words, its field or buttons, a note under
+     them — stand this far apart, as Notion's settings items (seen 2026-11-20:
+     워크스페이스 이름's description 12 over its box, 페이지 조회's row 12 over
+     자세히 알아보기). */
+  --settings-item-gap: 12px;
+  /* A checked box's tick, Notion's checkmarkFillSmall: the ✓'s own three
+     points (CheckIcon) with a 1.75 line of its 16, white, drawn 1px in from
+     the box's edge whatever its size (seen 2026-11-15: 14 in a table's,
+     a row page's, a to-do's 16 box; 12 in a card's 14 box). A box takes it
+     as its background, `var(--accent-blue) var(--checkbox-tick) center /
+     calc(100% - 2px) no-repeat border-box`. */
+  --checkbox-tick: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.63 8.29 7.13 12.37 12.37 3.63' fill='none' stroke='%23fff' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+/* The reading direction as a sign: 1 left to right, -1 right to left. A
+   shadow's, a slide's or a fade's sideways offset has no start-or-end form, so
+   it is multiplied by this (`calc(-8px * var(--inline-sign, 1))`). A block's
+   text that finds its direction from its words (dir="auto") takes the sign it
+   finds, `data-reads` (NativeTiptapTextView): an English toggle's caret in a
+   right-to-left page points as English reads. */
+:root, [dir="ltr"], [data-reads="ltr"] { --inline-sign: 1; }
+[dir="rtl"], [data-reads="rtl"] { --inline-sign: -1; }
+/* A page's title with no words yet reads the way the app does where it reads
+   from the right, its hint and caret on that side, as Notion's in Arabic
+   (seen 2026-11-19 twice in two tabs: a new page's "صفحة جديدة" at the
+   right; in Korean at the left, as dir="auto" finds it). A letter typed
+   gives it its words' way; a body line with none, nativeTiptapLineWay.ts. */
+:root[dir="rtl"] :is(h1[dir="auto"]:has(> [data-page-title-editor][data-empty="true"]),
+  [data-page-title-editor][dir="auto"][data-empty="true"]) {
+  direction: rtl;
+}
+/* An icon that points along the reading direction turns over with it: a
+   submenu's, a row's or a toggle's chevron, back and forward, "«" closing the
+   sidebar, the sidebar's and a side peek's marks, undo and restore, and a
+   picture's left and right alignment, which stand at its start and end (as
+   Notion's in Hebrew, seen 2026-11-11); "옮기기" ↱, "새 탭에서 열기" and a
+   preview's "열기" ↗, the Enter sign ↵ (an icon, or a key written as a
+   character, `data-reading-turn`) and the search's preview pane mark, which
+   Notion marks directional-icon (seen 2026-11-19 in Arabic, in its block, page
+   and search windows). One whose meaning has no side (play, a check, a number,
+   a logo, a text's own left to right, both ways ⇆) stays as drawn.
+   Only under a right-to-left screen, so a left-to-right one draws them
+   untouched. */
+[dir="rtl"] :is([data-leafen-icon-glyph="caret-right"], [data-leafen-icon-glyph="caret-left"],
+  [data-leafen-icon-glyph="caret-double-right"], [data-leafen-icon-glyph="caret-double-left"],
+  [data-leafen-icon-glyph="arrow-right"], [data-leafen-icon-glyph="arrow-left"],
+  [data-leafen-icon-glyph="toggle-caret"], [data-leafen-icon-glyph="sidebar-simple"],
+  [data-leafen-icon-glyph="side-peek"], [data-leafen-icon-glyph="arrow-u-up-left"],
+  [data-leafen-icon-glyph="restore"], [data-leafen-icon-glyph="image-align-left"],
+  [data-leafen-icon-glyph="image-align-right"], [data-leafen-icon-glyph="arrow-turn-up-right"],
+  [data-leafen-icon-glyph="open-in-new"], [data-leafen-icon-glyph="arrow-elbow-down-left"],
+  [data-leafen-icon-glyph="highlight-pane"], [data-reading-turn]) {
+  scale: var(--inline-sign, 1) 1;
+}
+
+* { box-sizing: border-box; }
+html { min-width: 320px; background: var(--bg-app); }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: var(--bg-app); }
+button, input, textarea { font: inherit; }
+/* A field's hint is the field's own text at 37.5%, Notion's one rule for
+   every field (read 2026-11-15 from its sheet: ::-webkit-input-placeholder
+   { color: inherit; opacity: .375 } — its search, people and filter fields
+   alike, (176,176,175) over white). A hint drawn otherwise says so itself
+   (a title's faint hint, a form's description). */
+::placeholder { color: inherit; opacity: 0.375; }
+/* A field of many lines has no size grip at its corner: Notion's are never
+   resized by hand (seen 2026-11-15: the invite message, a property's
+   description, a form's long answer). Each field sets its own height. */
+textarea { resize: none; }
+/* Korean breaks between any two syllables, so a squeezed button would stand
+   a syllable a line ("취/소"); its label breaks only between words, and its
+   row makes room (user request 2026-10-04). */
+:lang(ko) button { word-break: keep-all; }
+/* A button doesn't take a container's "anywhere" breaks for long text, which
+   let a row squeeze it to a syllable or letter a line despite keep-all
+   (2026-10-16: "비/밀", "사용/량" in Server › Apps): a long token still
+   breaks rather than overflow, but never shrinks the button below its word.
+   A button's own class may still say otherwise. */
+:where(button) { overflow-wrap: break-word; }
+/* A row of a menu, a list or a sheet with a line under its name saying what
+   it does (data-described) is a row, not a squeezed button: its Korean breaks
+   between any two syllables, as Notion's — its menu rows and their notes are
+   word-break normal, the teamspace "…" menu's "팀스페이스 복제" note breaking
+   "…페이지와 멤 / 버는…" (seen 2026-11-11). */
+:lang(ko) button[data-described="true"] { word-break: normal; }
+/* Every other Korean text — a confirmation, the settings window and any other
+   window, a consent page, the sign-in panels — breaks between any two
+   syllables, as Notion's: its confirmations ("…작 / 동하는…", "삭 / 제하면"),
+   settings window ("서버 / 를"), add-account sign-in ("로 / 그인") and share
+   menu are word-break normal at 1440 and 768, and its code sets keep-all
+   nowhere (seen 2026-11-11). */
+/* An icon keeps its size in a crowded row rather than squeezing to a sliver. */
+:where([data-leafen-icon]) { flex-shrink: 0; }
+/* The keyboard's focus rings a control, as Notion's (seen 2026-10-29 in the
+   top bar, sidebar, page head, discussions, menus and dialogs): its ring over
+   the ground the pointer would give it. A rule of a control's own that draws
+   another edge on focus wins at the same weight. A table's chosen cell is
+   edged by its choice alone, as Notion's (seen 2026-11-06: the ring drew a
+   second edge round it after Escape). Where keys lead and the browser gives
+   no :focus-visible — WebKit (Safari and the desktop app) on a control the
+   focus was moved to by code or a Tab trap, Chrome on one the pointer focused
+   that a key then reaches — the keys' own mark (data-key-focus,
+   lib/lastPress.ts) takes this ring, and every other :focus-visible rule with
+   it (postcss.config.mjs). */
+:is([role="button"], [role="link"], [role="tab"], [role="switch"], [role="checkbox"], [role="radio"], [role="menuitem"],
+  [role="menuitemcheckbox"], [role="menuitemradio"], [role="treeitem"],
+  :where(button, a[href], summary, input[type="checkbox"], input[type="radio"],
+    [tabindex]:not([tabindex^="-"], input, textarea, select, [contenteditable="true"], [role="textbox"], [role="gridcell"]))):focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* While the pointer leads, the control the focus is on draws none of these
+   rings, whatever Chrome's :focus-visible says (data-pointer-focus,
+   lib/lastPress.ts): Notion's lights "표" ringless as "새 보기 추가" opens
+   from a press on "새 보기" after a search was typed in the views list (seen
+   2026-11-12 and 2026-11-15 at 1440, the focus on the tiles' grid), and its
+   question window's button takes no ring from a press on "폼" (2026-11-12).
+   A key not held with ⌘, Ctrl or Option brings the ring back, as Notion's
+   (2026-11-15: a tab given the focus back ringed at the next letter). */
+[data-pointer-focus] { --keyboard-focus-ring: 0 0 0 0 transparent; }
+/* A checkbox is a 16px box, as Notion's database checkbox and import
+   preview draw it (seen 2026-10-01): a faint 1px edge off, blue with a white
+   tick on, blue with a white dash when partly on. The browser's own box —
+   a lone white tick in the desktop app's WebKit, a 12px blue box in Chrome
+   (2026-11-08) — never shows. At no weight, so a checkbox drawn otherwise
+   (a database cell's, a to-do's, a switch) keeps its own look; one that
+   can't be changed fades only its colors, so such a look keeps its own way
+   of fading. The keyboard's ring is the rule above. */
+:where(input[type="checkbox"]) {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-block;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background-color: transparent;
+  background-origin: border-box;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  vertical-align: -3px;
+}
+:where(input[type="checkbox"]:checked, input[type="checkbox"]:indeterminate) {
+  border-color: var(--accent-blue);
+  background-color: var(--accent-blue);
+}
+:where(input[type="checkbox"]:checked) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.9 8.1 6.6 10.8 12.1 5.3' fill='none' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E");
+}
+:where(input[type="checkbox"]:indeterminate) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8h8' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+:where(input[type="checkbox"]:disabled) {
+  border-color: var(--border-default);
+}
+:where(input[type="checkbox"]:disabled:checked, input[type="checkbox"]:disabled:indeterminate) {
+  border-color: transparent;
+  background-color: color-mix(in srgb, var(--accent-blue) 45%, transparent);
+}
+/* Text that can't be written in — a read-only page's title, still a text box
+   to the keyboard — takes no ring when pressed, as Notion's (seen 2026-11-06). */
+/* A text field's own outline wins over this edge: a name typed in place, as
+   a database's or a form's, shows only its caret, as Notion's (seen
+   2026-10-10). Otherwise its edge turns blue, 1px in and 1px out, as
+   Notion's fields (seen 2026-10-29). */
+:where(input:focus-visible, textarea:focus-visible) { outline: 2px solid var(--focus); outline-offset: -1px; }
+/* A native menu keeps DOM focus on itself or its search field and moves only
+   its highlight (Aria virtual focus), shown as Notion shows a hovered item. */
+[data-native-menu]:focus { outline: none; }
+/* A menu row that can't be chosen looks it, whichever menu draws it: Aria
+   marks it aria-disabled rather than disabling its button, so a menu's own
+   ":disabled" rule missed it (2026-10-16: the sidebar's "팀스페이스 보관"
+   looked and hovered as if it could be chosen). Faded as Notion's (0.4); a
+   menu that tunes its own look keeps it. */
+:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"], [role="option"])[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+:is([role="menuitem"], [role="menuitemradio"], [role="menuitemcheckbox"], [role="option"])[aria-disabled="true"]:is(:hover, :focus, [data-focused="true"], [data-active="true"]) {
+  background: transparent !important;
+}
+/* A list beside a menu's row fading out keeps its lit row lit (besideListLeaving.ts), its copy named no menu. */
+:is([data-native-menu], [data-beside-leaving]) [data-focused="true"] { background: var(--bg-hover); }
+/* The row under the pointer keeps its shade beside the row the keys light,
+   whichever menu draws it and however it was opened: ↑ ↓ under a still
+   pointer ring the next row and leave the pointer's shaded, and the
+   pointer's first move after them shades the row it lands on, as Notion's
+   menus, pickers and advanced filter (seen 2026-11-24 at 1685 in Chrome,
+   dpr 1, in two tabs: "정렬 기준", "필터 기준", a column's menu and ⌘/'s
+   found rows). The least rule there is, so a menu's own shade wins. */
+@media (hover: hover) {
+  :where([data-native-menu] [role^="menuitem"]):hover { background: var(--bg-hover); }
+}
+/* A row the pointer crosses on its way to a list open beside another is shaded too, as Notion's (submenuHoverHold.ts). */
+[data-native-menu] [data-pointer-passing] { background: var(--bg-hover); }
+[data-pointer-heading-rule] { pointer-events: auto !important; }
+/* A row the keyboard moved to is also ringed, as Notion's (seen 2026-10-29);
+   not while its submenu is open and the keys work there (seen 2026-11-06:
+   "속성 편집" unringed while a new option is typed beside it) — but while
+   that list left the keys on the row ("연결 ›" with connections, seen
+   2026-11-18: ringed, data-beside-keeps-keys). */
+[data-native-menu] [data-focused="true"][data-focus-visible="true"]:not([aria-expanded="true"]:not([data-beside-keeps-keys])) { box-shadow: var(--keyboard-focus-ring); }
+/* A row whose list beside it is open stays shaded while that list holds the
+   keys or the pointer, as Notion's (seen 2026-11-16 at 1440 in Chrome: a
+   page's "⋯" "테마와 레이아웃 ›" opened by → and "알림 받기 ›" by →, each
+   grey with "기본" or the checked choice ringed; both opened by the pointer
+   resting on them and the pointer moved into the list, grey). A row that
+   only unfolds rows under it (aria-haspopup unset) is not one. */
+[data-native-menu] [role^="menuitem"][aria-haspopup][aria-expanded="true"] { background: var(--bg-hover); }
+/* A row holding the DOM focus itself — one its list beside it gave the focus
+   back to as an Escape the pointer led closed that list (NativeActionMenu) —
+   rings by that rule alone, not by the focus's own: shaded, as Notion's. */
+[data-native-menu] [data-native-menu-item]:focus:not([data-focus-visible="true"]) { box-shadow: none; }
+/* A menu's search field gives up its focus ring while a row of its menu
+   wears the keyboard's, showing the line it has unfocused (its
+   --menu-search-rest-ring) though it keeps the focus and the letters typed,
+   as Notion's (seen 2026-11-16 at 1440 in Chrome, in two tabs: a page's "⋯"
+   and a block's "⋮⋮" opened with the field ringed, ↓ ringed the first row and
+   left the field its 1px line, "l" or "c" typed then kept it so, the pointer
+   taking the highlight onto another row gave the field its ring back; the
+   views list's, 2026-11-15). The menu says so to its fields, whose focus ring
+   is --menu-search-ring-now when it is set: a shadow that draws nothing. */
+:is([data-native-menu], :has(> [data-native-menu])):has([data-focused="true"][data-focus-visible="true"]:not([aria-expanded="true"]:not([data-beside-keeps-keys]))) {
+  --menu-search-ring-now: 0 0 #0000;
+}
+/* A menu that pops over the page on a phone, not one in a sheet, draws its
+   rows further in, as Notion's phone (seen 2026-11-16 on the A90's Chrome at
+   411, a locked page's band menu, twice): a 22px mark 20px in and the name 14px
+   after it, in the same 14px on the same 28px rows (3px over and under the
+   mark), 16px from the row's end,
+   the menu as much wider as its longest name needs. A desktop's keeps its own,
+   and so does a teamspace picker, whose phone rows are its own
+   (TeamspaceMembers.module.css, data-choice-menu). */
+[data-phone="true"] [data-native-menu]:not([data-phone-sheet] [data-native-menu], [data-choice-menu] [data-native-menu]) [data-native-menu-item] { gap: 14px; padding-block: 3px; padding-inline: 20px 16px; }
+[data-phone="true"] [data-native-menu]:not([data-phone-sheet] [data-native-menu], [data-choice-menu] [data-native-menu]) [data-native-menu-item] > svg:first-child { width: 22px; height: 22px; }
+/* A list that scrolls fades out at an edge it runs on past, over the length
+   useEdgeFade writes as it scrolls (lib/edgeFade.ts), as Notion's menus do. */
+[data-edge-fade] {
+  mask-image: linear-gradient(to bottom, transparent, #000 var(--edge-fade-start, 0px),
+    #000 calc(100% - var(--edge-fade-end, 0px)), transparent);
+}
+/* A menu list's row carried under the drag (useDragReorder's live lists)
+   keeps the hovered look, as Notion's (seen 2026-11-11: rgba(255,255,255,0.055)
+   on the dragged row, the hover's). */
+[data-dragging="live"] { background: var(--bg-hover); }
+/* A picker option is a button for its press semantics but lays out its row
+   like the list it sits in; an option's own class may still align it. */
+:where(button[data-native-picker-option]) { text-align: inherit; }
+/* The icon picker's, the cover's and the page head's buttons start bare;
+   at no weight, so a button's own part (a head option's 8px and gray) wins
+   (2026-10-17: this reset took the head options' padding and color). */
+:where(button[data-native-page-icon-picker],
+[data-native-page-icon-picker] button,
+[data-native-page-cover] button,
+[data-page-header-root] button) {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+.scalar-block { display: flex; align-items: flex-start; margin-bottom: 10px; }
+.scalar-block textarea { width: 100%; resize: none; overflow: hidden; border: 0; outline: 0; color: var(--ink); background: transparent; line-height: 1.65; padding: 3px 0; }
+.scalar-block textarea { min-height: 62px; }
+.scalar-block textarea::placeholder { color: #767570; opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+/* What a page's width sets on one box, for that box alone: the room a wide
+   table, board, timeline or simple table takes across the page
+   (usePageWideTable, usePageWideSimpleTable) and the page's width on its
+   document (usePageColumn, MarginDiscussions). Inherited, each change of the
+   page's width — a side peek opening — made every element under them work
+   out its styles again: a whole page's, some 100ms with a table of 120 rows
+   (seen 2026-11-12). Each is read where it is set; a box under it that needs
+   one takes it with `inherit`, its writer handing it down again (handDownAgain). */
+@property --page-wide-offset { syntax: "*"; inherits: false; }
+@property --page-wide-width { syntax: "*"; inherits: false; }
+@property --page-wide-reach { syntax: "*"; inherits: false; }
+@property --page-wide-edge { syntax: "*"; inherits: false; }
+@property --page-width { syntax: "*"; inherits: false; }
+@property --page-peek-room { syntax: "*"; inherits: false; }
+@property --page-scrollbar-room { syntax: "*"; inherits: false; }
+@property --page-scrollbar { syntax: "*"; inherits: false; }
+
+/* A layer over the page keeps its scrolling to itself at either end: its
+   own box does, laid down here once for every layer. On an iPhone or iPad
+   every box in it does, as React Aria's modal lays down there while it is
+   open (lib/preventPageScroll.ts) — here once too, as laying it down and
+   taking it up again worked out every style in the page each time.
+   Elsewhere a box inside keeps `auto`: Chrome stops the wheel at the first
+   contained box under the pointer that holds a scroll, a row's words cut
+   with "…" (overflow hidden) included, though it cannot scroll, and the
+   list holding the row stood still (2026-11-19: an automation schedule's
+   time and time zone lists, a date's time zone list, wheeled over a row's
+   words). In Chrome on a Mac a contained box also takes Home and End from
+   a layer's fields, which lib/fieldHomeEnd.ts gives back. */
+@layer {
+  [data-overlay-root] > *, [aria-modal="true"] { overscroll-behavior: contain; }
+  [data-apple-touch="true"] :is([data-overlay-root], [aria-modal="true"]) * { overscroll-behavior: contain; }
+}
+
+/* On a touch screen an app's row in the server's apps holds its controls at
+   one height, the 44px the settings' buttons take there
+   (AdministratorSettingsPage.module.css): its status choice and "⋯" too, so
+   "…에서 업데이트", "설정", "복원", "켜짐 ⌄" and "⋯" share their edges
+   (2026-11-15: 44px buttons beside a 28px choice and a boxless "⋯"). */
+[data-touch="true"] [data-app-status] button { min-height: 44px; }
+[data-touch="true"] [data-app-row-menu] { min-width: 44px; min-height: 44px; }

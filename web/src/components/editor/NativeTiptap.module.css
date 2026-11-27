@@ -1,0 +1,69 @@
+.block { position: relative; }
+.surface :global(.tiptap) { outline: none; white-space: pre-wrap; }
+/* A body that can't be changed (a locked page) takes keys without a ring, as Notion's (seen 2026-10-31). */
+.surface :global(.tiptap[contenteditable="false"]:focus-visible) { box-shadow: none; }
+.blockContent > :global([data-node-view-content-react]) { display: contents; }
+.block[data-native-collapsed="true"] > div > div > div > .blockContent :global([data-native-children]) { display: none; }
+/* Columns share Notion's 720px column — 6px out of the block on either
+   side — each holding its blocks 6px in, as the page does (measured
+   2026-10-24). */
+/* 7px above and below, so two one-line columns stand 64px as Notion's (2026-10-31).
+   It places the handle in each gap for its height (EditorColumns .columnResize). */
+.columns > div > :global([data-node-view-content-react]) { position: relative; display: flex; align-items: flex-start; gap: 46px; margin: 7px -6px; }
+.columns :global([data-native-column]) { padding-inline: 6px; }
+.columns > div > :global([data-node-view-content-react]) > :global(.node-nativeBlock) { display: contents; }
+/* A simple table's rows share its columns: each box from the table down to a
+   row's cells passes its tracks on, so a column is as wide in every row; its
+   auto columns as the room it has lays them out (useSimpleTableAutoColumns). */
+.table { display: grid; grid-template-columns: var(--simple-table-auto-columns, var(--simple-table-columns)); width: max-content;
+  border-top: 1px solid var(--border-default); border-inline-start: 1px solid var(--border-default); }
+/* One without rows draws no lines, as Notion's (seen 2026-11-14: a table
+   whose rows were all deleted is its box alone, 48px). */
+.table[aria-rowcount="0"] { border: 0; }
+.table :has([data-native-table-cell]):not(:has(> [data-native-table-cell])) { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; min-width: 0; }
+/* A cell fills its row's height, so its lines meet its neighbours'. */
+.table :has(> [data-native-table-cell]) { display: grid; min-width: 0; }
+/* A table whose columns all stand at widths set in pixels — sized, or laid
+   out in its room (useSimpleTableAutoColumns, data-table-tracks) — lays each
+   row's cells on them by itself, the boxes between plain blocks, and a row
+   out of view isn't laid out, as wide as its columns and 35px, a one-line
+   row, until drawn: a 100×300 table laid out all its 30,000 cells through
+   their 14 nested grids with each letter typed in it, 0.1 s, and opened in
+   19 s (2026-11-19, 12 s now). A row new to a page already drawn paints
+   whole in its first frame (simpleTableRowArrival.ts). */
+[data-table-tracks="fixed"] .table:not([data-table-merged="true"]),
+[data-table-tracks="fixed"] .table:not([data-table-merged="true"]) :has([data-native-table-cell]):not(:has(> [data-native-table-cell]), [data-native-table-cells] > *) {
+  display: block; }
+[data-table-tracks="fixed"] .table:not([data-table-merged="true"]) [data-native-table-cells] > [data-node-view-content-react] {
+  display: grid; grid-template-columns: var(--simple-table-auto-columns, var(--simple-table-columns)); }
+@media not print {
+  [data-table-tracks="fixed"] .table:not([data-table-merged="true"]) [role="row"]:not([data-arriving]) {
+    content-visibility: auto; contain-intrinsic-size: var(--simple-table-tracks-width) auto 35px; }
+}
+/* A table with merged cells puts each cell straight on its grid at its row
+   and column, a merged one across its rows and columns as an HTML table's
+   rowspan and colspan: the boxes between give theirs up, and a cell a merged
+   one stands over is not shown (Notion, seen 2026-11-10). */
+.table[data-table-merged="true"] :has([data-native-table-cell]):not([data-native-table-cell]) { display: contents; }
+.table[data-table-merged="true"] [data-table-covered] { display: none; }
+/* The table's own (empty) widget stands in the first cell's place, adding no row. */
+.table[data-table-merged="true"] :global(.node-nativeWidget) { grid-area: 1 / 1; }
+/* One 1px line between cells, as Notion's collapsed borders; a header cell is
+   tinted and medium weight (seen 2026-10-11). */
+.cell { min-width: 0; border-inline-end: 1px solid var(--border-default); border-bottom: 1px solid var(--border-default); }
+.cell[data-header="true"] { background: var(--bg-table-header); font-weight: 500; }
+/* A phone stacks the columns; a narrow desktop window keeps them side by
+   side, as Notion's (seen 2026-11-01 at 560px). */
+:global(:is([data-phone="true"], [data-stack-columns="true"])) .columns > div > :global([data-node-view-content-react]) { flex-direction: column; gap: 18px; }
+:global(:is([data-phone="true"], [data-stack-columns="true"])) .columns :global([data-native-column]) { width: 100%; flex-basis: auto !important; }
+/* A list widened past the page (columnListWidth) keeps the page's width where its columns stack. */
+:global(:is([data-phone="true"], [data-stack-columns="true"])) .block[data-native-column-list] { width: auto !important; margin-inline: 0 !important; }
+
+:global([data-native-tab-label="true"]) { display: none; }
+/* A tab's item shows its blocks only: its own line, whatever block it is
+   (a heading's text, a divider, code, an equation), names the tab. */
+:global([data-native-tab-item] > [data-node-view-content] > [data-node-view-content-react] > :not(.node-nativeChildren)) { display: none; }
+/* Its blocks keep their 6px around them inside the tab's frame, their text
+   8px in from it, as Notion's (seen 2026-11-14: a line, a heading, code, a
+   quote and a list each 6px further in than on the page). */
+:global([data-native-tab-item] > [data-node-view-content] > [data-node-view-content-react] > .node-nativeChildren) { padding-inline-start: 6px; }

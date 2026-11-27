@@ -1,0 +1,32 @@
+:root { color-scheme: light; --ink: #191919; --muted: #6b6b6b; --line: #e3e2e0; --back: #f1f1ef; --bar: rgba(247, 247, 245, .96); --on: #e3e2e0; }
+:root[data-theme="dark"] { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .96); --on: #373737; }
+/* The theme arrives once the app connects; until then the system's, so a dark window doesn't flash white. */
+@media (prefers-color-scheme: dark) { :root:not([data-theme]) { color-scheme: dark; --ink: #e6e6e6; --muted: #9b9b9b; --line: #373737; --back: #202020; --bar: rgba(37, 37, 37, .96); --on: #373737; } }
+html, body { margin: 0; height: 100%; background: var(--back); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif; }
+.state { color: var(--muted); font-size: 14px; text-align: center; margin: 40px 16px; }
+.state[hidden] { display: none; }
+/* The page count, the editing tools, and whether the file is saved. */
+.bar { position: fixed; top: 0; inset-inline: 0; z-index: 3; min-height: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 12px;
+  padding: 2px 12px; box-sizing: border-box; font-size: 13px; color: var(--muted); background: var(--bar); border-bottom: 1px solid var(--line); }
+.bar[hidden], .tools[hidden], .save[hidden] { display: none; }
+/* The page count or whether the file is saved, in a place of its own: the
+   buttons after it stay where they are as the words change (2026-10-16: a
+   click meant for "저장" landed on a tool when "아직 저장하지 않음" pushed it). */
+.status { min-width: 11em; text-align: end; white-space: nowrap; }
+/* Editing, the page position has its own place and the status says the save, from the first as the other document apps do (2026-11-07). */
+.page { white-space: nowrap; }
+.page[hidden] { display: none; }
+.tools { display: inline-flex; gap: 2px; }
+.tools button { font: inherit; font-size: 13px; color: var(--ink); background: none; border: 0; border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+.tools button[aria-pressed="true"] { background: var(--on); }
+.save { font: inherit; font-size: 13px; color: #fff; background: #2383e2; border: 0; border-radius: 4px; padding: 4px 12px; cursor: pointer; }
+.save:disabled { opacity: .6; cursor: default; }
+/* pdf.js's viewer scrolls in its own box under the bar. */
+#viewerContainer { position: absolute; inset: var(--bar-height, 37px) 0 0; overflow: auto; }
+#viewerContainer[hidden] { display: none; }
+.pdfViewer .page { box-shadow: 0 1px 3px rgba(0, 0, 0, .15); border: 0; margin: 12px auto; }
+@media (max-width: 640px) { .pdfViewer .page { margin: 6px auto; } }
+/* A phone's browser enlarges text it finds small, and lines laid out for the first size overlap (seen in iOS Safari, 2026-11-05). */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+/* Without a save button, the status stands alone in the middle. */
+.bar:has(.save[hidden]) .status { min-width: 0; text-align: center; }

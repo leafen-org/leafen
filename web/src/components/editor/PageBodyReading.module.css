@@ -1,0 +1,55 @@
+/* A page whose body is still read shows no head either: one bar where its
+   title stands, then its title, body and scroll bar in one frame, as
+   Notion's page opened before it was read (seen 2026-11-15 four times in
+   Chrome 1440 dark, a long page opened from a mention: the frame empty for
+   87–109 ms, then one grey bar, then title, body and the 15px scroll bar
+   together 367–394 ms after the press). A title drawn before its body moved
+   7px left when the body's scroll bar came. The bar is a pill (radius 15)
+   30px tall, 10px under the title's top, from the start of the page's text
+   column and as wide as it up to 600px, however the page is opened (seen
+   2026-11-16 in Chrome dark, two tabs, seven new pages: from a page link, a
+   mention and a link to page, long and short, on a delayed or a plain
+   network — at 1440 600×30 at the column's start, 501, the title's own box
+   6px wider each side; at 768 576×30, the whole column; 11-15 had seen
+   radius 4). The title's box here is the column itself. */
+.reading > :global([data-page-header-root]) {
+  visibility: hidden;
+}
+
+.reading > :global([data-page-header-root]) h1 {
+  position: relative;
+}
+
+.reading > :global([data-page-header-root]) h1::after {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-start: 0;
+  width: min(600px, 100%);
+  height: 30px;
+  border-radius: 15px;
+  /* Notion's tint for a thing not there yet, the bar's in both layouts and
+     themes (app/olderInk.css) — a page opened before it was read. */
+  background: var(--reading-bar-bg);
+  content: "";
+  visibility: visible;
+  opacity: 0;
+  animation: pageBodyReadingReveal 1ms linear 100ms forwards;
+}
+
+/* On a phone the pill across the text column is 24px tall, as Notion's (seen
+   2026-11-15 in iPhone Safari at 402: about 354×24; 2026-11-16 in Android
+   Chrome at 411 on a slow network: 363×24 at 24px from each side, radius 15). */
+:global([data-phone="true"]) .reading > :global([data-page-header-root]) h1::after {
+  height: 24px;
+}
+
+/* The bar stands for the body's own lines. */
+.reading :global([data-page-body-reading-lines]) {
+  display: none;
+}
+
+@keyframes pageBodyReadingReveal {
+  to {
+    opacity: 1;
+  }
+}

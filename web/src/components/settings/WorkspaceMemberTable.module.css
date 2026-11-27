@@ -1,0 +1,194 @@
+/* Notion's member table (seen 2026-10-10): a 32px head between two lines,
+   14px names over the columns in the secondary color (2026-11-09, its
+   member and guest tables alike), 42px rows each over a line. Its columns
+   are 280, 160, 160 and 200 of the 800px the settings give it, each giving
+   way by its share where they give less, down to 751 (263, 150, 150, 188),
+   past which it scrolls sideways (seen 2026-11-14 at 1440 and 834: Notion's
+   cells flex 0 1 at those widths in a row at least 751 wide). */
+.scroller {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: max-content;
+}
+
+.table.members {
+  min-width: 751px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(250px, 280fr) minmax(125px, 160fr) minmax(125px, 160fr) minmax(155px, 200fr);
+  align-items: center;
+  min-height: 42px;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+}
+
+/* Past the person's column, a column's words stand 8px into its cell's 12,
+   as the words of its buttons do (Notion's, seen 2026-11-14: "팀스페이스",
+   "그룹" and "역할 ↑" over "팀스페이스 1개 ⌄" and "워크스페이스 소유자 ⌄", all
+   20px in, the sort button's 6px in that): where the table is cut at its
+   edge, the cut falls in a column's space, not on its next column's first
+   letters (2026-11-13: a sliver of "그룹" at 834). */
+.members .headCell + .headCell {
+  padding-inline-start: 20px;
+}
+
+.members .none,
+.members .role {
+  padding-inline-start: 8px;
+}
+
+.headRow {
+  min-height: 32px;
+  box-shadow: inset 0 1px 0 var(--border-default), inset 0 -1px 0 var(--border-default);
+}
+
+.headCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+/* A search that finds no one keeps the head and says so in a 32px row over
+   its line, 12px words 4px in, secondary color (Notion's member and guest
+   tables alike, seen 2026-11-19). */
+.emptyRow {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 4px;
+  box-shadow: inset 0 -1px 0 var(--border-default);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.headLabel,
+.sortButton {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  margin-inline-start: -6px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.sortButton:hover,
+.sortButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A person's 28px face, then their name over their address in the
+   secondary color, the two lines centred in the 42px row (2026-11-09: 7px
+   above and below had made the rows 48px). */
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 12px;
+}
+
+/* A person's second line: their address, or what an invitation waits on. */
+.userCell .userSub {
+  color: var(--text-secondary);
+}
+
+.avatar {
+  flex: 0 0 auto;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 12px;
+  font-size: 14px;
+}
+
+.none {
+  color: var(--text-tertiary);
+}
+
+/* "팀스페이스 N개 ⌄": 28px at its cell's 12px, 8px in, 14px/400 words, its
+   chevron 6px on in the tertiary icon color (Notion's, seen 2026-11-14). */
+.countButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.countButton svg {
+  color: var(--icon-tertiary);
+}
+
+.countButton:hover,
+.countButton:focus-visible,
+.countButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.roleCell {
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.role {
+  margin-inline-end: 4px;
+  color: var(--text-default);
+}
+
+/* A teamspace's 16px mark in a person's teamspace list, which opens apart
+   from the table (2026-11-07: kept to the table's box, it stretched the
+   row's width as a grey bar); Notion's rows show it at 16px, centred in a 20px
+   place (seen 2026-11-09). */
+.teamspaceIcon {
+  flex: 0 0 16px;
+  margin-inline: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background: var(--teamspace-letter-bg);
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* An invitation whose mail couldn't be sent says so in the danger color; its link is still there to copy. */
+.mailFailed[data-invitation-mail-failed] {
+  color: var(--danger);
+}
+
+/* An invitation's role with its "링크 복사" and "초대 취소": where the role
+   is a longer one (제한된 멤버) the actions go under it rather than past the
+   table's end. */
+.invitationRoleCell {
+  flex-wrap: wrap;
+  padding-block: 4px;
+}

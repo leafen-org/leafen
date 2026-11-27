@@ -1,0 +1,381 @@
+
+/* ── Selection toolbar ─────────────────────────────────────── */
+/* Selected text's toolbar: Notion's panel below the end of the selection,
+   with the block's type, two rows of marks, and comment and suggesting. */
+.selToolbar {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  padding: 8px;
+  background: var(--bg-elevated);
+  /* 14px round, as Notion's panel (seen 2026-11-01). */
+  border-radius: 14px;
+  box-shadow: var(--shadow-menu);
+}
+/* Notion's comment box: one row of marks over the selection (seen 2026-10-15). */
+.selToolbarRow {
+  flex-direction: row;
+  padding: 4px;
+  border-radius: 8px;
+}
+/* A comment box's row, Notion's (seen 2026-11-13 at 1440×723): 28px
+   buttons side by side round 16px glyphs, the link's 🔗▾ 40px and the
+   color's "A" 33px. */
+.selToolbarRow .tbRow {
+  gap: 0;
+}
+.selToolbar.selToolbarRow .tbBtn {
+  min-width: 28px;
+  padding: 0 6px;
+}
+.selToolbar.selToolbarRow .tbLinkBtn {
+  width: 40px;
+  padding-block: 0;
+  padding-inline: 5px 0;
+  justify-content: flex-start;
+  gap: 2px;
+}
+.selToolbar.selToolbarRow .tbColorBtn {
+  padding-block: 0;
+  padding-inline: 7px 6px;
+}
+.selToolbar .tbBtn > svg.tbLinkCaret {
+  color: var(--icon-tertiary);
+}
+.tbRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+/* Notion's lines under the block's type and over comment (seen 2026-10-31):
+   1px, 8px in from the panel's padding, 4px from the rows on each side. */
+.tbLine {
+  flex: none;
+  height: 1px;
+  margin: 0 8px;
+  background: var(--menu-divider);
+}
+.tbSpacer {
+  flex: 1;
+}
+.selToolbar .tbBtn {
+  min-width: 32px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-default);
+}
+.selToolbar .tbBtn > svg {
+  color: var(--icon-primary);
+}
+.selToolbar .tbBtn:hover,
+.selToolbar .tbBtn:focus-visible,
+.selToolbar .tbBtn[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+.selToolbar .tbBtn[aria-pressed="true"] {
+  background: transparent;
+  color: var(--accent-blue);
+}
+/* A mark that is on shows its icon blue too, as Notion's (seen 2026-11-07:
+   bold and link rgb(39,131,222), their icons' fill blue). */
+.selToolbar .tbBtn[aria-pressed="true"] > svg {
+  color: inherit;
+}
+.selToolbar .tbBtn[aria-pressed="true"]:hover,
+.selToolbar .tbBtn[aria-pressed="true"]:focus-visible {
+  background: var(--bg-hover);
+}
+/* A button that is off is dimmed whole, with no pointer, as Notion's (seen
+   2026-11-07: inline code in a code block, opacity 0.4, cursor default). */
+.selToolbar .tbBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+/* The type's row, as Notion's (measured 2026-11-15 at 1440×723): 6px in
+   before its 20px mark, so the mark stands in the rows' column of marks (the
+   panel's 8px and a 32px button's 6px), 8px between, its name at 42 and a
+   16px "›" 8px from the end. */
+.selToolbar .tbTurn {
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  font-size: 14px;
+}
+.tbTurnLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.selToolbar .tbComment {
+  gap: 6px;
+  padding-block: 0;
+  padding-inline: 6px 8px;
+  font-size: 14px;
+}
+/* As Notion's (seen 2026-11-01): "형식 초기화" is 28 wide, and "댓글" runs from
+   the row's start to the reaction, its mark 6px in and its word at 32. */
+.selToolbar .tbClear {
+  min-width: 28px;
+  padding: 0 4px;
+}
+.selToolbar .tbComment:not(:only-child) {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  margin-inline-end: -4px;
+}
+.selToolbar .tbComment + .tbSpacer {
+  display: none;
+}
+.tbBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 28px;
+  height: 25px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
+.tbBtn svg {
+  flex: 0 0 auto;
+}
+.tbBtn:hover,
+.tbBtn:focus-visible,
+.tbBtn[aria-expanded="true"],
+.tbBtn[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+.tbBtn[aria-pressed="true"] {
+  color: #fff;
+}
+.tbBtn:disabled {
+  color: rgba(255, 255, 255, 0.34);
+  cursor: default;
+}
+.tbBtn:disabled:hover,
+.tbBtn:disabled:focus-visible {
+  background: transparent;
+}
+/* The color button's "A" in a 20px box ringed inside, as Notion's (seen
+   2026-10-31: 12px/500, round 6px). */
+.tbColorButtonMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+}
+.tbColorButtonMark[data-color="gray"] { color: var(--c-gray); }
+.tbColorButtonMark[data-color="brown"] { color: var(--c-brown); }
+.tbColorButtonMark[data-color="orange"] { color: var(--c-orange); }
+.tbColorButtonMark[data-color="yellow"] { color: var(--c-yellow); }
+.tbColorButtonMark[data-color="green"] { color: var(--c-green); }
+.tbColorButtonMark[data-color="blue"] { color: var(--c-blue); }
+.tbColorButtonMark[data-color="purple"] { color: var(--c-purple); }
+.tbColorButtonMark[data-color="pink"] { color: var(--c-pink); }
+.tbColorButtonMark[data-color="red"] { color: var(--c-red); }
+.tbColorButtonMark[data-color="gray_background"] { background: var(--c-bg-gray); color: var(--c-gray); }
+.tbColorButtonMark[data-color="brown_background"] { background: var(--c-bg-brown); color: var(--c-brown); }
+.tbColorButtonMark[data-color="orange_background"] { background: var(--c-bg-orange); color: var(--c-orange); }
+.tbColorButtonMark[data-color="yellow_background"] { background: var(--c-bg-yellow); color: var(--c-yellow); }
+.tbColorButtonMark[data-color="green_background"] { background: var(--c-bg-green); color: var(--c-green); }
+.tbColorButtonMark[data-color="blue_background"] { background: var(--c-bg-blue); color: var(--c-blue); }
+.tbColorButtonMark[data-color="purple_background"] { background: var(--c-bg-purple); color: var(--c-purple); }
+.tbColorButtonMark[data-color="pink_background"] { background: var(--c-bg-pink); color: var(--c-pink); }
+.tbColorButtonMark[data-color="red_background"] { background: var(--c-bg-red); color: var(--c-red); }
+/* Notion's color menu (seen 2026-10-08): 190px, 12px in, gray 12px headings
+   over grids of 30px swatches five to a row 4px apart; a swatch is a 26px
+   rounded square ringed in its color — "A" for a text color, filled for a
+   background — and the text's own color is ringed 2px dark. */
+.tbColorMenu {
+  position: fixed;
+  width: 190px;
+  max-height: min(430px, calc(100vh - 64px));
+  overflow-y: auto;
+  padding: 2px 12px 12px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+.tbColorLabel {
+  padding: 8px 0 7px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.tbColorGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 30px);
+  gap: 4px;
+}
+.tbColorItem {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--text-default);
+}
+.tbColorItem:hover,
+.tbColorItem[data-focused="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.tbColorItem .colorSwatch {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  font-size: 16px;
+}
+.tbColorItem[data-active="true"] .colorSwatch {
+  box-shadow: inset 0 0 0 2px var(--text-default);
+}
+.tbColorItem .colorSwatch[data-color="default_background"] {
+  background: transparent;
+}
+.tbColorName {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.tbTurn {
+  gap: 3px;
+  padding: 0 6px;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+.tbTurnCaret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+.tbTurnMenu {
+  position: fixed;
+  width: 220px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 4px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+}
+/* Notion's standard menu row (seen 2026-10-31): the mark at 8px, the name at 36px. */
+.tbTurnItem {
+  display: grid;
+  grid-template-columns: 20px 1fr auto;
+  align-items: center;
+  gap: var(--menu-row-gap);
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: var(--menu-row-padding);
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.tbTurnItem + .tbTurnItem {
+  margin-top: var(--menu-row-space);
+}
+/* "페이지 위치:" opens its pages beside the list. */
+.tbTurnChevron {
+  color: var(--icon-tertiary);
+}
+.tbTurnItem:hover,
+.tbTurnItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.tbTurnGlyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary); /* Notion draws a turn's block mark in the text's own colour, seen 2026-11-16 */
+  font-size: 13px;
+}
+.tbTurnGlyph svg {
+  flex: 0 0 auto;
+}
+/* Notion's "붙여넣기 형식" (seen 2026-10-29): 200px, its name 12px in
+   over 28px lines of words alone, 4px in and 1px apart. */
+.pastedUrlMenu {
+  position: fixed;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: min(200px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: calc(100vh - 2 * var(--popover-edge));
+  overflow-y: auto;
+  padding: 0 4px 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+}
+.pastedUrlTitle {
+  padding: 10px 8px 7px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+/* Blocks pasted from another page: no title above the choices, as Notion's (seen 2026-11-05). */
+.pastedBlocksMenu {
+  width: min(320px, calc(100vw - 2 * var(--popover-edge)));
+  padding-top: 4px;
+}
+/* Its first choice starts chosen, shown by its background alone (Notion's,
+   seen again 2026-11-06 with the paste made from the keys) — over the native
+   menus' keyboard ring, whatever key brought it. */
+.pastedBlocksMenu > button[data-focused="true"][data-focus-visible="true"] {
+  box-shadow: none;
+}
+.pastedUrlMenu > button {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.pastedUrlMenu > button:hover,
+.pastedUrlMenu > button[data-focused="true"],
+.pastedUrlMenu > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

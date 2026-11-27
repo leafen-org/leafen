@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "id": "app.leafen.web-clip",
+  "slug": "web-clip",
+  "version": "1.0.12",
+  "name": { "en": "Web Clips", "ko": "웹 클립" },
+  "description": {
+    "en": "Keeps the web pages your clipper sends — MarkSnip or any tool that posts to a webhook — as pages in your own Web Clips database.",
+    "ko": "클리퍼(MarkSnip이나 웹훅으로 보내는 도구)가 보낸 웹 페이지를 내 \"웹 클립\" DB의 페이지로 둡니다."
+  },
+  "developer": { "name": "Leafen" },
+  "icon": "ui/icon.svg",
+  "category": "personal",
+  "tags": ["clipper", "markdown", "web"],
+  "surfaces": { "fullPage": { "entry": "ui/index.html" } },
+  "personAccess": "content",
+  "device": ["clipboard-write"],
+  "data": [ { "key": "clips", "file": "data/clips.json", "perPerson": true } ],
+  "network": {},
+  "workers": [
+    { "name": "clips", "module": "workers/main.wasm", "functions": ["clip", "find"], "resident": true }
+  ],
+  "endpoints": [
+    { "key": "clip", "name": { "en": "Where clippers send clips", "ko": "클립 받는 주소" }, "worker": "clips", "function": "clip", "methods": ["POST", "OPTIONS"] }
+  ],
+  "actions": [
+    {
+      "key": "find",
+      "name": { "en": "Find web clips", "ko": "웹 클립 찾기" },
+      "description": { "en": "The person's clips, newest first, by words in their title, address or summary.", "ko": "제목·주소·요약의 낱말로 찾은 내 웹 클립, 최근 것부터." },
+      "inputLabels": { "query": { "en": "Words", "ko": "찾을 말" }, "limit": { "en": "How many", "ko": "개수" } },
+      "input": {
+        "type": "object",
+        "properties": { "query": { "type": "string", "maxLength": 200 }, "limit": { "type": "integer", "minimum": 1, "maximum": 50 } },
+        "additionalProperties": false
+      },
+      "runAs": "person", "worker": "clips", "function": "find", "risk": "low", "tool": true
+    }
+  ],
+  "agent": {
+    "summary": { "en": "Web pages the person clipped, kept as pages.", "ko": "사람이 클립한 웹 페이지(페이지로 저장됨)." },
+    "instructions": {
+      "en": "Use find to look through the person's web clips; each comes with its page id — read the page with Leafen's page tools.",
+      "ko": "find로 웹 클립을 찾습니다. 결과의 페이지 ID로 리펜의 페이지 도구에서 본문을 읽습니다."
+    }
+  }
+}

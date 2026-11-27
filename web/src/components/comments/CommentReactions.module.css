@@ -1,0 +1,191 @@
+/* Notion's reaction chips (seen 2026-09-30, measured 2026-10-11 on a feed
+   post): 25px pills, a 16px emoji and a 12px count in even-width figures,
+   the person's own in blue on a 9.4% blue tint, the others' and the add on
+   its faint ground (bacTerTra, our --border-subtle; seen 2026-11-14 at 1440
+   dark: rgba(255,255,243,.082), its alpha half again under the pointer).
+   The row's own selectors outrank the buttons of the page header and the
+   comments panel they sit in. */
+/* 8px under the comment's words (Notion's, seen 2026-11-14 at 1440 and 411). */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+/* A page's own reactions, under its discussion head (seen 2026-10-11). */
+.row.pageRow {
+  margin: 4px 0 14px;
+}
+
+.row .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 25px;
+  min-height: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 100px;
+  background: var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.row .chip:hover:not(:disabled),
+.row .chip:focus-visible {
+  background: rgb(from var(--border-subtle) r g b / calc(alpha * 1.5));
+  outline: none;
+}
+
+/* One's own reaction: Notion's bluBacSecTra, its alpha half again under the
+   pointer (seen 2026-11-06: dark #439bff3d, light #007cd718). */
+.row .chip[data-mine="true"] {
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+}
+
+.row .chip[data-mine="true"]:hover:not(:disabled),
+.row .chip[data-mine="true"]:focus-visible {
+  background: var(--action-mark-blue-bg-hover);
+}
+
+.row .chip:disabled {
+  cursor: default;
+}
+
+/* The emoji in a 16px box, as Notion's picture of it, however wide the
+   system's emoji font draws it (Android's ran 18.8). */
+.emoji {
+  display: inline-flex;
+  justify-content: center;
+  width: 16px;
+  font-size: 16px;
+}
+
+/* A comment's add is a chip with its 16px smiley in the icons' grey: 32×25,
+   2px and 8px in (Notion's, seen 2026-11-14). */
+.row .add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  min-height: 0;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 100px;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+}
+
+.row .add:hover,
+.row .add:focus-visible {
+  background: rgb(from var(--border-subtle) r g b / calc(alpha * 1.5));
+  outline: none;
+}
+
+/* A page's own reactions add and resolve on 24px rounds with no ground, the
+   pointer's grey under it, the smiley 8px after the chips and the check 4px
+   after the smiley, as Notion's on a page and a row's page alike (seen
+   2026-11-14, 1440 wide dark: x+8 and x+4, in the icons' grey; a comment's
+   add keeps its pill). */
+.row.pageRow .add {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.row.pageRow .add[data-comment-action="react"] {
+  margin-inline-start: 4px;
+}
+
+.row.pageRow .add:hover,
+.row.pageRow .add:focus-visible {
+  background: var(--bg-hover);
+}
+
+/* A workspace emoji in a chip is its picture at the emoji's size. */
+.customEmoji {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  vertical-align: -3px;
+}
+.customEmojiMissing {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  vertical-align: -3px;
+}
+
+/* A reaction's tip: the emoji on a small light tile over who reacted, both
+   centered, 12px/500 (seen 2026-11-06: a 23×20 white tile, round 4, 4px over
+   the line, "님이" in the secondary color). */
+span.tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.tipTile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 23px;
+  height: 20px;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 12px;
+}
+
+.tipLine {
+  text-align: center;
+}
+
+.tipDim {
+  color: rgb(173, 169, 163);
+}
+
+/* On a phone the chips are 32px high with a 14px count, a comment's add
+   34×32 with an 18px smiley; a page's own add and check are the smiley 22
+   and the check 18 in their 24px rounds, the smiley on its 24px line's
+   baseline, 3px over the check's middle (Notion's at 411px, seen
+   2026-11-14: chip 32 high, smiley 1 under its top, check 4). */
+:global(body[data-phone="true"]) .row .chip {
+  height: 32px;
+  font-size: 14px;
+}
+
+:global(body[data-phone="true"]) .row:not(.pageRow) .add {
+  height: 32px;
+}
+
+:global(body[data-phone="true"]) .row:not(.pageRow) .add svg {
+  width: 18px;
+  height: 18px;
+}
+
+:global(body[data-phone="true"]) .row.pageRow .add[data-comment-action="react"] {
+  margin-block-end: 6px;
+}
+
+:global(body[data-phone="true"]) .row.pageRow .add[data-comment-action="react"] svg {
+  width: 22px;
+  height: 22px;
+}
+
+:global(body[data-phone="true"]) .row.pageRow .add[data-page-reactions-resolve] svg {
+  width: 18px;
+  height: 18px;
+}

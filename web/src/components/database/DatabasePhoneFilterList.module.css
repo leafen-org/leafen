@@ -1,0 +1,117 @@
+/* A phone's filter list, as Notion's "필터 N개" (seen 2026-10-24 at 375px). */
+
+/* While the viewer's own filters and sorts apply: a white 45px box of an
+   orange 22px tray and 17px/500 "모두에게 저장" 11px after it, in its middle,
+   and 8px after it a 45px box of "⋯". */
+.own {
+  display: flex;
+  gap: 8px;
+}
+
+.save,
+.more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--bg-app);
+  font: inherit;
+}
+
+.save {
+  flex: 1;
+  min-width: 0;
+  gap: 11px;
+  color: var(--c-accent-orange);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.save > svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+}
+
+/* A viewer who can't save for everyone resets them there instead. */
+.reset {
+  color: var(--text-default);
+  font-weight: 400;
+}
+
+.more {
+  flex: none;
+  width: 45px;
+  color: var(--icon-secondary);
+}
+
+.save:active,
+.more:active {
+  background: var(--bg-hover);
+}
+
+/* "정렬" and the advanced filter while they apply: blue, an 8px orange dot
+   ringed white at the icon's top right while the viewer's own. */
+.markIcon {
+  position: relative;
+  display: inline-flex;
+}
+
+[data-applied="true"] .markIcon,
+[data-applied="true"] .markLabel {
+  color: var(--c-accent-blue);
+}
+
+.unsaved {
+  position: absolute;
+  top: 1px;
+  inset-inline-end: -4px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--bg-default);
+  border-radius: 50%;
+  background: var(--unsaved-dot);
+}
+
+/* "⋯"'s sheet has no title: its rows start 15px nearer its top than a titled sheet's. */
+.moreActions {
+  margin-top: -15px;
+}
+
+/* A dashboard's "+ 필터 추가하기", as Notion's phone (seen 2026-11-16 at 402):
+   not a row but a small grey button 12 in from the groups' edge, its plus
+   10.5 wide and 6 before its 14px words, 16 under the filters' group (or the
+   sheet's top) on a 32px line. */
+.addLine {
+  display: flex;
+  align-items: flex-start;
+  min-height: 32px;
+  padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+}
+
+.addLine:first-child {
+  padding-top: 16px;
+}
+
+.addFilter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.addFilter:active {
+  background: var(--bg-hover);
+}

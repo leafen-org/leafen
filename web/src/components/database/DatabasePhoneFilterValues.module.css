@@ -1,0 +1,454 @@
+/* A filter's value in a phone's sheet, as Notion's (seen 2026-10-23 at
+   375px). A number's band runs edge to edge right under the head, not
+   inside the body's 16px: 1px below it, 45px with an 8px foot and its
+   divider line, its sign grey 8px in and the 16px field 6px after it
+   (Notion's phone, Galaxy A90 Chrome 411, 2026-11-15: the band 1px under
+   the head's foot, its field's middle 19px into it, the field from 23px). */
+.band {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  min-height: 45px;
+  margin-block: calc(1px - 16px) -1px;
+  margin-inline: -16px;
+  padding-block: 0 8px;
+  padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-block-end: 1px solid var(--border-secondary);
+  background: var(--bg-app);
+}
+
+.sign {
+  flex: none;
+  color: var(--text-tertiary);
+  font-size: 16px;
+}
+
+/* Each field in the band or a box, its own or a held part's, and the search
+   field: bare, 16px, filling its row. */
+input.field,
+.search input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* A value's parts in a column. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* A relative date's parts, as Notion's phone (seen 2026-11-11 at 402pt, light
+   and dark): 12px under the head, "이번", "지난" or "다음" and the unit each in
+   a 32px box edged in the buttons' line, 6px round, on the page's white (in
+   dark rgb(25,25,25)), its words 14px/500 from 19px and a 14px "⌄" 4px from
+   its end, 16px apart, its choices rising from the bottom; a count between
+   them in a 45px white field, 6px round over its line, 11px under the first
+   and 9px over the unit, its number 16px in and "ⓧ" at its end; then the
+   month's card and the note 16px apart. */
+.stack[data-date-filter-value="relative"] {
+  gap: 16px;
+  margin-top: -4px;
+}
+
+.choiceBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: calc(18px + var(--phone-safe-start, 0px)) calc(4px + var(--phone-safe-end, 0px));
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: start;
+}
+
+.choiceLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .choiceBox {
+  background: #191919;
+}
+
+.choiceBox .chevron {
+  inset-inline-end: 3px;
+}
+
+.countBox {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 45px;
+  margin-block: -5px -7px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(2px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  background: var(--bg-app);
+}
+
+/* A range's days, as Notion's phone (seen 2026-11-11 at 402pt, light and
+   dark): each in a 45px white field 6px round over its line, the first 1px
+   under the head, 10px apart and the month's card 17px under them; the field
+   16px from 14px in, no words while empty, and "ⓧ" 12px from its end once it
+   has a day. */
+.stack[data-date-filter-value="range"] {
+  gap: 10px;
+  margin-top: -15px;
+}
+
+.stack[data-date-filter-value="range"] > .card {
+  margin-top: 7px;
+}
+
+.rangeField {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 45px;
+  padding-inline: calc(14px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-secondary);
+  border-radius: 6px;
+  background: var(--bg-app);
+}
+
+/* A day an iPhone's Notion shows in the middle of its field, as the system
+   draws a date there, the field empty without one (seen 2026-11-11 at 402pt:
+   a range's days and a day field's own day; a day named from today stays at
+   the start). */
+:global([data-apple="true"]) .dayValue {
+  text-align: center;
+}
+
+.chevron {
+  position: absolute;
+  inset-inline-end: 16px;
+  color: var(--icon-secondary);
+  pointer-events: none;
+}
+
+.clear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-tertiary);
+}
+
+/* A typed value's "ⓧ" right after its field, running 4px past its row
+   (PhoneFilterValueClear): a number's band takes back its 6px gap. */
+.typedClear {
+  margin-inline-end: -4px;
+}
+.band > .typedClear {
+  margin-inline-start: -6px;
+}
+
+/* A day's value, as Notion's (seen 2026-11-11 at 402pt): its field in a
+   white group 47px high, its white 1px in at top and bottom, the 16px day
+   20px in, then "ⓧ" while it has one and its "⌄" 16px from the end, 24px
+   each; a day named from today dims in it. The month's card and a named
+   day's note follow 16px apart, 12px round, the note 36px of 14px words
+   in the second grey. */
+.stack[data-date-filter-value="day"] {
+  gap: 16px;
+}
+
+.stack[data-date-filter-value="day"] > .card,
+.stack[data-date-filter-value="day"] > .note {
+  border-radius: 12px;
+}
+
+.stack[data-date-filter-value="day"] > .note {
+  padding: 8px;
+  color: var(--text-secondary);
+}
+
+.dayField {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: 47px;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-block: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--bg-app);
+  background-clip: padding-box;
+}
+
+.dayField input.field:disabled {
+  opacity: 0.4;
+}
+
+.dayChoice {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+/* The chosen one's "✓" in a bottom list of choices, 18px in the words' colour. */
+.choiceCheck {
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--text-default);
+}
+
+/* The month in a 12px-round card of its own, 16px over the month's head and
+   8px under its last week; under a day's field 20px and 16px (Notion's, seen
+   2026-11-11 at 402pt: 364px and 376px). */
+.card {
+  padding: 16px 0 8px;
+  border-radius: 12px;
+  background: var(--bg-app);
+}
+
+.stack[data-date-filter-value="day"] > .card {
+  padding: 20px 0 16px;
+}
+
+.note {
+  margin: 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: var(--bg-app);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* People or pages: the search field holding the chosen ones' chips, then
+   rows of a 24px picture (or a page's 22px icon) 16px in and the 16px name
+   from 46px, "✓" at the end of a chosen one; "나" bare from 16px. The field
+   is 14px in at top and bottom and 16px at its sides, its chips and words
+   wrapping 4px apart, its "ⓧ" (22px) right after them at the top (Notion's,
+   seen 2026-11-17 in Android Chrome at 411). */
+.search {
+  display: flex;
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding-block: 14px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+}
+
+/* A person's field 52px with its words 14px in, a page's 54px with them 2px
+   lower (Notion's, seen 2026-11-17 at 411). */
+.picks {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.search[data-pages="true"] .picks {
+  padding-top: 2px;
+}
+
+/* Its words take what is left of the line, from 60 across, 8 short of its
+   "ⓧ" (Notion's, a person's and a page's field alike, seen 2026-11-17 on
+   iPhone Safari at 402). */
+.search input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  height: 24px;
+  margin-inline-end: 8px;
+  line-height: 24px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.chipIcon {
+  display: inline-flex;
+  flex: none;
+  margin-inline-end: 4px;
+}
+
+.chipLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A chip's "×": a 24px box 2px from either side, its 16px x in the second
+   icon grey (Notion's, seen 2026-11-17 at 411). */
+.chip button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline: 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+/* A page's chip: a link to it, its words 500 on a 1.2 line, underlined by
+   a faint 1px line at their foot as a related page's name is
+   (.relationChipName), its icon in a 24 box, the chips 5 apart down and 3
+   across, and its "×" Notion's bold 16px x (xMarkFillSmall) in the words'
+   colour at half (Notion's phone, seen 2026-11-17 on iPhone Safari at 402). */
+.search[data-pages="true"] .picks {
+  gap: 5px 3px;
+}
+
+.search[data-pages="true"] .chip {
+  height: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.chipLink {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  height: 24px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* A page's icon, in its chip and its row, in the icons' quieter colour (pageEmpty's, seen alike). */
+.search[data-pages="true"] .chipIcon {
+  width: 24px;
+  color: var(--icon-secondary);
+}
+
+[data-pages="true"] > .choice .choiceIcon {
+  color: var(--icon-secondary);
+}
+
+.search[data-pages="true"] .chipLabel {
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+
+.search[data-pages="true"] .chip button {
+  color: inherit;
+}
+
+.search[data-pages="true"] .chip button svg {
+  opacity: 0.5;
+}
+
+.choice {
+  gap: 8px;
+  padding-inline-start: calc(16px + var(--phone-safe-start, 0px));
+  font-size: 16px;
+}
+
+/* "나" bare and pages' names 17px, as Notion's. */
+.choice[data-bare="true"],
+[data-pages="true"] > .choice {
+  font-size: 17px;
+}
+
+.choiceIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 24px;
+}
+
+.check {
+  flex: none;
+}
+
+/* A relation filter's row making a page: its "+" in the icons' quieter colour (Notion's, seen 2026-11-17 on iPhone Safari at 402). */
+.createPlus {
+  color: var(--icon-secondary);
+}
+
+/* An automation condition's pages on its screen (PhoneRelationConditionPages): Notion draws its chips
+   smaller than a filter's — 20px high, 12 apart across and 6 down with no other gap, an 18px icon in a
+   20px box 4 from the name in 14/500, a 20px "×" box 2 from either side with a 12px x — and its rows'
+   icons in a 24px box, the name 14 after it (Notion's, seen 2026-11-17 on a Galaxy A90 at 411, where
+   its filter's chips are 24 high in 16/500 as above). */
+.search[data-condition="true"] .picks {
+  gap: 0;
+  padding-top: 0;
+}
+
+/* Its words 17px, as the condition screen's other searches (PhoneAutomationCondition.module.css). */
+.search[data-condition="true"] input {
+  font-size: 17px;
+}
+
+.search[data-condition="true"] .chip {
+  height: 20px;
+  margin-block-end: 6px;
+  margin-inline-end: 12px;
+  font-size: 14px;
+}
+
+.search[data-condition="true"] .chipLink {
+  height: 20px;
+}
+
+/* Its icon at the box's start, the box's 2px spare after it. */
+.search[data-condition="true"] .chipIcon {
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.search[data-condition="true"] .chip button {
+  width: 20px;
+  height: 20px;
+}
+
+.search[data-condition="true"] .chip button svg {
+  width: 12px;
+  height: 12px;
+}
+
+[data-condition="true"] > .choice .choiceIcon {
+  width: 24px;
+}

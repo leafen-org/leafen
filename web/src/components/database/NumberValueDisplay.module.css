@@ -1,0 +1,59 @@
+/* A number shown as a bar or a ring, as Notion's table cell draws it (seen
+   2026-09-30): the number first, then a 4px rounded bar filling the rest of
+   the cell, or the number set against a 21px ring at the cell's end. */
+.display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.display[data-number-display="ring"] {
+  justify-content: flex-end;
+}
+
+/* In a page's properties it starts at the value's left, the ring after the
+   number, as Notion's (seen 2026-11-04). */
+:global([data-row-property-value]) .display[data-number-display="ring"] {
+  justify-content: flex-start;
+}
+
+.value {
+  flex: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bar {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 24px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 1000px;
+  background: var(--number-display-track);
+}
+
+.barFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  border-radius: 1000px;
+  background: var(--number-display-color);
+}
+
+.ring {
+  flex: none;
+}
+
+.ringTrack {
+  fill: var(--number-display-track);
+}
+
+.ringFill {
+  stroke: var(--number-display-color);
+}

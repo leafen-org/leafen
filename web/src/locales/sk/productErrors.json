@@ -1,0 +1,908 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Načítať e-mailové adresy účtu",
+        "deniedEffect": "E-mailové adresy sa nepodarilo načítať; uložené adresy sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálne e-mailové adresy.",
+        "stateCheckAction": "Pred vykonaním zmeny sa znova pripojte a obnovte zoznam e-mailov."
+      },
+      "update": {
+        "operation": "Spravovať e-mailové adresy účtu",
+        "deniedEffect": "Žiadosť o zmenu e-mailu nebola prijatá; uložené adresy sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa žiadosť o zmenu e-mailu dokončila.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte zoznam e-mailov a skontrolujte overovaciu správu."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Načítať nastavenia oznámení",
+        "deniedEffect": "Vaše nastavenia oznámení sa nepodarilo načítať a uložené nastavenia sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, aké oznámenia dostávate.",
+        "stateCheckAction": "Pred zmenou zavrite a znova otvorte nastavenia, aby sa načítali vaše nastavenia oznámení."
+      },
+      "update": {
+        "operation": "Zmeniť nastavenia oznámení",
+        "deniedEffect": "Vaše nastavenia oznámení sa nezmenili a predchádzajúce nastavenia zostali zachované.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa vaše nastavenia oznámení zmenili.",
+        "stateCheckAction": "Zavrite a znova otvorte nastavenia, aby ste pred ďalšou zmenou skontrolovali nastavenia oznámení."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Načítať profil účtu",
+        "deniedEffect": "Vaše meno a fotku nebolo možné načítať a uložený profil sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť vaše aktuálne meno a fotku.",
+        "stateCheckAction": "Zavrite a znova otvorte nastavenia, aby sa profil pred zmenou znova načítal."
+      },
+      "update": {
+        "operation": "Uložiť profil účtu",
+        "deniedEffect": "Váš profil sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa profil účtu uložil.",
+        "stateCheckAction": "Pred ďalším pokusom znova načítajte profil účtu a históriu auditu."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Zmeniť dvojstupňové overenie",
+        "deniedEffect": "Požadovaná zmena dvojstupňového overenia nebola prijatá; predchádzajúce nastavenie zostáva v platnosti.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav dvojstupňového overenia.",
+        "stateCheckAction": "Pred ďalšou zmenou dvojstupňového overenia znova načítajte zabezpečenie účtu."
+      },
+      "password": {
+        "operation": "Zmeniť heslo účtu",
+        "deniedEffect": "Heslo sa nezmenilo a aktuálne relácie zostávajú platné.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa heslo zmenilo a či boli ostatné relácie ukončené.",
+        "stateCheckAction": "Znovu načítajte zabezpečenie účtu a ak aktuálna relácia už nefunguje, prihláste sa znova."
+      },
+      "read": {
+        "operation": "Načítať zabezpečenie účtu",
+        "deniedEffect": "Nastavenia zabezpečenia a relácie sa nenačítali; uložený stav účtu sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav dvojstupňového overenia a relácií.",
+        "stateCheckAction": "Pred vykonaním zmeny znova načítajte zabezpečenie účtu."
+      },
+      "recovery": {
+        "operation": "Nahradiť obnovovacie kódy",
+        "deniedEffect": "Náhradné obnovovacie kódy neboli prijaté; predtým nepoužité kódy stále fungujú.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, ktoré obnovovacie kódy sú aktívne.",
+        "stateCheckAction": "Pred rozhodnutím, či kódy znova nahradiť, znova načítajte zabezpečenie účtu."
+      },
+      "sessionRevoke": {
+        "operation": "Odvolať reláciu účtu",
+        "deniedEffect": "Odvolanie vybranej relácie nebolo potvrdené; ostatné relácie sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola vybratá relácia zrušená.",
+        "stateCheckAction": "Pred rozhodnutím, či akciu zopakovať, znova načítajte zoznam relácií."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Zrušiť zálohu servera",
+        "deniedEffect": "Zrušenie zálohy nebolo potvrdené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola záloha zrušená.",
+        "stateCheckAction": "Pred ďalším zrušením skontrolujte aktuálny stav zálohy."
+      },
+      "create": {
+        "operation": "Vytvoriť zálohu servera",
+        "deniedEffect": "Vytvorenie novej zálohy nebolo potvrdené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola žiadosť o zálohovanie prijatá.",
+        "stateCheckAction": "Pred odoslaním ďalšej žiadosti skontrolujte aktuálnu zálohu."
+      },
+      "download": {
+        "operation": "Stiahnuť zálohu servera",
+        "deniedEffect": "Nestiahol sa žiadny overený súbor zálohy.",
+        "uncertainEffect": "Leafen nedokázal overiť ani preniesť súbor zálohy.",
+        "stateCheckAction": "Pred ďalším stiahnutím skontrolujte stav dokončenej zálohy."
+      },
+      "retry": {
+        "operation": "Zopakovať zálohu servera",
+        "deniedEffect": "Zlyhaná záloha nebola znova spustená.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa záloha znova spustila.",
+        "stateCheckAction": "Pred ďalším pokusom skontrolujte aktuálny stav zálohy."
+      },
+      "status": {
+        "operation": "Načítať stav zálohy servera",
+        "deniedEffect": "Stav zálohy sa nepodarilo načítať; uložený stav zálohy sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav zálohy.",
+        "stateCheckAction": "Pred ďalšou akciou znova načítajte stav zálohy."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Načítať správu servera",
+        "deniedEffect": "Správu sa nepodarilo načítať; uložený stav správy sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu snímku správy.",
+        "stateCheckAction": "Pred obnovením znova načítajte aktuálnu správu."
+      },
+      "refresh": {
+        "operation": "Obnoviť správu servera",
+        "deniedEffect": "Nová snímka správy nebola potvrdená.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa snímka správy zmenila.",
+        "stateCheckAction": "Pred ďalším obnovením načítajte aktuálnu správu."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Načítať plán zálohovania",
+        "deniedEffect": "Plán zálohovania sa nepodarilo načítať; žiadne nastavenie sa nezmenilo.",
+        "uncertainEffect": "Leafen nedokázal overiť aktuálny plán zálohovania.",
+        "stateCheckAction": "Pred zmenou znova načítajte plán zálohovania."
+      },
+      "restore": {
+        "operation": "Obnoviť server zo zálohy",
+        "deniedEffect": "Údaje servera sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal overiť, či bolo obnovenie nastavené.",
+        "stateCheckAction": "Znova načítajte nastavenia zálohovania a pred ďalším pokusom zistite, či čaká obnovenie."
+      },
+      "save": {
+        "operation": "Uložiť plán zálohovania",
+        "deniedEffect": "Plán zálohovania sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal overiť, či bol plán zálohovania uložený.",
+        "stateCheckAction": "Pred ďalším uložením znova načítajte plán zálohovania a pozrite si platné nastavenia."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Načítať nastavenia protokolu požiadaviek",
+        "deniedEffect": "Nastavenia protokolu požiadaviek sa nepodarilo načítať; žiadne nastavenie sa nezmenilo.",
+        "uncertainEffect": "Leafen nedokázal overiť aktuálne nastavenia protokolu požiadaviek.",
+        "stateCheckAction": "Pred zmenou znova načítajte nastavenia protokolu požiadaviek."
+      },
+      "save": {
+        "operation": "Uložiť nastavenia protokolu požiadaviek",
+        "deniedEffect": "Nastavenia protokolu požiadaviek sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal overiť, či boli nastavenia protokolu požiadaviek uložené.",
+        "stateCheckAction": "Pred ďalším uložením znova načítajte nastavenia protokolu požiadaviek a pozrite si platné nastavenia."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Načítať sieťovú proxy",
+        "deniedEffect": "Sieťovú proxy sa nepodarilo načítať; žiadne nastavenie sa nezmenilo.",
+        "uncertainEffect": "Leafen nedokázal overiť aktuálnu sieťovú proxy.",
+        "stateCheckAction": "Pred zmenou znova načítajte sieťovú proxy."
+      },
+      "save": {
+        "operation": "Uložiť sieťovú proxy",
+        "deniedEffect": "Sieťová proxy sa nezmenila.",
+        "uncertainEffect": "Leafen nedokázal overiť, či bola sieťová proxy uložená.",
+        "stateCheckAction": "Pred ďalším uložením znova načítajte sieťovú proxy a pozrite si, ktorá platí."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Načítať nastavenia servera",
+        "deniedEffect": "Nastavenia sa nepodarilo načítať a uložené nastavenia sa nezmenili.",
+        "uncertainEffect": "Leafen nemohol overiť aktuálne nastavenia servera.",
+        "stateCheckAction": "Pred vykonaním zmien znovu načítajte nastavenia."
+      },
+      "save": {
+        "operation": "Uložiť nastavenia servera",
+        "deniedEffect": "Nové nastavenia neboli prijaté; predtým uložené nastavenia zostávajú v platnosti.",
+        "uncertainEffect": "Leafen nemohol overiť, či boli nové nastavenia uložené.",
+        "stateCheckAction": "Znovu načítajte nastavenia a pred ďalším pokusom porovnajte aktuálne hodnoty."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Kontrola stavu prihlásenia",
+        "deniedEffect": "Nevytvorila sa žiadna prihlasovacia relácia a údaje účtu sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav prihlásenia.",
+        "stateCheckAction": "Znovu načítajte stránku a potom sa znova prihláste."
+      },
+      "deviceCode": {
+        "operation": "Prihlásenie tohto zariadenia",
+        "deniedEffect": "Zariadenie nebolo prihlásené a žiadne údaje účtu sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bolo toto zariadenie prihlásené.",
+        "stateCheckAction": "Prihláste sa znova s novým kódom."
+      },
+      "emailVerification": {
+        "operation": "Overiť e-mailovú adresu",
+        "deniedEffect": "E-mailová adresa nebola overená a prihlásenie do účtu sa nevykonalo.",
+        "uncertainEffect": "Leafen nemohol overiť, či sa overenie e-mailu dokončilo.",
+        "stateCheckAction": "Skúste sa prihlásiť; ak to nefunguje, otvorte znova odkaz v e-maile."
+      },
+      "mfa": {
+        "operation": "Dokončiť dvojstupňové overenie",
+        "deniedEffect": "Neprihlásili ste sa a výzva MFA zostáva nedokončená.",
+        "uncertainEffect": "Leafen nemohol overiť, či sa dvojstupňové overenie dokončilo.",
+        "stateCheckAction": "Prihláste sa znova od začiatku."
+      },
+      "passwordResetConfirm": {
+        "operation": "Zmeniť heslo",
+        "deniedEffect": "Heslo nebolo zmenené.",
+        "uncertainEffect": "Leafen nemohol overiť, či sa heslo zmenilo.",
+        "stateCheckAction": "Skúste sa prihlásiť s novým heslom; ak to nefunguje, vyžiadajte si nový odkaz na obnovenie hesla."
+      },
+      "passwordResetRequest": {
+        "operation": "Požiadať o obnovenie hesla",
+        "deniedEffect": "Nebola prijatá žiadna správa o obnovení hesla na doručenie.",
+        "uncertainEffect": "Leafen nemohol overiť, či bola žiadosť o obnovenie prijatá.",
+        "stateCheckAction": "Pred odoslaním ďalšej žiadosti počkajte na e-mail."
+      },
+      "providerExchange": {
+        "operation": "Prihlásenie pomocou externého účtu",
+        "deniedEffect": "Neprihlásili ste sa a žiadne údaje účtu sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť výsledok externého prihlásenia.",
+        "stateCheckAction": "Prihláste sa znova rovnakým spôsobom."
+      },
+      "serverSetup": {
+        "operation": "Nastaviť server Leafen",
+        "deniedEffect": "Účet správcu sa nevytvoril.",
+        "uncertainEffect": "Leafen nemohol potvrdiť, či sa nastavenie servera dokončilo.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte stránku a skontrolujte stav nastavenia."
+      },
+      "signIn": {
+        "operation": "Prihlásenie",
+        "deniedEffect": "Neprihlásili ste sa a žiadne údaje účtu sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa prihlásenie dokončilo.",
+        "stateCheckAction": "Obnovte stránku a znova sa prihláste."
+      },
+      "signUp": {
+        "operation": "Vytvoriť účet",
+        "deniedEffect": "Nový účet sa nevytvoril.",
+        "uncertainEffect": "Leafen nemohol potvrdiť, či sa účet vytvoril.",
+        "stateCheckAction": "Skúste sa prihlásiť; ak to nepomôže, znova sa zaregistrujte."
+      },
+      "passkey": {
+        "operation": "Prihlásiť sa pomocou prístupového kľúča",
+        "deniedEffect": "Prihlásenie nebolo prijaté.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa prihlásenie dokončilo.",
+        "stateCheckAction": "Znova sa prihláste pomocou prístupového kľúča."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Načítať obsah stránky",
+        "deniedEffect": "Obsah stránky sa nenačítal a uložený obsah sa nezmenil.",
+        "uncertainEffect": "Leafen nemohol potvrdiť aktuálny obsah stránky.",
+        "stateCheckAction": "Pred úpravami obnovte stránku."
+      },
+      "update": {
+        "operation": "Uložiť obsah stránky",
+        "deniedEffect": "Zmena nebola prijatá; najnovší obsah na serveri zostáva v platnosti.",
+        "uncertainEffect": "Leafen nemohol potvrdiť, či sa obsah uložil.",
+        "stateCheckAction": "Pred ďalším pokusom znovu načítajte najnovší obsah a porovnajte ho."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Uložiť automatizáciu databázy",
+        "deniedEffect": "Automatizácia sa nezmenila.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť, či bola zmena automatizácie databázy uložená.",
+        "stateCheckAction": "Pred ďalším pokusom znovu načítajte automatizáciu."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Uložiť zásady DLP",
+        "deniedEffect": "Nové zásady DLP sa neuložili; predchádzajúce zásady zostávajú v platnosti.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či boli zásady DLP uložené.",
+        "stateCheckAction": "Pred ďalším pokusom znovu načítajte zásady DLP a históriu auditu organizácie."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Overiť SAML doménu",
+        "deniedEffect": "Doména zostáva v stave čakania; konfigurácia SAML, história auditu ani prihlasovacie relácie sa nezmenili.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť aktuálny stav overenia SAML domény.",
+        "stateCheckAction": "Pred ďalším pokusom znovu načítajte stav SAML domény."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Odstrániť súbor",
+        "deniedEffect": "Súbor sa neodstránil ani nezmenil.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť, či bol súbor odstránený.",
+        "stateCheckAction": "Pred rozhodnutím o opakovaní znovu načítajte súbor a jeho odkazy."
+      },
+      "upload": {
+        "operation": "Nahrať súbor",
+        "deniedEffect": "Nový súbor sa neuložil; existujúce súbory sa nezmenili.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť, či bol súbor uložený.",
+        "stateCheckAction": "Pred rozhodnutím o opakovaní znovu načítajte zoznam súborov."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Použiť priradenia osôb",
+        "deniedEffect": "Nové priradenia sa neprijali.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť, ktoré priradenia sa použili.",
+        "stateCheckAction": "Pred opätovným použitím znovu načítajte výsledky priradenia."
+      },
+      "refresh": {
+        "operation": "Obnoviť priradenia osôb",
+        "deniedEffect": "Najnovšie priradenia sa nenačítali; uložené priradenia sa nezmenili.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť aktuálny stav priradení.",
+        "stateCheckAction": "Pred pokračovaním znovu načítajte panel priradení."
+      },
+      "scan": {
+        "operation": "Skenovať importované osoby",
+        "deniedEffect": "Importované osoby sa nezobrazili a existujúce priradenia sa nezmenili.",
+        "uncertainEffect": "Nepodarilo sa potvrdiť aktuálny zoznam importovaných osôb.",
+        "stateCheckAction": "Pred vykonaním zmien znovu načítajte panel priradení."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Spustiť automatizáciu tlačidla",
+        "deniedEffect": "Akcie tlačidla sa nespustili a obsah stránky sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa automatizácia tlačidla spustila.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte dotknutý obsah a stav vykonávania."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopírovať API token organizácie",
+        "deniedEffect": "Nepotvrdilo sa, že token je v schránke; samotný token sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či sa zápis do schránky dokončil.",
+        "stateCheckAction": "Pred opätovným kopírovaním tokenu skontrolujte schránku."
+      },
+      "create": {
+        "operation": "Vytvoriť API token organizácie",
+        "deniedEffect": "Vytvorenie nového tokenu nebolo potvrdené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol token vytvorený.",
+        "stateCheckAction": "Pred vytvorením ďalšieho tokenu obnovte zoznam tokenov."
+      },
+      "list": {
+        "operation": "Načítať API tokeny organizácie",
+        "deniedEffect": "Tokeny sa nepodarilo načítať a existujúce tokeny sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny zoznam tokenov.",
+        "stateCheckAction": "Pred vykonaním zmien obnovte zoznam tokenov."
+      },
+      "revoke": {
+        "operation": "Odvolať API token organizácie",
+        "deniedEffect": "Odvolanie tokenu nebolo potvrdené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol token odvolaný.",
+        "stateCheckAction": "Pred ďalším odvolaním obnovte zoznam tokenov."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Načítať stránky pracovného priestoru",
+        "deniedEffect": "Stránky sa nepodarilo načítať a uložené údaje pracovného priestoru sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálne stránky pracovného priestoru.",
+        "stateCheckAction": "Pred úpravami obnovte pracovný priestor."
+      },
+      "create": {
+        "operation": "Vytvoriť stránku",
+        "deniedEffect": "Nová stránka sa nevytvorila a existujúce stránky sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola stránka vytvorená.",
+        "stateCheckAction": "Obnovte zoznam stránok a pred ďalším pokusom skontrolujte, či sa v ňom nachádza nová stránka."
+      },
+      "title": {
+        "update": {
+          "operation": "Uložiť názov stránky",
+          "deniedEffect": "Zmena názvu nebola prijatá; naďalej platí uložený názov.",
+          "uncertainEffect": "Leafen nedokázal potvrdiť, či bola zmena uložená.",
+          "stateCheckAction": "Obnovte stránku a skontrolujte aktuálny názov."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Načítať analytiku stránky",
+        "deniedEffect": "Analytika sa nenačítala a údaje stránky sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu analytiku.",
+        "stateCheckAction": "Pred vyvodením záverov obnovte analytiku."
+      },
+      "policyUpdate": {
+        "operation": "Uložiť zásady analytiky",
+        "deniedEffect": "Nové zásady analytiky neboli prijaté.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či boli zásady uložené.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte zásady a porovnajte ich."
+      },
+      "preferencesRead": {
+        "operation": "Načítať predvoľby analytiky",
+        "deniedEffect": "Predvoľby analytiky sa nenačítali a uložené nastavenia sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálne predvoľby analytiky.",
+        "stateCheckAction": "Pred úpravou predvolieb ich obnovte."
+      },
+      "preferencesUpdate": {
+        "operation": "Uložiť predvoľby analytiky",
+        "deniedEffect": "Nové predvoľby neboli prijaté.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či boli predvoľby uložené.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte predvoľby a porovnajte ich."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Bezpečne uložiť offline zmenu",
+        "deniedEffect": "Zmena nebola uložená v tomto zariadení.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola zmena uložená v tomto zariadení alebo na serveri.",
+        "stateCheckAction": "Skopírujte upravený obsah, potom obnovte stránku a porovnajte uložený stav."
+      },
+      "legacy": {
+        "operation": "Migrovať offline zmeny",
+        "deniedEffect": "Staršie offline zmeny zostávajú tam, kde boli uložené, a neboli odoslané.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, ktoré staršie offline zmeny boli migrované.",
+        "stateCheckAction": "Ponechajte túto kartu otvorenú, pred ďalšou úpravou obnovte stránku."
+      },
+      "refresh": {
+        "operation": "Znova načítať obnovené zmeny",
+        "deniedEffect": "Obnovené zmeny sa nezobrazili a uložené údaje sa nenahradili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu stránku po obnovení.",
+        "stateCheckAction": "Pred ďalšou úpravou obnovte stránku."
+      },
+      "replay": {
+        "operation": "Odoslať offline zmeny",
+        "deniedEffect": "Zmena vo fronte zostáva čakajúca a server ju nepotvrdil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, ktoré zmeny vo fronte sa dostali na server.",
+        "stateCheckAction": "Ponechajte túto kartu otvorenú, obnovte pripojenie a pred ďalším upravovaním znova načítajte stránku."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Prehľadať verejný web",
+        "deniedEffect": "Výsledky vyhľadávania sa nenačítali a publikovaný obsah sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálne výsledky vyhľadávania.",
+        "stateCheckAction": "Pred ďalším vyhľadávaním skontrolujte stav webu."
+      },
+      "sharedPage": {
+        "operation": "Načítať zdieľanú stránku",
+        "deniedEffect": "Zdieľaná stránka sa nenačítala a publikovaný obsah sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu zdieľanú stránku.",
+        "stateCheckAction": "Pred ďalším pokusom skontrolujte odkaz na zdieľanie."
+      },
+      "site": {
+        "operation": "Načítať verejný web",
+        "deniedEffect": "Verejný web sa nenačítal a publikovaný obsah sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny verejný web.",
+        "stateCheckAction": "Pred ďalším pokusom skontrolujte adresu webu."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Obnoviť prihlásenie formulára",
+        "deniedEffect": "Formulár pre členov sa neotvoril a žiadna odpoveď nebola odoslaná.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav prihlásenia pre tento formulár.",
+        "stateCheckAction": "Znovu načítajte formulár a znova sa prihláste."
+      },
+      "configurationWrite": {
+        "operation": "Uložiť nastavenia formulára",
+        "deniedEffect": "Nepotvrdilo sa, že nastavenia formulára boli uložené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu konfiguráciu formulára.",
+        "stateCheckAction": "Pred ďalším uložením znovu načítajte nastavenia formulára."
+      },
+      "definitionRead": {
+        "operation": "Načítať formulár",
+        "deniedEffect": "Formulár sa nenačítal a nebola odoslaná žiadna odpoveď.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu definíciu formulára.",
+        "stateCheckAction": "Pred zadaním odpovede znovu načítajte formulár."
+      },
+      "optionsRead": {
+        "operation": "Načítať možnosti formulára",
+        "deniedEffect": "Požadované možnosti sa nenačítali a koncept odpovede nebol odoslaný.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálne možnosti.",
+        "stateCheckAction": "Pred odoslaním formulára znova načítajte možnosti."
+      },
+      "responseSubmit": {
+        "operation": "Odoslať odpoveď formulára",
+        "deniedEffect": "Odpoveď nebola prijatá.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola odpoveď prijatá.",
+        "stateCheckAction": "Pred opätovným odoslaním odpovede skontrolujte výsledok formulára."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Načítať konfiguráciu za behu",
+        "deniedEffect": "Konfigurácia za behu sa nenačítala a uložené nastavenia servera sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálnu konfiguráciu za behu, preto sú aktívne bezpečné náhradné hodnoty.",
+        "stateCheckAction": "Obnovte stránku, aby sa načítala aktuálna konfigurácia servera."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Synchronizovať čakajúce zmeny",
+        "deniedEffect": "Čakajúce zmeny zostávajú vo fronte a server ich nepotvrdil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, ktoré čakajúce zmeny sa dostali na server.",
+        "stateCheckAction": "Nechajte túto kartu otvorenú, obnovte pripojenie a pred ďalším pokusom skontrolujte uložený stav."
+      },
+      "pendingRead": {
+        "operation": "Skontrolovať čakajúce zmeny",
+        "deniedEffect": "Počet čakajúcich zmien sa nepodarilo načítať; zmeny vo fronte neboli zahodené.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, koľko zmien ešte čaká.",
+        "stateCheckAction": "Nechajte túto kartu otvorenú a znova skontrolujte stav synchronizácie."
+      },
+      "retry": {
+        "operation": "Zopakovať synchronizáciu",
+        "deniedEffect": "Synchronizácia nebola potvrdená; čakajúce zmeny zostávajú vo fronte.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť výsledok poslednej synchronizácie.",
+        "stateCheckAction": "Pred ďalším pokusom skontrolujte uložený stav a pripojenie."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Vytvoriť pracovný priestor",
+        "deniedEffect": "Nový pracovný priestor sa nevytvoril a existujúce údaje sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol pracovný priestor vytvorený.",
+        "stateCheckAction": "Obnovte zoznam pracovných priestorov, skontrolujte, či sa v ňom nachádza nový pracovný priestor, a potom to skúste znova."
+      },
+      "delete": {
+        "operation": "Trvalo odstrániť pracovný priestor",
+        "deniedEffect": "Odstránenie nebolo prijaté; pracovný priestor ani existujúce údaje sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol pracovný priestor odstránený.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte zoznam pracovných priestorov."
+      },
+      "member": {
+        "add": {
+          "operation": "Pridanie člena pracovného priestoru",
+          "deniedEffect": "Člen nebol pridaný a nič sa nezmenilo.",
+          "uncertainEffect": "Leafen nedokázal potvrdiť, či bol člen pracovného priestoru pridaný.",
+          "stateCheckAction": "Pred ďalším pokusom znova načítajte členov, aktivitu a históriu auditu."
+        },
+        "revoke": {
+          "operation": "Odstránenie člena pracovného priestoru",
+          "deniedEffect": "Člen nebol odstránený a nič sa nezmenilo.",
+          "uncertainEffect": "Leafen nedokázal potvrdiť, či bol člen pracovného priestoru odstránený.",
+          "stateCheckAction": "Pred ďalším pokusom znova načítajte členov, aktivitu a históriu auditu."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Uloženie nastavení pracovného priestoru",
+          "deniedEffect": "Zmena nastavení nebola uložená; predchádzajúce nastavenia zostávajú v platnosti.",
+          "uncertainEffect": "Leafen nedokázal potvrdiť, či boli nastavenia pracovného priestoru uložené.",
+          "stateCheckAction": "Pred ďalším pokusom znova načítajte nastavenia pracovného priestoru, aktivitu a históriu auditu."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Zrušenie exportu pracovného priestoru",
+        "deniedEffect": "Export nebol zrušený a môže stále prebiehať.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol export zrušený.",
+        "stateCheckAction": "Pred ďalším zrušením obnovte stav exportu."
+      },
+      "download": {
+        "operation": "Stiahnutie exportu pracovného priestoru",
+        "deniedEffect": "Archív nebol stiahnutý; export na serveri sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bolo sťahovanie archívu dokončené.",
+        "stateCheckAction": "Pred ďalším sťahovaním skontrolujte zoznam stiahnutí."
+      },
+      "job": {
+        "operation": "Export pracovného priestoru",
+        "deniedEffect": "Archív nebol vytvorený; zdrojový pracovný priestor sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť použiteľný archív pre túto úlohu.",
+        "stateCheckAction": "Spustite náhradný export z aktuálneho pracovného priestoru."
+      },
+      "poll": {
+        "operation": "Čakanie na export pracovného priestoru",
+        "deniedEffect": "Najnovší stav exportu nebol načítaný; úloha exportu sa nezmenila.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav exportu.",
+        "stateCheckAction": "Pred ďalšou akciou obnovte stav exportu."
+      },
+      "retry": {
+        "operation": "Opakovanie exportu pracovného priestoru",
+        "deniedEffect": "Opakovaný pokus nebol prijatý; existujúca úloha exportu sa nezmenila.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol opakovaný pokus prijatý.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte stav exportu."
+      },
+      "start": {
+        "operation": "Spustiť export pracovného priestoru",
+        "deniedEffect": "Nová úloha exportu nebola prijatá; pracovný priestor sa nezmenil.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bola úloha exportu prijatá.",
+        "stateCheckAction": "Pred spustením ďalšej úlohy obnovte najnovší stav exportu."
+      },
+      "status": {
+        "operation": "Načítať stav exportu pracovného priestoru",
+        "deniedEffect": "Najnovší stav exportu sa nepodarilo načítať; úloha exportu sa nezmenila.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav exportu.",
+        "stateCheckAction": "Pred ďalšou akciou znovu otvorte dialóg exportu."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Zrušiť import",
+        "deniedEffect": "Import sa nezrušil a môže stále prebiehať.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol import zrušený.",
+        "stateCheckAction": "Pred ďalším zrušením obnovte stav importu."
+      },
+      "job": {
+        "operation": "Importovať súbor",
+        "deniedEffect": "Nebola vytvorená žiadna stránka; čiastočne importovaný obsah bol odstránený.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť použiteľnú stránku pre tento import.",
+        "stateCheckAction": "Ponechajte si diagnostickú referenciu a spustite nový import zo zdrojového súboru."
+      },
+      "start": {
+        "operation": "Spustiť import",
+        "deniedEffect": "Nový import nebol prijatý a nebola vytvorená žiadna stránka.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť, či bol import prijatý.",
+        "stateCheckAction": "Skúste znova s tým istým súborom bez zmien, aby sa Leafen mohol znova pripojiť k tej istej požiadavke."
+      },
+      "status": {
+        "operation": "Načítať stav importu",
+        "deniedEffect": "Najnovší stav importu sa nepodarilo načítať; úloha importu sa nezmenila.",
+        "uncertainEffect": "Leafen nedokázal potvrdiť aktuálny stav importu.",
+        "stateCheckAction": "Pred ďalšou akciou znovu otvorte dialóg importu, aby ste sa znova pripojili k uloženej úlohe."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Načítať prístupové kľúče účtu",
+        "deniedEffect": "Zoznam prístupových kľúčov sa nepodarilo načítať; uložené kľúče sa nezmenili.",
+        "uncertainEffect": "Leafen nedokázal overiť aktuálny zoznam prístupových kľúčov.",
+        "stateCheckAction": "Pred vykonaním zmeny sa znova pripojte a obnovte zoznam prístupových kľúčov."
+      },
+      "update": {
+        "operation": "Správa prístupových kľúčov účtu",
+        "deniedEffect": "Server nezmenil uložené prístupové kľúče.",
+        "uncertainEffect": "Leafen nevedel potvrdiť, či sa zmena prístupového kľúča dokončila.",
+        "stateCheckAction": "Pred ďalším pokusom obnovte zoznam prístupových kľúčov. Ak sa vytvoril nový kľúč, ale tu sa neuložil, skontrolujte správcu kľúčov v zariadení."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Súčasné heslo je nesprávne.",
+    "currentPasswordNext": "Ak ste ho zabudli, odhláste sa a obnovte ho na prihlasovacej stránke.",
+    "code": "Kód je nesprávny alebo už bol použitý.",
+    "codeNext": "Zadajte kód, ktorý teraz zobrazuje vaša overovacia aplikácia.",
+    "recoveryCode": "Obnovovací kód je nesprávny alebo už bol použitý.",
+    "recoveryCodeNext": "Zadajte obnovovací kód, ktorý ste ešte nepoužili.",
+    "accountDeactivated": "Tento účet deaktivoval správca servera.",
+    "accountDeactivatedNext": "Požiadajte správcu, aby ho znova povolil.",
+    "organizationSSO": "Táto organizácia povoľuje prihlásenie iba prostredníctvom jednotného prihlásenia (SSO).",
+    "organizationSSONext": "Namiesto toho sa prihláste firemným účtom.",
+    "organizationPasswordTwoStep": "Vaša organizácia vyžaduje prihlásenie heslom a dvojstupňovým overením, nie kódom zariadenia.",
+    "organizationPasswordTwoStepNext": "Prihláste sa e-mailom a heslom; ak heslo nemáte, požiadajte správcu o jednorazové heslo.",
+    "deviceCode": "Kód je nesprávny, už bol použitý, vypršal alebo ste zavreli okno, ktoré ho zobrazovalo.",
+    "deviceCodeNext": "Získajte nový kód a zadajte ho znova.",
+    "setupCode": "Kód nastavenia je nesprávny.",
+    "setupCodeNext": "Znova otvorte odkaz na nastavenie, ktorý server vypísal, alebo zadajte kód, s ktorým bol spustený.",
+    "setupCodeMissing": "Zadajte nastavovací kód.",
+    "setupCodeMissingNext": "Vyplní ho otvorenie odkazu na nastavenie, ktorý server vypísal; funguje aj kód, s ktorým bol server spustený.",
+    "sessionCapacity": "Tento účet dosiahol limit zariadení.",
+    "sessionCapacityNext": "Odhláste zariadenie, ktoré už nepoužívate, v Nastaveniach → Účet → Zariadenia a skúste to znova.",
+    "signInEnded": "Táto žiadosť o prihlásenie sa skončila: vypršal jej časový limit alebo bol kód príliš veľakrát nesprávny.",
+    "signInEndedNext": "Znova sa prihláste e-mailom a heslom.",
+    "emailNotVerified": "E-mail tohto účtu zatiaľ nie je potvrdený.",
+    "emailNotVerifiedNext": "Otvorte odkaz v e-maile, ktorý ste dostali pri registrácii, a potom sa prihláste.",
+    "registrationFailed": "Účet sa nepodarilo vytvoriť.",
+    "registrationFailedNext": "Skúste to o chvíľu znova. Ak to stále zlyháva, informujte správcu tohto servera."
+  },
+  "labels": {
+    "reference": "Referencia"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Táto organizácia pri firemnom prihlásení nevytvára nové účty.",
+    "samlAccountCreationOffNext": "Požiadajte správcu svojej organizácie, aby vás pozval.",
+    "samlRetryAfterInvite": "Po prijatí pozvánky sa znova prihláste.",
+    "samlIdentityDenied": "Tento e-mail nemôže použiť firemné prihlásenie tejto organizácie.",
+    "samlIdentityDeniedNext": "Požiadajte správcu svojej organizácie, aby skontroloval e-mailovú doménu a vaše členstvo.",
+    "samlRetryAfterAdministrator": "Keď to správca skontroluje, znova sa prihláste.",
+    "samlResponseInvalid": "Nepodarilo sa overiť odpoveď firemného prihlásenia.",
+    "samlResponseInvalidNext": "Začnite sa znova prihlasovať. Ak sa to bude opakovať, požiadajte správcu svojej organizácie, aby skontroloval nastavenia SAML.",
+    "accountAlreadyExistsForEmailAddress": "Pre túto e-mailovú adresu už existuje účet.",
+    "accountEmailCouldNotAdmittedFor": "Nepodarilo sa odoslať e-mail účtu.",
+    "administratorSettingsDoNotMeetServer": "Nastavenia správcu nespĺňajú požiadavky servera.",
+    "administratorSettingsNotAvailableCurrentAccount": "Nastavenia správcu nie sú dostupné pre aktuálny účet.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Iný správca už dokončil nastavenie servera.",
+    "anotherServerOperationTemporarilyLockedAccount": "Iná operácia servera dočasne uzamkla úložisko účtu.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Iná operácia servera dočasne uzamkla databázu, takže v exporte nebolo možné pokračovať.",
+    "anotherServerOperationTemporarilyLockedDlp": "Iná operácia servera dočasne uzamkla úložisko zásad DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "Iná operácia servera dočasne uzamkla úložisko súborov.",
+    "anotherServerOperationTemporarilyLockedPage": "Iná operácia servera dočasne uzamkla úložisko obsahu stránok.",
+    "anotherServerOperationTemporarilyLockedProduct": "Iná operácia servera dočasne uzamkla úložisko produktov.",
+    "askOrganizationAdministratorToAllow": "Požiadajte správcu organizácie alebo vlastníka tímového priestoru o povolenie.",
+    "askServerAdministratorCheckEmailDelivery": "Požiadajte správcu servera, aby skontroloval doručovanie e-mailov, a potom to skúste znova.",
+    "backupArtifactNotCompleteYet": "Súbor zálohy zatiaľ nie je dokončený.",
+    "backupStateNoLongerPermitsControl": "Aktuálny stav zálohy už túto akciu nepovoľuje.",
+    "causeCouldNotDetermined": "Príčinu nebolo možné určiť.",
+    "changeSaveReceiptAndSynchronizationState": "Zmena nebola uložená a obsah stránky zostal nezmenený.",
+    "checkCurrentBackupBeforeRetrying": "Pred ďalším pokusom skontrolujte aktuálnu zálohu.",
+    "checkCurrentJobStateBeforeDeciding": "Pred rozhodnutím, či to skúsiť znova, skontrolujte aktuálny stav úlohy.",
+    "checkCurrentListBeforeTryingDifferent": "Pred vyskúšaním inej položky skontrolujte aktuálny zoznam.",
+    "checkCurrentServerSettingsBeforeTrying": "Pred ďalším pokusom skontrolujte aktuálne nastavenia servera.",
+    "checkCurrentServerSetupStateBefore": "Pred ďalším pokusom skontrolujte aktuálny stav nastavenia servera.",
+    "checkCurrentStateAndUseNew": "Skontrolujte aktuálny stav a novú zálohu spustite iba vtedy, ak ju potrebujete.",
+    "checkEmailAndPassword": "Skontrolujte e-mail a heslo.",
+    "checkServerSecretStorageThenSave": "Skontrolujte úložisko tajných údajov servera a potom znova uložte rovnaké nastavenia.",
+    "checkServerStateThenLoadSettings": "Skontrolujte stav servera a potom znova načítajte nastavenia.",
+    "createNewBackupAndInspectServer": "Vytvorte novú zálohu a ak sa chyba zopakuje, skontrolujte úložisko servera.",
+    "currentAccountNotAuthorizedForOperation": "Aktuálny účet nemá oprávnenie na túto operáciu.",
+    "currentStateMustCheckedBeforeRetry": "Aktuálny stav je potrebné skontrolovať, aby bolo možné bezpečne skúsiť znova.",
+    "currentStateMustCheckedBeforeRetrying": "Pred opakovaním je potrebné skontrolovať aktuálny stav.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Služba overenia DNS je dočasne nedostupná.",
+    "doNotAssumeUnchangedRetrySafe": "Nepredpokladajte, že opakovanie je bezpečné, kým nebude úložisko servera opravené.",
+    "doNotKeepRetryingIdentifierNew": "Neopakujte túto požiadavku stále dokola; najprv obnovte stránku, potom je nový pokus bezpečný.",
+    "doNotResumeFailedJobStart": "Nepokračujte v zlyhanej úlohe; namiesto toho spustite nový export.",
+    "doNotRetryBeforeLoadingLatest": "Neopakujte pokus pred načítaním najnovších nastavení servera.",
+    "doNotRetryDirectRequestUnchanged": "Neskúšajte toto nahrávanie znova v nezmenenej podobe; použite nahrávanie s možnosťou pokračovania.",
+    "doNotRetryDirectRequestUnchanged2": "Neskúšajte toto nahrávanie znova v nezmenenej podobe; použite nahrávanie archívu s možnosťou pokračovania.",
+    "doNotRetrySetupRequestSign": "Neopakujte túto žiadosť o nastavenie; prihláste sa existujúcim účtom správcu.",
+    "doNotReuseInvalidArtifactCreate": "Nepoužívajte znova neplatný záložný súbor; vytvorte novú zálohu.",
+    "doNotReuseLinkNewAction": "Nepoužívajte tento odkaz znova; nová akcia je bezpečná.",
+    "emailOrPasswordDidNotMatch": "E-mail alebo heslo sa nezhodujú.",
+    "externalSignInProviderCouldNot": "Externý poskytovateľ prihlásenia nemohol dokončiť žiadosť.",
+    "fileLargerThanOneDirectUpload": "Tento súbor je príliš veľký na jedno priame nahratie.",
+    "formStorageTemporarilyLockedByAnother": "Úložisko formulárov bolo dočasne uzamknuté inou operáciou servera.",
+    "leafenArchiveLargerThanOneDirect": "Tento archív Leafen je príliš veľký na jeden priamy import.",
+    "leafenDidNotReceiveServerResponse": "Leafen nedostal odpoveď zo servera.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen obnovuje stav využívania úložiska organizácie.",
+    "leafenServiceCouldNotCompleteOperation": "Služba Leafen nemohla dokončiť operáciu.",
+    "isolatedRecordNotAppliedYourRequested": "Neúplný záznam bol odložený, vaša zmena nebola uložená a obsah stránky zostal nezmenený.",
+    "jobCannotRetriedStartReplacementExport": "Túto úlohu nie je možné zopakovať; spustite náhradný export.",
+    "jobSArchiveNotPublishedAnd": "Archív tejto úlohy nebol vytvorený a zdrojový pracovný priestor sa nezmenil.",
+    "keepDiagnosticReferenceAndAskServer": "Uschovajte diagnostickú referenciu a požiadajte správcu servera o opravu úložiska servera.",
+    "lastConfirmedSavedStateRestoredSo": "Posledný potvrdený uložený stav bol obnovený, takže rovnakú zmenu môžete bezpečne skúsiť znova.",
+    "loadCurrentReportAndUseNew": "Načítajte aktuálnu zostavu a potom znova obnovte.",
+    "loadCurrentReportBeforeRefreshingAgain": "Pred ďalším obnovením načítajte aktuálnu správu.",
+    "loadCurrentReportBeforeTryingAgain": "Načítajte aktuálnu zostavu pred ďalším pokusom.",
+    "newerOrIncompatibleStatePreventedOperation": "Novší alebo nekompatibilný stav zabránil tejto operácii.",
+    "noNewArchivePublishedAndSource": "Nebol vytvorený žiadny nový archív a zdrojový pracovný priestor ani predchádzajúce archívy sa nezmenili.",
+    "noNewSignInSessionCreated": "Nevytvorila sa žiadna nová prihlasovacia relácia a existujúce relácie sa nezmenili.",
+    "notKnownWhetherRetryingSafeUntil": "Kým sa neoverí aktuálny stav, nie je známe, či je opakovanie bezpečné.",
+    "organizationStorageAuthorityInconsistent": "Záznam o využití úložiska organizácie je nekonzistentný.",
+    "organizationDlpBlocksOperation": "Zásada organizácie na ochranu pred stratou údajov to blokuje.",
+    "takeOutTermOrAskAboutDlp": "Odstráňte akýkoľvek citlivý výraz a skúste to znova, alebo sa v prípade pochybností opýtajte správcu organizácie.",
+    "organizationSettingsDoNotAllowOperation": "Nastavenia organizácie alebo tímového priestoru to nepovoľujú.",
+    "organizationStorageLimitWouldExceeded": "Bol by prekročený limit úložiska organizácie.",
+    "serverDiskAlmostFull": "Disk servera je takmer plný.",
+    "askServerAdministratorToFreeSpace": "Požiadajte správcu servera o uvoľnenie miesta; keď sa uvoľní, bude to opäť fungovať.",
+    "safeRetryOnceServerHasRoom": "Keď bude mať server miesto, môžete tú istú vec bezpečne skúsiť znova.",
+    "readDoesNotChangeSavedData": "Toto čítanie nemení uložené údaje, takže je bezpečné to skúsiť znova.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Pred výberom inej akcie znova načítajte aktuálnu zálohu.",
+    "reloadCurrentBackupStateBeforeContinuing": "Pred pokračovaním znova načítajte aktuálny stav zálohy.",
+    "reloadCurrentStateBeforeDecidingWhether": "Pred rozhodnutím o opakovaní znova načítajte aktuálny stav.",
+    "reloadSignInPageAndStart": "Obnovte prihlasovaciu stránku a znova sa prihláste.",
+    "removeUnneededFilesOrAskOrganization": "Odstráňte nepotrebné súbory alebo požiadajte správcu fakturácie organizácie o zvýšenie limitu.",
+    "reportChangedAfterScreenLoaded": "Zostava sa po načítaní tejto obrazovky zmenila.",
+    "requestIdentifierBelongsDifferentOperation": "Táto požiadavka už bola použitá na inú akciu.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Táto požiadavka už bola použitá na iné obnovenie zostavy.",
+    "requestedItemNoLongerExistsOr": "Požadovaná položka už neexistuje alebo nie je pre tento účet viditeľná.",
+    "retryExportAfterOtherServerOperation": "Tento export skúste znova po dokončení inej operácie na serveri.",
+    "retryExportJobAfterServerStorage": "Túto úlohu exportu skúste znova po obnovení serverového úložiska.",
+    "retryOnlyAfterAccountOrPermission": "Skúste to znova až po zmene účtu alebo povolenia.",
+    "retryOnlyAfterOrganizationSettingChanges": "Skúste to znova až po zmene tohto nastavenia.",
+    "retrySameContentChangeAfterOther": "Rovnakú zmenu obsahu skúste znova po dokončení inej operácie na serveri.",
+    "retrySameContentChangeAfterServer": "Rovnakú zmenu obsahu skúste znova po obnovení serverového úložiska.",
+    "retrySameContentChangeNow": "Rovnakú zmenu obsahu skúste znova teraz.",
+    "changeTooLargeForOneChange": "Toto je príliš veľké na zmenu naraz. Jedna zmena pojme až 64 MB vrátane textu.",
+    "pageKeepsWhatItHadBefore": "Stránka zostala v pôvodnom stave.",
+    "makeTheChangeInParts": "Urobte to po častiach: najprv po častiach vymažte bloky vo veľkom prepínači alebo sekcii a dlhý text vkladajte po častiach.",
+    "sameSizeIsRefusedAgain": "Rovnaká veľkosť je znova odmietnutá; po rozdelení môžete bezpečne skúsiť znova.",
+    "linkCannotBeKeptHere": "Táto zmena prepája stránku alebo blok, ktoré sa na tomto mieste nedajú prepojiť.",
+    "chooseAnotherPageOrRefresh": "Vyberte inú stránku alebo obnovte stránku a skúste to znova.",
+    "sameLinkIsRefusedAgain": "Opätovné prepojenie rovnakého prvku je znova odmietnuté.",
+    "retrySameDomainVerificationAfterDns": "Po obnovení služby overovania DNS skúste rovnaké overenie domény znova.",
+    "retrySameFileOperationAfterOther": "Po dokončení inej operácie na serveri skúste rovnakú operáciu so súborom znova.",
+    "retrySameFileOperationAfterServer": "Po obnovení úložiska servera skúste rovnakú operáciu so súborom znova.",
+    "retrySameFormOperationAfterOther": "Po dokončení inej operácie na serveri skúste rovnakú operáciu s formulárom znova.",
+    "retrySameFormOperationAfterServer": "Po obnovení úložiska servera skúste rovnakú operáciu s formulárom znova.",
+    "retrySameOperationAfterOtherServer": "Po dokončení inej operácie na serveri skúste rovnakú operáciu znova.",
+    "retrySameOperationAfterServerStorage": "Po obnovení úložiska servera skúste rovnakú operáciu znova.",
+    "returnSignInWithExistingAccount": "Vráťte sa k prihláseniu s existujúcim účtom.",
+    "reviewAndCorrectEnteredServerSettings": "Skontrolujte a upravte zadané nastavenia servera.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Skontrolujte zadané hodnoty a opravte zvýraznené informácie.",
+    "safeRetryAfterEmailDeliveryRestored": "Po obnovení odosielania e-mailov môžete bezpečne skúsiť znova.",
+    "safeRetryAfterServerResourceChecks": "Po obnovení kontroly zdrojov servera môžete bezpečne skúsiť znova.",
+    "safeRetryAfterTemporaryLockClears": "Po uvoľnení dočasného zámku môžete bezpečne skúsiť znova.",
+    "safeRetryRead": "Toto čítanie môžete bezpečne zopakovať.",
+    "safeRetrySameAuthenticationOperationAfter": "Po obnovení úložiska môžete rovnakú autentizačnú operáciu bezpečne zopakovať.",
+    "safeRetrySameContentChangeAfter": "Po uvoľnení dočasného zámku môžete rovnakú zmenu obsahu bezpečne zopakovať.",
+    "safeRetrySameContentChangeAfter2": "Po obnovení úložiska môžete rovnakú zmenu obsahu bezpečne zopakovať.",
+    "safeRetrySameDlpPolicySave": "Po obnovení úložiska môžete rovnaké uloženie zásad DLP bezpečne zopakovať.",
+    "safeRetrySameDlpPolicySave2": "Po uvoľnení dočasného zámku môžete rovnaké uloženie zásad DLP bezpečne zopakovať.",
+    "safeRetrySameDomainVerificationAfter": "Po obnovení služby môžete rovnaké overenie domény bezpečne zopakovať.",
+    "safeRetrySameFileOperationAfter": "Po sprístupnení úložiska môžete rovnakú operáciu so súborom bezpečne zopakovať.",
+    "safeRetrySameFileOperationAfter2": "Po obnovení úložiska môžete rovnakú operáciu so súborom bezpečne zopakovať.",
+    "safeRetrySameFileOperationAfter3": "Po uvoľnení dočasného zámku môžete rovnakú operáciu so súborom bezpečne zopakovať.",
+    "safeRetrySameFormOperationAfter": "Po obnovení úložiska môžete rovnakú operáciu s formulárom bezpečne zopakovať.",
+    "safeRetrySameFormOperationAfter2": "Po zrušení dočasného zámku je bezpečné zopakovať rovnakú operáciu formulára.",
+    "safeRetrySameOperationAfterStorage": "Po obnovení úložiska je bezpečné zopakovať rovnakú operáciu.",
+    "safeRetrySameOperationAfterTemporary": "Po zrušení dočasného zámku je bezpečné zopakovať rovnakú operáciu.",
+    "safeRetrySameSettingsAfterSecret": "Po obnovení úložiska tajných údajov je bezpečné zopakovať rovnaké nastavenia.",
+    "safeRetrySameSettingsSaveAfter": "Po opravení neplatných hodnôt je bezpečné zopakovať uloženie rovnakých nastavení.",
+    "safeRetryWithSameJobIdentifier": "Je bezpečné zopakovať rovnakú úlohu.",
+    "safeRetryWithSameJobIdentity": "Je bezpečné zopakovať rovnakú úlohu.",
+    "safeSignInInsteadCreatingAnother": "Namiesto vytvorenia ďalšieho účtu sa môžete bezpečne prihlásiť.",
+    "safeStartNewProviderSignIn": "Neskôr sa môžete bezpečne prihlásiť cez nového poskytovateľa.",
+    "safeTryAgainAfterCorrectingDetails": "Po opravení údajov je bezpečné skúsiť to znova.",
+    "safeTryAgainAfterCorrectingInput": "Po opravení vstupu je bezpečné skúsiť to znova.",
+    "safeTryAgainAfterWait": "Po uplynutí čakania je bezpečné skúsiť to znova.",
+    "serverTakesNoChangesNow": "Tento server sa nedokáže pripojiť k záložnému umiestneniu, a preto teraz neprijíma zmeny.",
+    "serverDataMovedElsewhere": "Údaje tohto servera sa presunuli na iný server.",
+    "doItOnNewServer": "Urobte to na novom serveri.",
+    "serverDataMovedNoRetry": "Ak to skúsite znova tu, neuloží sa to.",
+    "sameRequestIdentityCanRetriedSafely": "Rovnakú požiadavku možno po krátkom čakaní bezpečne zopakovať.",
+    "saveSameDlpPolicyAgainAfter": "Po obnovení úložiska servera znova uložte rovnaké zásady DLP.",
+    "saveSameDlpPolicyAgainAfter2": "Po dokončení inej operácie servera znova uložte rovnaké zásady DLP.",
+    "serverAccountStorageTemporarilyUnavailable": "Úložisko účtov na serveri je dočasne nedostupné.",
+    "serverCannotCurrentlyConfirmResourceState": "Server momentálne nedokáže potvrdiť stav svojich zdrojov.",
+    "serverCouldNotCompleteAdministratorSettings": "Server nedokázal dokončiť uloženie nastavení správcu.",
+    "serverCouldNotCompleteAdministratorSetup": "Server nedokázal dokončiť požiadavku na nastavenie správcu.",
+    "serverCouldNotCompleteBackupLifecycle": "Server nedokázal dokončiť zálohovanie.",
+    "serverCouldNotLoadBackupState": "Server nedokázal načítať stav tejto zálohy.",
+    "serverCouldNotProtectAdministratorSecret": "Server nedokázal ochrániť tajné hodnoty správcu.",
+    "serverCouldNotReadAdministratorState": "Server nedokázal prečítať stav správcu.",
+    "serverCouldNotReadOneExact": "Server nedokázal načítať konzistentnú snímku zostavy.",
+    "serverDetectedAndIsolatedIncompleteContent": "Server zistil neúplný záznam obsahu a vyčlenil ho.",
+    "serverFileStorageTemporarilyUnavailable": "Úložisko súborov na serveri je dočasne nedostupné.",
+    "serverFormStorageTemporarilyUnavailable": "Úložisko formulárov na serveri je dočasne nedostupné.",
+    "serverPageContentStorageTemporarilyUnavailable": "Úložisko obsahu stránok na serveri je dočasne nedostupné.",
+    "serverSettingsChangedAfterScreenLoaded": "Po načítaní tejto obrazovky sa zmenili nastavenia servera.",
+    "serverStorageTemporarilyUnavailable": "Serverové úložisko je dočasne nedostupné.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Serverové úložisko bolo dočasne nedostupné, a preto nebolo možné archív vytvoriť.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Serverové úložisko je dočasne nedostupné, a preto nebolo možné uložiť zásady DLP.",
+    "signInAttemptIdentifierAlreadyBelongs": "Tento pokus o prihlásenie už bol použitý s inými údajmi.",
+    "signInOrAccountActionLink": "Odkaz na prihlásenie alebo akciu s účtom už nie je platný.",
+    "signInWithAuthorizedAccountOr": "Prihláste sa autorizovaným účtom alebo požiadajte administrátora o prístup.",
+    "signInWithExistingAdministratorAccount": "Prihláste sa existujúcim účtom administrátora.",
+    "signInWithServerAdministratorAccount": "Prihláste sa účtom správcu servera alebo požiadajte iného administrátora o prístup.",
+    "startAccountActionAgainGetNew": "Spustite akciu s účtom znova, aby ste dostali nový odkaz.",
+    "startReplacementExportFromLatestWorkspace": "Spustite náhradný export z najnovšieho pracovného priestoru.",
+    "storedBackupDidNotMatchVerified": "Uložená záloha nezodpovedala overenému súboru.",
+    "submittedInformationDidNotMeetOperation": "Odoslané informácie nespĺňali požiadavky operácie.",
+    "tooManyRequestsLimited": "Bolo vykonaných príliš veľa požiadaviek, preto je táto operácia obmedzená.",
+    "tooManyRequestsMadeSoOperation": "Bolo odoslaných príliš veľa požiadaviek, a preto je táto operácia dočasne obmedzená.",
+    "tryAgainAfterServerStorageRecovers": "Skúste to znova po obnovení serverového úložiska.",
+    "tryAgainInHours_one": "Skúste to znova približne o hodinu.",
+    "tryAgainInHours_few": "Skúste to znova približne o {{count}} hodiny.",
+    "tryAgainInHours_many": "Skúste to znova približne o {{count}} hodiny.",
+    "tryAgainInHours_other": "Skúste to znova približne o {{count}} hodín.",
+    "tryAgainInMinutes_one": "Skúste to znova približne o minútu.",
+    "tryAgainInMinutes_few": "Skúste to znova približne o {{count}} minúty.",
+    "tryAgainInMinutes_many": "Skúste to znova približne o {{count}} minúty.",
+    "tryAgainInMinutes_other": "Skúste to znova približne o {{count}} minút.",
+    "tryAgainInSeconds_one": "Skúste to znova približne o {{count}} sekundu.",
+    "tryAgainInSeconds_few": "Skúste to znova približne o {{count}} sekundy.",
+    "tryAgainInSeconds_many": "Skúste to znova približne o {{count}} sekundy.",
+    "tryAgainInSeconds_other": "Skúste to znova približne o {{count}} sekúnd.",
+    "useAnotherSignInMethodOr": "Použite iný spôsob prihlásenia alebo to cez tohto poskytovateľa skúste neskôr.",
+    "useResumableArchiveUploadSoProgress": "Použite nahrávanie archívu s možnosťou pokračovania, aby sa dalo nadviazať z uloženého stavu.",
+    "useResumableUploadSoProgressCan": "Použite nahrávanie s možnosťou pokračovania, aby sa dalo nadviazať z uloženého stavu.",
+    "waitForCompletionThenRetryDownload": "Počkajte na dokončenie a potom zopakujte stiahnutie.",
+    "waitForOtherServerOperationFinish": "Počkajte, kým sa dokončí iná operácia na serveri, a potom to skúste znova.",
+    "waitForStorageReconciliationAdvanceThen": "Počkajte chvíľu, kým sa úložisko aktualizuje, a potom zopakujte rovnakú operáciu.",
+    "waitMomentBeforeTryingAgain": "Pred ďalším pokusom chvíľu počkajte.",
+    "workspaceChangedWhileExportRunning": "Počas exportu sa pracovný priestor zmenil.",
+    "youNotSignedInAndNo": "Neboli ste prihlásený a žiadne údaje účtu sa nezmenili.",
+    "pageIsLocked": "Stránka je uzamknutá, a preto sa v nej nedajú robiť zmeny.",
+    "unlockPageThenTryAgain": "Odomknite stránku pre seba alebo pre všetkých v ponuke stránky a potom to skúste znova.",
+    "safeToRetryAfterUnlocking": "Po odomknutí stránky je bezpečné to skúsiť znova.",
+    "databaseIsLocked": "Databáza je uzamknutá, takže jej vlastnosti a zobrazenia nie je možné meniť.",
+    "unlockDatabaseThenTryAgain": "Odomknite databázu pre seba alebo pre všetkých cez tlačidlo Uzamknuté a skúste to znova.",
+    "databaseEditorsCanUnlock": "Databázu môže odomknúť iba ten, kto ju môže upravovať.",
+    "safeToRetryAfterDatabaseUnlocked": "Po odomknutí databázy môžete bezpečne skúsiť znova.",
+    "rowMoveNeedsFullAccess": "Ak ju chcete presunúť na inú stránku, potrebujete k nej úplný prístup a k cieľovému miestu prístup na úpravy.",
+    "askFullAccessHolderToMoveIt": "Požiadajte niekoho s úplným prístupom, aby ju presunul, alebo vyberte miesto, ktoré môžete upraviť.",
+    "rowMoveRefusedUntilAccess": "Presunutie bude znova zamietnuté, kým nebudete mať tento prístup.",
+    "otherWorkspaceCantMoveOrLink": "Položky sa nedajú presúvať ani prepájať medzi pracovnými priestormi.",
+    "makeItAnewInThatWorkspace": "Vytvorte položku v danom pracovnom priestore a skopírujte doň jej obsah. Celú stránku tam presuniete alebo skopírujete cez možnosť Presunúť do výberom pracovného priestoru.",
+    "otherWorkspaceRefusedAgain": "Opätovný pokus je odmietnutý z rovnakého dôvodu.",
+    "signInEndedForThisBrowser": "Prihlásenie v tomto prehliadači vypršalo alebo bolo ukončené.",
+    "signInEndedForThisApp": "Prihlásenie v tejto aplikácii vypršalo alebo bolo ukončené.",
+    "signInAgainToContinue": "Ak chcete pokračovať, prihláste sa znova.",
+    "retryAfterSigningInAgain": "Po opätovnom prihlásení to skúste znova.",
+    "serverRestoredSinceDeviceCopies": "Údaje tohto servera sa zmenili a kópie v tomto zariadení pochádzajú z času pred touto zmenou.",
+    "changeKeptOnThisDeviceOnly": "Zmena sa neuložila na serveri; nachádza sa iba v tomto zariadení.",
+    "takeServerContentAnew": "Ak chcete získať aktuálny obsah servera, vyberte položku „Načítať znova zo servera“.",
+    "retryAfterTakingContentAnew": "Po opätovnom načítaní zo servera to skúste znova.",
+    "propertyUsedByViewOrDependency": "Túto vlastnosť teraz nie je možné zmeniť: ide o názov alebo sa nachádza medzi odstránenými vlastnosťami.",
+    "changeWhatUsesPropertyFirst": "Načítajte stránku znova, aby ste videli aktuálny stav vlastnosti.",
+    "retryAfterChangingWhatUsesProperty": "Ak ju chcete zmeniť, najprv obnovte odstránenú vlastnosť.",
+    "workspaceAlreadyHasContentForArchive": "Tento pracovný priestor už má obsah, preto doň nemožno vložiť archív Leafen.",
+    "makeNewWorkspaceToImportArchive": "Vytvorte nový pracovný priestor a importujte tam tento archív.",
+    "retryInNewWorkspace": "V novom pracovnom priestore ho môžete importovať znova.",
+    "importFileDoesNotFitFormat": "Súbor nezodpovedá formátu, ktorý Leafen číta, preto sa nič neimportovalo.",
+    "exportFileAgainToImport": "Exportujte súbor znova z miesta, kde bol vytvorený, a potom tento súbor importujte.",
+    "sameFileRefusedAgain": "Opätovný import rovnakého súboru nebude fungovať.",
+    "pageBusyWithAnotherChange": "Táto stránka je zaneprázdnená inou zmenou, takže ju chvíľu nie je možné upravovať.",
+    "tryAgainOnceThatChangeIsDone": "Skúste to znova, keď bude táto zmena dokončená.",
+    "importPageInTrash": "Stránka, do ktorej sa má importovať, je v koši, takže sa nič neimportovalo.",
+    "restorePageThenImportAgain": "Obnovte stránku z koša a potom importujte znova.",
+    "importPageDeletedForGood": "Stránka, do ktorej sa má importovať, bola natrvalo odstránená, takže sa nič neimportovalo.",
+    "ownerBringsDeletedPageBack": "Do 30 dní ju môže vlastník pracovného priestoru obnoviť v časti Zabezpečenie → Uchovávanie údajov; potom ju obnovte z koša a znova importujte.",
+    "importAgainOnceRestored": "Kým stránku neobnovíte, opakovaný pokus nič neimportuje.",
+    "pageInTrashCantChange": "Stránku v koši nie je možné zmeniť, kým sa neobnoví.",
+    "restorePageThenTryAgain": "Obnovte stránku z koša a potom to skúste znova.",
+    "tryAgainOnceRestored": "Kým stránku neobnovíte, opakovaný pokus nebude fungovať.",
+    "optionNameHasComma": "Názov možnosti nemôže obsahovať čiarku (,).",
+    "takeCommaOutOrSplitOption": "Odstráňte čiarku alebo z toho urobte dve možnosti.",
+    "optionRefusedUntilRenamed": "Po zmene názvu to skúste znova.",
+    "optionNameTaken": "Táto vlastnosť už má možnosť s týmto názvom.",
+    "useAnotherOptionName": "Použite iný názov alebo vyberte už existujúcu možnosť.",
+    "optionsInUseLeftOut": "Táto zmena vynecháva možnosti, ktoré stránky používajú.",
+    "keepOptionsOrDeleteOneByOne": "Ponechajte tieto možnosti alebo ich odstraňujte po jednej z ponuky každej možnosti.",
+    "optionsRefusedUntilKeptOrDeleted": "Opätovný pokus bez zmeny je odmietnutý z rovnakého dôvodu."
+  }
+}

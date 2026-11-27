@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "name": "public-content",
+  "tsImports": [
+    { "names": ["GraphReadItem"], "from": "./contentGraphWire.generated" },
+    { "names": ["Page"], "from": "./workspaceMembershipWire.generated" },
+    { "names": ["CommentActorProfile"], "from": "./commentWire.generated" },
+    { "names": ["DatabasePageLayout"], "from": "./lib/databasePageLayout" }
+  ],
+  "bounds": [
+    { "goName": "maxPublicContentCursorBytes", "tsName": "cursorBytes", "value": 2048 },
+    { "goName": "maxPublicContentGraphItems", "tsName": "graphItems", "value": 100 },
+    { "goName": "maxPublicContentQueryCharacters", "tsName": "queryCharacters", "value": 200 },
+    { "goName": "maxPublicContentRequestBytes", "tsName": "requestBytes", "value": 65536 },
+    { "goName": "maxPublicContentSearchResults", "tsName": "searchResults", "value": 12 },
+    { "goName": "maxPublicContentSiteSlugCharacters", "tsName": "siteSlugCharacters", "value": 60 },
+    { "goName": "maxPublicContentSnapshotPages", "tsName": "snapshotPages", "value": 100 },
+    { "goName": "maxPublicContentTokenCharacters", "tsName": "tokenCharacters", "value": 255 }
+  ],
+  "errors": [
+    { "goName": "errorCodePublicContentInvalid", "tsName": "invalid", "value": "LEAFEN_PUBLIC_CONTENT_INVALID" },
+    { "goName": "errorCodePublicContentNotFound", "tsName": "notFound", "value": "LEAFEN_PUBLIC_CONTENT_NOT_FOUND" },
+    { "goName": "errorCodePublicContentRevisionConflict", "tsName": "revisionConflict", "value": "LEAFEN_PUBLIC_CONTENT_REVISION_CONFLICT" },
+    { "goName": "errorCodePublicContentFailed", "tsName": "failed", "value": "LEAFEN_PUBLIC_CONTENT_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "PublicContentAction",
+      "tsValuesName": "publicContentActions",
+      "values": [
+        { "goName": "publicContentActionSnapshot", "tsName": "snapshot", "value": "snapshot" },
+        { "goName": "publicContentActionSearchSite", "tsName": "searchSite", "value": "searchSite" },
+        { "goName": "publicContentActionCheck", "tsName": "check", "value": "check" },
+        { "goName": "publicContentActionDiscussions", "tsName": "discussions", "value": "discussions" }
+      ]
+    },
+    {
+      "tsName": "PublicContentSourceKind",
+      "tsValuesName": "publicContentSourceKinds",
+      "values": [
+        { "goName": "publicContentSourceShare", "tsName": "share", "value": "share" },
+        { "goName": "publicContentSourceSite", "tsName": "site", "value": "site" },
+        { "goName": "publicContentSourceView", "tsName": "view", "value": "view" }
+      ]
+    },
+    {
+      "tsName": "PublicSiteTheme",
+      "tsValuesName": "publicSiteThemes",
+      "values": [
+        { "goName": "publicSiteThemeSystem", "tsName": "system", "value": "system" },
+        { "goName": "publicSiteThemeLight", "tsName": "light", "value": "light" },
+        { "goName": "publicSiteThemeDark", "tsName": "dark", "value": "dark" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "publicContentActionEnvelope",
+      "tsName": "PublicContentActionEnvelope",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "PublicContentAction" }
+      ]
+    },
+    {
+      "goName": "publicContentSnapshotRequest",
+      "tsName": "PublicContentSnapshotRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"snapshot\"" },
+        { "goName": "SourceKind", "jsonName": "sourceKind", "goType": "string", "tsType": "PublicContentSourceKind" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SiteSlug", "jsonName": "siteSlug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "PagesCursor", "jsonName": "pagesCursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "GraphCursor", "jsonName": "graphCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicContentSearchRequest",
+      "tsName": "PublicContentSearchRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"searchSite\"" },
+        { "goName": "SiteSlug", "jsonName": "siteSlug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string" },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicContentPageSummary",
+      "tsName": "PublicContentPageSummary",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "Kind", "jsonName": "kind", "goType": "string", "tsType": "\"database\"", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "Opening", "jsonName": "opening", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicSiteConfiguration",
+      "tsName": "PublicSiteConfiguration",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Slug", "jsonName": "slug", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "PublicSiteTheme" },
+        { "goName": "ShowBreadcrumbs", "jsonName": "showBreadcrumbs", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShowSearch", "jsonName": "showSearch", "goType": "bool", "tsType": "boolean" },
+        { "goName": "ShowBranding", "jsonName": "showBranding", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NavigationPageIDs", "jsonName": "navigationPageIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "FaviconURL", "jsonName": "faviconUrl", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AllowDuplicate", "jsonName": "allowDuplicate", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowShare", "jsonName": "showShare", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "publicViewPresentation",
+      "tsName": "PublicViewPresentation",
+      "fields": [
+        { "goName": "Viewport", "jsonName": "viewport", "goType": "string", "tsType": "\"desktop\" | \"tablet\" | \"mobile\"" },
+        { "goName": "Theme", "jsonName": "theme", "goType": "string", "tsType": "PublicSiteTheme" },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FileKey", "jsonName": "fileKey", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "publicContentSnapshotResponse",
+      "tsName": "PublicContentSnapshotResult",
+      "fields": [
+        { "goName": "SourceKind", "jsonName": "sourceKind", "goType": "string", "tsType": "PublicContentSourceKind" },
+        { "goName": "AuthorityID", "jsonName": "authorityId", "goType": "string", "tsType": "string" },
+        { "goName": "RootPageID", "jsonName": "rootPageId", "goType": "string", "tsType": "string" },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" },
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "Pages", "jsonName": "pages", "goType": "[]publicContentPageSummary", "tsType": "PublicContentPageSummary[]" },
+        { "goName": "PagesNextCursor", "jsonName": "pagesNextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "PagesHasMore", "jsonName": "pagesHasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Graph", "jsonName": "graph", "goType": "[]graphReadItem", "tsType": "GraphReadItem[]" },
+        { "goName": "GraphNextCursor", "jsonName": "graphNextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "GraphHasMore", "jsonName": "graphHasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Site", "jsonName": "site", "goType": "*publicSiteConfiguration", "tsType": "PublicSiteConfiguration", "optional": true },
+        { "goName": "View", "jsonName": "view", "goType": "*publicViewPresentation", "tsType": "PublicViewPresentation", "optional": true },
+        { "goName": "LinkRole", "jsonName": "linkRole", "goType": "string", "tsType": "\"comment\" | \"edit\"", "optional": true },
+        { "goName": "CustomEmoji", "jsonName": "customEmoji", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true },
+        { "goName": "PageLayout", "jsonName": "pageLayout", "goType": "*databasePageLayout", "tsType": "DatabasePageLayout", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicContentSearchResponse",
+      "tsName": "PublicContentSearchResult",
+      "fields": [
+        { "goName": "SearchResults", "jsonName": "searchResults", "goType": "[]publicContentPageSummary", "tsType": "PublicContentPageSummary[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" },
+        { "goName": "CustomEmoji", "jsonName": "customEmoji", "goType": "map[string]string", "tsType": "Record<string, string>", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicContentCheckRequest",
+      "tsName": "PublicContentCheckRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"check\"" },
+        { "goName": "SourceKind", "jsonName": "sourceKind", "goType": "string", "tsType": "PublicContentSourceKind" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SiteSlug", "jsonName": "siteSlug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicContentCheckResponse",
+      "tsName": "PublicContentCheckResult",
+      "fields": [
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" }
+      ]
+    }
+ ,
+    {
+      "goName": "publicContentDiscussionsRequest",
+      "tsName": "PublicContentDiscussionsRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"discussions\"" },
+        { "goName": "SourceKind", "jsonName": "sourceKind", "goType": "string", "tsType": "PublicContentSourceKind" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "SiteSlug", "jsonName": "siteSlug", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "publicDiscussionComment",
+      "tsName": "PublicDiscussionComment",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "AuthorID", "jsonName": "authorId", "goType": "string", "tsType": "string" },
+        { "goName": "Body", "jsonName": "body", "goType": "any", "tsType": "unknown" },
+        { "goName": "Resolved", "jsonName": "resolved", "goType": "bool", "tsType": "boolean" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "string", "tsType": "string" },
+        { "goName": "EditedAt", "jsonName": "editedAt", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "publicContentDiscussionsResponse",
+      "tsName": "PublicContentDiscussionsResult",
+      "fields": [
+        { "goName": "Items", "jsonName": "items", "goType": "[]publicDiscussionComment", "tsType": "PublicDiscussionComment[]" },
+        { "goName": "People", "jsonName": "people", "goType": "[]commentActorProfile", "tsType": "CommentActorProfile[]" },
+        { "goName": "SourceRevision", "jsonName": "sourceRevision", "goType": "int", "tsType": "number" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ],
+  "unions": [
+    {
+      "tsName": "PublicContentRequest",
+      "members": ["PublicContentSnapshotRequest", "PublicContentSearchRequest", "PublicContentCheckRequest", "PublicContentDiscussionsRequest"]
+    }
+  ]
+}

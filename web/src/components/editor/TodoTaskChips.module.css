@@ -1,0 +1,122 @@
+/* A to-do's text box beside its checkbox (TodoTaskLine), its width the one
+   its task asks after. */
+.line {
+  flex: 1 1 auto;
+  min-width: 0;
+  container-type: inline-size;
+}
+/* A to-do's assignees and due date at its line's end, as Notion's (measured
+   2026-11-09 at 1460px, dark): 24px buttons rounded 6, the faces 18px and
+   overlapping, each ringed 1px in the page's color, the date 12px grey, 32px
+   of room before them. It floats at the end of the text's first line, so
+   only that line runs short of it, and its buttons stand 6 apart, as
+   Notion's (measured 2026-11-16: its box floats at the inline end, the next
+   lines run the text's whole width). A hidden add button keeps its room,
+   8px of room before the buttons then, so the box is as wide with the
+   pointer on it as without — 62px with both add buttons, 38px and the date
+   with the date alone, Notion's at rest and under the pointer alike. */
+.chips {
+  float: inline-end;
+  display: flex;
+  /* The text keeps half the line; a long date ends in "…". */
+  max-width: 50%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-height: 24px;
+  /* Its top on the first line's, the text's own top padding (EditorText
+     .editable's 3px, on a phone's list line too), as Notion's (measured
+     2026-11-17: its box's margin its text's padding, 2px at 1440 and at 402
+     in iPhone Safari, the box on the line's top both times). */
+  margin-block-start: 3px;
+  margin-inline-start: -2px;
+  padding-inline-start: 32px;
+  user-select: none;
+}
+.chips[data-adds="true"] {
+  padding-inline-start: 8px;
+}
+/* A text narrower than 300px shows no task, its words taking the whole
+   line, as Notion's (measured 2026-11-16 at 1440 and 1024: a text box
+   299.8px wide hid it, 300.5px showed it, in a column or nested alike). */
+@container (width < 300px) {
+  .chips {
+    display: none;
+  }
+}
+.chips > button {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+}
+.chips > button * {
+  pointer-events: none;
+}
+.chips > button:disabled {
+  cursor: default;
+}
+.chips > button:not(:disabled):hover {
+  background: var(--bg-hover);
+}
+.chips > button:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* The add buttons stand only where the pointer rests at the line's end, or
+   while one of them has the keyboard. */
+.chips .add {
+  justify-content: center;
+  width: 24px;
+  padding: 0;
+  color: var(--icon-secondary);
+  opacity: 0;
+}
+.chips:hover .add,
+.chips .add:focus-visible {
+  opacity: 1;
+}
+.chips .people {
+  flex: 0 0 auto;
+  padding-block: 0;
+  padding-inline: 3px;
+}
+.face {
+  display: inline-flex;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--bg-default);
+}
+.face + .face {
+  margin-inline-start: -6px;
+}
+.chips .due {
+  flex: 0 1 auto;
+  min-width: 0;
+  gap: 4px;
+  padding-block: 0;
+  padding-inline: 6px;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.dueText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chips .due svg {
+  flex: 0 0 auto;
+}
+.chips .due[data-reminder="true"] {
+  color: var(--accent-blue);
+}
+.chips [data-preview="true"] {
+  opacity: 0.5;
+}
+:global([data-phone="true"]) .chips {
+  padding-inline-start: 8px;
+}

@@ -1,0 +1,170 @@
+/* Notion's settings filters (seen 2026-10-12): a pill, blue while it filters;
+   24px tall, 8px in, its icon, name and ⌄ (SettingsChevron) 6px apart (seen
+   2026-11-16, the teamspaces' filters and the guests' sort, Chrome 1440). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.chip:hover:not(:disabled),
+.chip:focus-visible,
+.chip[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.chip[data-active] {
+  background: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  color: var(--accent-blue);
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.icon {
+  display: inline-flex;
+}
+
+.menu {
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  max-width: 320px;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.search {
+  height: 30px;
+  margin-bottom: 4px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--menu-row-height);
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.item + .item {
+  margin-top: var(--menu-row-space);
+}
+
+.item:hover,
+.item:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.itemIcon {
+  display: inline-flex;
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.itemText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.itemText small {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Nothing found, said as Notion's menus say it: a menu row's height and
+   type, in gray (seen 2026-10-17). */
+.empty {
+  display: flex;
+  align-items: center;
+  min-height: var(--menu-row-height);
+  margin: 0;
+  padding: var(--menu-row-padding);
+  color: var(--text-secondary);
+  font-size: var(--menu-row-font-size);
+  line-height: var(--menu-row-line-height);
+}
+
+/* The filters' row: the chips, then the search on the right. */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* A table's search field, after its magnifier: borderless, 120×20 (Notion's, 2026-10-27). */
+.searchField {
+  width: 120px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+}
+
+/* Notion's search mark is lighter than the secondary words in dark (seen 2026-10-28). */
+:global([data-theme="dark"]) .iconButton {
+  color: var(--text-accent-secondary);
+}
+
+.iconButton:hover,
+.iconButton:focus-visible,
+.iconButton[aria-pressed="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A table's empty row, as Notion's when it has no verified pages to show. */
+.emptyCell {
+  padding: 10px 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: center;
+}

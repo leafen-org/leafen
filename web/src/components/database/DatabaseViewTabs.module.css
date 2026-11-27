@@ -1,0 +1,665 @@
+.db {
+  container-name: database-surface;
+  container-type: inline-size;
+  margin-top: 8px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+.db[data-placement="inline"] {
+  margin-top: 4px;
+  overflow-x: visible;
+}
+/* With no title over it in a page's text — its "데이터 소스 제목 표시" off, a
+   chart's or a dashboard's — its tabs' 40px row is the block's top, the line
+   before ending right over it, as Notion's (seen 2026-11-13 at 1440, dark: a
+   "/세로 막대 차트" made under a line, its tab row 0 and pill 4 under that
+   line's block, the chart 8 under the row; 4 more before). */
+.db[data-placement="inline"]:not(:global([data-inline-database-header]) + *):not(:global(:is([data-database-page="true"], [data-phone="true"])) *) {
+  margin-top: 0;
+}
+.db[data-placement="page"] {
+  overflow-x: visible;
+}
+/* Over the blocks after it while its "새로 만들기" menu is open in its
+   toolbar (DatabaseTemplateMenu; the other toolbar menus are drawn on the
+   body): looked for by the boxes down to it, as a ":has()" through the whole
+   table ran again at each row put in or taken out (2026-11-13). */
+.db[data-placement="inline"]:has(> :where([data-database-chrome]) > :where([data-database-toolbar]) > :where([data-database-new-row]) > .toolbarMenu) {
+  position: relative;
+  z-index: 1002;
+}
+/* An inline database's view starts right under the tabs' line, as
+   Notion's table header does (seen 2026-09-30). */
+.db[data-placement="inline"] .viewBody {
+  padding-top: 0;
+}
+/* Notion's desktop calendar scrolls on the page canvas, with a 500px
+   inner grid even beside the sidebar (751px, seen 2026-10-09). Keep its
+   horizontal scroll boundary outside the text's right-hand padding; its
+   days start 1px into the text and end with the toolbar (seen 2026-11-04:
+   375–1161 under a toolbar ending at 1161 on a database's page). */
+.viewBody[data-view-type="calendar"]:not(:global([data-phone="true"]) *) {
+  /* 12 short of the page's edge: a narrow or full-width page's text holds
+     its database out that much, and the page must not scroll sideways
+     (Notion's doesn't, seen 2026-11-04). */
+  width: calc(100% + var(--content-pad, 96px) * 2 - 12px);
+  max-width: none;
+  margin-inline: calc(-1 * var(--content-pad, 96px)) 0;
+  padding-inline: calc(var(--content-pad, 96px) + 1px) calc(var(--content-pad, 96px) - 12px + var(--database-view-end, 0px));
+  overflow-x: auto;
+}
+/* A view ends where its database's toolbar does (--database-view-end: 8px
+   short of an inline database's frame in a page's text, EditorDatabaseBlocks),
+   as Notion's (seen 2026-11-08; a dashboard's widgets too, their frames 6
+   past, seen 2026-11-12: 496..1188 under "완료" ending at 1188); a table
+   runs on to the frame, a board's columns and a timeline's days past it. */
+.viewBody:not([data-view-type="table"], [data-view-type="board"], [data-view-type="timeline"]) {
+  padding-inline-end: var(--database-view-end, 0px);
+}
+.dbChrome {
+  max-width: 100%;
+  min-width: 0;
+}
+/* A database running on under a side peek lays its head in the part still
+   in view: its title cut short, its tools at that part's end
+   (databaseHeadInView.ts). */
+.dbChrome[data-head-shown="true"] {
+  max-inline-size: var(--database-head-shown);
+}
+
+/* The filter bar's row ends with the Sprint board's tasks done and "스프린트
+   완료" where its current sprint view puts them, as Notion's (seen
+   2026-11-03): 12 below the tabs and 8 above the view alone, beside the
+   bar's pills 15 below the tabs, the 26px button 1 above their middle.
+   Without them the bar is the row. */
+.filterRow {
+  display: flex;
+  align-items: flex-start;
+}
+
+.filterRow:has(> .sprintRow:empty) {
+  display: contents;
+}
+
+.filterRow > [data-quick-filter-bar] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sprintRow {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: auto;
+  padding: 12px 0 8px;
+}
+
+[data-quick-filter-bar] + .sprintRow {
+  padding-top: 13px;
+}
+
+.sprintRow:empty {
+  display: none;
+}
+.dbLoading {
+  height: 200px;
+}
+
+/* ── View tabs ─────────────────────────────────────────────── */
+/* Notion's tab line (seen 2026-10-11): pills side by side, the chosen one
+   filled, no line under them; a second press on the chosen one opens its
+   menu. */
+.viewTabs {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-bottom: 2px;
+  scrollbar-width: none;
+}
+.viewTabs::-webkit-scrollbar {
+  display: none;
+}
+.viewTabWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 34px;
+}
+/* A touch screen's row of views is 40 high, its 36px pills in the middle of
+   it, their names 15px, as Notion's phone and iPad (seen 2026-11-14 at 402
+   and 834: the views' row 193.6–233.6 under a database page's title ending
+   at 177.6, the pill or tab at 195.6, the search at 197.6 and the table's
+   head at 233.6). */
+:global([data-touch="true"]) .viewTabWrap {
+  height: 40px;
+}
+:global([data-touch="true"]) .viewTab {
+  height: 36px;
+  font-size: 15px;
+}
+.viewTabWrap[data-drag-over="true"]::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  inset-inline-start: -2px;
+  z-index: 3;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+.viewTabWrap[data-drag-over="true"][data-drop-side="after"]::before {
+  inset-inline-end: -2px;
+  inset-inline-start: auto;
+}
+.viewTabWrap[draggable="true"] {
+  cursor: grab;
+}
+.viewTabWrap[draggable="true"]:active {
+  cursor: grabbing;
+}
+.viewTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  max-width: 220px;
+  padding: 0 12px;
+  border-radius: 20px;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.viewTab:hover,
+.viewTab:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.viewTabActive {
+  background: var(--bg-tab-selected);
+  color: var(--text-default);
+}
+.viewTabName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* One view: its tools in the title row (Notion's, seen 2026-10-10: title,
+   4px, "+" and "⋯" 24px with 16px icons while the row is pointed at, the
+   toolbar at the right, the table's head right under the 40px row). */
+.db[data-placement="inline"] .dbChrome[data-title-row="true"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+}
+.db[data-placement="inline"]:has(> .dbChrome[data-title-row="true"]) {
+  margin-top: 0;
+}
+/* A long title gives way to the toolbar rather than pushing it down. */
+.db[data-placement="inline"]:not(:global([data-phone="true"]) *) .dbChrome[data-title-row="true"] {
+  flex-wrap: nowrap;
+}
+.dbChrome[data-title-row="true"] > [data-inline-database-header] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+/* A long title brings its "+ ⋯" next to the toolbar, over the toolbar's
+   pointer zone (DatabaseHeadToolsZone.module.css). */
+.viewTitleTools {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.dbChrome[data-title-row="true"]:hover:not(:has(> .dbToolbar:hover)) .viewTitleTools,
+.viewTitleTools:focus-within,
+.viewTitleTools:has([aria-expanded="true"]) {
+  opacity: 1;
+  --view-title-actions: inline-flex;
+}
+:global([data-touch="true"]) .viewTitleTools {
+  opacity: 1;
+  --view-title-actions: inline-flex;
+}
+/* Its "⋯" takes room only while they show; "+" keeps its room unseen, and
+   the toolbar's first button comes right after them: a long title runs on to
+   4px before the unseen "+" and gives "⋯" its 24px as the pointer comes, as
+   Notion's (seen 2026-11-13 at 1440, a database just made and one with all
+   its tools alike: the cut title ended 4px before "보기 추가", 24px sooner
+   with "컬렉션 작업" beside it, and no room after them). */
+.viewTitleTools > [data-view-title-actions] {
+  display: var(--view-title-actions, none);
+}
+.dbChrome[data-title-row="true"] > .viewTitleTools {
+  margin-inline-end: -4px;
+}
+/* A row narrowed to its few tools keeps "+" alone beside the title, its "⋯"
+   gone (Notion's, seen 2026-11-11: under a side peek at 1054 and 1191, "보기
+   추가" alone; with room, "보기 추가" and "컬렉션 작업"). */
+.dbChrome:has(> .dbToolbar[data-narrow-row="true"]) .viewTitleTool[data-view-title-actions] {
+  display: none;
+}
+.viewTitleTool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+.viewTitleTool:hover,
+.viewTitleTool:focus-visible,
+.viewTitleTool[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* "N개 더 보기" as Notion's: a plain pill, 10px aside, regular weight. */
+.viewOverflowButton {
+  gap: 4px;
+  padding-inline: 10px;
+  max-width: none;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+/* A view being made draws "새 보기", wider than the name it was reckoned by:
+   the pill gives up its sides first, its words whole in the middle, as
+   Notion's (seen 2026-11-06: 80 → 63 wide); a phone's picker gives way too. */
+.viewTabWrap[data-view-overflow-wrap]:not([data-active]), .viewTabWrap[data-view-overflow-wrap][data-phone="true"] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.viewTabWrap[data-view-overflow-wrap]:not([data-active]) > .viewOverflowButton {
+  width: 100%;
+  justify-content: center;
+}
+.viewOverflowButton > span, .viewOverflowButton svg { flex: 0 0 auto; }
+/* Notion's phone view picker (2026-10-17 at 390; 2026-11-15, A90 at 411): a 36px round pill on the hover
+   gray, the tab's 20px icon 10px in, the name 15px/500 6px after it, an 18px "⌄" 4px after that. */
+.viewOverflowButton[data-phone="true"] {
+  gap: 6px;
+  height: 36px;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 500;
+}
+.viewOverflowButton:hover,
+.viewOverflowButton:focus-visible,
+.viewOverflowButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* Folded on a desktop, the line is the current view's pill as its tab:
+   the selected tint, the 20px icon 10px in, the name 6px after it and
+   "⌄" 4px after that (Notion's, seen 2026-11-04: 90×32 for "보드"). */
+.viewOverflowButton[data-view-picker]:not([data-phone="true"]) {
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  background: var(--bg-tab-selected);
+  color: var(--text-default);
+  font-weight: 500;
+}
+.viewOverflowButton[data-view-picker] > svg:last-child {
+  margin-inline-start: -2px;
+}
+.viewOverflowButton[data-phone="true"] > svg:last-child { width: 18px; height: 18px; }
+/* A phone's picker gives way where its row lacks room, its name cut with "…" and its pill whole with its "⌄" (Notion's, seen 2026-11-14 on iOS Safari at 402: a dashboard's "⊞ 아주 긴 대시보드 이… ⌄" before its tools); a form's stops at 120 beside the builder's buttons (seen 2026-11-15 in Android Chrome at 411), set on the button, as a rule with :has() before a bare `span` restyled every span of the page's database at each focus or hover change in it (~60 ms a press at CPU ×2, 2026-11-15). */
+.viewTabs:has(~ * [data-form-preview-toggle]) .viewOverflowButton[data-phone="true"] { max-width: 120px; }
+.viewOverflowButton[data-phone="true"] > span:not(.viewGlyph) { flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The tab's 20px icon in the tab's color, 6px before its name (Notion's, seen 2026-10-11),
+   a narrow desktop window's too (seen 2026-11-01 at 560px); a phone shows its view picker alone. */
+.viewGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}
+.viewGlyph svg {
+  flex: 0 0 auto;
+}
+/* A view's own icon takes a 16px place and is drawn 1.2 times over it, from
+   10.4px in, its name 6px after the place, at 34px; a layout's 20px mark
+   stands from 12px, its name at 38px (Notion's tabs, seen 2026-11-14). */
+.viewGlyph[data-own-icon] {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+}
+.viewGlyph[data-own-icon] > * {
+  transform: scale(1.2);
+}
+/* "보기 추가": a round 28px "+" right after the tabs, its 16px icon the
+   icons' gray, shown while the pointer is over the tabs' row (Notion's,
+   seen 2026-11-01) or its menu is open, a stop of Tab only then (2026-11-15). */
+.addViewWrap {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  background: var(--table-surface, var(--bg-app));
+  opacity: 0; visibility: hidden;
+}
+.viewTabs:hover .addViewWrap,
+.addViewWrap:focus-within,
+.addViewWrap:has([aria-expanded="true"]) {
+  opacity: 1; visibility: visible;
+}
+/* A touch screen has no pointer over the tabs: the row rests without it, as
+   Notion's iPad (seen 2026-11-12 at 834 and 1210: "표" alone), and a press
+   in the row brings it out as the pointer does (pressShowsWithin.ts). */
+:global([data-touch="true"]) .viewTabs[data-pressed-within] .addViewWrap { opacity: 1; visibility: visible; }
+.addView {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+.addView:hover,
+.addView:focus-visible,
+.addView[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.viewMenu {
+  position: absolute;
+  z-index: 1000;
+  top: 36px;
+  inset-inline-start: 0;
+  width: 220px;
+  max-height: min(420px, calc(100vh - 56px));
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-menu);
+  box-shadow: var(--shadow-menu);
+  overscroll-behavior: contain;
+}
+.viewTabMenu {
+  position: absolute;
+  z-index: 53;
+  top: 36px;
+  inset-inline-start: 0;
+  width: 240px;
+  max-width: calc(100vw - 2 * var(--popover-edge));
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  overscroll-behavior: contain;
+}
+/* A view tab's "⋯", as Notion's (seen 2026-10-11): 220px, 28px rows with
+   20px marks, a name in gray and › on the right of a row that has one. */
+.viewTabMenu[data-view-tab-menu="true"] {
+  width: 220px;
+  padding: 4px;
+}
+/* "N개 더 보기" lists the views in a 290px menu, its rows to its edges
+   (Notion's, seen 2026-11-02). */
+.viewTabMenu[data-view-overflow-menu="true"] {
+  width: 290px;
+  padding: 0;
+}
+.viewTabMenu[data-view-tab-menu="true"] .viewMenuItem,
+.viewTabDisplayMenu .viewMenuItem {
+  height: 28px;
+  min-height: 28px;
+  padding: 0 8px;
+}
+.viewMenuMeta {
+  min-width: 0;
+  margin-inline-start: auto;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.viewMenuMetaArrow {
+  margin-inline-end: 4px;
+  vertical-align: -4px;
+}
+.viewMenuNext {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+}
+/* A row with a value keeps its name whole and the value gives way, its "›"
+   6px after it, as the view settings' rows (Notion's, seen 2026-11-15). */
+.viewMenuItem > span:has(+ .viewMenuMeta) {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.viewMenuMeta + .viewMenuNext {
+  margin-inline-start: -2px;
+}
+/* "다음과 같이 표시 ›" beside it: the three ways, then "applies to you" small. */
+/* As Notion's (seen 2026-11-06): 220px, its line 9px under the choices, 12px
+   in from the sides, the note under it in the secondary grey. */
+.viewTabDisplayMenu {
+  z-index: 54;
+  width: 220px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  outline: none;
+}
+.viewTabDisplayMenu .viewMenuItem {
+  justify-content: space-between;
+}
+.viewTabDisplayMenu .viewMenuSeparator {
+  margin: 9px 8px 0;
+}
+.viewTabDisplayNote {
+  padding: 10px 8px 7.5px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+/* The icon alone: 44px, as Notion's (seen 2026-10-11). */
+.viewTab[data-tab-display="icon"] {
+  justify-content: center;
+  width: 44px;
+  padding: 0;
+}
+/* Notion's "새 보기 추가" from the tab row or beside a database's title
+   (seen 2026-10-30 at 1041px and 1400px; five to a row and no form on
+   2026-10-25): 390px with 8px inside, its heading 12px/500 at 16,15, the
+   eleven layouts four to a row as 92×62 tiles 2px apart and rows 1px apart,
+   each a 22px mark 8px down and its name 4px under it, then a line 8px on
+   each side and "새 데이터 소스" 28px tall with a 20px mark. */
+.titleAddViewMenuPanel {
+  width: min(390px, calc(100vw - 2 * var(--popover-edge)));
+  padding: 8px;
+}
+.titleAddViewHeading {
+  padding: 6px 8px 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14px;
+}
+.titleAddViewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px 2px;
+}
+.titleAddViewMenuPanel[data-wide="true"] {
+  width: min(484px, calc(100vw - 2 * var(--popover-edge)));
+}
+.titleAddViewMenuPanel[data-wide="true"] .titleAddViewGrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.titleAddViewMenuPanel .titleAddViewSeparator {
+  margin: 8px;
+}
+.titleAddViewMenuPanel .titleAddViewSource {
+  min-height: 28px;
+  padding: 0 8px;
+}
+/* As a touch screen's sheet (WideAddViewSheet), as Notion's iPad (seen
+   2026-11-14 at 834, light): the panel across the sheet right under its
+   grip, 8px in; its heading 6px down and 8px further in, its 14.4px line 8px
+   over the tiles, which keep the desktop's 92px from the start; the line
+   8px round; "새 데이터 소스" its 28px row, the 22px mark 13px in and the
+   name 11px after it. */
+[data-phone-add-view][data-wide="true"] .titleAddViewSheetBody {
+  gap: 0;
+  padding: 0;
+}
+.titleAddViewMenuPanel.titleAddViewSheetPanel {
+  width: auto;
+}
+.titleAddViewSheetPanel .titleAddViewHeading {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  line-height: 1.2;
+}
+.titleAddViewSheetPanel .titleAddViewGrid {
+  grid-template-columns: repeat(5, 92px);
+}
+.titleAddViewSheetPanel .titleAddViewSource {
+  gap: 11px;
+  padding-inline: 13px 8px;
+}
+.viewMenuSeparator {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+.inlineAddViewType {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 62px;
+  padding: 8px 4px 0;
+  border-radius: 8px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+.inlineAddViewType span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The tile the keys are on is lit, the first as the menu opens, never ringed, its keys or not, as Notion's grid
+   (seen 2026-10-30; 2026-11-16 pressed or opened by Enter, then → lit ringless); a touch screen's has no keys on it. */
+.inlineAddViewType:hover,
+.inlineAddViewType:focus-visible,
+.inlineAddViewType[data-active="true"],
+.inlineAddViewType[data-lit="true"] {
+  background: var(--bg-hover);
+  outline: none;
+  --keyboard-focus-ring: 0 0 0 0 transparent;
+}
+
+/* On a phone, as Notion's (seen 2026-10-24 at 375px): one view's title,
+   cut short, then "⌄" 4px after it and the tools at the row's end 10px on;
+   with more views the title has a row of its own, "⌄" at its end. */
+:global([data-phone="true"]) .db[data-placement="inline"] .dbChrome[data-title-row="true"] {
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+:global([data-phone="true"]) .dbChrome[data-title-row="true"] > .dbToolbar {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding: 0;
+}
+
+/* A touch screen's title "⌄" (DatabaseViewTabs), a phone's and an iPad's alike (Notion's, seen 2026-11-14 at 834). */
+:global([data-touch="true"]) .viewTitleTools[data-phone="true"] {
+  margin-block: 0;
+  margin-inline: 4px 6px;
+  opacity: 1;
+}
+
+/* On a touch screen wider than a phone one view's row is Notion's iPad's
+   (seen 2026-11-14 at 834 and 1194, sidebar open and closed): the title,
+   its "⌄" 4px after it, and the tools straight after the "⌄" where the
+   title is cut ("새 데이터…" at 834 with the sidebar open), the row with no
+   gap of its own. */
+:global([data-touch="true"]:not([data-phone="true"])) .db[data-placement="inline"] .dbChrome[data-title-row="true"] {
+  gap: 0;
+}
+
+:global([data-touch="true"]:not([data-phone="true"])) .dbChrome[data-title-row="true"] > .viewTitleTools[data-phone="true"] {
+  margin-inline-end: 0;
+}
+
+/* Its "⌄" is 18px, as Notion's (seen 2026-10-27 at 375px). */
+:global([data-touch="true"]) .viewTitleTools[data-phone="true"] .viewTitleTool svg {
+  width: 18px;
+  height: 18px;
+}
+
+:global([data-touch="true"]) .phoneTitleRow {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  margin-bottom: 4px;
+}
+
+/* An inline database's tools end 12px inside its block (375px). */
+:global([data-phone="true"]) .db[data-placement="inline"] .dbChrome > .dbToolbar {
+  margin-inline-end: 6px;
+}
+
+/* On a database's own page they end at the margin (Notion's 351px at 375px). */
+:global([data-phone="true"]) :global(:is([data-kind="database"], [data-database-page="true"])) .db[data-placement="inline"] .dbChrome > .dbToolbar {
+  margin-inline-end: 0;
+}
+
+/* The title's "⌄" comes 4px after its words, and a title too long for the
+   row is cut where the "⌄" keeps its place at the row's end, as Notion's
+   (seen 2026-11-03 at 375px, one view or many: "T" 26–40.6 and the "⌄" at
+   44.6; a long title 26–329 and the "⌄" at 333–357). */
+:global([data-touch="true"]) .phoneTitleRow > [data-inline-database-header] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+:global([data-touch="true"]) .phoneTitleRow > [data-inline-database-header] input {
+  max-width: 100%;
+}
+
+:global([data-touch="true"]) .phoneTitleSlot {
+  display: inline-flex;
+  flex: none;
+  margin-inline-end: -6px;
+  margin-inline-start: 4px;
+}
+
+:global([data-touch="true"]) .phoneTitleSlot > .viewTitleTools[data-phone="true"] {
+  margin: 0;
+}

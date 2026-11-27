@@ -1,0 +1,65 @@
+/* A document embed's "상호 작용" (EmbedInteractOverlay), as Notion's (seen
+   2026-11-12, 1440 dark): over the whole document, clear, shown in 120ms
+   while the pointer is on the document; the document under it dimmed to
+   85% in 120ms and taking no presses. Its pill 36px high, 16px in, round,
+   #2c2c2b with #f0efed in either theme, a 20px hand 6px before 14px words
+   on 20px lines. The frame (.gate) is the embed's, positioned. */
+.idle {
+  pointer-events: none;
+  transition: filter 120ms ease-in-out;
+}
+.gate:hover > .idle {
+  filter: brightness(0.85);
+}
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-in-out;
+}
+.gate:hover > .overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Reached by Tab, it shows with a ring on its pill. */
+.overlay:focus-visible {
+  outline: none;
+  opacity: 1;
+}
+.overlay:focus-visible .pill {
+  box-shadow: var(--keyboard-focus-ring);
+}
+.pill {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: #2c2c2b;
+  box-shadow: 0 8px 12px 0 rgba(25, 25, 25, 0.027), 0 2px 6px 0 rgba(25, 25, 25, 0.027);
+  color: #f0efed;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  white-space: nowrap;
+}
+:global(:root[data-theme="dark"]) .pill {
+  box-shadow: 0 4px 12px -2px rgba(25, 25, 25, 0.08);
+}
+.pill svg {
+  flex: none;
+}

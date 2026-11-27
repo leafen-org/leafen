@@ -1,0 +1,77 @@
+/* A block's discussions in a card under the block, as Notion's narrow page
+   shows them (seen 2026-10-08): 480px wide, 10px round, a menu's ground and
+   shadow (rgb(37,37,37) in dark, seen 2026-11-06), with the one-line comment
+   field of a page's discussion. The attribute outweighs the panel's inline
+   layout it borrows. */
+.card[data-comments-mode] {
+  position: fixed;
+  inset: auto;
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 32px));
+  overflow-y: auto;
+  border: 0;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* The card's own list of threads, not a thread's replies (their faces stay
+   in the thread's column). */
+.card[data-comments-mode] > [role="list"] {
+  padding: 0;
+}
+.card[data-comments-mode] > [role="list"]:empty {
+  display: none;
+}
+
+/* Each thread as Notion's card lays it out (seen 2026-11-09, 1054 wide, dark
+   and the same in every state): its face 14px in from the card's left and
+   top, its words to 16px from the right, a 1px line between threads; 20px
+   from its last words or chips to its foot, or its reply row: that face 16px
+   under the words, the reply box 3.5px over the face and 4px past the words
+   on both sides, then 12px to the foot. One quoted comment is 147px. */
+.card[data-comments-mode] > [role="list"] > article {
+  padding-block: 14px 20px;
+  padding-inline: 14px 16px;
+}
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.card)[data-comments-mode] > [role="list"] > article:not(article:first-of-type) {
+  border-block-start: 1px solid var(--border-subtle);
+}
+.card[data-comments-mode] > [role="list"] > article:has(> [data-comment-reply-box]) {
+  padding-block-end: 12px;
+}
+.card[data-comments-mode] > [role="list"] > article > :has(+ [data-comment-reply-box]) {
+  margin-block-start: 8px;
+}
+.card[data-comments-mode] > [role="list"] > article > [data-comment-reply-box] {
+  margin-block-start: 4.5px;
+  margin-inline-end: -4px;
+}
+/* A reaction's chips 8px under the quote or the words, as Notion's. */
+.card[data-comments-mode] [data-comment-reactions] {
+  margin-block-start: 8px;
+}
+
+/* A comment's buttons 16px in from the card's right and 4px over its face,
+   as Notion's card (seen 2026-11-06: 916–992 in a card to 1008; 2026-11-09:
+   a thread's at 10, a reply's 4 over its face). */
+.card[data-comments-mode] {
+  --comment-pill-top: -4px;
+  --comment-pill-right: 0px;
+}
+.card[data-comments-mode] > [role="list"] > article > [data-comment-hover-actions] {
+  --comment-pill-top: 10px;
+  --comment-pill-right: 16px;
+}
+
+/* A new comment's field, as Notion's (seen 2026-11-09): 44px, 9px over the
+   24px face and 12px left of it, 8px right and under, its words 11px down. */
+.card[data-comments-mode] [data-comments-composer] {
+  padding-block: 9px 8px;
+  padding-inline: 12px 8px;
+  border: 0;
+}
+.card[data-comments-mode] [data-comments-composer] [contenteditable] {
+  padding-block: 2px 5px;
+}

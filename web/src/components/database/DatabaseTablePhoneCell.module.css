@@ -1,0 +1,39 @@
+/* A phone chooses no cell: its focused cell is drawn plain, its dot too,
+   under a value's sheet, once it closes and at a press on a value that opens
+   none (Notion's, seen 2026-11-18 on a Galaxy A90). */
+:global([data-phone="true"]) .cell:is(:focus, [data-cell-held="true"])::before {
+  content: none;
+}
+/* Once a key comes from a keyboard joined to the phone, the focused cell
+   takes the keyboard's ring as any button does (styles.css), cut at the
+   cell's own sides: a blue line 2px over it and one 2px under it, none
+   between it and the cells beside it, as Notion's cell, a button there (seen
+   2026-11-18 on a Galaxy A90 in Chrome, light, a hardware letter sent with
+   the focus left on the cell by its sheet's shade and no script before it,
+   in fresh tabs: the cell's box-shadow the ring's three layers, its blue
+   drawn from the cell's left edge to its right, 2 to 4px above its top and
+   below its bottom; a select's and a relation's, two tabs each). */
+:global([data-phone="true"]) .cell:focus-visible::before {
+  content: "";
+  border-radius: 0;
+  background: none;
+  box-shadow: var(--keyboard-focus-ring);
+  clip-path: inset(-6px 0);
+}
+
+/* A phone writes a value in the same box over its cell (DatabaseTableRows.module.css) at its own sizes, as Notion's
+   (seen 2026-11-25 on a Galaxy A90 in Chrome at 411, two tabs: a title's box 280.24×48 at 31,269.6 over its cell's
+   279.24×44 inside, within its lines, at 32,270.6, covering its icon and "열기", the words 9 in and 12 down; a text's
+   240×48 pushed to 12 from the window's right; on an iPhone in Safari at 402 the same day: a 280×45 cell with its lines
+   at 26,225.6 under a 280×48 box at 25,224.6 — the cell's width, its own end line left showing): 12px 9px in, 16/24
+   text, so a one-line value's box is 48 high. Its row under the keyboard, it stands
+   up over the rows above it to 12 over what stands at the window's foot (--cell-editor-lift, phoneCellBoxInSight.ts). */
+:global([data-phone="true"]) :is(.cell, .timelineTableCell) > .cellEditor:has(.cellInput:is(:focus, [data-field-held])) {
+  padding: 12px 9px;
+  translate: var(--cell-editor-hold-x, 0px) calc(var(--cell-editor-hold-y, 0px) - var(--cell-editor-lift, 0px));
+}
+:global([data-phone="true"]) :is(.cell, .timelineTableCell) > .cellEditor .cellInput.cellInput:is(:focus, [data-field-held]) {
+  min-height: 24px;
+  padding: 0;
+  line-height: 24px;
+}

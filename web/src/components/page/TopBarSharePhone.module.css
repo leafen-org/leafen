@@ -1,0 +1,490 @@
+/* A phone's "공유 설정" sheet, as Notion's (seen 2026-10-27 at 375px): its
+   parts 20px in, the people over a line across the sheet, then "일반 사용
+   권한", "고급" and "링크 복사". The tint of its grey fields is Notion's. */
+.sheet {
+  --share-tint: rgba(42, 28, 0, 0.07);
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  margin: -16px -16px -24px;
+  padding-bottom: 24px;
+}
+
+:global([data-theme="dark"]) .sheet {
+  --share-tint: rgba(255, 255, 243, 0.082);
+}
+
+/* "공유 | 게시": a 34px tint, 10px round, its chosen half a white 30px pill,
+   8px round; 16px words, the chosen 500 and dark, the other 400 and grey. */
+.sheet :global([data-share-tabs]) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  box-sizing: border-box;
+  height: 34px;
+  margin: 8px 20px 16px;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--share-tint);
+}
+
+.sheet :global([data-share-tabs]) > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.sheet :global([data-share-tabs]) > [data-active="true"] {
+  background: var(--bg-elevated);
+  color: var(--text-default);
+  font-weight: 500;
+}
+
+/* In dark the chosen half is the tint again over the tint (seen 2026-10-27). */
+:global([data-theme="dark"]) .sheet :global([data-share-tabs]) > [data-active="true"] {
+  background: var(--share-tint);
+}
+
+/* The field that opens the invite screen: 36px of tint, 10px round, an 18px
+   grey magnifier 12px in and the grey words 8px on. */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 36px;
+  margin: 0 20px 18px;
+  padding-block: 0; padding-inline: calc(12px + var(--phone-safe-start, 0px)) calc(12px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 10px;
+  background: var(--share-tint);
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 16px;
+  text-align: start;
+}
+
+.search svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+}
+
+/* A person's 64px row: a 40px face, the name 16px over the role 14px grey,
+   "⋯" at the end. */
+.person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 64px;
+  padding-block: 0; padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px));
+}
+
+.avatar {
+  flex: none;
+  width: 40px;
+  height: 40px;
+}
+
+.personText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.personName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.personName > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.you {
+  color: var(--text-tertiary);
+}
+
+.personRole {
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "⋯", 26px grey in a 30×28 button. */
+.more {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+
+.more svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* Under the people a line across the sheet, then "일반 사용 권한" (15px/500 grey). */
+.foot {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2px;
+  padding: 16px 20px 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.sectionLabel {
+  padding-inline: var(--phone-safe-start, 0px) var(--phone-safe-end, 0px);
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 26px;
+}
+
+/* The general access row, 64px: a 40px tile of tint, 6px round, its icon
+   grey; the choice 14px and an 18px grey "›" after it. */
+.general {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding-inline: var(--phone-safe-start, 0px) var(--phone-safe-end, 0px);
+}
+
+.generalButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.generalTile {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--share-tint);
+  color: var(--icon-secondary);
+  font-size: 17px;
+}
+
+.generalTile svg {
+  width: 24px;
+  height: 24px;
+}
+
+.generalLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.generalMore {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-start: -8px;
+  color: var(--icon-secondary);
+}
+
+/* "고급": a 22px grey gear 8px in and 14px dark words, 32px. */
+.advanced {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+
+.advanced svg {
+  width: 22px;
+  height: 22px;
+  color: var(--icon-secondary);
+}
+
+/* "링크 복사": 48px across, 12px round, blue, 16px/500, 12px under "고급". */
+.copy {
+  height: 48px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* "고급" on a phone, as Notion's (seen 2026-10-27; its places 2026-11-15 at
+   402pt): its sections 12px in from the sheet's sides and 16px apart, 16px
+   over the sheet's foot (a database's rule sections, TopBarSharePageRules,
+   then the agents'); in the agents', 4px apart, the heading 15px/500 grey
+   and the note 15px grey 8px further in, and a 48px row 8px in: a 40px tile
+   with the 17px question and its grey answer. */
+.advancedScreen {
+  gap: 16px;
+  padding: 0 12px 16px;
+}
+
+.advancedSection {
+  display: flex;
+  flex-direction: column;
+}
+
+.advancedSection:empty {
+  display: none;
+}
+
+.advancedSection[data-share-advanced-section="agents"] {
+  gap: 4px;
+}
+
+.advancedLabel {
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.advancedRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 48px;
+  padding-block: 4px; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  line-height: 22px;
+  text-align: start;
+}
+
+/* The question in the room its answer and "›" leave, going on to a next line
+   between words where it doesn't fit — Notion's runs past the screen — so the
+   answer shows whole (TopBarShareAdvanced.module.css). */
+.advancedRow > span:nth-child(2) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.advancedRow .generalTile svg {
+  width: 20px;
+  height: 20px;
+}
+
+.advancedValue {
+  flex: none;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.advancedRow > svg:last-child {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-tertiary);
+}
+
+.advancedNote {
+  margin: 0;
+  padding-block: 0; padding-inline: calc(8px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* A line under the sheet's parts keeps to their inset. */
+.note {
+  margin-block: 12px 0; margin-inline: calc(20px + var(--phone-safe-start, 0px)) calc(20px + var(--phone-safe-end, 0px));
+}
+
+.sheet :global([data-share-panel]) {
+  display: flex;
+  flex-direction: column;
+}
+
+/* A permission sheet's head: the person it is for, as their row. */
+.sheetPerson {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: -6px 0 10px;
+}
+
+.sheetPerson .personText {
+  gap: 2px;
+  padding-top: 1px;
+}
+
+/* "현재 사용 권한": the role 17px over where it comes from, 14px grey. */
+.current {
+  display: flex;
+  flex-direction: column;
+  padding-block: 11px; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  color: var(--text-default);
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.current > span:last-child {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* A general access row with a role, as a person's (Notion's phone and iPad,
+   seen 2026-11-13): the choice and its "›" over the role, 14px grey, their
+   middles 24px apart, and a "⋯" at the end that opens "사용 권한 변경". */
+.generalText {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.generalChoice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* "링크 만료 시점" heading "제거"'s group (Notion's, A90 411 2026-11-18;
+   402pt and 834pt 2026-11-13): 17px, when it stops grey 6px past, "⌄" 6px
+   on, over a line, in its place in that group (TopBarShareWebExpiry .phoneSection). */
+.expiryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-secondary);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.expiryValue {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+}
+
+/* On a touch screen wider than a phone the list stands in the middle of the
+   screen, round, as Notion's iPad (seen 2026-11-13 at 834pt: 409pt wide),
+   its rows a menu's — 14px words 11px in over 13px grey times, 28px one
+   line and 46px two, each over a line — "날짜 선택" set apart by a line. */
+@media (min-width: 600px) {
+  .expiryList {
+    top: 50%;
+    bottom: auto;
+    inset-inline: 0;
+    width: min(100% - 32px, 409px);
+    margin-inline: auto;
+    border-radius: 12px;
+    transform: translateY(-50%);
+    animation: none;
+  }
+
+  .expiryList [data-share-web-expiry-option] {
+    min-height: 28px;
+    padding-block: 4px;
+    padding-inline: calc(11px + var(--phone-safe-start, 0px)) calc(11px + var(--phone-safe-end, 0px));
+    border-top: 0;
+    border-bottom: 1px solid var(--border-default);
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  /* The row's words stand without the sheet row's own 12px over and under. */
+  .expiryList [data-described="true"] > span {
+    padding: 0;
+    line-height: 20px;
+  }
+
+  .expiryList [data-described="true"] > span > span:last-child {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .expiryList [data-share-web-expiry-option="date"] {
+    margin-top: 8px;
+    border-top: 1px solid var(--border-default);
+  }
+}
+
+/* Under "링크 복사", what a web link lets anyone see (Notion's phone, seen
+   2026-11-13 at 402pt): an "ⓘ" 6px in, the 14px grey words 36px in, 16px
+   under the button. */
+.webNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 16px 0 0;
+  padding-inline-start: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.webNote svg {
+  flex: none;
+  margin-top: 2px;
+}

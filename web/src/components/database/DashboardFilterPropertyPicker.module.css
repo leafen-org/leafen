@@ -1,0 +1,118 @@
+/* A dashboard filter's sources, as Notion's (seen twice on 2026-11-17 at
+   1440, dark): the menu stops at 400px and its search stays put while the
+   sources scroll under it, the list running the menu's full width 8px under
+   the search — its rows 4px in, a 12px gap above the first head and 4px under
+   the last row. Each source's head is its name and how many widgets show it,
+   12px apart on one baseline, 4px over its first row (5px with the rows' 1px
+   gap) and 15px under the last row before it (16px). */
+/* Its own column, not the property pickers' (whose search scrolls with
+   their rows in a window that lends them its inside): its search stays. */
+.picker {
+  display: flex;
+  flex-direction: column;
+  /* 400px less the menu's 8px top and 4px foot. */
+  max-height: 388px;
+  min-height: 0;
+  padding: 4px 4px 0;
+}
+
+.list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1px;
+  min-height: 0;
+  margin: 8px -12px 0;
+  padding: 12px 4px 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.head {
+  display: flex;
+  flex: none;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+  padding: 0 8px;
+}
+
+.head:not(:first-child) {
+  margin-top: 15px;
+}
+
+/* The name in the secondary text grey, the count in the tertiary one, as
+   Notion's phone sheet (iPhone 17 at 402, dark, 2026-11-17: 173,169,163 and
+   125,122,117). Its desktop menu paints the light theme's pair in the dark
+   one too (#7d7a75 and #a19e99, seen twice at 1440 on 2026-11-17), below. */
+.title {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The count's 13px line sits in the middle of a 1px-padded box, whose
+   baseline the name's meets (Notion's). */
+.views {
+  display: flex;
+  flex: none;
+  align-items: center;
+  padding: 1px 0;
+  color: var(--text-tertiary);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.views > span {
+  display: block;
+  line-height: 13px;
+}
+
+:global([data-theme="dark"]) .head .title {
+  color: #7d7a75;
+}
+
+:global([data-theme="dark"]) .head .views {
+  color: #a19e99;
+}
+
+/* "⋯ N개 더 보기" in the grey of a secondary row, over the picker row's
+   own colour by naming the list it stands in. */
+.list .more {
+  color: var(--text-secondary);
+}
+
+.more svg {
+  color: var(--icon-secondary);
+}
+
+/* A phone's: the source's name in 15px grey over its group, the count 12px
+   after it, the group's white 14pt under their line (Notion's iPhone 17 at
+   402, 2026-11-17: the search ending at 194, the line at 226, the group at
+   240; w1554 before) — the sheet's 16px gap less 7 under the head. */
+.sheetHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: -7px;
+  padding: 0 16px;
+}
+
+.sheetHead .title {
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.sheetHead .views {
+  padding: 0;
+  font-size: 13px;
+}
+
+.sheetHead .views > span {
+  line-height: 18px;
+}

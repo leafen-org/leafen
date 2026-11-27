@@ -1,0 +1,90 @@
+/* A page's rename popover (Notion's ⌘⇧R, seen 2026-10-02): a 380×36 box at
+   the window's top left holding the page's icon and its title, 56 high for a
+   title of two lines (seen 2026-11-10). */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.popover {
+  position: fixed;
+  top: 16px;
+  inset-inline-start: 12px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: min(380px, calc(100vw - 24px));
+  min-height: 36px;
+  /* 8px at the sides, as Notion's (seen 2026-10-27: icon 8px in, title 330px wide). */
+  padding: 4px 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.iconWrap {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+}
+
+.icon:hover,
+.icon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.titleWrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Rich text, its mentions drawn as the page's are; it wraps to more lines.
+   A file's rename box (useBlockFileMenu) draws its input with it too. */
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: var(--name-field-height);
+  padding: 4px 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  cursor: text;
+  border: 0;
+  border-radius: 4px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+}
+
+/* Notion's field keeps its thin border while typing, without the focus ring. */
+.title:focus-visible {
+  outline: none;
+}
+
+.title[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-tertiary);
+  pointer-events: none;
+}

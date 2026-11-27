@@ -1,0 +1,109 @@
+/* An account card, as Notion's account windows (seen 2026-10-30: 이메일 주소
+   400px, 비밀번호 설정 350px, 계정 삭제 420px): centered, 12px corners, a 32px
+   mark over a centered 17px title and its grey words, 12px field names over
+   28px fields, and either buttons at the end or full-width ones stacked. */
+section.card {
+  position: relative;
+  width: 400px;
+  max-width: calc(100vw - 32px);
+  padding: 20px;
+  border-radius: var(--modal-radius);
+  box-shadow: var(--shadow-modal);
+  text-align: start;
+}
+section.card[data-closable="true"] { padding: 47px 24px 24px; }
+.close {
+  position: absolute;
+  top: 20px;
+  inset-inline-end: 19px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+}
+.close svg { width: 14px; height: 14px; }
+.mark {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 8px;
+  color: var(--icon-secondary);
+}
+.card[data-closable="true"] .mark { margin-bottom: 15px; }
+.mark[data-tone="danger"] { color: var(--danger-fill); }
+.card h2.title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+  text-align: center;
+}
+.card p.words {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+.card[data-closable="true"] p.words { margin-top: 10px; }
+/* A card without its corner × keeps its words 20px in from each side (Notion's email and deletion cards). */
+.card:not([data-closable="true"]) p.words { padding: 0 20px; }
+.card .fields { display: flex; flex-direction: column; margin-top: 24px; }
+.card .fieldName {
+  display: block;
+  margin: 0 0 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.card .field + .fieldName { margin-top: 10px; }
+/* The email card's: its name heavier and further up, its field 34px with 15px words. */
+.card .fieldName[data-strong="true"] { margin-bottom: 8px; font-weight: 500; }
+/* The address codes' second field stands 24px under the first, as Notion's "이메일 주소 인증" (seen 2026-11-09). */
+.card .field[data-large="true"] + .fieldName[data-strong="true"] { margin-top: 24px; }
+.card .field {
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.card .field[data-large="true"] { height: 34px; font-size: 15px; line-height: 26px; }
+.card .field[data-look="boxed"] { height: 36px; padding: 5px 11px; border: 0; background: var(--name-field-bg); box-shadow: var(--name-field-ring); }
+.card .field:focus-visible,
+.card .field:focus {
+  outline: none;
+  box-shadow: var(--name-field-ring-focus);
+}
+.card .field[aria-invalid="true"] { box-shadow: inset 0 0 0 1px var(--danger), 0 0 0 1px var(--danger); }
+.card .error { margin: 4px 0 0; color: var(--danger); font-size: 12px; line-height: 16px; }
+.stack { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+/* A confirmation's buttons stand 28px under what it asks for (an account's or a workspace's deletion). */
+.stack.confirmStack { margin-top: 28px; }
+.wide {
+  width: 100%;
+  height: 32px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.wide[data-kind="primary"] { background: var(--accent-blue); color: var(--accent-blue-text); }
+.wide[data-kind="danger"] { background: var(--danger-fill); color: var(--danger-fill-text); }
+.wide[data-kind="quiet"] { background: transparent; color: var(--icon-secondary); font-weight: 400; }
+.wide[data-kind="cancel"] { background: transparent; color: var(--text-secondary); }
+.wide:disabled { opacity: .5; }
+.end { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+.end button { height: 28px; padding: 0 8px; border-radius: 6px; font-size: 14px; }
+.end button[data-kind="primary"] { background: var(--accent-blue); color: var(--accent-blue-text); font-weight: 500; }
+.end button[data-kind="quiet"] { background: transparent; color: var(--icon-secondary); }
+/* What can't be undone, as the wide one (account deletion): an address removed. */
+.end button[data-kind="danger"] { background: var(--danger-fill); color: var(--danger-fill-text); font-weight: 500; }

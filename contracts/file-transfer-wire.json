@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 2,
+  "name": "file-transfer",
+  "operations": [
+    { "goName": "fileTransferDirectUpload", "tsName": "directUpload", "method": "POST", "path": "/files" },
+    { "goName": "fileTransferPrepare", "tsName": "prepare", "method": "POST", "path": "/files/uploads" },
+    { "goName": "fileTransferPart", "tsName": "part", "method": "PUT", "path": "/files/uploads/{uploadId}/parts/{partNumber}" },
+    { "goName": "fileTransferComplete", "tsName": "complete", "method": "POST", "path": "/files/uploads/{uploadId}/complete" },
+    { "goName": "fileTransferDownload", "tsName": "download", "method": "GET", "path": "/files/{id}" },
+    { "goName": "fileTransferIssueCapability", "tsName": "issueCapability", "method": "POST", "path": "/files/{id}/capability" },
+    { "goName": "fileTransferDownloadCapability", "tsName": "downloadCapability", "method": "GET", "path": "/file-capabilities/{token}" },
+    { "goName": "fileTransferOperationAnswerDownload", "tsName": "operationAnswerDownload", "method": "GET", "path": "/operation-answers/{token}" }
+  ],
+  "bounds": [
+    { "goName": "fileTransferMaxFileBytes", "tsName": "maxFileBytes", "value": 5368709120 },
+    { "goName": "fileTransferDirectBytes", "tsName": "directBytes", "value": 8388608 },
+    { "goName": "fileTransferPartBytes", "tsName": "partBytes", "value": 8388608 },
+    { "goName": "fileTransferMaxParts", "tsName": "maxParts", "value": 640 },
+    { "goName": "fileTransferRequestIDChars", "tsName": "requestIdChars", "value": 255 },
+    { "goName": "fileTransferUploadInactivitySeconds", "tsName": "uploadInactivitySeconds", "value": 2100 },
+    { "goName": "fileTransferUploadCleanupTurnLimit", "tsName": "uploadCleanupTurnLimit", "value": 32 },
+    { "goName": "fileTransferUploadCleanupRetrySeconds", "tsName": "uploadCleanupRetrySeconds", "value": 5 },
+    { "goName": "fileDownloadCapabilityTTLSeconds", "tsName": "capabilityTtlSeconds", "value": 300 },
+    { "goName": "fileDownloadCapabilityRefreshSeconds", "tsName": "capabilityRefreshSeconds", "value": 5 },
+    { "goName": "fileDownloadCapabilityTokenChars", "tsName": "capabilityTokenChars", "value": 2048 },
+    { "goName": "operationAnswerDownloadTTLSeconds", "tsName": "operationAnswerTtlSeconds", "value": 300 },
+    { "goName": "operationAnswerDownloadMaxBytes", "tsName": "operationAnswerMaxBytes", "value": 5368709120 }
+  ],
+  "errorCodes": [
+    { "goName": "errorCodeFileUploadInvalid", "tsName": "uploadInvalid", "value": "LEAFEN_FILE_UPLOAD_INVALID" },
+    { "goName": "errorCodeFileUploadResumableRequired", "tsName": "uploadResumableRequired", "value": "LEAFEN_FILE_UPLOAD_RESUMABLE_REQUIRED" },
+    { "goName": "errorCodeFileUploadNotFound", "tsName": "uploadNotFound", "value": "LEAFEN_FILE_UPLOAD_NOT_FOUND" },
+    { "goName": "errorCodeFileUploadRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_FILE_UPLOAD_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeFileUploadPartConflict", "tsName": "partConflict", "value": "LEAFEN_FILE_UPLOAD_PART_CONFLICT" },
+    { "goName": "errorCodeFileUploadIncomplete", "tsName": "uploadIncomplete", "value": "LEAFEN_FILE_UPLOAD_INCOMPLETE" },
+    { "goName": "errorCodeFileUploadUnavailable", "tsName": "uploadUnavailable", "value": "LEAFEN_FILE_UPLOAD_UNAVAILABLE" },
+    { "goName": "errorCodeServerDiskLow", "tsName": "serverDiskLow", "value": "LEAFEN_SERVER_DISK_LOW" },
+    { "goName": "errorCodeFileUploadStorageUnavailable", "tsName": "uploadStorageUnavailable", "value": "LEAFEN_FILE_UPLOAD_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeFileUploadDatabaseBusy", "tsName": "uploadDatabaseBusy", "value": "LEAFEN_FILE_UPLOAD_DATABASE_BUSY" },
+    { "goName": "errorCodeFileUploadExpired", "tsName": "uploadExpired", "value": "LEAFEN_FILE_UPLOAD_EXPIRED" },
+    { "goName": "errorCodeFileUploadCleanupFailed", "tsName": "uploadCleanupFailed", "value": "LEAFEN_FILE_UPLOAD_CLEANUP_FAILED" },
+    { "goName": "errorCodeFileDownloadCapabilityInvalid", "tsName": "capabilityInvalid", "value": "LEAFEN_FILE_CAPABILITY_INVALID" },
+    { "goName": "errorCodeFileDownloadCapabilityExpired", "tsName": "capabilityExpired", "value": "LEAFEN_FILE_CAPABILITY_EXPIRED" },
+    { "goName": "errorCodeFileDownloadCapabilityUnavailable", "tsName": "capabilityUnavailable", "value": "LEAFEN_FILE_CAPABILITY_UNAVAILABLE" },
+    { "goName": "errorCodeFilePreviewTooLarge", "tsName": "previewTooLarge", "value": "LEAFEN_FILE_PREVIEW_TOO_LARGE" }
+  ],
+  "enums": [
+    {
+      "tsName": "FileUploadStatus",
+      "tsValuesName": "fileUploadStatuses",
+      "values": [
+        { "goName": "fileUploadStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "fileUploadStatusSettling", "tsName": "settling", "value": "settling" },
+        { "goName": "fileUploadStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "fileUploadStatusCleanupPending", "tsName": "cleanupPending", "value": "cleanup_pending" }
+      ]
+    },
+    {
+      "tsName": "FileUploadPurpose",
+      "tsValuesName": "fileUploadPurposes",
+      "values": [
+        { "goName": "fileUploadPurposePage", "tsName": "page", "value": "page" },
+        { "goName": "fileUploadPurposeComment", "tsName": "comment", "value": "comment" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "fileTransferFile",
+      "tsName": "FileTransferFile",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "SHA256", "jsonName": "sha256", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileUploadPrepareInput",
+      "tsName": "FileUploadPrepareInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "WorkspaceID", "jsonName": "workspaceId", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Size", "jsonName": "size", "goType": "int64", "tsType": "number" },
+        { "goName": "ContentType", "jsonName": "contentType", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Purpose", "jsonName": "purpose", "goType": "string", "tsType": "FileUploadPurpose", "optional": true }
+      ]
+    },
+    {
+      "goName": "fileUploadStateResponse",
+      "tsName": "FileUploadStateResponse",
+      "fields": [
+        { "goName": "UploadID", "jsonName": "uploadId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileUploadStatus" },
+        { "goName": "ReceivedBytes", "jsonName": "receivedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "NextPart", "jsonName": "nextPart", "goType": "int", "tsType": "number" },
+        { "goName": "PartBytes", "jsonName": "partBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "fileUploadPartResponse",
+      "tsName": "FileUploadPartResponse",
+      "fields": [
+        { "goName": "UploadID", "jsonName": "uploadId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileUploadStatus" },
+        { "goName": "ReceivedBytes", "jsonName": "receivedBytes", "goType": "int64", "tsType": "number" },
+        { "goName": "NextPart", "jsonName": "nextPart", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "fileUploadCompleteInput",
+      "tsName": "FileUploadCompleteInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileUploadCompleteResponse",
+      "tsName": "FileUploadCompleteResponse",
+      "fields": [
+        { "goName": "UploadID", "jsonName": "uploadId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileUploadStatus" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" },
+        { "goName": "File", "jsonName": "file", "goType": "fileTransferFile", "tsType": "FileTransferFile" }
+      ]
+    },
+    {
+      "goName": "fileDownloadCapabilityResponse",
+      "tsName": "FileDownloadCapability",
+      "fields": [
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string" },
+        { "goName": "ExpiresAt", "jsonName": "expiresAt", "goType": "int64", "tsType": "number" }
+      ]
+    }
+  ]
+}

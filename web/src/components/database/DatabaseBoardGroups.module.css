@@ -1,0 +1,442 @@
+
+/* ── Board view ────────────────────────────────────────────── */
+.board {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 8px 0 20px;
+  align-items: flex-start;
+}
+/* A touch screen's board starts 20 under its views bar, where a table's head
+   stays as on a computer (Notion's padding-top 20 there, seen 2026-11-15 at
+   411 on the A90; 2026-11-12 at 402pt read 22, two higher on both phones
+   since; 2026-11-16 in iPad Safari at 834 and 1210, inline and on its own
+   page: its columns' heads 20 under the bar, an empty inline board 179). */
+:global([data-touch="true"]) .board { padding-top: 20px; }
+/* Cards 180, 260 or 320 wide in their column's 8px sides, by the view's card
+   size, with "열 배경색" on or off — off only drops the wash (Notion's, seen
+   2026-11-04 on, 2026-11-06 off: 276px columns, 288 apart, 10px corners). */
+.board[data-size="small"] .boardCol {
+  flex-basis: 196px;
+  width: 196px;
+}
+.board[data-size="large"] .boardCol {
+  flex-basis: 336px;
+  width: 336px;
+}
+/* A column is as tall as its head, cards and "+ 새 페이지" with 8px under
+   them, an empty one 99px (Notion's, seen 2026-11-08 at 1303px: 48px of head
+   and 51 of column, 3 over "+ 새 페이지" and 8 under). */
+.boardCol {
+  position: relative;
+  flex: 0 0 276px;
+  width: 276px;
+  padding: 0 8px 8px;
+  border-radius: 10px;
+  transition: background 120ms ease;
+}
+/* A card dragged over a column leaves its ground as it is: only the line
+   where it would land shows (Notion's, seen 2026-11-15). */
+.boardCol[data-column-drag-over="true"]::before {
+  content: "";
+  position: absolute;
+  inset-block: 2px;
+  inset-inline: -7px auto;
+  z-index: 2;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent-blue);
+  pointer-events: none;
+}
+/* A column's head, as Notion's (seen 2026-10-24 at 1280px): 40px, its chip
+   in a 3px button 11px into the column, 3px before the count; a plain name
+   4px in and out, the count right after; the count 6px in, 14px. */
+.boardColHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0;
+}
+/* Staying 8px under the page's top as the cards go under it, it is its
+   column's top, its wash and corners on the ground the board stands on —
+   the page, or a coloured block's (--table-surface) — with that ground above
+   it (useStickyViewHeads; Notion's, seen 2026-11-12, and 2026-11-16 in a
+   blue toggle: the strip over the heads the toggle's rgb(35,56,80) dark). */
+.board:global([data-sticky-heads]) .boardColHead[data-sticky-head] {
+  margin-inline: -8px;
+  padding-inline: 8px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(var(--board-col-wash, transparent), var(--board-col-wash, transparent)), var(--table-surface, var(--bg-app));
+}
+/* The ground over it, and the part of a pixel a slid head can leave (over an
+   unslid one, out of the board's box). */
+.board:global([data-sticky-heads]) .boardColHead[data-sticky-head]::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 9px;
+  background: var(--table-surface, var(--bg-app));
+  pointer-events: none;
+}
+.boardColHead[draggable="true"] {
+  cursor: grab;
+}
+.boardColHead[data-group-dragging="true"] {
+  opacity: 0.48;
+  cursor: grabbing;
+}
+/* Its count 6px after its 3px padding, 9 after the pill (Notion's, seen
+   2026-11-15 at 1440: every column of a new task tracker's "상태별"). */
+.boardGroupBtn {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 3px;
+}
+.boardGroupBtn .chip {
+  font-weight: 500;
+  filter: var(--board-group-chip-filter, none);
+}
+/* The button takes the state its chip reads: a pointer state over ".chip"
+   restyled every chip in every table at each pointer move (2026-11-12). */
+.boardGroupBtn:hover,
+.boardGroupBtn:focus-visible,
+.boardGroupBtn[aria-expanded="true"] {
+  --board-group-chip-filter: brightness(0.97);
+}
+.boardGroupBtn:focus-visible,
+.boardGroupBtn[aria-expanded="true"] {
+  outline: none;
+}
+/* A group's name stays on one line and ends in "…" where the head runs
+   out of room before its "⋯ +", as Notion's (seen 2026-11-12 at 1440px:
+   a related page's long title, a person's name, "관계 없음"). */
+.boardNoGroup,
+.boardColName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* No value's name 70px short of the head's width, whatever the card size
+   (Notion's: 190px at medium, 110px at small, seen 2026-11-12). */
+.boardNoGroup {
+  max-width: calc(100% - 70px);
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-default);
+}
+/* The name on a 20px line, the button 26px tall, as Notion's. */
+.boardColName {
+  line-height: 20px;
+}
+/* A group of what cards hold — a title's text, a related page — is plain 14px text (Notion's, seen 2026-10-11). */
+.boardValueGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.boardValueGroup svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+/* A checkbox's column: its box and the property's name, 14px. */
+.boardCheckboxGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 4px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.boardCheckboxGroup > .cardCheckbox {
+  flex: none;
+}
+.boardColHead .boardCount {
+  padding: 0 6px;
+  font-size: 14px;
+  color: var(--text-tertiary);
+}
+/* The first card 3px under the head. */
+.boardColHead + .boardCards {
+  padding-top: 3px;
+}
+/* A column's and a sub-group's "⋯ +": 24px, 6px round (Notion's, seen 2026-11-15). */
+.boardGroupMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  font-size: 12px;
+  opacity: 0;
+  pointer-events: none;
+}
+.boardColHead > [data-board-group-actions] {
+  margin-inline-start: auto;
+}
+.boardCol:hover .boardGroupMore,
+.boardColHead:focus-within .boardGroupMore,
+.boardGroupMore:hover,
+.boardGroupMore:focus-visible,
+.boardGroupMore[aria-expanded="true"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen has nothing to point with: a column's and a sub-group's
+   "⋯ +" stay shown, "⋯" opening its "작업" (a sheet on a phone) and "+" its
+   new page (Notion's phone, seen 2026-11-12 at 402pt). */
+:global([data-touch="true"]) .boardGroupMore {
+  opacity: 1;
+  pointer-events: auto;
+}
+.boardGroupMore:hover,
+.boardGroupMore:focus-visible,
+.boardGroupMore[aria-expanded="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.boardGroupMenu {
+  position: absolute;
+  z-index: 53;
+  top: 32px;
+  inset-inline-start: 4px;
+  width: 260px;
+  padding: 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.boardGroupName {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 8px;
+}
+.boardGroupName span,
+.boardGroupLabel {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.boardGroupName input {
+  width: 100%;
+  height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 4px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+}
+.boardGroupName input:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.boardColorGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px;
+  padding: 6px 0;
+}
+.boardColorGrid button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+.boardColorGrid button:hover,
+.boardColorGrid button:focus-visible,
+.boardColorGrid button[aria-selected="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+.boardColorGrid span {
+  display: block;
+  flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(15, 15, 15, 0.08);
+}
+/* Its rows, "삭제" too in the menu's words even under the pointer, as Notion's
+   option menu (seen 2026-11-24). */
+.boardGroupItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 13px;
+}
+.boardGroupItem:hover,
+.boardGroupItem:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* After the columns: "+ 신규 그룹", then "고정된 그룹" — a 28px label in the
+   tertiary text color, its pinned groups 24px in, 32px each: the group's chip
+   and count, its filled pin in the secondary icon color — as Notion's (seen
+   2026-10-11). */
+.boardSide {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.boardPinnedTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+/* First after the columns, the label's words are on the columns' heads' line
+   and the groups' 38px under them (Notion's, seen 2026-11-11 on a desktop
+   and a phone). */
+.boardPinnedTitle:first-child {
+  margin-top: 6px;
+}
+.boardPinnedGroups {
+  display: flex;
+  flex-direction: column;
+  margin-block: 5px 0;
+  margin-inline: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+.boardPinnedGroup {
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+}
+.boardPinnedName {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.boardPinnedName {
+  border-radius: 6px;
+  cursor: pointer;
+}
+.boardPinnedName:hover:not(:disabled),
+.boardPinnedName:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.boardPinnedName:disabled {
+  cursor: default;
+}
+.boardPinnedName .chip {
+  height: 20px;
+  padding: 0 6px;
+  font-size: 14px;
+}
+.boardPinnedCount {
+  color: var(--text-default);
+}
+.boardPinnedUnpin {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+.boardPinnedUnpin:hover,
+.boardPinnedUnpin:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A view with nothing to show: its two outlined actions centered in 144px,
+   at medium weight, words and marks in Notion's gray accent, the same in
+   both themes (its graTexAccPri, seen 2026-11-12 in a table, list and board,
+   rgb(142, 139, 134) in dark as in light). */
+.boardNothingShown {
+  /* Over a database page's table, which reaches the window's bottom over it
+     (useOwnPageViewFill), so its buttons take presses. */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  /* 144px tall and the view's width, in a board's row or a list's column
+     alike (Notion's, seen 2026-11-06), and across a gallery's whole grid
+     (seen 2026-11-18). */
+  flex: none;
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 144px;
+}
+.boardNothingAction {
+  display: inline-flex;
+  align-items: center;
+  /* Its mark 6px before its words, in the faint outline of Notion's
+     outlined buttons (seen 2026-11-07: rgba(255, 255, 235, 0.1) in dark). */
+  gap: 6px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+.boardNothingAction:hover {
+  background: var(--bg-hover);
+}
+/* "결과 없음" and its 20px ⓘ right after the words, in the faint text of
+   what can't be done, as Notion's (seen 2026-11-18 in dark: 14px words on a
+   20px line and the mark alike in rgb(95, 94, 89), the two 76px across). */
+.boardNothingNote {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-disabled);
+  font-size: 14px;
+  line-height: 20px;
+}
+/* A board's "nothing to show" box starts at its top (Notion's, seen 2026-11-06). */
+.board.board:has(> [data-view-no-results]) {
+  padding-top: 0;
+}
+/* A gallery's box starts where its grid does and reaches 16px past its end,
+   as Notion's for one who may only read (seen 2026-11-18 as a guest, dpr 1:
+   a full-page database's grid 962/546/560 and box 978/562/576 at 1440, 1024
+   and 768; an inline one's 692/545 and 708/561 at 1440 and 768) — Notion's
+   box is its view's frame less its sticky inset, 8px wider than the grid's
+   inset on each side. */
+:global([data-gallery-grid]) > .boardNothingShown {
+  width: calc(100% + 16px);
+}

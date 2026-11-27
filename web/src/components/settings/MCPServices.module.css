@@ -1,0 +1,422 @@
+/* The "사용자 지정 MCP 서버" dialog: its fields, the warning box and the
+   button that opens the service's sign-in window. */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.field input {
+  height: 32px;
+  min-width: 0;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+.field input:read-only {
+  color: var(--text-secondary);
+}
+
+.field small {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.warning {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--c-notice-yellow-bg);
+  color: var(--c-notice-yellow-text);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.warning > span {
+  color: var(--text-secondary);
+}
+
+.openSignIn {
+  composes: line from "../ButtonLine.module.css";
+  align-self: flex-start;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: var(--radius);
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.openSignIn:hover,
+.openSignIn:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "+ 연결 추가하기 ∨" and its menu under it, in the "연결" item. */
+.addBar {
+  position: relative;
+  display: flex;
+  margin: 12px 0 16px;
+}
+
+.addBarEnd {
+  margin-inline-start: auto;
+}
+
+.addButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 10px 8px;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.addButton:hover,
+.addButton:focus-visible {
+  filter: brightness(0.95);
+  outline: none;
+}
+
+/* A service that registers no clients: the client the person makes there. */
+.client {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.clientNote {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Why the person makes a client on the service before signing in: the
+   redirect note's size, in the text's own color. */
+.clientNeed {
+  composes: clientNote;
+  color: var(--text-default);
+}
+
+.useToken {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-blue);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* The address, looked at as it is typed: a check mark in the field, or a
+   red mark and a line under it saying what is wrong. */
+.urlBox {
+  position: relative;
+  display: flex;
+}
+
+.urlBox input {
+  flex: 1;
+  padding-inline-end: 30px;
+}
+
+.urlBox[data-state="wrong"] input {
+  border-color: var(--danger);
+  outline-color: var(--danger);
+}
+
+.urlFound {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  color: white;
+  transform: translateY(-50%);
+}
+
+.urlFound svg {
+  width: 10px;
+  height: 10px;
+}
+
+.urlWrong {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 8px;
+  color: var(--danger);
+  transform: translateY(-50%);
+}
+
+.field .urlError {
+  color: var(--danger);
+}
+
+/* "인증 Bearer token ∨": a label and its choice on one line. */
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 28px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.choice > strong {
+  font-weight: 500;
+}
+
+.choiceText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.choiceText strong {
+  font-weight: 500;
+}
+
+.choiceText small {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.choice [data-app-select] {
+  max-width: 60%;
+}
+.choice [data-app-select] button {
+  color: var(--text-secondary);
+}
+
+/* The header the token goes in, under its field, as Notion shows it. */
+.sent {
+  margin-top: -6px;
+  align-self: flex-end;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* "범위 전체 ∨": the scopes the service asks for, each one kept or not. */
+.scopes {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.scopes summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  list-style: none;
+  cursor: pointer;
+}
+
+.scopes summary::-webkit-details-marker {
+  display: none;
+}
+
+.scopes summary:hover {
+  background: var(--bg-hover);
+}
+
+.scopeList {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 1;
+  display: flex;
+  min-width: 160px;
+  max-height: 240px;
+  flex-direction: column;
+  padding: 4px;
+  overflow-y: auto;
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.scopeList label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.scopeList label:hover {
+  background: var(--bg-hover);
+}
+
+/* "고급 설정 ›": folded under the form in a box of its own. */
+.advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--button-outline);
+  border-radius: 8px;
+}
+
+.advanced[data-open] {
+  padding-bottom: 12px;
+}
+
+.advanced > div {
+  padding: 0 12px;
+}
+
+.advancedToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.headerRow input {
+  min-width: 0;
+  height: 30px;
+  flex: 1;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+}
+
+.headerRow button,
+.addHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.addHeader {
+  align-self: flex-start;
+}
+
+.headerRow button:hover,
+.addHeader:hover {
+  background: var(--bg-hover);
+}
+
+/* A service's "관리": its tools, each with how it runs and its toggle. */
+.tools {
+  display: flex;
+  max-height: min(56vh, 520px);
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.tool {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.tool:not([data-enabled]) .toolText {
+  opacity: 0.55;
+}
+
+.toolText {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+
+.toolText strong {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolText span {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.toolText small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.tool [data-app-select] {
+  flex-shrink: 0;
+}
+.tool [data-app-select] button {
+  color: var(--text-secondary);
+  font-size: 13px;
+}

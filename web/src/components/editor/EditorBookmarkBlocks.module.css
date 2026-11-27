@@ -1,0 +1,174 @@
+/* Bookmark */
+/* A bookmark as Notion's card (seen 2026-10-17): the page's width, a 1px
+   line round 10px, 18px 24px 14px in; its page's name 17px/500 on one line,
+   up to two lines of description 13px 3px under it, then its address 13px
+   gray 8px under that, the page's icon 21.312px over its name where it has one
+   (seen 2026-11-07); no picture
+   where the page gives none; the hover gray as a row's. */
+/* 8px over and under it in its block, as Notion's (seen 2026-10-31: 82 in 98). */
+.bookmarkWrap {
+  position: relative;
+  width: calc(100% - 4px);
+  margin: 3px 2px;
+}
+/* A bookmark's "⋯" (BookmarkBlockTools): a touch screen's alone, 4px inside
+   the card's line at its top right, as Notion's iPad (seen 2026-11-13: a
+   28px group 5px in from the card's edges). */
+.imageActions[data-image-tools="bookmark"] {
+  top: 5px;
+  inset-inline-end: 5px;
+  display: none;
+}
+:global([data-touch="true"]) .imageActions[data-image-tools="bookmark"] {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+.bookmarkCard {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 18px 24px 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  text-decoration: none;
+}
+.bookmarkCard:hover {
+  background: var(--bg-hover);
+}
+.bookmarkContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.bookmarkTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 22px;
+}
+.bookmarkDescription {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--text-default);
+  font-size: 13px;
+  line-height: 18px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+.bookmarkUrl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  margin-top: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+.bookmarkUrl > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A page with a picture, as Notion's (read 2026-11-15 at 1440: its card a
+   wrapping row, the picture's box 154 high and flex 1 1 100px, the words
+   flex 4 1 180px and 18px 24px 14px in, its address at the foot by
+   space-between; the page's icon 21.312px over its name). So the picture takes a
+   fifth of what the card has past 280: 184 of a 704 card, 108 of a 321 one
+   (seen in a column of two), and below 282 the words wrap under the picture
+   across the card (seen in a column of three: 191 × 154 over the words). Cut
+   to fill, round 9 at its outer corners. */
+.bookmarkCard[data-picture] {
+  flex-flow: row wrap;
+  padding: 0;
+}
+/* Its own shape never sets the card's height: a square or a tall picture's
+   card is 156 high as a wide one's, as Notion's (seen 2026-11-12: 184×154 for
+   1280×1280, 1200×600 and 960×1230 pictures). */
+.bookmarkPicture {
+  flex: 1 1 100px;
+  min-width: 0;
+  height: 154px;
+  contain: size;
+  object-fit: cover;
+  border-start-start-radius: 9px;
+  border-start-end-radius: 2px;
+  border-end-end-radius: 2px;
+  border-end-start-radius: 9px;
+}
+.bookmarkText {
+  display: flex;
+  flex: 4 1 180px;
+  flex-direction: column;
+  min-width: 0;
+  padding: 18px 24px 14px;
+}
+/* A touch screen's card, a phone's or a tablet's, is Notion's mobile one
+   (read 2026-11-15 in iPhone Safari at 402; seen the same on its iPad
+   2026-11-13): the picture over the words, each in a box 100 high, the page's
+   name 20/25 and the words under it 16/21, cut at their box's foot, its
+   address under the cut. The card is those boxes and its line: 202 high with
+   a picture and 102 without on an iPhone, 201.5 and 101.5 on a Galaxy A90,
+   whose 1px line is drawn 0.76 high (read 2026-11-15 in its Chrome at 411). */
+:global([data-touch="true"]) .bookmarkCard[data-picture] {
+  flex-direction: column;
+}
+:global([data-touch="true"]) .bookmarkPicture {
+  height: 100px;
+}
+:global([data-touch="true"]) .bookmarkText {
+  flex-basis: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+/* Without a picture the words' box is the card's inside, its line around it. */
+:global([data-touch="true"]) .bookmarkCard[data-bookmark-card]:not([data-picture], [data-bookmark-unopened]) {
+  box-sizing: content-box;
+  height: calc(100px - 18px - 14px);
+}
+/* Its lines keep their height in the box that cuts them. */
+:global([data-touch="true"]) [data-bookmark-card] .bookmarkTitle {
+  flex-shrink: 0;
+  font-size: 20px;
+  line-height: 25px;
+}
+:global([data-touch="true"]) [data-bookmark-card]:not([data-bookmark-unopened]) :is(.bookmarkDescription, .bookmarkUrl) {
+  flex-shrink: 0;
+  font-size: 16px;
+  line-height: 21px;
+}
+/* The page's icon is Notion's 21.312px (its own width, read 2026-11-15 at
+   1440 and on a phone). */
+.bookmarkSiteIcon {
+  flex: none;
+  width: 21.312px;
+  height: 21.312px;
+  /* 1px right of the name, as Notion's (measured 2026-11-07, with a picture and without). */
+  margin-block: 1px 4px;
+  margin-inline: 1px 0;
+  border-radius: 4px;
+}
+.bookmarkCard[data-picture] .bookmarkUrl {
+  margin-top: auto;
+  padding-top: 8px;
+}
+.bookmarkEmpty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: min(100%, 520px);
+  margin: 4px 0;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  background: var(--bg-app);
+  color: var(--text-default);
+}

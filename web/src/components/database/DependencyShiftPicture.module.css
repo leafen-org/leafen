@@ -1,0 +1,58 @@
+/* Notion's picture over "날짜 자동 이동" (seen 2026-11-18 in desktop Chrome at
+   1440, dark, and on a Galaxy A90's Chrome at 411, light — the same picture on
+   both): a box 112 high, a 1px line in the secondary border colour, round 6, on
+   its palette's light gray (light rgba(84,72,49,.04), dark rgb(21,21,21)); day
+   lines 3 on 4 off in the palette's gray 300 (light #e3e2e0, dark
+   rgb(47,47,47)); tasks round 3 on the element ground, the dragged one light
+   #e7f3f8, dark #28456c; arrows 2px in the palette's yellow, red while one
+   runs backwards (rgb(229,100,88) in both themes); the pointer #32302c lined
+   white. */
+.picture {
+  --shift-ground: rgba(84, 72, 49, 0.04);
+  --shift-day: #e3e2e0;
+  --shift-moved: #e7f3f8;
+  display: block;
+  width: 100%;
+  height: 112px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: var(--shift-ground);
+}
+
+:global([data-theme="dark"]) .picture {
+  --shift-ground: rgb(21, 21, 21);
+  --shift-day: rgb(47, 47, 47);
+  --shift-moved: #28456c;
+}
+
+.picture line {
+  stroke: var(--shift-day);
+  stroke-dasharray: 3 4;
+}
+
+.picture rect {
+  fill: var(--bg-element);
+}
+
+.picture rect[data-part="moved"] {
+  fill: var(--shift-moved);
+}
+
+.picture [data-part="arrow"] {
+  fill: none;
+  stroke: var(--c-accent-yellow);
+  stroke-width: 2;
+}
+
+.picture [data-part="arrow"][data-backwards] {
+  stroke: var(--c-accent-red);
+}
+
+.picture [data-part="pointer"] path {
+  fill: #32302c;
+}
+
+.picture [data-part="pointer"] path[data-outline] {
+  stroke: #ffffff;
+  stroke-width: 0.5;
+}

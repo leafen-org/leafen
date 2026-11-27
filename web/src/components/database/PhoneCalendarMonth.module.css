@@ -1,0 +1,208 @@
+/* A phone's calendar, as Notion's (seen 2026-11-04 at 375px): a 42px row
+   with the month 8px in (16px/600) and 24px "‹", "오늘", "›" at its end; 8px
+   under it 24px weekdays (12px gray); weeks 60px high, a line over each, of
+   44px days — the number in a 28px box, an 8px dot 2px under it. Its days
+   start 1px into the view and end 8px short of the toolbar's end (seen
+   2026-11-12 at 402pt: lines 33–369.7 beside tools ending at 378). */
+.calendar {
+  padding-block: 0;
+  padding-inline: 1px 8px;
+}
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+}
+.title {
+  padding-inline-start: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--text-default);
+}
+.nav {
+  display: flex;
+  align-items: center;
+}
+.arrow,
+.today {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.arrow {
+  width: 24px;
+  color: var(--icon-secondary);
+}
+.today {
+  padding-inline: 6px;
+}
+.grid {
+  margin-top: 8px;
+}
+.weekdays,
+.week {
+  display: grid;
+  grid-template-columns: repeat(var(--phone-calendar-columns, 7), minmax(0, 1fr));
+}
+.weekday {
+  height: 24px;
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+.week {
+  padding: 8px 0;
+  box-shadow: var(--border-default) 0 -1px 0 0;
+}
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.day:active {
+  background: var(--bg-hover);
+}
+.number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+}
+.day[data-outside="true"] .number {
+  color: var(--text-tertiary);
+}
+/* Today in Notion's phone red, not the desktop's (seen 2026-11-03). */
+.day[data-today="true"] .number {
+  width: 28px;
+  border-radius: 100%;
+  background: var(--today-circle-bg);
+  color: #fff;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  margin-top: 2px;
+  border-radius: 100%;
+  background: var(--icon-secondary);
+}
+
+/* A day over the whole screen (Notion's): a 44px head with "‹ day ›" in its
+   middle (16px/600) and a blue "완료", a line under it (seen 2026-11-12 at
+   402pt); its items as 65px white rows with their title 16px in (16px/600),
+   28px under the line; 28px further "+ 새 항목" in a 45px row, the "+" 20px
+   in and the words at 56. */
+.daySheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--bg-soft);
+  color: var(--text-default);
+}
+.dayHead {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  height: 44px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.dayTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.done {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  height: 44px;
+  padding: 0 16px;
+  border: 0;
+  background: transparent;
+  color: var(--accent-blue);
+  font-size: 16px;
+  font-weight: 500;
+}
+/* A group's top line lies on the sheet's ground, as the head's does; its
+   rows' lines on their own (Notion's, seen 2026-11-12 in dark: 50 over 32). */
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+  margin-top: 27px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-elevated);
+  background-clip: padding-box;
+}
+.dayItem,
+.dayAdd {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-default);
+  font-size: 16px;
+  text-align: start;
+}
+.dayItem {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 6px;
+  min-height: 65px;
+  padding: 12px 16px;
+}
+/* A timed item's date above its title, 14px gray (87.4px row). */
+.dayItem[data-dated="true"] {
+  padding: 20px 16px 22px;
+}
+.dayItemDate,
+.dayItemTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dayItemDate {
+  font-size: 14px;
+  line-height: 19.2px;
+  color: var(--text-secondary);
+}
+.dayItemTitle {
+  font-weight: 600;
+  line-height: 19.2px;
+}
+.dayAdd {
+  gap: 16px;
+  height: 45px;
+  padding: 0 20px;
+  color: var(--text-secondary);
+}
+.dayAdd svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}

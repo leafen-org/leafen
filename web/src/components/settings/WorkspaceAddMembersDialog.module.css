@@ -1,0 +1,499 @@
+/* Settings › 사람's "멤버 추가하기" and its dialog, as Notion's (seen
+   2026-10-27 at 1280px): a 92×28 blue button, then a 460px dialog 20px in —
+   a 32px grey icon, the 17px/600 title, a grey line, the search field, "역할
+   선택" over a 55px card, "메시지" over its box, a full-width blue "초대
+   보내기" and a grey "취소". */
+
+.trigger {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.trigger:hover,
+.trigger:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+.trigger:disabled {
+  opacity: 0.4;
+}
+
+/* A phone's, across the screen: 32px, Notion's phone "멤버 추가" (seen 2026-11-12 at 402pt, 14px in from each side). */
+.trigger[data-phone-wide="true"] {
+  width: 100%;
+  height: 32px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+.dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(460px, 100%);
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  overflow-y: auto;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+}
+
+/* On a phone, a whole screen, as Notion's phone "멤버 추가" (seen 2026-11-12
+   at 402pt, iPhone Safari: the screen's width and height, its search field
+   holding the keyboard). */
+:global([data-phone="true"]) .overlay {
+  padding: 0;
+}
+:global([data-phone="true"]) .dialog {
+  width: 100%;
+  height: var(--app-height, 100dvh);
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  color: var(--icon-secondary);
+}
+
+.title {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.hint {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The field: 32px, its words 6px down and 8px in, its chips before them 4px
+   apart either way, the words wrapping below 60px left; the fields' resting
+   ground and ring, blue while it has the focus (Notion's, twice 2026-11-22 at
+   1440: 416×32, padding 6/8, gap 4, the words' box flex 1 1 60px). */
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 32px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.field:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.field input {
+  flex: 1 1 60px;
+  min-width: 60px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* A chosen address or person, Notion's token (seen 2026-11-16): 20px, 6px in
+   before its words, round 4px, the default chip's grey; its words the text's
+   colour, a 70% white in dark; its × a 16px xMark in a 20px square 2px from
+   either side, round 6px, on the hover grey even at rest. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  height: 20px;
+  padding-inline: 6px 0;
+  border-radius: 4px;
+  background: var(--c-chip-bg-default);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+:global([data-theme="dark"]) .chip { color: rgba(255, 255, 255, 0.7); }
+
+.chip > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.chip button {
+  display: inline-flex; flex: none; align-items: center; justify-content: center;
+  width: 20px; height: 20px; margin-inline: 2px; padding: 0; border: 0;
+  border-radius: 6px; background: var(--bg-hover); color: var(--icon-secondary);
+}
+
+/* The suggestions: a menu 14px under the field and 4px in from its sides,
+   over "역할 선택" and what follows, so the dialog keeps its size and place
+   as it opens and closes; 28px rows across it, 4px above and below (Notion's,
+   2026-11-12: 407×36 at 516,296 under a 416×32 field at 512,250). */
+.fieldWrap {
+  position: relative;
+}
+
+/* "멤버 추가하기"'s field stands 2px in at either side, 416 in the others' 420:
+   Notion pads its group 2px for the focus ring's outer pixel (twice 2026-11-22,
+   1440 dark: 416×32 at 512, the card and message box 420 at 510). A member's
+   request (WorkspaceMemberRequest) keeps the window's width. */
+.fieldInset {
+  padding-inline: 2px;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 14px);
+  inset-inline: 4px;
+  padding: 4px 0;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fieldInset > .suggestions { inset-inline: 6px; }
+
+.suggestion[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.suggestionName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* "초대됨" on someone already here, the row not faded and the name in the text's
+   colour: Notion's grey tag, as its phone's (twice 2026-11-22, 1440 dark). */
+.badge {
+  composes: personHere from "./WorkspaceAddMembersPhone.module.css";
+}
+.suggestions .suggestion[aria-disabled="true"] { opacity: 1; cursor: pointer; }
+
+.label {
+  display: block;
+  margin: 20px 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+/* The one role: icon 9 in at the top, name and what it allows 16.8 lines 2 apart, mid (Notion's, twice 2026-11-22: 9.7 and 28.5
+   down a 55 card), its edge Notion's 1px borPriTra border inside (a shadow, which a choosable card's button keeps). */
+.role {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-sizing: border-box;
+  min-height: 55px;
+  padding: 9px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+}
+
+.role > svg {
+  flex: none;
+  align-self: flex-start;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+.roleText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 16.8px;
+}
+
+.roleText > span:last-child {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* "역할 선택" sits 22px under the field, the other labels 20px under theirs (Notion's, 2026-11-08). */
+.roleLabel {
+  margin-top: 22px;
+}
+
+/* 6px under its label and 68px tall, as Notion's (2026-11-08; the role card
+   is 8px under its own): a box holding three lines, 4px above and below them
+   and 10px at their sides, the lines scrolling inside it past three (seen
+   2026-11-15: a 68px box holding a 60px field). */
+.messageBox {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 68px;
+  margin-top: -2px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+}
+
+.messageBox:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.message {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.message:focus {
+  outline: none;
+}
+
+.error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.send {
+  height: 32px;
+  margin-top: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.send:disabled {
+  opacity: 0.4;
+}
+
+.cancel {
+  composes: cancel from "../DialogButtons.module.css";
+  margin-top: 8px;
+}
+
+.send:not(:disabled):hover,
+.send:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+/* Leafen's own way in, under a line: by name, without an email. */
+.more {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-default);
+}
+
+.more button {
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.more button:hover,
+.more button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.subhead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.subhead button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-primary);
+}
+
+.subhead button:hover,
+.subhead button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "이름으로 초대", Leafen's own: the dialog's grey line, field and blue button,
+   then the links still waiting as rows, and what can open them last. */
+.nameInvite {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nameInviteForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameInviteForm .send {
+  margin-top: 12px;
+}
+
+/* Under the name: someone here already has it (WorkspaceNameInvitations). */
+.nameInviteSameName {
+  margin: 6px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.nameInvite .error {
+  margin: 0;
+}
+
+.nameInviteList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 -6px;
+}
+
+.nameInviteRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.nameInviteRow:hover {
+  background: var(--bg-hover);
+}
+
+.nameInviteWho {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.nameInviteWho span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nameInviteWho span:last-child {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.nameInviteRow button {
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.nameInviteRow button:hover,
+.nameInviteRow button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+.nameInviteNote {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}

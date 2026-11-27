@@ -1,0 +1,326 @@
+{
+  "schemaVersion": 1,
+  "name": "form",
+  "operations": [
+    { "name": "configure", "goName": "formConfigureOperation", "tsName": "configure", "method": "POST", "path": "/forms" },
+    { "name": "definition", "goName": "formDefinitionOperation", "tsName": "definition", "method": "POST", "path": "/forms" },
+    { "name": "options", "goName": "formOptionsOperation", "tsName": "options", "method": "POST", "path": "/forms" },
+    { "name": "submit", "goName": "formSubmitOperation", "tsName": "submit", "method": "POST", "path": "/forms" },
+    { "name": "responseCopy", "goName": "formResponseCopyOperation", "tsName": "responseCopy", "method": "POST", "path": "/forms" }
+  ],
+  "bounds": [
+    { "goName": "maxFormRequestBytes", "tsName": "requestBytes", "value": 65536 },
+    { "goName": "maxFormScalarBytes", "tsName": "scalarBytes", "value": 8192 },
+    { "goName": "maxFormIdentifierCharacters", "tsName": "identifierCharacters", "value": 255 },
+    { "goName": "maxFormTokenCharacters", "tsName": "tokenCharacters", "value": 64 },
+    { "goName": "maxFormOptionWindow", "tsName": "optionWindow", "value": 20 },
+    { "goName": "maxFormCursorCharacters", "tsName": "cursorCharacters", "value": 2048 },
+    { "goName": "maxFormOptionQueryCharacters", "tsName": "optionQueryCharacters", "value": 200 },
+    { "goName": "maxFormRequestIDBytes", "tsName": "requestIdBytes", "value": 512 },
+    { "goName": "maxFormSubmissionAdmission", "tsName": "submissionAdmission", "value": 30 },
+    { "goName": "formSubmissionAdmissionWindowSeconds", "tsName": "submissionAdmissionWindowSeconds", "value": 60 },
+    { "goName": "maxFormSubmissionAdmissionCleanupWindow", "tsName": "submissionAdmissionCleanupWindow", "value": 64 }
+  ],
+  "errors": [
+    { "goName": "errorCodeFormInvalid", "tsName": "invalid", "value": "LEAFEN_FORM_INVALID" },
+    { "goName": "errorCodeFormNotFound", "tsName": "notFound", "value": "LEAFEN_FORM_NOT_FOUND" },
+    { "goName": "errorCodeFormForbidden", "tsName": "forbidden", "value": "LEAFEN_FORM_FORBIDDEN" },
+    { "goName": "errorCodeFormConflict", "tsName": "conflict", "value": "LEAFEN_FORM_CONFLICT" },
+    { "goName": "errorCodeFormMutationIDReused", "tsName": "mutationIdReused", "value": "LEAFEN_FORM_MUTATION_ID_REUSED" },
+    { "goName": "errorCodeFormStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_FORM_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeFormDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_FORM_DATABASE_BUSY" },
+    { "goName": "errorCodeFormFailed", "tsName": "failed", "value": "LEAFEN_FORM_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "FormAction",
+      "tsValuesName": "formActions",
+      "values": [
+        { "goName": "formActionConfigure", "tsName": "configure", "value": "configure" },
+        { "goName": "formActionDefinition", "tsName": "definition", "value": "definition" },
+        { "goName": "formActionOptions", "tsName": "options", "value": "options" },
+        { "goName": "formActionSubmit", "tsName": "submit", "value": "submit" },
+        { "goName": "formActionResponseCopy", "tsName": "responseCopy", "value": "responseCopy" }
+      ]
+    },
+    {
+      "tsName": "FormAudience",
+      "tsValuesName": "formAudiences",
+      "values": [
+        { "goName": "formAudienceNone", "tsName": "none", "value": "none" },
+        { "goName": "formAudienceWorkspace", "tsName": "workspace", "value": "workspace" },
+        { "goName": "formAudienceWeb", "tsName": "web", "value": "web" }
+      ]
+    },
+    {
+      "tsName": "FormSubmitterAccess",
+      "tsValuesName": "formSubmitterAccesses",
+      "values": [
+        { "goName": "formWireSubmitterAccessNone", "tsName": "none", "value": "none" },
+        { "goName": "formWireSubmitterAccessReader", "tsName": "reader", "value": "reader" },
+        { "goName": "formWireSubmitterAccessCommentOnly", "tsName": "commentOnly", "value": "comment_only" },
+        { "goName": "formWireSubmitterAccessReadAndWrite", "tsName": "readAndWrite", "value": "read_and_write" },
+        { "goName": "formWireSubmitterAccessEditor", "tsName": "editor", "value": "editor" }
+      ]
+    },
+    {
+      "tsName": "FormButtonColor",
+      "tsValuesName": "formButtonColors",
+      "values": [
+        { "goName": "formButtonColorBlue", "tsName": "blue", "value": "blue" },
+        { "goName": "formButtonColorGray", "tsName": "gray", "value": "gray" },
+        { "goName": "formButtonColorGreen", "tsName": "green", "value": "green" },
+        { "goName": "formButtonColorRed", "tsName": "red", "value": "red" },
+        { "goName": "formButtonColorOrange", "tsName": "orange", "value": "orange" },
+        { "goName": "formButtonColorPurple", "tsName": "purple", "value": "purple" },
+        { "goName": "formButtonColorBrown", "tsName": "brown", "value": "brown" },
+        { "goName": "formButtonColorYellow", "tsName": "yellow", "value": "yellow" },
+        { "goName": "formButtonColorAzure", "tsName": "azure", "value": "azure" },
+        { "goName": "formButtonColorPink", "tsName": "pink", "value": "pink" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "formActionEnvelope",
+      "tsName": "FormActionEnvelope",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "FormAction" }
+      ]
+    },
+    {
+      "goName": "formQuestion",
+      "tsName": "FormQuestion",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Label", "jsonName": "label", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "Required", "jsonName": "required", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Hidden", "jsonName": "hidden", "goType": "bool", "tsType": "boolean" },
+        { "goName": "SyncWithPropertyName", "jsonName": "syncWithPropertyName", "goType": "bool", "tsType": "boolean" },
+        { "goName": "OwnLabel", "jsonName": "ownLabel", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "LongAnswer", "jsonName": "longAnswer", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "OptionsDisplay", "jsonName": "optionsDisplay", "goType": "string", "tsType": "\"list\" | \"dropdown\"", "optional": true },
+        { "goName": "MaxSelections", "jsonName": "maxSelections", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "IncludeEndDate", "jsonName": "includeEndDate", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "IncludeTime", "jsonName": "includeTime", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "CheckboxLabel", "jsonName": "checkboxLabel", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ConditionGroupID", "jsonName": "conditionGroupId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Position", "jsonName": "position", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "formConditionGroup",
+      "tsName": "FormConditionGroup",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "SourceQuestionID", "jsonName": "sourceQuestionId", "goType": "string", "tsType": "string" },
+        { "goName": "OptionIDs", "jsonName": "optionIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "MatchAll", "jsonName": "matchAll", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Checked", "jsonName": "checked", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "formSubmitConfiguration",
+      "tsName": "FormSubmitConfiguration",
+      "fields": [
+        { "goName": "ButtonLabel", "jsonName": "buttonLabel", "goType": "string", "tsType": "string" },
+        { "goName": "ConfirmationTitle", "jsonName": "confirmationTitle", "goType": "string", "tsType": "string" },
+        { "goName": "ConfirmationBody", "jsonName": "confirmationBody", "goType": "string", "tsType": "string" },
+        { "goName": "ButtonColor", "jsonName": "buttonColor", "goType": "string", "tsType": "FormButtonColor" },
+        { "goName": "ShowViewResponse", "jsonName": "showViewResponse", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowResponseCopy", "jsonName": "showResponseCopy", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "ShowSubmitAnother", "jsonName": "showSubmitAnother", "goType": "*bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "formViewConfiguration",
+      "tsName": "FormViewConfiguration",
+      "fields": [
+        { "goName": "Version", "jsonName": "version", "goType": "int", "tsType": "1" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "Cover", "jsonName": "cover", "goType": "string", "tsType": "string" },
+        { "goName": "CoverPosition", "jsonName": "coverPosition", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "Questions", "jsonName": "questions", "goType": "[]formQuestion", "tsType": "FormQuestion[]" },
+        { "goName": "ConditionGroups", "jsonName": "conditionGroups", "goType": "[]formConditionGroup", "tsType": "FormConditionGroup[]", "optional": true },
+        { "goName": "Anonymous", "jsonName": "anonymous", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Submit", "jsonName": "submit", "goType": "formSubmitConfiguration", "tsType": "FormSubmitConfiguration" }
+      ]
+    },
+    {
+      "goName": "formConfigureRequest",
+      "tsName": "FormConfigureRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"configure\"" },
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string" },
+        { "goName": "Audience", "jsonName": "audience", "goType": "string", "tsType": "FormAudience" },
+        { "goName": "SubmitterAccess", "jsonName": "submitterAccess", "goType": "string", "tsType": "FormSubmitterAccess", "optional": true },
+        { "goName": "Form", "jsonName": "form", "goType": "formViewConfiguration", "tsType": "FormViewConfiguration" }
+      ]
+    },
+    {
+      "goName": "formLinkResponse",
+      "tsName": "FormLinkResponse",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "Audience", "jsonName": "audience", "goType": "string", "tsType": "FormAudience" },
+        { "goName": "SubmitterAccess", "jsonName": "submitterAccess", "goType": "string", "tsType": "FormSubmitterAccess" },
+        { "goName": "Enabled", "jsonName": "enabled", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "formConfigureResponse",
+      "tsName": "FormConfigureResponse",
+      "fields": [
+        { "goName": "Form", "jsonName": "form", "goType": "formViewConfiguration", "tsType": "FormViewConfiguration" },
+        { "goName": "FormLink", "jsonName": "formLink", "goType": "formLinkResponse", "tsType": "FormLinkResponse" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "string", "tsType": "string" },
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "formDefinitionRequest",
+      "tsName": "FormDefinitionRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"definition\"" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "formPublicPropertyOption",
+      "tsName": "FormPublicPropertyOption",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Color", "jsonName": "color", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "formPublicPropertyConfiguration",
+      "tsName": "FormPublicPropertyConfiguration",
+      "fields": [
+        { "goName": "Options", "jsonName": "options", "goType": "[]formPublicPropertyOption", "tsType": "FormPublicPropertyOption[]" }
+      ]
+    },
+    {
+      "goName": "formPublicProperty",
+      "tsName": "FormPublicProperty",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Description", "jsonName": "description", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Config", "jsonName": "config", "goType": "*formPublicPropertyConfiguration", "tsType": "FormPublicPropertyConfiguration", "optional": true }
+      ]
+    },
+    {
+      "goName": "formDefinitionResponse",
+      "tsName": "FormDefinitionResponse",
+      "fields": [
+        { "goName": "Form", "jsonName": "form", "goType": "formViewConfiguration", "tsType": "FormViewConfiguration" },
+        { "goName": "Properties", "jsonName": "properties", "goType": "[]formPublicProperty", "tsType": "FormPublicProperty[]" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "string", "tsType": "string" },
+        { "goName": "ResponseCopy", "jsonName": "responseCopy", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Place", "jsonName": "place", "goType": "*formMemberPlace", "tsType": "FormMemberPlace", "optional": true },
+        { "goName": "Audience", "jsonName": "audience", "goType": "string", "tsType": "FormAudience", "optional": true }
+      ]
+    },
+    {
+      "goName": "formMemberPlace",
+      "tsName": "FormMemberPlace",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "DatabaseID", "jsonName": "databaseId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "CanEdit", "jsonName": "canEdit", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "formOptionsRequest",
+      "tsName": "FormOptionsRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"options\"" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "string", "tsType": "string" },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "PageFilter", "jsonName": "pageFilter", "goType": "string", "tsType": "\"all\" | \"verified\" | \"archived\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "formReferenceOption",
+      "tsName": "FormReferenceOption",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "HasContent", "jsonName": "hasContent", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true }
+      ]
+    },
+    {
+      "goName": "formOptionsResponse",
+      "tsName": "FormOptionsResponse",
+      "fields": [
+        { "goName": "PropertyID", "jsonName": "propertyId", "goType": "string", "tsType": "string" },
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "\"person\" | \"relation\"" },
+        { "goName": "Options", "jsonName": "options", "goType": "[]formReferenceOption", "tsType": "FormReferenceOption[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "TaskDatabase", "jsonName": "taskDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TargetTitle", "jsonName": "targetTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetIcon", "jsonName": "targetIcon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TargetIconType", "jsonName": "targetIconType", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "formSubmitRequest",
+      "tsName": "FormSubmitRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"submit\"" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "Answers", "jsonName": "answers", "goType": "map[string]any", "tsType": "Record<string, unknown>" }
+      ]
+    },
+    {
+      "goName": "formSubmitResponse",
+      "tsName": "FormSubmitResponse",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "Replayed", "jsonName": "replayed", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Confirmation", "jsonName": "confirmation", "goType": "*formSubmitConfiguration", "tsType": "FormSubmitConfiguration", "optional": true }
+      ]
+    },
+    {
+      "goName": "formResponseCopyRequest",
+      "tsName": "FormResponseCopyRequest",
+      "fields": [
+        { "goName": "Action", "jsonName": "action", "goType": "string", "tsType": "\"responseCopy\"" },
+        { "goName": "Token", "jsonName": "token", "goType": "string", "tsType": "string" },
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "formResponseCopyResponse",
+      "tsName": "FormResponseCopyResponse",
+      "fields": [
+        { "goName": "Sent", "jsonName": "sent", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ]
+}

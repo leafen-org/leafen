@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "name": "block-move",
+  "operations": [
+    { "goName": "blockMoveStart", "tsName": "startBlockMove", "method": "POST", "path": "/pages/{sourcePageId}/blocks/{blockId}/move" },
+    { "goName": "blockMoveRead", "tsName": "readBlockMove", "method": "GET", "path": "/block-moves/{jobId}" }
+  ],
+  "bounds": [
+    { "goName": "maxBlockMoveRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "maxBlockMoveItemsPerTurn", "tsName": "itemsPerTurn", "value": 32 }
+  ],
+  "errorCodes": [
+    { "goName": "errorCodeBlockMoveInvalid", "tsName": "invalid", "value": "LEAFEN_BLOCK_MOVE_INVALID" },
+    { "goName": "errorCodeBlockMoveNotFound", "tsName": "notFound", "value": "LEAFEN_BLOCK_MOVE_NOT_FOUND" },
+    { "goName": "errorCodeBlockMoveRequestIDReused", "tsName": "requestIdReused", "value": "LEAFEN_BLOCK_MOVE_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeBlockMoveConflict", "tsName": "conflict", "value": "LEAFEN_BLOCK_MOVE_CONFLICT" },
+    { "goName": "errorCodeBlockMoveStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_BLOCK_MOVE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeBlockMoveDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_BLOCK_MOVE_DATABASE_BUSY" },
+    { "goName": "errorCodeBlockMoveUnavailable", "tsName": "unavailable", "value": "LEAFEN_BLOCK_MOVE_UNAVAILABLE" }
+  ],
+  "enums": [
+    {
+      "tsName": "BlockMoveOperation",
+      "tsValuesName": "blockMoveOperationValues",
+      "values": [
+        { "goName": "blockMoveOperationMove", "tsName": "move", "value": "move" },
+        { "goName": "blockMoveOperationCopy", "tsName": "copy", "value": "copy" }
+      ]
+    },
+    {
+      "tsName": "BlockMoveStatus",
+      "tsValuesName": "blockMoveStatuses",
+      "values": [
+        { "goName": "blockMoveStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "blockMoveStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "blockMoveStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "tsName": "BlockMovePhase",
+      "tsValuesName": "blockMovePhases",
+      "values": [
+        { "goName": "blockMovePhaseDiscovering", "tsName": "discovering", "value": "discovering" },
+        { "goName": "blockMovePhaseMoving", "tsName": "moving", "value": "moving" },
+        { "goName": "blockMovePhaseRollingBack", "tsName": "rollingBack", "value": "rolling_back" },
+        { "goName": "blockMovePhaseCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "blockMovePhaseFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "blockMoveInput",
+      "tsName": "BlockMoveInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" },
+        { "goName": "DestinationPageID", "jsonName": "destinationPageId", "goType": "string", "tsType": "string" },
+        { "goName": "Operation", "jsonName": "operation", "goType": "string", "tsType": "BlockMoveOperation" },
+        { "goName": "WithoutContent", "jsonName": "withoutContent", "goType": "bool", "tsType": "boolean" },
+        { "goName": "PlaceAfter", "jsonName": "placeAfter", "goType": "string", "tsType": "string" },
+        { "goName": "PlaceParent", "jsonName": "placeParent", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "blockMoveProgress",
+      "tsName": "BlockMoveProgress",
+      "fields": [
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Discovered", "jsonName": "discovered", "goType": "int", "tsType": "number" },
+        { "goName": "Moved", "jsonName": "moved", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "blockMoveResponse",
+      "tsName": "BlockMoveResponse",
+      "fields": [
+        { "goName": "JobID", "jsonName": "jobId", "goType": "string", "tsType": "string" },
+        { "goName": "SourcePageID", "jsonName": "sourcePageId", "goType": "string", "tsType": "string" },
+        { "goName": "DestinationPageID", "jsonName": "destinationPageId", "goType": "string", "tsType": "string" },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string" },
+        { "goName": "TargetBlockID", "jsonName": "targetBlockId", "goType": "string", "tsType": "string" },
+        { "goName": "Operation", "jsonName": "operation", "goType": "string", "tsType": "BlockMoveOperation" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "BlockMoveStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "BlockMovePhase" },
+        { "goName": "Progress", "jsonName": "progress", "goType": "blockMoveProgress", "tsType": "BlockMoveProgress" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ]
+}

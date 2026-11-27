@@ -1,0 +1,141 @@
+/* An inline database opened alone: its icon and name as the page's title,
+   with "아이콘 추가" over it on hover, as a page's header controls — always
+   on a touch screen, as those of Notion's iPad (seen 2026-11-12). */
+/* 36px under the top bar, as a full-page database's title (Notion's, seen
+   2026-10-01); the options' 28px row takes 32px of it, 4px under the bar
+   and 4px over the name (Notion's inline database opened alone and its
+   full-page one, 2026-11-18 at 1440: the row at 48..76 for the name at 80). */
+.title {
+  position: relative;
+  padding-top: 36px;
+}
+.title:has(.controls) {
+  padding-top: 4px;
+}
+/* Its options as a full-page database's (PageHeader.module.css .controls):
+   side by side, the first 9px before the name's words (Notion's inline
+   database opened alone, 2026-11-18 at 1440: "아이콘 추가" at 95, "커버
+   추가" at 195.3 for words at 104, as its full-page one's). */
+.controls {
+  display: flex;
+  gap: 0;
+  height: 28px;
+  margin-bottom: 4px;
+  margin-inline: calc(var(--page-title-inset, 0px) - 9px) calc(var(--page-title-inset, 0px) - 8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.title:hover .controls,
+.title:focus-within .controls,
+:global([data-touch="true"]) .controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+.addIconWrap,
+.iconWrap {
+  position: relative;
+  display: inline-flex;
+}
+/* Its icon 36px in a 36px box 2px in, level with the name's line, and the
+   name's words 8px after it, or with no icon 2px in where a page's text
+   starts (--page-title-inset), as a full-page database's — one rule
+   (PageHeader.module.css .title and its .titleRow's gap): an inline
+   database opened alone once had its name at the column's edge, 2px short
+   of its views' tabs and first column (2026-11-18 at 1440: 102 against a
+   full-page database's 104). */
+.row {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(8px - var(--page-title-inset, 0px));
+}
+.icon,
+.glyph {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-block: 1.2px 0;
+  margin-inline: 2px 0;
+  padding: 0;
+  border-radius: 6px;
+  font-size: 36px;
+  line-height: 1;
+}
+.icon:hover,
+.icon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.name {
+  min-width: 0;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  padding-inline: var(--page-title-inset, 0px) 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-family: var(--page-font-family);
+  font-size: var(--page-title-size);
+  font-weight: 700;
+  line-height: 1.2;
+  outline: none;
+  /* A long name wraps on to more lines, as Notion's (seen 2026-10-04). */
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+/* "새 데이터베이스" on the caret's line while it has no name, as every rich
+   field's placeholder (floated, no height). */
+.name[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-title-placeholder);
+  pointer-events: none;
+}
+/* A view block's head is its icon alone, 36px under the top bar, its views
+   12px under it — 48px under the bar without one (Notion's, seen 2026-11-09). */
+.title[data-nameless="true"] :is(.icon, .glyph) {
+  margin-block: 0;
+}
+/* Under a cover its icon stands 48px down, the options' band in that room
+   (Notion's view block, seen 2026-11-09). */
+:global([data-has-cover="true"]) > .title[data-nameless="true"] {
+  padding-top: 48px;
+}
+:global([data-has-cover="true"]) > .title[data-nameless="true"]:has(.controls) {
+  padding-top: 16px;
+}
+/* A touch screen sets it as a full-page database's head there
+   (PageHeader.module.css): the buttons' row 16 under the bar, 28 tall, 7
+   out from the column and 12 over the 36px icon, the icon 8 over the 28px
+   name, the name's words 2 in (Notion's phone, an inline database opened
+   alone as a full-page one, seen 2026-11-15 at 411: buttons at 23,60, icon
+   at 32,100, the name at 144 in 28px, its views 16 under it). */
+:global([data-touch="true"]) .title:not([data-nameless="true"]) {
+  margin-bottom: 16px;
+}
+:global([data-touch="true"]) .title:has(.controls) {
+  padding-top: 16px;
+}
+:global([data-touch="true"]) .controls {
+  gap: 0;
+  height: auto;
+  min-height: 28px;
+  margin-block: 0 12px;
+  margin-inline: -7px 0;
+}
+:global([data-touch="true"]) .row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+:global([data-touch="true"]) :is(.icon, .glyph) {
+  margin-block: 0;
+}
+:global([data-touch="true"]) .name {
+  font-size: 28px;
+}

@@ -1,0 +1,902 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "I-load ang mga email address ng account",
+        "deniedEffect": "Hindi na-load ang mga email address; hindi nabago ang mga naka-save na address.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang mga kasalukuyang email address.",
+        "stateCheckAction": "Muling kumonekta at i-refresh ang listahan ng email bago gumawa ng pagbabago."
+      },
+      "update": {
+        "operation": "Pamahalaan ang mga email address ng account",
+        "deniedEffect": "Hindi tinanggap ang kahilingan sa email; hindi nabago ang mga naka-save na address.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung natapos ang kahilingan sa email.",
+        "stateCheckAction": "I-refresh ang listahan ng email at tingnan ang mensahe ng verification bago subukang muli."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "I-load ang mga setting ng notification",
+        "deniedEffect": "Hindi na-load ang mga setting ng notification, at hindi nabago ang mga naka-save na setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung aling mga notification ang natatanggap mo.",
+        "stateCheckAction": "Isara at muling buksan ang mga setting para ma-load ang mga setting ng notification bago baguhin ang mga ito."
+      },
+      "update": {
+        "operation": "Baguhin ang mga setting ng notification",
+        "deniedEffect": "Hindi nabago ang iyong mga setting ng notification, at nananatili ang mga dating setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nabago ang iyong mga setting ng notification.",
+        "stateCheckAction": "Isara at muling buksan ang mga setting para masuri ang iyong mga setting ng notification bago ito muling baguhin."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "I-load ang account profile",
+        "deniedEffect": "Hindi na-load ang iyong pangalan at larawan, at hindi nabago ang naka-save na profile.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang iyong kasalukuyang pangalan at larawan.",
+        "stateCheckAction": "Isara at muling buksan ang mga setting para i-load ang iyong profile bago ito baguhin."
+      },
+      "update": {
+        "operation": "I-save ang account profile",
+        "deniedEffect": "Hindi nabago ang iyong profile.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang account profile.",
+        "stateCheckAction": "I-reload ang account profile at kasaysayan ng audit bago subukang muli."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Baguhin ang 2-step verification",
+        "deniedEffect": "Hindi tinanggap ang hiniling na pagbabago sa 2-step verification; nananatiling may bisa ang dating setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng 2-step verification.",
+        "stateCheckAction": "I-reload ang seguridad ng account bago subukan ang isa pang pagbabago sa 2-step verification."
+      },
+      "password": {
+        "operation": "Baguhin ang password ng account",
+        "deniedEffect": "Hindi nabago ang password, at nananatiling valid ang mga kasalukuyang session.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nabago ang password at kung natapos ang ibang mga session.",
+        "stateCheckAction": "I-reload ang seguridad ng account at mag-log in muli kung hindi na gumagana ang kasalukuyang session."
+      },
+      "read": {
+        "operation": "I-load ang seguridad ng account",
+        "deniedEffect": "Hindi na-load ang mga setting ng seguridad at mga session; hindi nabago ang naka-save na estado ng account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng 2-step verification at session.",
+        "stateCheckAction": "I-reload ang seguridad ng account bago gumawa ng pagbabago."
+      },
+      "recovery": {
+        "operation": "Palitan ang mga recovery code",
+        "deniedEffect": "Hindi tinanggap ang mga kapalit na recovery code; gumagana pa rin ang mga dating hindi pa nagamit na code.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung aling mga recovery code ang aktibo.",
+        "stateCheckAction": "I-reload ang seguridad ng account bago magpasya kung palitan muli ang mga code."
+      },
+      "sessionRevoke": {
+        "operation": "Bawiin ang session ng account",
+        "deniedEffect": "Hindi nakumpirma na nabawi ang napiling session; hindi nabago ang ibang mga session.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-revoke ang napiling session.",
+        "stateCheckAction": "I-reload ang listahan ng session bago magpasya kung susubukan muli."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Kanselahin ang server backup",
+        "deniedEffect": "Hindi nakumpirma na nakansela ang backup.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakansela ang backup.",
+        "stateCheckAction": "Tingnan ang kasalukuyang estado ng backup bago muling kanselahin."
+      },
+      "create": {
+        "operation": "Gumawa ng server backup",
+        "deniedEffect": "Hindi nakumpirma ang bagong backup.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung tinanggap ang kahilingan sa backup.",
+        "stateCheckAction": "Tingnan ang kasalukuyang backup bago magsumite ng isa pang kahilingan."
+      },
+      "download": {
+        "operation": "I-download ang server backup",
+        "deniedEffect": "Walang na-download na beripikadong backup file.",
+        "uncertainEffect": "Hindi ma-verify o ma-stream ng Leafen ang backup file.",
+        "stateCheckAction": "Tingnan ang estado ng natapos na backup bago muling mag-download."
+      },
+      "retry": {
+        "operation": "Muling subukan ang server backup",
+        "deniedEffect": "Hindi na-restart ang nabigong backup.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-restart ang backup.",
+        "stateCheckAction": "Tingnan ang kasalukuyang estado ng backup bago muling subukan."
+      },
+      "status": {
+        "operation": "I-load ang status ng server backup",
+        "deniedEffect": "Hindi na-load ang status ng backup; walang nabagong estado ng backup.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng backup.",
+        "stateCheckAction": "I-reload ang status ng backup bago gumawa ng ibang aksyon."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "I-load ang server report",
+        "deniedEffect": "Hindi na-load ang report; walang nabagong estado ng report.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang snapshot ng report.",
+        "stateCheckAction": "I-reload ang kasalukuyang report bago ito i-refresh."
+      },
+      "refresh": {
+        "operation": "I-refresh ang server report",
+        "deniedEffect": "Hindi nakumpirma ang bagong snapshot ng report.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nagbago ang snapshot ng report.",
+        "stateCheckAction": "I-load ang kasalukuyang report bago muling mag-refresh."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "I-load ang iskedyul ng backup",
+        "deniedEffect": "Hindi na-load ang iskedyul ng backup; walang setting na nabago.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang iskedyul ng backup.",
+        "stateCheckAction": "I-reload ang iskedyul ng backup bago ito baguhin."
+      },
+      "restore": {
+        "operation": "I-restore ang server mula sa backup",
+        "deniedEffect": "Hindi nabago ang data ng server.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-set up ang restore.",
+        "stateCheckAction": "I-reload ang mga setting ng backup para makita kung may naghihintay na restore bago muling subukan."
+      },
+      "save": {
+        "operation": "I-save ang iskedyul ng backup",
+        "deniedEffect": "Hindi nabago ang iskedyul ng backup.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang iskedyul ng backup.",
+        "stateCheckAction": "I-reload ang iskedyul ng backup para makita ang mga setting na may bisa bago muling i-save."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "I-load ang mga setting ng request log",
+        "deniedEffect": "Hindi na-load ang mga setting ng request log; walang setting na nabago.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang mga setting ng request log.",
+        "stateCheckAction": "I-reload ang mga setting ng request log bago baguhin ang mga ito."
+      },
+      "save": {
+        "operation": "I-save ang mga setting ng request log",
+        "deniedEffect": "Hindi nabago ang mga setting ng request log.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang mga setting ng request log.",
+        "stateCheckAction": "I-reload ang mga setting ng request log para makita ang mga may bisa bago muling i-save."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "I-load ang network proxy",
+        "deniedEffect": "Hindi na-load ang network proxy; walang setting na nabago.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang network proxy.",
+        "stateCheckAction": "I-reload ang network proxy bago ito baguhin."
+      },
+      "save": {
+        "operation": "I-save ang network proxy",
+        "deniedEffect": "Hindi nabago ang network proxy.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang network proxy.",
+        "stateCheckAction": "I-reload ang network proxy para makita ang kasalukuyang aktibo bago muling i-save."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "I-load ang server settings",
+        "deniedEffect": "Hindi na-load ang mga setting, at hindi nabago ang mga naka-save na setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang mga setting ng server.",
+        "stateCheckAction": "I-reload ang mga setting bago gumawa ng mga pagbabago."
+      },
+      "save": {
+        "operation": "I-save ang server settings",
+        "deniedEffect": "Hindi tinanggap ang mga bagong setting; nananatiling may bisa ang dating naka-save na mga setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang mga bagong setting.",
+        "stateCheckAction": "I-reload ang mga setting at ihambing ang kasalukuyang mga value bago subukang muli."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Tingnan ang login status",
+        "deniedEffect": "Walang login session na naitatag, at walang nabago sa data ng account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng pag-log in.",
+        "stateCheckAction": "I-reload ang page, pagkatapos ay mag-log in muli."
+      },
+      "deviceCode": {
+        "operation": "Mag-log in sa device na ito",
+        "deniedEffect": "Hindi ka naka-log in, at walang nabago sa data ng account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung naka-log in ang device na ito.",
+        "stateCheckAction": "Mag-log in muli gamit ang bagong code."
+      },
+      "emailVerification": {
+        "operation": "I-verify ang email",
+        "deniedEffect": "Hindi na-verify ang email address, at hindi naka-log in ang account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakumpleto ang pag-verify ng email.",
+        "stateCheckAction": "Subukang mag-log in; kung hindi gumana, buksan muli ang link sa email."
+      },
+      "mfa": {
+        "operation": "Tapusin ang 2-step verification",
+        "deniedEffect": "Hindi ka naka-log in, at hindi pa nakumpleto ang MFA challenge.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakumpleto ang 2-step verification.",
+        "stateCheckAction": "Simulan muli ang pag-log in."
+      },
+      "passwordResetConfirm": {
+        "operation": "Palitan ang password",
+        "deniedEffect": "Hindi nabago ang password.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nabago ang password.",
+        "stateCheckAction": "Subukang mag-log in gamit ang bagong password; kung hindi gumana, kumuha ng bagong reset link."
+      },
+      "passwordResetRequest": {
+        "operation": "Humiling ng pag-reset ng password",
+        "deniedEffect": "Walang mensaheng pang-reset ng password ang tinanggap para ipadala.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung tinanggap ang kahilingan sa pag-reset.",
+        "stateCheckAction": "Hintayin ang email bago gumawa ng panibagong kahilingan."
+      },
+      "providerExchange": {
+        "operation": "Mag-log in gamit ang external na account",
+        "deniedEffect": "Hindi ka naka-log in, at walang nabago sa data ng account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang resulta ng external na pag-log in.",
+        "stateCheckAction": "Mag-log in muli sa parehong paraan."
+      },
+      "serverSetup": {
+        "operation": "I-set up ang server ng Leafen",
+        "deniedEffect": "Hindi nagawa ang administrator account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakumpleto ang setup ng server.",
+        "stateCheckAction": "I-reload ang page at tingnan ang estado ng setup bago subukang muli."
+      },
+      "signIn": {
+        "operation": "Mag-log in",
+        "deniedEffect": "Hindi ka naka-log in, at walang nabago sa data ng account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung natapos ang pag-login.",
+        "stateCheckAction": "I-refresh ang page at mag-login muli."
+      },
+      "signUp": {
+        "operation": "Gumawa ng account",
+        "deniedEffect": "Hindi nagawa ang bagong account.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nagawa ang account.",
+        "stateCheckAction": "Subukang mag-login; kung hindi gumana, mag-sign up muli."
+      },
+      "passkey": {
+        "operation": "Mag-login gamit ang passkey",
+        "deniedEffect": "Hindi tinanggap ang pag-login.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung natapos ang pag-login.",
+        "stateCheckAction": "Mag-login muli gamit ang iyong passkey."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "I-load ang page content",
+        "deniedEffect": "Hindi na-load ang content ng page, at hindi nagbago ang naka-save na content.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang content ng page.",
+        "stateCheckAction": "I-reload ang page bago mag-edit."
+      },
+      "update": {
+        "operation": "I-save ang page content",
+        "deniedEffect": "Hindi tinanggap ang pagbabago; mananatiling may bisa ang pinakabagong content sa server.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang content.",
+        "stateCheckAction": "I-reload ang pinakabagong content at ihambing ito bago subukang muli."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "I-save ang automation ng database",
+        "deniedEffect": "Hindi nabago ang automation.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang pagbabago sa automation ng database.",
+        "stateCheckAction": "I-reload ang automation ng database bago subukan muli."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "I-save ang DLP policy",
+        "deniedEffect": "Hindi na-save ang bagong DLP policy; nananatiling may bisa ang dating policy.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang DLP policy.",
+        "stateCheckAction": "I-reload ang DLP policy at ang audit history ng organisasyon bago subukan muli."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "I-verify ang SAML domain",
+        "deniedEffect": "Nananatiling pending ang domain; hindi nabago ang SAML configuration, audit history, at mga login session.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng pag-verify ng SAML domain.",
+        "stateCheckAction": "I-reload ang estado ng SAML domain bago subukan muli."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "I-delete ang file",
+        "deniedEffect": "Hindi na-delete ang file at hindi ito nabago.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-delete ang file.",
+        "stateCheckAction": "I-reload ang file at ang mga reference nito bago magpasya kung susubukan muli."
+      },
+      "upload": {
+        "operation": "I-upload ang file",
+        "deniedEffect": "Hindi na-save ang bagong file; hindi nabago ang mga existing na file.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang file.",
+        "stateCheckAction": "I-reload ang listahan ng file bago magpasya kung susubukan muli."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Ilapat ang mga mapping ng tao",
+        "deniedEffect": "Hindi tinanggap ang mga bagong mapping.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung aling mga mapping ang na-apply.",
+        "stateCheckAction": "I-reload ang mga resulta ng mapping bago muling ilapat ang mga ito."
+      },
+      "refresh": {
+        "operation": "I-refresh ang mga mapping ng tao",
+        "deniedEffect": "Hindi na-load ang pinakabagong mapping; hindi nabago ang mga naka-save na mapping.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng mapping.",
+        "stateCheckAction": "I-reload ang panel ng mapping bago magpatuloy."
+      },
+      "scan": {
+        "operation": "I-scan ang mga imported na tao",
+        "deniedEffect": "Hindi nailista ang mga imported na tao, at hindi nabago ang mga existing na mapping.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang listahan ng mga imported na tao.",
+        "stateCheckAction": "I-reload ang panel ng mapping bago gumawa ng mga pagbabago."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "I-execute ang button automation",
+        "deniedEffect": "Hindi naisagawa ang mga aksyon ng button, at hindi nagbago ang nilalaman ng page.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung naisagawa ang button automation.",
+        "stateCheckAction": "I-reload ang naapektuhang nilalaman at estado ng pag-execute bago muling subukan."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopyahin ang organization API token",
+        "deniedEffect": "Hindi nakumpirma sa clipboard ang token; hindi nagbago ang token mismo.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakumpleto ang pagsulat sa clipboard.",
+        "stateCheckAction": "Suriin ang clipboard bago muling kopyahin ang token."
+      },
+      "create": {
+        "operation": "Gumawa ng organization API token",
+        "deniedEffect": "Hindi nakumpirma ang bagong token.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nailikha ang token.",
+        "stateCheckAction": "I-reload ang listahan ng token bago gumawa ng isa pang token."
+      },
+      "list": {
+        "operation": "I-load ang organization API tokens",
+        "deniedEffect": "Hindi na-load ang mga token, at hindi nagbago ang mga umiiral na token.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang listahan ng token.",
+        "stateCheckAction": "I-reload ang listahan ng token bago gumawa ng mga pagbabago."
+      },
+      "revoke": {
+        "operation": "Bawiin ang organization API token",
+        "deniedEffect": "Hindi nakumpirma ang pagbawi ng token.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nabawi ang token.",
+        "stateCheckAction": "I-reload ang listahan ng token bago muling subukan ang pagbawi."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "I-load ang workspace pages",
+        "deniedEffect": "Hindi na-load ang mga page, at hindi nagbago ang naka-save na data ng workspace.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang mga page ng workspace.",
+        "stateCheckAction": "I-reload ang workspace bago mag-edit."
+      },
+      "create": {
+        "operation": "Gumawa ng page",
+        "deniedEffect": "Hindi nagawa ang bagong page, at hindi nagbago ang mga umiiral na page.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nagawa ang page.",
+        "stateCheckAction": "I-reload ang listahan ng page at tingnan kung naroon ang bagong page bago muling subukan."
+      },
+      "title": {
+        "update": {
+          "operation": "I-save ang pamagat",
+          "deniedEffect": "Hindi tinanggap ang pagbabago sa pamagat; nananatili ang naka-save na pamagat.",
+          "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang pagbabago.",
+          "stateCheckAction": "I-reload ang page at tingnan ang kasalukuyang pamagat."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "I-load ang page analytics",
+        "deniedEffect": "Hindi na-load ang analytics, at hindi nagbago ang data ng page.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang analytics.",
+        "stateCheckAction": "I-reload ang analytics bago magbigay ng konklusyon."
+      },
+      "policyUpdate": {
+        "operation": "I-save ang analytics policy",
+        "deniedEffect": "Hindi tinanggap ang bagong analytics policy.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang policy.",
+        "stateCheckAction": "I-reload ang policy at ihambing ito bago subukan muli."
+      },
+      "preferencesRead": {
+        "operation": "I-load ang analytics preferences",
+        "deniedEffect": "Hindi na-load ang analytics preferences, at hindi nagbago ang mga naka-save na setting.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang analytics preferences.",
+        "stateCheckAction": "I-reload ang preferences bago i-edit ang mga ito."
+      },
+      "preferencesUpdate": {
+        "operation": "I-save ang analytics preferences",
+        "deniedEffect": "Hindi tinanggap ang mga bagong preference.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang mga preference.",
+        "stateCheckAction": "I-reload ang preferences at ihambing ang mga ito bago subukan muli."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Ligtas na i-save ang offline na pagbabago",
+        "deniedEffect": "Hindi na-save ang pagbabago sa device na ito.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang pagbabago sa device na ito o sa server.",
+        "stateCheckAction": "Kopyahin ang na-edit na nilalaman, pagkatapos ay i-reload at ihambing ang naka-save na estado."
+      },
+      "legacy": {
+        "operation": "Ilipat ang mga offline na pagbabago",
+        "deniedEffect": "Nananatili ang mga lumang offline na pagbabago kung saan sila naka-store at hindi naipadala.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung aling lumang offline na pagbabago ang nailipat.",
+        "stateCheckAction": "Panatilihing bukas ang tab na ito at i-reload bago mag-edit muli."
+      },
+      "refresh": {
+        "operation": "I-reload ang mga na-recover na pagbabago",
+        "deniedEffect": "Hindi naipakita ang mga na-recover na pagbabago, at hindi napalitan ang naka-save na data.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang page pagkatapos ng recovery.",
+        "stateCheckAction": "I-reload ang page bago gumawa ng panibagong edit."
+      },
+      "replay": {
+        "operation": "Ipadala ang mga offline na pagbabago",
+        "deniedEffect": "Nananatiling nakabinbin ang naka-queue na pagbabago at hindi ito nakumpirma ng server.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung alin sa mga naka-queue na pagbabago ang nakarating sa server.",
+        "stateCheckAction": "Panatilihing bukas ang tab na ito, kumonekta muli, at i-reload bago muling mag-edit."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Maghanap sa pampublikong site",
+        "deniedEffect": "Hindi na-load ang mga resulta ng paghahanap, at hindi nabago ang nailathalang nilalaman.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang mga resulta ng paghahanap.",
+        "stateCheckAction": "Suriin ang estado ng site bago muling maghanap."
+      },
+      "sharedPage": {
+        "operation": "I-load ang ibinahaging pahina",
+        "deniedEffect": "Hindi na-load ang ibinahaging pahina, at hindi nabago ang nailathalang nilalaman.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang ibinahaging pahina.",
+        "stateCheckAction": "Suriin ang link ng pagbabahagi bago subukang muli."
+      },
+      "site": {
+        "operation": "I-load ang pampublikong site",
+        "deniedEffect": "Hindi na-load ang pampublikong site, at hindi nabago ang nailathalang nilalaman.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang pampublikong site.",
+        "stateCheckAction": "Suriin ang address ng site bago subukang muli."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Ibalik ang pag-login sa form",
+        "deniedEffect": "Hindi nabuksan ang form ng miyembro, at walang naisumiteng sagot.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang estado ng pag-login para sa form na ito.",
+        "stateCheckAction": "I-reload ang form at mag-login muli."
+      },
+      "configurationWrite": {
+        "operation": "I-save ang mga setting ng form",
+        "deniedEffect": "Hindi nakumpirma na na-save ang mga setting ng form.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang configuration ng form.",
+        "stateCheckAction": "I-reload ang mga setting ng form bago muling mag-save."
+      },
+      "definitionRead": {
+        "operation": "I-load ang form",
+        "deniedEffect": "Hindi na-load ang form, at walang naisumiteng sagot.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang definition ng form.",
+        "stateCheckAction": "I-reload ang form bago maglagay ng sagot."
+      },
+      "optionsRead": {
+        "operation": "I-load ang mga pagpipilian sa form",
+        "deniedEffect": "Hindi na-load ang mga hiniling na pagpipilian, at hindi naisumite ang draft na sagot.",
+        "uncertainEffect": "Hindi matiyak ng Leafen ang kasalukuyang mga pagpipilian.",
+        "stateCheckAction": "I-load muli ang mga pagpipilian bago isumite ang form."
+      },
+      "responseSubmit": {
+        "operation": "Isumite ang tugon sa form",
+        "deniedEffect": "Hindi tinanggap ang tugon.",
+        "uncertainEffect": "Hindi matiyak ng Leafen kung tinanggap ang tugon.",
+        "stateCheckAction": "Tingnan ang resulta ng form bago muling isumite ang tugon."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "I-load ang configuration ng runtime",
+        "deniedEffect": "Hindi na-load ang configuration ng runtime; hindi nabago ang mga naka-save na setting ng server.",
+        "uncertainEffect": "Hindi matiyak ng Leafen ang kasalukuyang configuration ng runtime, kaya nakaaktibo ang mga ligtas na fallback value.",
+        "stateCheckAction": "I-load muli ang page para mabasa ang kasalukuyang configuration ng server."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "I-sync ang mga nakabinbing pagbabago",
+        "deniedEffect": "Nananatiling nakapila ang mga nakabinbing pagbabago at hindi pa nakumpirma ng server.",
+        "uncertainEffect": "Hindi matiyak ng Leafen kung aling mga nakabinbing pagbabago ang nakarating sa server.",
+        "stateCheckAction": "Panatilihing bukas ang tab na ito, muling kumonekta, at tingnan ang naka-save na estado bago subukan muli."
+      },
+      "pendingRead": {
+        "operation": "Tingnan ang mga nakabinbing pagbabago",
+        "deniedEffect": "Hindi na-load ang bilang ng mga nakabinbing pagbabago; hindi itinapon ang mga nakapilang pagbabago.",
+        "uncertainEffect": "Hindi matiyak ng Leafen kung ilang pagbabago ang nakabinbin pa.",
+        "stateCheckAction": "Panatilihing bukas ang tab na ito at tingnan muli ang status ng pag-sync."
+      },
+      "retry": {
+        "operation": "Muling subukan ang pag-sync",
+        "deniedEffect": "Hindi nakumpirma ang pag-sync; nananatiling nakapila ang mga nakabinbing pagbabago.",
+        "uncertainEffect": "Hindi matiyak ng Leafen ang pinakabagong resulta ng pag-sync.",
+        "stateCheckAction": "Tingnan ang naka-save na estado at koneksyon bago muling subukan."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Gumawa ng workspace",
+        "deniedEffect": "Hindi nagawa ang bagong workspace, at hindi nabago ang umiiral na data.",
+        "uncertainEffect": "Hindi matiyak ng Leafen kung nagawa ang workspace.",
+        "stateCheckAction": "I-load muli ang listahan ng workspace at tingnan kung naroon ang bagong workspace bago subukan muli."
+      },
+      "delete": {
+        "operation": "Permanenteng i-delete ang workspace",
+        "deniedEffect": "Hindi tinanggap ang pag-delete; hindi nabago ang workspace at ang umiiral na data.",
+        "uncertainEffect": "Hindi matiyak ng Leafen kung na-delete ang workspace.",
+        "stateCheckAction": "I-load muli ang listahan ng workspace bago subukan muli."
+      },
+      "member": {
+        "add": {
+          "operation": "Magdagdag ng miyembro ng workspace",
+          "deniedEffect": "Hindi naidagdag ang miyembro, at walang nabago.",
+          "uncertainEffect": "Hindi makumpirma ng Leafen kung naidagdag ang miyembro ng workspace.",
+          "stateCheckAction": "I-reload ang mga miyembro, aktibidad, at kasaysayan ng audit bago subukang muli."
+        },
+        "revoke": {
+          "operation": "Alisin ang miyembro ng workspace",
+          "deniedEffect": "Hindi naalis ang miyembro, at walang nabago.",
+          "uncertainEffect": "Hindi makumpirma ng Leafen kung naalis ang miyembro ng workspace.",
+          "stateCheckAction": "I-reload ang mga miyembro, aktibidad, at kasaysayan ng audit bago subukang muli."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "I-save ang mga setting ng workspace",
+          "deniedEffect": "Hindi na-save ang pagbabago sa mga setting; nananatiling may bisa ang dating mga setting.",
+          "uncertainEffect": "Hindi makumpirma ng Leafen kung na-save ang mga setting ng workspace.",
+          "stateCheckAction": "I-reload ang mga setting ng workspace, aktibidad, at kasaysayan ng audit bago subukang muli."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Kanselahin ang pag-export ng workspace",
+        "deniedEffect": "Hindi nakansela ang pag-export at maaaring tumatakbo pa rin ito.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakansela ang pag-export.",
+        "stateCheckAction": "I-refresh ang status ng pag-export bago muling kanselahin."
+      },
+      "download": {
+        "operation": "I-download ang export ng workspace",
+        "deniedEffect": "Hindi na-download ang archive; walang nabago sa export sa server.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakumpleto ang pag-download ng archive.",
+        "stateCheckAction": "Tingnan ang listahan ng mga download bago mag-download muli."
+      },
+      "job": {
+        "operation": "I-export ang workspace",
+        "deniedEffect": "Hindi nagawa ang archive; walang nabago sa pinagmulang workspace.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung may magagamit na archive para sa job na ito.",
+        "stateCheckAction": "Simulan ang kapalit na export mula sa kasalukuyang workspace."
+      },
+      "poll": {
+        "operation": "Hintayin ang pag-export ng workspace",
+        "deniedEffect": "Hindi na-load ang pinakabagong status ng pag-export; walang nabago sa job ng pag-export.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang status ng pag-export.",
+        "stateCheckAction": "I-refresh ang status ng pag-export bago gumawa ng iba pang aksyon."
+      },
+      "retry": {
+        "operation": "Subukang muli ang pag-export ng workspace",
+        "deniedEffect": "Hindi tinanggap ang muling pagsubok; walang nabago sa kasalukuyang job ng pag-export.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung tinanggap ang retry.",
+        "stateCheckAction": "I-refresh ang status ng export bago muling subukan."
+      },
+      "start": {
+        "operation": "Simulan ang export ng workspace",
+        "deniedEffect": "Hindi tinanggap ang bagong export job; hindi binago ang workspace.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung tinanggap ang export job.",
+        "stateCheckAction": "I-refresh ang pinakabagong status ng export bago magsimula ng isa pang job."
+      },
+      "status": {
+        "operation": "I-load ang status ng export ng workspace",
+        "deniedEffect": "Hindi na-load ang pinakabagong status ng export; hindi binago ang export job.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang status ng export.",
+        "stateCheckAction": "I-reload ang dialog ng export bago gumawa ng iba pang aksyon."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Kanselahin ang import",
+        "deniedEffect": "Hindi nakansela ang import at maaaring tumatakbo pa rin ito.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung nakansela ang import.",
+        "stateCheckAction": "I-refresh ang status ng import bago muling kanselahin."
+      },
+      "job": {
+        "operation": "Mag-import ng file",
+        "deniedEffect": "Walang page na ginawa; inalis ang bahagyang na-import na nilalaman.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung may magagamit na page para sa import na ito.",
+        "stateCheckAction": "Itago ang diagnostic reference at magsimula ng bagong import mula sa source file."
+      },
+      "start": {
+        "operation": "Simulan ang import",
+        "deniedEffect": "Hindi tinanggap ang bagong import at walang page na ginawa.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung tinanggap ang import.",
+        "stateCheckAction": "Muling subukan ang parehong file nang hindi ito binabago para makakonekta muli ang Leafen sa parehong request."
+      },
+      "status": {
+        "operation": "I-load ang status ng import",
+        "deniedEffect": "Hindi na-load ang pinakabagong status ng import; hindi binago ang import job.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang status ng import.",
+        "stateCheckAction": "Muling buksan ang dialog ng import para makakonekta muli sa naka-save na job bago gumawa ng iba pang aksyon."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "I-load ang account passkeys",
+        "deniedEffect": "Hindi na-load ang listahan ng passkey; hindi binago ang mga naka-save na key.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen ang kasalukuyang listahan ng passkey.",
+        "stateCheckAction": "Muling kumonekta at i-refresh ang listahan ng passkey bago gumawa ng pagbabago."
+      },
+      "update": {
+        "operation": "Pamahalaan ang passkey ng account",
+        "deniedEffect": "Hindi binago ng server ang mga naka-save na passkey.",
+        "uncertainEffect": "Hindi makumpirma ng Leafen kung natapos ang pagbabago sa passkey.",
+        "stateCheckAction": "I-refresh ang listahan ng passkey bago subukang muli. Tingnan ang key manager ng device mo kung may bagong key na nagawa pero hindi na-save dito."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Mali ang kasalukuyang password.",
+    "currentPasswordNext": "Kung nakalimutan mo ito, mag-logout at i-reset ito mula sa login page.",
+    "code": "Mali ang code o nagamit na ito.",
+    "codeNext": "Ilagay ang code na ipinapakita ng authenticator app mo ngayon.",
+    "recoveryCode": "Mali ang recovery code o nagamit na ito.",
+    "recoveryCodeNext": "Ilagay ang recovery code na hindi mo pa nagamit.",
+    "accountDeactivated": "Na-disable ng administrator ng server ang account na ito.",
+    "accountDeactivatedNext": "Hilingin sa administrator na i-enable ito muli.",
+    "organizationSSO": "Pinapayagan lang ng organisasyong ito ang pag-login sa pamamagitan ng single sign-on (SSO).",
+    "organizationSSONext": "Sa halip, mag-login gamit ang account ng kumpanya mo.",
+    "organizationPasswordTwoStep": "Kailangan ng organisasyon mo na mag-login ka gamit ang password at 2-step verification, hindi device code.",
+    "organizationPasswordTwoStepNext": "Mag-login gamit ang email at password mo; kung wala kang password, humingi ng one-time password sa administrator.",
+    "deviceCode": "Mali ang code, nagamit na, nag-expire na, o isinara ang window na nagpapakita nito.",
+    "deviceCodeNext": "Kumuha ng bagong code at ilagay itong muli.",
+    "setupCode": "Mali ang setup code.",
+    "setupCodeNext": "Buksan muli ang setup link na in-print ng server, o i-type ang code na ginamit noong sinimulan ang server.",
+    "setupCodeMissing": "Ilagay ang setup code.",
+    "setupCodeMissingNext": "Kapag binuksan mo ang setup link na ini-print ng server, mapupuno ito; gumagana rin ang code na ginamit noong sinimulan ang server.",
+    "sessionCapacity": "Naabot na ng account na ito ang limitasyon nito sa mga device.",
+    "sessionCapacityNext": "I-logout ang device na hindi mo na ginagamit sa Mga Setting → Account → Mga Device, pagkatapos ay subukan muli.",
+    "signInEnded": "Natapos na ang kahilingang ito sa pag-login: nag-time out ito o naging mali ang code nang napakaraming beses.",
+    "signInEndedNext": "Mag-login muli gamit ang email at password mo.",
+    "emailNotVerified": "Hindi pa nakumpirma ang email ng account na ito.",
+    "emailNotVerifiedNext": "Buksan ang link sa email na natanggap mo noong nag-sign up ka, pagkatapos ay mag-login.",
+    "registrationFailed": "Hindi nagawa ang account.",
+    "registrationFailedNext": "Subukan muli maya-maya. Kung patuloy itong nabibigo, sabihin sa administrator ng server na ito."
+  },
+  "labels": {
+    "reference": "Sanggunian"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Hindi gumagawa ng bagong account ang organisasyong ito sa pag-login sa kumpanya.",
+    "samlAccountCreationOffNext": "Hilingin sa administrator ng iyong organisasyon na imbitahan ka.",
+    "samlRetryAfterInvite": "Mag-login muli kapag naimbitahan ka na.",
+    "samlIdentityDenied": "Hindi magagamit ng email na ito ang pag-login sa kumpanya ng organisasyong ito.",
+    "samlIdentityDeniedNext": "Hilingin sa administrator ng iyong organisasyon na suriin ang email domain at ang iyong membership.",
+    "samlRetryAfterAdministrator": "Mag-login muli kapag nasuri na ng administrator.",
+    "samlResponseInvalid": "Hindi ma-verify ang tugon ng pag-login sa kumpanya.",
+    "samlResponseInvalidNext": "Simulan muli ang pag-login. Kung patuloy itong nangyayari, hilingin sa administrator ng organisasyon mo na suriin ang mga setting ng SAML.",
+    "accountAlreadyExistsForEmailAddress": "Mayroon nang account para sa email address na ito.",
+    "accountEmailCouldNotAdmittedFor": "Hindi naipadala ang email ng account.",
+    "administratorSettingsDoNotMeetServer": "Hindi natutugunan ng mga setting ng administrator ang mga kinakailangan ng server.",
+    "administratorSettingsNotAvailableCurrentAccount": "Hindi available ang mga setting ng administrator sa kasalukuyang account.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Nakumpleto na ng isa pang administrator ang pag-set up ng server.",
+    "anotherServerOperationTemporarilyLockedAccount": "Pansamantalang na-lock ng isa pang operasyon sa server ang storage ng account.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Pansamantalang na-lock ng isa pang operasyon sa server ang database, kaya hindi naipagpatuloy ang export.",
+    "anotherServerOperationTemporarilyLockedDlp": "Pansamantalang na-lock ng isa pang operasyon sa server ang storage ng DLP policy.",
+    "anotherServerOperationTemporarilyLockedFile": "Pansamantalang na-lock ng isa pang operasyon sa server ang storage ng file.",
+    "anotherServerOperationTemporarilyLockedPage": "Pansamantalang na-lock ng isa pang operasyon sa server ang storage ng nilalaman ng page.",
+    "anotherServerOperationTemporarilyLockedProduct": "Pansamantalang na-lock ng isa pang operasyon sa server ang storage ng produkto.",
+    "askOrganizationAdministratorToAllow": "Hilingin sa administrator ng organisasyon o sa may-ari ng teamspace na payagan ito.",
+    "askServerAdministratorCheckEmailDelivery": "Hilingin sa administrator ng server na suriin ang pagpapadala ng email, pagkatapos ay subukan muli.",
+    "backupArtifactNotCompleteYet": "Hindi pa kumpleto ang backup file.",
+    "backupStateNoLongerPermitsControl": "Hindi na pinapayagan ng kasalukuyang estado ng backup ang aksyong iyon.",
+    "causeCouldNotDetermined": "Hindi matukoy ang dahilan.",
+    "changeSaveReceiptAndSynchronizationState": "Hindi na-save ang pagbabago, at hindi nagbago ang nilalaman ng page.",
+    "checkCurrentBackupBeforeRetrying": "Suriin ang kasalukuyang backup bago subukan muli.",
+    "checkCurrentJobStateBeforeDeciding": "Suriin ang kasalukuyang estado ng job bago magpasya kung susubukan muli.",
+    "checkCurrentListBeforeTryingDifferent": "Suriin ang kasalukuyang listahan bago subukan ang ibang item.",
+    "checkCurrentServerSettingsBeforeTrying": "Suriin ang kasalukuyang mga setting ng server bago subukan muli.",
+    "checkCurrentServerSetupStateBefore": "Suriin ang kasalukuyang estado ng pag-set up ng server bago subukan muli.",
+    "checkCurrentStateAndUseNew": "Suriin ang kasalukuyang estado, at magsimula lamang ng bagong backup kung kailangan mo ito.",
+    "checkEmailAndPassword": "Suriin ang email at password.",
+    "checkServerSecretStorageThenSave": "Suriin ang secret storage ng server, pagkatapos ay i-save muli ang parehong mga setting.",
+    "checkServerStateThenLoadSettings": "Suriin ang estado ng server, pagkatapos ay i-load muli ang mga setting.",
+    "createNewBackupAndInspectServer": "Gumawa ng bagong backup at suriin ang storage ng server kung nauulit ang error.",
+    "currentAccountNotAuthorizedForOperation": "Hindi awtorisado ang kasalukuyang account para sa operasyong ito.",
+    "currentStateMustCheckedBeforeRetry": "Kailangang suriin ang kasalukuyang estado bago maituring na ligtas ang muling pagsubok.",
+    "currentStateMustCheckedBeforeRetrying": "Kailangang suriin ang kasalukuyang estado bago subukang muli.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Pansamantalang hindi available ang serbisyo ng pag-verify ng DNS.",
+    "doNotAssumeUnchangedRetrySafe": "Huwag ipagpalagay na ligtas nang subukang muli hangga't hindi naayos ang storage ng server.",
+    "doNotKeepRetryingIdentifierNew": "Huwag patuloy na subukang muli ang kahilingang ito; i-reload muna, pagkatapos ay ligtas nang magsimula ng bagong pagtatangka.",
+    "doNotResumeFailedJobStart": "Huwag ipagpatuloy ang nabigong job; magsimula na lang ng bagong export.",
+    "doNotRetryBeforeLoadingLatest": "Huwag subukang muli bago i-load ang pinakabagong mga setting ng server.",
+    "doNotRetryDirectRequestUnchanged": "Huwag nang subukang muli ang pag-upload na ito nang walang pagbabago; gumamit ng resumable na pag-upload.",
+    "doNotRetryDirectRequestUnchanged2": "Huwag nang subukang muli ang pag-upload na ito nang walang pagbabago; gumamit ng resumable na pag-upload ng archive.",
+    "doNotRetrySetupRequestSign": "Huwag nang subukan muli ang setup request na ito; mag-login gamit ang existing na administrator account.",
+    "doNotReuseInvalidArtifactCreate": "Huwag gamitin muli ang di-wastong backup file; gumawa ng bagong backup.",
+    "doNotReuseLinkNewAction": "Huwag gamitin muli ang link na ito; ligtas nang magsimula ng bagong aksyon.",
+    "emailOrPasswordDidNotMatch": "Hindi tumugma ang email o password.",
+    "externalSignInProviderCouldNot": "Hindi nakumpleto ng external login provider ang request.",
+    "fileLargerThanOneDirectUpload": "Masyadong malaki ang file na ito para sa isang direktang pag-upload.",
+    "formStorageTemporarilyLockedByAnother": "Pansamantalang na-lock ang storage ng form dahil sa isa pang operasyon sa server.",
+    "leafenArchiveLargerThanOneDirect": "Masyadong malaki ang Leafen archive na ito para sa isang direktang pag-import.",
+    "leafenDidNotReceiveServerResponse": "Hindi nakatanggap ang Leafen ng tugon mula sa server.",
+    "leafenRebuildingOrganizationStorageUsageState": "Muling binubuo ng Leafen ang estado ng paggamit ng storage ng organisasyon.",
+    "leafenServiceCouldNotCompleteOperation": "Hindi nakumpleto ng serbisyo ng Leafen ang operasyon.",
+    "isolatedRecordNotAppliedYourRequested": "Itinabi ang hindi kumpletong record, hindi na-save ang iyong pagbabago, at hindi nagbago ang nilalaman ng page.",
+    "jobCannotRetriedStartReplacementExport": "Hindi na maisusubukang muli ang job na ito; magsimula ng kapalit na export.",
+    "jobSArchiveNotPublishedAnd": "Hindi nagawa ang archive ng job na ito, at hindi nabago ang source workspace.",
+    "keepDiagnosticReferenceAndAskServer": "Itago ang diagnostic reference at hilingin sa administrator ng server na ayusin ang storage ng server.",
+    "lastConfirmedSavedStateRestoredSo": "Naibalik ang huling kumpirmadong naka-save na estado, kaya ligtas nang subukang muli ang parehong pagbabago.",
+    "loadCurrentReportAndUseNew": "I-load ang kasalukuyang report, pagkatapos ay i-refresh muli.",
+    "loadCurrentReportBeforeRefreshingAgain": "I-load ang kasalukuyang report bago i-refresh muli.",
+    "loadCurrentReportBeforeTryingAgain": "I-load ang kasalukuyang report bago subukan muli.",
+    "newerOrIncompatibleStatePreventedOperation": "Hinadlangan ng mas bago o hindi compatible na estado ang operasyong ito.",
+    "noNewArchivePublishedAndSource": "Walang bagong archive na ginawa, at hindi nagbago ang source workspace at ang mga naunang archive.",
+    "noNewSignInSessionCreated": "Walang nagawang bagong login session at hindi nabago ang mga existing session.",
+    "notKnownWhetherRetryingSafeUntil": "Hindi alam kung ligtas ang pagsubok muli hangga't hindi nasusuri ang kasalukuyang estado.",
+    "organizationStorageAuthorityInconsistent": "Hindi tugma ang record ng paggamit ng storage ng organisasyon.",
+    "organizationDlpBlocksOperation": "Hinaharang ito ng patakaran sa pagpigil sa pagkawala ng data ng organisasyon mo.",
+    "takeOutTermOrAskAboutDlp": "Alisin ang anumang sensitibong termino at subukan muli, o tanungin ang administrator ng organisasyon kung hindi ka sigurado.",
+    "organizationSettingsDoNotAllowOperation": "Hindi pinapayagan ito ng mga setting ng organisasyon mo o ng teamspace mo.",
+    "organizationStorageLimitWouldExceeded": "Lalampas sa limit ng storage ng organisasyon.",
+    "serverDiskAlmostFull": "Malapit nang mapuno ang disk ng server.",
+    "askServerAdministratorToFreeSpace": "Hilingin sa administrator ng server na magbakante ng espasyo; gagana itong muli kapag may espasyo na.",
+    "safeRetryOnceServerHasRoom": "Ligtas na subukan muli ang parehong bagay kapag may espasyo na ang server.",
+    "readDoesNotChangeSavedData": "Hindi binabago ng pagbasang ito ang naka-save na data, kaya ligtas itong subukan muli.",
+    "reloadCurrentBackupBeforeChoosingAnother": "I-reload ang kasalukuyang backup bago pumili ng ibang aksyon.",
+    "reloadCurrentBackupStateBeforeContinuing": "I-reload ang kasalukuyang estado ng backup bago magpatuloy.",
+    "reloadCurrentStateBeforeDecidingWhether": "I-reload ang kasalukuyang estado bago magpasya kung susubukan muli.",
+    "reloadSignInPageAndStart": "I-refresh ang login page at mag-login muli.",
+    "removeUnneededFilesOrAskOrganization": "Alisin ang mga hindi kailangang file o hilingin sa billing administrator ng organisasyon na taasan ang limit.",
+    "reportChangedAfterScreenLoaded": "Nagbago ang report pagkatapos ma-load ang screen na ito.",
+    "requestIdentifierBelongsDifferentOperation": "Nagamit na ang request na ito para sa ibang aksyon.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Nagamit na ang request na ito para sa ibang pag-refresh ng report.",
+    "requestedItemNoLongerExistsOr": "Wala na ang hiniling na item o hindi ito nakikita ng account na ito.",
+    "retryExportAfterOtherServerOperation": "Subukan muli ang export na ito pagkatapos matapos ang ibang operasyon sa server.",
+    "retryExportJobAfterServerStorage": "Subukan muli ang export job na ito pagkatapos bumalik sa normal ang storage ng server.",
+    "retryOnlyAfterAccountOrPermission": "Subukan muli pagkatapos lamang magbago ang account o pahintulot.",
+    "retryOnlyAfterOrganizationSettingChanges": "Subukan muli pagkatapos lamang magbago ang setting na iyon.",
+    "retrySameContentChangeAfterOther": "Subukan muli ang parehong pagbabago sa content pagkatapos matapos ang ibang operasyon sa server.",
+    "retrySameContentChangeAfterServer": "Subukan muli ang parehong pagbabago sa content pagkatapos bumalik sa normal ang storage ng server.",
+    "retrySameContentChangeNow": "Subukan muli ngayon ang parehong pagbabago sa content.",
+    "changeTooLargeForOneChange": "Masyado itong malaki para baguhin nang sabay-sabay. Hanggang 64 MB ang isang pagbabago, kasama ang teksto.",
+    "pageKeepsWhatItHadBefore": "Nanatili ang page gaya ng dati.",
+    "makeTheChangeInParts": "Gawin ito nang hati-hati: tanggalin muna nang hati-hati ang mga block sa loob ng malaking toggle o seksyon, at i-paste nang hati-hati ang mahabang teksto.",
+    "sameSizeIsRefusedAgain": "Muling tinatanggihan ang parehong laki; kapag nahati na, ligtas nang subukang muli.",
+    "linkCannotBeKeptHere": "Ang pagbabagong ito ay nagli-link ng pahina o block na hindi maaaring i-link dito.",
+    "chooseAnotherPageOrRefresh": "Pumili ng ibang page, o i-refresh ang page at subukang muli.",
+    "sameLinkIsRefusedAgain": "Tinatanggihan muli ang pag-link sa parehong item.",
+    "retrySameDomainVerificationAfterDns": "Subukang muli ang parehong pag-verify ng domain pagkatapos makabawi ang serbisyo ng pag-verify ng DNS.",
+    "retrySameFileOperationAfterOther": "Subukang muli ang parehong operasyon sa file pagkatapos matapos ang iba pang operasyon sa server.",
+    "retrySameFileOperationAfterServer": "Subukang muli ang parehong operasyon sa file pagkatapos makabawi ang storage ng server.",
+    "retrySameFormOperationAfterOther": "Subukang muli ang parehong operasyon sa form pagkatapos matapos ang iba pang operasyon sa server.",
+    "retrySameFormOperationAfterServer": "Subukang muli ang parehong operasyon sa form pagkatapos makabawi ang storage ng server.",
+    "retrySameOperationAfterOtherServer": "Subukang muli ang parehong operasyon pagkatapos matapos ang iba pang operasyon sa server.",
+    "retrySameOperationAfterServerStorage": "Subukang muli ang parehong operasyon pagkatapos makabawi ang storage ng server.",
+    "returnSignInWithExistingAccount": "Bumalik para mag-log in gamit ang existing na account.",
+    "reviewAndCorrectEnteredServerSettings": "Suriin at iwasto ang mga naipasok na setting ng server.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Suriin ang mga naipasok na halaga at iwasto ang naka-highlight na impormasyon.",
+    "safeRetryAfterEmailDeliveryRestored": "Ligtas nang subukang muli pagkatapos maibalik ang paghahatid ng email.",
+    "safeRetryAfterServerResourceChecks": "Ligtas nang subukang muli pagkatapos maibalik ang mga pagsusuri sa resource ng server.",
+    "safeRetryAfterTemporaryLockClears": "Ligtas nang subukang muli pagkatapos mawala ang pansamantalang lock.",
+    "safeRetryRead": "Ligtas nang subukang muli ang pagbasang ito.",
+    "safeRetrySameAuthenticationOperationAfter": "Ligtas nang subukang muli ang parehong operasyon sa pagpapatotoo pagkatapos makabawi ang storage.",
+    "safeRetrySameContentChangeAfter": "Ligtas nang subukang muli ang parehong pagbabago sa nilalaman pagkatapos mawala ang pansamantalang lock.",
+    "safeRetrySameContentChangeAfter2": "Ligtas nang subukang muli ang parehong pagbabago sa nilalaman pagkatapos makabawi ang storage.",
+    "safeRetrySameDlpPolicySave": "Ligtas nang subukang muli ang parehong pag-save ng patakaran sa DLP pagkatapos makabawi ang storage.",
+    "safeRetrySameDlpPolicySave2": "Ligtas nang subukang muli ang parehong pag-save ng patakaran sa DLP pagkatapos mawala ang pansamantalang lock.",
+    "safeRetrySameDomainVerificationAfter": "Ligtas nang subukang muli ang parehong pag-verify ng domain pagkatapos makabawi ang serbisyo.",
+    "safeRetrySameFileOperationAfter": "Ligtas nang subukang muli ang parehong operasyon sa file kapag available na ang storage.",
+    "safeRetrySameFileOperationAfter2": "Ligtas nang subukang muli ang parehong operasyon sa file pagkatapos makabawi ang storage.",
+    "safeRetrySameFileOperationAfter3": "Ligtas nang subukang muli ang parehong operasyon sa file pagkatapos mawala ang pansamantalang lock.",
+    "safeRetrySameFormOperationAfter": "Ligtas nang subukang muli ang parehong operasyon sa form pagkatapos makabawi ang storage.",
+    "safeRetrySameFormOperationAfter2": "Ligtas na muling subukan ang parehong operasyon sa form kapag natanggal na ang pansamantalang lock.",
+    "safeRetrySameOperationAfterStorage": "Ligtas na muling subukan ang parehong operasyon kapag naibalik na ang storage.",
+    "safeRetrySameOperationAfterTemporary": "Ligtas na muling subukan ang parehong operasyon kapag natanggal na ang pansamantalang lock.",
+    "safeRetrySameSettingsAfterSecret": "Ligtas na muling subukan ang parehong mga setting kapag naibalik na ang secret storage.",
+    "safeRetrySameSettingsSaveAfter": "Ligtas na muling subukan ang parehong pag-save ng mga setting pagkatapos maitama ang mga di-wastong halaga.",
+    "safeRetryWithSameJobIdentifier": "Ligtas na muling subukan ang parehong job.",
+    "safeRetryWithSameJobIdentity": "Ligtas na muling subukan ang parehong job.",
+    "safeSignInInsteadCreatingAnother": "Ligtas na mag-log in sa halip na gumawa ng panibagong account.",
+    "safeStartNewProviderSignIn": "Ligtas na magsimula ng bagong pag-log in sa provider mamaya.",
+    "safeTryAgainAfterCorrectingDetails": "Ligtas na muling subukan pagkatapos maitama ang mga detalye.",
+    "safeTryAgainAfterCorrectingInput": "Ligtas na muling subukan pagkatapos maitama ang input.",
+    "safeTryAgainAfterWait": "Ligtas na muling subukan pagkatapos maghintay.",
+    "serverTakesNoChangesNow": "Hindi maabot ng server na ito ang backup na lokasyon nito, kaya hindi ito tumatanggap ng mga pagbabago sa ngayon.",
+    "serverDataMovedElsewhere": "Inilipat sa ibang server ang data ng server na ito.",
+    "doItOnNewServer": "Gawin ito sa bagong server.",
+    "serverDataMovedNoRetry": "Hindi ito mai-save kahit subukan muli dito.",
+    "sameRequestIdentityCanRetriedSafely": "Ligtas na muling subukan ang parehong request pagkatapos ng maikling paghihintay.",
+    "saveSameDlpPolicyAgainAfter": "I-save muli ang parehong DLP policy kapag naibalik na ang storage ng server.",
+    "saveSameDlpPolicyAgainAfter2": "I-save muli ang parehong DLP policy kapag natapos na ang iba pang operasyon sa server.",
+    "serverAccountStorageTemporarilyUnavailable": "Pansamantalang hindi available ang storage ng account sa server.",
+    "serverCannotCurrentlyConfirmResourceState": "Hindi makumpirma ng server ang estado ng resource nito sa ngayon.",
+    "serverCouldNotCompleteAdministratorSettings": "Hindi nakumpleto ng server ang pag-save ng mga setting ng administrator.",
+    "serverCouldNotCompleteAdministratorSetup": "Hindi nakumpleto ng server ang kahilingan sa setup ng administrator.",
+    "serverCouldNotCompleteBackupLifecycle": "Hindi nakumpleto ng server ang backup.",
+    "serverCouldNotLoadBackupState": "Hindi na-load ng server ang estado ng backup na iyon.",
+    "serverCouldNotProtectAdministratorSecret": "Hindi naprotektahan ng server ang mga secret value ng administrator.",
+    "serverCouldNotReadAdministratorState": "Hindi nabasa ng server ang estado ng administrator.",
+    "serverCouldNotReadOneExact": "Hindi nabasa ng server ang isang consistent na report snapshot.",
+    "serverDetectedAndIsolatedIncompleteContent": "Natukoy ng server ang isang hindi kumpletong record ng content at inihiwalay ito.",
+    "serverFileStorageTemporarilyUnavailable": "Pansamantalang hindi available ang storage ng file sa server.",
+    "serverFormStorageTemporarilyUnavailable": "Pansamantalang hindi available ang storage ng form sa server.",
+    "serverPageContentStorageTemporarilyUnavailable": "Pansamantalang hindi available ang storage ng nilalaman ng page sa server.",
+    "serverSettingsChangedAfterScreenLoaded": "Nagbago ang mga setting ng server pagkatapos ma-load ang screen na ito.",
+    "serverStorageTemporarilyUnavailable": "Pansamantalang hindi available ang storage ng server.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Pansamantalang hindi available ang storage ng server, kaya hindi nagawa ang archive.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Pansamantalang hindi available ang storage ng server, kaya hindi na-save ang DLP policy.",
+    "signInAttemptIdentifierAlreadyBelongs": "Nagamit na ang pagtatangkang mag-log in na ito gamit ang ibang detalye.",
+    "signInOrAccountActionLink": "Hindi na valid ang link sa pag-log in o sa aksyon sa account.",
+    "signInWithAuthorizedAccountOr": "Mag-log in gamit ang awtorisadong account o humingi ng access sa isang administrator.",
+    "signInWithExistingAdministratorAccount": "Mag-log in gamit ang existing na administrator account.",
+    "signInWithServerAdministratorAccount": "Mag-log in gamit ang server administrator account o humingi ng access sa ibang administrator.",
+    "startAccountActionAgainGetNew": "Simulan muli ang aksyon sa account para makakuha ng bagong link.",
+    "startReplacementExportFromLatestWorkspace": "Simulan ang kapalit na export mula sa pinakabagong workspace.",
+    "storedBackupDidNotMatchVerified": "Hindi tumugma ang naka-store na backup sa na-verify na file.",
+    "submittedInformationDidNotMeetOperation": "Hindi natugunan ng isinumiteng impormasyon ang mga kinakailangan ng operasyon.",
+    "tooManyRequestsLimited": "Masyadong maraming request ang ginawa, kaya limitado ang operasyong ito.",
+    "tooManyRequestsMadeSoOperation": "Masyadong maraming request ang nagawa, kaya pansamantalang limitado ang operasyong ito.",
+    "tryAgainAfterServerStorageRecovers": "Subukan muli pagkatapos maibalik ang storage ng server.",
+    "tryAgainInHours_one": "Subukang muli pagkalipas ng halos isang oras.",
+    "tryAgainInHours_other": "Subukang muli pagkalipas ng halos {{count}} oras.",
+    "tryAgainInMinutes_one": "Subukang muli pagkalipas ng halos isang minuto.",
+    "tryAgainInMinutes_other": "Subukang muli pagkalipas ng halos {{count}} minuto.",
+    "tryAgainInSeconds_one": "Subukang muli pagkalipas ng halos {{count}} segundo.",
+    "tryAgainInSeconds_other": "Subukang muli pagkalipas ng halos {{count}} segundo.",
+    "useAnotherSignInMethodOr": "Gumamit ng ibang paraan ng pag-log in o subukan ang provider na ito mamaya.",
+    "useResumableArchiveUploadSoProgress": "Gamitin ang resumable archive upload para maipagpatuloy ang progreso mula sa naka-save na estado.",
+    "useResumableUploadSoProgressCan": "Gamitin ang resumable upload para maipagpatuloy ang progreso mula sa naka-save na estado.",
+    "waitForCompletionThenRetryDownload": "Hintayin ang pagkumpleto, pagkatapos ay subukan muli ang download.",
+    "waitForOtherServerOperationFinish": "Hintayin matapos ang ibang operasyon sa server, pagkatapos ay subukan muli.",
+    "waitForStorageReconciliationAdvanceThen": "Maghintay sandali para makahabol ang storage, pagkatapos ay subukan muli ang parehong operasyon.",
+    "waitMomentBeforeTryingAgain": "Maghintay sandali bago subukan muli.",
+    "workspaceChangedWhileExportRunning": "Nagbago ang workspace habang tumatakbo ang export.",
+    "youNotSignedInAndNo": "Hindi ka naka-log in, at walang nabago sa data ng account.",
+    "pageIsLocked": "Naka-lock ang page, kaya hindi magawa ang mga pagbabago.",
+    "unlockPageThenTryAgain": "I-unlock ang page para sa iyo o para sa lahat mula sa menu ng page, pagkatapos ay subukan muli.",
+    "safeToRetryAfterUnlocking": "Ligtas na subukang muli pagkatapos i-unlock ang page.",
+    "databaseIsLocked": "Naka-lock ang database, kaya hindi mababago ang mga property at view nito.",
+    "unlockDatabaseThenTryAgain": "I-unlock ang database para sa iyo o para sa lahat mula sa button na Naka-lock nito, pagkatapos ay subukan muli.",
+    "databaseEditorsCanUnlock": "Ang makakapag-edit lang ng database ang makakapag-unlock nito.",
+    "safeToRetryAfterDatabaseUnlocked": "Ligtas na subukan muli pagkatapos ma-unlock ang database.",
+    "rowMoveNeedsFullAccess": "Upang ilipat ito sa ibang page, kailangan ng buong access dito at access sa pag-edit sa pupuntahan nito.",
+    "askFullAccessHolderToMoveIt": "Hilingin sa isang taong may buong access na ilipat ito, o pumili ng lugar na maaari mong i-edit.",
+    "rowMoveRefusedUntilAccess": "Tatangihan muli ang paglipat nito hangga't hindi mo pa nakukuha ang access na iyon.",
+    "otherWorkspaceCantMoveOrLink": "Hindi maaaring ilipat o i-link ang mga bagay sa pagitan ng mga workspace.",
+    "makeItAnewInThatWorkspace": "Gawin itong bago sa workspace na iyon at kopyahin ang nilalaman nito. Ang buong page ay inililipat o kinokopya doon mula sa Ilipat sa, kapag pinili ang workspace.",
+    "otherWorkspaceRefusedAgain": "Tatanggihan ang muling pagsubok dahil sa parehong dahilan.",
+    "signInEndedForThisBrowser": "Nag-expire o natapos ang pag-log in sa browser na ito.",
+    "signInEndedForThisApp": "Nag-expire o natapos ang pag-log in sa app na ito.",
+    "signInAgainToContinue": "Mag-log in muli para magpatuloy.",
+    "retryAfterSigningInAgain": "Subukang muli pagkatapos mag-log in muli.",
+    "serverRestoredSinceDeviceCopies": "Nagbago ang data ng server na ito, at ang mga kopya sa device na ito ay mula pa bago nito.",
+    "changeKeptOnThisDeviceOnly": "Hindi na-save sa server ang pagbabago; dito lang ito sa device na ito.",
+    "takeServerContentAnew": "Piliin ang “I-reload mula sa server” para makuha ang kasalukuyang nilalaman ng server.",
+    "retryAfterTakingContentAnew": "Subukan muli pagkatapos mag-reload mula sa server.",
+    "propertyUsedByViewOrDependency": "Hindi mababago ang property na ito ngayon: ito ang title property, o kabilang ito sa Mga na-delete na property.",
+    "changeWhatUsesPropertyFirst": "I-reload ang page para makita ang property sa kasalukuyang anyo nito.",
+    "retryAfterChangingWhatUsesProperty": "I-restore muna ang isang na-delete na property para mabago ito.",
+    "workspaceAlreadyHasContentForArchive": "May nilalaman na ang workspace na ito, kaya hindi mailalagay dito ang isang Leafen archive.",
+    "makeNewWorkspaceToImportArchive": "Gumawa ng bagong workspace at i-import ang archive na ito doon.",
+    "retryInNewWorkspace": "Maaari mo itong i-import muli sa isang bagong workspace.",
+    "importFileDoesNotFitFormat": "Hindi tugma ang file sa format na binabasa ng Leafen, kaya walang na-import.",
+    "exportFileAgainToImport": "I-export muli ang file mula sa pinagmulan nito, pagkatapos ay i-import ang file na iyon.",
+    "sameFileRefusedAgain": "Hindi gagana ang pag-import muli ng parehong file.",
+    "pageBusyWithAnotherChange": "Abala ang page na ito sa ibang pagbabago, kaya hindi ito ma-edit pansamantala.",
+    "tryAgainOnceThatChangeIsDone": "Subukan muli kapag tapos na ang pagbabagong iyon.",
+    "importPageInTrash": "Ang page na paglalagyan nito ay nasa Basurahan, kaya walang na-import.",
+    "restorePageThenImportAgain": "I-restore ang page mula sa Basurahan, pagkatapos ay mag-import muli.",
+    "importPageDeletedForGood": "Ang page na paglalagyan nito ay tuluyang nabura, kaya walang na-import.",
+    "ownerBringsDeletedPageBack": "Sa loob ng 30 araw, maaaring i-restore ito ng may-ari ng workspace sa Seguridad → Pagpapanatili ng data; pagkatapos, i-restore ito mula sa Basurahan at mag-import muli.",
+    "importAgainOnceRestored": "Hindi ito ma-i-import kahit subukan muli hangga't hindi na-restore ang page.",
+    "pageInTrashCantChange": "Hindi mababago ang page na nasa Basurahan hangga't hindi ito na-restore.",
+    "restorePageThenTryAgain": "I-restore ang page mula sa Basurahan, pagkatapos ay subukan muli.",
+    "tryAgainOnceRestored": "Hindi gagana ang muling pagsubok hangga't hindi na-restore ang page.",
+    "optionNameHasComma": "Hindi maaaring magkaroon ng comma (,) ang pangalan ng opsyon.",
+    "takeCommaOutOrSplitOption": "Alisin ang comma, o gawin itong dalawang opsyon.",
+    "optionRefusedUntilRenamed": "Subukang muli kapag nabago na ang pangalan.",
+    "optionNameTaken": "Mayroon nang opsyon ang property na ito na may ganoong pangalan.",
+    "useAnotherOptionName": "Gumamit ng ibang pangalan, o piliin ang opsyon na mayroon na.",
+    "optionsInUseLeftOut": "Inaalis ng pagbabagong ito ang mga opsyon na ginagamit ng mga page.",
+    "keepOptionsOrDeleteOneByOne": "Panatilihin ang mga opsyon na iyon, o tanggalin ang mga ito nang isa-isa mula sa menu ng bawat opsyon.",
+    "optionsRefusedUntilKeptOrDeleted": "Hindi papayagan ang muling pagsubok nang walang pagbabago dahil sa parehong dahilan."
+  }
+}

@@ -1,0 +1,66 @@
+/* A wider touch screen's settings window, as Notion's iPad (measured
+   2026-11-17 in iPad Safari at 834 and 1210 wide, both twice). A desktop's
+   and a phone's stay SettingsWindow's. */
+
+/* The window stands in the screen's full height less 20 kept under it, 50
+   off the top and as much off that foot: the large viewport less 120 (Notion
+   sizes it by 100vh, which Safari takes for the screen with its bar folded
+   away: 834 wide 1153 tall, the window 1033; 1210 wide 777 and 657), so with
+   the bar showing its foot runs 5px past the screen's edge, as Notion's
+   does. Written lvh: the build reads every vh as dvh (postcss.config.mjs). */
+.window[role="dialog"] {
+  height: calc(100lvh - 120px);
+}
+
+/* The list: a group's name 15px medium on a 32px line; its items, still
+   28px tall and 2 apart, 17px medium on 22px lines in the sidebar's page
+   names' colour, the chosen one in the default colour; their marks and the
+   person's face 22px in a 24px box 6 in, the words 6 after it. */
+.window [data-settings-group] > :first-child {
+  height: 32px;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.window nav [data-settings-section] {
+  gap: 6px;
+  padding-inline: 6px;
+  color: var(--text-accent-secondary);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+/* A search that finds nothing says so as a desktop's does, in 17px on 22px
+   lines (seen 2026-11-17 in iPad Safari at 1210). */
+.window nav [data-settings-search-none] {
+  font-size: 17px;
+  line-height: 22px;
+}
+
+.window nav [data-settings-section][data-active="true"] {
+  color: var(--text-default);
+}
+
+.window nav [data-settings-section] > :first-child {
+  width: 22px;
+  height: 22px;
+  margin: 1px;
+}
+
+.window nav [data-settings-section] > [data-avatar] {
+  font-size: 11px;
+}
+
+/* 계정, 기본 설정 and 알림 are Notion's lists of rows: there its rows stand
+   48 apart, not a desktop's 24 (also before a table, and before the next
+   group's head as on a desktop); in 기본 설정 and 알림 a 1px line runs
+   through the middle of the room between two rows of one group — none in
+   계정, none before a group's head (WorkspaceSettingsSecurity's rows). */
+.window [data-settings-touch]:is([data-settings-content="account"], [data-settings-content="preferences"], [data-settings-content="notifications"]) {
+  --settings-row-gap: 48px;
+}
+
+.window [data-settings-touch]:is([data-settings-content="preferences"], [data-settings-content="notifications"]) {
+  --settings-row-line: var(--border-default);
+}

@@ -1,0 +1,16 @@
+/* Notion's full screen embed (measured 2026-11-06): the window under its windows' shade,
+   rgba(15, 15, 15, .8) in dark and .6 in light (its --ca-modUndBac; seen 2026-11-17 on
+   the Galaxy A90 at 411, light, and in iPhone Safari at 402, dark), the embed in its
+   middle with 1px corners and nothing around it. */
+.backdrop { position: fixed; inset: 0; display: grid; place-items: center; background: var(--modal-shade); }
+.frame { position: relative; overflow: hidden; border-radius: 1px; background: var(--bg-app); outline: none; }
+.frame > figure { width: 100% !important; max-width: 100%; height: 100%; margin: 0; }
+.frame [data-embed-frame] { width: 100%; height: 100% !important; margin: 0; border-radius: 1px; }
+.frame iframe { width: 100%; height: 100% !important; border: 0; }
+/* A document in full screen is used at once, with no "상호 작용" first (EmbedInteractOverlay). */
+.frame [data-embed-interact] { display: none; }
+.frame [data-embed-frame] iframe { pointer-events: auto; filter: none; }
+.frame [data-html-embed-more] { display: none; }
+.frame [data-reader-file-actions] { display: none; }
+/* A document's name head stays on the page: full screen is the frame alone, as Notion's (seen 2026-11-07). */
+.frame [data-document-embed-head] { display: none; }

@@ -1,0 +1,341 @@
+/* A phone "속성 편집"'s type group and what hangs under it, as Notion's
+   (seen 2026-11-11 at 402pt in iOS Safari). */
+
+/* Every row over a line, the first one's hidden over the group's top: the
+   type's rows sit in wrappers of their own, so no row knows it is last. */
+.typeRows {
+  display: flex;
+  flex-direction: column;
+  margin-top: -1px;
+}
+
+.typeRows [data-phone-setting-row] {
+  border-top: 1px solid var(--border-secondary);
+  border-bottom: 0;
+}
+
+/* A type's wrappers lay no room of their own between its rows. */
+.typeRows > div,
+.typeRows > div > div {
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+/* A section under the group joins its foot: the group's corners there
+   square, a line between them, as Notion's "옵션" (seen 2026-11-11). */
+.typeGroup:has(+ .after > [data-phone-type-section]) {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.after {
+  display: contents;
+}
+
+/* A group with nothing drawn in it — a status's settings from its column's
+   menu, whose "유형" is the menu's own row — is left out, its sections
+   starting the sheet, as Notion's there (seen 2026-11-11). */
+.typeGroup:not(:has(:not(div))) {
+  display: none;
+}
+
+.section {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  /* Right under the group, over the body's 16px. */
+  margin-top: -16px;
+}
+
+/* The first one meets a drawn group by the group's own foot, starting the
+   sheet where the group is left out: told by the group of what follows it,
+   not by a `+` after the group's ":not()" (check-css-sibling-invalidation.mjs). */
+.after > .section:first-child {
+  margin-top: 0;
+}
+
+.typeGroup:has(+ .after > .section:first-child) {
+  margin-bottom: -16px;
+}
+
+/* "옵션" in grey 15px, 17px in, its "+" at the end: 52px on the sheet's colour. */
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 52px;
+  padding-inline: calc(17px + var(--phone-safe-start, 0px)) calc(8px + var(--phone-safe-end, 0px));
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.sectionAdd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: none;
+  color: var(--icon-secondary);
+}
+
+.sectionAdd > svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Its rows white and square, the sections one group with the rows over
+   them: only the last section's foot is round, as Notion's status groups
+   (seen 2026-11-11, from the view's settings and from a column's menu). */
+.sectionRows {
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.section:last-child .sectionRows {
+  clip-path: inset(0 0 -1px round 0 0 12px 12px);
+}
+
+/* The group ends 1px under its last row, the next group 17px under that, as
+   Notion's (seen 2026-11-11 at 402pt: a select's options 381–471, the next
+   group's white at 489); its feet are that end's, the frame's 12 cutting the
+   last row's white a pixel over it (a select's "속성 편집" at 411 in Android
+   Chrome, 2026-11-25: the options' frame to 672.5, the last white to 671.5). */
+.section:last-child {
+  padding-bottom: 1px;
+}
+
+/* A status's last row keeps its 1px unseen, as Notion's 45px rows; a
+   select's last option shows its line over the round foot (seen 2026-11-11). */
+.section[data-status-group]:last-child .sectionRows > :last-child {
+  border-bottom-color: transparent;
+}
+
+/* "표시 옵션" stays on the sheet's colour, 32px in, its cards 32px in
+   right under it, as Notion's (seen 2026-11-11 at 402pt): its words 18px
+   under the group, the cards 47px. */
+.section[data-plain="true"] .sectionHead {
+  min-height: 47px;
+  padding-top: 1px;
+  padding-inline-start: calc(32px + var(--phone-safe-start, 0px));
+}
+
+.settingRow .settingValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 60%;
+}
+
+.valueLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A value that is a link to a database — a relation's "관계형 대상" — in the
+   link's weight, 600, as the desktop's (PropertySettingRow.module.css). */
+.settingRow[data-value-link] .valueLabel {
+  font-weight: 600;
+}
+
+.valueIcon {
+  display: inline-flex;
+  flex: none;
+}
+
+/* A row that can't change fades whole (PhoneSheet's 0.4), its mark in the
+   icons' own colour and its value in the words' colour, its value's mark
+   grey, as Notion's "관계형 대상" and a rollup's "대상 속성" and "계산"
+   before its relation (seen 2026-11-19 on the A90's Chrome at 411, light:
+   rgb(56,56,54) mark, rgb(44,44,43) value, rgb(142,139,134) value mark, no
+   underline), and the desktop's (PropertySettingRow.module.css); those two
+   rollup rows' names in the secondary grey (rgb(125,122,117)). */
+.settingRow:disabled .settingValue {
+  color: inherit;
+}
+.settingRow:disabled .valueIcon {
+  color: var(--icon-secondary);
+}
+:global([data-setting-name-faint]) .settingRow:disabled [data-property-setting-label] {
+  color: var(--text-secondary);
+}
+
+/* A small form's rows, as Notion's "양방향 관계형": "활성화" and its switch
+   over a line, then the related property's name under its grey label. */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  margin: 0;
+  padding-inline: calc(20px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-default);
+  font-size: 16px;
+}
+
+/* A field's label over it, its field the row under. */
+.form label:has(> input:not([role="switch"])) {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+}
+
+/* Its words told by the field beside them, not by a :has() on the label
+   before them (AppShell .main). */
+.form label > span:has(~ input:not([role="switch"])),
+:where(.form) label > span:nth-child(n + 2 of input:not([role="switch"]), span) {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding-inline: 20px;
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-tertiary);
+  font-size: 15px;
+}
+
+.form label > input:not([role="switch"]) {
+  min-height: 46px;
+  padding-inline: 20px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* An option's 45px row, as Notion's (seen 2026-11-11): its handle's middle
+   9px in, its chip 34px in, "›" at the end; 44px over its line, the last
+   one of a status group too, the next group's name under it. */
+.optionRow {
+  display: flex;
+  align-items: center;
+  min-height: 45px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.optionDrag {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 44px;
+  border: 0;
+  background: none;
+  color: var(--icon-secondary);
+  touch-action: none;
+}
+
+.optionDrag > svg {
+  width: 18px;
+  height: 18px;
+}
+
+.optionOpen {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 44px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 17px;
+  text-align: start;
+}
+
+.optionOpen > :first-child {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.optionOpen > svg {
+  flex: none;
+  margin-inline-start: auto;
+  width: 18px;
+  height: 18px;
+  color: var(--icon-secondary);
+}
+
+/* A status's default says "기본" in grey 12px just before its "›", 6px
+   apart, as Notion's (seen 2026-11-11: 13pt from its words to the arrow's). */
+.optionDefault {
+  flex: none;
+  margin-inline: auto -2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.optionDefault + svg {
+  margin-inline-start: 0;
+}
+
+/* A new option's name, the first row over its line. */
+.optionNew {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 45px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border: 0;
+  border-bottom: 1px solid var(--border-secondary);
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+/* "표시 옵션"'s three cards, 32px in from the group's edge, as Notion's. */
+.numberDisplay {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-inline: calc(18px + var(--phone-safe-start, 0px)) calc(18px + var(--phone-safe-end, 0px));
+}
+
+/* Its cards 50px high and 6px apart, with no room over them; the note
+   16px under them and 20px over the next group (Notion's, seen 2026-11-11:
+   the desktop's 9px over the cards and 9px under the note are not there). */
+.numberDisplay .numberKinds {
+  gap: 6px;
+  margin: 0 14px;
+}
+
+.numberDisplay .numberKind {
+  min-height: 50px;
+}
+
+.numberDisplay .numberNote {
+  margin: 3px 16px 0;
+  padding-bottom: 0;
+  line-height: 20px;
+}
+
+/* "유형" that can't change — a title's, a task role's — grey as a whole,
+   its lock 4px before the type, as Notion's (seen 2026-11-11). */
+.typeRows [data-property-type-row]:disabled > [aria-hidden="true"]:first-child {
+  color: var(--icon-secondary);
+}
+
+.typeLock {
+  flex: none;
+  margin-inline-end: 4px;
+  vertical-align: -2px;
+}

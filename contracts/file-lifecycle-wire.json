@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 4,
+  "name": "file-lifecycle",
+  "operations": [
+    { "goName": "fileDelete", "tsName": "deleteFile", "method": "DELETE", "path": "/files/{id}" }
+  ],
+  "bounds": [
+    { "goName": "maxFileDeleteRequestIDRunes", "tsName": "requestIdRunes", "value": 255 },
+    { "goName": "fileUnattachedRetentionSeconds", "tsName": "unattachedRetentionSeconds", "value": 86400 },
+    { "goName": "fileReferenceDeleteGraceSeconds", "tsName": "referenceDeleteGraceSeconds", "value": 300 },
+    { "goName": "fileReferenceCleanupTurnLimit", "tsName": "referenceCleanupTurnLimit", "value": 32 },
+    { "goName": "fileReferenceCleanupRetrySeconds", "tsName": "referenceCleanupRetrySeconds", "value": 5 },
+    { "goName": "fileReferenceCleanupPolicyRecheckSeconds", "tsName": "referenceCleanupPolicyRecheckSeconds", "value": 86400 },
+    { "goName": "fileDeleteReceiptReplayRetentionSeconds", "tsName": "deleteReceiptReplayRetentionSeconds", "value": 604800 },
+    { "goName": "fileDeleteReceiptCleanupTurnLimit", "tsName": "deleteReceiptCleanupTurnLimit", "value": 20 }
+  ],
+  "errorCodes": [
+    { "goName": "errorCodeFileDeleteInvalid", "tsName": "deleteInvalid", "value": "LEAFEN_FILE_DELETE_INVALID" },
+    { "goName": "errorCodeFileReferenced", "tsName": "referenced", "value": "LEAFEN_FILE_REFERENCED" },
+    { "goName": "errorCodeFileDeleteRequestIDReused", "tsName": "deleteRequestIdReused", "value": "LEAFEN_FILE_DELETE_REQUEST_ID_REUSED" },
+    { "goName": "errorCodeFileDeleteUnavailable", "tsName": "deleteUnavailable", "value": "LEAFEN_FILE_DELETE_UNAVAILABLE" },
+    { "goName": "errorCodeFileDeleteStorageUnavailable", "tsName": "deleteStorageUnavailable", "value": "LEAFEN_FILE_DELETE_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeFileDeleteDatabaseBusy", "tsName": "deleteDatabaseBusy", "value": "LEAFEN_FILE_DELETE_DATABASE_BUSY" },
+    { "goName": "errorCodeFileReferenceCleanupFailed", "tsName": "referenceCleanupFailed", "value": "LEAFEN_FILE_REFERENCE_CLEANUP_FAILED" },
+    { "goName": "errorCodeFileDeleteReceiptCleanupFailed", "tsName": "deleteReceiptCleanupFailed", "value": "LEAFEN_FILE_DELETE_RECEIPT_CLEANUP_FAILED" }
+  ],
+  "enums": [
+    {
+      "tsName": "FileDeleteStatus",
+      "tsValuesName": "fileDeleteStatuses",
+      "values": [
+        { "goName": "fileDeleteStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "fileDeleteStatusCompleted", "tsName": "completed", "value": "completed" }
+      ]
+    },
+    {
+      "tsName": "FileReferenceCleanupStatus",
+      "tsValuesName": "fileReferenceCleanupStatuses",
+      "values": [
+        { "goName": "fileReferenceCleanupStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "fileReferenceCleanupStatusCleanupPending", "tsName": "cleanupPending", "value": "cleanup_pending" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "fileDeleteInput",
+      "tsName": "FileDeleteInput",
+      "fields": [
+        { "goName": "RequestID", "jsonName": "requestId", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "fileDeleteResponse",
+      "tsName": "FileDeleteResponse",
+      "fields": [
+        { "goName": "FileID", "jsonName": "fileId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "FileDeleteStatus" }
+      ]
+    }
+  ]
+}

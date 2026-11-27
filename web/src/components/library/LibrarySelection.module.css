@@ -1,0 +1,192 @@
+/* A row's select box, as Notion's library (seen 2026-10-07): a 16px box in a
+   36px cell left of the table, shown under the pointer and while chosen; the
+   head's while any row is. */
+.selectCell {
+  position: absolute;
+  top: 0;
+  inset-inline-start: -36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  opacity: 0;
+}
+
+[role="row"]:hover > .selectCell,
+.selectCell:focus-within,
+.selectCell[data-shown="true"] {
+  opacity: 1;
+}
+
+.selectBox {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: var(--bg-app);
+  cursor: pointer;
+}
+
+.selectBox:checked,
+.selectBox:indeterminate {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+}
+/* Checked, Notion's tick 1px in from the box's edge (styles.css --checkbox-tick). */
+.selectBox:checked:not(:indeterminate) {
+  background: var(--accent-blue) var(--checkbox-tick) center / calc(100% - 2px) no-repeat border-box;
+}
+
+.selectBox:indeterminate::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 3px;
+  inset-inline-start: 3px;
+  top: 6px;
+  height: 2px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.selectBox:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A chosen row is blue, as Notion's. */
+[data-library-row][data-selected="true"],
+[data-library-teamspace][data-selected="true"] {
+  background: var(--bg-block-selected);
+}
+
+/* The bar over the tabs while rows are chosen, as Notion's (seen
+   2026-10-07): 32px, 10px left of the table and 8px above it, the count in
+   blue (which clears the choice), then the actions, split by thin lines. */
+.selectionAnchor {
+  position: sticky;
+  top: 48px;
+  z-index: 20;
+  height: 0;
+}
+
+.selectionBar {
+  position: absolute;
+  bottom: 8px;
+  inset-inline-start: -2px;
+  display: inline-flex;
+  align-items: stretch;
+  height: 32px;
+  border-radius: 5px;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-raised);
+  color: var(--text-default);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+:global([data-theme="dark"]) .selectionBar {
+  box-shadow: var(--shadow-menu);
+}
+
+.selectionCount,
+.selectionAction,
+.selectionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  color: inherit;
+  font-size: 14px;
+  box-shadow: calc(1px * var(--inline-sign, 1)) 0 0 rgba(42, 28, 0, 0.07);
+}
+
+.selectionCount {
+  padding: 0 10px;
+  border-start-start-radius: 5px;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  border-end-start-radius: 5px;
+  color: var(--accent-blue);
+}
+
+.selectionAction {
+  gap: 6px;
+  padding: 0 8px;
+}
+
+/* The teamspaces' bar lies just under the tabs, over the table's head, at
+   its left edge, as Notion's (seen 2026-10-07). */
+.teamspaceAnchor .selectionBar {
+  top: 1px;
+  bottom: auto;
+  inset-inline-start: 8px;
+}
+
+/* Grouped, the head the bar lies over is the joined group's, under its 37px
+   name and 8px in (LibraryTeamspaces.module.css .groupBody). */
+.teamspaceAnchor[data-grouped="true"] .selectionBar {
+  top: 38px;
+  inset-inline-start: 16px;
+}
+
+.selectionIcon {
+  width: 28px;
+}
+
+.selectionIcon:last-child,
+.selectionAction:last-child {
+  width: 30px;
+  border-start-start-radius: 0;
+  border-start-end-radius: 5px;
+  border-end-end-radius: 5px;
+  border-end-start-radius: 0;
+  box-shadow: none;
+}
+
+.selectionAction:last-child {
+  width: auto;
+}
+
+.selectionCount:hover,
+.selectionAction:hover,
+.selectionIcon:hover,
+.selectionCount:focus-visible,
+.selectionAction:focus-visible,
+.selectionIcon:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.selectionMenu.selectionMenu[data-row-menu-variant] {
+  width: 265px;
+}
+
+.menuSection {
+  padding: 6px 8px 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Many pages' "…" ends with their words and characters. */
+.menuCounts {
+  padding: 4px 8px 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+/* A phone has no pointer to show the boxes. */
+:global([data-phone="true"]) .selectCell {
+  display: none;
+}

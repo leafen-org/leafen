@@ -1,0 +1,77 @@
+/* A value's tools under the pointer, as Notion's (seen 2026-11-03): 24x20
+   each in a white tray 4px in from the end its value doesn't start at (a
+   number's left), 6px down in a table cell and 5px down on a page's 34px
+   property line. */
+.tools {
+  display: none;
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 4px;
+  z-index: 3;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-block-toolbar);
+}
+
+/* Its own width and ground, not the width and the commented mark every
+   child of the line's value takes. */
+.tools.tools[data-place="line"] {
+  top: 5px;
+  width: auto;
+  border-bottom: 0;
+  background: var(--bg-elevated);
+}
+
+.tools[data-side="start"] {
+  inset-inline-end: auto;
+  inset-inline-start: 4px;
+}
+
+:hover > .tools,
+.tools:focus-within {
+  display: flex;
+}
+
+/* A visitor's page on a touch screen, where no pointer brings it, shows a
+   line's tray (Notion's public database page on an iPad, seen 2026-11-11). */
+:global([data-touch="true"]) :global([data-visitor-properties]) .tools[data-place="line"] {
+  display: flex;
+}
+
+/* A page's line showing "비어 있음" has nothing to copy or discuss — a
+   computed value's hint shows only where no value came before it
+   (DatabaseRowPage.module.css). */
+:global([data-row-property-value]):has(:global([data-row-property-empty]:not([data-computed-hint]))) > .tools,
+:global([data-row-property-value]):has(> :global([data-computed-hint]:first-child)) > .tools,
+:global([data-row-property-value]):has(:global([data-computed-empty] + [data-computed-hint])) > .tools {
+  display: none;
+}
+
+/* A relation's pages on a page's line each take "−" and "+" at their end
+   under the pointer, and no tray: its threads start from its name's menu
+   (Notion's, seen 2026-11-12). */
+:global([data-row-property-value]):has(:global([data-row-relation-chip])) > .tools[data-place="line"] {
+  display: none;
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.tool:hover,
+.tool:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* A rollup's cell has "롤업 구성" empty or not, "클립보드에 복사" only with a value (Notion's, seen 2026-11-06). */
+[data-table-cell]:has([data-computed-empty]) .tool[data-property-copy] {
+  display: none;
+}

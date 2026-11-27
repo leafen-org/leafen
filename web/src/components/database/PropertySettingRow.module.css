@@ -1,0 +1,95 @@
+/* A property setting's line, as Notion's (seen 2026-11-02 in its property
+   settings): 28px, 14px words, a 20px mark 8px in, its name 8px after. */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+  /* Lines 29px apart. */
+  margin-bottom: 1px;
+}
+.row:not(:disabled):hover, .row:focus-visible, .row[aria-expanded="true"] { background: var(--bg-hover); outline: none; }
+/* A setting row that cannot change, faded as Notion's (0.4, seen 2026-11-03),
+   its value in the words' colour then, faded with them, not in its grey
+   (seen 2026-11-14: a relation's "관계형 대상 · 이 데이터베이스" both
+   rgb(240,239,237) at 0.4 in the dark theme). */
+.row:disabled { opacity: 0.4; cursor: default; }
+.row:disabled > .value { color: inherit; }
+/* A rollup's "대상 속성" and "계산" before its relation has their names in
+   the secondary grey under that fade, their values not, where its chosen
+   rows' names and a relation's dim row keep the words' colour (seen
+   2026-11-19 at 1440 dpr 2 in two tabs: rgb(173,169,163) dark). */
+:global([data-setting-name-faint]) .row:disabled > .label { color: var(--text-secondary); }
+.label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Notion's ⓘ: 16px, 6px after the name, in the value's grey. */
+.labelTip { display: inline-flex; flex: none; margin-inline-start: -2px; color: var(--text-tertiary); }
+.value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  min-width: 0;
+  margin-inline-start: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-tertiary);
+}
+/* A value that is a link to a page — a relation's "관계형 대상" — has its name
+   6px after its mark, as Notion's link there (seen 2026-11-15 in Chrome 1440:
+   4px apart and the name's own 2px), where a new relation's has none
+   (RelationPropertyCreationDialog). */
+.row[data-value-link] > .value { gap: 6px; }
+/* Its name in the link's weight, 600, as Notion's (seen 2026-11-19 at 1440 and on the A90:
+   the target database's name 600 beside the row's 400 words). */
+.row[data-value-link] .valueLabel { font-weight: 600; }
+.icon { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 20px; width: 20px; height: 20px; }
+/* The row's own mark in the icons' primary colour, as Notion's (icoPri, seen 2026-11-18 at 1440 in two tabs:
+   rgb(230,229,227) dark beside its rgb(240,239,237) words); a value's mark keeps its own. */
+.row > .icon { color: var(--icon-primary); }
+/* Its "›" in the faintest icon grey, as Notion's (icoTer, seen 2026-11-17 in
+   Chrome 1440 in two tabs: number '숫자 형식'·'소수점 이하 자리' and select
+   '정렬' rgb(125,122,117) dark, rgb(173,169,163) light), its value's grey. */
+.row > svg { flex: none; margin-inline-start: auto; color: var(--icon-tertiary); }
+.value + svg { margin-inline-start: 0; }
+.panel { z-index: 1003; width: 250px; padding: 12px; border-radius: var(--radius-menu); background: var(--bg-elevated); box-shadow: var(--shadow-menu); }
+
+.valueLabel { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.panel:focus { outline: none; }
+
+/* A phone's settings sheet, as Notion's "속성 편집" rows (seen 2026-10-23
+   at 375px): white and 12px round, 45px, the 22px icon 13px in (drawn at
+   22px, PhoneSettingsListContext), the 17px label 11px on, the value in
+   gray 17px and an 18px "›" (drawn at 18px too). A type's own rows in "속성 편집" are the type
+   group's (PhonePropertyTypeGroup). */
+:global([data-phone-settings]) .row {
+  gap: 11px;
+  min-height: 45px;
+  padding-block: 0;
+  padding-inline: calc(13px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 12px;
+  background: var(--bg-app);
+  font-size: 17px;
+}
+:global([data-phone-settings]) .row:not(:disabled):hover,
+:global([data-phone-settings]) .row[aria-expanded="true"] {
+  background: var(--bg-app);
+}
+/* Its icons in the words' colour, as Notion's "설정" (seen 2026-11-11 at
+   402pt: rgb(44,44,43)), the database sheets' (PhoneSheet's settings tone). */
+:global([data-phone-settings]) .icon {
+  flex-basis: 22px;
+  width: 22px;
+  height: 22px;
+  color: var(--text-default);
+}

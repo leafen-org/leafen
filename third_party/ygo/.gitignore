@@ -1,0 +1,56 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Fuzz corpus and cache
+testdata/fuzz/
+/tmp/
+
+# Build output
+/dist/
+/bin/
+# `go build ./cmd/ygo-server/` drops the binary in the repo root, where
+# nothing else ignores it — a 16MB artifact one `git add -A` away from being
+# committed.
+/ygo-server
+# Same problem, `go build ./examples/offline-client/` (#165): the binary
+# lands in the repo root, and its default `-db offline-client.db` flag value
+# (see examples/offline-client/main.go) does too when run from there.
+/offline-client
+*.db
+
+# Go workspace
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Benchmarks
+benchmarks/*.txt
+testutil/node_modules/
+.claude/
+
+# /code-review skill output — converted to GitHub issues, not tracked
+code-review-report.md
+
+# Brainstorming specs and plans — planning artifacts stay local; the durable
+# record lives in CHANGELOG, PR descriptions, and issue threads.
+docs/superpowers/
+
+# Local working notes (per-issue progress trackers, debug logs, scratch repros).
+# Same rationale: planning stays local, durable record lives in PRs and issues.
+.notes/

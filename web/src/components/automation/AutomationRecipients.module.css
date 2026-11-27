@@ -1,0 +1,191 @@
+/* A notification's people (AutomationRecipientsField): the box they are
+   picked in and each picked one; a person property's chips. */
+
+/* The people's box, as Notion's (seen 2026-11-01 on a button, 2026-11-08 in
+   a database's automation): the card's width, 28px, ringed, round 6, its
+   14px words 6px in and grey while it names nobody — still grey behind a red
+   mark once asked for (seen 2026-11-21: rgb(125,122,117) in the dark theme) —
+   with the chevron at its end; once someone is picked, each by a 16px face
+   and 12px name, who runs it or made the page in a blue tag. */
+.recipientBox {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 28px;
+  box-sizing: border-box;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+.recipientBox > span:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recipientPicker[data-value=""] .recipientBox > span:first-child {
+  color: var(--text-tertiary);
+}
+.recipientPicker[data-warning] > button {
+  color: var(--danger);
+}
+.recipientBox > svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--icon-secondary);
+}
+.recipientWarningInline {
+  width: 16px;
+  height: 16px;
+  margin-inline-end: 4px;
+  vertical-align: -3px;
+  color: var(--danger);
+}
+.recipientBox > .recipientTokens {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 4px 0;
+  overflow: visible;
+  white-space: normal;
+}
+.recipientToken,
+.recipientSource {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 14px;
+  white-space: nowrap;
+}
+.recipientToken {
+  gap: 6px;
+  color: var(--text-default);
+}
+.recipientSource {
+  gap: 4px;
+  height: 18px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  border-radius: 6px;
+  background: var(--action-mark-blue-bg);
+  color: var(--c-accent-blue);
+}
+.recipientToken > button,
+.recipientSource > button {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.6;
+}
+.recipientToken > button:hover,
+.recipientSource > button:hover {
+  opacity: 1;
+}
+
+/* The people picker: the box, or a person property's chip. */
+.recipientPicker {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+
+/* "속성 선택 ⌄", then the property picked — "👥 Owner ⌄" — as Notion's
+   (seen 2026-11-14 at 1440): 28px high in 14px words, 6px in and the
+   chevron 2px after the words; a property's mark 4px in and its name 24px
+   after its start. No ground of its own: the hover's under the pointer and
+   while its list is open; an empty one's words in the second color, a picked
+   one's in the first (Notion's, seen 2026-11-21 in a database's button and
+   its automation, 1440 dark). */
+.recipientPropertyButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  justify-self: start;
+  max-width: 100%;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.recipientPropertyButton:hover,
+.recipientPropertyButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+/* Asked for and still empty, its words stay red (above) and its hover is red's
+   (rgba(255, 105, 96, .114) in the dark theme, Notion's, seen 2026-11-21). */
+.recipientPicker[data-warning] > .recipientPropertyButton:is(:hover, [aria-expanded="true"]) {
+  background: var(--danger-outline-hover);
+}
+
+.recipientPicker[data-value=""]:not([data-warning]) > .recipientPropertyButton {
+  color: var(--text-secondary);
+}
+
+.recipientPropertyButton:has(> .recipientProperty) {
+  padding-inline-start: 4px;
+}
+
+.recipientPropertyButton > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.recipientPropertyButton > span {
+  overflow: hidden;
+  min-width: 0;
+}
+
+.recipientProperty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* The mark a size up in a 20px box, as the property lists draw it (AutomationPropertyMark). */
+.recipientPropertyMark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--icon-secondary);
+}
+
+.recipientPropertyMark > svg {
+  transform: scale(1.2);
+}
+
+.recipientPropertyName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recipientProperty > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

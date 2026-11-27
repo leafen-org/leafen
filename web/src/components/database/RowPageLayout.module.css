@@ -1,0 +1,505 @@
+/* A database page laid out by its database's page layout, as Notion's
+   (seen 2026-10-12): pinned properties side by side under the title, the
+   page's modules in order and the details panel on the right. */
+/* As Notion's (seen 2026-11-14 at 1440 and 1024, page and peeks): the pinned
+   properties on one line from 6 out of the title's text, 8 apart, scrolled
+   sideways past the column's end. Its scroller keeps 6 over and under for the
+   values' hover and focus. Each is a column as wide as its name or its value
+   and 6 either side, at least 80: its name on a 24 line, its value in a 30
+   box under it spanning the column, every type's content 6 in
+   (DatabaseRowProperties .rowPinnedValue) — on the name's line. The line ends
+   24 over what follows (the head's own 12 and 12): its margin keeps the 2 the
+   comments' heading draws up. */
+.pinnedStrip {
+  position: relative;
+  margin-block: 10px 26px;
+  margin-inline: -6px 0;
+}
+.pinnedScroller {
+  margin-block: -6px;
+  padding-block: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.pinnedScroller::-webkit-scrollbar { display: none; }
+/* Where more go on, the line fades out over its last 100 (Notion's, seen 2026-11-14). */
+.pinnedStrip[data-after] .pinnedScroller {
+  mask-image: linear-gradient(calc(270deg * var(--inline-sign, 1)), transparent 0, #000 100px);
+}
+.pinnedStrip[data-before] .pinnedScroller {
+  mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 100px);
+}
+.pinnedStrip[data-before][data-after] .pinnedScroller {
+  mask-image: linear-gradient(calc(90deg * var(--inline-sign, 1)), transparent 0, #000 100px, #000 calc(100% - 100px), transparent 100%);
+}
+/* Its arrows: 32 square, 4 out past its ends, its middle on the line's (Notion's, seen 2026-11-14). */
+.pinnedArrow {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  transform: translateY(-50%);
+}
+.pinnedArrow[data-side="before"] { inset-inline-start: -4px; }
+.pinnedArrow[data-side="after"] { inset-inline-end: -4px; }
+.pinnedArrow:hover,
+.pinnedArrow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.pinned {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+}
+
+.pinnedProperty {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  min-width: 80px;
+  max-width: 350px;
+}
+/* Beside a text value or more than three of them, each grows to 200; a text
+   one of three or fewer takes its whole line (Notion's, seen 2026-11-14). */
+.pinnedProperty[data-width="narrow"] { max-width: 200px; }
+.pinnedProperty[data-width="line"] { max-width: none; }
+
+.pinnedLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding-inline: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* "세부 정보 보기" under the title, as Notion's (seen 2026-11-06): grey 14px
+   text in a 28px button whose text lines up with the title's, 12 under it
+   (with the title's own 8) and 25 over the pinned names. Its grey is Notion's
+   gray accent text, the same in both themes, on the page and in the layout
+   builder alike (seen 2026-11-14: its graTexAccPri, #8e8b86). */
+.detailsToggle {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  height: 28px;
+  margin-block: 4px 15px;
+  margin-inline: -8px 0;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-gray-accent);
+  font-size: 14px;
+  line-height: 17px;
+}
+
+/* The pinned properties stand 22 under the button, as Notion's (seen
+   2026-11-14: its line's own 12 and their 10): its 15 and 7. */
+.detailsToggle + .pinnedStrip { margin-block-start: 7px; }
+/* A phone's stand 30 under it (its line's own 20 and their 10), and the
+   line keeps 8 under it inside it, the head's own 16 making the 24 over
+   what follows whether the head is a column, whose margins stay apart, or
+   not (Notion's, seen 2026-11-14 at 402pt: the
+   button 231.6–259.6, the names' line at 289.6, the values' foot 343.6, "댓글"
+   at 367.6). */
+:global([data-phone="true"]) .detailsToggle + .pinnedStrip { margin-block-start: 15px; }
+:global([data-phone="true"]) .pinnedStrip {
+  margin-block-end: 0;
+  padding-block-end: 8px;
+}
+
+/* A phone's title has no margin of its own: the button keeps 12 under it,
+   as Notion's at 402pt (seen 2026-11-12: the title 100–134, the button 146). */
+:global([data-row-peek-panel][data-phone="true"]) .detailsToggle {
+  margin-block-start: 12px;
+}
+
+.detailsToggle:hover,
+.detailsToggle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.pinnedLabel svg {
+  color: var(--icon-secondary);
+}
+.pinnedInfo {
+  display: inline-flex;
+  flex: none;
+  margin-inline-start: -2px;
+  visibility: hidden;
+}
+.pinnedInfo svg { color: var(--icon-tertiary); } /* Notion's "i": icoTer (seen 2026-11-17). */
+.pinned:hover .pinnedInfo, .pinnedInfo:focus-visible { visibility: visible; }
+
+/* Its value's cell holds the "비어 있음" an empty one shows, as Notion's
+   pinned properties always do (seen 2026-11-06). */
+.pinnedValue {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  font-size: 14px;
+}
+.pinnedValue > * { min-width: 0; width: 100%; }
+
+/* A value that can't be changed there (a reader's page, the layout
+   builder's card) is its plain value, in the same box 6 in. */
+.pinnedValue > :is([data-row-property-typed-value], [data-template-value]) {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  padding-inline: 6px;
+}
+
+/* "비어 있음" over the empty value's own button, where its content starts. */
+.pinnedValue [data-row-property-empty] {
+  inset-inline-start: 6px;
+  white-space: nowrap;
+}
+
+.frame {
+  container-type: inline-size;
+}
+
+.columns {
+  display: block;
+}
+
+.columns[data-panel="true"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 28px;
+  align-items: start;
+}
+
+.panel {
+  position: sticky;
+  top: 12px;
+  padding: 8px 12px;
+  border-inline-start: 1px solid var(--border-default);
+}
+
+.panelToggle {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.panelToggle button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.panelToggle button:hover,
+.panelToggle button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.panel {
+  --row-property-name-width: 110px;
+}
+
+/* Where the page's column is too narrow for the panel beside it, it opens
+   right under the heading, where "세부 정보 보기" was pressed, before the
+   page's modules: Notion draws it as a column of the page's frame instead,
+   widening a side peek for it (seen 2026-11-06), which this column can't. */
+@container (max-width: 760px) {
+  .columns[data-panel="true"] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .panel {
+    order: -1;
+    position: static;
+    padding: 0 0 12px;
+    border-inline-start: 0;
+  }
+}
+
+.module + .module {
+  margin-top: 4px;
+}
+
+/* A tabbed layout's tabs under the title, as Notion's (seen 2026-11-01):
+   26px under it, 32px pills 1px apart on one line (LayoutTabStrip), each its
+   20px mark 12px in and its name 6px on in 14px/500, the chosen one filled; 17px over what follows. */
+.tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1px;
+  margin: 26px 0 17px;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
+  height: 32px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 20px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+/* A phone's tabs as one pill (Notion's, seen 2026-11-12 at 402pt): the open
+   tab's icon and name and "⌄" in a 36px round grey pill. */
+.phoneTabPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
+  height: 36px;
+  margin: 26px 0 17px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+}
+/* Right under "세부 정보 보기", no pinned properties between, the tabs stand
+   26 under it as under the title (its own 15 and 11 more), and a phone's
+   pill on a line of its own 24 under it (Notion's, seen 2026-11-12: the
+   button 216–244 and the tabs 270 at 1440; 146–174 and the pill 198 at 402pt). */
+.tabs[data-under-details] { margin-block-start: 11px; }
+.phoneTabPill[data-under-details] {
+  display: flex;
+  width: fit-content;
+  margin-block-start: 9px;
+}
+.phoneTabPill > svg { flex: none; }
+.phoneTabPill > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* On another tab its view's bar holds the tabs, its filter, sort and search
+   level with them, as Notion's (seen 2026-11-12, a published page's visitor
+   and a member alike). Their depth under the title is then their panel's
+   (.tabPanel), and they stand 14 over the view's head (a phone's pill 12),
+   not the 17 over a content tab's body, as Notion's (seen 2026-11-12 at
+   1440: a table's head 14 under the tabs, on the page and in its side peek
+   alike). The tools are centred on the tabs (Notion's at 1440: both
+   centred at 246), a phone's 2.5 over its pill's middle. */
+.tabs:has(+ :global([data-database-toolbar])) { margin-block: 0 14px; }
+.phoneTabPill:has(+ :global([data-database-toolbar])) { margin-block: 0 12px; }
+.tabs + :global([data-database-toolbar]) { margin-block: -7px 7px; }
+.phoneTabPill + :global([data-database-toolbar]) { margin-block: -8.5px 8.5px; }
+/* The panel of a tab whose view's bar holds the tabs stands as deep as the
+   content tab's tabs: its margin runs into the title's own 8, or the pinned
+   properties' 21, as theirs does, so the tabs stand 26 under the title on
+   every tab (Notion's, seen 2026-11-12 at 1440: at 230 on the content tab
+   and on a view's alike), and 26 under "세부 정보 보기" (its own 15 and 11
+   more; a phone's 24, its 15 and 9). */
+.tabPanel { margin-block-start: 26px; }
+.tabPanel[data-under-details] { margin-block-start: 11px; }
+:global([data-phone="true"]) .tabPanel[data-under-details] { margin-block-start: 9px; }
+.tab > svg, .tab > span[aria-hidden="true"] { flex: none; }
+.tab span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab:hover { background: var(--bg-hover); }
+.tab[aria-selected="true"] { background: var(--bg-tab-selected); color: var(--text-default); }
+
+/* The property group's name in a tabbed layout: 13px/500 grey. */
+.groupLabel {
+  margin-bottom: 11px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+/* A relations group's "관계형", as Notion's (seen 2026-11-07): 2px left of
+   the comments' heading, its first line 6px under it. */
+/* A visitor's page names its properties 40px under its title's middle (Notion's published page, seen 2026-11-11). */
+.groupLabel[data-row-properties-heading] { margin-top: 7px; }
+/* Under pinned properties, 32px below their values (Notion's, seen 2026-11-13 at 1440). */
+.groupLabel[data-row-layout-properties-heading="pinned"] { margin-top: 4px; }
+.groupLabel[data-relations-heading] { margin-block: 0 6px; margin-inline: -2px 0; }
+.tab:focus-visible { outline: none; box-shadow: var(--keyboard-focus-ring); }
+
+/* A tab's view is an inline database's in a page's text: its box by the page's frame (rowPageTabDatabaseBox.css). */
+/* The tabs and what they show are at least 60vh, 12 over and under them,
+   so a page's tabbed layout always scrolls and stands by its scrollbar, as
+   Notion's (seen 2026-11-12 at 1440 × 723: the section 216..649.8 under a
+   title ending at 204, the page 835.7 high); the panel from its tabs, 26
+   under the title, to as far down as the page then is. */
+:global([data-row-peek-panel][data-mode="full"]) :global([data-row-layout-tab-panel]):not(:global([data-phone="true"]) *) {
+  min-height: calc(60vh - 2px);
+}
+:global([data-row-peek-panel][data-mode="full"]) .tabs + [role="tabpanel"]:not(:global([data-phone="true"]) *) {
+  min-height: calc(60vh - 51px);
+}
+/* A tab's table keeps 27 under its rows or its empty box, its sideways bar
+   under that, as in a page's text (Notion's, seen 2026-11-12 at 1440: the
+   scroll 222 under the head's top round a 144 box). */
+:global([data-row-layout-tab-panel]) :global([data-view-type="table"]) :global([data-table-scroll]):not(:global([data-phone="true"]) *) {
+  padding-bottom: 27px;
+}
+/* A data source's tab: its pages as a table, the source's properties as columns. */
+.tabTable {
+  display: table;
+  width: 100%;
+  border-top: 1px solid var(--border-default);
+  font-size: 14px;
+}
+.tabTableScroll { overflow-x: auto; contain: inline-size; }
+.tabTableRow { display: table-row; }
+.tabTableHead, .tabTableCell {
+  display: table-cell;
+  min-width: 120px;
+  height: 34px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border-default);
+  vertical-align: middle;
+}
+.tabTableHead {
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.tabTableHead > span { margin-inline-start: 6px; }
+.tabTableCell > a { color: var(--text-default); font-weight: 500; text-decoration: none; }
+.tabTableCell > a:hover { text-decoration: underline; }
+.tabEmpty { margin: 8px 0; color: var(--text-tertiary); font-size: 14px; }
+/* A relation tab's "기존 항목 연결", under its view. */
+.tabLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}
+.tabLink:hover, .tabLink[aria-expanded="true"] { background: var(--bg-hover); color: var(--text-secondary); }
+
+/* The details panel as Notion's (seen 2026-11-06): a column of the page's
+   frame from its top to its foot, 385 wide on the page and 280 in a side
+   peek, which widens by as much; its "»" in the top bar's row 21 in, its
+   "속성" 16 under the bar and 28 in, its names in a 120 column. The frame's top bar keeps its buttons
+   over the panel's top. */
+.framePanel {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  inset-inline-end: 0;
+  bottom: 0;
+  width: 385px;
+  pointer-events: none;
+}
+
+.framePanel[data-place="side"] {
+  width: 280px;
+}
+
+.framePanelClose {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 12px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  pointer-events: auto;
+}
+
+.framePanelClose:hover,
+.framePanelClose:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.framePanelBody {
+  --row-property-name-width: 120px;
+  position: absolute;
+  top: 44px;
+  inset-inline-end: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding-block: 16px;
+  padding-inline: 28px 16px;
+  background: var(--bg-app);
+  pointer-events: auto;
+}
+
+:global([data-row-peek-panel][data-details-panel="open"]) [data-page-scroll] {
+  margin-inline-end: 385px;
+}
+
+:global([data-row-peek-panel][data-mode="side"][data-details-panel="open"]) [data-page-scroll] {
+  margin-inline-end: 280px;
+}
+
+:global([data-row-peek-panel][data-mode="side"][data-details-panel="open"]) {
+  width: min(calc(var(--row-peek-width, 564px) + 280px), 100vw);
+}
+
+/* A published page opened at its own address, as Notion's (seen 2026-11-12
+   at 1440): the panel is a column of the window, 385 wide from its top to
+   its foot behind a line, over the site's header row, whose own buttons stay
+   where they are; its "»" 10 in (the line's 1 and 9) and 6 down, what it holds 44 down on the
+   page's colour, 16 in at the top and right and 20 at the left. The page's
+   column narrows by as much. */
+.framePanel[data-place="window"] {
+  position: fixed;
+  z-index: 11;
+  border-inline-start: 1px solid var(--border-subtle);
+}
+
+.framePanel[data-place="window"] .framePanelClose {
+  top: 6px;
+  inset-inline-start: 9px;
+}
+
+.framePanel[data-place="window"] .framePanelBody {
+  padding-block: 16px;
+  padding-inline: 20px 16px;
+  background: var(--site-bg, var(--bg-app));
+}
+
+:global([data-public-details-panel="open"]) [data-page-scroll]:not(:global([data-row-peek-panel]) *) {
+  margin-inline-end: 385px;
+}
+
+/* A phone's "페이지 정보" (Notion's, seen 2026-11-12 at 402pt): the panel's
+   modules on the page's white right under the sheet's head, at the page's
+   own side margin. */
+:global([data-phone-sheet="screen"][data-row-details-sheet="true"][data-tone]) > :last-child {
+  flex: 1 1 auto;
+  padding: 0;
+  background: var(--bg-app);
+}
+
+.detailsSheetBody {
+  padding-inline: 24px;
+}
+
+/* A published database page opened at its own address lays out under the
+   page's title, its "세부 정보 보기" 12px under it, as Notion's (seen
+   2026-11-12). */
+.publicLayout {
+  margin-block-start: 8px;
+}

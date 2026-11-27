@@ -1,0 +1,347 @@
+/* A page's body in search's preview, as Notion's (seen 2026-10-31, light):
+   13px lines 18px tall in the secondary grey, 8px apart. */
+.blocks {
+  --preview-heading: #5f5e59;
+  --preview-quote: #d4d3cf;
+  --preview-bar: rgba(42, 28, 0, 0.07);
+  padding-top: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+/* Its bars' dark tint as Notion's (seen 2026-11-14 on a database's bar). */
+:global([data-theme="dark"]) .blocks {
+  --preview-heading: var(--text-default);
+  --preview-quote: var(--border-default);
+  --preview-bar: rgba(255, 255, 235, 0.1);
+}
+
+/* A mention takes its line's grey, its name underlined in the faint line
+   colour, as Notion's preview (seen 2026-11-01). */
+.blocks {
+  --mention-underline: var(--button-outline);
+  --preview-chip: rgba(135, 131, 120, 0.15);
+}
+:global([data-theme="dark"]) .blocks {
+  --preview-chip: rgba(255, 255, 235, 0.1);
+}
+.blocks [data-mention] {
+  color: inherit;
+}
+
+/* Coloured words take the palette's accent colours in search's preview,
+   brighter than the page's and the same in light and dark (Notion's
+   preview spans read its *TexAccPri tokens, seen 2026-11-13: red
+   rgb(229, 100, 88) where the page has rgb(207, 81, 72)); their
+   backgrounds stay the page's. A page's card draws the page's own. */
+.blocks:not([data-variant="card"]) {
+  --c-gray: var(--c-accent-gray);
+  --c-brown: var(--c-accent-brown);
+  --c-orange: var(--c-accent-orange);
+  --c-yellow: var(--c-accent-yellow);
+  --c-green: var(--c-accent-green);
+  --c-blue: var(--c-accent-blue);
+  --c-purple: var(--c-accent-purple);
+  --c-pink: var(--c-accent-pink);
+  --c-red: var(--c-accent-red);
+}
+
+/* A link is its words underlined in its line's colour, as Notion's preview
+   (seen 2026-11-13); the line itself is what opens. */
+.blocks [data-rich-cell-text] [href]:not([data-mention]) {
+  text-decoration: underline;
+}
+
+/* In search's preview inline code takes its line's grey on a chip's tint,
+   rounded 3, 0.2em by 0.3em in, and an inline equation is a chip naming it,
+   Σ and its word 4px apart, 0.9em, 0.4em in each side (Notion's, seen
+   2026-11-13 in dark). */
+.blocks:not([data-variant="card"]) [data-rich-cell-text] code:not([data-node-view-content-react]) {
+  color: inherit;
+  background: var(--preview-chip);
+  border-radius: 3px;
+  padding: 0.2em 0.3em;
+}
+.equation {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 0.4em;
+  border-radius: 3px;
+  background: var(--preview-chip);
+  font-size: 0.9em;
+  line-height: 18px;
+}
+/* :first-child, not `* + *`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+.blocks > :where(:not(:first-child)) {
+  margin-top: 8px;
+}
+
+.text,
+.pageLink,
+.heading,
+.listItem,
+.todo,
+.toggle,
+.quote,
+.callout {
+  min-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+.pageLink {
+  text-decoration: underline;
+  text-decoration-color: var(--border-default);
+  text-underline-offset: 2px;
+}
+
+.heading {
+  color: var(--preview-heading);
+  font-weight: 600;
+}
+.heading1 {
+  font-size: 17px;
+  line-height: 20px;
+}
+.heading2 {
+  font-size: 15px;
+  line-height: 20px;
+}
+.heading3 {
+  font-size: 14px;
+}
+.blocks > .heading1:not(:first-child) {
+  margin-top: 23.8px;
+}
+.blocks > .heading2:not(:first-child) {
+  margin-top: 18px;
+}
+.blocks > .heading3:not(:first-child) {
+  margin-top: 14px;
+}
+
+/* A list item's mark in the 18px before its words. */
+.listItem {
+  display: flex;
+}
+.marker {
+  flex: 0 0 18px;
+  text-align: center;
+}
+
+/* A to-do's 14px box and a toggle's closed caret in an 18px place, 6px before the words. */
+.todo,
+.toggle {
+  display: flex;
+  gap: 6px;
+}
+.box,
+.caret {
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+}
+.box::before {
+  content: "";
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border-default);
+  border-radius: 3px;
+}
+.box[data-checked="true"]::before {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+}
+.todoText[data-checked="true"] {
+  color: var(--text-tertiary);
+  text-decoration: line-through;
+}
+.caret {
+  color: var(--text-default);
+}
+
+.quote {
+  padding-block: 2px;
+  padding-inline: 12px 0;
+  border-inline-start: 3px solid var(--preview-quote);
+}
+
+.callout,
+.code {
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--bg-code-block);
+}
+.callout {
+  display: flex;
+  gap: 6px;
+}
+.calloutIcon {
+  display: inline-flex;
+  flex: 0 0 18px;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  font-size: 15.6px;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 18px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.code :global(.code-highlight),
+.code > code {
+  display: block;
+  padding: 0;
+  background: transparent;
+  line-height: inherit;
+}
+
+/* Files, sound and sums: a grey bar with the kind's mark and name. */
+.bar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background: var(--preview-bar);
+  color: var(--text-tertiary);
+}
+.blocks > .bar {
+  margin: 16px 0;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 176px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.imagePlace {
+  background: var(--preview-bar, var(--bg-hover));
+}
+
+/* A table or a database: its kind's name over an empty grid, in an
+   8px-round frame (seen 2026-10-31): six 20px rows ruled under, in 130px. */
+.blocks > .grid {
+  margin: 16px 0;
+}
+.grid {
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+.gridName {
+  min-height: 44px;
+  padding: 20px 8px 0;
+  border-bottom: 1px solid var(--border-secondary);
+  color: var(--text-tertiary);
+  font-weight: 600;
+  line-height: 16px;
+}
+.gridCells {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: start;
+  height: 130px;
+}
+.gridCells[data-columns="4"] {
+  grid-template-columns: 3fr 1fr 1fr 1fr;
+}
+.gridCells > span {
+  height: 20px;
+  border-bottom: 1px solid var(--border-secondary);
+}
+.gridCells[data-columns="3"] > span:not(:nth-child(3n)),
+.gridCells[data-columns="4"] > span:not(:nth-child(4n)) {
+  border-inline-end: 1px solid var(--border-secondary);
+}
+
+/* A table in a page's card: its cells as its page draws them (seen
+   2026-10-31), 14px words in 120px columns 35px tall, ruled. */
+.table {
+  display: grid;
+  width: max-content;
+  border-top: 1px solid var(--border-default);
+  border-inline-start: 1px solid var(--border-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.table > span {
+  min-height: 35px;
+  padding: 7px 9px;
+  border-inline-end: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  overflow-wrap: anywhere;
+}
+
+/* A database in a page's card: a picture of a table the card's width, twice
+   as wide as tall, in a faint 4px-round frame (seen 2026-10-31). */
+.databasePicture {
+  display: block;
+  box-sizing: content-box;
+  width: calc(100% - 2px);
+  aspect-ratio: 2;
+  margin-bottom: 6px;
+  border: 1px solid var(--preview-bar);
+  border-radius: 4px;
+}
+.pictureRule {
+  stroke: var(--border-default);
+  stroke-width: 1.6;
+}
+.pictureDot {
+  fill: var(--border-default);
+}
+.pictureBar {
+  fill: var(--bg-hover);
+}
+.pictureNew {
+  fill: var(--accent-blue);
+}
+.pictureNewMark {
+  fill: rgba(255, 255, 255, 0.3);
+}
+
+/* A page's card draws its blocks as Notion's card does (seen 2026-10-31):
+   the page small, 9px words on 13.5px lines at 0.91, each block 8px in, an
+   empty line a line tall, a heading 32, 28 or 24px under what is above it,
+   even at the top; in the text color. Last, so it wins over the spacing
+   above. */
+.blocks[data-variant="card"] {
+  width: calc(100% / 0.91);
+  padding-top: 0;
+  color: var(--text-default);
+  font-size: 9px;
+  line-height: 13.5px;
+  transform: scale(0.91);
+  transform-origin: top left;
+}
+.blocks[data-variant="card"] > [data-preview-block] {
+  min-height: 29.5px;
+  padding: 8px;
+}
+.blocks[data-variant="card"] > :not(:first-child) {
+  margin-top: 0;
+}
+.blocks[data-variant="card"] > .heading1 {
+  padding-top: 32px;
+  font-size: 16.9px;
+  line-height: 1.3;
+}
+.blocks[data-variant="card"] > .heading2 {
+  padding-top: 28px;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+.blocks[data-variant="card"] > .heading3 {
+  padding-top: 24px;
+  font-size: 11.3px;
+  line-height: 1.3;
+}

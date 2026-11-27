@@ -1,0 +1,307 @@
+/* A teamspace's members and its invite dialog, as Notion's (seen 2026-10-06). */
+
+/* The table's head 22 under the search, as Notion's (2026-11-06). */
+.members { display: flex; flex-direction: column; gap: 22px; }
+
+.membersHead { display: flex; align-items: center; gap: 6px; }
+
+/* Notion's search: 32 tall on the faint field ground with a 1px ring (2026-11-06). */
+.search {
+  display: flex; flex: 1 1 auto; align-items: center; gap: 6px; min-width: 0; height: 32px; padding: 0 8px;
+  border: 0; border-radius: 6px; background: var(--filter-field-bg); box-shadow: var(--name-field-ring); color: var(--text-tertiary);
+}
+
+.search input { flex: 1 1 auto; min-width: 0; border: 0; background: transparent; color: var(--text-default); font: inherit; font-size: 14px; outline: none; }
+
+.search:focus-within { box-shadow: var(--name-field-ring-focus); }
+
+.addButton, .invite {
+  flex: 0 0 auto; height: 32px; padding: 0 11px; border-radius: 6px; background: var(--accent-blue); color: var(--accent-blue-text);
+  font-size: 14px; font-weight: 500; white-space: nowrap;
+}
+
+.addButton:hover, .addButton:focus-visible, .invite:hover, .invite:focus-visible { filter: brightness(0.94); outline: none; }
+
+.addButton:disabled, .invite:disabled { opacity: 0.45; cursor: default; filter: none; }
+
+/* Notion's table opens with a rule 20 under the search (the section's 22 less 2), then its 29px head
+   and its 52px rows, each over a rule of its own (2026-11-19: rules at 365, 395 and 448). */
+.table { display: flex; flex-direction: column; margin-top: -2px; border-top: 1px solid var(--border-default); }
+
+.headRow, .row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 53px; padding: 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.headRow { min-height: 30px; color: var(--text-tertiary); font-size: 12px; }
+
+/* What a search that finds no one says: 8 under the top rule, 14px in the secondary color, Notion's. */
+.noMatch { margin: 8px 0 0; color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+
+.person { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--text-default); font-size: 14px; }
+
+.person > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.personText { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+
+.personName { display: flex; align-items: center; gap: 6px; min-width: 0; }
+
+.personName > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.youMark { flex: 0 0 auto; color: var(--text-tertiary); }
+
+.roleBadge {
+  flex: 0 0 auto; padding: 1px 5px; border-radius: 4px; background: var(--bg-hover); color: var(--text-secondary);
+  font-size: 11px; line-height: 16px; white-space: nowrap;
+}
+
+/* A restricted member's "제한됨" in the shared yellow tag (people/NameTag.module.css). */
+.restrictedBadge { composes: tag yellow from "../people/NameTag.module.css"; }
+
+.email { overflow: hidden; color: var(--text-tertiary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+
+.avatar {
+  display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; width: 26px; height: 26px;
+  border-radius: 50%; background: var(--bg-hover); color: var(--text-secondary); font-size: 12px; font-weight: 600;
+}
+
+/* A member row's face is larger and ringed, as Notion's. */
+.row .avatar { width: 32px; height: 32px; border: 1px solid var(--border-default); background: var(--bg-app); font-size: 13px; font-weight: 500; }
+
+.sortButton {
+  display: inline-flex; align-items: center; gap: 3px; padding: 2px 4px; border-radius: 4px; color: var(--text-tertiary); font-size: 12px;
+}
+
+.sortButton:hover, .sortButton:focus-visible { background: var(--bg-hover); color: var(--text-secondary); outline: none; }
+
+.roleButton, .roleButtonCompact {
+  display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 6px; border-radius: 5px;
+  color: var(--text-secondary); font-size: 13px; white-space: nowrap;
+}
+
+.roleButtonCompact { flex: 0 0 auto; gap: 6px; margin-block: 0; margin-inline: auto 4px; padding: 0 8px; border-radius: 6px; color: var(--text-default); font-size: 14px; }
+
+.roleButtonCompact svg { color: var(--icon-tertiary); }
+
+.roleButton:hover, .roleButton:focus-visible, .roleButton[aria-expanded="true"],
+.roleButtonCompact:hover, .roleButtonCompact:focus-visible, .roleButtonCompact[aria-expanded="true"] {
+  background: var(--bg-hover); color: var(--text-default); outline: none;
+}
+
+.roleButton:disabled, .roleButtonCompact:disabled { cursor: default; opacity: 0.55; }
+
+/* A setting's choices, as wide as their words and at least 150, as Notion's
+   (the security tab's "팀스페이스 소유자만 / 모든 팀스페이스 멤버", seen
+   2026-11-18 at 1440: 164.57 wide, 4px in, its 28px rows 1px apart). */
+.roleMenu {
+  z-index: 400; display: flex; flex-direction: column; min-width: 150px; max-width: min(320px, calc(100vw - 2 * var(--popover-edge))); padding: 4px; border-radius: var(--radius-menu); background: var(--bg-elevated); box-shadow: var(--shadow-menu);
+}
+
+/* A boxed setting's menu is as wide as its box (TeamspaceChoiceMenu `wide`). */
+.roleMenu[data-wide="true"] { max-width: calc(100vw - 2 * var(--popover-edge)); }
+
+/* A choice's row; how far its words start under its top (--choice-row-top)
+   is what its ✓ is placed by (.roleCheckTop). */
+.roleMenu [data-native-menu-item] {
+  --choice-row-top: 0px;
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 28px; padding: var(--choice-row-top) 8px; border-radius: 4px;
+  color: var(--text-default); font-size: 14px; text-align: start;
+}
+
+.roleMenu [data-native-menu-item]:hover, .roleMenu [data-native-menu-item][data-focused="true"] { background: var(--bg-hover); }
+
+.roleMenu [data-native-menu-item] + [data-native-menu-item] { margin-top: 1px; }
+
+.roleMenu [data-native-menu-item][aria-disabled="true"] { opacity: 0.45; cursor: default; }
+
+.roleText { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+
+/* What a choice does, under its name, in the secondary text colour, as
+   every teamspace picker's in Notion (texSec, seen 2026-11-18 at 1440, light
+   and dark: the security kind's in "팀스페이스 만들기" and the settings box,
+   a page role's, a member's role's). */
+.roleText span:last-child:not(:first-child) { color: var(--text-secondary); font-size: 12px; line-height: 1.35; white-space: normal; }
+
+/* The chosen choice's ✓, the same in every teamspace picker, as Notion's
+   (seen 2026-11-18 at 1440, light and dark: the security kind's menus, a
+   page role's, the security tab's "팀스페이스 소유자만 / 모든 팀스페이스
+   멤버"): its 16px checkmark 8 from the row's end and 8 after the words, in
+   the text's own colour; in the middle of a one-line row, 7 under the top
+   of a row with what it does under its name. */
+.roleCheck { flex: none; margin-inline-start: auto; color: var(--text-default); }
+
+.roleCheckTop { align-self: flex-start; margin-block-start: calc(7px - var(--choice-row-top, 0px)); }
+
+.roleRemove { margin-top: 4px; border-top: 1px solid var(--border-default); border-radius: 0 0 4px 4px; color: var(--menu-danger) !important; }
+
+.more { align-self: flex-start; height: 28px; padding: 0 8px; border-radius: 5px; color: var(--text-secondary); font-size: 13px; }
+
+.more:hover, .more:focus-visible { background: var(--bg-hover); outline: none; }
+
+.muted, .empty { margin: 6px 4px; color: var(--text-tertiary); font-size: 13px; }
+
+/* The invite window sits in the middle of the window, as Notion's (seen 2026-10-10): 500px wide, 22px in from
+   its rounded edge, the title, 18px, a 44px search field, 28px, its button at the bottom right. The title, the
+   field and the button keep one line on each side: 22px in from its edge opened from a teamspace's menu, 26px
+   just after the teamspace is made, with its × (Notion's padding 22px and 22px 26px, seen 2026-11-16). */
+.overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; }
+
+.backdrop { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--modal-shade); }
+
+.inviteDialog {
+  position: relative; display: flex; flex-direction: column; gap: 18px; width: min(500px, 100%); padding: 22px;
+  border-radius: var(--modal-radius); background: var(--modal-bg); box-shadow: var(--shadow-modal);
+}
+
+.inviteDialog[data-just-made="true"] { padding-inline: 26px; }
+
+/* Where the invite's close sits; its look is the teamspace windows' (TeamspaceDialog.module.css .close). */
+.inviteClose { position: absolute; top: 10px; inset-inline-end: 10px; }
+
+.inviteTitle { display: flex; align-items: center; gap: 3px; min-width: 0; margin: 0; color: var(--text-default); font-size: 16px; font-weight: 400; line-height: 24px; }
+
+.inviteLabel { flex: 0 0 auto; }
+
+.inviteGlyph { composes: glyph from "./TeamspaceGlyph.module.css"; }
+
+.inviteName { min-width: 0; max-width: 250px; overflow: hidden; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+
+/* The people chosen and the field on the left, the role on the right, as Notion's (seen 2026-11-16 at 1440 in two
+   tabs): 5px in at the top, right and foot and 8px at the start, the chips from there and the field 2px further; the
+   field is a line of its own (its basis 100%, at least 60px), so with anyone chosen it goes under them (the box 44
+   tall, 74 with a chip) and the role stays level with the first line of chips. */
+.inviteBox {
+  display: flex; align-items: center; gap: 4px; min-height: 44px; padding-block: 5px; padding-inline: 8px 5px;
+  border-radius: 4px; background: var(--card-field-bg); box-shadow: var(--name-field-ring);
+}
+
+.inviteBox[data-has-chips="true"] { align-items: flex-start; }
+
+.inviteBox[data-has-chips="true"] .roleButtonCompact { margin-block-start: 3px; }
+
+.inviteBox:focus-within { box-shadow: var(--name-field-ring-focus-apart); }
+
+.inviteEntries { display: flex; flex: 1 1 auto; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 0; }
+
+.chips { display: contents; }
+
+/* A chosen person or group, Notion's token here (seen 2026-11-16): 28px with its 20px words 4px from top and foot,
+   3px from the next line, 6px in, round 4px, the default chip's grey, a 70% white in dark; its × a 16px xMark in a
+   20px square 2px from either side, with no ground even under the pointer. */
+.chip {
+  display: inline-flex; align-items: center; min-width: 0; max-width: 100%; height: 28px; margin-block: 3px; padding-block: 4px;
+  padding-inline: 6px 0; border-radius: 4px; background: var(--c-chip-bg-default); color: var(--text-default); font-size: 14px;
+  line-height: 20px;
+}
+
+:global([data-theme="dark"]) .chip { color: rgba(255, 255, 255, 0.7); }
+
+.chip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.chip button {
+  display: inline-flex; flex: none; align-items: center; justify-content: center; width: 20px; height: 20px; margin-inline: 2px;
+  border-radius: 6px; color: var(--icon-secondary);
+}
+
+.chip button:focus-visible { background: var(--bg-hover); outline: none; }
+
+.inviteEntries > input {
+  flex: 1 1 100%; min-width: 60px; height: 26px; margin-inline-start: 2px; border: 0; background: transparent; color: var(--text-default);
+  font: inherit; font-size: 14px; outline: none;
+}
+
+.inviteList { display: flex; flex-direction: column; max-height: 240px; overflow-y: auto; }
+
+.sectionLabel { padding: 4px 6px; color: var(--text-tertiary); font-size: 12px; }
+
+.option { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 4px 6px; border-radius: 6px; color: var(--text-default); font-size: 14px; cursor: pointer; }
+
+.option[data-active="true"], .option:hover { background: var(--bg-hover); }
+
+/* The foot sits 40px under the search box, the link 5px in from the box's edge, blue as a link, with a blue
+   tint on hover (Notion's business plan "멤버 추가", seen 2026-11-09). */
+.inviteFoot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 22px; }
+
+.copyInviteLink {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; margin-inline: 5px auto; padding: 0 8px; border: 0; border-radius: 6px;
+  background: none; color: var(--accent-blue); font-size: 14px;
+}
+
+.copyInviteLink:hover:not(:disabled) { background: color-mix(in srgb, var(--accent-blue) 12%, transparent); }
+
+.inviteFoot .invite { height: 32px; padding: 0 8px; }
+
+.error { margin: 0; color: var(--danger); font-size: 13px; }
+
+.roleFixed { padding: 0 6px; color: var(--text-secondary); font-size: 13px; white-space: nowrap; }
+
+.skip {
+  height: 32px; padding: 0 12px; border: 1px solid var(--button-outline); border-radius: 6px; color: var(--text-default);
+  font-size: 14px; font-weight: 500;
+}
+
+.skip:hover, .skip:focus-visible { background: var(--bg-hover); outline: none; }
+
+/* Its rows 45 tall and 46 apart, each with its mark, as Notion's (seen 2026-11-05). */
+.roleMenu[data-with-icons="true"] [data-native-menu-item] { min-height: 45px; }
+
+.roleMenu[data-with-icons="true"] .roleText { gap: 2px; line-height: 17px; }
+
+/* Its marks as far in as its button's own (TeamspaceChoiceMenu markInset): the
+   settings box's 5px margin, so 13 and the words 46 in (Notion's, 2026-11-18). */
+.roleMenu[data-with-icons="true"] [data-native-menu-item] > svg:first-child { margin-inline: var(--choice-mark-inset, 0px); }
+
+.roleMenu[data-with-icons="true"] .roleText span:last-child:not(:first-child) { line-height: 17px; }
+
+/* A picker's marks — its box's and each of its choices' — in the colour its
+   window draws them in (TeamspaceChoiceMenu marks), as Notion's (seen
+   2026-11-18 at 1440, light and dark): "팀스페이스 만들기" in the icons'
+   secondary colour (icoSec); the teamspace settings box, owned or not, and
+   its menu in the fixed ink Notion writes on them, not a token: black, and
+   rgb(196, 196, 196) in dark. */
+[data-choice-marks="secondary"] { --choice-mark: var(--icon-secondary); }
+
+[data-choice-marks="ink"] { --choice-mark: #000; }
+
+:global([data-theme="dark"]) [data-choice-marks="ink"] { --choice-mark: rgb(196, 196, 196); }
+
+:is([data-choice-marks], [data-choice-marks] > span) > svg:first-child,
+.roleMenu[data-choice-marks] [data-native-menu-item] > svg:first-child { color: var(--choice-mark); }
+
+/* A teamspace role's menu, as Notion's (seen 2026-11-12): 280 wide in the member list and 264 in the invite window,
+   each role 14/16.8 over what it allows 12/16.8 two px under, rows 1px apart, the chosen one's ✓ 16px at the top of
+   its end, "제거" 28 tall right under them. */
+.roleMenu[data-role-menu] { width: 280px; min-width: 0; max-width: calc(100vw - 2 * var(--popover-edge)); }
+
+/* A page role's (TeamspaceChoiceMenu: choices that say what they do) is the
+   invite window's, 264 wide (Notion's, seen 2026-11-18 at 1440 in two tabs);
+   a role saying what it allows at least 45 tall, one without it 28, the words
+   in the middle, the ✓ still 7 under the top of a role with its line. */
+.roleMenu[data-role-menu="invite"], .roleMenu[data-role-menu="page"] { width: 264px; }
+
+.roleMenu[data-role-menu] [data-native-menu-item] { --choice-row-top: 4px; align-items: flex-start; border-radius: 6px; line-height: 16.8px; }
+
+.roleMenu[data-role-menu] [data-native-menu-item][aria-disabled="true"] { opacity: 0.4; }
+
+.roleMenu[data-role-menu] .roleText { flex: 1; gap: 2px; }
+
+.roleMenu[data-role-menu] .roleText span:last-child:not(:first-child) { line-height: 16.8px; }
+
+.roleMenu[data-role-menu] .roleRemove { align-items: center; min-height: 28px; border-top: 0; border-radius: 6px; }
+
+/* On a phone a teamspace picker pops over the page in Notion's phone shape
+   (the kind's in "팀스페이스 만들기", seen 2026-11-18 on the A90's Chrome at
+   411, light): its rows 20px in and 16 from the end, the mark 20px and the
+   words 14 after it, what a choice does 14px like its name, 4px over and
+   under the words, the chosen one's ✓ 18px 7 under the top. The phone's
+   other menus' rule leaves these to this one (styles.css). */
+:global([data-phone="true"]) .roleMenu[data-choice-menu] [data-native-menu-item] { --choice-row-top: 4px; gap: 14px; padding-inline: 20px 16px; }
+
+:global([data-phone="true"]) .roleMenu[data-choice-menu] .roleText span:last-child:not(:first-child) { font-size: 14px; line-height: 16.8px; }
+
+:global([data-phone="true"]) .roleMenu[data-choice-menu] .roleCheck { width: 18px; height: 18px; }
+
+/* A page role's rows hold their words in the middle (above). */
+.roleMenu[data-role-menu="page"] [data-native-menu-item] { align-items: center; }
+
+.roleMenu[data-role-menu="page"] [data-native-menu-item]:has(> .roleText > span + span) { min-height: 45px; }

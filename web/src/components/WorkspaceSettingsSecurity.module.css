@@ -1,0 +1,452 @@
+
+.securityPanel {
+  --row-list-gap: 10px;
+  display: grid;
+  gap: var(--row-list-gap);
+  min-width: 0;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: var(--bg-secondary);
+}
+
+/* 설정 › 계정's security is flat rows, a name and its line on the left and
+   the button on the right, as Notion's (seen 2026-10-12). */
+[data-account-security] .securityPanel {
+  margin-top: var(--settings-row-gap, 24px);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+/* What a row says keeps room to be read beside its button. Rows stand 24px
+   apart, as Notion's settings rows do (seen 2026-10-11, 일반 and 기본 설정),
+   after a field too (2026-10-19: 일반's landing page touched the icon above);
+   a page may set other room, and a line through its middle
+   (SettingsTouchWindow).
+   A list spacing what it holds by a gap says it in --row-list-gap; a row in
+   it stands only the rest of the 24px off the row before, the gap not added
+   to it (2026-11-20: 에이전트's connections and 서버 계정's accounts 48px
+   apart, 신원's policies 38, 보안's view links 32). Not inherited: a row reads
+   the box it sits in, and one in a block inside such a list keeps its 24px. */
+@property --row-list-gap { syntax: "<length>"; inherits: false; initial-value: 0px; }
+
+.securityRow {
+  --row-list-gap: inherit;
+  display: grid;
+  grid-template-columns: minmax(min(220px, 100%), 1fr) minmax(0, auto);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.securityRow + .securityRow,
+.field + .securityRow {
+  margin-top: max(0px, var(--settings-row-gap, 24px) - var(--row-list-gap));
+}
+
+:global([data-settings-touch]) .securityRow + .securityRow {
+  position: relative;
+}
+
+:global([data-settings-touch]) .securityRow + .securityRow::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: calc(var(--settings-row-gap, 24px) / -2 - 0.5px);
+  height: 1px;
+  background: var(--settings-row-line, transparent);
+  pointer-events: none;
+}
+
+/* A row's choice, as Notion's (seen 2026-10-10): as wide as the chosen value
+   at the row's end (AppSelect "setting"). */
+.securityRow > [data-app-select] {
+  justify-self: end;
+}
+
+.securityRow > div,
+.securityInstruction,
+.recoveryCodes {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* A row's buttons sit side by side, as Notion's (2026-10-18: the rule
+   above stacked two-step verification's and the local lock's two buttons). */
+.securityRow > .sectionActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+/* A row's name and what it says, in Notion's sizes (seen 2026-10-11): 14px
+   medium on 20px, then 13px on 18px. A long name wraps under itself as
+   Notion's do (seen 2026-10-30, 보안's "멤버가 아닌 사용자가 링크를 가지고
+   있는 경우 …" on two lines). */
+.securityRow strong,
+.securityInstruction strong,
+.recoveryCodes strong {
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+/* A wider touch screen's row names are 15px on 20px, as Notion's iPad
+   (measured 2026-11-17 in iPad Safari at 834 and 1210 wide: 기본 설정, 멤버
+   and 일반); what they say stays 13px on 18px. */
+:global([data-settings-touch]) :is(.securityRow, .securityInstruction, .recoveryCodes) strong {
+  font-size: 15px;
+}
+
+/* What a row says, grey 13px on 18px. A notice in a row (errorText,
+   noticeText: "다시 연결해야 함", "관리자가 … 승인하지 않아", a failed move or
+   browser opening) is not what it says and keeps its own red or plain 12px
+   in its box — as a span it took this grey (2026-11-20). The exclusion sits
+   in :where, so the rule weighs what it did. */
+.securityRow span:not([data-app-select], [data-app-select] *, :where(.errorText, .noticeText, .errorText *, .noticeText *)),
+.securityInstruction span:not(:where(.errorText, .noticeText, .errorText *, .noticeText *)),
+.recoveryCodes span:not(:where(.errorText, .noticeText, .errorText *, .noticeText *)) {
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+}
+
+/* Notion's blue "권장됨" after the passkey row's name (seen 2026-11-09): 11px/500
+   on a 4px-round chip, 6px off the name. */
+.securityRow .securityInstruction .recommendedBadge {
+  display: inline-block;
+  margin-inline-start: 6px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--action-mark-blue-bg);
+  color: var(--accent-blue);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+  vertical-align: 1px;
+}
+
+.securityInstruction span b {
+  font-weight: 600;
+}
+
+.securityCode {
+  display: block;
+  overflow-x: auto;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.securityInlineForm {
+  display: grid;
+  grid-template-columns: minmax(128px, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.passwordChangeForm {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 8px;
+  align-items: end;
+  min-width: 0;
+}
+
+.passwordChangeForm label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.passwordChangeForm label span {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.securitySetup {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-default);
+}
+
+.totpStep {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 9px;
+  min-width: 0;
+}
+
+.totpStepMarker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-app);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.totpStepBody {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.totpStepBody > strong {
+  color: var(--text-default);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.totpStepBody > span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.totpApplyFields {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.totpActionRow {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.totpSetupGrid {
+  display: grid;
+  grid-template-columns: 156px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+  margin-top: 3px;
+}
+
+.totpQrCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 156px;
+  min-height: 156px;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.totpQrCard img {
+  display: block;
+  width: 140px;
+  height: 140px;
+}
+
+.totpQrCard span {
+  color: #787774;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.totpFallback {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.securitySecretRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+  min-width: 0;
+}
+
+.securitySecret {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.securitySecret span {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.securityInlineForm input,
+.passwordChangeForm input,
+.totpApplyFields input,
+.securitySecret input {
+  min-width: 0;
+  width: 100%;
+  height: 32px;
+  padding: 1px 10px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+  outline: none;
+}
+
+.securityInlineForm input:focus-visible,
+.passwordChangeForm input:focus-visible,
+.totpApplyFields input:focus-visible,
+.securitySecret input:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.securityDetails {
+  min-width: 0;
+}
+
+.securityDetails summary {
+  width: max-content;
+  max-width: 100%;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.securityDetails[open] summary {
+  margin-bottom: 8px;
+}
+
+.securityDetails .securityDetails {
+  margin-top: 8px;
+}
+
+.recoveryCodes {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-default);
+}
+
+.recoveryHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: start;
+  min-width: 0;
+}
+
+.recoveryHeader > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.recoveryActions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* A group of rows inside a page's section, after its list: 48px between
+   groups, and room before the folded line under it (2026-11-06: the key
+   policy stood 10px under the agents and against "MCP 주소와 키"). */
+.rowGroup {
+  margin-top: 48px;
+  margin-bottom: 24px;
+}
+
+/* A blue button among a row's buttons stands as tall as the others, a
+   settings row's 28px (2026-11-05: the agents step's "복사" stood 33px
+   beside "새 코드" at 29px). */
+.recoveryActions .primaryButton {
+  height: 28px;
+  padding: 0 8px;
+}
+
+.recoveryCodes code {
+  display: block;
+  overflow-x: auto;
+  margin-top: 4px;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  background: var(--bg-app);
+  color: var(--text-default);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre;
+}
+
+/* A form's cancel and create, at the end of the box under its choices. */
+.keyFormActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.keyFormActions .primaryButton {
+  height: 28px;
+  padding: 0 8px;
+}
+
+/* The settings window's own screens keep groups without boxes (baseline
+   "리펜 고유 화면 › 설정 창 안의 화면"): rows 24px apart, groups 48px. */
+.plainGroup {
+  --row-list-gap: 10px;
+  display: grid;
+  gap: var(--row-list-gap);
+  min-width: 0;
+}
+
+.plainGroup + .plainGroup {
+  margin-top: 48px;
+}
+
+.plainList {
+  --row-list-gap: 24px;
+  display: grid;
+  gap: var(--row-list-gap);
+  min-width: 0;
+}
+
+.plainEmpty {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Right after its summary, a details' first child (check-css-sibling-invalidation.mjs). */
+.securityDetails > .plainGroup:nth-child(2) {
+  margin-top: 16px;
+}

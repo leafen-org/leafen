@@ -1,0 +1,244 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow: hidden;
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+
+/* The mark 30px square 20px in from the corner, its name 10px after it, as
+   Notion's head (seen 2026-11-09). */
+.brand {
+  position: absolute;
+  top: 20px;
+  inset-inline-start: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.brand img {
+  width: 30px;
+  height: 30px;
+}
+
+/* A 708px column in the middle of the window, under all else, as Notion's
+   (seen 2026-11-09): wider than a narrow window, it is cut at its sides. */
+.outline {
+  position: absolute;
+  top: 50%;
+  left: 50%; /* physical: centred on its own box in either direction */
+  width: 708px;
+  height: 722px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(#000 50%, transparent);
+  mask-image: linear-gradient(#000 50%, transparent);
+}
+
+.outline span {
+  position: absolute;
+  inset-inline-start: 0;
+  border-radius: 999px;
+  background: rgba(227, 226, 224, 0.5);
+}
+
+/* Notion dims the same bars in its dark theme. */
+:global(:root[data-theme="dark"]) .outline span {
+  background: rgba(136, 136, 134, 0.5);
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: min(400px, calc(100% - 32px));
+  padding: 40px;
+  border-radius: var(--modal-radius);
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+/* Notion's card (seen 2026-11-09): 40px in, its mark, title and line 12px apart, the
+   button 28px under the line and 232px wide. */
+.mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* The sent card's picture stands where the mark stood. */
+.sent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  color: var(--text-secondary);
+}
+
+.card h1 {
+  margin: 12px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+/* A no-access card's title is plain but for its workspace's name, as
+   Notion's (seen 2026-11-13: "〈작업공간〉" 600, "에서 이 페이지에 대한 사용
+   권한 없음" 400). */
+.card h1.noAccessTitle {
+  font-weight: 400;
+}
+
+.noAccessTitle .workspaceName {
+  font-weight: 600;
+}
+
+.card p {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.request {
+  width: min(232px, 100%);
+  height: 32px;
+  margin-top: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.request:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* The sent card's way back is as wide as its words. */
+.request.back {
+  width: auto;
+  padding: 0 12px;
+}
+
+.card .outcome {
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+/* Centred in the band between the 50px head and the 108px foot, as Notion's
+   "페이지 찾지 못함" (seen 2026-11-06: its title 345px down an 873px window). */
+.notFound {
+  position: absolute;
+  top: 50px;
+  bottom: 108px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(340px, calc(100% - 32px));
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.notFound h1 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.notFound p {
+  margin: 0 0 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.notFound button {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.notFound button:hover {
+  background: var(--bg-hover);
+}
+
+/* The signed-in line 44px over the window's foot, as Notion's (seen 2026-11-06). */
+.account {
+  position: absolute;
+  inset-inline-end: 16px;
+  bottom: 44px;
+  inset-inline-start: 16px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* The person's face (PersonAvatar) keeps only its room before the address. */
+.accountMark {
+  margin-inline-end: 6px;
+}
+
+.accountName {
+  color: var(--text-default);
+}
+
+.account button {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.account button:hover {
+  color: var(--text-default);
+}
+
+/* Lines fill as Notion's card fills them (seen 2026-11-06: "…이 페이지에 대 /
+   한 사용 권한 없음"), Korean breaking between syllables; a long address
+   still breaks rather than overflowing. */
+.card h1, .card p, .notFound h1, .notFound p {
+  overflow-wrap: anywhere;
+}

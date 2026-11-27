@@ -1,0 +1,499 @@
+
+/* Relation cells */
+.relationCell {
+  position: relative;
+  width: 100%;
+}
+.relationChips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-height: 31px;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+.relationChips[data-readonly="true"] {
+  min-height: 0;
+  padding: 0;
+  cursor: default;
+}
+.relationChips:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A related page in a cell, as Notion's (seen 2026-10-24 at 1280px): no
+   chip, its 18px icon and 6px after it the name, 14px/500, 8px between;
+   the name's box as tall as its letters (17px, seen 2026-11-12), so its
+   underline isn't cut. A rollup's page is the same, pressed as one link
+   (RollupPageLinks). */
+.relationChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 20px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: none;
+}
+.relationChipSkeleton {
+  position: relative;
+  display: inline-flex;
+  flex: 0 1 92px;
+  width: 92px;
+  max-width: 100%;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--c-bg-gray);
+}
+.relationChipSkeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(-100% * var(--inline-sign, 1)));
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--text-default) 10%, transparent),
+    transparent
+  );
+  animation: relationChipSkeletonSweep 1.15s ease-in-out infinite;
+}
+@keyframes relationChipSkeletonSweep {
+  100% {
+    transform: translateX(calc(100% * var(--inline-sign, 1)));
+  }
+}
+.relationMissingChip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--c-bg-gray);
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  line-height: 1;
+}
+.relationPageIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
+  color: var(--icon-secondary);
+  font-size: 13px;
+  line-height: 1;
+}
+.relationChip .relationPageIcon {
+  width: 18px;
+  height: 18px;
+}
+.relationOption .relationPageIcon {
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+}
+.relationPageIcon img {
+  border-radius: 3px;
+}
+.relationChipLink {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+  text-decoration: none;
+}
+.relationChipText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: inherit;
+}
+/* A related page's name — a relation's or a rollup's, in a cell, on a card
+   or on a page — is underlined by a faint 1px line at the foot of its
+   letters, on each line it takes, a page mention's line, and stays so under
+   the pointer (Notion's, seen 2026-11-12: 17px over 14px letters, 14px over
+   a card's 12px on its 18px line). */
+.relationChipName {
+  background-image: linear-gradient(to right, var(--backlink-underline) 0%, var(--backlink-underline) 100%);
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+/* On a page's property row a rollup's pages run on side by side and wrap,
+   21px lines 6px apart and 8px between pages, from the value's start where
+   a relation's sit one to a line 2px in (Notion's, seen 2026-11-12: three
+   pages on a line and the fourth under them, a 62px row). */
+.rowPropertyValue .relationChips[data-rollup-pages] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  padding-block: 7px;
+}
+.rowPropertyValue .relationChips[data-rollup-pages] .relationChip {
+  height: 21px;
+  padding-inline-start: 0;
+}
+/* A row page lists its related pages one to a line, each a 32px line from
+   6px before the value to its end, its icon 2px into the value and the name
+   6px after it, the first on the property's name, pressed as one to open its
+   page, faintly lit under the pointer with "−" and "+" at its end (Notion's,
+   seen 2026-10-24 at 1280px and 2026-11-12 at 1440px); "+" there links
+   another, so the value's own goes while it holds pages. */
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding-block: 0;
+}
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChip {
+  height: 32px;
+  max-width: none;
+  margin-inline-start: -6px;
+  padding-inline: 8px 4px;
+  border-radius: 4px;
+}
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChip[role="button"] {
+  cursor: pointer;
+}
+.rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChip[role="button"]:is(:hover, :focus-visible) {
+  background: var(--bg-hover);
+  outline: none;
+}
+.rowPropertyValue .relationChips:not([data-relation-section]) :is(.relationChip:hover, .relationChip:focus-within) [data-relation-section-row-actions] {
+  display: inline-flex;
+}
+.rowPropertyValue .relationChips:not([data-empty]) > .propertyCellEditTrigger {
+  display: none;
+}
+/* A touch screen has no pointer to bring a row page line's box: it keeps the
+   box at the line's end with its "−" alone, and the value ends in a
+   "+ 페이지 추가" line for its "+" (Notion's iPad and iPhone, seen
+   2026-11-13: the line 32 high, its "+" 22 under the pages' icons, the words
+   14 grey 8 after it). A page section's line keeps its "−" alone as well. */
+.relationAddLine { display: none; }
+:global([data-touch="true"]) .relationAddLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin-inline-start: -6px;
+  padding-inline: 8px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-tertiary);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+}
+:global([data-touch="true"]) [data-row-relation-chip] [data-relation-section-row-actions]:has(> [data-relation-unlink]) {
+  display: inline-flex;
+}
+/* On a property's value the box stands over the line's end, 2px in, the
+   page's name running to its own end under it (Notion's iPhone, seen
+   2026-11-12 at 402: a long name cut under the "−", no room kept for it). */
+:global([data-touch="true"]) .rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) .relationChip {
+  position: relative;
+}
+:global([data-touch="true"]) .rowPropertyValue .relationChips:not([data-relation-section], [data-rollup-pages]) [data-relation-section-row-actions] {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 6px;
+  height: fit-content;
+  margin: auto 0;
+}
+:global([data-touch="true"]) [data-relation-section-row-actions] > :is([data-relation-link-another], [data-relation-rename-in-place]) {
+  display: none;
+}
+/* A relation's picker, as Notion's (seen 2026-11-03): 560px wide over its
+   cell, at most 336px tall; a 36px search bar on a faint ground over a line,
+   then the pages under "페이지 선택" — the chosen ones first under
+   "N개 선택함", the rest under "추가 선택" — in 32px rows 1px apart, the
+   name 38px in, "+" or "−" 20px at the end of the row under the pointer. */
+.relationMenu {
+  position: absolute;
+  z-index: 53;
+  top: 0;
+  inset-inline-start: 0;
+  width: 560px;
+  border-radius: var(--picker-radius);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* Its 336px, inside whatever room the window leaves it. */
+.relationPanel {
+  display: flex;
+  flex-direction: column;
+  max-height: 336px;
+  overflow: hidden;
+}
+/* The search, the filter and where it searches on one bar, as Notion's (seen
+   2026-11-04): the filter 47×24, round, the database named in bold. */
+.relationSearchBar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 36px;
+  padding-inline-end: 10px;
+  background: var(--bg-block-empty);
+  box-shadow: 0 1px 0 var(--picker-field-line);
+}
+.relationFilterButton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 47px;
+  height: 24px;
+  border: 0;
+  border-radius: 32px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.relationFilterButton:hover,
+.relationFilterButton[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+/* "⛁ T 내 검색" as Notion's (seen 2026-11-12 at 1440): 10px after the
+   filter and 10px short of the bar's end, the database's 20px glyph 4px in
+   and 4px before its name in 14px/600, the rest 14px secondary. */
+.relationSearchScope {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  max-width: 45%;
+  margin-inline-start: 6px;
+  padding-inline-start: 4px;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.relationScopeIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+.relationSearchScope b {
+  color: var(--text-default);
+  font-weight: 600;
+}
+.relationScopeMenu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.relationScopeMenu > [role="menuitemradio"] {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding-block: 0;
+  padding-inline: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.relationScopeMenu > [role="menuitemradio"]:hover,
+.relationScopeMenu > [role="menuitemradio"][data-focused] {
+  background: var(--bg-hover);
+}
+.relationScopeCheck {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 20px;
+}
+.relationPropertiesButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-inline-start: auto;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.relationPropertiesButton:hover {
+  background: var(--bg-hover);
+}
+.relationPropertiesPanel {
+  position: fixed;
+  width: 180px;
+  max-height: calc(100vh - 16px);
+  padding: 0 8px 8px;
+  overflow: auto;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+.relationOptionValues {
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.relationSearch {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+.relationList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-height: 0;
+  padding: 12px 8px 8px;
+  overflow-y: auto;
+}
+.relationGroup {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 24px;
+  margin-bottom: 6px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+/* With pages chosen, as Notion's (seen 2026-11-11): its heading 4 above the
+   first, the chosen lines touching (31 high, a page's 32 over the 1 between
+   lines), "추가 선택" 8 below the last of them and 4 above the rest, and 12
+   under the list. */
+.relationList[data-chosen="true"] {
+  padding-bottom: 12px;
+}
+.relationList[data-chosen="true"] > .relationGroup {
+  margin-bottom: 3px;
+}
+.relationChosenLine {
+  flex: none;
+  height: 31px;
+}
+.relationGroupLine {
+  flex: none;
+  padding-block: 8px 3px;
+}
+.relationGroupLine > .relationGroup {
+  margin-bottom: 0;
+}
+.relationOption,
+.relationCreate {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  min-width: 0;
+  padding: 0 8px 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+/* A page's line as Notion's (seen 2026-11-12 at 1440): its 18px icon 6px in, its title 14px/500 30px in; a chosen
+   page's ⠿ an 18x20 box 2px in with its 16px glyph 3px in (2026-11-18), its icon 26px in and its title 50px in. */
+.relationOption {
+  gap: 5px;
+  padding-inline-start: 5px;
+}
+.relationOption .relationDragHandle { width: 18px; margin-inline: -3px 0; }
+.relationOptionTitle {
+  font-weight: 500;
+}
+/* One page is lit, the pointer moving the light as it moves and a page under
+   a still pointer left plain, as Notion's (seen 2026-11-14: opened from
+   "외 2개 항목" over 항목 4, 항목 1 alone lit; the pointer on 항목 6 lit
+   it alone; ↓ lit 항목 7 alone). */
+.relationOption:focus-visible,
+.relationOption[data-active="true"],
+.relationCreate:focus-visible,
+.relationCreate[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.relationOptionTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.relationRowAction {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-start: auto;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--button-outline);
+  color: var(--icon-secondary);
+}
+.relationOption[data-active="true"] .relationRowAction,
+:global([data-touch="true"]) .relationOption .relationRowAction {
+  display: inline-flex;
+}
+/* A chosen page's ⠿ at the start of its row, which moves it in the relation's
+   order, as Notion's (seen 2026-11-07); a page section's line shows it under
+   the pointer. */
+.relationDragHandle {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 20px;
+  margin-inline-end: 2px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+  cursor: grab;
+}
+/* In the secondary icon gray, with no box under the pointer, its row lighting
+   instead (Notion's ⠿ in its database menu lists, seen 2026-11-18). */
+[data-relation-section="true"] .relationChip .relationDragHandle {
+  visibility: hidden;
+  margin-inline-start: -18px;
+}
+[data-relation-section="true"] .relationChip:hover .relationDragHandle {
+  visibility: visible;
+}

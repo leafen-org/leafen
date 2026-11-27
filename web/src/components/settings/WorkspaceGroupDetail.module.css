@@ -1,0 +1,499 @@
+/* A group's window and its "멤버 추가", as Notion's (seen 2026-11-09). */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 255;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade);
+}
+
+/* 554px wide and 100px short of the screen, its words 28px in, the mark 32px
+   under its top (Notion's, 2026-11-11); the window keeps its height as its
+   tabs change. */
+.window {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(554px, calc(100vw - 32px));
+  height: min(623px, calc(100dvh - 100px));
+  padding: 32px 28px 24px;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+
+.close {
+  position: absolute;
+  inset-block-start: 10px;
+  inset-inline-end: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.markSlot {
+  position: relative;
+  display: inline-flex;
+  align-self: flex-start;
+}
+
+button.mark:hover:not(:disabled),
+button.mark:focus-visible {
+  filter: brightness(1.15);
+  outline: none;
+}
+
+/* The 64px mark, in the words' color, as Notion's (2026-11-11). */
+.mark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 6px;
+  color: var(--text-default);
+}
+
+/* The name, 26px/700, 24px under the mark, its 28px pencil 4px after it; the owner's field in its place. */
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  margin-top: 24px;
+}
+
+.nameLine h2 {
+  margin: 0;
+  overflow: hidden;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 32px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pencil {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+}
+
+.pencil:hover:not(:disabled),
+.pencil:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* The name's field where the name was (NameInPlaceField). */
+.nameField {
+  margin-top: 24px;
+}
+
+.count {
+  margin: 4px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* The tabs as pills, 28px and 14px/500, the open one filled. */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-top: 32px;
+  margin-inline-start: -2px;
+}
+
+.tab {
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.heading {
+  margin: 5px 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 4px 20px;
+}
+
+.rowText {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rowText strong {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.rowText span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+/* The ID 10px, its 20px copy button 4px after it, as Notion's. */
+.groupId {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.groupId button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.groupId button:hover,
+.groupId button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* "그룹 삭제": a settings row's red button. */
+.danger {
+  composes: softDangerButton from "../WorkspaceSettingsChrome.module.css";
+}
+
+/* "팀스페이스 생성하기": 28px, outlined, as the window's other buttons. */
+.secondary {
+  flex: none;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--bg-hover);
+}
+
+.secondary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.searchLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--icon-secondary);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.primary {
+  flex: none;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.primary:disabled {
+  opacity: 0.4;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
+.personText {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.personName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "제한됨" in the shared yellow tag (people/NameTag.module.css), a phone's
+   in its members' lines' shape. */
+.badge {
+  composes: tag yellow from "../people/NameTag.module.css";
+}
+
+.phoneBadge {
+  composes: tag phone yellow from "../people/NameTag.module.css";
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--icon-secondary);
+}
+
+.more:hover {
+  background: var(--bg-hover);
+}
+
+.teamspace {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  font-size: 14px;
+}
+
+.teamspaceMark {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--teamspace-letter-bg);
+  font-size: 12px;
+}
+
+.empty {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.error {
+  margin: 12px 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* "멤버 추가" over the window: 480px, its parts centred; no ring when a pick rests the focus on it. */
+.addWindow {
+  position: relative;
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: min(480px, calc(100vw - 32px));
+  padding: 24px 20px 20px;
+  border-radius: 12px;
+  background: var(--modal-bg);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+
+.addWindow h2 {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.addWindow p {
+  margin: 0 0 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.addMark { display: inline-flex; color: var(--icon-secondary); }
+
+.addField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  align-self: stretch;
+  min-height: 30px;
+  padding: 4px 7px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+}
+
+/* Ringed only while its search holds the focus, as the create window's member field. */
+.addField:focus-within { box-shadow: var(--name-field-ring-focus); }
+
+.addField input {
+  flex: 1;
+  min-width: 80px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  padding-block: 0;
+  padding-inline: 8px 4px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-size: 13px;
+}
+
+.chip button {
+  display: inline-flex;
+  color: var(--text-secondary);
+}
+
+.choices {
+  align-self: stretch;
+  max-height: 200px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+}
+
+.choices > li > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 30px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.choices > li > button:hover,
+.choices > li > button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.choiceEmail {
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.addActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  align-self: stretch;
+  margin-top: 16px;
+}
+
+.quiet {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.quiet:hover {
+  background: var(--bg-hover);
+}

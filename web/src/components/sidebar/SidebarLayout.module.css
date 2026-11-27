@@ -1,0 +1,697 @@
+/* The top and the foot of the sidebar, as Notion's new one (the new-sidebar
+   decision of 2026-10-31, measured that day at 1280×900): close, the inbox
+   and "새로" in a 28px row 8px down, the 32px search field 8px under it, home
+   where Notion's tab row is (12px lower, the list 126px down), and at the
+   foot the switcher and "더 보기". */
+.topArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+}
+/* In the Mac and Windows apps the search is 6px under the strip, as Notion's search row under its 40px tab bar (7.44.1). */
+.topArea[data-in-strip="true"] { padding-top: 6px; }
+/* With no home row (a guest's), the list starts 6px under the search, as
+   Notion's guest list does (seen 2026-11-12: search to 76, list from 82). */
+.topArea[data-top-rows="none"] {
+  padding-bottom: 6px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+}
+
+.headerSpacer { flex: 1 1 auto; }
+
+/* In the Mac and Windows apps the strip draws this row (SidebarTopActions):
+   it takes no room and is not seen, and "새로" is moved where the strip's is. */
+.headerRow[data-in-strip="true"] {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  height: 0;
+  overflow: visible;
+  visibility: hidden;
+}
+
+/* At the top the switcher takes the row's room and its menu opens down. */
+.headerRow .workspaceSwitcher {
+  margin-inline-start: -4px;
+}
+.headerRow .workspaceSwitcher .workspaceMenu {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+
+/* Home: a 30px row of 14px words with a 20px icon, as Notion's page rows. */
+.topRows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 4px -4px 0;
+}
+.topRows:empty {
+  display: none;
+}
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+.topRow svg {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+.topRow span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.topRow:hover,
+.topRow:focus-visible,
+.topRow[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.topRow[data-active="true"] {
+  color: var(--text-default);
+  font-weight: 500;
+}
+.topRow:disabled {
+  opacity: 0.4;
+}
+.phoneTabCount {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--unread-mark);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.headerIcon {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--text-default);
+}
+
+/* Notion's sidebar top (seen 2026-10-11): closing and the inbox in the gray
+   icon color, a new page in its secondary text color. */
+.headerIcon[data-sidebar-collapse-action],
+.headerIcon[data-sidebar-icon-action] {
+  color: var(--icon-secondary);
+}
+.headerIcon[data-sidebar-new-page] {
+  color: var(--text-secondary);
+}
+/* A guest's "새로" that asks to become a member: 20px wide (the inbox 8px
+   further in), its mark at 0.4, as Notion's guest one (seen 2026-11-12). */
+.headerIcon[data-sidebar-new-page][data-asks="true"] {
+  width: 20px;
+}
+.headerIcon[data-sidebar-new-page][data-asks="true"] svg {
+  opacity: 0.4;
+}
+/* The footer's buttons are the gray icon color too, as Notion's (seen 2026-10-11). */
+.footerRow .headerIcon {
+  color: var(--icon-secondary);
+}
+
+.headerIcon:hover,
+.headerIcon[data-active="true"] {
+  background: var(--bg-hover);
+}
+
+.headerIcon:disabled {
+  opacity: 0.4;
+}
+
+/* The field asks nothing of AI here, unlike Notion's; it searches. Its edge
+   is Notion's outline line (seen 2026-11-17 at 1440: 1px rgba(28,19,1,.11)
+   on the light sidebar, rgba(255,255,235,.1) on the dark one). */
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.searchField:hover {
+  background: var(--bg-hover);
+}
+
+.searchField span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Its keys in a small tinted chip, 7px from the field's right edge. */
+.searchField kbd {
+  margin-inline-end: -2px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: var(--icon-secondary);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14.3px;
+}
+
+/* The switcher fills the foot's 28px row up to "더 보기", 8px in from each side and 7.5px over the window's foot
+   and under the foot's 1px line, as Notion's 44px foot (seen 2026-11-22: borSec over it, whatever the list holds). */
+.footerRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 7.5px 8px;
+  border-top: 1px solid var(--border-secondary);
+}
+/* At the foot the switcher is Notion's: its mark 9px in, the name in 14px
+   medium gray (500, a member's and a guest's alike, seen 2026-11-12) with
+   its caret right after it, always shown. */
+.footerRow .workspaceBtn {
+  height: 28px;
+  gap: 9px;
+  padding-block: 0;
+  padding-inline: 9px 8px;
+  border-radius: 6px;
+  color: var(--text-accent-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+.footerRow .wsName {
+  flex: 0 1 auto;
+}
+.footerRow .wsChevron {
+  margin-inline-start: -3px;
+  opacity: 1;
+}
+/* The struck-out cloud of no connection 6px after the name, the caret right
+   after it, as Notion's (seen 2026-11-14). */
+.footerRow .wsOffline {
+  margin-inline-start: -3px;
+}
+.footerRow .wsOffline + .wsChevron {
+  margin-inline-start: -9px;
+}
+
+.workspaceSwitcher {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+}
+
+/* 8px from the window's edge, as Notion's (measured 2026-10-27; at the foot
+   2026-10-31, 4px over the switcher). */
+.workspaceSwitcher .workspaceMenu {
+  top: auto;
+  bottom: calc(100% + 4px);
+  inset-inline-start: 4px;
+}
+.footerRow .workspaceSwitcher .workspaceMenu {
+  inset-inline-start: 0;
+}
+
+/* A menu's click-away layer stays clear under the pointer, past the
+   sidebar's hover color for its buttons. */
+/* The sidebar's menus and their backdrop sit over an open page's peek or
+   its full row page (z-index 51), which would hide them; every menu sits
+   over its own backdrop (60 over 59), or the backdrop takes its clicks. */
+.moreMenuBackdrop,
+.moreMenuBackdrop:hover {
+  position: fixed;
+  inset: 0;
+  z-index: 59;
+  border: 0;
+  background: transparent;
+  cursor: default;
+}
+
+.moreMenu {
+  position: absolute;
+  inset-inline-end: 8px;
+  bottom: calc(100% + 2px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* A section's "…" stays shown while its menu is open. */
+.sectionActions:has([data-sidebar-section-menu][aria-expanded="true"]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The sidebar's popover menus, from this one owner (2026-10-17: a second
+   copy in SidebarChrome.module.css met it on the same element and which one
+   applied depended on stylesheet order). */
+/* Notion's sidebar menus (seen 2026-10-30): 220px, rows 1px apart. */
+.sectionMenu {
+  position: fixed;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 220px;
+  min-width: 178px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.sectionMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* A menu as wide as its rows, as Notion's plain menus (its teamspace "…",
+   seen 2026-11-11): each row at least 200px, its icon 8px from the words, a
+   value at most 96px and cut short past it, at the row's end, a row's note at
+   least 230px wide — 208px in all, 241px with "팀스페이스 › Leafen Test
+   Team", 282px with "팀스페이스 복제"'s note. */
+.sectionMenu[data-content-width] > .sectionMenuItem {
+  min-width: 200px;
+  gap: 8px;
+}
+
+.sectionMenu[data-content-width] > .sectionMenuItem > .sectionMenuValue {
+  flex: 0 0 auto;
+  max-width: 96px;
+  margin-inline-start: auto;
+}
+
+.sectionMenu[data-content-width] > .sectionMenuItem[data-described="true"] > .sectionMenuLabelStack {
+  min-width: 230px;
+}
+
+/* The row's name (or its name and note stacked) takes the room left; a mark
+   drawn as a span before it keeps its own size. */
+.sectionMenuItem > .sectionMenuLabel,
+.sectionMenuItem > .sectionMenuLabelStack {
+  flex: 1;
+  min-width: 0;
+}
+
+:where(.sectionMenuItem span) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sectionMenuItem svg {
+  flex: 0 0 auto;
+  color: currentColor;
+}
+
+.sectionMenuItem[data-danger="true"] {
+  color: var(--menu-danger);
+}
+
+.sectionMenuItem:hover,
+.sectionMenuItem:focus-visible,
+.sectionMenuItem[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.sectionMenuItem:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.sectionMenuItem:disabled:hover {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.sectionMenuValue {
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* A teamspace's glyph before its name, as Notion's "팀스페이스 ›" lists them (seen 2026-11-11). */
+.sectionMenuTeamspaceIcon { composes: glyph from "../teamspace/TeamspaceGlyph.module.css"; }
+
+/* A note after a row's label: 12px in the secondary grey, after a faint dash
+   6px off each side, the label shortening first (Notion's "Leafen Test Team —
+   2명의 멤버", seen 2026-11-09). */
+.sectionMenuItem:has(> .sectionMenuNote) > .sectionMenuLabel {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sectionMenuItem > .sectionMenuNote {
+  flex: 0 0 auto;
+  margin-inline-start: -8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.sectionMenuNote::before {
+  content: "—";
+  margin: 0 6px;
+  color: var(--text-disabled);
+}
+
+/* A question over a menu's rows: 12px/500 in the secondary grey, 6px under
+   the menu's top and 8px over its first row, 8px in (Notion's "내 작업" "새 작업",
+   seen 2026-11-08). */
+.sectionMenuHeading {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 14.4px;
+}
+
+/* A row's "›", 16px in the faint grey at its end. */
+.sectionMenuItem .sectionMenuNext {
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+}
+
+/* A row with a line under it saying what it does, as Notion's "팀스페이스 복제":
+   4px over its name on a 16.8px line, the note 2px under (60px with a
+   two-line note, measured 2026-11-06). */
+.sectionMenuItem[data-described="true"] {
+  align-items: flex-start;
+  height: auto;
+  min-height: 28px;
+  padding-top: 4px;
+  padding-bottom: 3px;
+}
+.sectionMenuItem[data-described="true"] .sectionMenuLabelStack > :not(.sectionMenuDescription) {
+  line-height: 16.8px;
+}
+
+.sectionMenuLabelStack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sectionMenuItem .sectionMenuLabelStack,
+.sectionMenuItem .sectionMenuDescription {
+  overflow: visible;
+  white-space: normal;
+}
+
+/* The note in the secondary grey, as Notion's (texSec, measured 2026-11-06). */
+.sectionMenuDescription {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* A row's note wraps in the menu's width and never widens it, as Notion's
+   (seen 2026-11-06: the teamspace "…" stays 282px, "복제" in two lines). */
+.sectionMenuItem .sectionMenuDescription {
+  width: 0;
+  min-width: 100%;
+}
+
+/* "··· 모두 보기": a 30px row, its 20px ⋯ in the light icon grey, the words
+   14px in the faint grey (Notion, seen 2026-10-31). */
+.showAll {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  height: 30px;
+  padding-block: 0;
+  padding-inline: 9px 8px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+.showAll svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+.showAll:hover,
+.showAll:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.sectionEmpty {
+  margin: 0;
+  padding-block: 4px;
+  padding-inline: 29px 8px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+/* "사이드바 사용자 지정" at the end of the list (its place: SidebarListEnd), and its customize mode (Notion, seen
+   2026-10-01): "섹션 추가" and a blue "완료". */
+.customizeEntry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+
+/* Notion's row keeps one line at any sidebar width: the label ellipsizes. */
+.customizeEntry > svg {
+  flex: none;
+}
+
+.customizeEntry > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customizeEntry:hover,
+.customizeEntry:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  outline: none;
+}
+
+.customizeList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 0;
+}
+
+/* A row as Notion's (2026-11-18 at 1440, computed): 4px in, 8px at its end, round 8px; ⠿ and icon in 22px boxes 4px
+   apart, the name 8px on (16, 42, 72px across a 246px row 12px in) in the page names' color, ⠿ and icon gray. */
+.customizeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 30px;
+  padding-inline: 4px 8px;
+  border-radius: 8px;
+  color: var(--text-accent-secondary);
+  font-size: 14px;
+}
+
+.customizeRow:hover {
+  background: var(--bg-hover);
+}
+
+.customizeHandle,
+.customizeIcon {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  inline-size: 22px;
+  block-size: 24px;
+  color: var(--icon-secondary);
+}
+
+.customizeHandle {
+  margin-inline-end: -4px;
+  cursor: grab;
+}
+
+/* A teamspace's glyph in its row, the size of the other rows' icons so the names line up. */
+.customizeTeamspaceIcon {
+  composes: glyph from "../teamspace/TeamspaceGlyph.module.css";
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  font-size: 11px;
+}
+
+.customizeName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.customizeActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* A row's ⚙ and × show under the pointer, with focus in the row or its menu open, as Notion's (seen 2026-11-09); a touch
+   screen keeps them shown. At rest they take no room, so a mark before them (a preset's ⚠) ends the row, as Notion's
+   does; Tab still reaches them, and they open out with focus. */
+@media (hover: hover) {
+  .customizeRow:not(.customizeRow:hover, .customizeRow:focus-within) .customizeActions:not(:has([aria-expanded="true"])) {
+    max-inline-size: 0;
+    margin-inline-start: -8px;
+    overflow: hidden;
+    opacity: 0;
+  }
+}
+
+.customizeAddWrap {
+  position: relative;
+}
+
+/* "섹션 추가"'s menu opens beside the sidebar, its top on the button's, 4px past it, 240px wide, rows 1px apart (Notion, 2026-10-30). */
+.customizeMenu.sectionAddMenu {
+  position: fixed;
+  top: auto;
+  inset-inline-start: auto;
+  gap: 1px;
+  width: 240px;
+}
+
+.customizeAdd {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 30px;
+  padding: 0 4px;
+  border-radius: 8px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  text-align: start;
+}
+
+.customizeAdd:hover,
+.customizeAdd:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.customizeMenu {
+  position: absolute;
+  top: calc(100% + 2px);
+  inset-inline-start: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  width: 225px;
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.customizeNote {
+  margin: 2px 8px 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.customizeEmpty {
+  margin: 0;
+  padding: 6px 8px;
+  color: var(--text-tertiary);
+  font-size: 13px;
+}
+
+.customizeDone {
+  height: 28px;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.customizeDone:hover,
+.customizeDone:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}

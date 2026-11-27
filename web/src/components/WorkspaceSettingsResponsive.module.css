@@ -1,0 +1,174 @@
+/* What a section holds follows the room the section has, as the window is
+   narrow on a middling screen too (user request 2026-10-04): rows stack and
+   wrap once the section is narrower than its rows need side by side. Each
+   rule names the settings content before the class it reshapes, one step more
+   specific than that class's own rule in its module, so the narrow layout
+   applies whatever order the stylesheets load in (2026-10-17). */
+@container settings (max-width: 600px) {
+  :global([data-settings-content]) .field {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  :global([data-settings-content]) .field > span {
+    padding-top: 0;
+  }
+
+  :global([data-settings-content]) .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  :global([data-settings-content]) /* Buttons stay small at the end of their row,
+  :global([data-settings-content]) wrapping onto a line of
+     their own when the row runs out,
+  :global([data-settings-content]) as Notion's settings do in a 768px
+     window (2026-10-16: some stretched across the row). */
+  .sectionActions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-inline-start: auto;
+  }
+
+  :global([data-settings-content]) .dangerButton {
+    grid-column: 1;
+  }
+
+  :global([data-settings-content]) .dangerButton {
+    width: 100%;
+  }
+
+  :global([data-settings-content]) .memberRow {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  :global([data-settings-content]) .memberControls,
+  :global([data-settings-content]) .memberRole {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  :global([data-settings-content]) .memberControls {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  :global([data-settings-content]) .memberDirectoryTools {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  :global([data-settings-content]) .memberDirectoryCount {
+    justify-self: start;
+  }
+
+  :global([data-settings-content]) .auditRow,
+  :global([data-settings-content]) .securitySecretRow,
+  :global([data-settings-content]) .totpSetupGrid,
+  :global([data-settings-content]) .recoveryHeader {
+    grid-template-columns: 1fr;
+  }
+
+  :global([data-settings-content]) /* The doubled class outranks the row's own rule,
+  :global([data-settings-content]) which the bundle may put
+     after this file. */
+  .securityRow.securityRow,
+  :global([data-settings-content]) .securityPanel .securityInlineForm,
+  :global([data-settings-content]) .securityPanel .passwordChangeForm {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  :global([data-settings-content]) .securityRow.securityRow strong,
+  :global([data-settings-content]) .securityPanel .securityInstruction strong,
+  :global([data-settings-content]) .securityPanel .passwordChangeForm label span {
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+  }
+
+  :global([data-settings-content]) .totpQrCard {
+    justify-self: start;
+  }
+
+  :global([data-settings-content]) .totpActionRow {
+    justify-content: flex-start;
+  }
+
+  :global([data-settings-content]) .recoveryActions {
+    justify-content: flex-start;
+  }
+
+  :global([data-settings-content]) .auditRow time {
+    justify-content: flex-start;
+    justify-self: start;
+  }
+}
+
+/* A choice, a button or a value stays beside what it sets, as Notion's do
+   in a 751px window and the account's rows in an 800px one (seen
+   2026-10-10 and 10-12): "이메일 관리", "내 계정 삭제", "모든 기기에서
+   로그아웃", the user ID. What the row says takes three quarters of the row
+   beside its control and keeps 200px, 12px from it, and a control that would
+   leave it less goes below it at the right, as Notion's rows at every width
+   (its words flex 3 and min-width 200px, the control's side flex 1, gap 12px:
+   378px of a 515px row at 963px and 591px of 800px at 1400px, seen
+   2026-10-30; 2026-10-19 at 375px: "비밀번호 추가" beside its row, "시작
+   페이지"'s "마지막 방문 페이지" under it) — two-step verification's two
+   buttons had squeezed its words to four lines. The words grow to their
+   share and no further, so the control stays as wide as itself at the end.
+   They keep 190px rather than Notion's 200: Leafen's font draws a control
+   some 10px wider (2026-10-30: "워크스페이스 소유자 ⌄" 156px to Notion's 145),
+   which would otherwise send a row under where Notion's stays beside (the
+   font decision of 2026-10-30 08:37 keeps the font, not the broken lines). */
+:global([data-settings-content]) .securityRow.securityRow:has(> [data-app-select]),
+:global([data-settings-content]) .securityRow.securityRow:has(> button:last-child),
+:global([data-settings-content]) .securityRow.securityRow:has(> .sectionActions:last-child),
+:global([data-settings-content]) .securityRow.securityRow:has(> [data-row-end]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* A row's words and its control are told by themselves, not by a :has() on
+   the row before them: such a rule had every element put anywhere in the app
+   work out its every style again (AppShell .main). */
+:global([data-settings-content]) .securityRow.securityRow > :first-child:is([data-app-select], button:last-child,
+  .sectionActions:last-child, [data-row-end], :has(~ :is([data-app-select], button:last-child, .sectionActions:last-child, [data-row-end]))) {
+  flex: 1 1 190px;
+  max-width: calc(75% - 9px);
+  min-width: 0;
+  margin-inline-end: auto;
+}
+
+/* Once the control has gone under them, the words take the whole line, as
+   Notion's (its control's side wraps whole; settingsRowWrap.ts marks the row). */
+:global([data-settings-content]) .securityRow.securityRow[data-row-wrapped] > :first-child:is([data-app-select], button:last-child,
+  .sectionActions:last-child, [data-row-end], :has(~ :is([data-app-select], button:last-child, .sectionActions:last-child, [data-row-end]))) {
+  max-width: none;
+}
+
+:global([data-settings-content]) .securityRow.securityRow > :not(:first-child):is([data-app-select], button:last-child,
+  .sectionActions:last-child, [data-row-end], :has(~ :is([data-app-select], button:last-child, .sectionActions:last-child, [data-row-end]))),
+:global([data-settings-content]) .securityRow.securityRow > :is([data-app-select], [data-row-end]) ~ :not(:first-child) {
+  flex: 0 1 auto;
+  max-width: 100%;
+}
+
+/* Compact subsection block inside a settings section (e.g. imported-people
+   mapping under People). */
+.subsection {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.subsectionTitle {
+  color: var(--text-default);
+  font-size: 15px;
+  font-weight: 600;
+}

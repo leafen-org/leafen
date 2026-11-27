@@ -1,0 +1,223 @@
+/* A place's picker over its cell, as Notion's 240-wide place window (seen
+   2026-11-12, 1440, both themes): fields across its top, each a 37px band
+   in the soft gray with a line in the secondary border under it, its
+   words 14px in a 28px field 4px in; the map 4px in (below); "현재
+   위치" a 28px menu row 4px in.
+   It takes the menu's whole width, past the menu's 8px padding. */
+.picker {
+  display: flex;
+  flex-direction: column;
+  margin: -8px;
+}
+
+.band {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  box-sizing: border-box;
+  height: 37px;
+  padding: 4px;
+  border-bottom: 1px solid var(--border-secondary);
+  background: var(--bg-soft);
+}
+
+.band:first-child {
+  border-start-start-radius: var(--picker-radius);
+  border-start-end-radius: var(--picker-radius);
+}
+
+.bandInput {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 28px;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+/* The "×" that clears the place: a 16px cross in a 20px button, as on
+   Notion's chosen place. */
+.clear {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 4px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+.clear:hover,
+.clear:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+/* An operator's search runs only when asked for. */
+.searchButton {
+  flex: none;
+  height: 24px;
+  margin-inline-end: 2px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.searchButton:hover:not(:disabled),
+.searchButton:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.searchButton:disabled {
+  opacity: 0.5;
+}
+
+.mapRoom {
+  padding: 4px;
+}
+
+/* The map takes the window's width less 8 and is 168 high, as Notion's:
+   232 in a table cell's 240 window, 543 in a row page's 551 (seen
+   2026-11-12 and 2026-11-25 at 1440 dark, two tabs). */
+.map {
+  position: relative;
+  height: 168px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--accent-blue) 7%, var(--bg-app));
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+}
+
+.map:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent-blue) 56%, transparent);
+  outline-offset: -2px;
+}
+
+/* Where Enter puts the point, shown while the map has the keys. */
+.crosshair {
+  position: absolute;
+  z-index: 2;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent-blue);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.map:focus-visible .crosshair {
+  opacity: 1;
+}
+
+/* The map's zoom, Leafen's own as the point is picked on the map (a touch
+   screen has no other way to zoom it). Notion's place map has no zoom, only
+   its corner button "Google Maps에서 열기": 24 square, 6 round on the page's
+   ground, raised (shaOutMd), its glyph 16, 8 in from the map's end, a
+   pointer over it lighting it as a menu row (seen 2026-11-25 at 1440 dark).
+   The two zoom buttons are that button's kind in one box, one over the
+   other, 8 in from the map's top and end — the map's foot is its
+   attribution's. */
+.zoom {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  border-radius: 6px;
+  background: var(--bg-app);
+  box-shadow: var(--shadow-raised);
+}
+
+.zoom button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--icon-secondary);
+  cursor: pointer;
+  transition: background 0.1s ease-in-out;
+}
+
+.zoom button:hover,
+.zoom button:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.hint {
+  margin: 0;
+  padding: 2px 10px 6px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.rows {
+  display: grid;
+  max-height: 200px;
+  overflow: auto;
+  padding: 4px;
+}
+
+.row,
+.result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.row:hover:not(:disabled),
+.row:focus-visible,
+.result:hover,
+.result:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.row:disabled {
+  opacity: 0.5;
+}
+
+.rowIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+/* A found place: its name, its address under it. */
+.result {
+  display: grid;
+  gap: 2px;
+  padding-block: 4px;
+}
+
+.result span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}

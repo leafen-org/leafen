@@ -1,0 +1,43 @@
+/* A select's choices over a phone's property settings (PhoneSheetChoices), as Notion's "다음과 같이 표시", "날짜 형식"
+   and "숫자 형식" (seen 2026-11-16 at 402pt in iOS Safari, dark), its grouping "정렬" and a status option's "그룹화"
+   (seen 2026-11-18 on a Galaxy A90 at 411, light, in two tabs): no head, the list straight under the grip on the
+   page's ground, a block the sheet's height under its grip but no taller than 70vh (Notion's own rule there, its
+   style read on the A90: height 100%, max-height 70vh — 586 of the A90's 748). Notion's vh is the browser's, the
+   window with its bars put away (837 on the A90, whose window is 781), so the cap says lvh: the vh this build
+   writes as dvh (postcss.config.mjs) would be the window's (547); the list's corners 10 round, its
+   bands across the sheet's whole width, each 45 high in the raised white over its 1px line with 1px of the ground
+   between them (rows at 28, 74, 120 under a list at 27), a mark 13 in or the words 16 in; a list longer than the
+   block scrolls inside it, as Notion's 45 number formats (seen 2026-11-16). */
+.body {
+  flex: 1;
+  gap: 0;
+  padding: 0;
+}
+
+.ground {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 70lvh;
+  background: var(--bg-page);
+}
+
+.list {
+  min-height: 0;
+  padding-block-start: 1px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 10px;
+}
+
+.list > button {
+  min-height: 45px;
+  margin-block-end: 1px;
+  background: var(--bg-elevated);
+}
+
+.list > button:active {
+  background: var(--bg-hover);
+}

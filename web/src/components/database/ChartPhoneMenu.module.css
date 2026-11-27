@@ -1,0 +1,132 @@
+/* A chart setting's menu on a phone (ChartPanelMenus.tsx ChartPhoneMenu), as
+   Notion's (seen 2026-11-18 on a Galaxy A90 in Chrome at 411, light, in two
+   tabs): a bottom list (PhoneSheetMenu) whose choices are bands across it 46
+   apart — a 1px parting, the row, a 2px line of the faint border, as the
+   other bottom lists' rows (PhoneSheet.module.css .menu .row) — their 16px
+   words 50 in after a 16px place for their mark 20 in (the property's mark
+   drawn 19.2 there, as Notion's), its ✓ or › 18px 16 from the end, the ›
+   in the icons' grey; a choice without a mark starts its words 16 in;
+   "속성 검색" a 45px row of 16px words 16 in over a line. */
+.menu {
+  padding: 0;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.body [data-chart-choices] {
+  gap: 0;
+}
+
+.body [data-chart-choice] {
+  gap: 14px;
+  min-height: 46px;
+  padding-block: 0;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-top: 1px solid var(--bg-app);
+  border-bottom: 2px solid var(--border-subtle);
+  border-radius: 0;
+  font-size: 16px;
+}
+
+/* No line between a menu's kinds of choices, as Notion's lists there. */
+.body [role="separator"] {
+  display: none;
+}
+
+/* No row lit when it opens or after a tap, the chosen one only ticked, as Notion's. */
+.body [data-chart-choice][data-focused="true"],
+.body [data-chart-choice]:hover {
+  background: none;
+}
+
+.body [data-chart-choice] > span[aria-hidden="true"]:first-child {
+  width: 16px;
+  margin-inline-start: 4px;
+  overflow: visible;
+}
+
+.body [data-chart-choice] > svg {
+  width: 18px;
+  height: 18px;
+  margin-inline-start: auto;
+}
+
+.body [data-chart-choice] > svg:not([data-leafen-icon-glyph="check"]) {
+  color: var(--icon-secondary);
+}
+
+.body div:has(> [data-chart-search]) {
+  padding: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.body [data-chart-search] {
+  height: 45px;
+  padding-block: 0; padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-radius: 0;
+  background: transparent;
+  font-size: 16px;
+}
+
+.body [data-chart-search]:focus {
+  box-shadow: none;
+}
+
+/* A whole sheet's menu ("정렬 기준", "색상", "높이", "기준선"), as Notion's
+   (seen 2026-11-18 on the A90, light) and the property settings' choices
+   (PhoneSheetChoices.module.css): no head, its list straight under the grip
+   on the page's ground, no taller than 70lvh and 10 round, its choices bands
+   45 high in the raised white with 1px of the ground between them. */
+.sheetBody {
+  flex: 1;
+  gap: 0;
+  padding: 0;
+}
+
+.ground {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 70lvh;
+  background: var(--bg-page);
+}
+
+.sheetList {
+  min-height: 0;
+  padding-block-start: 1px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 10px;
+}
+
+.sheetList .body {
+  background: var(--bg-elevated);
+}
+
+.sheetList .body [data-chart-choice] {
+  min-height: 45px;
+  border-top: 0;
+  border-bottom: 1px solid var(--bg-page);
+  background: var(--bg-elevated);
+}
+
+/* "정렬 기준"'s groups go on as the sorts' bands, an option's chip or a
+   name 16 in with its eye at the end, without "그룹 · 모두 숨기기" over them
+   (Notion's, seen 2026-11-18 on the A90, light). */
+.sheetList .body div:has(> [data-chart-groups-all]) {
+  display: none;
+}
+
+.sheetList .body [data-chart-group] {
+  min-height: 45px;
+  padding-inline: calc(16px + var(--phone-safe-start, 0px)) calc(16px + var(--phone-safe-end, 0px));
+  border-bottom: 1px solid var(--bg-page);
+  border-radius: 0;
+  background: var(--bg-elevated);
+  font-size: 16px;
+}

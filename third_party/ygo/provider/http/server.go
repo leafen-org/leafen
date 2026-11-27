@@ -1,0 +1,194 @@
+package http
+
+import (
+	"encoding/base64"
+	"io"
+	"net/http"
+	"path"
+	"sync"
+
+	"github.com/reearth/ygo/crdt"
+	"github.com/reearth/ygo/internal/roomname"
+)
+
+// maxUpdateBytes is the maximum accepted size for a POST body or sv parameter
+// payload. Requests exceeding this limit are rejected before being read into
+// memory, preventing OOM from large crafted uploads.
+const maxUpdateBytes int64 = 64 << 20 // 64 MiB
+
+// maxSVParamBytes is the maximum accepted length (bytes) of the base64-encoded
+// sv query parameter. A state vector cannot realistically exceed a few KB; this
+// cap prevents wasted allocation from oversized query strings.
+const maxSVParamBytes = 1 << 16 // 64 KiB
+
+// Server is an http.Handler that serves Yjs document sync over HTTP.
+// Each distinct {room} path segment maps to a separate in-memory document.
+//
+// Mount it with a path pattern that captures the room name, e.g.:
+//
+//	http.Handle("/doc/{room}", srv)
+type Server struct {
+	mu   sync.RWMutex
+	docs map[string]*crdt.Doc
+
+	// MaxPendingItems caps the per-document pending-items queue depth. The
+	// queue holds items whose dependencies have not yet arrived, waiting for
+	// out-of-order delivery to resolve. Zero or negative uses the crdt default
+	// (100,000). See crdt.WithMaxPendingItems and issue #46.
+	MaxPendingItems int
+
+	// AuthFunc, if non-nil, is called on every request before any document is
+	// read or mutated. Returning false rejects the request with 401 Unauthorized.
+	// This mirrors websocket.Server.AuthFunc (issue #50); without it, any caller
+	// can GET full document state or POST arbitrary updates.
+	AuthFunc func(r *http.Request) bool
+
+	// MaxUpdateBytes is the maximum accepted size (bytes) of a POST body. Bodies
+	// larger than this are rejected with 413 before being buffered. Zero or
+	// negative uses the package default (64 MiB), matching the cap the WebSocket
+	// provider applies to peer frames (issue #50).
+	MaxUpdateBytes int
+}
+
+// effectiveMaxUpdateBytes returns the configured POST-body cap, or the 64 MiB
+// default when MaxUpdateBytes is unset.
+func (s *Server) effectiveMaxUpdateBytes() int64 {
+	if s.MaxUpdateBytes > 0 {
+		return int64(s.MaxUpdateBytes)
+	}
+	return maxUpdateBytes
+}
+
+// NewServer returns a new Server with an empty document store.
+func NewServer() *Server {
+	return &Server{
+		docs: make(map[string]*crdt.Doc),
+	}
+}
+
+// getOrCreateDoc returns the document for the given room, creating a new one
+// with a random client ID if it does not exist.
+func (s *Server) getOrCreateDoc(room string) *crdt.Doc {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if doc, ok := s.docs[room]; ok {
+		return doc
+	}
+	// Use NewClientID (crypto/rand, uint32) to stay within Yjs wire protocol's
+	// 53-bit VarUint limit and avoid predictable IDs in multi-tenant deployments.
+	docOpts := []crdt.DocOption{crdt.WithClientID(crdt.NewClientID())}
+	if s.MaxPendingItems > 0 {
+		docOpts = append(docOpts, crdt.WithMaxPendingItems(s.MaxPendingItems))
+	}
+	doc := crdt.New(docOpts...)
+	s.docs[room] = doc
+	return doc
+}
+
+// GetDoc returns the document for the given room, or nil if it does not exist.
+func (s *Server) GetDoc(room string) *crdt.Doc {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.docs[room]
+}
+
+// ServeHTTP handles GET and POST requests.
+//
+// GET  /.../{room}?sv=<base64>  — returns binary V1 update diff (Content-Type: application/octet-stream)
+// POST /.../{room}              — body is a binary V1 update; applies it to the room doc
+//
+// Room name is extracted from the last path segment (PathValue("room") on
+// Go 1.22+, or the final segment of r.URL.Path as fallback).
+//
+// GET with no sv parameter returns the full document state.
+// A 400 is returned if the sv parameter is present but cannot be base64-decoded
+// or parsed as a state vector.
+// A 400 is returned if the POST body cannot be applied.
+// A 405 is returned for any other method.
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// Auth gate (issue #50): reject before touching any document.
+	if s.AuthFunc != nil && !s.AuthFunc(r) {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract room name: try PathValue first (Go 1.22 ServeMux), fall back to path.Base.
+	room := r.PathValue("room")
+	if room == "" {
+		room = path.Base(r.URL.Path)
+	}
+
+	// Reject crafted room names (empty, oversized, "."/"..", control chars) using
+	// the same rule as the WebSocket provider (issue #50).
+	if !roomname.Valid(room) {
+		http.Error(w, "invalid room name", http.StatusBadRequest)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		s.handleGet(w, r, room)
+	case http.MethodPost:
+		s.handlePost(w, r, room)
+	default:
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (s *Server) handleGet(w http.ResponseWriter, r *http.Request, room string) {
+	doc := s.getOrCreateDoc(room)
+
+	var sv crdt.StateVector
+
+	svParam := r.URL.Query().Get("sv")
+	if svParam != "" {
+		if int64(len(svParam)) > maxSVParamBytes {
+			http.Error(w, "invalid sv parameter: too large", http.StatusBadRequest)
+			return
+		}
+		svBytes, err := base64.StdEncoding.DecodeString(svParam)
+		if err != nil {
+			http.Error(w, "invalid sv parameter: base64 decode failed", http.StatusBadRequest)
+			return
+		}
+		var parseErr error
+		sv, parseErr = crdt.DecodeStateVectorV1(svBytes)
+		if parseErr != nil {
+			http.Error(w, "invalid sv parameter: state vector parse failed", http.StatusBadRequest)
+			return
+		}
+	}
+
+	update := crdt.EncodeStateAsUpdateV1(doc, sv)
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(update)
+}
+
+func (s *Server) handlePost(w http.ResponseWriter, r *http.Request, room string) {
+	// Require application/octet-stream to prevent browsers from accidentally
+	// POSTing JSON or form-encoded data that would fail with a cryptic decode error.
+	if ct := r.Header.Get("Content-Type"); ct != "application/octet-stream" {
+		http.Error(w, "unsupported media type: Content-Type must be application/octet-stream", http.StatusUnsupportedMediaType)
+		return
+	}
+
+	// Reject bodies exceeding the configured cap before buffering the payload.
+	r.Body = http.MaxBytesReader(w, r.Body, s.effectiveMaxUpdateBytes())
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "failed to read body", http.StatusRequestEntityTooLarge)
+		return
+	}
+
+	doc := s.getOrCreateDoc(room)
+
+	if err := crdt.ApplyUpdateV1(doc, body, r.RemoteAddr); err != nil {
+		// Return a generic message — err.Error() may contain internal decoder
+		// details that are unhelpful to callers and leak implementation info (N-M4).
+		http.Error(w, "failed to apply update", http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}

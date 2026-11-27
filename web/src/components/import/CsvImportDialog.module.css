@@ -1,0 +1,624 @@
+/* The CSV import window, as Notion's "CSV를 Notion으로 가져오기" (seen
+   2026-10-01, its rule measured 2026-11-12 at 768, 1000 and 1440): 40px in
+   from each side of the screen, at most 1000×651; a column of steps 37% of
+   it on the left (370 of 1000) and the table it makes on the right. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: var(--modal-shade);
+  cursor: default;
+}
+
+/* The whole window, the table side too, has Notion's warm ground (seen
+   2026-10-01, light; its dark one is not seen, so dark keeps the page's). */
+.dialog {
+  position: relative;
+  display: flex;
+  width: min(1000px, 100vw - 80px);
+  height: min(651px, 100vh - 80px);
+  overflow: hidden;
+  border-radius: var(--modal-radius);
+  background: rgb(249, 248, 247);
+  box-shadow: var(--shadow-modal);
+  color: var(--text-default);
+}
+
+:global([data-theme="dark"]) .dialog {
+  background: var(--bg-default);
+}
+
+.close {
+  position: absolute;
+  top: 13px;
+  inset-inline-start: 13px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--icon-secondary);
+  cursor: pointer;
+}
+
+.close svg {
+  width: 14px;
+  height: 14px;
+}
+
+.close:hover {
+  background: var(--bg-hover);
+}
+
+/* "가져오기를 완료했습니다", as Notion's (seen 2026-10-01): the CSV, a check and
+   the app's mark over the words in the middle of the window, its way to the
+   database, and a round close at the top right. */
+.dialog[data-done="true"] .close {
+  top: 10px;
+  inset-inline-end: 10px;
+  inset-inline-start: auto;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+}
+
+/* Notion's end and progress windows sit their content 4px above the
+   window's middle (measured 2026-11-07). */
+.done {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px 28px;
+  text-align: center;
+}
+
+.doneMarks {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.doneMarks img {
+  border-radius: 10px;
+}
+
+.doneTile {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.doneTile svg {
+  width: 32px;
+  height: 32px;
+}
+
+.doneCheck {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-blue);
+  color: #ffffff;
+}
+
+.doneCheck[data-failed="true"] {
+  background: var(--danger);
+}
+
+/* The progress window's marks, smaller than the finished window's, as
+   Notion's "가져오는 중…" (measured 2026-11-07): a 36px tile, an arrow, a
+   32px mark, 12px apart; its hint wraps at 340px. */
+.progressMarks {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progressMarks img {
+  border-radius: 7px;
+}
+
+.progressTile {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.progressTile svg {
+  width: 20px;
+  height: 20px;
+}
+
+.progressArrow {
+  color: var(--text-secondary);
+}
+
+.progressHint {
+  max-width: 340px;
+}
+
+.doneTitle {
+  margin: 20px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 26px;
+}
+
+.doneHint {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.doneOpen {
+  height: 28px;
+  margin-top: 20px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--button-outline);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.doneOpen:hover {
+  background: var(--bg-hover);
+}
+
+/* The steps scroll; their popovers sit over the window, outside the scroll. */
+.side {
+  display: flex;
+  flex: 0 0 37%;
+  flex-direction: column;
+  padding: 52px 24px 24px;
+  overflow-y: auto;
+}
+
+/* The column step's title stands 50px down, 2px higher than the first
+   step's, and only its columns scroll (Notion's, measured 2026-11-12). */
+.side[data-step="columns"] {
+  padding-top: 50px;
+}
+
+/* The first step's fields scroll from the window's top, its button staying
+   at the foot, 32px under the last field scrolled to its end (Notion's,
+   measured 2026-11-12). */
+.sourceScroll {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  min-height: 0;
+  margin: -52px -24px 0;
+  padding: 52px 24px 8px;
+  overflow-y: auto;
+}
+
+/* As wide as its words and centered in itself, as Notion's: one line sits at
+   the start, two (a narrow window's) are each centered. */
+.title {
+  align-self: flex-start;
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 36px;
+  text-align: center;
+}
+
+.hint {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.hint[data-mapping="true"] {
+  margin-top: 24px;
+}
+
+.label {
+  margin: 24px 0 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.label[data-strong="true"] {
+  font-weight: 500;
+}
+
+/* The chosen file's name in 14px at weight 500, as Notion's import windows
+   show it (seen 2026-11-15). */
+.fileButton,
+.file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: rgba(42, 28, 0, 0.07);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+:global([data-theme="dark"]) .fileButton,
+:global([data-theme="dark"]) .file {
+  background: var(--bg-muted);
+}
+
+.fileButton {
+  justify-content: center;
+  cursor: pointer;
+}
+
+.fileButton:hover {
+  background: rgba(42, 28, 0, 0.11);
+}
+
+:global([data-theme="dark"]) .fileButton:hover {
+  background: var(--bg-muted-strong);
+}
+
+.file span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.file button {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.method {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 70px;
+  margin-bottom: 8px;
+  padding-block: 16px;
+  padding-inline: 14px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.method:last-child {
+  margin-bottom: 0;
+}
+
+.method[aria-checked="true"] {
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+
+/* Notion's CSV method cards (seen 2026-11-09, dark): the icon 20px at 14,16
+   in tertiary grey, the words between, and at the end a 16px radio in a 24
+   wide slot, centred on the card's height — blue with a 6px light dot when
+   chosen, an empty ring of the border's color otherwise. */
+.method > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+.methodText {
+  flex: 1;
+  min-width: 0;
+}
+
+.methodRadio {
+  position: relative;
+  flex: 0 0 24px;
+  align-self: center;
+  height: 16px;
+}
+
+.methodRadio::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+}
+
+.method[aria-checked="true"] .methodRadio::before {
+  border: 0;
+  background: var(--accent-blue);
+}
+
+.method[aria-checked="true"] .methodRadio::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 5px;
+  inset-inline-start: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: white;
+}
+
+.method strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.method small {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.place {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--bg-default);
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.place[data-database="true"] {
+  height: 36px;
+}
+
+.place[data-empty="true"] {
+  color: var(--text-secondary);
+}
+
+.place:disabled {
+  cursor: default;
+}
+
+.place span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+/* The place under the first step's button that the second step's "취소하기" takes. */
+.footSpace {
+  height: 32px;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.primary,
+.secondary {
+  width: 100%;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.primary {
+  height: 36px;
+  background: var(--c-accent-blue);
+  color: rgb(243, 249, 253);
+}
+
+.primary:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.secondary {
+  height: 32px;
+  background: transparent;
+  color: var(--text-tertiary);
+}
+
+.secondary:hover {
+  background: var(--bg-hover);
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+/* As Notion's CSV column settings (measured 2026-11-07, 2026-11-12 and
+   2026-11-15, dark): two equal columns (145 at 1440, halves of the step at
+   any width) with a 16px arrow between, 8px apart; a column's type a 32px
+   field with a 1px border, 2px 6px in, its secondary mark a 16px box drawn at
+   1.2 (19.2, as Notion's), 8px before the name, the name up to a 12px
+   secondary chevron at its end, cut where it runs past ("날짜 • 전체 날짜"
+   in Notion's too). */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 8px;
+  align-items: center;
+}
+
+/* Many columns scroll here alone, the heads with them, as wide as the step
+   so the bar runs at its edge; the buttons stay 24px under it at the foot
+   (Notion's, measured 2026-11-12 at 768 and 1440, a new database's window
+   and a database's "CSV와 병합" alike). */
+.columnsScroll {
+  flex: 1 1 0%;
+  min-height: 0;
+  margin-top: 32px;
+  margin-inline: -24px;
+  padding-inline: 24px;
+  overflow-y: auto;
+}
+
+.columnsHead {
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.columnName {
+  height: 32px;
+  padding: 0 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--border-default);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 32px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.columnArrow {
+  justify-self: center;
+  color: var(--icon-tertiary, var(--text-tertiary));
+}
+
+.typeButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  padding: 2px 6px;
+  border: 1px solid var(--button-outline);
+  border-radius: 4px;
+  background: var(--bg-element);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  text-align: start;
+  cursor: pointer;
+}
+
+.typeButton > svg {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+.typeButton > svg:first-child {
+  margin-inline-end: 8px;
+  transform: scale(1.2);
+}
+
+.typeButton span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeButton[data-skipped="true"] {
+  color: var(--text-secondary);
+}
+
+/* A type menu row's mark, in gray as Notion's (seen 2026-11-13). */
+.typeMenuMark {
+  color: var(--icon-secondary);
+}
+
+@media (max-width: 599px) {
+  .dialog {
+    flex-direction: column;
+    width: min(1000px, 100%);
+    height: min(650px, 100%);
+  }
+
+  /* Over the table, as tall as its words; it gives way to the table's 240px
+     before the window ends, its fields or columns and its buttons scrolling
+     in it as one (a scroll of their own had no room there, 2026-11-13). */
+  .side {
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+
+  .sourceScroll, .columnsScroll { flex: none; overflow: visible; }
+}

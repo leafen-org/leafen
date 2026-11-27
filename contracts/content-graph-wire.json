@@ -1,0 +1,2596 @@
+{
+  "schemaVersion": 22,
+  "name": "content-graph",
+  "bounds": [
+    {
+      "goName": "maxGraphMutationOperations",
+      "tsName": "mutationOperations",
+      "value": 1000
+    },
+    {
+      "goName": "maxGraphReadItems",
+      "tsName": "readItems",
+      "value": 100
+    },
+    {
+      "goName": "maxGraphSnapshotRestarts",
+      "tsName": "snapshotRestarts",
+      "value": 2
+    },
+    {
+      "goName": "maxGraphIdentifierLength",
+      "tsName": "identifierLength",
+      "value": 255
+    },
+    {
+      "goName": "maxGraphPositionLength",
+      "tsName": "positionLength",
+      "value": 255
+    },
+    {
+      "goName": "maxGraphTitleRunes",
+      "tsName": "titleRunes",
+      "value": 200000
+    },
+    {
+      "goName": "maxGraphCursorBytes",
+      "tsName": "cursorBytes",
+      "value": 1024
+    },
+    {
+      "goName": "maxGraphDatabaseDeletes",
+      "tsName": "databaseDeletes",
+      "value": 1000
+    },
+    {
+      "goName": "maxGraphChangeItems",
+      "tsName": "changeItems",
+      "value": 100
+    },
+    {
+      "goName": "maxGraphChangeBytes",
+      "tsName": "changeBytes",
+      "value": 1048576
+    },
+    {
+      "goName": "maxGraphTextCharacters",
+      "tsName": "textCharacters",
+      "value": 200000
+    },
+    {
+      "goName": "maxGraphTableWidth",
+      "tsName": "tableWidth",
+      "value": 349525
+    },
+    {
+      "goName": "maxGraphExternalPages",
+      "tsName": "externalPages",
+      "value": 100
+    }
+  ],
+  "errors": [
+    {
+      "goName": "errorCodeGraphInvalid",
+      "tsName": "invalid",
+      "value": "LEAFEN_GRAPH_INVALID"
+    },
+    {
+      "goName": "errorCodeGraphReferenceInvalid",
+      "tsName": "referenceInvalid",
+      "value": "LEAFEN_GRAPH_REFERENCE_INVALID"
+    },
+    {
+      "goName": "errorCodeGraphMutationFailed",
+      "tsName": "mutationFailed",
+      "value": "LEAFEN_GRAPH_MUTATION_FAILED"
+    },
+    {
+      "goName": "errorCodeGraphDatabaseBusy",
+      "tsName": "databaseBusy",
+      "value": "LEAFEN_GRAPH_DATABASE_BUSY"
+    },
+    {
+      "goName": "errorCodeGraphStorageUnavailable",
+      "tsName": "storageUnavailable",
+      "value": "LEAFEN_GRAPH_STORAGE_UNAVAILABLE"
+    },
+    {
+      "goName": "errorCodeGraphMutationIDReused",
+      "tsName": "mutationIdReused",
+      "value": "LEAFEN_GRAPH_MUTATION_ID_REUSED"
+    },
+    {
+      "goName": "errorCodeGraphReadFailed",
+      "tsName": "readFailed",
+      "value": "LEAFEN_GRAPH_READ_FAILED"
+    },
+    {
+      "goName": "errorCodeGraphCursorInvalid",
+      "tsName": "cursorInvalid",
+      "value": "LEAFEN_GRAPH_CURSOR_INVALID"
+    },
+    {
+      "goName": "errorCodeGraphTextAuthorityConflict",
+      "tsName": "textAuthorityConflict",
+      "value": "LEAFEN_GRAPH_TEXT_AUTHORITY_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphStructureAuthorityConflict",
+      "tsName": "structureAuthorityConflict",
+      "value": "LEAFEN_GRAPH_STRUCTURE_AUTHORITY_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphStructureRecovered",
+      "tsName": "structureRecovered",
+      "value": "LEAFEN_GRAPH_STRUCTURE_RECOVERED"
+    },
+    {
+      "goName": "errorCodeGraphChangeInvalid",
+      "tsName": "changeInvalid",
+      "value": "LEAFEN_GRAPH_CHANGE_INVALID"
+    },
+    {
+      "goName": "errorCodeGraphChangeFailed",
+      "tsName": "changeFailed",
+      "value": "LEAFEN_GRAPH_CHANGE_FAILED"
+    },
+    {
+      "goName": "errorCodeGraphRevisionConflict",
+      "tsName": "revisionConflict",
+      "value": "LEAFEN_GRAPH_REVISION_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphPageCursorConflict",
+      "tsName": "pageCursorConflict",
+      "value": "LEAFEN_GRAPH_PAGE_CURSOR_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphTextTargetConflict",
+      "tsName": "textTargetConflict",
+      "value": "LEAFEN_GRAPH_TEXT_TARGET_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphViewConflict",
+      "tsName": "viewConflict",
+      "value": "LEAFEN_GRAPH_VIEW_CONFLICT"
+    },
+    {
+      "goName": "errorCodeGraphPropertyAccessDenied",
+      "tsName": "propertyAccessDenied",
+      "value": "LEAFEN_GRAPH_PROPERTY_ACCESS_DENIED"
+    },
+    {
+      "goName": "errorCodeGraphRowAccessDenied",
+      "tsName": "rowAccessDenied",
+      "value": "LEAFEN_GRAPH_ROW_ACCESS_DENIED"
+    },
+    {
+      "goName": "errorCodeGraphChangeTooLarge",
+      "tsName": "changeTooLarge",
+      "value": "LEAFEN_GRAPH_CHANGE_TOO_LARGE"
+    }
+  ],
+  "enums": [
+    {
+      "tsName": "GraphOperationKind",
+      "tsValuesName": "graphOperationKinds",
+      "goValuesName": "graphOperationKinds",
+      "values": [
+        {
+          "goName": "graphOperationKindUpsertBlock",
+          "value": "upsertBlock"
+        },
+        {
+          "goName": "graphOperationKindMoveBlock",
+          "value": "moveBlock"
+        },
+        {
+          "goName": "graphOperationKindDeleteBlock",
+          "value": "deleteBlock"
+        },
+        {
+          "goName": "graphOperationKindUpsertDataSource",
+          "value": "upsertDataSource"
+        },
+        {
+          "goName": "graphOperationKindDeleteDataSource",
+          "value": "deleteDataSource"
+        },
+        {
+          "goName": "graphOperationKindUpsertView",
+          "value": "upsertView"
+        },
+        {
+          "goName": "graphOperationKindUpdateView",
+          "value": "updateView"
+        },
+        {
+          "goName": "graphOperationKindDeleteView",
+          "value": "deleteView"
+        },
+        {
+          "goName": "graphOperationKindUpsertProperty",
+          "value": "upsertProperty"
+        },
+        {
+          "goName": "graphOperationKindDeleteProperty",
+          "value": "deleteProperty"
+        },
+        {
+          "goName": "graphOperationKindUpsertRow",
+          "value": "upsertRow"
+        },
+        {
+          "goName": "graphOperationKindRestoreDateCommand",
+          "value": "restoreDateCommand"
+        },
+        {
+          "goName": "graphOperationKindDeleteRow",
+          "value": "deleteRow"
+        },
+        {
+          "goName": "graphOperationKindConfigureDependency",
+          "value": "configureDependency"
+        },
+        {
+          "goName": "graphOperationKindUpsertDependencyEdge",
+          "value": "upsertDependencyEdge"
+        },
+        {
+          "goName": "graphOperationKindDeleteDependencyEdge",
+          "value": "deleteDependencyEdge"
+        }
+      ]
+    },
+    {
+      "tsName": "GraphBlockType",
+      "tsValuesName": "graphBlockTypes",
+      "goValuesName": "graphBlockTypes",
+      "values": [
+        {
+          "goName": "graphBlockTypeParagraph",
+          "value": "paragraph"
+        },
+        {
+          "goName": "graphBlockTypeHeading1",
+          "value": "heading_1"
+        },
+        {
+          "goName": "graphBlockTypeHeading2",
+          "value": "heading_2"
+        },
+        {
+          "goName": "graphBlockTypeHeading3",
+          "value": "heading_3"
+        },
+        {
+          "goName": "graphBlockTypeHeading4",
+          "value": "heading_4"
+        },
+        {
+          "goName": "graphBlockTypeToggleHeading1",
+          "value": "toggle_heading_1"
+        },
+        {
+          "goName": "graphBlockTypeToggleHeading2",
+          "value": "toggle_heading_2"
+        },
+        {
+          "goName": "graphBlockTypeToggleHeading3",
+          "value": "toggle_heading_3"
+        },
+        {
+          "goName": "graphBlockTypeToggleHeading4",
+          "value": "toggle_heading_4"
+        },
+        {
+          "goName": "graphBlockTypeBulletedListItem",
+          "value": "bulleted_list_item"
+        },
+        {
+          "goName": "graphBlockTypeNumberedListItem",
+          "value": "numbered_list_item"
+        },
+        {
+          "goName": "graphBlockTypeToDo",
+          "value": "to_do"
+        },
+        {
+          "goName": "graphBlockTypeToggle",
+          "value": "toggle"
+        },
+        {
+          "goName": "graphBlockTypeQuote",
+          "value": "quote"
+        },
+        {
+          "goName": "graphBlockTypeCallout",
+          "value": "callout"
+        },
+        {
+          "goName": "graphBlockTypeDivider",
+          "value": "divider"
+        },
+        {
+          "goName": "graphBlockTypeCode",
+          "value": "code"
+        },
+        {
+          "goName": "graphBlockTypeEquation",
+          "value": "equation"
+        },
+        {
+          "goName": "graphBlockTypeTable",
+          "value": "table"
+        },
+        {
+          "goName": "graphBlockTypeTableRow",
+          "value": "table_row"
+        },
+        {
+          "goName": "graphBlockTypeImage",
+          "value": "image"
+        },
+        {
+          "goName": "graphBlockTypeVideo",
+          "value": "video"
+        },
+        {
+          "goName": "graphBlockTypeAudio",
+          "value": "audio"
+        },
+        {
+          "goName": "graphBlockTypeBookmark",
+          "value": "bookmark"
+        },
+        {
+          "goName": "graphBlockTypeLinkPreview",
+          "value": "link_preview"
+        },
+        {
+          "goName": "graphBlockTypeEmbed",
+          "value": "embed"
+        },
+        {
+          "goName": "graphBlockTypePDF",
+          "value": "pdf"
+        },
+        {
+          "goName": "graphBlockTypeFile",
+          "value": "file"
+        },
+        {
+          "goName": "graphBlockTypeBreadcrumb",
+          "value": "breadcrumb"
+        },
+        {
+          "goName": "graphBlockTypeTableOfContents",
+          "value": "table_of_contents"
+        },
+        {
+          "goName": "graphBlockTypeSyncedBlock",
+          "value": "synced_block"
+        },
+        {
+          "goName": "graphBlockTypeButton",
+          "value": "button"
+        },
+        {
+          "goName": "graphBlockTypeTemplate",
+          "value": "template"
+        },
+        {
+          "goName": "graphBlockTypeTab",
+          "value": "tab"
+        },
+        {
+          "goName": "graphBlockTypeInlineDatabase",
+          "value": "inline_database"
+        },
+        {
+          "goName": "graphBlockTypeColumnList",
+          "value": "column_list"
+        },
+        {
+          "goName": "graphBlockTypeColumn",
+          "value": "column"
+        },
+        {
+          "goName": "graphBlockTypeChildPage",
+          "value": "child_page"
+        },
+        {
+          "goName": "graphBlockTypeLinkToPage",
+          "value": "link_to_page"
+        },
+        {
+          "goName": "graphBlockTypeChildDatabase",
+          "value": "child_database"
+        }
+      ]
+    },
+    {
+      "tsName": "GraphDataSourceIconType",
+      "tsValuesName": "graphDataSourceIconTypes",
+      "goValuesName": "graphDataSourceIconTypes",
+      "values": [
+        {
+          "goName": "graphDataSourceIconNone",
+          "value": "none"
+        },
+        {
+          "goName": "graphDataSourceIconEmoji",
+          "value": "emoji"
+        },
+        {
+          "goName": "graphDataSourceIconImage",
+          "value": "image"
+        },
+        {
+          "goName": "graphDataSourceIconCustomEmoji",
+          "value": "custom_emoji"
+        },
+        {
+          "goName": "graphDataSourceIconBuiltIn",
+          "value": "icon"
+        }
+      ]
+    },
+    {
+      "tsName": "GraphViewType",
+      "tsValuesName": "graphViewTypes",
+      "goValuesName": "graphViewTypes",
+      "values": [
+        {
+          "goName": "graphViewTypeTable",
+          "value": "table"
+        },
+        {
+          "goName": "graphViewTypeBoard",
+          "value": "board"
+        },
+        {
+          "goName": "graphViewTypeList",
+          "value": "list"
+        },
+        {
+          "goName": "graphViewTypeCalendar",
+          "value": "calendar"
+        },
+        {
+          "goName": "graphViewTypeTimeline",
+          "value": "timeline"
+        },
+        {
+          "goName": "graphViewTypeGallery",
+          "value": "gallery"
+        },
+        {
+          "goName": "graphViewTypeForm",
+          "value": "form"
+        },
+        {
+          "goName": "graphViewTypeChart",
+          "value": "chart"
+        },
+        {
+          "goName": "graphViewTypeMap",
+          "value": "map"
+        },
+        {
+          "goName": "graphViewTypeDashboard",
+          "value": "dashboard"
+        },
+        {
+          "goName": "graphViewTypeFeed",
+          "value": "feed"
+        }
+      ]
+    },
+    {
+      "tsName": "GraphValueType",
+      "tsValuesName": "graphValueTypes",
+      "goValuesName": "graphValueTypes",
+      "values": [
+        {
+          "goName": "graphValueTypeTitle",
+          "value": "title"
+        },
+        {
+          "goName": "graphValueTypeRichText",
+          "value": "rich_text"
+        },
+        {
+          "goName": "graphValueTypeNumber",
+          "value": "number"
+        },
+        {
+          "goName": "graphValueTypeSelect",
+          "value": "select"
+        },
+        {
+          "goName": "graphValueTypeMultiSelect",
+          "value": "multi_select"
+        },
+        {
+          "goName": "graphValueTypeStatus",
+          "value": "status"
+        },
+        {
+          "goName": "graphValueTypeDate",
+          "value": "date"
+        },
+        {
+          "goName": "graphValueTypePerson",
+          "value": "person"
+        },
+        {
+          "goName": "graphValueTypeCheckbox",
+          "value": "checkbox"
+        },
+        {
+          "goName": "graphValueTypeURL",
+          "value": "url"
+        },
+        {
+          "goName": "graphValueTypeEmail",
+          "value": "email"
+        },
+        {
+          "goName": "graphValueTypePhone",
+          "value": "phone"
+        },
+        {
+          "goName": "graphValueTypeFiles",
+          "value": "files"
+        },
+        {
+          "goName": "graphValueTypeCreatedTime",
+          "value": "created_time"
+        },
+        {
+          "goName": "graphValueTypeLastEditedTime",
+          "value": "last_edited_time"
+        },
+        {
+          "goName": "graphValueTypeCreatedBy",
+          "value": "created_by"
+        },
+        {
+          "goName": "graphValueTypeLastEditedBy",
+          "value": "last_edited_by"
+        },
+        {
+          "goName": "graphValueTypeRelation",
+          "value": "relation"
+        },
+        {
+          "goName": "graphValueTypeRollup",
+          "value": "rollup"
+        },
+        {
+          "goName": "graphValueTypeFormula",
+          "value": "formula"
+        },
+        {
+          "goName": "graphValueTypeUniqueID",
+          "value": "unique_id"
+        },
+        {
+          "goName": "graphValueTypeButton",
+          "value": "button"
+        },
+        {
+          "goName": "graphValueTypeLocation",
+          "value": "location"
+        },
+        {
+          "goName": "graphValueTypeVerification",
+          "value": "verification"
+        },
+        {
+          "goName": "graphValueTypeLastVisitedTime",
+          "value": "last_visited_time"
+        },
+        {
+          "goName": "graphValueTypePlace",
+          "value": "place"
+        }
+      ]
+    },
+    {
+      "tsName": "GraphReadKind",
+      "tsValuesName": "graphReadKinds",
+      "goValuesName": "graphReadKinds",
+      "values": [
+        {
+          "goName": "graphReadKindBlock",
+          "value": "block"
+        },
+        {
+          "goName": "graphReadKindDatabaseContainer",
+          "value": "databaseContainer"
+        },
+        {
+          "goName": "graphReadKindDataSource",
+          "value": "dataSource"
+        },
+        {
+          "goName": "graphReadKindView",
+          "value": "view"
+        },
+        {
+          "goName": "graphReadKindProperty",
+          "value": "property"
+        },
+        {
+          "goName": "graphReadKindRow",
+          "value": "row"
+        },
+        {
+          "goName": "graphReadKindYgoDocument",
+          "value": "ygoDocument"
+        }
+      ]
+    }
+  ],
+  "classifications": [
+    {
+      "goName": "graphManagedFileBlockTypes",
+      "tsName": "graphManagedFileBlockTypes",
+      "enum": "GraphBlockType",
+      "values": [
+        "file",
+        "image",
+        "video",
+        "audio",
+        "pdf",
+        "embed"
+      ]
+    },
+    {
+      "goName": "graphTextBlockTypes",
+      "tsName": "graphTextBlockTypes",
+      "enum": "GraphBlockType",
+      "values": [
+        "paragraph",
+        "heading_1",
+        "heading_2",
+        "heading_3",
+        "heading_4",
+        "toggle_heading_1",
+        "toggle_heading_2",
+        "toggle_heading_3",
+        "toggle_heading_4",
+        "bulleted_list_item",
+        "numbered_list_item",
+        "to_do",
+        "toggle",
+        "quote",
+        "callout",
+        "code"
+      ]
+    }
+  ],
+  "valueAliases": [
+    {
+      "goName": "graphFilesValue",
+      "tsName": "GraphFilesValue",
+      "goType": "[]graphFileValueItem",
+      "tsType": "GraphFileValueItem[]"
+    },
+    {
+      "goName": "graphDataSourceWrite",
+      "tsName": "GraphDataSourceWrite",
+      "goType": "graphDataSource",
+      "tsType": "Omit<GraphDataSource, \"title\"> & { title?: string }"
+    }
+  ],
+  "records": [
+    {
+      "goName": "graphFileValueItem",
+      "tsName": "GraphFileValueItem",
+      "fields": [
+        {
+          "goName": "Source",
+          "jsonName": "source",
+          "goType": "string",
+          "tsType": "\"external\"",
+          "optional": true
+        },
+        {
+          "goName": "FileID",
+          "jsonName": "fileId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "URL",
+          "jsonName": "url",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Size",
+          "jsonName": "size",
+          "goType": "int64",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "ContentType",
+          "jsonName": "contentType",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SHA256",
+          "jsonName": "sha256",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphFileBlockContent",
+      "tsName": "GraphFileBlockContent",
+      "fields": [
+        {
+          "goName": "FileID",
+          "jsonName": "fileId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Size",
+          "jsonName": "size",
+          "goType": "int64",
+          "tsType": "number"
+        },
+        {
+          "goName": "ContentType",
+          "jsonName": "contentType",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SHA256",
+          "jsonName": "sha256",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Caption",
+          "jsonName": "caption",
+          "goType": "[]graphTextSpan",
+          "tsType": "GraphTextSpan[]",
+          "optional": true
+        },
+        {
+          "goName": "Width",
+          "jsonName": "width",
+          "goType": "float64",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "SizedWidth",
+          "jsonName": "sizedWidth",
+          "goType": "float64",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "Height",
+          "jsonName": "height",
+          "goType": "float64",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "Align",
+          "jsonName": "align",
+          "goType": "string",
+          "tsType": "\"left\" | \"center\" | \"right\"",
+          "optional": true
+        },
+        {
+          "goName": "AltText",
+          "jsonName": "altText",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ImageLink",
+          "jsonName": "imageLink",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CaptionVisible",
+          "jsonName": "captionVisible",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Color",
+          "jsonName": "color",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "NaturalSize",
+          "jsonName": "naturalSize",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SizeHidden",
+          "jsonName": "sizeHidden",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "PixelWidth",
+          "jsonName": "pixelWidth",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "PixelHeight",
+          "jsonName": "pixelHeight",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "ColumnWide",
+          "jsonName": "columnWide",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphMutationInput",
+      "tsName": "GraphMutationInput",
+      "fields": [
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Operations",
+          "jsonName": "operations",
+          "goType": "[]graphOperation",
+          "tsType": "GraphOperation[]"
+        },
+        {
+          "goName": "BasePageCursor",
+          "jsonName": "basePageCursor",
+          "goType": "*int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "BaseGraphRevision",
+          "jsonName": "baseGraphRevision",
+          "goType": "*int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "PageTitle",
+          "jsonName": "pageTitle",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "TextUpdates",
+          "jsonName": "textUpdates",
+          "goType": "[]graphTextUpdate",
+          "tsType": "GraphTextUpdate[]",
+          "optional": true
+        },
+        {
+          "goName": "PageKind",
+          "jsonName": "pageKind",
+          "goType": "*string",
+          "tsType": "\"page\" | \"database\"",
+          "optional": true
+        },
+        {
+          "goName": "ReplacesPage",
+          "jsonName": "replacesPage",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Words",
+          "jsonName": "words",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Typing",
+          "jsonName": "typing",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "RowTemplates",
+          "jsonName": "rowTemplates",
+          "goType": "[]graphRowTemplateFill",
+          "tsType": "GraphRowTemplateFill[]",
+          "optional": true
+        },
+        {
+          "goName": "AsHeld",
+          "jsonName": "asHeld",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphRowTemplateFill",
+      "tsName": "GraphRowTemplateFill",
+      "fields": [
+        {
+          "goName": "RowID",
+          "jsonName": "rowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TemplateID",
+          "jsonName": "templateId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "OrDefault",
+          "jsonName": "orDefault",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "TimeZone",
+          "jsonName": "timeZone",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Blocks",
+          "jsonName": "blocks",
+          "goType": "[]graphBlock",
+          "tsType": "GraphBlock[]",
+          "optional": true
+        },
+        {
+          "goName": "Words",
+          "jsonName": "words",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphTextSpan",
+      "tsName": "GraphTextSpan",
+      "fields": [
+        {
+          "goName": "Text",
+          "jsonName": "text",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Bold",
+          "jsonName": "bold",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Italic",
+          "jsonName": "italic",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Underline",
+          "jsonName": "underline",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Strikethrough",
+          "jsonName": "strikethrough",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Code",
+          "jsonName": "code",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Color",
+          "jsonName": "color",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Background",
+          "jsonName": "background",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Link",
+          "jsonName": "link",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CommentID",
+          "jsonName": "commentId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Mention",
+          "jsonName": "mention",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DatabaseID",
+          "jsonName": "databaseId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CustomEmojiID",
+          "jsonName": "customEmojiId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Date",
+          "jsonName": "date",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DateStartUnset",
+          "jsonName": "dateStartUnset",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DateEnd",
+          "jsonName": "dateEnd",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DateTimeZone",
+          "jsonName": "dateTimeZone",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DateReminder",
+          "jsonName": "dateReminder",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DateFormat",
+          "jsonName": "dateFormat",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DateTimeFormat",
+          "jsonName": "dateTimeFormat",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "UserID",
+          "jsonName": "userId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "IconURL",
+          "jsonName": "iconUrl",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Provider",
+          "jsonName": "provider",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Description",
+          "jsonName": "description",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ImageURL",
+          "jsonName": "imageUrl",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Equation",
+          "jsonName": "equation",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "EmptyPiece",
+          "jsonName": "emptyPiece",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Template",
+          "jsonName": "template",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Suggestion",
+          "jsonName": "suggestion",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SuggestionID",
+          "jsonName": "suggestionId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SuggestionBefore",
+          "jsonName": "suggestionBefore",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphTextUpdate",
+      "tsName": "GraphTextUpdate",
+      "fields": [
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Spans",
+          "jsonName": "spans",
+          "goType": "[]graphTextSpan",
+          "tsType": "GraphTextSpan[]"
+        }
+      ]
+    },
+    {
+      "goName": "graphPageMutationReceipt",
+      "tsName": "GraphPageMutationReceipt",
+      "fields": [
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Revision",
+          "jsonName": "revision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Cursor",
+          "jsonName": "cursor",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "UpdatedAt",
+          "jsonName": "updatedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "LastEditedBy",
+          "jsonName": "lastEditedBy",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "graphBlock",
+      "tsName": "GraphBlock",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ParentID",
+          "jsonName": "parentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "AfterID",
+          "jsonName": "afterId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "GraphBlockType"
+        },
+        {
+          "goName": "Content",
+          "jsonName": "content",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>"
+        },
+        {
+          "goName": "BaseContent",
+          "jsonName": "baseContent",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>",
+          "optional": true
+        },
+        {
+          "goName": "RestorePageConversion",
+          "jsonName": "restorePageConversion",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphBlockMove",
+      "tsName": "GraphBlockMove",
+      "fields": [
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ParentID",
+          "jsonName": "parentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "AfterID",
+          "jsonName": "afterId",
+          "goType": "*string",
+          "tsType": "string | null"
+        }
+      ]
+    },
+    {
+      "goName": "graphBlockDelete",
+      "tsName": "GraphBlockDelete",
+      "fields": [
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "KeepText",
+          "jsonName": "keepText",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDatabaseContainer",
+      "tsName": "GraphDatabaseContainer",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "BlockID",
+          "jsonName": "blockId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ParentBlockID",
+          "jsonName": "parentBlockId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Kind",
+          "jsonName": "kind",
+          "goType": "string",
+          "tsType": "\"source\" | \"linked\""
+        },
+        {
+          "goName": "SourceContainerID",
+          "jsonName": "sourceContainerId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "DataSourceIDs",
+          "jsonName": "dataSourceIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "ViewIDs",
+          "jsonName": "viewIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        }
+      ]
+    },
+    {
+      "goName": "graphDataSource",
+      "tsName": "GraphDataSource",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TitleOmitted",
+          "goType": "bool",
+          "goOnly": true
+        },
+        {
+          "goName": "TitleSpans",
+          "jsonName": "titleSpans",
+          "goType": "[]graphTextSpan",
+          "tsType": "GraphTextSpan[]",
+          "optional": true
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "*string",
+          "tsType": "GraphDataSourceIconType",
+          "optional": true
+        },
+        {
+          "goName": "Description",
+          "jsonName": "description",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "DescriptionHidden",
+          "jsonName": "descriptionHidden",
+          "goType": "*bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DescriptionSpans",
+          "jsonName": "descriptionSpans",
+          "goType": "[]graphTextSpan",
+          "tsType": "GraphTextSpan[]",
+          "optional": true
+        },
+        {
+          "goName": "Cover",
+          "jsonName": "cover",
+          "goType": "*string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CoverPosition",
+          "jsonName": "coverPosition",
+          "goType": "*int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "ManageAccess",
+          "jsonName": "manageAccess",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SprintStatusPropertyID",
+          "jsonName": "sprintStatusPropertyId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ProjectDatabase",
+          "jsonName": "projectDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "MeetingDatabase",
+          "jsonName": "meetingDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DocsDatabase",
+          "jsonName": "docsDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "TaskDatabase",
+          "jsonName": "taskDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SprintFutureOptionID",
+          "jsonName": "sprintFutureOptionId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "SourcePageInTrash",
+          "jsonName": "sourcePageInTrash",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SourceInTrash",
+          "jsonName": "sourceInTrash",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "AutomationCount",
+          "jsonName": "automationCount",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "UntitledRowName",
+          "jsonName": "untitledRowName",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "UntitledName",
+          "jsonName": "untitledName",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "PeopleDatabase",
+          "jsonName": "peopleDatabase",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "FixedPropertyIDs",
+          "jsonName": "fixedPropertyIds",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDatabaseDelete",
+      "tsName": "GraphDatabaseDelete",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "RelatedProperty",
+          "jsonName": "relatedProperty",
+          "goType": "string",
+          "tsType": "\"delete\" | \"keep\"",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDatabaseView",
+      "tsName": "GraphView",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ContainerID",
+          "jsonName": "containerId",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "GraphViewType"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Config",
+          "jsonName": "config",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>"
+        },
+        {
+          "goName": "TimelineDependency",
+          "jsonName": "timelineDependency",
+          "goType": "*graphTimelineDependency",
+          "tsType": "GraphTimelineDependency",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphTimelineDependency",
+      "tsName": "GraphTimelineDependency",
+      "fields": [
+        {
+          "goName": "Enabled",
+          "jsonName": "enabled",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "PredecessorPropertyID",
+          "jsonName": "predecessorPropertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Revision",
+          "jsonName": "revision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "graphDatabaseViewUpdate",
+      "tsName": "GraphViewUpdate",
+      "fields": [
+        {
+          "goName": "Base",
+          "jsonName": "base",
+          "goType": "graphDatabaseView",
+          "tsType": "GraphView"
+        },
+        {
+          "goName": "View",
+          "jsonName": "view",
+          "goType": "graphDatabaseView",
+          "tsType": "GraphView"
+        }
+      ]
+    },
+    {
+      "goName": "graphProperty",
+      "tsName": "GraphProperty",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "GraphValueType"
+        },
+        {
+          "goName": "Name",
+          "jsonName": "name",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Config",
+          "jsonName": "config",
+          "goType": "json.RawMessage",
+          "tsType": "Record<string, unknown>"
+        },
+        {
+          "goName": "Access",
+          "jsonName": "access",
+          "goType": "*graphPropertyAccess",
+          "tsType": "{ restricted: boolean; level: \"edit\" | \"edit_values\" | \"view\" | \"view_property\" | \"none\"; editsProperty: boolean; variesByPerson?: boolean }",
+          "optional": true
+        },
+        {
+          "goName": "SprintManaged",
+          "jsonName": "sprintManaged",
+          "goType": "string",
+          "tsType": "\"taskSprint\" | \"sprintTasks\" | \"sprintStatus\"",
+          "optional": true
+        },
+        {
+          "goName": "PublicOrder",
+          "jsonName": "publicOrder",
+          "keepsZero": true,
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphRowValue",
+      "tsName": "GraphRowValue",
+      "fields": [
+        {
+          "goName": "Type",
+          "jsonName": "type",
+          "goType": "string",
+          "tsType": "GraphValueType"
+        },
+        {
+          "goName": "Value",
+          "jsonName": "value",
+          "goType": "json.RawMessage",
+          "tsType": "unknown"
+        },
+        {
+          "goName": "Spans",
+          "jsonName": "spans",
+          "goType": "[]graphTextSpan",
+          "tsType": "GraphTextSpan[]",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDatabaseRow",
+      "tsName": "GraphRow",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SubitemParentID",
+          "jsonName": "subitemParentId",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "Position",
+          "jsonName": "position",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "IconType",
+          "jsonName": "iconType",
+          "goType": "string",
+          "tsType": "\"none\" | \"emoji\" | \"image\" | \"custom_emoji\" | \"icon\"",
+          "optional": true
+        },
+        {
+          "goName": "Cover",
+          "jsonName": "cover",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CoverPosition",
+          "jsonName": "coverPosition",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "ArchivedAt",
+          "jsonName": "archivedAt",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ArchivedBy",
+          "jsonName": "archivedBy",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CreatedAt",
+          "jsonName": "createdAt",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "CreatedBy",
+          "jsonName": "createdBy",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "UpdatedAt",
+          "jsonName": "updatedAt",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "LastEditedBy",
+          "jsonName": "lastEditedBy",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "LockedForMe",
+          "jsonName": "lockedForMe",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "HasContent",
+          "jsonName": "hasContent",
+          "keepsZero": true,
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "FullWidth",
+          "jsonName": "fullWidth",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "SmallText",
+          "jsonName": "smallText",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Values",
+          "jsonName": "values",
+          "goType": "map[string]graphRowValue",
+          "tsType": "Record<string, GraphRowValue>"
+        },
+        {
+          "goName": "HiddenValues",
+          "jsonName": "hiddenValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ReadOnlyValues",
+          "jsonName": "readOnlyValues",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ReadOnlyForMe",
+          "jsonName": "readOnlyForMe",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDependencyBinding",
+      "tsName": "GraphDependencyBinding",
+      "fields": [
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PredecessorPropertyID",
+          "jsonName": "predecessorPropertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SuccessorPropertyID",
+          "jsonName": "successorPropertyId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataKey",
+          "jsonName": "dataKey",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ExpectedRevision",
+          "jsonName": "expectedRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "graphDependencyEdge",
+      "tsName": "GraphDependencyEdge",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "PredecessorRowID",
+          "jsonName": "predecessorRowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "SuccessorRowID",
+          "jsonName": "successorRowId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ExpectedRevision",
+          "jsonName": "expectedRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "graphDependencyEdgeDelete",
+      "tsName": "GraphDependencyEdgeDelete",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DataSourceID",
+          "jsonName": "dataSourceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ExpectedRevision",
+          "jsonName": "expectedRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "graphMutationCounts",
+      "tsName": "GraphMutationCounts",
+      "fields": [
+        {
+          "goName": "Blocks",
+          "jsonName": "blocks",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "DataSources",
+          "jsonName": "dataSources",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Views",
+          "jsonName": "views",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Properties",
+          "jsonName": "properties",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Rows",
+          "jsonName": "rows",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "RowValues",
+          "jsonName": "rowValues",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "DependencyBindings",
+          "jsonName": "dependencyBindings",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "DependencyEdges",
+          "jsonName": "dependencyEdges",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "graphMutationReceipt",
+      "tsName": "GraphMutationReceipt",
+      "fields": [
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string",
+          "dbTag": "mutation_id"
+        },
+        {
+          "goName": "Cursor",
+          "jsonName": "graphRevision",
+          "goType": "int",
+          "tsType": "number",
+          "dbTag": "cursor"
+        },
+        {
+          "goName": "LegacyCursor",
+          "jsonName": "cursor",
+          "goType": "int",
+          "tsType": "number",
+          "deprecated": "The old name of graphRevision, the same number, still written for clients that read it; it is not the page's cursor (page.cursor, which basePageCursor takes)."
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "Counts",
+          "jsonName": "counts",
+          "goType": "graphMutationCounts",
+          "tsType": "GraphMutationCounts"
+        },
+        {
+          "goName": "StateVector",
+          "jsonName": "stateVector",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TextUpdate",
+          "jsonName": "textUpdate",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "Page",
+          "jsonName": "page",
+          "goType": "*graphPageMutationReceipt",
+          "tsType": "GraphPageMutationReceipt",
+          "optional": true
+        },
+        {
+          "goName": "PropertyConversions",
+          "jsonName": "propertyConversions",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "MergedBlockContent",
+          "jsonName": "mergedBlockContent",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DateCommand",
+          "jsonName": "dateCommand",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "KeptSyncedCopies",
+          "jsonName": "keptSyncedCopies",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShifts",
+          "jsonName": "dependencyShifts",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShiftTasks",
+          "jsonName": "dependencyShiftTasks",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "DependencyShiftsDenied",
+          "jsonName": "dependencyShiftsDenied",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "RelatedChanges",
+          "jsonName": "relatedChanges",
+          "goType": "int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "WordsStored",
+          "jsonName": "wordsStored",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "goName": "graphDateCommandRestore",
+      "tsName": "GraphDateCommandRestore",
+      "fields": [
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Forward",
+          "jsonName": "forward",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "graphChange",
+      "tsName": "GraphChange",
+      "fields": [
+        {
+          "goName": "Cursor",
+          "jsonName": "cursor",
+          "goType": "int",
+          "tsType": "number",
+          "dbTag": "cursor"
+        },
+        {
+          "goName": "MutationID",
+          "jsonName": "mutationId",
+          "goType": "string",
+          "tsType": "string",
+          "dbTag": "mutation_id"
+        },
+        {
+          "goName": "Update",
+          "jsonName": "update",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "graphChangeResponse",
+      "tsName": "GraphChangeResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Changes",
+          "jsonName": "changes",
+          "goType": "[]graphChange",
+          "tsType": "GraphChange[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*int",
+          "tsType": "number | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "graphReadResponse",
+      "tsName": "GraphReadResponse",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Items",
+          "jsonName": "items",
+          "goType": "[]graphReadItem",
+          "tsType": "GraphReadItem[]"
+        },
+        {
+          "goName": "SnapshotRevision",
+          "jsonName": "snapshotRevision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "*string",
+          "tsType": "string | null"
+        },
+        {
+          "goName": "HasMore",
+          "jsonName": "hasMore",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "CanEdit",
+          "jsonName": "canEdit",
+          "keepsZero": true,
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "CanSuggest",
+          "jsonName": "canSuggest",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Busy",
+          "jsonName": "busy",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        },
+        {
+          "goName": "ChangedSince",
+          "jsonName": "changedSince",
+          "goType": "*int",
+          "tsType": "number",
+          "optional": true
+        },
+        {
+          "goName": "GoneRows",
+          "jsonName": "goneRows",
+          "goType": "[]string",
+          "tsType": "string[]",
+          "optional": true
+        },
+        {
+          "goName": "ChangedDatabases",
+          "jsonName": "changedDatabases",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "ChangedBlocks",
+          "jsonName": "changedBlocks",
+          "goType": "bool",
+          "tsType": "boolean",
+          "optional": true
+        },
+        {
+          "goName": "Words",
+          "jsonName": "words",
+          "goType": "string",
+          "tsType": "string",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "operation": {
+    "goName": "graphOperation",
+    "tsName": "GraphOperation",
+    "variants": [
+      {
+        "kind": "upsertBlock",
+        "goField": "Block",
+        "jsonField": "block",
+        "goType": "*graphBlock",
+        "tsType": "GraphBlock"
+      },
+      {
+        "kind": "moveBlock",
+        "goField": "Move",
+        "jsonField": "move",
+        "goType": "*graphBlockMove",
+        "tsType": "GraphBlockMove"
+      },
+      {
+        "kind": "deleteBlock",
+        "goField": "Deletion",
+        "jsonField": "deletion",
+        "goType": "*graphBlockDelete",
+        "tsType": "GraphBlockDelete"
+      },
+      {
+        "kind": "upsertDataSource",
+        "goField": "DataSource",
+        "jsonField": "dataSource",
+        "goType": "*graphDataSourceWrite",
+        "tsType": "GraphDataSourceWrite"
+      },
+      {
+        "kind": "deleteDataSource",
+        "goField": "DataSourceDeletion",
+        "jsonField": "dataSourceDeletion",
+        "goType": "*graphDatabaseDelete",
+        "tsType": "GraphDatabaseDelete"
+      },
+      {
+        "kind": "upsertView",
+        "goField": "View",
+        "jsonField": "view",
+        "goType": "*graphDatabaseView",
+        "tsType": "GraphView"
+      },
+      {
+        "kind": "updateView",
+        "goField": "ViewUpdate",
+        "jsonField": "viewUpdate",
+        "goType": "*graphDatabaseViewUpdate",
+        "tsType": "GraphViewUpdate"
+      },
+      {
+        "kind": "deleteView",
+        "goField": "ViewDeletion",
+        "jsonField": "viewDeletion",
+        "goType": "*graphDatabaseDelete",
+        "tsType": "GraphDatabaseDelete"
+      },
+      {
+        "kind": "upsertProperty",
+        "goField": "Property",
+        "jsonField": "property",
+        "goType": "*graphProperty",
+        "tsType": "GraphProperty"
+      },
+      {
+        "kind": "deleteProperty",
+        "goField": "PropertyDeletion",
+        "jsonField": "propertyDeletion",
+        "goType": "*graphDatabaseDelete",
+        "tsType": "GraphDatabaseDelete"
+      },
+      {
+        "kind": "upsertRow",
+        "goField": "Row",
+        "jsonField": "row",
+        "goType": "*graphDatabaseRow",
+        "tsType": "GraphRow"
+      },
+      {
+        "kind": "restoreDateCommand",
+        "goField": "DateRestore",
+        "jsonField": "dateRestore",
+        "goType": "*graphDateCommandRestore",
+        "tsType": "GraphDateCommandRestore"
+      },
+      {
+        "kind": "deleteRow",
+        "goField": "RowDeletion",
+        "jsonField": "rowDeletion",
+        "goType": "*graphDatabaseDelete",
+        "tsType": "GraphDatabaseDelete"
+      },
+      {
+        "kind": "configureDependency",
+        "goField": "DependencyBinding",
+        "jsonField": "dependencyBinding",
+        "goType": "*graphDependencyBinding",
+        "tsType": "GraphDependencyBinding"
+      },
+      {
+        "kind": "upsertDependencyEdge",
+        "goField": "DependencyEdge",
+        "jsonField": "dependencyEdge",
+        "goType": "*graphDependencyEdge",
+        "tsType": "GraphDependencyEdge"
+      },
+      {
+        "kind": "deleteDependencyEdge",
+        "goField": "DependencyEdgeDeletion",
+        "jsonField": "dependencyEdgeDeletion",
+        "goType": "*graphDependencyEdgeDelete",
+        "tsType": "GraphDependencyEdgeDelete"
+      }
+    ]
+  },
+  "readItem": {
+    "goName": "graphReadItem",
+    "tsName": "GraphReadItem",
+    "variants": [
+      {
+        "kind": "block",
+        "tsType": "GraphBlock"
+      },
+      {
+        "kind": "databaseContainer",
+        "tsType": "GraphDatabaseContainer"
+      },
+      {
+        "kind": "dataSource",
+        "tsType": "GraphDataSource"
+      },
+      {
+        "kind": "view",
+        "tsType": "GraphView"
+      },
+      {
+        "kind": "property",
+        "tsType": "GraphProperty"
+      },
+      {
+        "kind": "row",
+        "tsType": "GraphRow"
+      }
+    ]
+  }
+}

@@ -1,0 +1,153 @@
+/* The Latin and Korean faces; Japanese's and Chinese's are declared once the
+   page is in that language (lib/localeFontFaces.ts), each drawn as below. */
+@import "./typography.generated.css";
+
+/* The serif and code faces are bundled as the UI's are, so a serif page and
+   a code block look the same on every device (font decision B, 2026-10-30):
+   Source Serif 4 stands for Notion's Lyon Text, which is not open, with
+   Noto Serif for each CJK script; code is in Notion's iA Writer Mono. A
+   formula's code (its editor, an automation's message) is in it too, where
+   Notion's takes the device's SFMono, Menlo or Consolas — the same face on
+   every device, as that decision chose. What the bundled UI faces lack goes
+   to the device's own face in Notion's order (read 2026-11-18), arrows and
+   mathematical operators among it (≥ ≤ ≠ →: SF on a Mac, Segoe UI on
+   Windows), which the CJK sans faces leave to it
+   (scripts/vendor-typography-fonts.mjs): they drew them a full em wide, 14
+   at 14px where Notion's ≥ is 8.67. Each bundled UI face is followed by its
+   stand-in (below), which draws only while that face is on its way. */
+:root {
+  --font-ui-latin: "Leafen Inter";
+  --font-ui-cjk: "Leafen Noto Sans KR";
+  --font-serif-cjk: "Leafen Noto Serif KR";
+  --font-ui: var(--font-ui-latin), "Leafen Inter Fallback", var(--font-ui-cjk), "Leafen Noto Sans KR Fallback", ui-sans-serif,
+    -apple-system, system-ui, "Segoe UI Variable Display", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-serif: "Leafen Source Serif 4", var(--font-serif-cjk), Georgia, ui-serif, serif;
+  --font-mono: "Leafen iA Writer Mono", var(--font-ui-cjk), monospace;
+}
+
+/* While a bundled UI face is on its way (font-display: swap), its text is
+   drawn in a device face sized to it — the standard fallback-metric
+   adjustment: size-adjust for the width, the ascent, descent and line-gap
+   overrides for the line — so the text keeps its width and its baseline when
+   the bundled face takes over. Drawn in the device's face as it was, a 13px
+   Korean line on the loading screen was 188px wide and became 197.66 when Noto Sans KR and
+   Inter came, its baseline dropping a pixel in between (2026-11-18, Chrome,
+   a first visit to a NAS-class server; the user saw it as the line changing
+   shape once). Measured in Chrome on a Mac at 12–14px: Inter is 1.0598 ×
+   Arial's width at 400 and 1.0206 × at 700, Noto Sans KR's Hangul 1.0636 ×
+   Apple SD Gothic Neo's at every weight; Inter's ascent and descent are
+   0.969 and 0.241, Noto Sans KR's 1.16 and 0.288 (each override is that ÷
+   the size-adjust). A stand-in claims only what its bundled face claims
+   (Inter's Latin, Korean's Hangul), so it never draws a sign the bundled
+   faces leave to the device's own face. Where the device lacks the stand-in
+   (no Arial, no Apple SD Gothic Neo), its own face draws as before. */
+@font-face {
+  font-family: "Leafen Inter Fallback";
+  font-weight: 400;
+  src: local("Arial"), local("ArialMT");
+  size-adjust: 105.98%;
+  ascent-override: 91.43%;
+  descent-override: 22.74%;
+  line-gap-override: 0%;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Leafen Inter Fallback";
+  font-weight: 700;
+  src: local("Arial Bold"), local("Arial-BoldMT");
+  size-adjust: 102.06%;
+  ascent-override: 94.94%;
+  descent-override: 23.61%;
+  line-gap-override: 0%;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Leafen Noto Sans KR Fallback";
+  font-weight: 400;
+  src: local("Apple SD Gothic Neo"), local("AppleSDGothicNeo-Regular");
+  size-adjust: 106.36%;
+  ascent-override: 109.06%;
+  descent-override: 27.08%;
+  line-gap-override: 0%;
+  unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+}
+
+@font-face {
+  font-family: "Leafen Noto Sans KR Fallback";
+  font-weight: 500;
+  src: local("Apple SD Gothic Neo Medium"), local("AppleSDGothicNeo-Medium");
+  size-adjust: 106.36%;
+  ascent-override: 109.06%;
+  descent-override: 27.08%;
+  line-gap-override: 0%;
+  unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+}
+
+@font-face {
+  font-family: "Leafen Noto Sans KR Fallback";
+  font-weight: 600;
+  src: local("Apple SD Gothic Neo SemiBold"), local("AppleSDGothicNeo-SemiBold");
+  size-adjust: 106.36%;
+  ascent-override: 109.06%;
+  descent-override: 27.08%;
+  line-gap-override: 0%;
+  unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+}
+
+@font-face {
+  font-family: "Leafen Noto Sans KR Fallback";
+  font-weight: 700;
+  src: local("Apple SD Gothic Neo Bold"), local("AppleSDGothicNeo-Bold");
+  size-adjust: 106.36%;
+  ascent-override: 109.06%;
+  descent-override: 27.08%;
+  line-gap-override: 0%;
+  unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7A3, U+D7B0-D7FF;
+}
+
+/* Inter's contextual alternates draw a typed "->" or "-->" as one arrow: what
+   was typed shows as typed, as Notion's system face shows it (2026-11-07). */
+html {
+  font-variant-ligatures: no-contextual;
+}
+
+html:lang(ko) {
+  --font-ui-cjk: "Leafen Noto Sans KR";
+  --font-serif-cjk: "Leafen Noto Serif KR";
+}
+
+html:lang(ja) {
+  --font-ui-cjk: "Leafen Noto Sans JP";
+  --font-serif-cjk: "Leafen Noto Serif JP";
+}
+
+html:lang(zh-Hans),
+html:lang(zh-CN),
+html:lang(zh-SG) {
+  --font-ui-cjk: "Leafen Noto Sans SC";
+  --font-serif-cjk: "Leafen Noto Serif SC";
+}
+
+html:lang(zh-Hant),
+html:lang(zh-TW),
+html:lang(zh-HK),
+html:lang(zh-MO) {
+  --font-ui-cjk: "Leafen Noto Sans TC";
+  --font-serif-cjk: "Leafen Noto Serif TC";
+}
+
+/* A page's emoji icons — its head's, its links', its mentions' — are drawn
+   from the emoji fonts in a serif or mono page, where and as large as in a
+   page in the default font, as Notion's (seen 2026-11-13: ☕ at 503,130.5,
+   78 by 102.5 in either, its emoji fonts "Apple Color Emoji", "Segoe UI
+   Emoji", "Segoe UI Symbol"): the mono face's own ☕, a small white outline,
+   was drawn in its place. The UI face first keeps the line the default one
+   makes (data-emoji-glyph: PageIcon; a mention's: pageMentionIconCss). */
+:is([data-font="serif"], [data-font="mono"]) [data-emoji-glyph],
+:is([data-font="serif"], [data-font="mono"]) :is(a[data-mention="page"], span[data-mention="page"][href])::before {
+  font-family: var(--font-ui-latin), "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+}

@@ -1,0 +1,271 @@
+/* The row's control side, Notion's (seen 2026-11-14): "초기화" and the
+   chooser at the row's end, and a refused page's words 8px under them. The
+   settings row lays its blocks out as grids; this one is a column. */
+.end.end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* With the words, the side is Notion's quarter of the row beside the
+   other three (flex 1 to 3, 12px apart: 197px of an 800px row), the
+   chooser at its start and the words across it. */
+.end.end[data-landing-page-hidden="true"] {
+  align-items: stretch;
+  inline-size: calc(25% - 3px);
+}
+
+/* "초기화" and the chooser on one line. */
+.wrap.wrap {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Notion's red words under a refused page's chooser: 12px on 16px. */
+.hiddenNote {
+  color: var(--danger);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: start;
+}
+
+/* "초기화" before the chosen page: Notion's blue words (seen 2026-11-09). */
+.reset {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-blue);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.reset:hover:not(:disabled) {
+  color: var(--accent-blue-hover);
+}
+
+/* An outlined chooser, as Notion's settings rows' choosers ("페이지 선택하기 ⌄",
+   "다크 모드 ⌄", seen 2026-11-14): 28px, 8px in, the chosen page's 16px
+   icon, its title 14px medium up to 200px, and the thin chevron, 6px apart. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* On a phone, as a settings row's other choices there (AppSelect.module.css). */
+.trigger[data-phone] {
+  min-height: 36px;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 8px;
+}
+
+.trigger:hover:not(:disabled),
+.trigger[aria-expanded="true"] {
+  background: var(--bg-hover);
+}
+
+.trigger:disabled {
+  cursor: default;
+  color: var(--text-secondary);
+}
+
+.triggerIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.trigger > span.value {
+  max-width: 200px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  flex: none;
+  color: var(--icon-secondary);
+}
+
+/* The open list, placed over the window by WorkspaceLandingPage, as Notion's
+   (seen 2026-11-14): 250px rounded 10px, its filter a 24px field 12px in and
+   8px down, the pages under it 4px in, a pixel apart, and "+ 새 페이지
+   생성하기" under a line kept 12px from the sides. */
+.panel {
+  width: 250px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+/* On a touch screen's sheet the list lies in the sheet's group, flat and
+   as long as the sheet lets it be (WorkspaceLandingPage). */
+.panel[data-in-sheet="true"] {
+  position: static;
+  width: auto;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.filterRow {
+  padding: 8px 12px 0;
+}
+
+/* A filled field, its magnifier 4px in and the words 6px after it, ringed
+   blue while typed in. */
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding-block: 4px;
+  padding-inline: 4px 10px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  cursor: text;
+}
+
+.filter:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.filter > svg {
+  flex: none;
+}
+
+.filter > input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.menu:focus {
+  outline: none;
+}
+
+.list,
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+}
+
+.foot {
+  position: relative;
+  margin-top: 1px;
+}
+
+.foot::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -1px;
+  inset-inline: 12px;
+  height: 1px;
+  background: var(--menu-divider);
+}
+
+/* A row: its 20px icon 8px in, the words 8px after it in 14px; a page
+   with pages above it is 45px, their names under its own in 12px gray. */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: start;
+  cursor: pointer;
+}
+
+.option[data-two-line="true"] {
+  min-height: 45px;
+  padding-block: 4px;
+}
+
+.option[data-two-line="true"] > .icon {
+  align-self: start;
+  margin-top: 1px;
+}
+
+.option:hover,
+.option[data-focused="true"] {
+  background: var(--bg-hover);
+}
+
+.option[data-focused="true"][data-focus-visible="true"] {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.empty {
+  padding: 6px 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* A page's title with the pages above it on a line under it. */
+.optionText {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.location {
+  margin-top: 2px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.4;
+}

@@ -1,0 +1,87 @@
+/* A member's "멤버 초대 요청", as Notion's (seen 2026-11-21 in two tabs of the
+   business trial's member, 1440 dpr 1, dark): 420 wide and 20 in, round 12;
+   its title 16/24 500; 10 under it the address field, 28 tall, round 4, its
+   words 14/20 3 down; 10 under the field a line across, and 5 under the line
+   "요청 이유" 16/24; 5 under that the reason, 8 in a faint box round 6 with a
+   1px ring, three 14/20 lines 60 tall; 15 under the box the foot, a 12/16
+   grey note on the left and the 32-tall blue "초대 요청" (12 in, round 6) on
+   the right — 269 tall in all. Set over the add dialog's own look
+   (WorkspaceAddMembersDialog.module.css), hence the attribute. */
+.dialog[data-member-request] {
+  width: min(420px, 100%);
+  padding: 20px;
+}
+
+.title {
+  margin: 0 0 10px;
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+[data-member-request] .field {
+  min-height: 28px;
+  padding: 3px 6px 5px;
+  border-radius: 4px;
+}
+
+/* The line under the field, drawn in the label's top 5 so the window keeps
+   Notion's height. Notion draws "요청 이유" in its light theme's grey on dark
+   (rgba(55,53,47,.7), near the window's own colour); Leafen gives it the
+   secondary text colour in either theme, readable. */
+.reason {
+  display: block;
+  margin-block-start: 10px;
+  padding-block-start: 5px;
+  box-shadow: inset 0 1px 0 var(--block-divider);
+  color: var(--text-secondary);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.reasonBox {
+  composes: messageField from "../teamspace/TeamspaceRequestWindow.module.css";
+  margin-block-start: 5px;
+}
+
+.reasonText {
+  composes: message from "../teamspace/TeamspaceRequestWindow.module.css";
+}
+
+.foot {
+  composes: foot from "../teamspace/TeamspaceRequestWindow.module.css";
+}
+
+.note {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.send {
+  flex: 0 0 auto;
+  height: 32px;
+  margin-inline-start: 20px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.send:hover,
+.send:focus-visible {
+  background: var(--accent-blue-hover);
+  outline: none;
+}
+
+.send:disabled {
+  cursor: default;
+  opacity: 0.4;
+}

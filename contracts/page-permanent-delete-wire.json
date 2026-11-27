@@ -1,0 +1,1063 @@
+{
+  "schemaVersion": 1,
+  "name": "page-permanent-delete",
+  "operations": [
+    {
+      "goName": "pagePermanentDelete",
+      "tsName": "deletePagePermanently",
+      "method": "POST",
+      "path": "/pages/{pageId}/permanent-delete"
+    },
+    {
+      "goName": "pageTrashEmpty",
+      "tsName": "emptyTrash",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/trash/empty"
+    },
+    {
+      "goName": "pageDeletedPages",
+      "tsName": "listDeletedPages",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/deleted-pages"
+    },
+    {
+      "goName": "pageDeletedPageRecover",
+      "tsName": "recoverDeletedPage",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/deleted-pages/{pageId}/recover"
+    },
+    {
+      "goName": "pageDeletedPagePurge",
+      "tsName": "purgeDeletedPage",
+      "method": "POST",
+      "path": "/workspaces/{workspaceId}/deleted-pages/{pageId}/purge"
+    },
+    {
+      "goName": "pageTrashLegalHolds",
+      "tsName": "readTrashLegalHolds",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/trash/legal-holds"
+    },
+    {
+      "goName": "pageTrashList",
+      "tsName": "listTrash",
+      "method": "GET",
+      "path": "/workspaces/{workspaceId}/trash"
+    }
+  ],
+  "bounds": [
+    {
+      "goName": "maxPagePermanentDeleteRequestIDRunes",
+      "tsName": "requestIdRunes",
+      "value": 255
+    },
+    {
+      "goName": "maxPagePermanentDeleteItemsPerRequest",
+      "tsName": "itemsPerRequest",
+      "value": 32
+    },
+    {
+      "goName": "maxTrashEmptyRootsPerRequest",
+      "tsName": "trashEmptyRootsPerRequest",
+      "value": 32
+    },
+    {
+      "goName": "maxTrashEmptyDiscoveryStepsPerRequest",
+      "tsName": "trashEmptyDiscoveryStepsPerRequest",
+      "value": 32
+    },
+    {
+      "goName": "maxTrashEmptyChildJobsPerRequest",
+      "tsName": "trashEmptyChildJobsPerRequest",
+      "value": 1
+    },
+    {
+      "goName": "pageTrashListWindow",
+      "tsName": "trashListWindow",
+      "value": 100
+    }
+  ],
+  "errorCodes": [
+    {
+      "goName": "errorCodePagePermanentDeleteInvalid",
+      "tsName": "invalid",
+      "value": "LEAFEN_PAGE_PERMANENT_DELETE_INVALID"
+    },
+    {
+      "goName": "errorCodePagePermanentDeleteNotTrashed",
+      "tsName": "notTrashed",
+      "value": "LEAFEN_PAGE_PERMANENT_DELETE_NOT_TRASHED"
+    },
+    {
+      "goName": "errorCodePagePermanentDeleteRequestIDReused",
+      "tsName": "requestIdReused",
+      "value": "LEAFEN_PAGE_PERMANENT_DELETE_REQUEST_ID_REUSED"
+    },
+    {
+      "goName": "errorCodePagePermanentDeleteConflict",
+      "tsName": "conflict",
+      "value": "LEAFEN_PAGE_PERMANENT_DELETE_CONFLICT"
+    },
+    {
+      "goName": "errorCodePagePermanentDeleteUnavailable",
+      "tsName": "unavailable",
+      "value": "LEAFEN_PAGE_PERMANENT_DELETE_UNAVAILABLE"
+    },
+    {
+      "goName": "errorCodePagePermanentDeleteLegalHold",
+      "tsName": "legalHold",
+      "value": "LEAFEN_LEGAL_HOLD_PREVENTS_PERMANENT_DELETE"
+    },
+    {
+      "goName": "errorCodeTrashEmptyInvalid",
+      "tsName": "trashEmptyInvalid",
+      "value": "LEAFEN_TRASH_EMPTY_INVALID"
+    },
+    {
+      "goName": "errorCodeTrashEmptyRequestIDReused",
+      "tsName": "trashEmptyRequestIdReused",
+      "value": "LEAFEN_TRASH_EMPTY_REQUEST_ID_REUSED"
+    },
+    {
+      "goName": "errorCodeTrashEmptyConflict",
+      "tsName": "trashEmptyConflict",
+      "value": "LEAFEN_TRASH_EMPTY_CONFLICT"
+    },
+    {
+      "goName": "errorCodeTrashEmptyUnavailable",
+      "tsName": "trashEmptyUnavailable",
+      "value": "LEAFEN_TRASH_EMPTY_UNAVAILABLE"
+    }
+  ],
+  "enums": [
+    {
+      "tsName": "PagePermanentDeleteStatus",
+      "tsValuesName": "pagePermanentDeleteStatuses",
+      "values": [
+        {
+          "goName": "pagePermanentDeleteStatusPending",
+          "tsName": "pending",
+          "value": "pending"
+        },
+        {
+          "goName": "pagePermanentDeleteStatusCompleted",
+          "tsName": "completed",
+          "value": "completed"
+        }
+      ]
+    },
+    {
+      "tsName": "PagePermanentDeletePhase",
+      "tsValuesName": "pagePermanentDeletePhases",
+      "values": [
+        {
+          "goName": "pagePermanentDeletePhaseDiscovering",
+          "tsName": "discovering",
+          "value": "discovering"
+        },
+        {
+          "goName": "pagePermanentDeletePhaseAuthorizing",
+          "tsName": "authorizing",
+          "value": "authorizing"
+        },
+        {
+          "goName": "pagePermanentDeletePhaseCleaning",
+          "tsName": "cleaning",
+          "value": "cleaning"
+        },
+        {
+          "goName": "pagePermanentDeletePhasePublishing",
+          "tsName": "publishing",
+          "value": "publishing"
+        },
+        {
+          "goName": "pagePermanentDeletePhaseCompleted",
+          "tsName": "completed",
+          "value": "completed"
+        }
+      ]
+    },
+    {
+      "tsName": "TrashEmptyStatus",
+      "tsValuesName": "trashEmptyStatuses",
+      "values": [
+        {
+          "goName": "trashEmptyStatusPending",
+          "tsName": "pending",
+          "value": "pending"
+        },
+        {
+          "goName": "trashEmptyStatusCompleted",
+          "tsName": "completed",
+          "value": "completed"
+        }
+      ]
+    },
+    {
+      "tsName": "TrashEmptyPhase",
+      "tsValuesName": "trashEmptyPhases",
+      "values": [
+        {
+          "goName": "trashEmptyPhaseDiscovering",
+          "tsName": "discovering",
+          "value": "discovering"
+        },
+        {
+          "goName": "trashEmptyPhaseAdmitting",
+          "tsName": "admitting",
+          "value": "admitting"
+        },
+        {
+          "goName": "trashEmptyPhaseDeleting",
+          "tsName": "deleting",
+          "value": "deleting"
+        },
+        {
+          "goName": "trashEmptyPhaseCompleted",
+          "tsName": "completed",
+          "value": "completed"
+        }
+      ]
+    },
+    {
+      "tsName": "TrashLineKind",
+      "tsValuesName": "trashLineKinds",
+      "values": [
+        {
+          "goName": "pageTrashLinePage",
+          "tsName": "page",
+          "value": "page"
+        },
+        {
+          "goName": "pageTrashLineDatabasePage",
+          "tsName": "databasePage",
+          "value": "database_page"
+        },
+        {
+          "goName": "pageTrashLineDatabase",
+          "tsName": "database",
+          "value": "database"
+        }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "pagePermanentDeleteInput",
+      "tsName": "PagePermanentDeleteInput",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "pagePermanentDeleteCounts",
+      "tsName": "PagePermanentDeleteCounts",
+      "fields": [
+        {
+          "goName": "Pages",
+          "jsonName": "pages",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "pagePermanentDeleteProgress",
+      "tsName": "PagePermanentDeleteProgress",
+      "fields": [
+        {
+          "goName": "Revision",
+          "jsonName": "revision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Discovered",
+          "jsonName": "discovered",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Authorized",
+          "jsonName": "authorized",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Cleaned",
+          "jsonName": "cleaned",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "pagePermanentDeleteResponse",
+      "tsName": "PagePermanentDeleteResponse",
+      "fields": [
+        {
+          "goName": "JobID",
+          "jsonName": "jobId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "RootPageID",
+          "jsonName": "rootPageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Status",
+          "jsonName": "status",
+          "goType": "string",
+          "tsType": "PagePermanentDeleteStatus"
+        },
+        {
+          "goName": "Phase",
+          "jsonName": "phase",
+          "goType": "string",
+          "tsType": "PagePermanentDeletePhase"
+        },
+        {
+          "goName": "Progress",
+          "jsonName": "progress",
+          "goType": "pagePermanentDeleteProgress",
+          "tsType": "PagePermanentDeleteProgress"
+        },
+        {
+          "goName": "Counts",
+          "jsonName": "counts",
+          "goType": "pagePermanentDeleteCounts",
+          "tsType": "PagePermanentDeleteCounts"
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "AlreadyDeleted",
+          "jsonName": "alreadyDeleted",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "trashEmptyInput",
+      "tsName": "TrashEmptyInput",
+      "fields": [
+        {
+          "goName": "RequestID",
+          "jsonName": "requestId",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "trashEmptyCounts",
+      "tsName": "TrashEmptyCounts",
+      "fields": [
+        {
+          "goName": "Roots",
+          "jsonName": "roots",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "trashEmptyProgress",
+      "tsName": "TrashEmptyProgress",
+      "fields": [
+        {
+          "goName": "Revision",
+          "jsonName": "revision",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Discovered",
+          "jsonName": "discovered",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Admitted",
+          "jsonName": "admitted",
+          "goType": "int",
+          "tsType": "number"
+        },
+        {
+          "goName": "Completed",
+          "jsonName": "completed",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "trashEmptyResponse",
+      "tsName": "TrashEmptyResponse",
+      "fields": [
+        {
+          "goName": "JobID",
+          "jsonName": "jobId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "WorkspaceID",
+          "jsonName": "workspaceId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Status",
+          "jsonName": "status",
+          "goType": "string",
+          "tsType": "TrashEmptyStatus"
+        },
+        {
+          "goName": "Phase",
+          "jsonName": "phase",
+          "goType": "string",
+          "tsType": "TrashEmptyPhase"
+        },
+        {
+          "goName": "Progress",
+          "jsonName": "progress",
+          "goType": "trashEmptyProgress",
+          "tsType": "TrashEmptyProgress"
+        },
+        {
+          "goName": "Counts",
+          "jsonName": "counts",
+          "goType": "trashEmptyCounts",
+          "tsType": "TrashEmptyCounts"
+        },
+        {
+          "goName": "Duplicate",
+          "jsonName": "duplicate",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "pageDeletedPageRecord",
+      "tsName": "DeletedPage",
+      "fields": [
+        {
+          "goName": "PageID",
+          "jsonName": "pageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TitleSpans",
+          "jsonName": "titleSpans",
+          "goType": "[]graphTextSpan",
+          "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]",
+          "optional": true
+        },
+        {
+          "goName": "Icon",
+          "jsonName": "icon",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Row",
+          "jsonName": "row",
+          "goType": "bool",
+          "tsType": "boolean"
+        },
+        {
+          "goName": "DeletedByName",
+          "jsonName": "deletedByName",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "DeletedAt",
+          "jsonName": "deletedAt",
+          "goType": "int64",
+          "tsType": "number"
+        },
+        {
+          "goName": "PurgeAt",
+          "jsonName": "purgeAt",
+          "goType": "int64",
+          "tsType": "number"
+        },
+        {
+          "goName": "LegalHold",
+          "jsonName": "legalHold",
+          "goType": "bool",
+          "tsType": "boolean"
+        }
+      ]
+    },
+    {
+      "goName": "pageDeletedPagesResponse",
+      "tsName": "DeletedPagesResponse",
+      "fields": [
+        {
+          "goName": "Pages",
+          "jsonName": "pages",
+          "goType": "[]pageDeletedPageRecord",
+          "tsType": "DeletedPage[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "pageDeletedPageRecoverResponse",
+      "tsName": "DeletedPageRecoverResponse",
+      "fields": [
+        {
+          "goName": "AuthorityRevision",
+          "jsonName": "authorityRevision",
+          "goType": "int",
+          "tsType": "number"
+        }
+      ]
+    },
+    {
+      "goName": "pageTrashLegalHoldsResponse",
+      "tsName": "TrashLegalHolds",
+      "fields": [
+        {
+          "goName": "PageIDs",
+          "jsonName": "pageIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        },
+        {
+          "goName": "DatabaseIDs",
+          "jsonName": "databaseIds",
+          "goType": "[]string",
+          "tsType": "string[]"
+        }
+      ]
+    },
+    {
+      "goName": "pageTrashLine",
+      "tsName": "TrashLine",
+      "fields": [
+        {
+          "goName": "ID",
+          "jsonName": "id",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "Kind",
+          "jsonName": "kind",
+          "goType": "string",
+          "tsType": "TrashLineKind"
+        },
+        {
+          "goName": "Title",
+          "jsonName": "title",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TrashedAt",
+          "jsonName": "trashedAt",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "TrashedWithPageID",
+          "jsonName": "trashedWithPageId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "ParentID",
+          "jsonName": "parentId",
+          "goType": "string",
+          "tsType": "string"
+        },
+        {
+          "goName": "LastEditedBy",
+          "jsonName": "lastEditedBy",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    },
+    {
+      "goName": "pageTrashListResponse",
+      "tsName": "TrashList",
+      "fields": [
+        {
+          "goName": "Items",
+          "jsonName": "items",
+          "goType": "[]pageTrashLine",
+          "tsType": "TrashLine[]"
+        },
+        {
+          "goName": "NextCursor",
+          "jsonName": "nextCursor",
+          "goType": "string",
+          "tsType": "string"
+        }
+      ]
+    }
+  ],
+  "residueAuthorities": [
+    {
+      "table": "leafen_pages",
+      "key": "id",
+      "disposition": "root_last_delete"
+    },
+    {
+      "table": "leafen_mutation_receipts",
+      "key": "page",
+      "disposition": "pocketbase_cascade"
+    },
+    {
+      "table": "leafen_ygo_updates",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_structural_updates",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_structural_quarantine",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_update_quarantine",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_structural_documents",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_documents",
+      "key": "room",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_ygo_marks",
+      "key": "room",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_ygo_document_states",
+      "key": "room",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_ygo_structural_document_states",
+      "key": "room",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_blocks",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_block_trash_tombstones",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_containers",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_container_sources",
+      "key": "page_id",
+      "disposition": "linked_container_cleanup"
+    },
+    {
+      "table": "leafen_database_container_views",
+      "key": "page_id",
+      "disposition": "linked_container_cleanup"
+    },
+    {
+      "table": "leafen_data_sources",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_views",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_properties",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_rows",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_row_values",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_relation_items",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_relation_property_targets",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_database_view_property_refs",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_database_mutation_jobs",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_database_dependency_edges",
+      "key": "page_id",
+      "disposition": "bounded_page_child_delete"
+    },
+    {
+      "table": "leafen_database_dependency_bindings",
+      "key": "page_id",
+      "disposition": "bounded_page_child_delete"
+    },
+    {
+      "table": "leafen_database_query_dependency_values",
+      "key": "job_id",
+      "disposition": "bounded_job_child_delete"
+    },
+    {
+      "table": "leafen_database_query_jobs",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_query_results",
+      "key": "job_id",
+      "disposition": "job_cascade"
+    },
+    {
+      "table": "leafen_database_sql_query_jobs",
+      "key": "id",
+      "disposition": "bounded_source_owner_delete"
+    },
+    {
+      "table": "leafen_database_sql_query_sources",
+      "key": "page_id",
+      "disposition": "bounded_job_owner_delete"
+    },
+    {
+      "table": "leafen_database_sql_query_rows",
+      "key": "job_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_database_sql_query_results",
+      "key": "job_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_graph_mutations",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_graph_changes",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_restore_receipts",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_snapshot_blocks",
+      "key": "materialization_id",
+      "disposition": "bounded_job_child_delete"
+    },
+    {
+      "table": "leafen_page_history_snapshot_jobs",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_block_spans",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_text_spans",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_checkpoints",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_events",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_page_history_versions",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_form_links",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_search_pages",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_search_pages_fts",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_search_dirty",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_search_chunks",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_jobs",
+      "key": "page_id",
+      "disposition": "cancel_then_delete"
+    },
+    {
+      "table": "leafen_job_effects",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_job_chunks",
+      "key": "job_id",
+      "disposition": "job_cascade"
+    },
+    {
+      "table": "leafen_interactive_automation_executions",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_events",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_outcomes",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_deliveries",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_schedule_occurrences",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_notifications",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_mutations",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_frontiers",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_database_automation_definitions",
+      "key": "page_id",
+      "disposition": "direct_delete"
+    },
+    {
+      "table": "leafen_notifications",
+      "key": "page_id",
+      "disposition": "bounded_page_child_delete"
+    },
+    {
+      "table": "leafen_workspace_creation_receipts",
+      "key": "page_id",
+      "disposition": "clear_reference"
+    },
+    {
+      "table": "leafen_notion_import_mappings",
+      "key": "native_id",
+      "disposition": "semantic_delete"
+    },
+    {
+      "table": "leafen_page_permissions",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_public_share_links",
+      "key": "root_page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_public_share_graph_memberships",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_public_sites",
+      "key": "root_page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_analytics_daily",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_analytics_unique_viewers",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_analytics_recent_viewers",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_visits",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_analytics_page_opt_outs",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_notification_preferences",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_reminders",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_deadline_notices",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_deadline_acknowledgements",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_person_mentions",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_person_mention_baselines",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_database_sprints",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_reminder_dirty_pages",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    },
+    {
+      "table": "leafen_page_lock_records",
+      "key": "page_id",
+      "disposition": "sqlite_cascade"
+    }
+  ],
+  "preservedAuthorities": [
+    {
+      "authority": "backup-and-migration-recovery-archives"
+    },
+    {
+      "authority": "leafen_files-owner-library"
+    },
+    {
+      "authority": "leafen_organization_audit_events"
+    },
+    {
+      "authority": "leafen_organization_legal_hold_history"
+    },
+    {
+      "authority": "leafen_page_permanent_delete_terminal_receipts"
+    },
+    {
+      "authority": "leafen_workspace_export_artifacts"
+    }
+  ]
+}

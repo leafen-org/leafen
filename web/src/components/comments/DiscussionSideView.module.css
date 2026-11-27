@@ -1,0 +1,119 @@
+/* A page title thread's own view, as Notion's (seen 2026-11-25 in Chrome at
+   1440, dpr 2, two tabs): beside a page shown whole from the window's top,
+   564px wide, the page giving up that room; in a peek, over the peek's frame.
+   It wears the page's ground in a side peek's faint ring. */
+.view {
+  position: fixed;
+  z-index: 52;
+  top: 0;
+  bottom: 0;
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: min(564px, 100vw);
+  background: var(--bg-app);
+  box-shadow: var(--shadow-raised);
+  outline: none;
+}
+
+.view[data-in-peek="true"] {
+  bottom: auto;
+  inset-inline-end: auto;
+  box-shadow: none;
+}
+
+:global([data-page-scroll][data-discussion-side="true"]) {
+  margin-inline-end: min(564px, 100vw);
+}
+
+/* Its head: 44px, "»" (or "✕" in a peek) 24px with 20px marks 16px in, and
+   "토론" 8px after it in 14px words. */
+.head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px;
+}
+
+.close {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--icon-secondary);
+}
+
+.close:hover {
+  background: var(--bg-hover);
+}
+
+.title {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+/* The thread: its first comment 8px under the head and 16px in, 12px over a
+   line across the view, then 6px down its replies, each 64px with its face
+   16px in and its words 32px after, and the reply row's face 8px under the
+   last, its box's words level with it. Each comment's buttons stand 2px under
+   its face's top, 16px short of the view's end; no line joins the faces and
+   the box takes no ring (Notion's, seen 2026-11-25 at 1440, dpr 2). */
+.body > [data-comment-id] {
+  --comment-pill-top: 10px;
+  --comment-pill-right: 16px;
+  --reply-face-top: 8px;
+  padding: 8px 16px 0;
+  border-radius: 0;
+  row-gap: 0;
+}
+
+.body > [data-comment-id]:hover {
+  background: none;
+}
+
+.body > [data-comment-id] > [data-comment-replies] {
+  gap: 0;
+  margin: 12px -16px 0;
+  padding: 6px 16px 0;
+  border-top: 1px solid var(--border-secondary);
+}
+
+.body > [data-comment-id] > [data-comment-replies] > [data-comment-id] {
+  --comment-pill-top: 10px;
+  --comment-pill-right: 0px;
+  padding-block: 8px;
+}
+
+.body > [data-comment-id] > [data-comment-reply-box] {
+  margin-block-start: 4.5px;
+  margin-inline-end: -8px;
+}
+
+.view .body [data-comment-reply-box]:focus-within {
+  box-shadow: none;
+}
+
+.view .body > [data-comment-id] > [class]::after,
+.view .body > [data-comment-id] > [data-comment-replies] > [data-comment-id] > [class]::after {
+  content: none;
+}

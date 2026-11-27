@@ -1,0 +1,122 @@
+/* The list of the pages a synced block is in (SyncedBlockPlaces), as
+   Notion's (seen 2026-11-15 and 2026-11-16 at 1440, dark): a 400px box 8px
+   under the pages button, from its start, kept on the screen; headed
+   "동기화 대상:"; a row for each page — its icon, its name underlined, the
+   pages above it on the right, the original's and this page's marks as
+   small pills. Notion's last row, "동기화 블록에 대해 자세히 알아보기" to its
+   help center, is left out. */
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: min(400px, calc(100vw - 2 * var(--popover-edge)));
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px;
+  box-sizing: border-box;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+  color: var(--text-default);
+  font-weight: 400;
+  text-align: start;
+  white-space: normal;
+}
+.head {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.rows {
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+/* A row fills the box's width with square ends, its shade too. */
+.row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 33px;
+  margin-block-end: 2px;
+  padding-block: 4px;
+  padding-inline: 10px 16px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.row[data-focused="true"],
+.row:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0 4px;
+}
+/* The name takes what the place leaves, the place at most two fifths. */
+.name {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.title {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  border-bottom: 1px solid var(--backlink-underline);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.place {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  padding-inline-start: 8px;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pill {
+  flex: none;
+  margin-inline-start: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 9px;
+  line-height: 9px;
+  white-space: nowrap;
+}
+.more {
+  padding: 4px 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  text-align: start;
+  cursor: pointer;
+}

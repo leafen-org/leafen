@@ -1,0 +1,425 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--modal-shade); /* Notion's window shade (seen 2026-11-05 on its export window) */
+}
+
+.adminConsole {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.nav {
+  min-width: 0;
+  padding: 12px 8px;
+  background: var(--bg-sidebar);
+  border-inline-end: 1px solid var(--border-default);
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+}
+
+.navGroup {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  margin-top: 10px;
+}
+
+.navGroupLabel {
+  padding: 7px 8px 3px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.navItem[data-active="true"],
+.navItem:hover,
+.navItem:focus-visible {
+  background: var(--bg-active);
+  color: var(--text-default);
+}
+
+.navItem:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.navItem svg {
+  color: var(--icon-secondary);
+  flex: 0 0 auto;
+}
+
+.panel {
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding-block: 0;
+  padding-inline: 22px 18px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.header h2 {
+  margin: 0;
+  color: var(--text-default);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.adminConsole .header {
+  height: 70px;
+  padding-inline-end: 24px;
+  padding-inline-start: 26px;
+}
+
+.adminConsole .section {
+  max-width: 920px;
+  padding: 0;
+}
+
+.close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius);
+  color: var(--icon-secondary);
+}
+
+.close:hover,
+.close:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.close:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A settings group, as Notion's (seen 2026-10-11): no box or line of its
+   own, 48px after its last row before the next group's heading. */
+.section {
+  padding: 0;
+}
+
+.section + .section {
+  margin-top: 48px;
+}
+
+/* Under 설정 › 계정's passkey suggestion the next group starts 24px below
+   its button, as Notion's (seen 2026-10-30: 48px between the other groups). */
+.section:has([data-passkey-suggestion]) + .section {
+  margin-top: 24px;
+}
+
+/* A group's heading, as Notion's: 16px, 500 on a 24px line, 12px over a
+   faint line, the group's first row 16px under it. */
+.sectionTitle,
+.sectionHeader {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sectionTitle {
+  color: var(--text-default);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sectionHeader .sectionTitle {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.organizationMeta {
+  margin-top: 4px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.organizationSubhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.organizationSubhead strong {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* A row's buttons, on one line where it has room; where it has less — in a
+   narrow first-run screen, outside the settings window's narrow rules — they
+   wrap rather than make the panel wider than its place (2026-10-28: the
+   recommended models' three ways overflowed a 390px window). */
+.sectionActions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+/* A settings button has a 1px border on the page's ground, as Notion's
+   settings and the server console's (2026-10-16: the account's security
+   buttons were bare text). */
+/* A settings row's button, as Notion's (seen 2026-10-30: "이메일 관리",
+   "내보내기", "페이지 선택하기"): 28px, 8px in, a thin outline, 14px words. */
+.secondaryButton {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+  /* A button's label stays on one line; its row gives way instead. */
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+}
+
+.secondaryButton:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.secondaryButton:disabled,
+.secondaryButton[aria-disabled="true"] {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.72;
+}
+
+/* A settings row's red button, as Notion's "내 계정 삭제", "모든 기기에서
+   로그아웃" and "워크스페이스 삭제하기" (seen 2026-11-14, 1440 dark): a row
+   button's size with no outline, its 14px/1.2 words centred in the 28px, on
+   Notion's soft red (--danger-soft-*) that grows under the pointer and
+   pressed. Every settings row's red button is this one. */
+.softDangerButton {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--danger-soft-bg);
+  color: var(--danger-soft-text);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: background 0.1s ease-in-out;
+}
+
+.softDangerButton:hover:not(:disabled),
+.softDangerButton:focus-visible {
+  background: var(--danger-soft-bg-hover);
+  outline: none;
+}
+
+.softDangerButton:active:not(:disabled) {
+  background: var(--danger-soft-bg-active);
+}
+
+.softDangerButton:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.errorText,
+.noticeText {
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  /* A notice's diagnostic reference stands on its own line. */
+  white-space: pre-line;
+}
+
+.errorText {
+  border: 1px solid color-mix(in srgb, var(--danger) 28%, transparent);
+  background: color-mix(in srgb, var(--danger) 8%, var(--bg-app));
+  color: var(--danger);
+}
+
+.noticeText {
+  border: 1px solid color-mix(in srgb, var(--accent-blue) 24%, transparent);
+  background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-app));
+  color: var(--text-default);
+}
+
+.primaryButton {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: var(--radius);
+  background: var(--accent-blue);
+  color: var(--accent-blue-text);
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  background: #1f76c9;
+  outline: none;
+}
+
+.primaryButton:focus-visible {
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+.field input:disabled,
+.securityInlineForm input:disabled,
+.securitySecret input:disabled,
+.memberAction:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+  opacity: 0.72;
+}
+
+/* A filled button that can't be used keeps its white words and dims, as
+   Notion's blue does (2026-10-16: gray words on blue read at about 1.1:1). */
+.primaryButton:disabled,
+.dangerButton:disabled {
+  color: white;
+  cursor: default;
+  opacity: 0.4;
+}
+
+.primaryButton:disabled:hover {
+  background: var(--accent-blue);
+}
+
+.notice {
+  min-height: 34px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  background: var(--danger-wash);
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.notice[data-tone="neutral"] {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+  margin-top: 12px;
+}
+
+.field > span {
+  padding-top: 7px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.field input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 1px 10px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: var(--radius);
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+  outline: none;
+}
+
+.field input:focus-visible {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.fieldMessage {
+  color: var(--text-tertiary);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.fieldMessage[data-tone="error"] {
+  color: var(--danger);
+}

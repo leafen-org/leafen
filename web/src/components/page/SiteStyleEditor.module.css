@@ -1,0 +1,224 @@
+/* Notion's site editor (seen 2026-11-05 and 2026-11-06 at 1280×683): a
+   window over everything, a 56px bar ("× 취소" 66×32 24px in, the site's
+   title in the middle, the blue "변경 사항 게시" 104×32 24px in), the site's
+   frame from 24px to 16px before the 280px settings column. */
+.editor {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-app);
+  color: var(--text-default);
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  flex: 0 0 56px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding-block: 0;
+  padding-inline: 8px 10px;
+  border-radius: 6px;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.cancel:hover,
+.back:hover {
+  background: var(--bg-hover);
+}
+
+
+.barTitle {
+  position: absolute;
+  left: 50%; /* physical: centred on its own box in either direction */
+  max-width: 40%;
+  overflow: hidden;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.publish {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: var(--accent-blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.publish:hover:not(:disabled) {
+  background: var(--accent-blue-hover);
+}
+
+.publish:disabled {
+  opacity: 0.4;
+}
+
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 16px;
+  min-height: 0;
+  padding-block: 0;
+  padding-inline: 24px 16px;
+}
+
+/* The site as a browser shows it: three dots and its address over it. */
+.frame {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+}
+
+/* The address sits in the middle of the room the dots leave, as Notion's. */
+.chrome {
+  display: flex;
+  flex: 0 0 44px;
+  align-items: center;
+  padding-inline-start: 20px;
+}
+
+.dots {
+  display: flex;
+  gap: 16px;
+}
+
+.dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+.address {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: min(423px, 50%);
+  height: 24px;
+  margin: 0 auto;
+  padding: 0 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.address > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.site {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  background: transparent;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  flex: 0 0 280px;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 12px 24px;
+  overflow-y: auto;
+}
+
+.panelTitle {
+  display: flex;
+  flex: 0 0 54px;
+  align-items: center;
+  margin-block: 0;
+  margin-inline: -4px 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.back {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-block: 0;
+  margin-inline: -7px 7px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.label {
+  margin: 23px 0 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.panelTitle + .label {
+  margin-top: 15px;
+}
+
+.section {
+  margin-top: 18px;
+}
+
+/* A phone has no room for the site beside the settings: they take the window. */
+@media (max-width: 767px) {
+  .bar {
+    padding: 0 12px;
+  }
+
+  .body {
+    padding: 0 16px;
+  }
+
+  .frame {
+    display: none;
+  }
+
+  .panel {
+    flex: 1 1 auto;
+    padding-inline: 0;
+  }
+}
+
+/* Notion's "제목" screen (seen 2026-11-06, 1280 wide): its column is 8px in
+   from the panel's edges, not 12, and "페이지 단축키" is 600 at 24px under the
+   switches (its rows: SiteStylePanelControls and SiteStylePanelScreens). */
+.panel[data-site-editor-screen="header"] {
+  padding-inline-end: 8px;
+  padding-inline-start: 8px;
+}
+
+.panel[data-site-editor-screen="header"] .section {
+  margin: 24px 0 8px;
+  font-weight: 600;
+}
+
+.panel[data-site-editor-screen="header"] .panelTitle {
+  margin-inline-start: 0;
+}

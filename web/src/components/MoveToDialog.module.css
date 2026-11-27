@@ -1,0 +1,443 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+}
+
+/* A click outside the popover closes it; the page stays as it is. */
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* "옮기기" is a popover under what opened it, as Notion's (seen 2026-09-30),
+   453px tall however few places it lists (2026-10-31); another workspace's
+   list keeps that room under the note, which makes it taller. */
+.dialog {
+  position: relative;
+  width: min(330px, calc(100vw - 24px));
+  height: min(453px, calc(100vh - 24px));
+  max-height: min(453px, calc(100vh - 24px));
+  margin: 84px auto 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border-radius: 10px;
+  box-shadow: var(--shadow-menu);
+}
+
+/* With no workspace to choose at its foot — a block's, or a just-made page's
+   "추가 대상" — it is that much shorter, 420px, as Notion's (seen 2026-11-13:
+   both 330×420, a page's "옮기기" 453 with the workspace under its list). */
+.dialog[data-workspace-foot="none"] {
+  height: min(420px, calc(100vh - 24px));
+  max-height: min(420px, calc(100vh - 24px));
+}
+
+/* A search's list is as long as what it found, as Notion's (seen 2026-11-05). */
+.dialog[data-searching="true"] {
+  height: auto;
+}
+
+/* A filled 28px field 12px in, its magnifier 6px in and the words 6px after,
+   ringed blue while typed in, as Notion's (seen 2026-11-07). */
+.searchRow {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 6px;
+  height: 28px;
+  margin: 12px 12px 0;
+  padding: 3px 6px;
+  border-radius: 6px;
+  background: var(--card-field-bg);
+  color: var(--text-tertiary);
+}
+
+.searchRow:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.searchRow input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+/* Another workspace's list opens under Notion's note that the page is
+   copied there, not moved (seen 2026-10-31): a faint gray box 12px in and
+   14px under the search, its orange triangle at the start of the words.
+   Notion's "자세히 알아보기" to its help is left out. */
+/* The note is two lines at 330px: 12px over it and 56px of box. */
+.dialog[data-copying="true"] {
+  height: min(521px, calc(100vh - 24px));
+  max-height: min(521px, calc(100vh - 24px));
+}
+.copyNotice {
+  flex: 0 0 auto;
+  margin: 12px 12px 0;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(84, 72, 49, 0.04);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.copyNotice svg {
+  display: inline-block;
+  margin-inline-end: 4px;
+  vertical-align: -2px;
+  color: rgba(217, 95, 13, 0.82);
+}
+:global(:root[data-theme="dark"]) .copyNotice {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.results {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+/* Rows past the list's edge fade out at that edge (useMoveListEdges, styles.css [data-edge-fade]). */
+
+/* Notion's picker of where to put something ("페이지에 추가", seen
+   2026-11-06 at 1280): 320px wide and as tall as what it lists up to 360px,
+   its search 12px in, 28px, with no magnifier, "추천" in the lighter gray,
+   rows 4px in, and under them a fixed "새 개인 페이지" past a line. */
+.dialog[data-place="true"] {
+  width: min(320px, calc(100vw - 24px));
+  height: auto;
+}
+.dialog[data-place="true"] .searchRow {
+  height: 28px;
+  margin: 12px 12px 0;
+  padding: 3px 6px;
+}
+.dialog[data-place="true"] .searchRow > svg {
+  display: none;
+}
+.dialog[data-place="true"] .results {
+  padding: 2px 4px 4px;
+}
+/* A search's pages start 12px under it, with no heading over them. */
+.dialog[data-place="true"] .results > .result:first-child {
+  margin-top: 10px;
+}
+.dialog[data-place="true"] .groupHeading {
+  padding: 16px 8px 8px;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+.dialog[data-place="true"] {
+  max-height: min(360px, calc(100vh - 24px));
+}
+
+/* The page it is on, tagged on its right "현재 페이지": 11px, medium, on a
+   faint gray. */
+.currentTag {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: var(--border-subtle);
+  color: color-mix(in srgb, var(--text-secondary) 35%, var(--text-tertiary));
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  white-space: nowrap;
+}
+:global(:root[data-theme="dark"]) .currentTag {
+  background: rgba(255, 255, 235, 0.1);
+}
+
+/* "새 개인 페이지" stays at the foot, past a line across, its 28px row 4px
+   in, however far the list scrolls or whatever a search finds. */
+.result.placeCreate {
+  position: sticky;
+  bottom: -4px;
+  z-index: 1;
+  min-height: 37px;
+  margin: 4px -4px -4px;
+  padding: 5px 12px 8px;
+  border-top: 1px solid var(--menu-divider);
+  border-radius: 0;
+  background: var(--bg-elevated);
+}
+.result.placeCreate:hover,
+.result.placeCreate[data-active="true"] {
+  background: linear-gradient(var(--bg-hover), var(--bg-hover)) 4px 1px / calc(100% - 8px) 28px no-repeat,
+    var(--bg-elevated);
+}
+
+/* "추천" and "팀스페이스" over the places before a search, "팀스페이스" and
+   "페이지" over what it found; before a search one group's heading comes right
+   under the other's last row (seen 2026-11-13: 34px, as the first's). */
+.groupHeading {
+  padding: 12px 14px 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* A teamspace's mark as the sidebar's (TeamspaceGlyph). */
+.teamspaceGlyph { composes: glyph from "./teamspace/TeamspaceGlyph.module.css"; }
+
+/* A destination's row as Notion's (seen 2026-10-17): 28px, its mark in 22px,
+   the name 4px after in 14px regular. */
+.result {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+
+.result:hover,
+.result:focus-visible,
+.result[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A row that can't be chosen greys its title alone, its mark and where it is as they were, as Notion's (seen 2026-11-10),
+   rather than fading whole as a menu's disabled item. */
+.result:disabled,
+.result[data-disabled="true"] {
+  cursor: default;
+}
+.results .result[data-disabled="true"] {
+  opacity: 1;
+}
+.result[data-disabled="true"] .text > span:first-child {
+  color: var(--text-secondary);
+}
+.result:disabled:hover,
+.result:disabled:focus-visible,
+.result[data-disabled="true"][data-active="true"] {
+  background: transparent;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* It takes the row's room, so a searched title's end keeps up to half of it (MiddleTitle). */
+.text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.text > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+/* The place under a destination's name; a top-level page has none. */
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.text) > span:not(span:first-of-type) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.lock {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  color: var(--text-tertiary);
+}
+/* After the private pages' name, 4px on (seen 2026-10-31). */
+.privateLock {
+  margin-inline-start: 4px;
+  vertical-align: -3px;
+  color: var(--text-tertiary);
+}
+
+/* A search that finds nothing: "결과 없음" in a row's place, 4px in and
+   10px under the search field, its words 8px in, as Notion's (seen
+   2026-11-13: 322×28 at 4,50, 14px in the secondary gray). */
+.empty {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  margin: 4px 4px 0;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.2;
+}
+.dialog[data-searching="true"] .empty {
+  margin: -2px 0 0;
+}
+
+/* Only a phone's window takes it across, as Notion's keeps its 330px
+   popover beside a 751px window's pointer (seen 2026-10-07). */
+:global([data-phone="true"]) .dialog,
+:global([data-phone="true"]) .dialog[data-copying="true"] {
+  height: auto;
+  width: calc(100vw - 20px);
+  max-height: calc(100vh - 40px);
+  margin-top: 20px;
+}
+
+/* The suggestions open into the pages under them, as Notion's: a toggle
+   before each place, each level 14px in. */
+.treeRow {
+  display: flex;
+  align-items: center;
+  padding-inline-start: calc(14px + var(--move-depth, 0) * 14px);
+}
+.treeRow > .result {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+/* A row is one band across the picker, its toggle in it, with no rounding,
+   as Notion's (seen 2026-11-07). */
+.dialog:not([data-place="true"]) .result {
+  padding: 4px 14px;
+  border-radius: 0;
+}
+.dialog:not([data-place="true"]) .treeRow > .result {
+  padding-inline-start: 0;
+}
+.treeRow:hover,
+.treeRow:has(> .result[data-active="true"]),
+.treeRow[data-keys-within] {
+  background: var(--bg-hover);
+}
+.treeRow > .result:hover,
+.treeRow > .result:focus-visible,
+.treeRow > .result[data-active="true"] {
+  background: transparent;
+}
+/* What a search finds stays 4px in, rounded and 1px apart under "페이지"
+   18px below the field and 8px in, its title 36px in (seen 2026-11-07). */
+.dialog:not([data-place="true"])[data-searching="true"] .results {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 12px 4px 4px;
+}
+/* Its rows keep their two lines and the list scrolls, when the room under or
+   over what opened it is short (2026-11-10: squeezed, a title lay over its place). */
+.dialog:not([data-place="true"])[data-searching="true"] .results > * {
+  flex-shrink: 0;
+}
+.dialog:not([data-place="true"])[data-searching="true"] .groupHeading {
+  padding: 6px 8px 8px;
+  line-height: var(--menu-label-line-height);
+}
+/* A later group's heading 14px under the last row found, as Notion's "페이지"
+   under "팀스페이스" (seen 2026-11-13). */
+.dialog:not([data-place="true"])[data-searching="true"] .result + .groupHeading {
+  margin-top: 7px;
+}
+.dialog:not([data-place="true"])[data-searching="true"] .result {
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.dialog:not([data-place="true"])[data-searching="true"] .icon {
+  width: 20px;
+}
+/* A found row is a page's row as every Notion page picker draws it (seen
+   2026-11-19 at dpr 2, "옮기기" and the "/페이지 링크" picker alike): its
+   title and the line under it — its place, or why it can't be chosen — each
+   a 16.8px line, 2px apart, in a 45px row's middle (title 4.7 down, place
+   23.5), its icon at the top 1px down (`data-placed`); alone, one line in
+   28px. */
+.dialog:not([data-place="true"])[data-searching="true"] .text > span {
+  line-height: 16.8px;
+}
+.dialog:not([data-place="true"])[data-searching="true"] .result[data-placed] {
+  min-height: 45px;
+}
+.dialog:not([data-place="true"])[data-searching="true"] .result[data-placed] > .icon {
+  align-self: flex-start;
+  margin-top: 1px;
+}
+.treeToggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--icon-secondary);
+}
+.treeToggle:hover,
+.treeToggle:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A full-page database's row keeps the toggle's room, with nothing to press (MoveDestinationRow). */
+span.treeToggle:hover {
+  background: transparent;
+}
+.treeToggle[data-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+/* 27px: one 21px line of 14px words and 6px under it (seen 2026-11-10). */
+.treeEmpty {
+  padding-top: 0;
+  padding-bottom: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+/* A search's "더 불러오기" (MoveLoadMoreRow), as Notion's (seen 2026-11-19 at 1440, dark): 28px, its
+   16px arrow 4px in and its 14px words 8px after it, both in the faint grey, 4px under the last answer
+   and over the list's foot — not a found row's columns (after the searching rows' rules, which it overrides). */
+.dialog .results > .result.loadMore {
+  gap: 8px;
+  margin-block: 3px 4px;
+  padding: 4px;
+  border-radius: 4px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+}
+.result.loadMore > svg {
+  flex: none;
+  color: var(--icon-tertiary);
+}

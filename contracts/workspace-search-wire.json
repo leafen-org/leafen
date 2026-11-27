@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "name": "workspace-search",
+  "bounds": [
+    { "goName": "maxWorkspaceSearchQueryRunes", "tsName": "queryRunes", "value": 256 },
+    { "goName": "defaultWorkspaceSearchResults", "tsName": "defaultResults", "value": 12 },
+    { "goName": "maxWorkspaceSearchResults", "tsName": "results", "value": 50 },
+    { "goName": "maxWorkspaceSearchCursorBytes", "tsName": "cursorBytes", "value": 4096 },
+    { "goName": "workspaceSearchProjectionWindow", "tsName": "projectionWindow", "value": 64 },
+    { "goName": "maxWorkspaceSearchBodyRunes", "tsName": "bodyRunes", "value": 8000000 },
+    { "goName": "maxWorkspaceSearchHighlights", "tsName": "highlights", "value": 14 },
+    { "goName": "maxPagePreviewLines", "tsName": "previewLines", "value": 4 },
+    { "goName": "maxPagePreviewBlocks", "tsName": "previewBlocks", "value": 40 },
+    { "goName": "pagePreviewLineRunes", "tsName": "previewLineRunes", "value": 160 }
+  ],
+  "errors": [
+    { "goName": "errorCodeWorkspaceSearchInvalid", "tsName": "invalid", "value": "LEAFEN_WORKSPACE_SEARCH_INVALID" },
+    { "goName": "errorCodeWorkspaceSearchCursorInvalid", "tsName": "cursorInvalid", "value": "LEAFEN_WORKSPACE_SEARCH_CURSOR_INVALID" },
+    { "goName": "errorCodeWorkspaceSearchFailed", "tsName": "failed", "value": "LEAFEN_WORKSPACE_SEARCH_FAILED" },
+    { "goName": "errorCodeWorkspaceSearchStorageUnavailable", "tsName": "storageUnavailable", "value": "LEAFEN_WORKSPACE_SEARCH_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceSearchDatabaseBusy", "tsName": "databaseBusy", "value": "LEAFEN_WORKSPACE_SEARCH_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceSearchProjectionFailed", "tsName": "projectionFailed", "value": "LEAFEN_WORKSPACE_SEARCH_PROJECTION_FAILED" },
+    { "goName": "errorCodeWorkspaceSearchRebuildFailed", "tsName": "rebuildFailed", "value": "LEAFEN_WORKSPACE_SEARCH_REBUILD_FAILED" },
+    { "goName": "errorCodeWorkspaceSearchRebuildStorageUnavailable", "tsName": "rebuildStorageUnavailable", "value": "LEAFEN_WORKSPACE_SEARCH_REBUILD_STORAGE_UNAVAILABLE" },
+    { "goName": "errorCodeWorkspaceSearchRebuildDatabaseBusy", "tsName": "rebuildDatabaseBusy", "value": "LEAFEN_WORKSPACE_SEARCH_REBUILD_DATABASE_BUSY" },
+    { "goName": "errorCodeWorkspaceSearchDocumentTooLarge", "tsName": "documentTooLarge", "value": "LEAFEN_WORKSPACE_SEARCH_DOCUMENT_TOO_LARGE" },
+    { "goName": "errorCodePageMetadataUpdateFailed", "tsName": "pageMetadataUpdateFailed", "value": "LEAFEN_PAGE_METADATA_UPDATE_FAILED" },
+    { "goName": "errorCodePageMetadataConflict", "tsName": "pageMetadataConflict", "value": "LEAFEN_PAGE_METADATA_CONFLICT" }
+  ],
+  "enums": [
+    {
+      "tsName": "WorkspaceSearchMatch",
+      "tsValuesName": "workspaceSearchMatches",
+      "values": [
+        { "goName": "workspaceSearchMatchTitle", "tsName": "title", "value": "title" },
+        { "goName": "workspaceSearchMatchBody", "tsName": "body", "value": "body" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "pageMetadataInput",
+      "tsName": "PageMetadataInput",
+      "fields": [
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "TitleSpans", "jsonName": "titleSpans", "goType": "*[]graphTextSpan", "tsType": "import(\"./lib/modelTypes/content\").TextSpan[]", "optional": true },
+        { "goName": "TitleEdited", "jsonName": "titleEdited", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "ParentID", "jsonName": "parentId", "goType": "string", "tsType": "string" },
+        { "goName": "TeamspaceID", "jsonName": "teamspaceId", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Position", "jsonName": "position", "goType": "*float64", "tsType": "number", "optional": true },
+        { "goName": "KeepLastEdit", "jsonName": "keepLastEdit", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "IsLocked", "jsonName": "isLocked", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "IsArchived", "jsonName": "isArchived", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "Cover", "jsonName": "cover", "goType": "*string", "tsType": "string", "optional": true },
+        { "goName": "CoverPosition", "jsonName": "coverPosition", "goType": "*int", "tsType": "number", "optional": true },
+        { "goName": "Font", "jsonName": "font", "goType": "*string", "tsType": "PageFont", "optional": true },
+        { "goName": "SmallText", "jsonName": "smallText", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "FullWidth", "jsonName": "fullWidth", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "BacklinksDisplay", "jsonName": "backlinksDisplay", "goType": "*string", "tsType": "BacklinksDisplay", "optional": true },
+        { "goName": "PageCommentsDisplay", "jsonName": "pageCommentsDisplay", "goType": "*string", "tsType": "PageCommentsDisplay", "optional": true },
+        { "goName": "TableOfContentsDisplay", "jsonName": "tableOfContentsDisplay", "goType": "*string", "tsType": "PageTableOfContentsDisplay", "optional": true },
+        { "goName": "InlineCommentsDisplay", "jsonName": "inlineCommentsDisplay", "goType": "*string", "tsType": "PageInlineCommentsDisplay", "optional": true },
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "BaseCursor", "jsonName": "baseCursor", "goType": "int", "tsType": "number" },
+        { "goName": "ExpectedAuthorityRevision", "jsonName": "expectedAuthorityRevision", "goType": "int", "tsType": "number", "optional": true },
+        { "goName": "LeaveDatabase", "jsonName": "leaveDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "WorkspaceRefreshToken", "jsonName": "workspaceRefreshToken", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "AfterMutationIDs", "jsonName": "afterMutationIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "CarriesAfter", "jsonName": "carriesAfter", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "pageMetadataReceipt",
+      "tsName": "PageMetadataReceipt",
+      "fields": [
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "int", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "pageMetadataResponse",
+      "tsName": "PageMetadataResponse",
+      "fields": [
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "Receipt", "jsonName": "receipt", "goType": "pageMetadataReceipt", "tsType": "PageMetadataReceipt" },
+        { "goName": "WorkspaceRefreshToken", "jsonName": "workspaceRefreshToken", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchRebuildInput",
+      "tsName": "WorkspaceSearchRebuildInput",
+      "fields": [
+        { "goName": "Cursor", "jsonName": "cursor", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceSearchEventInput",
+      "tsName": "WorkspaceSearchEventInput",
+      "fields": [
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string" },
+        { "goName": "Clicked", "jsonName": "clicked", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "workspaceSearchRebuildResponse",
+      "tsName": "WorkspaceSearchRebuildResponse",
+      "fields": [
+        { "goName": "Queued", "jsonName": "queued", "goType": "int", "tsType": "number" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" }
+      ]
+    },
+    {
+      "goName": "workspaceSearchRowResult",
+      "tsName": "WorkspaceSearchRowResult",
+      "fields": [
+        { "goName": "RowID", "jsonName": "rowId", "goType": "string", "tsType": "string" },
+        { "goName": "ContainerPageID", "jsonName": "containerPageId", "goType": "string", "tsType": "string" },
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "InlineDatabase", "jsonName": "inlineDatabase", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "DatabaseTitle", "jsonName": "databaseTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Template", "jsonName": "template", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Person", "jsonName": "person", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchDatabaseSource",
+      "tsName": "WorkspaceSearchDatabaseSource",
+      "fields": [
+        { "goName": "DataSourceID", "jsonName": "dataSourceId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Linked", "jsonName": "linked", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchDatabaseResult",
+      "tsName": "WorkspaceSearchDatabaseResult",
+      "fields": [
+        { "goName": "ContainerID", "jsonName": "containerId", "goType": "string", "tsType": "string" },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Sources", "jsonName": "sources", "goType": "[]workspaceSearchDatabaseSource", "tsType": "WorkspaceSearchDatabaseSource[]", "optional": true },
+        { "goName": "Named", "jsonName": "named", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchFile",
+      "tsName": "WorkspaceSearchFile",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Name", "jsonName": "name", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceSearchResult",
+      "tsName": "WorkspaceSearchResult",
+      "fields": [
+        { "goName": "Match", "jsonName": "match", "goType": "string", "tsType": "WorkspaceSearchMatch" },
+        { "goName": "Page", "jsonName": "page", "goType": "pageResponse", "tsType": "Page" },
+        { "goName": "Preview", "jsonName": "preview", "goType": "string", "tsType": "string" },
+        { "goName": "Row", "jsonName": "row", "goType": "*workspaceSearchRowResult", "tsType": "WorkspaceSearchRowResult", "optional": true },
+        { "goName": "Database", "jsonName": "database", "goType": "*workspaceSearchDatabaseResult", "tsType": "WorkspaceSearchDatabaseResult", "optional": true },
+        { "goName": "Partial", "jsonName": "partial", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "File", "jsonName": "file", "goType": "*workspaceSearchFile", "tsType": "WorkspaceSearchFile", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchBlockResponse",
+      "tsName": "WorkspaceSearchBlockResponse",
+      "fields": [
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchActor",
+      "tsName": "WorkspaceSearchActor",
+      "fields": [
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string" },
+        { "goName": "DisplayName", "jsonName": "displayName", "goType": "string", "tsType": "string" },
+        { "goName": "Avatar", "jsonName": "avatar", "goType": "string", "tsType": "string" }
+      ]
+    },
+    {
+      "goName": "workspaceSearchResponse",
+      "tsName": "WorkspaceSearchResponse",
+      "fields": [
+        { "goName": "Results", "jsonName": "results", "goType": "[]workspaceSearchResult", "tsType": "WorkspaceSearchResult[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "HasMore", "jsonName": "hasMore", "goType": "bool", "tsType": "boolean" },
+        { "goName": "Indexing", "jsonName": "indexing", "goType": "bool", "tsType": "boolean" },
+        { "goName": "IndexCursor", "jsonName": "indexCursor", "goType": "*string", "tsType": "string | null" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "Actors", "jsonName": "actors", "goType": "[]workspaceSearchActor", "tsType": "WorkspaceSearchActor[]" },
+        { "goName": "Backlog", "jsonName": "backlog", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "workspaceSearchHighlightsResponse",
+      "tsName": "WorkspaceSearchHighlightsResponse",
+      "fields": [
+        { "goName": "Highlights", "jsonName": "highlights", "goType": "[]string", "tsType": "string[]" }
+      ]
+    },
+    {
+      "goName": "pagePreviewBlock",
+      "tsName": "PagePreviewBlock",
+      "fields": [
+        { "goName": "Type", "jsonName": "type", "goType": "string", "tsType": "string" },
+        { "goName": "Text", "jsonName": "text", "goType": "string", "tsType": "string" },
+        { "goName": "Depth", "jsonName": "depth", "goType": "int", "tsType": "number" },
+        { "goName": "Checked", "jsonName": "checked", "goType": "bool", "tsType": "boolean", "optional": true, "keepsZero": true },
+        { "goName": "Language", "jsonName": "language", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "FileID", "jsonName": "fileId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "URL", "jsonName": "url", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Cells", "jsonName": "cells", "goType": "[][]string", "tsType": "string[][]", "optional": true },
+        { "goName": "Widths", "jsonName": "widths", "goType": "[]int", "tsType": "number[]", "optional": true },
+        { "goName": "Spans", "jsonName": "spans", "goType": "[]pagePreviewSpan", "tsType": "PagePreviewSpan[]", "optional": true },
+        { "goName": "BlockID", "jsonName": "blockId", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "pagePreviewSpan",
+      "tsName": "PagePreviewSpan",
+      "fields": [
+        { "goName": "Text", "jsonName": "text", "goType": "string", "tsType": "string" },
+        { "goName": "Mention", "jsonName": "mention", "goType": "string", "tsType": "\"page\" | \"person\" | \"date\" | \"database\"", "optional": true },
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DatabaseID", "jsonName": "databaseId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UserID", "jsonName": "userId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Date", "jsonName": "date", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DateEnd", "jsonName": "dateEnd", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DateTimeZone", "jsonName": "dateTimeZone", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DateFormat", "jsonName": "dateFormat", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DateTimeFormat", "jsonName": "dateTimeFormat", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Unavailable", "jsonName": "unavailable", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Bold", "jsonName": "bold", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Italic", "jsonName": "italic", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Underline", "jsonName": "underline", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Strikethrough", "jsonName": "strikethrough", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Code", "jsonName": "code", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "Color", "jsonName": "color", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Background", "jsonName": "background", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Link", "jsonName": "link", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Equation", "jsonName": "equation", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "EmptyPiece", "jsonName": "emptyPiece", "goType": "string", "tsType": "\"equation\" | \"text\"", "optional": true }
+      ]
+    },
+    {
+      "goName": "pagePreviewResponse",
+      "tsName": "PagePreviewResponse",
+      "fields": [
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string" },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string" },
+        { "goName": "Lines", "jsonName": "lines", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "ContainerPageID", "jsonName": "containerPageId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DatabaseTitle", "jsonName": "databaseTitle", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UntitledName", "jsonName": "untitledName", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Blocks", "jsonName": "blocks", "goType": "[]pagePreviewBlock", "tsType": "PagePreviewBlock[]", "optional": true },
+        { "goName": "PageKind", "jsonName": "pageKind", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "ViewBlock", "jsonName": "viewBlock", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TrashedAt", "jsonName": "trashedAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TrashedBy", "jsonName": "trashedBy", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "databaseMentionPreviewResponse",
+      "tsName": "DatabaseMentionPreviewResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "SourceTitles", "jsonName": "sourceTitles", "goType": "[]databaseSourceTitle", "tsType": "Array<string | { title: string; linked: true }>", "optional": true },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TrashedAlone", "jsonName": "trashedAlone", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TrashedAt", "jsonName": "trashedAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TrashedBy", "jsonName": "trashedBy", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "dataSourceMentionPreviewResponse",
+      "tsName": "DataSourceMentionPreviewResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "DatabaseID", "jsonName": "databaseId", "goType": "string", "tsType": "string" },
+        { "goName": "ViewID", "jsonName": "viewId", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Sources", "jsonName": "sources", "goType": "int", "tsType": "number" },
+        { "goName": "Icon", "jsonName": "icon", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IconType", "jsonName": "iconType", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "InTrash", "jsonName": "inTrash", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TrashedAlone", "jsonName": "trashedAlone", "goType": "bool", "tsType": "boolean", "optional": true },
+        { "goName": "TrashedAt", "jsonName": "trashedAt", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "TrashedBy", "jsonName": "trashedBy", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    },
+    {
+      "goName": "blockMentionPreviewResponse",
+      "tsName": "BlockMentionPreviewResponse",
+      "fields": [
+        { "goName": "PageID", "jsonName": "pageId", "goType": "string", "tsType": "string" },
+        { "goName": "Title", "jsonName": "title", "goType": "string", "tsType": "string" },
+        { "goName": "Words", "jsonName": "words", "goType": "string", "tsType": "string" }
+      ]
+    }
+  ]
+}

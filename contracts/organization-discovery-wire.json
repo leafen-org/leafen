@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "name": "organization-discovery",
+  "operations": [
+    { "goName": "organizationDiscoveryExportList", "tsName": "listExports", "method": "GET", "path": "/organizations/{organizationId}/discovery-exports" },
+    { "goName": "organizationDiscoveryExportCreate", "tsName": "createExport", "method": "POST", "path": "/organizations/{organizationId}/discovery-exports" },
+    { "goName": "organizationDiscoveryExportGet", "tsName": "getExport", "method": "GET", "path": "/organizations/{organizationId}/discovery-exports/{exportId}" },
+    { "goName": "organizationDiscoveryExportDownload", "tsName": "downloadExport", "method": "GET", "path": "/organizations/{organizationId}/discovery-exports/{exportId}/download" }
+  ],
+  "bounds": [
+    { "goName": "organizationDiscoveryItemsPerTurn", "tsName": "itemsPerTurn", "value": 100 },
+    { "goName": "organizationDiscoveryMaximumItems", "tsName": "maximumItems", "value": 20000 },
+    { "goName": "organizationDiscoveryMaximumBytes", "tsName": "maximumBytes", "value": 8388608 },
+    { "goName": "organizationDiscoveryChunkMaxBytes", "tsName": "chunkBytes", "value": 262144 },
+    { "goName": "organizationDiscoveryDownloadChunkWindow", "tsName": "downloadChunkWindow", "value": 4 },
+    { "goName": "organizationDiscoveryExportsPerPage", "tsName": "exportsPerPage", "value": 20 },
+    { "goName": "organizationDiscoveryQueryMaxRunes", "tsName": "queryRunes", "value": 300 },
+    { "goName": "organizationDiscoveryCustodianMaxItems", "tsName": "custodianItems", "value": 500 },
+    { "goName": "organizationDiscoveryWorkspaceMaxItems", "tsName": "workspaceItems", "value": 200 },
+    { "goName": "organizationDiscoveryIdentifierMaxRunes", "tsName": "identifierRunes", "value": 200 }
+  ],
+  "errors": [
+    { "goName": "errorCodeOrganizationDiscoveryInvalid", "tsName": "invalid", "value": "LEAFEN_ORGANIZATION_DISCOVERY_INVALID" },
+    { "goName": "errorCodeOrganizationDiscoveryNotFound", "tsName": "notFound", "value": "LEAFEN_ORGANIZATION_DISCOVERY_NOT_FOUND" },
+    { "goName": "errorCodeOrganizationDiscoveryUnavailable", "tsName": "unavailable", "value": "LEAFEN_ORGANIZATION_DISCOVERY_UNAVAILABLE" },
+    { "goName": "errorCodeOrganizationDiscoveryTooLarge", "tsName": "tooLarge", "value": "LEAFEN_ORGANIZATION_DISCOVERY_TOO_LARGE" },
+    { "goName": "errorCodeOrganizationDiscoverySourceChanged", "tsName": "sourceChanged", "value": "LEAFEN_ORGANIZATION_DISCOVERY_SOURCE_CHANGED" }
+  ],
+  "enums": [
+    {
+      "goName": "organizationDiscoveryExportFormat",
+      "tsName": "OrganizationDiscoveryExportFormat",
+      "tsValuesName": "organizationDiscoveryExportFormats",
+      "values": [
+        { "goName": "organizationDiscoveryExportFormatJSONL", "tsName": "jsonl", "value": "jsonl" },
+        { "goName": "organizationDiscoveryExportFormatJSON", "tsName": "json", "value": "json" }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportStatus",
+      "tsName": "OrganizationDiscoveryExportStatus",
+      "tsValuesName": "organizationDiscoveryExportStatuses",
+      "values": [
+        { "goName": "organizationDiscoveryExportStatusPending", "tsName": "pending", "value": "pending" },
+        { "goName": "organizationDiscoveryExportStatusRunning", "tsName": "running", "value": "running" },
+        { "goName": "organizationDiscoveryExportStatusCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "organizationDiscoveryExportStatusFailed", "tsName": "failed", "value": "failed" }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportPhase",
+      "tsName": "OrganizationDiscoveryExportPhase",
+      "tsValuesName": "organizationDiscoveryExportPhases",
+      "values": [
+        { "goName": "organizationDiscoveryExportPhaseCapture", "tsName": "capture", "value": "capture" },
+        { "goName": "organizationDiscoveryExportPhasePublish", "tsName": "publish", "value": "publish" },
+        { "goName": "organizationDiscoveryExportPhaseCompleted", "tsName": "completed", "value": "completed" },
+        { "goName": "organizationDiscoveryExportPhaseFailed", "tsName": "failed", "value": "failed" }
+      ]
+    }
+  ],
+  "records": [
+    {
+      "goName": "organizationDiscoveryFilter",
+      "tsName": "OrganizationDiscoveryFilter",
+      "fields": [
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string" },
+        { "goName": "UserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]" },
+        { "goName": "Since", "jsonName": "since", "goType": "string", "tsType": "string" },
+        { "goName": "Until", "jsonName": "until", "goType": "string", "tsType": "string" },
+        { "goName": "IncludeTrashed", "jsonName": "includeTrashed", "goType": "bool", "tsType": "boolean" }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportCreateInput",
+      "tsName": "OrganizationDiscoveryExportCreateInput",
+      "fields": [
+        { "goName": "MutationID", "jsonName": "mutationId", "goType": "string", "tsType": "string" },
+        { "goName": "Query", "jsonName": "query", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "UserIDs", "jsonName": "userIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "WorkspaceIDs", "jsonName": "workspaceIds", "goType": "[]string", "tsType": "string[]", "optional": true },
+        { "goName": "Since", "jsonName": "since", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Until", "jsonName": "until", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "IncludeTrashed", "jsonName": "includeTrashed", "goType": "*bool", "tsType": "boolean", "optional": true },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "OrganizationDiscoveryExportFormat", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportResponse",
+      "tsName": "OrganizationDiscoveryExport",
+      "fields": [
+        { "goName": "ID", "jsonName": "id", "goType": "string", "tsType": "string" },
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "Status", "jsonName": "status", "goType": "string", "tsType": "OrganizationDiscoveryExportStatus" },
+        { "goName": "Phase", "jsonName": "phase", "goType": "string", "tsType": "OrganizationDiscoveryExportPhase" },
+        { "goName": "Format", "jsonName": "format", "goType": "string", "tsType": "OrganizationDiscoveryExportFormat" },
+        { "goName": "Filter", "jsonName": "filter", "goType": "organizationDiscoveryFilter", "tsType": "OrganizationDiscoveryFilter" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "ItemCount", "jsonName": "itemCount", "goType": "int", "tsType": "number" },
+        { "goName": "ByteCount", "jsonName": "byteCount", "goType": "int64", "tsType": "number" },
+        { "goName": "ChunkCount", "jsonName": "chunkCount", "goType": "int", "tsType": "number" },
+        { "goName": "CreatedBy", "jsonName": "createdBy", "goType": "string", "tsType": "string" },
+        { "goName": "CreatedAt", "jsonName": "createdAt", "goType": "int64", "tsType": "number" },
+        { "goName": "CompletedAt", "jsonName": "completedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "ContentSHA256", "jsonName": "contentSha256", "goType": "string", "tsType": "string" },
+        { "goName": "ErrorCode", "jsonName": "errorCode", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "DiagnosticReference", "jsonName": "diagnosticReference", "goType": "string", "tsType": "string", "optional": true },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean", "optional": true }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportContentResponse",
+      "tsName": "OrganizationDiscoveryExportContent",
+      "fields": [
+        { "goName": "DiscoveryExport", "jsonName": "discoveryExport", "goType": "organizationDiscoveryExportResponse", "tsType": "OrganizationDiscoveryExport" }
+      ]
+    },
+    {
+      "goName": "organizationDiscoveryExportListResponse",
+      "tsName": "OrganizationDiscoveryExportList",
+      "fields": [
+        { "goName": "DiscoveryExports", "jsonName": "discoveryExports", "goType": "[]organizationDiscoveryExportResponse", "tsType": "OrganizationDiscoveryExport[]" },
+        { "goName": "NextCursor", "jsonName": "nextCursor", "goType": "string", "tsType": "string", "optional": true }
+      ]
+    }
+  ]
+}

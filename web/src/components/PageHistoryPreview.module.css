@@ -1,0 +1,625 @@
+/* A version as the history's preview draws it, as Notion's: its column,
+   title, properties and blocks, what the version changed and who changed
+   it, and the blocks it deleted. The window and the canvas the column
+   stands in are UpdatesPanelHistory.module.css's. */
+.historyPreviewDocument {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 0 8px;
+}
+
+/* On a touch screen a version reads as the touch page does, as Notion's
+   iPad and iPhone (measured 2026-11-14 at 834, 1210 and 402 wide): its
+   column up to 708, 96 in from the screen's sides (18 on a phone,
+   PageHistoryTouch), the title 28px and the words on 22px lines, a line of
+   words 38px. */
+[data-page-history-touch-preview] .historyPreviewDocument {
+  width: min(100%, 708px);
+}
+
+/* Who made a change and when, over the change the pointer is on: a 24px chip 5px above its start, the person's
+   16px picture, the name at 500 and the time after it in grey, as Notion's preview (measured 2026-11-07), on
+   bacPri raised in shaOutMd (seen 2026-11-24 twice, 1685 dark). */
+.historyChangeAuthor {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--bg-default);
+  box-shadow: var(--shadow-raised);
+  color: var(--text-default);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.historyChangeAuthorName {
+  font-weight: 500;
+}
+
+.historyChangeAuthorTime {
+  color: var(--text-secondary);
+}
+
+.historyPreviewDocument[data-history-full-page-database="true"] {
+  width: 100%;
+  padding: 0;
+}
+
+.historyPreviewDocument[data-history-full-page-database="true"] > h1 {
+  margin-top: 0;
+  padding-block: 0;
+  padding-inline: 84px 8px;
+  font-size: 32px;
+}
+
+/* A database a restore keeps says it shows as it is now: a round grey box
+   across the column under its name, its 12px words 12px in, as Notion's
+   (measured 2026-11-07). */
+.historyPreviewDatabaseNow {
+  margin-block: 0 8px;
+  margin-inline: -8px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg-element);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* A version's inline database table, under its name, on to the column's
+   edge past the text's 8px, as Notion's. */
+.historyPreviewDatabase {
+  margin-inline-end: -8px;
+  margin-inline-start: var(--history-indent, 0px);
+}
+
+/* Under "시각화할 수 없음" the version dims (the canvas says so,
+   PageHistoryDialog). */
+[data-page-history-preview][data-history-unshown="true"] .historyPreviewDocument {
+  opacity: 0.3;
+}
+
+.historyPreviewIcon {
+  display: flex;
+  align-items: center;
+  width: 78px;
+  height: 78px;
+  margin-block: 0 12px;
+  margin-inline: 8px 0;
+  font-size: 78px;
+  line-height: 1;
+}
+
+/* The version's title as a page's: 40px, 700, 1.2 (Notion's preview, seen
+   2026-10-17). */
+/* The title 84px under the preview's top (4px under the canvas's 80),
+   right under an icon. */
+.historyPreviewDocument h1 {
+  margin: 4px 0 0;
+  color: var(--text-default);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* A version's blocks as Notion's preview spaces them (measured 2026-11-07):
+   16px words on 24px lines, each block 8px above and below its line — a
+   line of words 40px — headings further down (30px 32.5px under the block
+   before, 24px 28.4px, 20px 24px), from 16px under the title. A block's
+   padding is its --history-pad-top and --history-pad-bottom, less what its
+   place among the blocks around it keeps not (--history-top-cut and
+   --history-bottom-cut: a run of list items 3px apart, a block that holds
+   blocks ending after them), and its margins the space it takes into the
+   line it is under or leaves under the blocks it ends (--history-over,
+   --history-under), all from pageHistoryRowLayout as the editor spaces its
+   blocks (measured 2026-11-12); --history-pad-top-now and
+   --history-pad-bottom-now are what it keeps, which its background's box
+   stands by. It stands --history-indent in. */
+.historyPreviewBlocks {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.historyPreviewBlock {
+  --history-depth: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  --history-pad-top: 8px;
+  --history-pad-bottom: 8px;
+  --history-pad-top-now: calc(var(--history-pad-top) - var(--history-top-cut, 0px));
+  --history-pad-bottom-now: calc(var(--history-pad-bottom) - var(--history-bottom-cut, 0px));
+  padding: var(--history-pad-top-now) 0 var(--history-pad-bottom-now);
+  margin-block: var(--history-over, 0px) var(--history-under, 0px);
+  margin-inline-start: var(--history-indent, 0px);
+  color: var(--text-default);
+  font-size: var(--history-text-size, 16px);
+  line-height: var(--history-text-line, 24px);
+}
+
+[data-page-history-touch-preview] .historyPreviewBlock {
+  line-height: 22px;
+}
+
+.historyPreviewBlock[data-type="heading_1"],
+.historyPreviewBlock[data-type="toggle_heading_1"] {
+  --history-pad-top: 32.5px;
+  --history-pad-bottom: 7.5px;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 39px;
+}
+
+.historyPreviewBlock[data-type="heading_2"],
+.historyPreviewBlock[data-type="toggle_heading_2"] {
+  --history-pad-top: 28.4px;
+  --history-pad-bottom: 7.4px;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 31.2px;
+}
+
+.historyPreviewBlock[data-type="heading_3"],
+.historyPreviewBlock[data-type="heading_4"],
+.historyPreviewBlock[data-type="toggle_heading_3"],
+.historyPreviewBlock[data-type="toggle_heading_4"] {
+  --history-pad-top: 24px;
+  --history-pad-bottom: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
+/* A quote's words 25px past its bar's start, as Notion's. */
+.historyPreviewBlock[data-type="quote"] {
+  gap: 22px;
+}
+
+.historyPreviewBlock[data-type="code"] {
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: var(--bg-active);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+/* A block's background as Notion's preview draws it, as its editor does
+   (measured 2026-11-12): a round 6px box 2px around its line, across the
+   column to 6px less for each block it is under, holding the blocks under it
+   to 1px over its own bottom after them (its first row "open", the last
+   "close", --history-band-end past that row's bottom, those between
+   "inside", on through the space under them); a quote's fills its line, bar
+   and all, square. A row draws the outermost box it stands in and the
+   innermost (data-history-band-inner). */
+.historyPreviewBlock:is([data-history-band], [data-history-band-inner]) {
+  isolation: isolate;
+}
+
+.historyPreviewBlock[data-history-band]::before,
+.historyPreviewBlock[data-history-band-inner]::after {
+  position: absolute;
+  z-index: -1;
+  inset-block: calc(var(--history-pad-top-now) - 2px) calc(var(--history-pad-bottom-now) - 2px);
+  inset-inline: calc(-1 * var(--history-band-back) - 2px) calc(var(--history-band-depth) * 6px - 2px);
+  border-radius: 6px;
+  background: var(--history-band);
+  content: "";
+}
+
+.historyPreviewBlock[data-history-band-inner]::after {
+  inset-inline: calc(-1 * var(--history-band-inner-back) - 2px) calc(var(--history-band-inner-depth) * 6px - 2px);
+  background: var(--history-band-inner);
+}
+
+.historyPreviewBlock[data-history-band="open"]::before,
+.historyPreviewBlock[data-history-band-inner="open"]::after {
+  inset-block-end: calc(-1 * var(--history-under, 0px));
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.historyPreviewBlock[data-history-band="inside"]::before,
+.historyPreviewBlock[data-history-band-inner="inside"]::after {
+  inset-block: 0 calc(-1 * var(--history-under, 0px));
+  border-radius: 0;
+}
+
+.historyPreviewBlock[data-history-band="close"]::before {
+  inset-block: 0 calc(-1 * var(--history-band-end));
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.historyPreviewBlock[data-history-band-inner="close"]::after {
+  inset-block: 0 calc(-1 * var(--history-band-inner-end));
+  border-start-start-radius: 0;
+  border-start-end-radius: 0;
+}
+
+.historyPreviewBlock[data-type="quote"][data-history-band="whole"]::before,
+.historyPreviewBlock[data-type="quote"][data-history-band-inner="whole"]::after {
+  inset-block: var(--history-pad-top-now) var(--history-pad-bottom-now);
+  inset-inline: 0 calc(var(--history-depth) * 6px);
+  border-radius: 0;
+}
+
+/* A callout: a round 10px box 8px from the blocks around it, its line 1px
+   in the divider's color (clear under its background color), 12px in; its
+   24px icon 13 in and 20.5 down, its words 45 in, as Notion's preview draws
+   it as its editor does (measured 2026-11-07 and 2026-11-12). */
+.historyPreviewCallout {
+  display: flex;
+  margin-block: calc(8px + var(--history-over, 0px)) calc(8px + var(--history-under, 0px));
+  margin-inline: var(--history-indent, 0px) 0;
+  padding: 12px;
+  border: 1px solid var(--block-divider);
+  border-radius: 10px;
+}
+
+.historyPreviewCallout[data-tinted="true"] {
+  border-color: transparent;
+}
+
+.historyPreviewCalloutIcon {
+  display: flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  margin-top: 7.5px;
+  font-size: 16.8px;
+  line-height: 16.8px;
+}
+
+/* An emoji as the editor's callout draws it: a 21.6px line 1.2px in from
+   the place's edges, the emoji on its baseline (Notion's, 2026-11-15). */
+.historyPreviewCalloutIcon[data-emoji="true"] {
+  display: block;
+  padding: 1.2px;
+  font-size: 21.6px;
+  line-height: 21.6px;
+}
+.historyPreviewCalloutIcon[data-emoji="true"] > * { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.historyPreviewCalloutBody {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding-inline-start: 8px;
+}
+
+/* A list item's mark or a toggle's caret in its words' color, as Notion's
+   preview (measured 2026-11-12). */
+.historyPreviewMarker {
+  flex: 0 0 24px;
+  text-align: center;
+}
+
+/* A toggle's caret turns down while it is open. A toggle heading's stands
+   where a toggle's does, its words 2px after it, on the heading's line, at
+   the text's size, as Notion's preview (measured 2026-11-12: a heading 2's
+   caret at the column's start, 2.6px under its words' top, its words 26px
+   in). */
+.historyPreviewMarker[data-toggle-caret][data-open] {
+  transform: rotate(calc(90deg * var(--inline-sign, 1)));
+}
+
+.historyPreviewBlock:is([data-type="toggle_heading_1"], [data-type="toggle_heading_2"], [data-type="toggle_heading_3"],
+  [data-type="toggle_heading_4"]) {
+  gap: 0;
+}
+
+.historyPreviewBlock:is([data-type="toggle_heading_1"], [data-type="toggle_heading_2"], [data-type="toggle_heading_3"],
+  [data-type="toggle_heading_4"]) > [data-toggle-caret] {
+  height: 24px;
+  margin-block-start: 1px;
+  margin-inline-end: 2px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.historyPreviewBlock[data-type="toggle_heading_1"] > [data-toggle-caret] {
+  margin-block-start: 7.5px;
+}
+
+.historyPreviewBlock[data-type="toggle_heading_2"] > [data-toggle-caret] {
+  margin-block-start: 3.6px;
+}
+
+/* A roman numeral stands at its column's start, as the editor's. */
+.historyPreviewMarker[data-roman] {
+  text-align: start;
+}
+
+.historyPreviewCheckbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  margin: 4px 4px 0;
+  border: 1px solid var(--text-tertiary);
+  border-radius: 3px;
+  color: white;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.historyPreviewCheckbox[data-checked="true"] {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue);
+}
+
+.historyPreviewQuote {
+  align-self: stretch;
+  flex: 0 0 3px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* A quote's line runs on down the blocks under it to 8px over its foot, as
+   the editor's (measured 2026-11-12: 64px beside its line and a line under
+   it): beside each row under it, on through the space under the row, and on
+   its last row --history-rail-end past the row's bottom. */
+.historyPreviewQuoteRail {
+  position: absolute;
+  inset-block: 0 calc(-1 * var(--history-under, 0px));
+  inset-inline-start: calc(-1 * var(--history-rail-back));
+  width: 3px;
+  background: currentColor;
+  pointer-events: none;
+}
+
+.historyPreviewQuoteRail[data-place="close"] {
+  inset-block-end: calc(-1 * var(--history-rail-end));
+  border-end-start-radius: 2px;
+  border-end-end-radius: 2px;
+}
+
+.historyPreviewTableRow {
+  display: flex;
+  margin-block: var(--history-over, 0px) var(--history-under, 0px);
+  margin-inline-start: var(--history-indent, 0px);
+  border-inline-start: 1px solid var(--border-subtle);
+}
+.historyPreviewTableRow + .historyPreviewTableRow .historyPreviewTableCell {
+  border-top: 0;
+}
+.historyPreviewTableCell {
+  flex: 0 0 120px;
+  min-height: 32px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--border-subtle);
+  border-inline-end: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A block's own line breaks stay, as Notion's preview keeps them (seen 2026-11-16: "line one⏎line two" two lines). */
+.historyPreviewBlockText {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* What the version changed, as Notion's (seen 2026-10-01): the block
+   outlined in blue (PageHistoryChangeMarks.module.css), words added on its
+   author's tint, words taken out struck through in that color where they
+   stood. */
+/* Added words in the author's color on its tint, as Notion's (seen 2026-11-07). */
+.historyPreviewBlockText [data-history-change="added"] {
+  background: color-mix(in srgb, var(--history-change-color, rgb(35, 131, 226)) 14%, transparent);
+  color: var(--history-change-color, rgb(35, 131, 226));
+}
+.historyPreviewBlockText [data-history-change="removed"] {
+  text-decoration: line-through;
+  text-decoration-color: var(--history-change-color, rgb(35, 131, 226));
+}
+
+.historyPreviewBlockText:only-child { width: 100%; }
+
+.historyPreviewDivider {
+  width: calc(100% - 2px - var(--history-indent, 0px));
+  margin-block: calc(6px + var(--history-over, 0px)) calc(6px + var(--history-under, 0px));
+  margin-inline: calc(1px + var(--history-indent, 0px)) 1px;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+}
+
+/* A database a version holds, by its name. */
+/* An inline database's name, 24px on a 40px line, and its tools at the
+   line's end: 16px icons 28px apart, 14px from it, in the icons' gray, as
+   Notion's preview (measured 2026-11-07). */
+.historyPreviewBlock[data-type="inline_database"] {
+  align-items: center;
+  min-height: 40px;
+  padding: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.historyPreviewDatabaseTools {
+  display: flex;
+  flex: none;
+  gap: 12px;
+  margin-inline-start: auto;
+  padding-block: 0;
+  padding-inline: 12px 6px;
+  color: var(--icon-secondary);
+}
+
+/* Under 480px only its settings stay, as Notion's preview (seen 2026-11-07
+   in an 800px window and its restore). */
+@container (width < 480px) {
+  .historyPreviewDatabaseTools > :not(:last-child) {
+    display: none;
+  }
+}
+
+.historyPreviewBlock[data-type="full_page_database"] {
+  align-items: center;
+  font-weight: 500;
+}
+
+/* A button's chip as Notion's preview draws it (measured 2026-11-12): 32px
+   high in a 1px outline, round 6px, 2px before the words' column, its icon
+   and name 6px apart and 12px in, 14px at 500 in the muted color; the row
+   spaces as the editor's button does, 43px, 6px apart in a run
+   (pageHistoryRowLayout). */
+.historyPreviewButton {
+  display: inline-flex;
+  margin-inline-start: -2px;
+  align-items: center;
+  gap: 6px;
+  max-width: min(100%, 360px);
+  height: 32px;
+  box-sizing: border-box;
+  padding: 0 12px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16.8px;
+}
+
+.historyPreviewButtonName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A page block's icon before its name, as Notion's preview shows it. */
+.historyPreviewPageIcon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-inline-end: 4px;
+  color: var(--text-secondary);
+}
+/* A file block's row as Notion's preview draws it (seen 2026-10-18): its
+   22px icon against the name, the size in 12px secondary 6px after it. */
+.historyPreviewBlock[data-history-file="true"] {
+  align-items: center;
+  gap: 0;
+}
+.historyPreviewBlock[data-history-file="true"] .historyPreviewPageIcon {
+  margin-inline-end: 2px;
+  color: var(--text-default);
+}
+.historyPreviewFileSize {
+  flex: 0 0 auto;
+  margin-inline-start: 6px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+/* A page's line, or a full-page database's: its icon 1px in, its name 5px
+   past it at 500 over a faint line, as Notion's preview (measured
+   2026-11-07); the line 24px high as the editor's page block, 35px with its
+   own top and bottom (measured 2026-11-12). */
+.historyPreviewBlock[data-history-page-line="true"] .historyPreviewPageIcon {
+  margin-block: 1px;
+  margin-inline: 1px -1px;
+}
+.historyPreviewBlock[data-history-page-line="true"] .historyPreviewBlockText {
+  margin-top: 1px;
+  border-bottom: 1px solid var(--backlink-underline);
+  font-weight: 500;
+  line-height: 20.8px;
+}
+
+[data-page-history-touch-preview] .historyPreviewDocument h1 {
+  font-size: 28px;
+}
+
+/* Blocks a version deleted, kept where they stood as Notion's preview keeps
+   them (seen 2026-10-01): a light red box, round 4px, under a 30px heading
+   "⊖ 콘텐츠를 삭제함" (13px, weight 500, red) whose chevron at its right end
+   folds the box to the heading. */
+/* The box spans the column past the words' 8px, right under the block
+   before it, its tag 6px in and the heading 4px past it, its chevron 6px
+   from the end (Notion's, measured 2026-11-07 and 2026-11-15). */
+.historyPreviewRemoved {
+  margin: 0 -8px;
+  border-radius: 4px;
+  background: var(--c-bg-red);
+}
+
+.historyPreviewRemovedHead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 30px;
+  padding: 0 6px;
+  color: var(--c-red);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+
+.historyPreviewRemovedIcon {
+  flex: none;
+}
+
+.historyPreviewRemovedChevron {
+  margin-inline-start: auto;
+  transition: transform 0.1s;
+}
+
+/* The deleted blocks under a 1px line in the red rings' color, as Notion's
+   (measured 2026-11-15: rgba(255,106,94,.173) in the dark). */
+.historyPreviewRemovedBody {
+  box-shadow: inset 0 1px var(--c-card-ring-red);
+}
+
+.historyPreviewRemoved[data-history-removed="closed"] .historyPreviewRemovedChevron {
+  transform: rotate(180deg);
+}
+
+.historyPreviewRemovedBody {
+  padding: 1px 8px 0;
+}
+
+.historyLoadMore {
+  align-self: flex-start;
+  height: 28px;
+  margin-top: 8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.historyLoadMore:hover,
+.historyLoadMore:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}

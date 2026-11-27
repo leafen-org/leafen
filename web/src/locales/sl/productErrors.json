@@ -1,0 +1,908 @@
+{
+  "contexts": {
+    "accountEmails": {
+      "read": {
+        "operation": "Nalaganje e-poštnih naslovov računa",
+        "deniedEffect": "E-poštni naslovi niso bili naloženi; shranjeni naslovi se niso spremenili.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih e-poštnih naslovov.",
+        "stateCheckAction": "Ponovno se povežite in osvežite seznam e-poštnih naslovov, preden kaj spremenite."
+      },
+      "update": {
+        "operation": "Upravljanje e-poštnih naslovov računa",
+        "deniedEffect": "Zahteva za e-pošto ni bila sprejeta; shranjeni naslovi se niso spremenili.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila zahteva za e-pošto izvedena.",
+        "stateCheckAction": "Osvežite seznam e-poštnih naslovov in preverite, ali je prispelo potrditveno sporočilo, preden poskusite znova."
+      }
+    },
+    "accountNotifications": {
+      "read": {
+        "operation": "Nalaganje nastavitev obvestil",
+        "deniedEffect": "Nastavitev obvestil ni bilo mogoče naložiti, shranjene nastavitve pa se niso spremenile.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katera obvestila prejemate.",
+        "stateCheckAction": "Zaprite in znova odprite nastavitve, da naložite nastavitve obvestil, preden jih spremenite."
+      },
+      "update": {
+        "operation": "Spreminjanje nastavitev obvestil",
+        "deniedEffect": "Vaše nastavitve obvestil niso bile spremenjene, prejšnje nastavitve pa so ohranjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali so se nastavitve obvestil spremenile.",
+        "stateCheckAction": "Zaprite in znova odprite nastavitve ter preverite nastavitve obvestil, preden jih znova spremenite."
+      }
+    },
+    "accountProfile": {
+      "read": {
+        "operation": "Nalaganje profila računa",
+        "deniedEffect": "Vašega imena in fotografije ni bilo mogoče naložiti, shranjeni profil pa ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi vašega trenutnega imena in fotografije.",
+        "stateCheckAction": "Zaprite in znova odprite nastavitve ter naložite profil, preden ga spremenite."
+      },
+      "update": {
+        "operation": "Shranjevanje profila računa",
+        "deniedEffect": "Vaš profil ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil profil računa shranjen.",
+        "stateCheckAction": "Znova naložite profil računa in zgodovino revizij, preden poskusite znova."
+      }
+    },
+    "accountSecurity": {
+      "mfa": {
+        "operation": "Spreminjanje dvostopenjskega preverjanja",
+        "deniedEffect": "Zahtevana sprememba dvostopenjskega preverjanja ni bila sprejeta; prejšnja nastavitev ostaja v veljavi.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja dvostopenjskega preverjanja.",
+        "stateCheckAction": "Znova naložite varnost računa, preden poskusite z novo spremembo dvostopenjskega preverjanja."
+      },
+      "password": {
+        "operation": "Spreminjanje gesla računa",
+        "deniedEffect": "Geslo ni bilo spremenjeno in trenutne seje ostajajo veljavne.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo geslo spremenjeno in so bile druge seje končane.",
+        "stateCheckAction": "Ponovno naložite varnost računa in se znova prijavite, če trenutna seja ne deluje več."
+      },
+      "read": {
+        "operation": "Nalaganje varnosti računa",
+        "deniedEffect": "Varnostnih nastavitev in sej ni bilo mogoče naložiti; shranjeno stanje računa ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja dvostopenjskega preverjanja in sej.",
+        "stateCheckAction": "Znova naložite varnost računa, preden kaj spremenite."
+      },
+      "recovery": {
+        "operation": "Zamenjava kod za obnovitev",
+        "deniedEffect": "Nadomestne kode za obnovitev niso bile sprejete; prej neuporabljene kode še vedno delujejo.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katere kode za obnovitev so aktivne.",
+        "stateCheckAction": "Znova naložite varnost računa, preden se odločite, ali boste kode znova zamenjali."
+      },
+      "sessionRevoke": {
+        "operation": "Preklic seje računa",
+        "deniedEffect": "Preklic izbrane seje ni bil potrjen; druge seje niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila izbrana seja preklicana.",
+        "stateCheckAction": "Znova naložite seznam sej, preden se odločite, ali boste poskusili znova."
+      }
+    },
+    "administratorBackup": {
+      "cancel": {
+        "operation": "Preklic varnostne kopije strežnika",
+        "deniedEffect": "Preklic varnostne kopije ni bil potrjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila varnostna kopija preklicana.",
+        "stateCheckAction": "Preverite trenutno stanje varnostne kopije, preden jo znova prekličete."
+      },
+      "create": {
+        "operation": "Ustvarjanje varnostne kopije strežnika",
+        "deniedEffect": "Nova varnostna kopija ni bila potrjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila zahteva za varnostno kopijo sprejeta.",
+        "stateCheckAction": "Preden pošljete novo zahtevo, preverite trenutno varnostno kopijo."
+      },
+      "download": {
+        "operation": "Prenos varnostne kopije strežnika",
+        "deniedEffect": "Nobena preverjena datoteka varnostne kopije ni bila prenesena.",
+        "uncertainEffect": "Leafen ni mogel preveriti ali pretakati datoteke varnostne kopije.",
+        "stateCheckAction": "Preden znova prenesete, preverite stanje dokončane varnostne kopije."
+      },
+      "retry": {
+        "operation": "Ponovni poskus varnostne kopije strežnika",
+        "deniedEffect": "Neuspešna varnostna kopija ni bila znova zagnana.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali se je varnostna kopija znova zagnala.",
+        "stateCheckAction": "Preden znova poskusite, preverite trenutno stanje varnostne kopije."
+      },
+      "status": {
+        "operation": "Nalaganje stanja varnostne kopije strežnika",
+        "deniedEffect": "Stanje varnostne kopije ni bilo naloženo; nobeno shranjeno stanje se ni spremenilo.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja varnostne kopije.",
+        "stateCheckAction": "Preden izvedete drugo dejanje, znova naložite stanje varnostne kopije."
+      }
+    },
+    "administratorReport": {
+      "read": {
+        "operation": "Nalaganje poročila strežnika",
+        "deniedEffect": "Poročilo ni bilo naloženo; nobeno shranjeno stanje poročila se ni spremenilo.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega posnetka poročila.",
+        "stateCheckAction": "Preden poročilo osvežite, znova naložite trenutno poročilo."
+      },
+      "refresh": {
+        "operation": "Osveževanje poročila strežnika",
+        "deniedEffect": "Nov posnetek poročila ni bil potrjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali se je posnetek poročila spremenil.",
+        "stateCheckAction": "Preden znova osvežite, naložite trenutno poročilo."
+      }
+    },
+    "administratorScheduledBackup": {
+      "read": {
+        "operation": "Nalaganje urnika varnostnega kopiranja",
+        "deniedEffect": "Urnik varnostnega kopiranja ni bil naložen; nobena nastavitev ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega urnika varnostnega kopiranja.",
+        "stateCheckAction": "Znova naložite urnik varnostnega kopiranja, preden ga spremenite."
+      },
+      "restore": {
+        "operation": "Obnovitev strežnika iz varnostne kopije",
+        "deniedEffect": "Podatki strežnika niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila obnovitev pripravljena.",
+        "stateCheckAction": "Znova naložite nastavitve varnostnega kopiranja in preverite, ali katera obnovitev čaka, preden poskusite znova."
+      },
+      "save": {
+        "operation": "Shranjevanje urnika varnostnega kopiranja",
+        "deniedEffect": "Urnik varnostnega kopiranja ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil urnik varnostnega kopiranja shranjen.",
+        "stateCheckAction": "Znova naložite urnik varnostnega kopiranja, da pred ponovnim shranjevanjem vidite veljavne nastavitve."
+      }
+    },
+    "administratorRequestLog": {
+      "read": {
+        "operation": "Nalaganje nastavitev dnevnika zahtev",
+        "deniedEffect": "Nastavitve dnevnika zahtev niso bile naložene; nobena nastavitev ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih nastavitev dnevnika zahtev.",
+        "stateCheckAction": "Znova naložite nastavitve dnevnika zahtev, preden jih spremenite."
+      },
+      "save": {
+        "operation": "Shranjevanje nastavitev dnevnika zahtev",
+        "deniedEffect": "Nastavitve dnevnika zahtev niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali so bile nastavitve dnevnika zahtev shranjene.",
+        "stateCheckAction": "Znova naložite nastavitve dnevnika zahtev, da pred ponovnim shranjevanjem vidite, katere so v veljavi."
+      }
+    },
+    "administratorNetworkProxy": {
+      "read": {
+        "operation": "Nalaganje omrežnega posrednika",
+        "deniedEffect": "Omrežni posrednik ni bil naložen; nobena nastavitev ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega omrežnega posrednika.",
+        "stateCheckAction": "Znova naložite omrežni posrednik, preden ga spremenite."
+      },
+      "save": {
+        "operation": "Shranjevanje omrežnega posrednika",
+        "deniedEffect": "Omrežni posrednik ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil omrežni posrednik shranjen.",
+        "stateCheckAction": "Znova naložite omrežni posrednik, da pred ponovnim shranjevanjem vidite, kateri je v veljavi."
+      }
+    },
+    "administratorSettings": {
+      "read": {
+        "operation": "Nalaganje nastavitev strežnika",
+        "deniedEffect": "Nastavitve niso bile naložene, shranjene nastavitve pa niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih nastavitev strežnika.",
+        "stateCheckAction": "Ponovno naložite nastavitve, preden jih spremenite."
+      },
+      "save": {
+        "operation": "Shranjevanje nastavitev strežnika",
+        "deniedEffect": "Nove nastavitve niso bile sprejete; prej shranjene nastavitve ostajajo v veljavi.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali so bile nove nastavitve shranjene.",
+        "stateCheckAction": "Ponovno naložite nastavitve in primerjajte trenutne vrednosti, preden poskusite znova."
+      }
+    },
+    "auth": {
+      "bootstrap": {
+        "operation": "Preverjanje stanja prijave",
+        "deniedEffect": "Prijavna seja ni bila vzpostavljena in podatki računa niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja prijave.",
+        "stateCheckAction": "Ponovno naložite stran in se nato znova prijavite."
+      },
+      "deviceCode": {
+        "operation": "Prijava te naprave",
+        "deniedEffect": "Niste bili prijavljeni in podatki računa niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila ta naprava prijavljena.",
+        "stateCheckAction": "Znova se prijavite z novo kodo."
+      },
+      "emailVerification": {
+        "operation": "Preverjanje e-naslova",
+        "deniedEffect": "E-poštni naslov ni bil potrjen in v račun niste bili prijavljeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo preverjanje e-naslova dokončano.",
+        "stateCheckAction": "Poskusite se prijaviti; če ne uspe, znova odprite povezavo v e-pošti."
+      },
+      "mfa": {
+        "operation": "Dokončanje dvostopenjskega preverjanja",
+        "deniedEffect": "Niste bili prijavljeni in MFA izziv ostaja nedokončan.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo dvostopenjsko preverjanje dokončano.",
+        "stateCheckAction": "Znova začnite prijavo."
+      },
+      "passwordResetConfirm": {
+        "operation": "Spreminjanje gesla",
+        "deniedEffect": "Geslo ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo geslo spremenjeno.",
+        "stateCheckAction": "Poskusite se prijaviti z novim geslom; če ne uspe, pridobite novo povezavo za ponastavitev."
+      },
+      "passwordResetRequest": {
+        "operation": "Zahteva za ponastavitev gesla",
+        "deniedEffect": "Nobeno sporočilo za ponastavitev gesla ni bilo sprejeto za pošiljanje.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila zahteva za ponastavitev sprejeta.",
+        "stateCheckAction": "Počakajte na e-pošto, preden pošljete novo zahtevo."
+      },
+      "providerExchange": {
+        "operation": "Prijava z zunanjim računom",
+        "deniedEffect": "Niste bili prijavljeni in podatki računa niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi izida zunanje prijave.",
+        "stateCheckAction": "Znova se prijavite na enak način."
+      },
+      "serverSetup": {
+        "operation": "Nastavitev strežnika Leafen",
+        "deniedEffect": "Skrbniški račun ni bil ustvarjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila nastavitev strežnika končana.",
+        "stateCheckAction": "Ponovno naložite stran in preverite stanje nastavitve, preden poskusite znova."
+      },
+      "signIn": {
+        "operation": "Prijava",
+        "deniedEffect": "Niste bili prijavljeni in podatki računa niso bili spremenjeni.",
+        "uncertainEffect": "Leafenu ni uspelo potrditi, ali je bila prijava dokončana.",
+        "stateCheckAction": "Osvežite stran in se znova prijavite."
+      },
+      "signUp": {
+        "operation": "Ustvarjanje računa",
+        "deniedEffect": "Nov račun ni bil ustvarjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil račun ustvarjen.",
+        "stateCheckAction": "Poskusite se prijaviti; če ne uspe, se znova registrirajte."
+      },
+      "passkey": {
+        "operation": "Prijava s preglednim ključem",
+        "deniedEffect": "Prijava ni bila sprejeta.",
+        "uncertainEffect": "Leafenu ni uspelo potrditi, ali je bila prijava dokončana.",
+        "stateCheckAction": "Znova se prijavite s preglednim ključem."
+      }
+    },
+    "contentGraph": {
+      "read": {
+        "operation": "Nalaganje vsebine strani",
+        "deniedEffect": "Vsebina strani ni bila naložena in shranjena vsebina ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne vsebine strani.",
+        "stateCheckAction": "Ponovno naložite stran pred urejanjem."
+      },
+      "update": {
+        "operation": "Shranjevanje vsebine strani",
+        "deniedEffect": "Sprememba ni bila sprejeta; najnovejša vsebina na strežniku ostaja v veljavi.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila vsebina shranjena.",
+        "stateCheckAction": "Ponovno naložite najnovejšo vsebino in jo primerjajte, preden poskusite znova."
+      }
+    },
+    "databaseAutomation": {
+      "write": {
+        "operation": "Shranjevanje avtomatizacije zbirke podatkov",
+        "deniedEffect": "Avtomatizacija ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila sprememba avtomatizacije podatkovne zbirke shranjena.",
+        "stateCheckAction": "Znova naložite avtomatizacijo, preden poskusite znova."
+      }
+    },
+    "enterpriseDlp": {
+      "policyUpdate": {
+        "operation": "Shranjevanje pravilnika DLP",
+        "deniedEffect": "Novi pravilnik DLP ni bil shranjen; prejšnji pravilnik ostaja v veljavi.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil pravilnik DLP shranjen.",
+        "stateCheckAction": "Znova naložite pravilnik DLP in zgodovino revizij organizacije, preden poskusite znova."
+      }
+    },
+    "enterpriseSaml": {
+      "domainVerification": {
+        "operation": "Preverjanje domene SAML",
+        "deniedEffect": "Domena ostaja v čakanju; konfiguracija SAML, zgodovina revizij in prijavne seje niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja preverjanja domene SAML.",
+        "stateCheckAction": "Znova naložite stanje domene SAML, preden poskusite znova."
+      }
+    },
+    "file": {
+      "delete": {
+        "operation": "Brisanje datoteke",
+        "deniedEffect": "Datoteka ni bila izbrisana in ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila datoteka izbrisana.",
+        "stateCheckAction": "Znova naložite datoteko in njene sklice, preden se odločite, ali boste poskusili znova."
+      },
+      "upload": {
+        "operation": "Nalaganje datoteke",
+        "deniedEffect": "Nova datoteka ni bila shranjena; obstoječe datoteke niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila datoteka shranjena.",
+        "stateCheckAction": "Znova naložite seznam datotek, preden se odločite, ali boste poskusili znova."
+      }
+    },
+    "importedPeople": {
+      "apply": {
+        "operation": "Uporaba preslikav oseb",
+        "deniedEffect": "Nove preslikave niso bile sprejete.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katere preslikave so bile uporabljene.",
+        "stateCheckAction": "Znova naložite rezultate preslikav, preden jih znova uporabite."
+      },
+      "refresh": {
+        "operation": "Osvežitev preslikav oseb",
+        "deniedEffect": "Najnovejše preslikave niso bile naložene; shranjene preslikave niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja preslikav.",
+        "stateCheckAction": "Znova naložite ploščo preslikav, preden nadaljujete."
+      },
+      "scan": {
+        "operation": "Pregled uvoženih oseb",
+        "deniedEffect": "Uvožene osebe niso bile prikazane na seznamu in obstoječe preslikave niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega seznama uvoženih oseb.",
+        "stateCheckAction": "Znova naložite ploščo preslikav, preden naredite spremembe."
+      }
+    },
+    "interactiveAutomation": {
+      "execute": {
+        "operation": "Izvedi avtomatizacijo gumbov",
+        "deniedEffect": "Dejanja gumba se niso izvedla in vsebina strani se ni spremenila.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali se je avtomatizacija gumbov izvedla.",
+        "stateCheckAction": "Preden poskusite znova, znova naložite prizadeto vsebino in stanje izvajanja."
+      }
+    },
+    "notionAdmin": {
+      "clipboard": {
+        "operation": "Kopiraj žeton API organizacije",
+        "deniedEffect": "Žeton ni bil potrjen v odložišču; sam žeton se ni spremenil.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo kopiranje v odložišče dokončano.",
+        "stateCheckAction": "Preden znova kopirate žeton, preverite odložišče."
+      },
+      "create": {
+        "operation": "Ustvari žeton API organizacije",
+        "deniedEffect": "Nov žeton ni bil potrjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil žeton ustvarjen.",
+        "stateCheckAction": "Preden ustvarite nov žeton, znova naložite seznam žetonov."
+      },
+      "list": {
+        "operation": "Naloži žetone API organizacije",
+        "deniedEffect": "Žetoni niso bili naloženi in obstoječi žetoni se niso spremenili.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega seznama žetonov.",
+        "stateCheckAction": "Preden naredite spremembe, znova naložite seznam žetonov."
+      },
+      "revoke": {
+        "operation": "Prekliči žeton API organizacije",
+        "deniedEffect": "Preklic žetona ni bil potrjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil žeton preklican.",
+        "stateCheckAction": "Preden poskusite še en preklic, znova naložite seznam žetonov."
+      }
+    },
+    "page": {
+      "bootstrap": {
+        "operation": "Nalaganje strani delovnega prostora",
+        "deniedEffect": "Strani niso bile naložene in shranjeni podatki delovnega prostora se niso spremenili.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih strani delovnega prostora.",
+        "stateCheckAction": "Preden urejate, znova naložite delovni prostor."
+      },
+      "create": {
+        "operation": "Ustvari stran",
+        "deniedEffect": "Nova stran ni bila ustvarjena in obstoječe strani se niso spremenile.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila stran ustvarjena.",
+        "stateCheckAction": "Preden poskusite znova, znova naložite seznam strani in preverite, ali je nova stran na seznamu."
+      },
+      "title": {
+        "update": {
+          "operation": "Shrani naslov strani",
+          "deniedEffect": "Sprememba naslova ni bila sprejeta; shranjeni naslov ostaja v veljavi.",
+          "uncertainEffect": "Leafen ni mogel potrditi, ali je bila sprememba shranjena.",
+          "stateCheckAction": "Ponovno naložite stran in preverite trenutni naslov."
+        }
+      }
+    },
+    "pageAnalytics": {
+      "analyticsRead": {
+        "operation": "Nalaganje analitike strani",
+        "deniedEffect": "Analitika ni bila naložena in podatki strani niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne analitike.",
+        "stateCheckAction": "Ponovno naložite analitiko, preden oblikujete sklepe."
+      },
+      "policyUpdate": {
+        "operation": "Shranjevanje pravilnika analitike",
+        "deniedEffect": "Novi pravilnik analitike ni bil sprejet.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil pravilnik shranjen.",
+        "stateCheckAction": "Ponovno naložite pravilnik in ga primerjajte, preden poskusite znova."
+      },
+      "preferencesRead": {
+        "operation": "Nalaganje nastavitev analitike",
+        "deniedEffect": "Nastavitve analitike niso bile naložene, shranjene nastavitve pa niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih nastavitev analitike.",
+        "stateCheckAction": "Ponovno naložite nastavitve, preden jih urejate."
+      },
+      "preferencesUpdate": {
+        "operation": "Shranjevanje nastavitev analitike",
+        "deniedEffect": "Nove nastavitve niso bile sprejete.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali so bile nastavitve shranjene.",
+        "stateCheckAction": "Ponovno naložite nastavitve in jih primerjajte, preden poskusite znova."
+      }
+    },
+    "pageMutation": {
+      "admission": {
+        "operation": "Varno shranjevanje spremembe brez povezave",
+        "deniedEffect": "Sprememba ni bila shranjena na tej napravi.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila sprememba shranjena na tej napravi ali na strežniku.",
+        "stateCheckAction": "Kopirajte urejeno vsebino, nato ponovno naložite stran in primerjajte shranjeno stanje."
+      },
+      "legacy": {
+        "operation": "Migracija sprememb brez povezave",
+        "deniedEffect": "Starejše spremembe brez povezave ostajajo tam, kjer so bile shranjene, in niso bile poslane.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katere starejše spremembe brez povezave so bile migrirane.",
+        "stateCheckAction": "Pustite ta zavihek odprt in ponovno naložite stran, preden znova urejate."
+      },
+      "refresh": {
+        "operation": "Ponovno nalaganje obnovljenih sprememb",
+        "deniedEffect": "Obnovljene spremembe niso bile prikazane in shranjeni podatki niso bili zamenjani.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja strani po obnovitvi.",
+        "stateCheckAction": "Ponovno naložite stran, preden znova urejate."
+      },
+      "replay": {
+        "operation": "Pošiljanje sprememb brez povezave",
+        "deniedEffect": "Čakajoča sprememba ostaja nepotrjena; strežnik je ni potrdil.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katere čakajoče spremembe so dosegle strežnik.",
+        "stateCheckAction": "Pustite ta zavihek odprt, znova vzpostavite povezavo in osvežite stran, preden znova urejate."
+      }
+    },
+    "publicContent": {
+      "search": {
+        "operation": "Iskanje po javnem spletišču",
+        "deniedEffect": "Rezultati iskanja niso bili naloženi in objavljena vsebina ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih rezultatov iskanja.",
+        "stateCheckAction": "Preverite stanje spletišča, preden znova iščete."
+      },
+      "sharedPage": {
+        "operation": "Nalaganje skupne strani",
+        "deniedEffect": "Skupna stran ni bila naložena in objavljena vsebina ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne skupne strani.",
+        "stateCheckAction": "Preverite povezavo za deljenje, preden poskusite znova."
+      },
+      "site": {
+        "operation": "Nalaganje javnega spletišča",
+        "deniedEffect": "Javno spletišče ni bilo naloženo in objavljena vsebina ni bila spremenjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega javnega spletišča.",
+        "stateCheckAction": "Preverite naslov spletišča, preden poskusite znova."
+      }
+    },
+    "publicForm": {
+      "authRestore": {
+        "operation": "Obnovi prijavo v obrazec",
+        "deniedEffect": "Obrazec za člane ni bil odprt in noben odgovor ni bil oddan.",
+        "uncertainEffect": "Leafenu ni uspelo potrditi trenutnega stanja prijave za ta obrazec.",
+        "stateCheckAction": "Osvežite obrazec in se znova prijavite."
+      },
+      "configurationWrite": {
+        "operation": "Shranjevanje nastavitev obrazca",
+        "deniedEffect": "Nastavitve obrazca niso bile potrjene kot shranjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne konfiguracije obrazca.",
+        "stateCheckAction": "Osvežite nastavitve obrazca, preden znova shranite."
+      },
+      "definitionRead": {
+        "operation": "Nalaganje obrazca",
+        "deniedEffect": "Obrazec ni bil naložen in noben odgovor ni bil oddan.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne definicije obrazca.",
+        "stateCheckAction": "Osvežite obrazec, preden vnesete odgovor."
+      },
+      "optionsRead": {
+        "operation": "Nalaganje možnosti obrazca",
+        "deniedEffect": "Zahtevane možnosti niso bile naložene in osnutek odgovora ni bil oddan.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnih izbir.",
+        "stateCheckAction": "Znova naložite izbire, preden pošljete obrazec."
+      },
+      "responseSubmit": {
+        "operation": "Oddaja odgovora obrazca",
+        "deniedEffect": "Odgovor ni bil sprejet.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil odgovor sprejet.",
+        "stateCheckAction": "Pred ponovnim pošiljanjem odgovora preverite rezultat obrazca."
+      }
+    },
+    "runtimeConfig": {
+      "read": {
+        "operation": "Nalaganje konfiguracije izvajanja",
+        "deniedEffect": "Konfiguracija izvajanja ni bila naložena; shranjene nastavitve strežnika niso bile spremenjene.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutne konfiguracije izvajanja, zato so v veljavi varne nadomestne vrednosti.",
+        "stateCheckAction": "Znova naložite stran, da preberete trenutno konfiguracijo strežnika."
+      }
+    },
+    "syncStatus": {
+      "flush": {
+        "operation": "Sinhronizacija čakajočih sprememb",
+        "deniedEffect": "Čakajoče spremembe ostajajo v čakalni vrsti in jih strežnik ni potrdil.",
+        "uncertainEffect": "Leafen ni mogel potrditi, katere čakajoče spremembe so dosegle strežnik.",
+        "stateCheckAction": "Pustite ta zavihek odprt, znova se povežite in pred ponovnim poskusom preverite shranjeno stanje."
+      },
+      "pendingRead": {
+        "operation": "Preverjanje čakajočih sprememb",
+        "deniedEffect": "Število čakajočih sprememb ni bilo naloženo; spremembe v čakalni vrsti niso bile zavržene.",
+        "uncertainEffect": "Leafen ni mogel potrditi, koliko sprememb je še čakajočih.",
+        "stateCheckAction": "Pustite ta zavihek odprt in znova preverite stanje sinhronizacije."
+      },
+      "retry": {
+        "operation": "Ponovni poskus sinhronizacije",
+        "deniedEffect": "Sinhronizacija ni bila potrjena; čakajoče spremembe ostajajo v čakalni vrsti.",
+        "uncertainEffect": "Leafen ni mogel potrditi zadnjega rezultata sinhronizacije.",
+        "stateCheckAction": "Pred ponovnim poskusom preverite shranjeno stanje in povezavo."
+      }
+    },
+    "workspace": {
+      "create": {
+        "operation": "Ustvarjanje delovnega prostora",
+        "deniedEffect": "Nov delovni prostor ni bil ustvarjen, obstoječi podatki pa niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil delovni prostor ustvarjen.",
+        "stateCheckAction": "Znova naložite seznam delovnih prostorov in preverite, ali je novi delovni prostor na njem, preden poskusite znova."
+      },
+      "delete": {
+        "operation": "Trajno brisanje delovnega prostora",
+        "deniedEffect": "Brisanje ni bilo sprejeto; delovni prostor in obstoječi podatki niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil delovni prostor izbrisan.",
+        "stateCheckAction": "Pred ponovnim poskusom znova naložite seznam delovnih prostorov."
+      },
+      "member": {
+        "add": {
+          "operation": "Dodaj člana delovnega prostora",
+          "deniedEffect": "Član ni bil dodan in nič ni bilo spremenjeno.",
+          "uncertainEffect": "Leafen ni mogel potrditi, ali je bil član delovnega prostora dodan.",
+          "stateCheckAction": "Pred ponovnim poskusom znova naložite člane, dejavnost in revizijsko zgodovino."
+        },
+        "revoke": {
+          "operation": "Odstrani člana delovnega prostora",
+          "deniedEffect": "Član ni bil odstranjen in nič ni bilo spremenjeno.",
+          "uncertainEffect": "Leafen ni mogel potrditi, ali je bil član delovnega prostora odstranjen.",
+          "stateCheckAction": "Pred ponovnim poskusom znova naložite člane, dejavnost in revizijsko zgodovino."
+        }
+      },
+      "settings": {
+        "update": {
+          "operation": "Shranjevanje nastavitev delovnega prostora",
+          "deniedEffect": "Sprememba nastavitev ni bila shranjena; prejšnje nastavitve ostajajo v veljavi.",
+          "uncertainEffect": "Leafen ni mogel potrditi, ali so bile nastavitve delovnega prostora shranjene.",
+          "stateCheckAction": "Pred ponovnim poskusom znova naložite nastavitve delovnega prostora, dejavnost in revizijsko zgodovino."
+        }
+      }
+    },
+    "workspaceExport": {
+      "cancel": {
+        "operation": "Prekliči izvoz delovnega prostora",
+        "deniedEffect": "Izvoz ni bil preklican in morda še vedno poteka.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil izvoz preklican.",
+        "stateCheckAction": "Pred ponovnim preklicem osvežite stanje izvoza."
+      },
+      "download": {
+        "operation": "Prenesi izvoz delovnega prostora",
+        "deniedEffect": "Arhiv ni bil prenesen; izvoz na strežniku ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil prenos arhiva dokončan.",
+        "stateCheckAction": "Pred ponovnim prenosom preverite seznam prenosov."
+      },
+      "job": {
+        "operation": "Izvozi delovni prostor",
+        "deniedEffect": "Arhiv ni bil ustvarjen; izvorni delovni prostor ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je arhiv za to opravilo uporaben.",
+        "stateCheckAction": "Zaženite nadomestni izvoz iz trenutnega delovnega prostora."
+      },
+      "poll": {
+        "operation": "Počakaj na izvoz delovnega prostora",
+        "deniedEffect": "Najnovejše stanje izvoza ni bilo naloženo; opravilo izvoza ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja izvoza.",
+        "stateCheckAction": "Preden izvedete drugo dejanje, osvežite stanje izvoza."
+      },
+      "retry": {
+        "operation": "Ponovi izvoz delovnega prostora",
+        "deniedEffect": "Ponovni poskus ni bil sprejet; obstoječe opravilo izvoza ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil ponovni poskus sprejet.",
+        "stateCheckAction": "Osvežite stanje izvoza, preden znova poskusite."
+      },
+      "start": {
+        "operation": "Začni izvoz delovnega prostora",
+        "deniedEffect": "Novo opravilo izvoza ni bilo sprejeto; delovni prostor ni bil spremenjen.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bilo opravilo izvoza sprejeto.",
+        "stateCheckAction": "Osvežite najnovejše stanje izvoza, preden začnete z drugim opravilom."
+      },
+      "status": {
+        "operation": "Naloži stanje izvoza delovnega prostora",
+        "deniedEffect": "Najnovejše stanje izvoza ni bilo naloženo; opravilo izvoza ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja izvoza.",
+        "stateCheckAction": "Znova naložite pogovorno okno za izvoz, preden izvedete drugo dejanje."
+      }
+    },
+    "workspaceImport": {
+      "cancel": {
+        "operation": "Prekliči uvoz",
+        "deniedEffect": "Uvoz ni bil preklican in morda še vedno poteka.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil uvoz preklican.",
+        "stateCheckAction": "Osvežite stanje uvoza, preden znova prekličete."
+      },
+      "job": {
+        "operation": "Uvozi datoteko",
+        "deniedEffect": "Nobena stran ni bila ustvarjena; delno uvožena vsebina je bila odstranjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je za ta uvoz na voljo uporabna stran.",
+        "stateCheckAction": "Obdržite diagnostično referenco in začnite nov uvoz iz izvorne datoteke."
+      },
+      "start": {
+        "operation": "Začni uvoz",
+        "deniedEffect": "Nov uvoz ni bil sprejet in nobena stran ni bila ustvarjena.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bil uvoz sprejet.",
+        "stateCheckAction": "Poskusite znova z isto datoteko, ne da bi jo spremenili, da se bo Leafen lahko znova povezal z isto zahtevo."
+      },
+      "status": {
+        "operation": "Naloži stanje uvoza",
+        "deniedEffect": "Najnovejše stanje uvoza ni bilo naloženo; opravilo uvoza ni bilo spremenjeno.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega stanja uvoza.",
+        "stateCheckAction": "Znova odprite pogovorno okno za uvoz, da se znova povežete s shranjenim opravilom, preden izvedete drugo dejanje."
+      }
+    },
+    "accountPasskeys": {
+      "read": {
+        "operation": "Nalaganje ključev za dostop do računa",
+        "deniedEffect": "Seznam ključev za dostop ni bil naložen; shranjeni ključi niso bili spremenjeni.",
+        "uncertainEffect": "Leafen ni mogel potrditi trenutnega seznama ključev za dostop.",
+        "stateCheckAction": "Znova se povežite in osvežite seznam ključev za dostop, preden kaj spremenite."
+      },
+      "update": {
+        "operation": "Upravljanje pristopnih ključev",
+        "deniedEffect": "Strežnik ni spremenil shranjenih pristopnih ključev.",
+        "uncertainEffect": "Leafen ni mogel potrditi, ali je bila sprememba pristopnega ključa dokončana.",
+        "stateCheckAction": "Osvežite seznam pristopnih ključev, preden poskusite znova. Če je bil nov ključ ustvarjen, vendar tukaj ni shranjen, preverite upravitelja ključev naprave."
+      }
+    }
+  },
+  "correctable": {
+    "currentPassword": "Trenutno geslo ni pravilno.",
+    "currentPasswordNext": "Če ste ga pozabili, se odjavite in ga ponastavite na prijavni strani.",
+    "code": "Koda je napačna ali je bila že uporabljena.",
+    "codeNext": "Vnesite kodo, ki jo zdaj prikazuje vaša aplikacija za preverjanje pristnosti.",
+    "recoveryCode": "Koda za obnovitev je napačna ali je bila že uporabljena.",
+    "recoveryCodeNext": "Vnesite kodo za obnovitev, ki je še niste uporabili.",
+    "accountDeactivated": "Skrbnik strežnika je onemogočil ta račun.",
+    "accountDeactivatedNext": "Prosite skrbnika, da ga znova omogoči.",
+    "organizationSSO": "Ta organizacija dovoljuje prijavo samo prek enotne prijave (SSO).",
+    "organizationSSONext": "Namesto tega se prijavite s službenim računom.",
+    "organizationPasswordTwoStep": "Vaša organizacija zahteva prijavo z geslom in dvostopenjskim preverjanjem, ne s kodo naprave.",
+    "organizationPasswordTwoStepNext": "Prijavite se z e-pošto in geslom; če gesla nimate, prosite administratorja za enkratno geslo.",
+    "deviceCode": "Koda je napačna, je bila že uporabljena, je potekla ali pa je bilo okno, ki jo je prikazovalo, zaprto.",
+    "deviceCodeNext": "Pridobite novo kodo in jo znova vnesite.",
+    "setupCode": "Koda za nastavitev ni pravilna.",
+    "setupCodeNext": "Znova odprite povezavo za nastavitev, ki jo je izpisal strežnik, ali vnesite kodo, s katero je bil zagnan.",
+    "setupCodeMissing": "Vnesite kodo za nastavitev.",
+    "setupCodeMissingNext": "Če odprete povezavo za nastavitev, ki jo je izpisal strežnik, se koda vnese; deluje tudi koda, s katero je bil strežnik zagnan.",
+    "sessionCapacity": "Ta račun je dosegel omejitev števila naprav.",
+    "sessionCapacityNext": "Odjavite napravo, ki je ne uporabljate več (Nastavitve → Račun → Naprave), in poskusite znova.",
+    "signInEnded": "Ta zahteva za prijavo se je končala: potekel je čas ali je bila koda prevečkrat napačna.",
+    "signInEndedNext": "Znova se prijavite z e-pošto in geslom.",
+    "emailNotVerified": "E-pošta tega računa še ni potrjena.",
+    "emailNotVerifiedNext": "Odprite povezavo v e-pošti, ki ste jo prejeli ob registraciji, in se nato prijavite.",
+    "registrationFailed": "Računa ni bilo mogoče ustvariti.",
+    "registrationFailedNext": "Poskusite znova čez trenutek. Če se ponavlja, obvestite skrbnika tega strežnika."
+  },
+  "labels": {
+    "reference": "Referenca"
+  },
+  "meanings": {
+    "samlAccountCreationOff": "Ta organizacija ob prijavi s službenim računom ne ustvarja novih računov.",
+    "samlAccountCreationOffNext": "Prosite skrbnika svoje organizacije, da vas povabi.",
+    "samlRetryAfterInvite": "Znova se prijavite, ko prejmete povabilo.",
+    "samlIdentityDenied": "Ta e-poštni naslov ne more uporabljati prijave s službenim računom te organizacije.",
+    "samlIdentityDeniedNext": "Prosite skrbnika svoje organizacije, da preveri e-poštno domeno in vaše članstvo.",
+    "samlRetryAfterAdministrator": "Znova se prijavite, ko bo administrator preveril.",
+    "samlResponseInvalid": "Odgovora na prijavo s službenim računom ni bilo mogoče preveriti.",
+    "samlResponseInvalidNext": "Znova začnite s prijavo. Če se to ponavlja, prosite administratorja svoje organizacije, naj preveri nastavitve SAML.",
+    "accountAlreadyExistsForEmailAddress": "Za ta e-poštni naslov že obstaja račun.",
+    "accountEmailCouldNotAdmittedFor": "E-poštnega sporočila o računu ni bilo mogoče poslati.",
+    "administratorSettingsDoNotMeetServer": "Nastavitve skrbnika ne izpolnjujejo zahtev strežnika.",
+    "administratorSettingsNotAvailableCurrentAccount": "Nastavitve skrbnika niso na voljo trenutnemu računu.",
+    "anotherAdministratorAlreadyCompletedServerSetup": "Drug skrbnik je že dokončal nastavitev strežnika.",
+    "anotherServerOperationTemporarilyLockedAccount": "Drugo strežniško opravilo je začasno zaklenilo shrambo računa.",
+    "anotherServerOperationTemporarilyLockedDatabase": "Drugo strežniško opravilo je začasno zaklenilo zbirko podatkov, zato izvoza ni bilo mogoče nadaljevati.",
+    "anotherServerOperationTemporarilyLockedDlp": "Drugo strežniško opravilo je začasno zaklenilo shrambo pravilnika DLP.",
+    "anotherServerOperationTemporarilyLockedFile": "Drugo strežniško opravilo je začasno zaklenilo shrambo datotek.",
+    "anotherServerOperationTemporarilyLockedPage": "Drugo strežniško opravilo je začasno zaklenilo shrambo vsebine strani.",
+    "anotherServerOperationTemporarilyLockedProduct": "Drugo strežniško opravilo je začasno zaklenilo shrambo izdelka.",
+    "askOrganizationAdministratorToAllow": "Prosite skrbnika organizacije ali lastnika ekipnega prostora, da to dovoli.",
+    "askServerAdministratorCheckEmailDelivery": "Prosite skrbnika strežnika, da preveri dostavo e-pošte, nato poskusite znova.",
+    "backupArtifactNotCompleteYet": "Datoteka varnostne kopije še ni dokončana.",
+    "backupStateNoLongerPermitsControl": "Trenutno stanje varnostne kopije ne dovoljuje več tega dejanja.",
+    "causeCouldNotDetermined": "Vzroka ni bilo mogoče ugotoviti.",
+    "changeSaveReceiptAndSynchronizationState": "Sprememba ni bila shranjena in vsebina strani je nespremenjena.",
+    "checkCurrentBackupBeforeRetrying": "Pred ponovnim poskusom preverite trenutno varnostno kopijo.",
+    "checkCurrentJobStateBeforeDeciding": "Preden se odločite, ali boste poskusili znova, preverite trenutno stanje opravila.",
+    "checkCurrentListBeforeTryingDifferent": "Preden poskusite z drugim elementom, preverite trenutni seznam.",
+    "checkCurrentServerSettingsBeforeTrying": "Pred ponovnim poskusom preverite trenutne nastavitve strežnika.",
+    "checkCurrentServerSetupStateBefore": "Pred ponovnim poskusom preverite trenutno stanje nastavitve strežnika.",
+    "checkCurrentStateAndUseNew": "Preverite trenutno stanje in začnite novo varnostno kopijo le, če jo potrebujete.",
+    "checkEmailAndPassword": "Preverite e-poštni naslov in geslo.",
+    "checkServerSecretStorageThenSave": "Preverite shrambo skrivnosti strežnika in nato znova shranite iste nastavitve.",
+    "checkServerStateThenLoadSettings": "Preverite stanje strežnika in nato znova naložite nastavitve.",
+    "createNewBackupAndInspectServer": "Ustvarite novo varnostno kopijo in preglejte shrambo strežnika, če se napaka ponovi.",
+    "currentAccountNotAuthorizedForOperation": "Trenutni račun ni pooblaščen za to operacijo.",
+    "currentStateMustCheckedBeforeRetry": "Trenutno stanje je treba preveriti, preden je ponovni poskus lahko varen.",
+    "currentStateMustCheckedBeforeRetrying": "Pred ponovnim poskusom je treba preveriti trenutno stanje.",
+    "dnsVerificationServiceTemporarilyUnavailable": "Storitev preverjanja DNS je začasno nedosegljiva.",
+    "doNotAssumeUnchangedRetrySafe": "Ne predpostavljajte, da je ponovni poskus varen, dokler shramba strežnika ni popravljena.",
+    "doNotKeepRetryingIdentifierNew": "Ne ponavljajte te zahteve; najprej znova naložite stran, nato je nov poskus varen.",
+    "doNotResumeFailedJobStart": "Ne nadaljujte neuspešnega opravila; namesto tega začnite nov izvoz.",
+    "doNotRetryBeforeLoadingLatest": "Ne poskušajte znova, preden naložite najnovejše nastavitve strežnika.",
+    "doNotRetryDirectRequestUnchanged": "Ne poskušajte tega nalaganja znova brez sprememb; uporabite nadaljevalno nalaganje.",
+    "doNotRetryDirectRequestUnchanged2": "Ne poskušajte tega nalaganja znova brez sprememb; uporabite nadaljevalno nalaganje arhiva.",
+    "doNotRetrySetupRequestSign": "Te zahteve za nastavitev ne poskušajte znova; prijavite se z obstoječim administratorskim računom.",
+    "doNotReuseInvalidArtifactCreate": "Ne uporabite znova neveljavne datoteke varnostne kopije; ustvarite novo varnostno kopijo.",
+    "doNotReuseLinkNewAction": "Te povezave ne uporabljajte znova; varno je začeti novo dejanje.",
+    "emailOrPasswordDidNotMatch": "E-poštni naslov ali geslo se ne ujemata.",
+    "externalSignInProviderCouldNot": "Zunanji ponudnik prijave ni mogel dokončati zahteve.",
+    "fileLargerThanOneDirectUpload": "Ta datoteka je prevelika za eno neposredno nalaganje.",
+    "formStorageTemporarilyLockedByAnother": "Shramba obrazcev je bila začasno zaklenjena zaradi druge strežniške operacije.",
+    "leafenArchiveLargerThanOneDirect": "Ta arhiv Leafen je prevelik za en neposreden uvoz.",
+    "leafenDidNotReceiveServerResponse": "Leafen ni prejel odgovora strežnika.",
+    "leafenRebuildingOrganizationStorageUsageState": "Leafen obnavlja stanje uporabe shrambe organizacije.",
+    "leafenServiceCouldNotCompleteOperation": "Storitev Leafen ni mogla dokončati operacije.",
+    "isolatedRecordNotAppliedYourRequested": "Nepopoln zapis je bil izločen, vaša sprememba ni bila shranjena in vsebina strani je nespremenjena.",
+    "jobCannotRetriedStartReplacementExport": "Tega opravila ni mogoče znova poskusiti; začnite nadomestni izvoz.",
+    "jobSArchiveNotPublishedAnd": "Arhiv tega opravila ni bil ustvarjen in izvorni delovni prostor ni bil spremenjen.",
+    "keepDiagnosticReferenceAndAskServer": "Obdržite diagnostično referenco in prosite skrbnika strežnika, naj popravi shrambo strežnika.",
+    "lastConfirmedSavedStateRestoredSo": "Nazadnje potrjeno shranjeno stanje je bilo obnovljeno, zato je varno znova poskusiti isto spremembo.",
+    "loadCurrentReportAndUseNew": "Naložite trenutno poročilo in nato znova osvežite.",
+    "loadCurrentReportBeforeRefreshingAgain": "Naložite trenutno poročilo, preden znova osvežite.",
+    "loadCurrentReportBeforeTryingAgain": "Naložite trenutno poročilo, preden poskusite znova.",
+    "newerOrIncompatibleStatePreventedOperation": "Novejše ali nezdružljivo stanje je preprečilo to opravilo.",
+    "noNewArchivePublishedAndSource": "Noben nov arhiv ni bil ustvarjen, izvorni delovni prostor in prejšnji arhivi pa se niso spremenili.",
+    "noNewSignInSessionCreated": "Nova prijavna seja ni bila ustvarjena in obstoječe seje niso bile spremenjene.",
+    "notKnownWhetherRetryingSafeUntil": "Dokler trenutno stanje ni preverjeno, ni znano, ali je ponovni poskus varen.",
+    "organizationStorageAuthorityInconsistent": "Zapis o uporabi shrambe organizacije je nedosleden.",
+    "organizationDlpBlocksOperation": "Pravilnik vaše organizacije o preprečevanju izgube podatkov to preprečuje.",
+    "takeOutTermOrAskAboutDlp": "Odstranite morebitni občutljivi izraz in poskusite znova ali pa vprašajte skrbnika organizacije, če niste prepričani.",
+    "organizationSettingsDoNotAllowOperation": "Nastavitve vaše organizacije ali timskega prostora tega ne dovoljujejo.",
+    "organizationStorageLimitWouldExceeded": "Omejitev shrambe organizacije bi bila presežena.",
+    "serverDiskAlmostFull": "Disk strežnika je skoraj poln.",
+    "askServerAdministratorToFreeSpace": "Skrbnika strežnika prosite, naj sprosti prostor; ko bo dovolj prostora, bo spet delovalo.",
+    "safeRetryOnceServerHasRoom": "Ko bo na strežniku dovolj prostora, lahko isto stvar varno poskusite znova.",
+    "readDoesNotChangeSavedData": "To branje ne spremeni shranjenih podatkov, zato je ponovni poskus varen.",
+    "reloadCurrentBackupBeforeChoosingAnother": "Znova naložite trenutno varnostno kopijo, preden izberete drugo dejanje.",
+    "reloadCurrentBackupStateBeforeContinuing": "Znova naložite trenutno stanje varnostne kopije, preden nadaljujete.",
+    "reloadCurrentStateBeforeDecidingWhether": "Znova naložite trenutno stanje, preden se odločite, ali boste poskusili znova.",
+    "reloadSignInPageAndStart": "Osvežite prijavno stran in se znova prijavite.",
+    "removeUnneededFilesOrAskOrganization": "Odstranite nepotrebne datoteke ali prosite organizacijskega skrbnika za obračun, naj poveča omejitev.",
+    "reportChangedAfterScreenLoaded": "Poročilo se je spremenilo po nalaganju tega zaslona.",
+    "requestIdentifierBelongsDifferentOperation": "Ta zahteva je bila že uporabljena za drugo dejanje.",
+    "requestIdentifierBelongsDifferentReportRefresh": "Ta zahteva je bila že uporabljena za drugo osvežitev poročila.",
+    "requestedItemNoLongerExistsOr": "Zahtevani element ne obstaja več ali ni viden temu računu.",
+    "retryExportAfterOtherServerOperation": "Ta izvoz poskusite znova, ko se konča drugo strežniško opravilo.",
+    "retryExportJobAfterServerStorage": "To izvozno opravilo poskusite znova, ko se strežniška shramba obnovi.",
+    "retryOnlyAfterAccountOrPermission": "Znova poskusite šele, ko se spremeni račun ali dovoljenje.",
+    "retryOnlyAfterOrganizationSettingChanges": "Znova poskusite šele, ko se ta nastavitev spremeni.",
+    "retrySameContentChangeAfterOther": "Enako spremembo vsebine poskusite znova, ko se konča drugo strežniško opravilo.",
+    "retrySameContentChangeAfterServer": "Enako spremembo vsebine poskusite znova, ko se strežniška shramba obnovi.",
+    "retrySameContentChangeNow": "Enako spremembo vsebine poskusite znova zdaj.",
+    "changeTooLargeForOneChange": "To je preveliko, da bi spremenili naenkrat. Ena sprememba lahko obsega do 64 MB, vključno z besedilom.",
+    "pageKeepsWhatItHadBefore": "Stran je takšna, kot je bila prej.",
+    "makeTheChangeInParts": "Spremembo izvedite po delih: najprej po delih izbrišite bloke znotraj velikega preklopa ali razdelka, dolgo besedilo pa prilepite po delih.",
+    "sameSizeIsRefusedAgain": "Ista velikost je znova zavrnjena; ko je enkrat razdeljena, je varno poskusiti znova.",
+    "linkCannotBeKeptHere": "Ta sprememba poveže stran ali blok, ki ju tukaj ni mogoče povezati.",
+    "chooseAnotherPageOrRefresh": "Izberite drugo stran ali osvežite stran in poskusite znova.",
+    "sameLinkIsRefusedAgain": "Povezovanje istega elementa je znova zavrnjeno.",
+    "retrySameDomainVerificationAfterDns": "Ko se storitev za preverjanje DNS obnovi, znova poskusite z istim preverjanjem domene.",
+    "retrySameFileOperationAfterOther": "Ko se drugi strežniški postopek konča, znova poskusite z istim postopkom z datoteko.",
+    "retrySameFileOperationAfterServer": "Ko se strežniška shramba obnovi, znova poskusite z istim postopkom z datoteko.",
+    "retrySameFormOperationAfterOther": "Ko se drugi strežniški postopek konča, znova poskusite z istim postopkom z obrazcem.",
+    "retrySameFormOperationAfterServer": "Ko se strežniška shramba obnovi, znova poskusite z istim postopkom z obrazcem.",
+    "retrySameOperationAfterOtherServer": "Ko se drugi strežniški postopek konča, znova poskusite z istim postopkom.",
+    "retrySameOperationAfterServerStorage": "Ko se strežniška shramba obnovi, znova poskusite z istim postopkom.",
+    "returnSignInWithExistingAccount": "Vrnite se k prijavi z obstoječim računom.",
+    "reviewAndCorrectEnteredServerSettings": "Preglejte in popravite vnesene nastavitve strežnika.",
+    "reviewEnteredValuesAndCorrectHighlighted": "Preglejte vnesene vrednosti in popravite označene podatke.",
+    "safeRetryAfterEmailDeliveryRestored": "Ko se dostava e-pošte obnovi, lahko varno poskusite znova.",
+    "safeRetryAfterServerResourceChecks": "Ko se preverjanja strežniških virov obnovijo, lahko varno poskusite znova.",
+    "safeRetryAfterTemporaryLockClears": "Ko se začasna zaklenitev odpravi, lahko varno poskusite znova.",
+    "safeRetryRead": "To branje lahko varno poskusite znova.",
+    "safeRetrySameAuthenticationOperationAfter": "Ko se shramba obnovi, lahko varno znova poskusite z istim postopkom preverjanja pristnosti.",
+    "safeRetrySameContentChangeAfter": "Ko se začasna zaklenitev odpravi, lahko varno znova poskusite izvesti isto spremembo vsebine.",
+    "safeRetrySameContentChangeAfter2": "Ko se shramba obnovi, lahko varno znova poskusite izvesti isto spremembo vsebine.",
+    "safeRetrySameDlpPolicySave": "Ko se shramba obnovi, lahko varno znova shranite isti pravilnik DLP.",
+    "safeRetrySameDlpPolicySave2": "Ko se začasna zaklenitev odpravi, lahko varno znova shranite isti pravilnik DLP.",
+    "safeRetrySameDomainVerificationAfter": "Ko se storitev obnovi, lahko varno znova poskusite z istim preverjanjem domene.",
+    "safeRetrySameFileOperationAfter": "Ko shramba postane na voljo, lahko varno znova poskusite z istim postopkom z datoteko.",
+    "safeRetrySameFileOperationAfter2": "Ko se shramba obnovi, lahko varno znova poskusite z istim postopkom z datoteko.",
+    "safeRetrySameFileOperationAfter3": "Ko se začasna zaklenitev odpravi, lahko varno znova poskusite z istim postopkom z datoteko.",
+    "safeRetrySameFormOperationAfter": "Ko se shramba obnovi, lahko varno znova poskusite z istim postopkom z obrazcem.",
+    "safeRetrySameFormOperationAfter2": "Ko se začasna zaklenitev odpravi, lahko varno znova poskusite isti postopek z obrazcem.",
+    "safeRetrySameOperationAfterStorage": "Ko se shramba obnovi, lahko varno znova poskusite isto operacijo.",
+    "safeRetrySameOperationAfterTemporary": "Ko se začasna zaklenitev odpravi, lahko varno znova poskusite isti postopek.",
+    "safeRetrySameSettingsAfterSecret": "Ko se shramba skrivnosti obnovi, lahko varno znova poskusite iste nastavitve.",
+    "safeRetrySameSettingsSaveAfter": "Ko popravite neveljavne vrednosti, lahko varno znova poskusite shraniti iste nastavitve.",
+    "safeRetryWithSameJobIdentifier": "Varno je, da znova poskusite isto opravilo.",
+    "safeRetryWithSameJobIdentity": "Varno je, da znova poskusite isto opravilo.",
+    "safeSignInInsteadCreatingAnother": "Varno se je prijaviti, namesto da ustvarite drug račun.",
+    "safeStartNewProviderSignIn": "Varno je, da pozneje začnete novo prijavo prek ponudnika.",
+    "safeTryAgainAfterCorrectingDetails": "Ko popravite podatke, lahko varno znova poskusite.",
+    "safeTryAgainAfterCorrectingInput": "Ko popravite vnos, lahko varno znova poskusite.",
+    "safeTryAgainAfterWait": "Po čakanju lahko varno znova poskusite.",
+    "serverTakesNoChangesNow": "Ta strežnik ne more doseči mesta za varnostno kopijo, zato trenutno ne sprejema sprememb.",
+    "serverDataMovedElsewhere": "Podatki tega strežnika so se preselili na drug strežnik.",
+    "doItOnNewServer": "To storite na novem strežniku.",
+    "serverDataMovedNoRetry": "Če tukaj znova poskusite, se ne bo shranilo.",
+    "sameRequestIdentityCanRetriedSafely": "Po kratkem čakanju lahko varno znova poskusite isto zahtevo.",
+    "saveSameDlpPolicyAgainAfter": "Ko se strežniška shramba obnovi, znova shranite isti pravilnik DLP.",
+    "saveSameDlpPolicyAgainAfter2": "Ko se druga strežniška operacija konča, znova shranite isti pravilnik DLP.",
+    "serverAccountStorageTemporarilyUnavailable": "Strežniška shramba računov začasno ni na voljo.",
+    "serverCannotCurrentlyConfirmResourceState": "Strežnik trenutno ne more potrditi stanja virov.",
+    "serverCouldNotCompleteAdministratorSettings": "Strežniku ni uspelo dokončati shranjevanja skrbniških nastavitev.",
+    "serverCouldNotCompleteAdministratorSetup": "Strežniku ni uspelo dokončati zahteve za skrbniško nastavitev.",
+    "serverCouldNotCompleteBackupLifecycle": "Strežniku ni uspelo dokončati varnostnega kopiranja.",
+    "serverCouldNotLoadBackupState": "Strežnik ni mogel naložiti tega stanja varnostne kopije.",
+    "serverCouldNotProtectAdministratorSecret": "Strežnik ni mogel zaščititi skrbniških skrivnih vrednosti.",
+    "serverCouldNotReadAdministratorState": "Strežnik ni mogel prebrati skrbniškega stanja.",
+    "serverCouldNotReadOneExact": "Strežnik ni mogel prebrati doslednega posnetka poročila.",
+    "serverDetectedAndIsolatedIncompleteContent": "Strežnik je našel nepopoln zapis vsebine in ga izločil.",
+    "serverFileStorageTemporarilyUnavailable": "Strežniška shramba datotek začasno ni na voljo.",
+    "serverFormStorageTemporarilyUnavailable": "Strežniška shramba obrazcev začasno ni na voljo.",
+    "serverPageContentStorageTemporarilyUnavailable": "Strežniška shramba vsebine strani začasno ni na voljo.",
+    "serverSettingsChangedAfterScreenLoaded": "Nastavitve strežnika so se spremenile po nalaganju tega zaslona.",
+    "serverStorageTemporarilyUnavailable": "Strežniška shramba začasno ni na voljo.",
+    "serverStorageTemporarilyUnavailableSoArchive": "Strežniška shramba začasno ni bila na voljo, zato arhiva ni bilo mogoče ustvariti.",
+    "serverStorageTemporarilyUnavailableSoDlp": "Strežniška shramba začasno ni na voljo, zato pravilnika DLP ni bilo mogoče shraniti.",
+    "signInAttemptIdentifierAlreadyBelongs": "Ta poskus prijave je bil že uporabljen z drugačnimi podatki.",
+    "signInOrAccountActionLink": "Povezava za prijavo ali dejanje v računu ni več veljavna.",
+    "signInWithAuthorizedAccountOr": "Prijavite se z avtoriziranim računom ali prosite skrbnika za dostop.",
+    "signInWithExistingAdministratorAccount": "Prijavite se z obstoječim skrbniškim računom.",
+    "signInWithServerAdministratorAccount": "Prijavite se z računom strežniškega skrbnika ali prosite drugega skrbnika za dostop.",
+    "startAccountActionAgainGetNew": "Znova začnite dejanje z računom, da prejmete novo povezavo.",
+    "startReplacementExportFromLatestWorkspace": "Zaženite nadomestni izvoz iz najnovejšega delovnega prostora.",
+    "storedBackupDidNotMatchVerified": "Shranjena varnostna kopija se ni ujemala s preverjeno datoteko.",
+    "submittedInformationDidNotMeetOperation": "Poslani podatki niso ustrezali zahtevam postopka.",
+    "tooManyRequestsLimited": "Preveč je bilo zahtev, zato je ta operacija omejena.",
+    "tooManyRequestsMadeSoOperation": "Preveč je bilo zahtev, zato je to dejanje začasno omejeno.",
+    "tryAgainAfterServerStorageRecovers": "Poskusite znova, ko se strežniška shramba obnovi.",
+    "tryAgainInHours_one": "Poskusite znova čez približno eno uro.",
+    "tryAgainInHours_two": "Poskusite znova čez približno {{count}} uri.",
+    "tryAgainInHours_few": "Poskusite znova čez približno {{count}} ure.",
+    "tryAgainInHours_other": "Poskusite znova čez približno {{count}} ur.",
+    "tryAgainInMinutes_one": "Poskusite znova čez približno eno minuto.",
+    "tryAgainInMinutes_two": "Poskusite znova čez približno {{count}} minuti.",
+    "tryAgainInMinutes_few": "Poskusite znova čez približno {{count}} minute.",
+    "tryAgainInMinutes_other": "Poskusite znova čez približno {{count}} minut.",
+    "tryAgainInSeconds_one": "Poskusite znova čez približno {{count}} sekundo.",
+    "tryAgainInSeconds_two": "Poskusite znova čez približno {{count}} sekundi.",
+    "tryAgainInSeconds_few": "Poskusite znova čez približno {{count}} sekunde.",
+    "tryAgainInSeconds_other": "Poskusite znova čez približno {{count}} sekund.",
+    "useAnotherSignInMethodOr": "Uporabite drug način prijave ali poskusite s tem ponudnikom pozneje.",
+    "useResumableArchiveUploadSoProgress": "Uporabite nalaganje arhiva z možnostjo nadaljevanja, da se napredek lahko nadaljuje od shranjenega stanja.",
+    "useResumableUploadSoProgressCan": "Uporabite nalaganje z možnostjo nadaljevanja, da se napredek lahko nadaljuje od shranjenega stanja.",
+    "waitForCompletionThenRetryDownload": "Počakajte na dokončanje, nato znova poskusite prenesti.",
+    "waitForOtherServerOperationFinish": "Počakajte, da se drugo dejanje na strežniku konča, nato poskusite znova.",
+    "waitForStorageReconciliationAdvanceThen": "Počakajte trenutek, da se shramba uskladi, nato ponovite isto dejanje.",
+    "waitMomentBeforeTryingAgain": "Počakajte trenutek, preden poskusite znova.",
+    "workspaceChangedWhileExportRunning": "Delovni prostor se je spremenil med izvajanjem izvoza.",
+    "youNotSignedInAndNo": "Niste bili prijavljeni in podatki računa niso bili spremenjeni.",
+    "pageIsLocked": "Stran je zaklenjena, zato ni mogoče izvajati sprememb.",
+    "unlockPageThenTryAgain": "Odklenite stran zase ali za vse v meniju strani, nato poskusite znova.",
+    "safeToRetryAfterUnlocking": "Po odklepu strani lahko varno poskusite znova.",
+    "databaseIsLocked": "Zbirka podatkov je zaklenjena, zato njenih lastnosti in pogledov ni mogoče spreminjati.",
+    "unlockDatabaseThenTryAgain": "Odklenite zbirko podatkov zase ali za vse s klikom na gumb „Zaklenjeno“, nato poskusite znova.",
+    "databaseEditorsCanUnlock": "Zbirko podatkov lahko odklene samo nekdo, ki jo lahko ureja.",
+    "safeToRetryAfterDatabaseUnlocked": "Ko je zbirka podatkov odklenjena, lahko varno poskusite znova.",
+    "rowMoveNeedsFullAccess": "Za premik tega elementa na drugo stran potrebujete polni dostop do njega in dostop za urejanje na ciljnem mestu.",
+    "askFullAccessHolderToMoveIt": "Prosite nekoga s polnim dostopom, da ga premakne, ali izberite mesto, ki ga lahko urejate.",
+    "rowMoveRefusedUntilAccess": "Premikanje bo znova zavrnjeno, dokler ne boste imeli tega dostopa.",
+    "otherWorkspaceCantMoveOrLink": "Elementov med delovnimi prostori ni mogoče premikati ali povezovati.",
+    "makeItAnewInThatWorkspace": "Ustvarite ga v tem delovnem prostoru in prekopirajte njegovo vsebino. Cela stran se tja premakne ali prekopira iz »Premakni v« z izbiro delovnega prostora.",
+    "otherWorkspaceRefusedAgain": "Ponovni poskus je zavrnjen iz istega razloga.",
+    "signInEndedForThisBrowser": "Prijava v tem brskalniku je potekla ali je bila končana.",
+    "signInEndedForThisApp": "Prijava v tej aplikaciji je potekla ali je bila končana.",
+    "signInAgainToContinue": "Ponovno se prijavite, da nadaljujete.",
+    "retryAfterSigningInAgain": "Poskusite znova, ko se ponovno prijavite.",
+    "serverRestoredSinceDeviceCopies": "Podatki na tem strežniku so se spremenili, kopije na tej napravi pa so od prej.",
+    "changeKeptOnThisDeviceOnly": "Sprememba ni bila shranjena na strežniku; obstaja le na tej napravi.",
+    "takeServerContentAnew": "Izberite »Znova naloži s strežnika«, da pridobite trenutno vsebino strežnika.",
+    "retryAfterTakingContentAnew": "Poskusite znova po ponovnem nalaganju s strežnika.",
+    "propertyUsedByViewOrDependency": "Te lastnosti zdaj ni mogoče spremeniti: je naslovna lastnost ali pa je med izbrisanimi lastnostmi.",
+    "changeWhatUsesPropertyFirst": "Znova naložite stran, da vidite lastnost v trenutnem stanju.",
+    "retryAfterChangingWhatUsesProperty": "Najprej obnovite izbrisano lastnost, da jo lahko spremenite.",
+    "workspaceAlreadyHasContentForArchive": "Ta delovni prostor že ima vsebino, zato arhiva Leafen ni mogoče uvoziti vanj.",
+    "makeNewWorkspaceToImportArchive": "Ustvarite nov delovni prostor in tja uvozite ta arhiv.",
+    "retryInNewWorkspace": "Znova ga lahko uvozite v novem delovnem prostoru.",
+    "importFileDoesNotFitFormat": "Datoteka ne ustreza obliki, ki jo bere Leafen, zato ni bilo uvoženo nič.",
+    "exportFileAgainToImport": "Datoteko znova izvozite iz mesta, kjer je bila ustvarjena, nato pa jo uvozite.",
+    "sameFileRefusedAgain": "Ponovni uvoz iste datoteke ne bo uspel.",
+    "pageBusyWithAnotherChange": "Ta stran je zaradi druge spremembe zasedena, zato je za trenutek ni mogoče urejati.",
+    "tryAgainOnceThatChangeIsDone": "Poskusite znova, ko bo ta sprememba končana.",
+    "importPageInTrash": "Stran, v katero naj bi se uvozilo, je v smeteh, zato ni bilo uvoženo nič.",
+    "restorePageThenImportAgain": "Obnovite stran iz smeti in nato znova uvozite.",
+    "importPageDeletedForGood": "Stran, v katero naj bi se uvozilo, je bila dokončno izbrisana, zato ni bilo uvoženo nič.",
+    "ownerBringsDeletedPageBack": "V 30 dneh jo lahko lastnik delovnega prostora obnovi v razdelku Varnost → Hramba podatkov; nato jo obnovite iz smeti in znova uvozite.",
+    "importAgainOnceRestored": "Če poskusite znova, uvoz ne bo uspel, dokler stran ne bo obnovljena.",
+    "pageInTrashCantChange": "Strani v smeteh ni mogoče spreminjati, dokler ni obnovljena.",
+    "restorePageThenTryAgain": "Obnovite stran iz smeti in poskusite znova.",
+    "tryAgainOnceRestored": "Če poskusite znova, ne bo uspelo, dokler stran ne bo obnovljena.",
+    "optionNameHasComma": "Ime možnosti ne more vsebovati vejice (,).",
+    "takeCommaOutOrSplitOption": "Odstranite vejico ali ustvarite dve možnosti.",
+    "optionRefusedUntilRenamed": "Poskusite znova, ko spremenite ime.",
+    "optionNameTaken": "Ta lastnost že ima možnost s tem imenom.",
+    "useAnotherOptionName": "Uporabite drugo ime ali izberite že obstoječo možnost.",
+    "optionsInUseLeftOut": "Ta sprememba izpušča možnosti, ki jih uporabljajo strani.",
+    "keepOptionsOrDeleteOneByOne": "Te možnosti obdržite ali jih izbrišite eno za drugo v meniju vsake možnosti.",
+    "optionsRefusedUntilKeptOrDeleted": "Ponovni poskus brez sprememb je zavrnjen iz istega razloga."
+  }
+}

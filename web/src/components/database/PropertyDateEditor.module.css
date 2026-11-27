@@ -1,0 +1,434 @@
+/* The date editor's inputs, calendar head and option rows, laid out as
+   Notion's date editor (seen 2026-09-30). */
+.inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.inputs[data-single="true"],
+.inputs[data-timed="true"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* A day and its time in one field, "2026. 11. 8. | 오전 9:00", as Notion's
+   (seen 2026-11-14: in a 224px field 8px in, the day and the time each
+   94.5px, between them a 1px line 14px high, 6px after the day and 12px
+   before the time). */
+.pair {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding-inline: 7px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  background: var(--card-field-bg);
+}
+/* Without a time the day's field stands alone in the same box, so a time
+   switched on keeps that field, its focus and its ring where they were. */
+.pairOff {
+  display: contents;
+}
+.pair .input {
+  flex: 1 1 0;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+/* The one split every date window draws between a day and its time: the
+   database editor's, a form's, an automation's and a mention's (Notion's
+   mention window the same, seen 2026-11-14), centred in whatever box holds
+   the two. */
+.pairRule {
+  flex: none;
+  align-self: center;
+  width: 1px;
+  height: 14px;
+  margin-inline: 6px 12px;
+  background: var(--menu-divider);
+}
+/* A faint line on a faint ground, focused or not, as Notion's (seen
+   2026-11-02: rgba(28,19,1,.11) on rgba(66,35,3,.03), no blue ring); its
+   text 14px, as Notion's date window and mention fields both are (seen
+   2026-11-14, DateMentionEditor.module.css). */
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--button-outline);
+  border-radius: 6px;
+  outline: none;
+  background: var(--card-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+/* With an end, the end being set has Notion's 2px blue ring at its field's
+   edge, the other its faint line (seen 2026-11-08). */
+.input[data-active="true"],
+.pair[data-active="true"] {
+  border-color: var(--accent-blue);
+  box-shadow: inset 0 0 0 1px var(--accent-blue);
+}
+/* The month's head 25px high, 1px under the fields (a padding, which does
+   not fold into the fields' margin), its weekdays right under it, as
+   Notion's (seen 2026-11-11: fields 12..40, month 49..74, weekdays
+   74..106, first week 106..138). It spans the days' 224: the month 3.5px
+   in from their edge, "오늘 ‹ ›" 8px apart ending at their other edge, each
+   20 high and rounded 3 — the arrows 20 square, "오늘" 8px in at 12px/500,
+   at least 43 wide with its words in the middle on one line, so a short word
+   in either font takes 43 and a longer one its own width (Notion's,
+   seen 2026-11-16 twice at 1440 dark: head 865..1089, 오늘 990 43×20 —
+   min-width 43, centered, its 20.8px word 11.1 in — ‹ 1041 and › 1069..1089,
+   both 20×20). */
+.calendarHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding-block: 1px 0;
+  padding-inline: 3.5px 0;
+}
+.calendarHead > span {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  color: var(--text-default);
+  font-size: 14px;
+  font-weight: 500;
+}
+.calendarHead button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+.calendarHead button[data-date-now] {
+  min-width: 43px;
+  padding: 0 8px;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+/* "오늘" in Notion's gray accent text, the same in both themes and under the
+   pointer too, only its ground lighting (its graTexAccPri, seen 2026-11-16
+   twice in a table cell's date window at 1440 dark, its token sheet giving
+   it no dark value of its own). */
+.calendarHead button[data-date-now],
+.calendarHead button[data-date-now]:is(:hover, :focus-visible) {
+  color: var(--text-gray-accent);
+}
+.calendarHead button:hover,
+.calendarHead button:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+/* "‹ ›" in Notion's fixed gray, the same in both themes and under the pointer,
+   only their ground lighting (rgb(165, 165, 165), seen 2026-11-16 in a table
+   cell's and an "@" date's window at 1440 dark and light); a filter's window
+   draws its own (DateFilterEditor.module.css). */
+.calendarHead button:not([data-date-now]),
+.calendarHead button:not([data-date-now]):is(:hover, :focus-visible) {
+  color: rgb(165, 165, 165);
+}
+/* Their mark 11px wide in a box 17 high inside the 20px button, as
+   Notion's (seen 2026-11-16 twice in a table cell's date window at 1440:
+   its 120-unit chevron drawn 11 by 17, 4.5px in and 1.5px down). */
+.calendarHead button:not([data-date-now]) > svg {
+  width: 11px;
+  height: 17px;
+}
+/* The rows run 4px in from the editor's edges, under a line as wide as
+   the calendar 4px under its last week, the first row 5px under the line,
+   as Notion's (seen 2026-10-05; 2026-11-11: weeks end 298, line 302, row
+   307). */
+.options {
+  position: relative;
+  display: grid;
+  margin: 4px -8px 0;
+  padding-top: 5px;
+}
+.options::before {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  border-top: 1px solid var(--border-default);
+  content: "";
+}
+/* Each row one line, its label and value whole: the window holding them is
+   as wide as its widest (CellMenuPortal widestLine), as Notion's date window
+   is (seen 2026-11-19: its labels and values nowrap, the value never
+   shrinking — German "Datumsformat · Vollständiges Datum" widens it to 275). */
+.choiceRow,
+.switchRow,
+.clearRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.choiceRow:hover,
+.choiceRow:focus-visible,
+.switchRow:hover,
+.switchRow:focus-within,
+.clearRow:hover,
+.clearRow:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+.choiceRow:disabled,
+.switchRow[data-disabled="true"] {
+  cursor: default;
+  opacity: 0.6;
+}
+.choiceRow:disabled:hover {
+  background: transparent;
+}
+/* Only past the window's widest, at the screen's edge, a label ends in "…". */
+.choiceLabel {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* A row's value in the secondary grey, 4px before its "›", as Notion's date
+   editor and repeat fields (seen 2026-11-02: rgb(125,122,117), › 4px on). */
+.choiceValue {
+  flex: none;
+  color: var(--text-secondary);
+}
+.choiceChevron {
+  flex: 0 0 auto;
+  color: var(--icon-secondary);
+}
+.choiceValue + .choiceChevron {
+  margin-inline-start: -4px;
+}
+/* "삭제" stands under a line of its own, and so do the deadline rows under it,
+   where Notion's foot line is (seen 2026-11-11: 500 tall for a date alone). */
+.clearRow {
+  position: relative;
+  margin-top: 9px;
+  color: var(--text-default);
+}
+.foot {
+  position: relative;
+  margin-top: 9px;
+}
+.clearRow::before,
+.foot::before {
+  position: absolute;
+  top: -5px;
+  inset-inline-end: 8px;
+  inset-inline-start: 8px;
+  border-top: 1px solid var(--border-default);
+  content: "";
+}
+.choiceMenu {
+  padding: 4px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+/* Its rows stand 1px apart, as Notion's date lists (seen 2026-11-05: 4px in, 28px rows, 181 for six). */
+.choiceList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.choiceOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 13px;
+  text-align: start;
+  cursor: pointer;
+}
+.choiceOption > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Two lines, as Notion's "자정 전후 / 자정~오전 3시" (seen 2026-10-25): 45px high. */
+.choiceTwoLine {
+  min-height: 45px;
+}
+.choiceTwoLine > span:first-child {
+  display: flex;
+  flex-direction: column;
+}
+.choiceTwoLine small {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.choiceRule {
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--border-default);
+}
+.choiceOption:hover,
+.choiceOption:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A row the arrow keys moved to in a list whose search keeps the focus (the
+   zones') has the hovered ground and the keyboard's ring, and the search
+   lets its own ring go meanwhile, as Notion's (seen 2026-11-14: "lon", ↓ —
+   the first zone rgba(255,255,255,.055) ringed 2px #191919, 4px #2383e2,
+   the search field unringed). A row the typing alone lit shows nothing. */
+.choiceOption[data-active="true"][data-focus-visible="true"] {
+  background: var(--bg-hover);
+  box-shadow: var(--keyboard-focus-ring);
+}
+/* A list that lights a row as it opens (DateEditorChoices `lightFirst`)
+   shows its lit row on the pointer's ground, wherever the pointer or the
+   keys take it. */
+.choiceList[data-lights-row] .choiceOption[data-active="true"] {
+  background: var(--bg-hover);
+}
+/* The zones' window is 342 wide and as high as its zones up to 595, less
+   where the window is lower than that and its margins, its top on its
+   row's and moved up to show whole; its search a name field 12px in at its
+   top and sides and 8px over the zones, which scroll under it, as Notion's
+   (seen 2026-11-14 at 723 high: 342 by 595 from 116 to 711, the field
+   318 by 28 at 12, 3px 6px in, the zones from 48; filtered, the window
+   shrinks to its zones and its foot stays 12px over the window's). */
+.zoneMenu {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.zoneHead {
+  flex: none;
+  padding: 12px 12px 8px;
+}
+.zoneSearch {
+  display: block;
+  width: 100%;
+  height: var(--name-field-height);
+  padding: var(--name-field-padding);
+  border: 0;
+  border-radius: 6px;
+  outline: none;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+}
+.zoneSearch:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.zoneHead:has(~ .zoneList [data-focus-visible="true"]) .zoneSearch {
+  box-shadow: var(--name-field-ring);
+}
+/* Each group of zones a column 4px in at its top and bottom, its rows 1px
+   apart under a 12px label 6px under the group's top and 8px over its first
+   row; each zone a 45px row, its city over its offset 2px under it, the two
+   centred, each on one line cut short at its end, the offset in the
+   secondary grey, as Notion's (seen 2026-11-14: rows 8px in at 4px, the
+   city 14px and the offset 12px each 16.8px high — the row's 120% line
+   height — and the label's 14.4px on a 14.9px head, NotionSelect's
+   groupHeadLine). */
+.zoneList [role="group"] {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-block: 4px;
+}
+.zoneList .choiceOption {
+  align-items: center;
+  gap: 8px;
+  min-height: 45px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 120%;
+}
+.zoneText {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.zoneText > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The chosen zone's check, 16px, at the row's end level with its city, as
+   Notion's (seen 2026-11-14: its box 3px under the row's padding). */
+.zoneCheck {
+  display: flex;
+  flex: none;
+  align-self: flex-start;
+  margin-block-start: 3px;
+}
+.zoneList {
+  max-height: calc(min(595px, 100vh - 2 * var(--popover-edge)) - 48px);
+  padding-inline: 4px;
+  overflow-y: auto;
+}
+.zoneGroupLabel {
+  composes: groupHeadLine from "./NotionSelect.module.css";
+  margin-block: 6px 8px;
+  padding-inline: 8px;
+  color: var(--text-secondary);
+}
+.zoneOffset {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+/* A search nothing answers: under the zones' head a 28px row, its words
+   14px further in, in the secondary grey, as Notion's (seen 2026-11-14). */
+.zoneEmpty {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding-inline: 8px;
+  font-size: 14px;
+  line-height: 120%;
+}
+.zoneEmpty > span {
+  margin-inline-start: 14px;
+  color: var(--text-secondary);
+}
+
+/* Rows 29 apart, as Notion's (seen 2026-11-05). */
+.switchRow + .switchRow,
+.choiceRow + .switchRow,
+.switchRow + .choiceRow,
+.choiceRow + .choiceRow {
+  margin-top: 1px;
+}

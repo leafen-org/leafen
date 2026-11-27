@@ -1,0 +1,469 @@
+/* The people list and a member's profile, as Notion's (seen 2026-10-12). */
+
+.unavailable {
+  padding: 96px 24px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+}
+
+/* "Membership Type": select chips, as the database's (colors.ts) — the
+   owner red, a member blue, a restricted member and a guest yellow, the
+   deactivated gray (Notion's People options, seen 2026-10-12). */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 3px;
+  background: var(--c-bg-gray);
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.tag[data-membership="owner"] { background: var(--c-bg-red); }
+.tag[data-membership="restricted"] { background: var(--c-bg-yellow); }
+.tag[data-membership="member"] { background: var(--c-bg-blue); }
+.tag[data-membership="guest"] { background: var(--c-bg-yellow); }
+
+/* The list: a database page's title over its views, in a full-page
+   database's frame (PeopleView): the title 36px under the bar, as a database
+   page's without a cover, and its views 8px under it. */
+/* Its view where a database page's stands: 2px into its block, as a
+   paragraph's text is (EditorDatabaseBlocks .inlineDatabase). */
+.directoryView {
+  padding-inline-start: 2px;
+}
+
+/* Its title is a full-page database's with its icon (PageHeader's
+   data-database-head): the 36px icon 2px in, the words 8px after it, as
+   Notion's People (seen 2026-11-14 at 768 and 999: the icon 104 to 140, the
+   words at 148, 80 under the window's top). */
+.directoryTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  padding-top: 36px;
+  font-size: var(--page-title-size);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.directoryTitle > svg {
+  flex: none;
+  margin-inline-start: 2px;
+}
+
+/* On a touch screen its words are a page title's there, 28px (PageHeader). */
+:global(:is([data-phone="true"], [data-touch="true"])) .directoryTitle {
+  font-size: 28px;
+}
+
+/* A profile: the cover, 280px tall; the picture, 140px, over its foot; the
+   name; then the work and, 66px beside it, the side. */
+.profile {
+  width: 100%;
+  padding-bottom: 80px;
+  container-type: inline-size;
+}
+
+/* The profile's cover is a page's (PageCover): 30vh up to 280px, its
+   controls over it for the person and the workspace's owner. */
+.cover {
+  position: relative;
+}
+
+/* 1044px in the middle, as Notion's (seen 2026-11-05), at least 96px from each side. */
+.profileBody {
+  box-sizing: border-box;
+  width: calc(100% - 192px);
+  max-width: 1044px;
+  margin: 0 auto;
+}
+
+.face {
+  position: relative;
+  z-index: 1;
+  width: fit-content;
+  margin-block: -80px 0;
+  margin-inline: 8px 0;
+  line-height: 0;
+}
+
+/* A 2px white ring, in the dark too (Notion's, measured 2026-11-07: the
+   picture 140 at the cover's foot −80). */
+.face > [data-avatar][data-avatar][data-avatar] {
+  outline: 2px solid #fff;
+  outline-offset: 0;
+}
+
+/* The name 12px under the picture, 72 under the cover's foot, on another's
+   profile; 20px (80) on one's own, where Notion's page keeps its controls'
+   row there (seen 2026-11-15: a member's and a removed guest's in two
+   workspaces, and one's own). */
+.profileName {
+  margin: 12px 0 0;
+  padding: 0 8px;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 48px;
+}
+
+/* "비활성화됨" under a deactivated person's name, as Notion's (seen 2026-11-15:
+   20px, 600, its tertiary words, 12px under the name). */
+.profileStatus {
+  margin: 12px 0 0;
+  padding: 0 8px;
+  color: var(--text-tertiary);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 25px;
+}
+
+.profileName[data-self] {
+  margin-block-start: 20px;
+}
+
+.selfMark {
+  margin-inline-start: 10px;
+  color: var(--text-tertiary);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 246px;
+  grid-template-areas: "work side";
+  gap: 32px 66px;
+  margin-top: 44px;
+  padding: 0 8px;
+}
+
+.work { grid-area: work; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.side { grid-area: side; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+
+/* Where the page is narrow the side comes first, as Notion's peek shows it. */
+@container (max-width: 860px) {
+  .profileBody { width: calc(100% - 96px); }
+  .columns { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "work"; max-width: 640px; }
+}
+
+@container (max-width: 520px) {
+  .profileBody { width: calc(100% - 32px); }
+  .gallery { grid-template-columns: minmax(0, 1fr); }
+}
+
+.workHeading,
+.sideHeading {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 28px;
+}
+
+/* "〈이름〉 님의 페이지" and its search, a 25px row 12px over the cards, as Notion's (seen 2026-11-15). */
+.workHeadingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 25px;
+  margin-block-end: 12px;
+}
+
+.workSearchButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--icon-secondary);
+}
+
+.workSearchButton:hover { background: var(--bg-hover); }
+
+.workSearch {
+  box-sizing: border-box;
+  width: 100%;
+  height: 28px;
+  margin: 4px 0 8px;
+  padding: 1px 9px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 14px;
+}
+
+.workEmpty,
+.sideEmpty,
+.empty {
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* "최근 활동" a 20px line 8px over its box, as Notion's (seen 2026-11-15 twice). */
+.workHeading.activityHeading { padding-bottom: 8px; line-height: 20px; }
+
+/* The activity's box, as Notion's (seen 2026-11-15 in two workspaces at
+   1440): 16px inside a 1px border rounded 12, its 29px rows 2px apart —
+   each 4px 8px round a 21px line, rounded 6 — the verb 4px before the
+   page, its 16px icon 4px before the title (500, not underlined), and the
+   date 12/18 at the end, 8px after them. */
+.activity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: start;
+}
+
+.activityRow:hover { background: var(--bg-hover); }
+
+.activityKind { flex: none; color: var(--text-secondary); }
+
+.activityPage {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.activityTitle {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activityTime { flex: none; margin-inline-start: 4px; color: var(--text-tertiary); font-size: 12px; line-height: 18px; }
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* No activity in the last 30 days: its words in the middle, no box (Notion's, seen 2026-11-15). */
+.activityEmpty {
+  padding: 20px 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+}
+
+/* No pages made: a 220px box with a 32px pages mark over the words, 8px apart (Notion's, seen 2026-11-15). */
+.pagesEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 220px;
+  padding: 0 16px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 16px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+
+/* The pages mark is icoTer in Notion's own style (seen 2026-11-17). */
+.pagesEmpty > svg { color: var(--icon-tertiary); }
+
+.galleryCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 130px;
+  padding: 0 16px 12px;
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  background: var(--bg-app);
+  color: var(--text-default);
+  text-align: start;
+}
+
+.galleryCard:hover { background: var(--bg-hover); }
+
+.galleryPreview {
+  display: flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+  width: calc(100% + 32px);
+  height: 52px;
+  margin: 0 -16px 4px;
+  padding: 0 16px;
+  background: var(--bg-sidebar);
+  line-height: 0;
+}
+
+.galleryTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.galleryFoot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.property {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.propertyLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.propertyValue {
+  font-size: 14px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+/* A property its owner added: its value's cell, "비어 있음" over it while it
+   holds none and is not being written in, as "About" shows its own. */
+.ownValue { position: relative; min-height: 20px; }
+.ownEmpty { position: absolute; inset-block-start: 0; inset-inline-start: 0; color: var(--text-tertiary); pointer-events: none; }
+.ownValue:focus-within .ownEmpty { display: none; }
+
+.emailValue {
+  color: var(--text-default);
+  text-decoration: none;
+}
+
+.aboutText { white-space: pre-wrap; }
+
+.aboutButton {
+  display: block;
+  width: 100%;
+  margin: -2px -4px;
+  padding: 2px 4px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.aboutButton:hover { background: var(--bg-hover); }
+
+.aboutInput {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px 7px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font: inherit;
+}
+
+.aboutError { margin-top: 4px; color: var(--danger); font-size: 12px; }
+
+.sideRule {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--border-default);
+}
+
+.sideGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* "없음" under a guest's or deactivated person's "팀스페이스", right under
+   its heading's box, as Notion's (seen 2026-11-15: 13px on 18, its secondary
+   words). */
+.sideNone {
+  margin-top: -4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.sideItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+button.sideItem:hover { text-decoration: underline; }
+
+.sideIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  font-size: 12px;
+}
+
+/* People in its peek beside a page (PeoplePeek): the title a side peek's
+   head, 32px, and its icon and tabs right at the peek's text edge, 84px in,
+   with no step in of their own, as Notion's People peek (seen 2026-11-16 at
+   1440 in two tabs: the 36px icon and "Directory View" at 804 in a peek
+   from 720, the words at 848, 80 under the window's top). */
+.peekDirectory .directoryTitle {
+  font-size: 32px;
+}
+.peekDirectory .directoryTitle > svg {
+  margin-inline-start: 0;
+}
+.peekDirectory .directoryView {
+  padding-inline-start: 0;
+}

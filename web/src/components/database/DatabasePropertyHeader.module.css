@@ -1,0 +1,307 @@
+/* The table column menu's backdrop, just under the menu. */
+.propertyMenuBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.propertyHeaderField {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+  color: var(--text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+}
+.propertyHeaderField input,
+.propertyHeaderField textarea {
+  width: 100%;
+  min-width: 0;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 5px;
+  background: var(--name-field-bg);
+  color: var(--text-default);
+  font-size: 13px;
+  outline: none;
+}
+.propertyHeaderField input {
+  height: 30px;
+  padding: 1px 9px;
+}
+.propertyHeaderField textarea {
+  min-height: 48px;
+  max-height: 96px;
+  padding: 8px 9px;
+  line-height: 1.35;
+}
+.propertyHeaderField input:focus,
+.propertyHeaderField textarea:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+.propertyHeaderFieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 8px;
+}
+
+.propertyHeaderDivider {
+  flex: none;
+  height: 1px;
+  margin: var(--menu-divider-margin);
+  background: var(--menu-divider);
+}
+.propertyHeaderItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.propertyHeaderItem + .propertyHeaderItem {
+  margin-top: var(--menu-row-space);
+}
+.propertyHeaderItem:hover:not(:disabled),
+.propertyHeaderItem:focus-visible:not(:disabled),
+.propertyHeaderItem[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+/* A row the column can't take ("정렬" of a rollup with no relation, "고정"
+   past the frame) is drawn in the dim colour, words and mark, not faded as
+   other menus' rows are (styles.css): Notion's column menu sets its own
+   colour, var(--c-texDis), where its other menus fade the row to 0.4 (seen
+   2026-11-19 at 1440 dpr 2 in two tabs: rgb(95,94,89) at 1 dark, its light
+   value #bcbab6; the sidebar's teamspace menu 0.4). */
+.propertyHeaderItem.propertyHeaderItem:is(:disabled, [aria-disabled="true"]) {
+  color: var(--text-disabled);
+  opacity: 1;
+  cursor: default;
+}
+.propertyHeaderItemText {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* A row's current choice at its end, as "다음과 같이 표시: 선택 ⌄". */
+.propertyHeaderItemMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--text-tertiary);
+}
+/* A type list's line, as Notion's column menu's "유형 변경" (seen 2026-11-17
+   at 1440 in two tabs): its mark's 20px place 8px in, the mark drawn 19.2
+   (propertyMarkClass), the name 36px in. */
+.propertyHeaderTypeOption {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 20px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--menu-row-height);
+  padding: 0 8px;
+  border-radius: var(--menu-row-radius);
+  color: var(--text-default);
+  font-size: var(--menu-row-font-size);
+  text-align: start;
+}
+/* Rows 1px apart, as Notion's menus (seen 2026-10-27). */
+.propertyHeaderTypeOption + .propertyHeaderTypeOption {
+  margin-top: var(--menu-row-space);
+}
+/* Its mark in the icons' primary color, its name in the text's: Notion's
+   type lists — a column's "유형 변경", a page's and the view settings'
+   "유형" — draw their marks icoPri (seen 2026-11-17 at 1440 in two tabs,
+   light rgb(56,56,54), dark rgb(230,229,227)); "+ 속성 추가"'s grid draws
+   them icoSec (TablePropertyTypeChoices). */
+.propertyHeaderTypeOption:not(:disabled) > svg:first-child {
+  color: var(--icon-primary);
+}
+/* Its rows' marks in the icons' primary color and its actions' names in the
+   text's, as Notion's property settings — a page's "이름 바꾸기" and "속성
+   편집" and the view settings' "속성 편집" alike (seen 2026-11-17 at 1440 in
+   two tabs, dark: marks rgb(230,229,227), names rgb(240,239,237)): "유형",
+   "속성 사용 권한", a type's own rows ("정렬"), "콘텐츠 줄바꿈하기", "속성
+   복제" and "속성 삭제" — not the grey actions elsewhere ("그룹화 제거"). A
+   phone's sheet colors its rows itself (DatabaseLayout, PropertySettingRow). */
+.propertyEditRows:not(:where(:global([data-phone-settings])) *) > .layoutAction {
+  color: var(--text-default);
+}
+.propertyEditRows:not(:where(:global([data-phone-settings])) *) :is(.layoutRowLabel > svg, .layoutActionIcon, [data-property-setting-row] > [aria-hidden="true"]:first-child) {
+  color: var(--icon-primary);
+}
+.propertyHeaderTypeOption > span:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.propertyHeaderTypeOption:hover:not(:disabled),
+.propertyHeaderTypeOption:focus-visible:not(:disabled),
+.propertyHeaderTypeOption[data-active="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.propertyHeaderTypeCheck {
+  justify-self: end;
+}
+.propertyHeaderTypeOption:disabled {
+  color: var(--text-tertiary);
+  cursor: default;
+}
+/* A delete reads as any other line until the pointer is on it, as Notion's (seen 2026-11-04). */
+/* The line takes the color its mark reads (unset, the mark keeps the line's
+   own): a pointer or focus state over "svg" restyled every icon on the page
+   at each pointer move (2026-11-12). */
+.propertyHeaderItem[data-danger="true"]:hover:not(:disabled),
+.propertyHeaderItem[data-danger="true"]:focus-visible:not(:disabled),
+.propertyHeaderItem[data-danger="true"][data-active="true"] {
+  --property-danger-mark: var(--menu-danger);
+  color: var(--menu-danger);
+}
+.propertyHeaderItem[data-danger="true"] svg {
+  color: var(--property-danger-mark);
+}
+
+/* A rollup cell's form, as Notion's (seen 2026-11-03): at least 180 wide, a card's value's
+   and a table cell's alike (seen 2026-11-12) and where a feature keeps it (seen 2026-11-06),
+   wider for a long choice (195 for "비어 있지 않은 값 세기(%)"),
+   each part 4 in with its 12px/500 name 6 under its top and 8 over its 28px
+   choice, the parts 6 apart over a 1px line 12 in from each side; the
+   choices after the relation faint, and their "⌄" gone, until it is chosen. */
+.rollupForm {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 180px;
+  max-width: 286px;
+}
+
+/* Kept by a feature, its relation and calculation read as they are and its property faint
+   (Notion's Sprints, seen 2026-11-06). */
+.rollupForm[data-locked] .rollupFormChoice:disabled {
+  opacity: 1;
+}
+
+.rollupForm[data-locked] > section[data-rollup-form-target] .rollupFormChoice:disabled {
+  opacity: 0.46;
+}
+
+.rollupForm > section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+}
+
+/* Its tags held apart by :first-of-type, not `a + b`: a sibling rule between bare tags made the browser restyle the page at every element put in or taken out anywhere (2026-11-13, a table row 65 ms). */
+:where(.rollupForm) > section:not(section:first-of-type) {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+:where(.rollupForm) > section:not(section:first-of-type)::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  inset-inline-end: 12px;
+  inset-inline-start: 12px;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.rollupForm > section > span:first-child {
+  margin: 6px 0 8px;
+  padding: 0 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.rollupForm > section[data-faint] {
+  opacity: 0.4;
+}
+
+.rollupFormSelect.rollupFormSelect {
+  width: 100%;
+}
+
+.rollupForm .rollupFormChoice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2px;
+  width: 100%;
+  height: 28px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.rollupForm .rollupFormChoice:hover:not(:disabled),
+.rollupForm .rollupFormChoice:focus-visible {
+  background: var(--bg-hover);
+  outline: none;
+}
+
+.rollupForm .rollupFormChoice [data-placeholder="true"] {
+  color: var(--text-secondary);
+}
+
+.rollupForm .rollupFormChoice:disabled > svg {
+  display: none;
+}
+
+.rollupForm .rollupFormChoice > svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  color: var(--icon-tertiary);
+}
+
+/* A chosen relation's or property's icon, 14px in the icons' gray, its name 8 after its 20px room (Notion's, seen 2026-11-06). */
+.rollupForm .rollupFormChoice > span:not(:last-of-type) {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-inline-end: 8px;
+}
+
+.rollupForm .rollupFormChoice > span:not(:last-of-type) svg {
+  width: 14px;
+  height: 14px;
+}
+
+.rollupForm .rollupFormChoice > span:last-of-type {
+  flex: 1 1 auto;
+}
+
+.rollupForm .rollupFormChoice > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

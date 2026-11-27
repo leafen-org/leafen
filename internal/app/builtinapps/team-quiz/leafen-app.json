@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "app.leafen.teamquiz",
+  "slug": "team-quiz",
+  "version": "1.0.18",
+  "name": { "en": "Team Quiz", "ko": "팀 퀴즈" },
+  "description": {
+    "en": "A quiz at a table for the team and its guests, from questions the team adds.",
+    "ko": "팀이 넣은 문제로 팀원과 게스트가 한 테이블에서 겨루는 퀴즈입니다."
+  },
+  "developer": { "name": "Leafen" },
+  "icon": "ui/icon.svg",
+  "category": "games",
+  "tags": ["game", "quiz", "example"],
+  "surfaces": { "fullPage": { "entry": "ui/index.html" } },
+  "personAccess": "read",
+  "data": [
+    { "key": "questions", "file": "data/questions.json" },
+    { "key": "results", "file": "data/results.json", "locked": true }
+  ],
+  "network": {},
+  "realtime": { "maxParticipants": 200, "worker": "referee", "function": "referee", "loop": true },
+  "guests": {
+    "rooms": ["table-1", "table-2", "table-3", "table-4"],
+    "names": {
+      "table-1": { "en": "Table 1", "ko": "테이블 1" },
+      "table-2": { "en": "Table 2", "ko": "테이블 2" },
+      "table-3": { "en": "Table 3", "ko": "테이블 3" },
+      "table-4": { "en": "Table 4", "ko": "테이블 4" }
+    },
+    "resultDatabase": "results",
+    "maxPerRoom": 100
+  },
+  "workers": [ { "name": "referee", "module": "workers/main.wasm", "functions": ["referee"] } ]
+}

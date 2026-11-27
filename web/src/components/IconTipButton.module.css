@@ -1,0 +1,127 @@
+/* Notion's dark tip (the share window's, seen 2026-10-13; Hermes desktop's
+   message actions alike, 2026-10-28): 12px #f0efed on rgb(44, 44, 43), 5px by
+   8px, rounded 6px, a soft shadow and a faint ring, a shortcut on a line of its
+   own in #ada9a3 (2026-10-28). The ring is drawn inside the tip, as every
+   dark tip of Notion's draws it (seen 2026-11-21 at 1440, dpr 1, dark: the
+   top bar's "링크 복사하기", a property's and a type's ⓘ tips), and as the
+   property tips (PropertyDescriptionTip) and the slash menu's do. */
+.tip {
+  position: fixed;
+  z-index: 10000;
+  width: max-content;
+  max-width: 240px;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: rgb(44, 44, 43);
+  box-shadow: var(--shadow-tip);
+  color: #f0efed;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16.8px;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: tipIn 50ms ease-out;
+}
+/* It comes in and goes out over 50 ms, as Notion's (lib/tipTiming.ts). */
+@keyframes tipIn {
+  from { opacity: 0; }
+}
+.tipLeaving {
+  animation: tipOut 50ms ease-out forwards;
+}
+@keyframes tipOut {
+  to { opacity: 0; }
+}
+/* A key that writes in the page puts a tip away with the handles it names,
+   till the mouse moves (typingFade.ts), as Notion's "+" tip goes (seen 2026-11-11). */
+:global(:root[data-typing="true"]) .tip {
+  display: none;
+}
+
+.tipKeys {
+  display: block;
+  color: #ada9a3;
+}
+
+.tipNote {
+  color: #ada9a3;
+}
+
+/* A key named in a tip's words, in their letters (the "⋮⋮" tip's ⌘/, as Notion's). */
+.tipKbd {
+  font: inherit;
+}
+
+/* A tip of more than one line, a line each. */
+.tipLine {
+  display: block;
+}
+
+/* A tip's own lines wrap within its width, as a long name in the lock's tip does. */
+.tipLine {
+  display: block;
+  white-space: normal;
+}
+
+.tip strong {
+  font-weight: 600;
+}
+
+/* A tip as wide as its words up to 300px, then wrapped (Notion's over a dim settings button, seen 2026-11-11). */
+.tipWide {
+  max-width: 300px;
+  white-space: normal;
+}
+
+/* A sentence wrapped at 200px, as Notion's tip on its top bar's "오프라인"
+   (seen 2026-11-14: 216 wide with its 8px sides; lib/iconTips.ts). */
+.tipWrap {
+  max-width: 216px;
+  white-space: normal;
+}
+
+/* A picture's tip, as Notion's on a workspace emoji in text (seen 2026-11-07):
+   the picture on a 48px white tile, 40px, with the name in 12px 500 under it,
+   4px by 8px around. */
+.tipPicture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 8px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.tipTile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin: 2px 0 4px;
+  border-radius: 4px;
+  background: #fff;
+}
+
+.tipTile img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* A quiet tip, as Notion's under a template's "@지금" (seen 2026-11-09, dark):
+   12px grey words on the menus' ground, 4px by 8px, rounded 10px, the raised
+   surface's ring and soft shadow. */
+.tip.tipQuiet {
+  padding: 4px 8px;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-raised);
+  color: var(--text-secondary);
+  line-height: 18px;
+}
+
+/* As wide as its words up to the tip's 240px, then wrapped (an option's ⓘ, OptionInfoTip). */
+.tipWrapped {
+  white-space: normal;
+}

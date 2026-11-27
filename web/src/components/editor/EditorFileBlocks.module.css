@@ -1,0 +1,587 @@
+
+/* File: one line of its icon, name and size, as Notion's (seen 2026-10-04:
+   "evidence.txt 67 B"), with a hover background and its actions. Since
+   2026-10-31 a 28px row across the block, 6px in a 40px block: a 22px icon,
+   4px, the name at 16/24, 6px, the size at 12/16; a reader's or a phone's
+   actions at the row's right end, where Notion's own hover button is. */
+.fileBlock {
+  width: 100%;
+  margin: 1px 0;
+}
+.fileCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 0 2px;
+  border-radius: 4px;
+  background: transparent;
+}
+.fileCard:hover { background: var(--bg-hover); }
+/* Its 22px mark stands in a 21.6px box, spilling over it evenly, so the name
+   starts 33.6px into the block, as Notion's (measured 2026-11-08). */
+.fileIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 21.6px;
+  height: 22px;
+  color: var(--text-default);
+}
+/* A document's row colors its mark by format, as Notion's (seen 2026-11-05). */
+.fileIcon[data-kind="docx"] { color: var(--file-kind-word); }
+.fileIcon[data-kind="xlsx"] { color: var(--file-kind-sheet); }
+.fileIcon[data-kind="pptx"] { color: var(--file-kind-slides); }
+.fileIcon[data-kind="pdf"] { color: var(--file-kind-pdf); }
+.fileIcon[data-kind="hwp"], .fileIcon[data-kind="hwpx"] { color: var(--file-kind-hwp); }
+/* A code file's "</>" is purple and a CSV file's table green, as Notion's (seen 2026-11-12, dark). */
+.fileIcon[data-kind="code"] { color: var(--c-purple); }
+.fileIcon[data-kind="table"] { color: var(--file-kind-sheet); }
+.fileInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+button.fileInfo:focus-visible { outline: none; box-shadow: none; }
+/* The keyboard's ring goes round the whole row, its mark too, as Notion's does when its preview closes by Escape (2026-11-07, 2026-11-15) — WebKit's too, where the focus given back takes the keys' own mark (data-key-focus), which every :focus-visible rule takes too (postcss.config.mjs). The name's own box spread over the row draws it: asked of the row with :has(), the mark there, which moves with every focus the keys lead anywhere, had Chrome work out every :has() over each focus again (2026-11-15: 2.5 ms a focus move in a table inside a toggle, 0.4 so). */
+button.fileInfo:focus-visible::after { content: ""; position: absolute; inset: 0; border-radius: 4px; box-shadow: var(--keyboard-focus-ring); pointer-events: none; }
+.fileName,
+.fileMeta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fileName {
+  min-width: 0;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+}
+.fileMeta {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+.fileActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.fileCard:hover .fileActions,
+.fileActions:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* A touch screen has no hover: the row's actions show, as the block handle does. */
+:global([data-touch="true"]) .fileActions {
+  opacity: 1;
+  pointer-events: auto;
+}
+.fileActions button,
+.fileActions a {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+/* An editor's hovered row shows its background alone, as Notion's (seen
+   2026-11-01; its "AI에게 질문하기" is left out): replacing,
+   opening and downloading are the block menu's. A touch screen's row shows
+   none either, a phone's too: a long press opens the block's menu
+   (useBlockLongPress), as Notion's iPhone and iPad (seen 2026-11-13: the
+   row its 40px, "바꾸기" and "다운로드" in the "작업" sheet). */
+.fileActions [data-editor-file-action] {
+  display: none;
+}
+:global([data-phone="true"]) .fileActions:not(:has(> :not([data-editor-file-action]))) {
+  display: none;
+}
+/* On a phone the name comes first and a reader's download takes a line of
+   its own under it: beside it it left a name too short to tell files apart
+   (seen in iOS Safari, 2026-11-05). */
+:global([data-phone="true"]) .fileCard:has(> .fileActions > :not([data-editor-file-action])) {
+  flex-wrap: wrap;
+}
+:global([data-phone="true"]) .fileInfo {
+  flex: 1 1 0;
+  min-width: 0;
+}
+:global([data-phone="true"]) .fileActions {
+  flex: 1 0 100%;
+  padding-inline-start: 26px;
+}
+/* A touch screen's row, a phone's or wider, draws its mark at 26px in its
+   21.6 × 24 box, the name on a 22px line and the size at 14/20, as Notion's
+   iPhone and iPad (measured 2026-11-13 at 402 and 834: a 28px row in a 40px
+   block, the size 6px after the name); the finger held on it opens the
+   block's menu, not the system's own for its link or words. */
+:global([data-touch="true"]) .fileCard {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+:global([data-touch="true"]) .fileIcon {
+  height: 24px;
+}
+:global([data-touch="true"]) .fileIcon > svg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+}
+:global([data-touch="true"]) .fileName {
+  line-height: 22px;
+}
+:global([data-touch="true"]) .fileMeta {
+  font-size: 14px;
+  line-height: 20px;
+}
+.fileActions button:hover,
+.fileActions button:focus-visible,
+.fileActions a:hover,
+.fileActions a:focus-visible {
+  background: var(--bg-hover);
+  color: var(--text-default);
+  outline: none;
+}
+
+/* PDF, as Notion's (seen 2026-10-31): a grey box 8px into its block that
+   scrolls its pages (PdfPages), 8px from its top and apart, white, 16px from
+   its sides; 320px high until resized, linked 2px in each side and uploaded
+   8px (measured 2026-11-01: 704×320 and 692×320 in 336px blocks). */
+.pdfBlock {
+  width: 100%;
+  margin: 3px 0;
+}
+.pdfFrame {
+  position: relative;
+  margin: 0 2px;
+  overflow: hidden;
+  /* Square, as Notion's viewer clips (measured 2026-11-01). */
+  border-radius: 0;
+  background: rgb(226, 226, 226);
+}
+.pdfBlock[data-file-source="managed"]:not([data-upload-box="column"]) .pdfFrame {
+  margin: 0 8px;
+}
+/* An uploaded PDF in the middle of its column keeps Notion's 708px box as an
+   uploaded video's (EditorMediaBlocks .videoBlock): no wider than the page,
+   past the column in a narrower window (seen 2026-11-14 at 768: 708 over a
+   545 column, in its middle). One the block API made spans the column as a
+   linked one (seen 2026-11-15 at 1440: 704). */
+.pdfBlock[data-upload-box="page"] {
+  width: min(708px, var(--page-room, 100%));
+  margin-inline: calc((100% - min(708px, var(--page-room, 100%))) / 2);
+}
+/* A phone's PDF is its file's row (PdfBlock's PhonePdfRow), in a 40px box
+   where a linked PDF's viewer stands, uploaded or linked: 2px in from the
+   block's place and its row 6px in from that, as Notion's iPhone (measured
+   2026-11-13 at 402: the box 26–376 and 7.6px down a 56px block, the row
+   32–370). */
+.pdfRow {
+  margin: 0 2px;
+  padding: 6px;
+}
+:global([data-theme="dark"]) .pdfFrame {
+  background: var(--bg-soft);
+}
+/* The box reaches 16px past the frame, which hides its scrollbar there, so
+   each page's white runs to 16px from the frame's side, as Notion's
+   (measured 2026-11-05: frame 692, box 708, white 661, picture 645). */
+.pdfPages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  width: calc(100% + 16px);
+  height: 320px;
+  padding: 8px 16px;
+  overflow-y: auto;
+}
+/* A linked PDF's box is the frame itself, its scrollbar showing inside, so
+   the white is the page's own width, as Notion's (measured 2026-11-06:
+   frame 704, box 704, white and picture 657; uploaded 692, 708, 661, 645). */
+.pdfBlock:not([data-file-source="managed"]) .pdfPages {
+  width: 100%;
+}
+/* A touch screen wider than a phone's draws an upload's frame as a link's,
+   8px in from each side of its block, its box the frame itself (the
+   scrollbar lies over the pages there) and 500px high until resized, as
+   Notion's iPad (measured 2026-11-13 in iPad Safari at 834: both frames
+   326 in a 342 block, 500 high in a 516 block, the pages 16px in). */
+:global([data-touch="true"]) .pdfBlock[data-file-source="managed"] .pdfFrame {
+  margin: 0 2px;
+}
+:global([data-touch="true"]) .pdfPages {
+  width: 100%;
+  height: 500px;
+}
+.pdfPage {
+  position: relative;
+  flex: none;
+  padding-bottom: 8px;
+  background: #fff;
+}
+.pdfPage canvas {
+  display: block;
+}
+/* While a corner is dragged the pages keep their drawing, scaled to the box;
+   they are drawn again at its width once it is kept. */
+.pdfBlock[data-resizing] .pdfPage canvas {
+  max-width: 100%;
+}
+/* Notion's corner handles (seen 2026-10-31): 20px in each lower corner of
+   the box, a rounded mark that shows while the pointer is on the block. */
+.cornerHandle {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  opacity: 0;
+}
+.cornerHandle[data-side="left"] {
+  inset-inline-start: 0;
+  cursor: nesw-resize;
+}
+.cornerHandle[data-side="right"] {
+  inset-inline-end: 0;
+  cursor: nwse-resize;
+}
+.cornerHandle svg {
+  position: relative;
+  bottom: 3px;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: rgba(0, 0, 0, 0.65);
+  stroke: rgba(255, 255, 255, 0.5);
+}
+.cornerHandle[data-side="right"] svg {
+  inset-inline-start: -3px;
+}
+.cornerHandle[data-side="left"] svg {
+  inset-inline-start: 3px;
+  transform: scaleX(-1);
+}
+/* Read from the right, the start grip is the bottom right corner and the end
+   grip the bottom left: their marks and cursors turn over with them. */
+:root[dir="rtl"] .cornerHandle[data-side="left"] {
+  cursor: nwse-resize;
+}
+:root[dir="rtl"] .cornerHandle[data-side="right"] {
+  cursor: nesw-resize;
+}
+:root[dir="rtl"] .cornerHandle[data-side="left"] svg {
+  transform: none;
+}
+:root[dir="rtl"] .cornerHandle[data-side="right"] svg {
+  transform: scaleX(-1);
+}
+.pdfBlock:hover .cornerHandle,
+.pdfBlock[data-resizing] .cornerHandle {
+  opacity: 1;
+}
+/* pdf.js's text layer (its pdf_viewer.css): the page's words, unseen, over
+   the drawing for choosing and copying. */
+.pdfTextLayer {
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  overflow: clip;
+  line-height: 1;
+  text-align: initial;
+  transform-origin: 0 0;
+  --min-font-size: 1;
+  --text-scale-factor: calc(var(--total-scale-factor) * var(--min-font-size));
+  --min-font-size-inv: calc(1 / var(--min-font-size));
+}
+.pdfTextLayer :is(span, br) {
+  position: absolute;
+  color: transparent;
+  white-space: pre;
+  cursor: text;
+  transform-origin: 0% 0%;
+  user-select: text;
+}
+.pdfTextLayer > :not(:global(.markedContent)),
+.pdfTextLayer :global(.markedContent) span:not(:global(.markedContent)) {
+  --font-height: 0;
+  --scale-x: 1;
+  --rotate: 0deg;
+  font-size: calc(var(--text-scale-factor) * var(--font-height));
+  transform: rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv));
+}
+.pdfTextLayer :global(.markedContent) {
+  display: contents;
+}
+.pdfActions {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.pdfFrame:hover .pdfActions,
+.pdfFrame:focus-within .pdfActions {
+  opacity: 1;
+}
+.pdfActions a,
+.pdfActions button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 4px;
+  background: var(--bg-floating-control);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-default);
+  font-size: 12px;
+}
+/* A PDF that did not draw: its words at the top left of the box, as Notion's pdf.js line (16px, 2026-11-06). */
+.pdfBroken {
+  margin: 0;
+  padding: 2px 0;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 24px;
+}
+/* A PDF it can't draw keeps the viewer's 500px box with its line at the
+   top left, 16 in and 11 down, as Notion's (seen 2026-11-08: "Failed to
+   load PDF file." there; Leafen's own words and "원본 열기"). */
+.pdfUnavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 500px;
+  box-sizing: border-box;
+  padding: 9px 16px;
+  color: var(--text-secondary);
+  text-align: start;
+}
+.pdfUnavailable a {
+  color: var(--text-default);
+  text-decoration: underline;
+}
+.pdfStatus {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+@media (max-width: 640px) {
+  .pdfFrame,
+  .pdfFrame iframe,
+  .pdfUnavailable {
+    min-height: 320px;
+  }
+  .pdfFrame iframe {
+    height: 60vh;
+  }
+}
+
+/* Table of contents: as Notion's (measured 2026-10-31 at 1280px), one 30.2px
+   row a heading across the column 8px in from each side, its words 14px on
+   1.3 2px in, in the gray text color over a 1px line only as wide as they
+   are; hovering tints the row; each level 24px further; none marked as where
+   the reader is. */
+.toc {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 3px 2px;
+}
+.tocItem {
+  display: block;
+  box-sizing: border-box;
+  min-height: 30.2px;
+  overflow: hidden;
+  padding: 6px 2px;
+  /* Its block's color (TableOfContentsBlock): gray with none of its own,
+     the page's text color for "default". */
+  color: var(--block-color, var(--c-gray));
+  font-size: 14px;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.toc[data-toc-color="default"] .tocItem {
+  color: inherit;
+}
+.tocItem > span {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  background: linear-gradient(var(--block-divider), var(--block-divider)) 0 100% / 100% 1px repeat-x;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+.tocItem:hover {
+  background: var(--bg-hover);
+}
+.tocItem[data-level="2"] {
+  padding-inline-start: 26px;
+}
+.tocItem[data-level="3"] {
+  padding-inline-start: 50px;
+}
+.tocItem[data-level="4"] {
+  padding-inline-start: 74px;
+}
+/* A contents block with no heading yet is one 40px line, as Notion's (seen
+   2026-10-30): its words 14px on 1.3, 3px 2px in, 8px from the block's edges. */
+.tocEmpty {
+  padding: 3px 2px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 1.3;
+}
+.toc:has(> .tocEmpty) {
+  margin: 1px 0;
+  padding: 2px 0;
+}
+
+/* Synced block: as Notion's (measured 2026-10-31 at 1280px), its blocks sit
+   where they would without it. While the caret is in it a 2px frame, 6px
+   round, goes round the block's column, and a toolbar hangs over its top
+   right 40px up: the pages it is synced to, copy and the block's menu. */
+.syncedBlock {
+  position: relative;
+  width: 100%;
+}
+/* Its own blocks' boxes end where its box ends, as they would stand without
+   it: 6px past the column for a top one or a column's own, as Notion's (seen
+   2026-11-13: its text 708 wide on the page and 325 in a column, as the
+   lines beside it, where they stood 702 and 319). */
+.syncedContent > [data-node-view-content] > * > :global(.react-renderer) > .children > * > * > :global(.react-renderer) > * > .blockGroup {
+  margin-inline-end: var(--synced-block-end, 0px);
+}
+.blockGroup[data-depth="0"][data-block-type="synced_block"], .column .blockGroup[data-block-type="synced_block"] {
+  --synced-block-end: -6px;
+}
+.column .blockGroup .blockGroup[data-block-type="synced_block"] {
+  --synced-block-end: 0px;
+}
+/* Its lines show its own handle alone, by its first line (EditorBlockHandles),
+   while it isn't being worked in, and each line its own while it is — the
+   caret in it, or what is chosen chosen in it (SyncedBlockContent) — as
+   Notion's (seen 2026-11-01, 2026-11-14): the two never stand on each other. */
+:where(.syncedBlock):not([data-caret-inside="true"], [data-chosen="inside"]):not(.syncedBlock:focus-within) .gutter:not([data-menu-open="true"]),
+.blockRow[data-type="synced_block"] > .gutter:not([data-menu-open="true"]):has(~ .blockBody > .syncedBlock:is([data-caret-inside="true"], [data-chosen="inside"], :focus-within)) {
+  opacity: 0;
+  pointer-events: none;
+}
+/* Its blocks' handles, at any depth, stand 5px further out than a page's —
+   its first line's where its own handle stands — as Notion's (seen
+   2026-11-14 at 1440: ⋮⋮ 39.5px before the text inside it, 34.5 outside). */
+.syncedContent .gutter:not(:global([data-phone="true"]) *) {
+  margin-inline-start: -5px;
+}
+/* Worked in or chosen alone, it keeps the frame under the blue (Notion's, seen
+   2026-11-06, 2026-11-14); chosen with other blocks, none. */
+.syncedBlock:is([data-caret-inside="true"], [data-chosen], :focus-within)::after {
+  content: "";
+  position: absolute;
+  inset: 0 -6px;
+  border: 2px solid var(--synced-block-frame);
+  border-radius: 6px;
+  pointer-events: none;
+}
+.syncedToolbar {
+  position: absolute;
+  top: -40px;
+  inset-inline-end: -8px;
+  z-index: 3;
+  display: none;
+  align-items: center;
+  height: 28px;
+  padding: 2px;
+  box-sizing: border-box;
+  border-radius: 6px;
+  background: var(--bg-element);
+  box-shadow: var(--shadow-block-toolbar);
+}
+/* Its toolbar too; chosen, once the pointer moves after a key (SyncedBlockContent). */
+.syncedBlock:is([data-caret-inside="true"], [data-chosen-toolbar="true"], :focus-within) > .syncedToolbar {
+  display: flex;
+}
+/* Its buttons, the places list's among them. */
+.syncedToolbar > button,
+.syncedPlaces > button,
+.syncedPlacesLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg-code-toolbar);
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.syncedPlaces > button,
+.syncedPlacesLabel {
+  padding: 0 6px;
+}
+.syncedPlacesLabel {
+  cursor: default;
+}
+/* Its arrow and chevron are 10px, as the code block's language button's. */
+:is(.syncedPlaces > button, .syncedPlacesLabel) svg {
+  width: 10px;
+  height: 10px;
+}
+.syncedToolbar > button:hover,
+.syncedToolbar > button:focus-visible,
+.syncedPlaces > button:hover,
+.syncedPlaces > button:focus-visible,
+.syncedPlaces > button[aria-expanded="true"] {
+  background: var(--bg-hover);
+  outline: none;
+}
+.syncedToolbarDivider {
+  flex: 0 0 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--c-bg-gray);
+}
+.syncedPlaces {
+  position: relative;
+}
+.syncedContent {
+  padding: 0;
+}
+.syncedMissing {
+  min-height: 28px;
+  padding: 4px 2px;
+  color: var(--text-tertiary);
+  font-size: 14px;
+}

@@ -1,0 +1,185 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The picture sits in the window's middle, as Notion's (measured
+     2026-11-07: its middle at half the window's height, the bar over it),
+     as large as fits 32 in from every edge (2026-11-15 at 1440×723: a 3:2
+     picture 988.5×659 at (225.8, 32), a 5:1 one 1376 wide at x 32). */
+  padding: 32px;
+  /* Over the windows' shade, as Notion's picture view (its underlay's
+     var(--ca-modUndBac), rgba(15, 15, 15, .8) in dark and .6 in light, read
+     2026-11-17 in Chrome at 1416): the full-screen embed and the diagram
+     view take the same. */
+  background: var(--modal-shade);
+  cursor: zoom-out;
+}
+
+.image {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 2px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  cursor: default;
+  transition: transform 140ms ease-out;
+  transform-origin: center;
+}
+
+/* Notion's picture view controls (seen 2026-11-05): a 28px dark bar 30px over
+   the bottom, "− 100% +" | download | the way out, lines between, shown
+   while the pointer moves. */
+.toolbar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%; /* physical: centred on its own box in either direction */
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.62);
+  /* Notion centers a box 10px wider than its bar whose first 10px are empty,
+     so the bar sits 5px right of the middle (measured 2026-11-07). */
+  transform: translateX(calc(-50% + 5px));
+  cursor: default;
+  transition: opacity 150ms ease;
+}
+
+.toolbar:not([data-shown]):not(:focus-within) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: rgb(240, 239, 237);
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.control:hover:not(:disabled),
+.control:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  outline: 2px solid rgba(255, 255, 255, 0.88);
+  outline-offset: -2px;
+}
+
+.control:focus-visible {
+  outline: none;
+  box-shadow: var(--keyboard-focus-ring);
+}
+
+/* A press past the zoom's end is greyed whole, as Notion's (opacity 0.4,
+   measured 2026-11-15). */
+.control:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Notion's first and last boxes are padded 4px more on their outer side
+   (6px 6px 6px 10px, 6px 10px 6px 6px, measured 2026-11-15), its "−" and
+   way out standing 2px in from their boxes' middles. */
+.control:first-child {
+  padding-inline-start: 4px;
+}
+
+.control:last-child {
+  padding-inline-end: 4px;
+}
+
+/* Its zoom reads half white at every zoom, as Notion's (rgba(255, 255, 255,
+   0.5), measured 2026-11-15 at 100%, 150% and 200%). */
+.zoom,
+.zoom:disabled {
+  width: 46px;
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+}
+
+/* Its field, as Notion's (measured 2026-11-15 at 1440): the number in a
+   29px box with a 1px blue line, white, then "%" 4px after it, the two
+   filling the zoom's 46px. */
+.zoomField {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 28px;
+  color: rgb(255, 255, 255);
+  font-size: 14px;
+}
+
+.zoomInput {
+  width: 29px;
+  height: 19px;
+  margin: 0;
+  padding: 1px;
+  border: 0; box-shadow: var(--name-field-ring);
+  border-radius: 4px;
+  outline: none;
+  background: var(--name-field-bg);
+  color: inherit;
+  font: inherit;
+  text-align: center;
+}
+
+.zoomInput + span {
+  margin-inline-start: 4px;
+}
+
+.separator {
+  flex: none;
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.282);
+}
+
+@media (max-width: 560px) {
+  .backdrop {
+    padding: 52px 12px 80px;
+  }
+
+  /* A finger's size on a phone. */
+  .toolbar {
+    bottom: 14px;
+    height: 40px;
+    max-width: calc(100vw - 16px);
+  }
+
+  .separator {
+    height: 40px;
+  }
+
+  .control {
+    width: 40px;
+    height: 40px;
+  }
+
+  .zoom,
+  .zoomField {
+    width: 54px;
+    height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image {
+    transition: none;
+  }
+}

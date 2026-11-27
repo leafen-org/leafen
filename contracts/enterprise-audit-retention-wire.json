@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "name": "enterprise-audit-retention",
+  "operations": [
+    { "goName": "auditRetentionGet", "tsName": "get", "method": "GET", "path": "/organizations/{organizationId}/audit-retention" },
+    { "goName": "auditRetentionUpdate", "tsName": "update", "method": "PUT", "path": "/organizations/{organizationId}/audit-retention" }
+  ],
+  "bounds": [
+    { "goName": "auditRetentionMaxBodyBytes", "tsName": "bodyBytes", "value": 16384 },
+    { "goName": "auditRetentionDefaultDays", "tsName": "defaultDays", "value": 0 },
+    { "goName": "auditRetentionMinimumDays", "tsName": "minimumDays", "value": 1 },
+    { "goName": "auditRetentionOrganizationsPerDiscovery", "tsName": "organizationsPerDiscovery", "value": 128 },
+    { "goName": "auditRetentionOrganizationsPerSlice", "tsName": "organizationsPerSlice", "value": 20 },
+    { "goName": "auditRetentionEventsPerOrganization", "tsName": "eventsPerOrganization", "value": 100 },
+    { "goName": "auditRetentionEventsPerSlice", "tsName": "eventsPerSlice", "value": 200 },
+    { "goName": "auditRetentionLeaseSeconds", "tsName": "leaseSeconds", "value": 60 },
+    { "goName": "auditRetentionLogicalHourUTC", "tsName": "logicalHourUTC", "value": 3 },
+    { "goName": "auditRetentionLogicalMinuteUTC", "tsName": "logicalMinuteUTC", "value": 15 }
+  ],
+  "strings": [
+    { "goName": "auditRetentionCron", "tsName": "cron", "value": "1-59/2 * * * *" }
+  ],
+  "errors": [
+    { "goName": "errorCodeAuditRetentionInvalid", "tsName": "invalid", "value": "LEAFEN_AUDIT_RETENTION_INVALID" },
+    { "goName": "errorCodeAuditRetentionUnavailable", "tsName": "unavailable", "value": "LEAFEN_AUDIT_RETENTION_UNAVAILABLE" },
+    { "goName": "errorCodeAuditRetentionRunnerFailed", "tsName": "runnerFailed", "value": "LEAFEN_AUDIT_RETENTION_RUNNER_FAILED" }
+  ],
+  "records": [
+    {
+      "goName": "auditRetentionUpdateInput",
+      "tsName": "AuditRetentionUpdateInput",
+      "fields": [
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number" }
+      ]
+    },
+    {
+      "goName": "auditRetentionPolicyResponse",
+      "tsName": "AuditRetentionPolicy",
+      "fields": [
+        { "goName": "OrganizationID", "jsonName": "organizationId", "goType": "string", "tsType": "string" },
+        { "goName": "RetentionDays", "jsonName": "retentionDays", "goType": "int", "tsType": "number" },
+        { "goName": "Revision", "jsonName": "revision", "goType": "int", "tsType": "number" },
+        { "goName": "UpdatedAt", "jsonName": "updatedAt", "goType": "int64", "tsType": "number" },
+        { "goName": "Duplicate", "jsonName": "duplicate", "goType": "bool", "tsType": "boolean" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,448 @@
+/* ── Row page body ─────────────────────────────────────────── */
+/* A row's page inside its peek or opened whole: the scroller, the document
+   column each mode gives it, its title, its property values and its body.
+   The peek's frame and its bar are DatabaseRowPreview's; this sheet follows
+   it in the database sheet (databaseSheet.ts), whose order is the cascade's. */
+/* A side peek's words stand 84px in from either edge, as Notion's (seen
+   2026-11-01: its blocks 76px in and their words 8px more — the icon, title,
+   properties, comments and body alike; seen again 2026-11-08 at 768, the
+   words at 288 in a peek from 204), its head right under the bar. The
+   panel has no edge line of its own beside the page (its ring,
+   DatabaseRowPreview). */
+.rowPeek[data-mode="side"] .rowPeekDoc {
+  padding-inline-end: 84px;
+  padding-inline-start: 84px;
+}
+.rowPeek[data-mode="side"] .rowPeekDoc[data-has-cover="false"] {
+  padding-top: 0;
+}
+/* A center peek's text stands 134px in at every width, as Notion's (seen
+   2026-10-30: its property icons 135px in at 656, 880 and 975 wide), from
+   the window's edge on the left, inside its 1px edge, and from the
+   scrollbar's on the right (seen 2026-11-08: the words to 1103 in a window
+   from 277, 975 wide). */
+.rowPeek[data-mode="center"] .rowPeekDoc {
+  padding-inline-end: 134px;
+  padding-inline-start: 133px;
+}
+/* A peek's foot under its body, a side's or a center's, as Notion's (seen
+   2026-11-11: 120 under the body's 16, EditorCanvas); an empty body's
+   template prompt keeps its own (below), a database alone its view's. */
+.rowPeek:is([data-mode="side"], [data-mode="center"]):not([data-phone="true"]) .rowPeekDoc:not([data-inline-database-peek], [data-database-peek], :has([data-row-page-template-prompt])) {
+  padding-bottom: 120px;
+}
+/* A peek's body, side or center, holds at least 240px from 8px over its
+   first block, as Notion's page content (seen 2026-11-16 at 1440: min-height
+   240 in its side and center peeks, none on a page opened whole): a short
+   page's room under its last line scrolls, and a press there writes at its end. */
+.rowPeek:is([data-mode="side"], [data-mode="center"]):not([data-phone="true"]) .rowPeekDoc:not([data-inline-database-peek], [data-database-peek]) .rowPeekEditor > [role="region"][data-editor-page] {
+  min-height: 232px;
+}
+.rowPeek[data-mode="center"][data-motion-state="opening"],
+.rowPeek[data-mode="center"][data-motion-state="closing"] {
+  opacity: 0;
+  transform: translate(-50%, 2%) scale(0.98);
+}
+/* Full-page mode: the row covers the main content area as its own page,
+   drawn whole from its first frame, as Notion's page is: opened whole from
+   its peek (⤢) it is there as its frame widens (seen 2026-11-12). */
+/* A page opened whole stays under the sidebar's menus, which open over it. */
+.rowPeek[data-mode="full"] {
+  inset-inline-end: auto;
+  bottom: auto;
+  z-index: 19;
+  min-width: 0;
+  border: 0;
+  box-shadow: none;
+  transform: none;
+}
+/* On a phone it is the page: on an iPhone it slides aside with it as the
+   sidebar's drawer opens and back as it closes (AppShell.module.css), over
+   the drawer till then; on Android it stays under the drawer, dimmed. The
+   drawer is marked on the root (usePhoneDrawerShut), as the shell's mark
+   doesn't reach the body's layers. */
+.rowPeek[data-mode="full"][data-phone="true"] {
+  transition: transform 200ms ease, box-shadow 0s linear 200ms;
+}
+:global(:root[data-phone-drawer="open"] body[data-apple-touch]) .rowPeek[data-mode="full"][data-phone="true"] {
+  transform: translateX(calc(var(--phone-drawer-width, 87vw) * var(--inline-sign, 1)));
+  box-shadow: var(--shadow-menu);
+  transition: transform 200ms ease;
+}
+/* On Android the drawer comes over it instead, and it dims as the page does. */
+:global(body:not([data-apple-touch])) .rowPeek[data-mode="full"][data-phone="true"] {
+  transition: filter 200ms ease;
+}
+:global(:root[data-phone-drawer="open"] body:not([data-apple-touch])) .rowPeek[data-mode="full"][data-phone="true"] {
+  filter: brightness(0.7);
+}
+/* Its column is a page's (PageView's .doc), as Notion's row page is (seen
+   2026-11-01 at 768, 1024 and 1280, the sidebar open and shut): the words
+   8px inside the middle 720px and at least 104px in, the body's blocks 2px
+   out of them; a narrower window than 600px takes a page's 24px. */
+.rowPeek[data-mode="full"] .rowPeekDoc {
+  --content-pad: 102px;
+  width: 100%;
+  max-width: 912px;
+  margin: 0 auto;
+  padding-inline-end: calc(var(--content-pad) + 2px);
+  padding-inline-start: calc(var(--content-pad) + 2px);
+}
+/* A phone's row page has 24px margins; a desktop window as narrow keeps the desktop's (Notion's, seen 2026-11-01). */
+.rowPeek[data-mode="full"][data-phone="true"] .rowPeekDoc {
+  --content-pad: 24px;
+}
+/* Its foot is a page's: the last block 16px over 30vh (EditorCanvas), not a
+   180px body and a tail of its own (Notion, seen 2026-11-01: 167 and 257
+   under a one-line body at 500 and 800 high). */
+.rowPeek[data-mode="full"]:not([data-phone="true"]) .rowPeekDoc {
+  padding-bottom: 30vh;
+}
+.rowPeek[data-mode="full"]:not([data-phone="true"]) .rowPeekEditor {
+  min-height: 0;
+}
+/* Behind a side peek it keeps its column and scrolls sideways, as a page does (PageView .scroll, pageColumn.module.css). */
+:global([data-side-row-peek-room="true"]:not([data-phone="true"])) .rowPeek[data-mode="full"] .rowPeekScroll { overflow-x: auto; }
+/* A row's page, in a peek or full, scrolls down only, as a page does
+   (PageView .scroll) and as Notion's peek and page scrollers do (seen
+   2026-11-14 at 1440: overflow hidden auto, side and center): what stands
+   past its sides — a line's "💬+" past its end on a phone — is cut, not
+   scrolled to. */
+.rowPeekScroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.rowPeekDoc {
+  --page-font-family: var(--font-ui);
+  padding: 0 84px 56px;
+  font-family: var(--page-font-family);
+}
+/* A database page's style, as a page's (PageView .doc): its font with its
+   own size and 1.6 lines — serif 17px, mono 15px, as Notion's database page
+   (seen 2026-11-16: its body and empty body hint 17px serif, 15px on 24px
+   lines mono) — smaller text, and the full width of a database page opened
+   as a full page. */
+.rowPeekDoc[data-font="serif"] {
+  --page-font-family: var(--font-serif);
+  --page-font-size: 17px;
+  --page-line-height: 1.6;
+}
+.rowPeekDoc[data-font="mono"] {
+  --page-font-family: var(--font-mono);
+  --page-font-size: 15px;
+  --page-line-height: 1.6;
+}
+.rowPeekDoc[data-small-text="true"] {
+  --page-font-size: 14px;
+  --page-marker-line: 21px;
+}
+.rowPeekDoc[data-small-text="true"][data-font="serif"] {
+  --page-font-size: 15px;
+}
+/* An empty body's hint is the body's words, a mono page's spaced as its
+   blocks are (EditorCanvas .editor; Notion's, seen 2026-11-16: 0.825px). */
+.rowPeekDoc[data-font="mono"] p[data-row-page-template-prompt] {
+  letter-spacing: 0.055em;
+}
+.rowPeek[data-mode="full"] .rowPeekDoc[data-full-width="true"] {
+  max-width: none;
+}
+/* Discussions beside a full page's text move it as a page's do (PageView's
+   .doc, the same column): it stays in the middle while the column
+   (MarginDiscussions) fits right of it, and moves left only as far as it
+   must, keeping its width, down to 40px from the edge (--doc-start and its
+   blocks' column, pageColumn.module.css). */
+.rowPeek[data-mode="full"] .rowPeekDoc[data-margin-discussions="true"] {
+  position: relative;
+  margin-inline-end: auto;
+  margin-inline-start: var(--doc-start);
+}
+/* A full-width one gives its end to them as a full-width page does (PageView .doc), its pads 2px wider. */
+.rowPeek[data-mode="full"] .rowPeekDoc[data-full-width="true"][data-margin-discussions="true"] { margin-inline-start: 0; padding-inline-end: 476px; }
+.rowPeekDoc[data-margin-discussions="true"] [data-block-comment-count] {
+  display: none;
+}
+.rowPeekDoc[data-has-cover="false"] {
+  padding-top: 12px;
+}
+/* A row's own title (a page's is the page head's, which keeps its own look),
+   40px at every width as a page's. Its properties start 8px under it in
+   center and full views and the template's, as Notion's (seen 2026-11-01 at
+   1280×900, 2026-11-08 at 768 and 1529). */
+.rowPeekDoc .rowPeekTitle {
+  margin: 0 0 8px;
+  color: var(--text-default);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  outline: none;
+  cursor: text;
+}
+/* A side peek's title is 32px, as Notion's (seen 2026-10-17), its
+   properties 8px under it as in the other views (seen 2026-11-13 at 1440:
+   the title's block 44 to 118.4, the first line at 126.4, with or without
+   values, comments or a body). */
+.rowPeek[data-mode="side"] .rowPeekDoc .rowPeekTitle {
+  font-size: 32px;
+}
+/* A phone's row page, as Notion's at 375px (seen 2026-10-25): its words 26px
+   in (past the camera's cutout on its side, AppShell.module.css); "아이콘 추가 · 커버 추가" alone (the rest is in "⋯"), 28px buttons of a
+   16px mark and 14px words from 9px out, 16px under the bar; the title
+   28px/700 12px under them, the properties 8px under it. */
+.rowPeek[data-phone="true"][data-mode] .rowPeekDoc {
+  padding-inline-end: calc(26px + var(--phone-safe-end, 0px));
+  padding-inline-start: calc(26px + var(--phone-safe-start, 0px));
+}
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-header][data-has-cover] {
+  margin-bottom: 0;
+}
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-header][data-has-cover="true"] { padding-top: 4px; }
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-header-controls] {
+  gap: 0;
+  min-height: 28px;
+  margin-block: 0 12px;
+  margin-inline: -9px 0;
+}
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-header-controls] [data-page-header-control] {
+  gap: 6px;
+  padding: 0 8px;
+  font-size: 14px;
+}
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-header-controls] [data-page-header-control] > svg {
+  width: 16px;
+  height: 16px;
+}
+.rowPeek[data-phone="true"] .rowPeekDoc [data-page-verify],
+.rowPeek[data-phone="true"] .rowPeekDoc [data-row-page-customize-layout] {
+  display: none;
+}
+.rowPeek[data-phone="true"] .rowPeekDoc .rowPeekTitle {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.2;
+}
+/* An empty title says "새 페이지" as faint as a page title's, as Notion's
+   row and template pages do (seen 2026-10-30: rgba(55,53,47,0.15)), on the
+   caret's own line: floated with no height, not a line before the editor's
+   block (2026-11-01: an empty title stood two lines tall). */
+.rowPeekDoc h1[data-row-page-title][data-empty="true"]::before {
+  content: attr(data-placeholder);
+  float: inline-start;
+  height: 0;
+  color: var(--text-title-placeholder);
+  pointer-events: none;
+}
+.rowPropertyValue {
+  min-width: 0;
+  position: relative;
+}
+.rowPropertyValue > * {
+  width: 100%;
+}
+/* In a row page's 34px line a cell keeps no box height of its own. */
+.rowPropertyValue .chips,
+.rowPropertyValue .personChips,
+.rowPropertyValue .filesChips,
+.rowPropertyValue .relationChips {
+  min-height: 30px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.rowPropertyValue .propertyCellEditTrigger {
+  min-height: 0;
+  height: 24px;
+  padding: 0;
+}
+/* A select's or status's "+", unseen but for the keyboard, keeps no room on
+   its line, as a table cell's and a pinned property's don't (Notion's draws
+   none: the value is pressed anywhere). Taking room, a chip filling the line
+   sent it to a line of its own: 54px for Notion's 34 (2026-11-15, at 768 by
+   the updates panel and at 600). */
+.rowPropertyValue .chips > .propertyCellEditTrigger {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
+  transform: translateY(-50%);
+}
+.rowPropertyValue .cellInput,
+.rowPropertyValue .numberDisplay,
+.rowPropertyValue .dateButton,
+.rowPropertyValue .personChips,
+.rowPropertyValue .peopleReadonly,
+.rowPropertyValue .filesChips,
+.rowPropertyValue .relationChips,
+.rowPropertyValue .chips,
+.rowPropertyValue .cellReadonly,
+.rowPropertyValue .rollupValue,
+.rowPropertyValue .cellCheck,
+.rowPropertyValue .placeCellButton {
+  padding-inline-end: 0;
+  padding-inline-start: 0;
+}
+/* A page's value takes no ground under the pointer, whatever its type, its
+   line's tools alone showing, as Notion's (seen 2026-11-16 in a side peek,
+   every type, and on a full page: a number, a date, empty or not); a
+   table's cells keep their own. */
+.rowPropertyValue :is(.numberDisplay, .dateButton):hover {
+  background: none;
+}
+/* A formula's or rollup's value runs on to more lines in a page's property
+   row, as Notion's (seen 2026-11-07: pre-wrap, 21px lines). */
+.rowPropertyValue .rollupValue {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* A created or edited time keeps the 34px line of the other properties,
+   as Notion's (seen 2026-10-25). */
+.rowPropertyValue .cellReadonly {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+/* Over the card field's one line whatever order the screens' styles come in
+   (a visitor's peek drew it on one line, cut, 2026-11-12). */
+.rowPropertyTextValue.rowPropertyTextValue {
+  display: block;
+  overflow: visible;
+  color: var(--text-default);
+  font-size: 14px;
+  line-height: 1.48;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* A page's text value that runs on to more lines starts on the line a
+   single one sits on, centered in the 34px line, beside its name — as
+   Notion's (seen 2026-11-12: a published row page's description on an
+   iPhone) — so its tray (PropertyValueTools, 5px down) sits on that first
+   line's end. It started at the line's top, its tray over the second line. */
+.rowPropertyValue .rowPropertyTextValue {
+  padding-block: calc((34px - 1.48em) / 2);
+}
+.rowPeekEditor {
+  min-height: 180px;
+  padding-top: 2px;
+  border-top: 1px solid var(--border-default);
+}
+/* An inline database opened alone in a side peek has no properties over it
+   and no line under the peek's bar: its head stands 36px under the bar, as
+   Notion's (seen 2026-11-09). */
+[data-inline-database-peek] > .rowPeekEditor {
+  padding-top: 0;
+  border-top: 0;
+}
+/* Under a database page's comments the line is the comment field's own,
+   one line as Notion's (seen 2026-10-30): the body draws none of its own.
+   Its first block stands 16px under it, its words on Notion's line, on a
+   computer and a phone alike (measured 2026-11-08 at 1440: line, then the
+   block at 16 and a code box at its own 8 in; 2026-11-14 on a Galaxy A90 at
+   411: the block 16 under it, the words 25.5). */
+[data-row-page-comments] + .rowPeekEditor,
+[data-row-layout-module="comments"] + [data-row-layout-module="content"] > .rowPeekEditor {
+  border-top: 0;
+  padding-top: 9px;
+}
+/* Under a wiki page's properties the line is theirs, and its body's words
+   start 31px under it. On a computer they stand 5px lower, a first line's
+   letters 48px under the line to their middle, as Notion's (measured 2026-11-02
+   typing into it: its first block 28px under the line). Empty, with its
+   template prompt, it runs as any database page's does (below). */
+.rowPeekEditor[data-under-wiki-line="true"] {
+  padding-top: 24px;
+  border-top: 0;
+}
+.rowPeek:not([data-phone="true"]) .rowPeekEditor[data-under-wiki-line="true"] {
+  padding-top: 29px;
+}
+.rowPeek:not([data-phone="true"]) .rowPeekEditor:has(> [data-row-page-template-prompt]) [data-editor-tail] {
+  min-height: 0;
+}
+/* Empty with Notion's hint, a database page's body on a computer — a
+   template's, or a row's with its templates — runs as Notion's page content
+   does at any height, in either peek and opened whole (seen 2026-11-16 at
+   1440×723: a template and a row in the center peek, a row in the side peek,
+   both opened whole): 8px over a 16px first line, the hint's 56 — its line
+   24 under its words, two lines in a side peek — and the templates' list,
+   then 14vh after them and 15vh under all; in a peek at least 240 over its
+   120 foot, opened whole no least over the page's 30vh foot. So it
+   overflows, and its scrollbar takes its 15px, at the heights Notion's does;
+   fixed at 341, it overflowed at 723 and not at 900 where Notion's did. A
+   template's hint is the editor's last piece, its words 32 under the body's
+   top as Notion's: 21 more under its button, then the 29vh. A row's list
+   stands 24 under the hint's words (DatabaseRowPage .templateList) and
+   Notion's keeps 2px under its last line; the typing line under it here
+   (23px with the editor's -1) is inside that room, so 21px come off it. A
+   touch screen's runs its own way (below). */
+:global(body:not([data-touch="true"])) .rowPeek[data-mode] .rowPeekEditor > [data-editor-page][data-page-starter-hint="true"]:not([data-page-body-populated]) {
+  padding-bottom: calc(21px + 29vh);
+}
+:global(body:not([data-touch="true"])) .rowPeek[data-mode] .rowPeekEditor:has(> [data-row-page-template-prompt]) {
+  min-height: 240px;
+}
+:global(body:not([data-touch="true"])) .rowPeek[data-mode="full"] .rowPeekEditor:has(> [data-row-page-template-prompt]) {
+  min-height: 0;
+}
+:global(body:not([data-touch="true"])) .rowPeek[data-mode] .rowPeekDoc .rowPeekEditor:has(> [data-row-page-template-prompt]) > [role="region"][data-editor-page] {
+  min-height: 0;
+  padding-bottom: calc(29vh - 21px);
+}
+:global(body:not([data-touch="true"])) .rowPeek:is([data-mode="side"], [data-mode="center"]) .rowPeekDoc:has(> .rowPeekEditor > [data-row-page-template-prompt]) {
+  padding-bottom: 120px;
+}
+/* On a touch screen wider than a phone that body runs further, as Notion's
+   iPad's full row page (seen 2026-11-15, the focus off the title, upright
+   at 834 by 1078 and turned at 1194 by 702): 8px over its prompt — its 54px
+   line and its templates' 38px lines (rowPageTemplateTouch) — then 14lvh
+   under them and the page's 15lvh under all (DatabaseRowProperties): 396
+   and 287 high with no template, 510 at 834 with one (read again 2026-11-15:
+   8, a 168px prompt, 14lvh, 15lvh). The 14lvh is the body's own room after
+   the prompt, so it follows however many templates it lists. */
+:global([data-touch="true"]:not([data-phone="true"])) .rowPeek[data-mode="full"] .rowPeekEditor:has(> [data-row-page-template-prompt]) {
+  min-height: 0;
+}
+:global([data-touch="true"]:not([data-phone="true"])) .rowPeek[data-mode="full"] .rowPeekEditor:has(> [data-row-page-template-prompt]) > [data-editor-page] {
+  min-height: 14lvh;
+}
+/* A page's peek has no properties, so no line under its title: its first
+   line stands where a full page's does, as Notion's in a side peek, a center
+   peek and the sidebar "+" window (seen 2026-11-08 at 768: its block 16px
+   under the title's box, as on the full page; measured again 2026-11-08 in a
+   side peek, its words on Notion's line 42px under the title). With the
+   editor's -1px this is the full page's room (EditorCanvas). */
+[data-page-header-root] + .rowPeekEditor {
+  padding-top: 17px;
+  border-top: 0;
+}
+/* Its blocks' words stand under the title's, as Notion's in every peek and
+   on the full page (seen 2026-11-01): a block's words are 2px inside it. */
+.rowPeekEditor > :not(nav) {
+  margin-inline: -2px;
+}
+.block,
+.empty {
+  margin: 0;
+  padding: 3px 2px;
+  color: var(--text-default);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.empty {
+  color: var(--text-tertiary);
+}
+:global([data-phone="true"]) .rowPeekDoc {
+  padding: 0 28px 48px;
+}
+
+:global([data-phone="true"]) .rowPeek[data-mode="center"] .rowPeekDoc {
+  padding-inline-end: 28px;
+  padding-inline-start: 28px;
+}
+
+:global([data-phone="true"]) .rowPeekDoc[data-has-cover="false"] {
+  padding-top: 0;
+}

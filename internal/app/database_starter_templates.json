@@ -1,0 +1,5406 @@
+{
+ "version": 1,
+ "templates": [
+  {
+   "key": "tasks",
+   "taskDatabase": true,
+   "name": "Tasks Tracker",
+   "untitledName": "New task",
+   "icon": "checkmark:green",
+   "tone": "green",
+   "description": "Stay organized with tasks, your way.",
+   "features": [
+    {
+     "key": "priority",
+     "name": "Priority",
+     "defaultOn": true,
+     "properties": [
+      "property-priority"
+     ]
+    },
+    {
+     "key": "type",
+     "name": "Task type",
+     "defaultOn": true,
+     "properties": [
+      "property-type"
+     ]
+    },
+    {
+     "key": "effort",
+     "name": "Effort level",
+     "defaultOn": true,
+     "properties": [
+      "property-effort"
+     ],
+     "icon": "hourglass"
+    },
+    {
+     "key": "description",
+     "name": "Description",
+     "defaultOn": true,
+     "properties": [
+      "property-description"
+     ]
+    },
+    {
+     "key": "updated",
+     "name": "Updated at",
+     "defaultOn": false,
+     "properties": [
+      "property-updated"
+     ]
+    },
+    {
+     "key": "overdue",
+     "name": "Past due",
+     "defaultOn": false,
+     "properties": [
+      "property-overdue"
+     ],
+     "icon": "alarm"
+    },
+    {
+     "key": "files",
+     "name": "Attach file",
+     "defaultOn": false,
+     "properties": [
+      "property-files"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "All Tasks",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    },
+    {
+     "key": "status",
+     "name": "By Status",
+     "defaultOn": true,
+     "id": "view-status",
+     "retainedProperties": []
+    },
+    {
+     "key": "mine",
+     "name": "My Tasks",
+     "defaultOn": true,
+     "id": "view-mine",
+     "retainedProperties": []
+    },
+    {
+     "key": "checklist",
+     "name": "Checklist",
+     "defaultOn": false,
+     "id": "view-checklist",
+     "retainedProperties": []
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Tasks Tracker",
+     "icon": "checkmark:green",
+     "iconType": "icon",
+     "description": "Stay organized with tasks, your way.",
+     "descriptionHidden": false
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Task name",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-status",
+     "dataSourceId": "source",
+     "type": "status",
+     "name": "Status",
+     "position": "a00000001",
+     "config": {
+      "options": [
+       {
+        "color": "gray",
+        "colorFromGroup": true,
+        "group": "To-do",
+        "id": "todo",
+        "name": "Not started"
+       },
+       {
+        "color": "blue",
+        "group": "In progress",
+        "id": "doing",
+        "name": "In progress"
+       },
+       {
+        "color": "green",
+        "group": "Complete",
+        "id": "done",
+        "name": "Done"
+       }
+      ],
+      "statusGroups": [
+       {
+        "color": "gray",
+        "id": "group-todo",
+        "name": "To-do",
+        "optionIds": [
+         "todo"
+        ]
+       },
+       {
+        "color": "blue",
+        "id": "group-doing",
+        "name": "In progress",
+        "optionIds": [
+         "doing"
+        ]
+       },
+       {
+        "color": "green",
+        "id": "group-done",
+        "name": "Complete",
+        "optionIds": [
+         "done"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-assignee",
+     "dataSourceId": "source",
+     "type": "person",
+     "name": "Assignee",
+     "position": "a00000002",
+     "config": {
+      "description": "Who’s responsible for the project?"
+     }
+    },
+    {
+     "id": "property-due",
+     "dataSourceId": "source",
+     "type": "date",
+     "name": "Due date",
+     "position": "a00000003",
+     "config": {
+      "dateFormat": "month_day_year"
+     }
+    },
+    {
+     "id": "property-priority",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Priority",
+     "position": "a00000004",
+     "config": {
+      "options": [
+       {
+        "color": "red",
+        "id": "option-0",
+        "name": "High"
+       },
+       {
+        "color": "yellow",
+        "id": "option-1",
+        "name": "Medium"
+       },
+       {
+        "color": "green",
+        "id": "option-2",
+        "name": "Low"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-type",
+     "dataSourceId": "source",
+     "type": "multi_select",
+     "name": "Task type",
+     "position": "a00000005",
+     "config": {
+      "options": [
+       {
+        "color": "orange",
+        "id": "option-0",
+        "name": "🐞 Bug"
+       },
+       {
+        "color": "green",
+        "id": "option-1",
+        "name": "💬 Feature request"
+       },
+       {
+        "color": "pink",
+        "id": "option-2",
+        "name": "💅 Polish"
+       }
+      ],
+      "icon": "kind:gray"
+     }
+    },
+    {
+     "id": "property-effort",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Effort level",
+     "position": "a00000006",
+     "config": {
+      "options": [
+       {
+        "color": "green",
+        "id": "option-0",
+        "name": "Small"
+       },
+       {
+        "color": "yellow",
+        "id": "option-1",
+        "name": "Medium"
+       },
+       {
+        "color": "red",
+        "id": "option-2",
+        "name": "Large"
+       }
+      ],
+      "description": "How long will it take?",
+      "icon": "hourglass:gray"
+     }
+    },
+    {
+     "id": "property-description",
+     "dataSourceId": "source",
+     "type": "rich_text",
+     "name": "Description",
+     "position": "a00000007",
+     "config": {}
+    },
+    {
+     "id": "property-updated",
+     "dataSourceId": "source",
+     "type": "last_edited_time",
+     "name": "Updated at",
+     "position": "a00000008",
+     "config": {}
+    },
+    {
+     "id": "property-overdue",
+     "dataSourceId": "source",
+     "type": "formula",
+     "name": "Past due",
+     "position": "a00000009",
+     "config": {
+      "formula": "if(prop(\"Due date\") < now(), \"⏰ Past Due\", \"\")",
+      "icon": "bell-notification:gray",
+      "description": "Flags tasks that missed their due date"
+     }
+    },
+    {
+     "id": "property-files",
+     "dataSourceId": "source",
+     "type": "files",
+     "name": "Attach file",
+     "position": "a00000010",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All Tasks",
+     "position": "a00000000",
+     "config": {
+      "icon": "star:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-assignee",
+       "property-due",
+       "property-priority",
+       "property-type",
+       "property-description",
+       "property-files",
+       "property-overdue",
+       "property-updated",
+       "property-effort"
+      ],
+      "propertyWidths": {
+       "property-name": 276,
+       "property-status": 130,
+       "property-assignee": 142,
+       "property-due": 118,
+       "property-priority": 105,
+       "property-type": 165,
+       "property-description": 266,
+       "property-effort": 137
+      },
+      "showPageIcons": false
+     }
+    },
+    {
+     "id": "view-status",
+     "dataSourceId": "source",
+     "type": "board",
+     "name": "By Status",
+     "position": "a00000001",
+     "config": {
+      "groupBy": "property-status",
+      "groupByMode": "option",
+      "icon": "arrow-right:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-assignee",
+       "property-due",
+       "property-priority",
+       "property-type",
+       "property-description",
+       "property-files",
+       "property-overdue",
+       "property-updated",
+       "property-effort"
+      ],
+      "visibleProperties": [
+       "property-name",
+       "property-assignee",
+       "property-priority",
+       "property-type"
+      ]
+     }
+    },
+    {
+     "id": "view-mine",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "My Tasks",
+     "position": "a00000002",
+     "config": {
+      "filters": [
+       {
+        "operator": "contains",
+        "propertyId": "property-assignee",
+        "value": {
+         "kind": "leafen.current_user"
+        }
+       }
+      ],
+      "hiddenProperties": [
+       "property-priority",
+       "property-type",
+       "property-description",
+       "property-files",
+       "property-overdue",
+       "property-updated",
+       "property-effort"
+      ],
+      "icon": "user:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-assignee",
+       "property-due",
+       "property-status",
+       "property-priority",
+       "property-type",
+       "property-description",
+       "property-files",
+       "property-overdue",
+       "property-updated",
+       "property-effort"
+      ],
+      "propertyWidths": {
+       "property-name": 280,
+       "property-assignee": 160,
+       "property-due": 113,
+       "property-status": 129
+      }
+     }
+    },
+    {
+     "id": "view-checklist",
+     "dataSourceId": "source",
+     "type": "list",
+     "name": "Checklist",
+     "position": "a00000003",
+     "config": {
+      "icon": "checklist:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-assignee",
+       "property-due",
+       "property-priority",
+       "property-type",
+       "property-description",
+       "property-files",
+       "property-overdue",
+       "property-updated",
+       "property-effort"
+      ],
+      "statusCheckboxPropertyId": "property-status",
+      "visibleProperties": [
+       "property-status"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "row-0",
+     "dataSourceId": "source",
+     "position": "a00000000",
+     "subitemParentId": null,
+     "values": {
+      "property-priority": {
+       "type": "select",
+       "value": "option-0"
+      },
+      "property-type": {
+       "type": "multi_select",
+       "value": [
+        "option-2"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Improve website copy"
+      },
+      "property-due": {
+       "type": "date",
+       "value": {
+        "start": "2025-02-03"
+       }
+      },
+      "property-status": {
+       "type": "status",
+       "value": "done"
+      },
+      "property-effort": {
+       "type": "select",
+       "value": "option-1"
+      },
+      "property-description": {
+       "type": "rich_text",
+       "value": "Change header text to better reflect our latest product offerings."
+      }
+     },
+     "icon": "",
+     "iconType": "none"
+    },
+    {
+     "id": "row-1",
+     "dataSourceId": "source",
+     "position": "a00000001",
+     "subitemParentId": null,
+     "values": {
+      "property-priority": {
+       "type": "select",
+       "value": "option-1"
+      },
+      "property-type": {
+       "type": "multi_select",
+       "value": [
+        "option-1"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Update help center & FAQ"
+      },
+      "property-due": {
+       "type": "date",
+       "value": {
+        "start": "2025-02-20"
+       }
+      },
+      "property-status": {
+       "type": "status",
+       "value": "doing"
+      },
+      "property-effort": {
+       "type": "select",
+       "value": "option-0"
+      },
+      "property-description": {
+       "type": "rich_text",
+       "value": "Update support documents to reflect new product releases."
+      }
+     },
+     "icon": "📕",
+     "iconType": "emoji"
+    },
+    {
+     "id": "row-2",
+     "dataSourceId": "source",
+     "position": "a00000002",
+     "subitemParentId": null,
+     "values": {
+      "property-priority": {
+       "type": "select",
+       "value": "option-2"
+      },
+      "property-type": {
+       "type": "multi_select",
+       "value": [
+        "option-1"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Publish release notes"
+      },
+      "property-due": {
+       "type": "date",
+       "value": {
+        "start": "2025-02-28"
+       }
+      },
+      "property-status": {
+       "type": "status",
+       "value": "todo"
+      },
+      "property-effort": {
+       "type": "select",
+       "value": "option-0"
+      },
+      "property-description": {
+       "type": "rich_text",
+       "value": "Include product updates in next release note."
+      }
+     },
+     "icon": "🗒️",
+     "iconType": "emoji"
+    }
+   ],
+   "rowBodies": [
+    {
+     "id": "rowPageBlock-2",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Task description"
+       }
+      ],
+      "text": "Task description"
+     }
+    },
+    {
+     "id": "rowPageBlock-8",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the task and related details."
+       }
+      ],
+      "text": "Provide an overview of the task and related details."
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-gap-rowPageBlock-9",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-9",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Sub-tasks"
+       }
+      ],
+      "text": "Sub-tasks"
+     }
+    },
+    {
+     "id": "rowPageBlock-4",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-5",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-0",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-1-gap-rowPageBlock-7",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-7",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting files"
+       }
+      ],
+      "text": "Supporting files"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-pdf",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-1-drive",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000010",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-figma",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000011",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    },
+    {
+     "id": "rowPageBlock-15",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Task description"
+       }
+      ],
+      "text": "Task description"
+     }
+    },
+    {
+     "id": "rowPageBlock-19",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the task and related details."
+       }
+      ],
+      "text": "Provide an overview of the task and related details."
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-gap-rowPageBlock-16",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-16",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Sub-tasks"
+       }
+      ],
+      "text": "Sub-tasks"
+     }
+    },
+    {
+     "id": "rowPageBlock-13",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-12",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-18",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-0-gap-rowPageBlock-10",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-10",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting files"
+       }
+      ],
+      "text": "Supporting files"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-pdf",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-0-drive",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000010",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-figma",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000011",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    },
+    {
+     "id": "rowPageBlock-29",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Task description"
+       }
+      ],
+      "text": "Task description"
+     }
+    },
+    {
+     "id": "rowPageBlock-26",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the task and related details."
+       }
+      ],
+      "text": "Provide an overview of the task and related details."
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-gap-rowPageBlock-22",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-22",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Sub-tasks"
+       }
+      ],
+      "text": "Sub-tasks"
+     }
+    },
+    {
+     "id": "rowPageBlock-27",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-20",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-21",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-2-gap-rowPageBlock-28",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-28",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting files"
+       }
+      ],
+      "text": "Supporting files"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-pdf",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-2-drive",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000010",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-figma",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000011",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    }
+   ],
+   "templates": [
+    {
+     "id": "template-0",
+     "dataSourceId": "source",
+     "name": "New task",
+     "icon": "checkmark:green",
+     "title": "",
+     "properties": {},
+     "propertySpans": {},
+     "blocks": [
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Task description"
+         }
+        ],
+        "text": "Task description"
+       },
+       "id": "templateBody-0",
+       "parentId": null,
+       "position": "p0000000000",
+       "type": "heading_2"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Provide an overview of the task and related details."
+         }
+        ],
+        "text": "Provide an overview of the task and related details."
+       },
+       "id": "templateBody-1",
+       "parentId": null,
+       "position": "p0000000001",
+       "type": "paragraph"
+      },
+      {
+       "content": {},
+       "id": "templateBody-gap-templateBody-2",
+       "parentId": null,
+       "position": "p0000000002",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Sub-tasks"
+         }
+        ],
+        "text": "Sub-tasks"
+       },
+       "id": "templateBody-2",
+       "parentId": null,
+       "position": "p0000000003",
+       "type": "heading_2"
+      },
+      {
+       "content": {},
+       "id": "templateBody-3",
+       "parentId": null,
+       "position": "p0000000004",
+       "type": "to_do"
+      },
+      {
+       "content": {},
+       "id": "templateBody-4",
+       "parentId": null,
+       "position": "p0000000005",
+       "type": "to_do"
+      },
+      {
+       "content": {},
+       "id": "templateBody-5",
+       "parentId": null,
+       "position": "p0000000006",
+       "type": "to_do"
+      },
+      {
+       "content": {},
+       "id": "templateBody-gap-templateBody-6",
+       "parentId": null,
+       "position": "p0000000007",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Supporting files"
+         }
+        ],
+        "text": "Supporting files"
+       },
+       "id": "templateBody-6",
+       "parentId": null,
+       "position": "p0000000008",
+       "type": "heading_2"
+      },
+      {
+       "content": {},
+       "id": "templateBody-pdf",
+       "parentId": null,
+       "position": "p0000000009",
+       "type": "pdf"
+      },
+      {
+       "content": {
+        "service": "google_drive"
+       },
+       "id": "templateBody-drive",
+       "parentId": null,
+       "position": "p0000000010",
+       "type": "embed"
+      },
+      {
+       "content": {
+        "service": "figma"
+       },
+       "id": "templateBody-figma",
+       "parentId": null,
+       "position": "p0000000011",
+       "type": "embed"
+      }
+     ],
+     "isDefault": true,
+     "position": "a00000000"
+    }
+   ],
+   "pageLayout": {
+    "heading": {
+     "pinned": [
+      "property-assignee",
+      "property-status",
+      "property-due"
+     ],
+     "labels": true,
+     "backlinks": ""
+    },
+    "page": [
+     {
+      "id": "comments",
+      "kind": "comments"
+     },
+     {
+      "id": "content",
+      "kind": "content"
+     }
+    ],
+    "panel": [
+     {
+      "id": "properties",
+      "kind": "properties"
+     }
+    ],
+    "panelOpen": false,
+    "propertyGroup": [
+     {
+      "kind": "property",
+      "propertyId": "property-priority"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-type"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-effort"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-description"
+     }
+    ],
+    "structure": "simple",
+    "tabs": [],
+    "options": {
+     "inlineComments": "default",
+     "pageComments": true,
+     "propertyIcons": true,
+     "fullWidth": false,
+     "templates": true
+    }
+   }
+  },
+  {
+   "key": "projects",
+   "name": "Projects",
+   "untitledName": "New project",
+   "icon": "iterate:blue",
+   "tone": "blue",
+   "description": "Manage projects start to finish.",
+   "features": [
+    {
+     "key": "priority",
+     "name": "Priority",
+     "defaultOn": true,
+     "properties": [
+      "property-priority"
+     ]
+    },
+    {
+     "key": "team",
+     "name": "Team",
+     "defaultOn": true,
+     "properties": [
+      "property-team"
+     ]
+    },
+    {
+     "key": "dates",
+     "name": "Start and end dates",
+     "defaultOn": true,
+     "properties": [
+      "property-start",
+      "property-end"
+     ]
+    },
+    {
+     "key": "assignee",
+     "name": "Assignee",
+     "defaultOn": true,
+     "properties": [
+      "property-assignee"
+     ]
+    },
+    {
+     "key": "files",
+     "name": "Attach file",
+     "defaultOn": true,
+     "properties": [
+      "property-files"
+     ]
+    },
+    {
+     "key": "progress",
+     "name": "Progress",
+     "defaultOn": false,
+     "properties": [
+      "property-startValue",
+      "property-endValue",
+      "property-progress"
+     ],
+     "icon": "chart-line"
+    },
+    {
+     "key": "budget",
+     "name": "Budget",
+     "defaultOn": false,
+     "properties": [
+      "property-budget"
+     ],
+     "icon": "currency-coin"
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "status",
+     "name": "By Status",
+     "defaultOn": true,
+     "id": "view-status",
+     "retainedProperties": []
+    },
+    {
+     "key": "all",
+     "name": "All Projects",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    },
+    {
+     "key": "gantt",
+     "name": "Gantt",
+     "defaultOn": true,
+     "id": "view-gantt",
+     "retainedProperties": [
+      "property-start"
+     ]
+    },
+    {
+     "key": "mine",
+     "name": "My Projects",
+     "defaultOn": false,
+     "id": "view-mine",
+     "retainedProperties": [
+      "property-assignee"
+     ]
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-status"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Projects",
+     "icon": "iterate:blue",
+     "iconType": "icon",
+     "description": "Manage and execute projects from start to finish.",
+     "descriptionHidden": false
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Project name",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-status",
+     "dataSourceId": "source",
+     "type": "status",
+     "name": "Status",
+     "position": "a00000001",
+     "config": {
+      "options": [
+       {
+        "color": "gray",
+        "colorFromGroup": true,
+        "group": "To-do",
+        "id": "todo",
+        "name": "Not started"
+       },
+       {
+        "color": "blue",
+        "group": "In progress",
+        "id": "doing",
+        "name": "In progress"
+       },
+       {
+        "color": "green",
+        "group": "Complete",
+        "id": "done",
+        "name": "Done"
+       }
+      ],
+      "statusGroups": [
+       {
+        "color": "gray",
+        "id": "group-todo",
+        "name": "To-do",
+        "optionIds": [
+         "todo"
+        ]
+       },
+       {
+        "color": "blue",
+        "id": "group-doing",
+        "name": "In progress",
+        "optionIds": [
+         "doing"
+        ]
+       },
+       {
+        "color": "green",
+        "id": "group-done",
+        "name": "Complete",
+        "optionIds": [
+         "done"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-priority",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Priority",
+     "position": "a00000002",
+     "config": {
+      "options": [
+       {
+        "color": "red",
+        "id": "option-0",
+        "name": "High"
+       },
+       {
+        "color": "yellow",
+        "id": "option-1",
+        "name": "Medium"
+       },
+       {
+        "color": "green",
+        "id": "option-2",
+        "name": "Low"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-team",
+     "dataSourceId": "source",
+     "type": "multi_select",
+     "name": "Team",
+     "position": "a00000003",
+     "config": {
+      "options": [
+       {
+        "color": "default",
+        "id": "option-0",
+        "name": "Account Management"
+       },
+       {
+        "color": "blue",
+        "id": "option-1",
+        "name": "Business Development"
+       },
+       {
+        "color": "green",
+        "id": "option-2",
+        "name": "Product Design"
+       },
+       {
+        "color": "purple",
+        "id": "option-3",
+        "name": "Human Resources"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-start",
+     "dataSourceId": "source",
+     "type": "date",
+     "name": "Start date",
+     "position": "a00000004",
+     "config": {
+      "dateFormat": "month_day_year"
+     }
+    },
+    {
+     "id": "property-end",
+     "dataSourceId": "source",
+     "type": "date",
+     "name": "End date",
+     "position": "a00000005",
+     "config": {
+      "dateFormat": "month_day_year"
+     }
+    },
+    {
+     "id": "property-assignee",
+     "dataSourceId": "source",
+     "type": "person",
+     "name": "Assignee",
+     "position": "a00000006",
+     "config": {
+      "description": "Who’s responsible for the project?"
+     }
+    },
+    {
+     "id": "property-files",
+     "dataSourceId": "source",
+     "type": "files",
+     "name": "Attach file",
+     "position": "a00000007",
+     "config": {}
+    },
+    {
+     "id": "property-startValue",
+     "dataSourceId": "source",
+     "type": "number",
+     "name": "Start value",
+     "position": "a00000008",
+     "config": {}
+    },
+    {
+     "id": "property-endValue",
+     "dataSourceId": "source",
+     "type": "number",
+     "name": "End value",
+     "position": "a00000009",
+     "config": {}
+    },
+    {
+     "id": "property-progress",
+     "dataSourceId": "source",
+     "type": "formula",
+     "name": "Progress",
+     "position": "a00000010",
+     "config": {
+      "formula": "prop(\"Start value\") / prop(\"End value\")",
+      "numberDisplay": "bar",
+      "numberDivideBy": 1,
+      "numberFormat": "percent",
+      "icon": "activity:gray",
+      "description": "Calculated as start value divided by end value"
+     }
+    },
+    {
+     "id": "property-budget",
+     "dataSourceId": "source",
+     "type": "number",
+     "name": "Budget",
+     "position": "a00000011",
+     "config": {
+      "numberFormat": "dollar",
+      "icon": "currency-coin:gray"
+     }
+    }
+   ],
+   "views": [
+    {
+     "id": "view-status",
+     "dataSourceId": "source",
+     "type": "board",
+     "name": "By Status",
+     "position": "a00000000",
+     "config": {
+      "groupBy": "property-status",
+      "groupByMode": "option",
+      "icon": "arrow-right:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-assignee",
+       "property-status",
+       "property-start",
+       "property-end",
+       "property-priority",
+       "property-team",
+       "property-files",
+       "property-startValue",
+       "property-endValue",
+       "property-progress",
+       "property-budget"
+      ],
+      "visibleProperties": [
+       "property-name",
+       "property-assignee",
+       "property-progress",
+       "property-priority"
+      ]
+     }
+    },
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All Projects",
+     "position": "a00000001",
+     "config": {
+      "icon": "star:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-assignee",
+       "property-status",
+       "property-start",
+       "property-end",
+       "property-priority",
+       "property-team",
+       "property-files",
+       "property-startValue",
+       "property-endValue",
+       "property-progress",
+       "property-budget"
+      ],
+      "showPageIcons": false
+     }
+    },
+    {
+     "id": "view-gantt",
+     "dataSourceId": "source",
+     "type": "timeline",
+     "name": "Gantt",
+     "position": "a00000002",
+     "config": {
+      "groupBy": "property-status",
+      "groupByMode": "option",
+      "icon": "timeline:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-assignee",
+       "property-status",
+       "property-start",
+       "property-end",
+       "property-priority",
+       "property-team",
+       "property-files",
+       "property-startValue",
+       "property-endValue",
+       "property-progress",
+       "property-budget"
+      ],
+      "timelineBy": "property-start",
+      "timelineEndBy": "property-end",
+      "timelineShowTable": true,
+      "timelineTableProperties": [
+       {
+        "id": "property-name",
+        "visible": true
+       }
+      ]
+     }
+    },
+    {
+     "id": "view-mine",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "My Projects",
+     "position": "a00000003",
+     "config": {
+      "filters": [
+       {
+        "operator": "contains",
+        "propertyId": "property-assignee",
+        "value": {
+         "kind": "leafen.current_user"
+        }
+       }
+      ],
+      "icon": "user:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-assignee",
+       "property-status",
+       "property-start",
+       "property-end",
+       "property-priority",
+       "property-team",
+       "property-files",
+       "property-startValue",
+       "property-endValue",
+       "property-progress",
+       "property-budget"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "row-0",
+     "dataSourceId": "source",
+     "position": "a00000000",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "doing"
+      },
+      "property-end": {
+       "type": "date",
+       "value": {
+        "start": "2025-04-30"
+       }
+      },
+      "property-team": {
+       "type": "multi_select",
+       "value": [
+        "option-2"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Public launch of iOS app"
+      },
+      "property-startValue": {
+       "type": "number",
+       "value": 50
+      },
+      "property-start": {
+       "type": "date",
+       "value": {
+        "start": "2025-04-09"
+       }
+      },
+      "property-budget": {
+       "type": "number",
+       "value": 50000
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-0"
+      },
+      "property-endValue": {
+       "type": "number",
+       "value": 100
+      }
+     },
+     "icon": "📱",
+     "iconType": "emoji"
+    },
+    {
+     "id": "row-1",
+     "dataSourceId": "source",
+     "position": "a00000001",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "done"
+      },
+      "property-end": {
+       "type": "date",
+       "value": {
+        "start": "2025-02-04"
+       }
+      },
+      "property-team": {
+       "type": "multi_select",
+       "value": [
+        "option-3"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Revamp new hire onboarding"
+      },
+      "property-startValue": {
+       "type": "number",
+       "value": 100
+      },
+      "property-start": {
+       "type": "date",
+       "value": {
+        "start": "2025-01-20"
+       }
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-2"
+      },
+      "property-endValue": {
+       "type": "number",
+       "value": 100
+      }
+     },
+     "icon": "groups:blue",
+     "iconType": "icon"
+    },
+    {
+     "id": "row-2",
+     "dataSourceId": "source",
+     "position": "a00000002",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "todo"
+      },
+      "property-end": {
+       "type": "date",
+       "value": {
+        "start": "2025-03-28"
+       }
+      },
+      "property-team": {
+       "type": "multi_select",
+       "value": [
+        "option-0"
+       ]
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Quarterly sales planning"
+      },
+      "property-startValue": {
+       "type": "number",
+       "value": 0
+      },
+      "property-start": {
+       "type": "date",
+       "value": {
+        "start": "2025-03-24"
+       }
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-1"
+      },
+      "property-endValue": {
+       "type": "number",
+       "value": 100
+      }
+     },
+     "icon": "📖",
+     "iconType": "emoji"
+    }
+   ],
+   "rowBodies": [
+    {
+     "id": "rowPageBlock-3",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "About project"
+       }
+      ],
+      "text": "About project"
+     }
+    },
+    {
+     "id": "rowPageBlock-0",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the project’s goals and context"
+       }
+      ],
+      "text": "Provide an overview of the project’s goals and context"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-gap-rowPageBlock-1",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-1",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items"
+       }
+      ],
+      "text": "Action items"
+     }
+    },
+    {
+     "id": "rowPageBlock-2",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-2-gap-rowPageBlock-5",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-5",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Documents"
+       }
+      ],
+      "text": "Documents"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-drive",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-2-pdf",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-2-figma",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    },
+    {
+     "id": "rowPageBlock-11",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "About project"
+       }
+      ],
+      "text": "About project"
+     }
+    },
+    {
+     "id": "rowPageBlock-6",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the project’s goals and context"
+       }
+      ],
+      "text": "Provide an overview of the project’s goals and context"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-gap-rowPageBlock-8",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-8",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items"
+       }
+      ],
+      "text": "Action items"
+     }
+    },
+    {
+     "id": "rowPageBlock-9",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-1-gap-rowPageBlock-10",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-10",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Documents"
+       }
+      ],
+      "text": "Documents"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-drive",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-1-pdf",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-1-figma",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    },
+    {
+     "id": "rowPageBlock-13",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "About project"
+       }
+      ],
+      "text": "About project"
+     }
+    },
+    {
+     "id": "rowPageBlock-12",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide an overview of the project’s goals and context"
+       }
+      ],
+      "text": "Provide an overview of the project’s goals and context"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-gap-rowPageBlock-16",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-16",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items"
+       }
+      ],
+      "text": "Action items"
+     }
+    },
+    {
+     "id": "rowPageBlock-15",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "to_do",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-0-gap-rowPageBlock-14",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-14",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_3",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Documents"
+       }
+      ],
+      "text": "Documents"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-drive",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "embed",
+     "content": {
+      "service": "google_drive"
+     }
+    },
+    {
+     "id": "rowPageBlock-row-0-pdf",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000008",
+     "type": "pdf",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-row-0-figma",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000009",
+     "type": "embed",
+     "content": {
+      "service": "figma"
+     }
+    }
+   ],
+   "templates": [
+    {
+     "id": "template-0",
+     "dataSourceId": "source",
+     "name": "New project",
+     "icon": "iterate:blue",
+     "title": "",
+     "properties": {},
+     "propertySpans": {},
+     "blocks": [
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "About project"
+         }
+        ],
+        "text": "About project"
+       },
+       "id": "templateBody-0",
+       "parentId": null,
+       "position": "p0000000000",
+       "type": "heading_3"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Provide an overview of the project’s goals and context"
+         }
+        ],
+        "text": "Provide an overview of the project’s goals and context"
+       },
+       "id": "templateBody-1",
+       "parentId": null,
+       "position": "p0000000001",
+       "type": "paragraph"
+      },
+      {
+       "content": {},
+       "id": "templateBody-gap-templateBody-2",
+       "parentId": null,
+       "position": "p0000000002",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Action items"
+         }
+        ],
+        "text": "Action items"
+       },
+       "id": "templateBody-2",
+       "parentId": null,
+       "position": "p0000000003",
+       "type": "heading_3"
+      },
+      {
+       "content": {},
+       "id": "templateBody-3",
+       "parentId": null,
+       "position": "p0000000004",
+       "type": "to_do"
+      },
+      {
+       "content": {},
+       "id": "templateBody-gap-templateBody-4",
+       "parentId": null,
+       "position": "p0000000005",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Documents"
+         }
+        ],
+        "text": "Documents"
+       },
+       "id": "templateBody-4",
+       "parentId": null,
+       "position": "p0000000006",
+       "type": "heading_3"
+      },
+      {
+       "content": {
+        "service": "google_drive"
+       },
+       "id": "templateBody-drive",
+       "parentId": null,
+       "position": "p0000000007",
+       "type": "embed"
+      },
+      {
+       "content": {},
+       "id": "templateBody-pdf",
+       "parentId": null,
+       "position": "p0000000008",
+       "type": "pdf"
+      },
+      {
+       "content": {
+        "service": "figma"
+       },
+       "id": "templateBody-figma",
+       "parentId": null,
+       "position": "p0000000009",
+       "type": "embed"
+      }
+     ],
+     "isDefault": true,
+     "position": "a00000000"
+    }
+   ],
+   "pageLayout": {
+    "heading": {
+     "pinned": [
+      "property-status",
+      "property-assignee",
+      "property-priority",
+      "property-end"
+     ],
+     "labels": true,
+     "backlinks": ""
+    },
+    "page": [
+     {
+      "id": "comments",
+      "kind": "comments"
+     },
+     {
+      "id": "content",
+      "kind": "content"
+     }
+    ],
+    "panel": [
+     {
+      "id": "properties",
+      "kind": "properties"
+     }
+    ],
+    "panelOpen": false,
+    "propertyGroup": [
+     {
+      "kind": "property",
+      "propertyId": "property-start"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-team"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-files"
+     }
+    ],
+    "structure": "simple",
+    "tabs": [],
+    "options": {
+     "inlineComments": "default",
+     "pageComments": true,
+     "propertyIcons": true,
+     "fullWidth": false,
+     "templates": true
+    }
+   }
+  },
+  {
+   "key": "skills",
+   "name": "Skills",
+   "hidden": true,
+   "icon": "🪄",
+   "tone": "gray",
+   "description": "Store reusable instructions for agents.",
+   "features": [
+    {
+     "key": "files",
+     "name": "Files",
+     "defaultOn": true,
+     "properties": [
+      "property-files"
+     ]
+    },
+    {
+     "key": "tags",
+     "name": "Tags",
+     "defaultOn": true,
+     "properties": [
+      "property-tags"
+     ]
+    },
+    {
+     "key": "creator",
+     "name": "Created by",
+     "defaultOn": true,
+     "properties": [
+      "property-creator"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "All skills",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Skills",
+     "icon": "🪄",
+     "iconType": "emoji",
+     "description": "Store reusable instructions agents can apply across the workspace.",
+     "descriptionHidden": false
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Skill name",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-description",
+     "dataSourceId": "source",
+     "type": "rich_text",
+     "name": "Description",
+     "position": "a00000001",
+     "config": {}
+    },
+    {
+     "id": "property-files",
+     "dataSourceId": "source",
+     "type": "files",
+     "name": "Files",
+     "position": "a00000002",
+     "config": {}
+    },
+    {
+     "id": "property-tags",
+     "dataSourceId": "source",
+     "type": "multi_select",
+     "name": "Tags",
+     "position": "a00000003",
+     "config": {
+      "options": []
+     }
+    },
+    {
+     "id": "property-creator",
+     "dataSourceId": "source",
+     "type": "created_by",
+     "name": "Created by",
+     "position": "a00000004",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All skills",
+     "position": "a00000000",
+     "config": {
+      "propertyOrder": [
+       "property-name",
+       "property-description",
+       "property-files",
+       "property-tags",
+       "property-creator"
+      ]
+     }
+    }
+   ],
+   "rows": [],
+   "rowBodies": [],
+   "templates": [],
+   "previewPropertyIds": [
+    "property-name",
+    "property-description",
+    "property-files"
+   ]
+  },
+  {
+   "key": "docs",
+   "name": "Document Hub",
+   "untitledName": "New doc",
+   "icon": "document:red",
+   "tone": "red",
+   "description": "Collaborate on docs in one hub.",
+   "features": [
+    {
+     "key": "created",
+     "name": "Created time",
+     "defaultOn": true,
+     "properties": [
+      "property-created"
+     ]
+    },
+    {
+     "key": "category",
+     "name": "Category",
+     "defaultOn": true,
+     "properties": [
+      "property-category"
+     ]
+    },
+    {
+     "key": "editor",
+     "name": "Last edited by",
+     "defaultOn": true,
+     "properties": [
+      "property-editor"
+     ]
+    },
+    {
+     "key": "updated",
+     "name": "Last updated time",
+     "defaultOn": true,
+     "properties": [
+      "property-updated"
+     ]
+    },
+    {
+     "key": "reviewer",
+     "name": "Reviewers",
+     "defaultOn": false,
+     "properties": [
+      "property-reviewer"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "All Docs",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    },
+    {
+     "key": "mine",
+     "name": "My Docs",
+     "defaultOn": true,
+     "id": "view-mine",
+     "retainedProperties": []
+    },
+    {
+     "key": "category",
+     "name": "By Category",
+     "defaultOn": false,
+     "id": "view-category",
+     "retainedProperties": [
+      "property-category"
+     ]
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Document Hub",
+     "icon": "document:red",
+     "iconType": "icon",
+     "description": "Create and collaborate on documents in one place.",
+     "descriptionHidden": false
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Doc name",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-creator",
+     "dataSourceId": "source",
+     "type": "created_by",
+     "name": "Created by",
+     "position": "a00000001",
+     "config": {}
+    },
+    {
+     "id": "property-created",
+     "dataSourceId": "source",
+     "type": "created_time",
+     "name": "Created time",
+     "position": "a00000002",
+     "config": {}
+    },
+    {
+     "id": "property-category",
+     "dataSourceId": "source",
+     "type": "multi_select",
+     "name": "Category",
+     "position": "a00000003",
+     "config": {
+      "options": [
+       {
+        "color": "yellow",
+        "id": "option-0",
+        "name": "Proposal"
+       },
+       {
+        "color": "blue",
+        "id": "option-1",
+        "name": "Customer research"
+       },
+       {
+        "color": "orange",
+        "id": "option-2",
+        "name": "Strategy doc"
+       },
+       {
+        "color": "red",
+        "id": "option-3",
+        "name": "Planning"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-editor",
+     "dataSourceId": "source",
+     "type": "last_edited_by",
+     "name": "Last edited by",
+     "position": "a00000004",
+     "config": {}
+    },
+    {
+     "id": "property-updated",
+     "dataSourceId": "source",
+     "type": "last_edited_time",
+     "name": "Last updated time",
+     "position": "a00000005",
+     "config": {
+      "formerNames": [
+       "Last updated"
+      ]
+     }
+    },
+    {
+     "id": "property-reviewer",
+     "dataSourceId": "source",
+     "type": "person",
+     "name": "Reviewers",
+     "position": "a00000006",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All Docs",
+     "position": "a00000000",
+     "config": {
+      "icon": "star:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-category",
+       "property-creator",
+       "property-created",
+       "property-editor",
+       "property-updated",
+       "property-reviewer"
+      ],
+      "showPageIcons": false
+     }
+    },
+    {
+     "id": "view-mine",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "My Docs",
+     "position": "a00000001",
+     "config": {
+      "filters": [
+       {
+        "operator": "contains",
+        "propertyId": "property-creator",
+        "value": {
+         "kind": "leafen.current_user"
+        }
+       }
+      ],
+      "icon": "user:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-category",
+       "property-creator",
+       "property-created",
+       "property-editor",
+       "property-updated",
+       "property-reviewer"
+      ]
+     }
+    },
+    {
+     "id": "view-category",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "By Category",
+     "position": "a00000002",
+     "config": {
+      "groupBy": "property-category",
+      "icon": "archive:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-category",
+       "property-creator",
+       "property-created",
+       "property-editor",
+       "property-updated",
+       "property-reviewer"
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "row-0",
+     "dataSourceId": "source",
+     "position": "a00000000",
+     "subitemParentId": null,
+     "values": {
+      "property-name": {
+       "type": "title",
+       "value": "Company mission and strategy"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-2"
+       ]
+      }
+     },
+     "icon": "star:yellow",
+     "iconType": "icon"
+    },
+    {
+     "id": "row-1",
+     "dataSourceId": "source",
+     "position": "a00000001",
+     "subitemParentId": null,
+     "values": {
+      "property-name": {
+       "type": "title",
+       "value": "Proposal for new year campaign"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-0"
+       ]
+      }
+     },
+     "icon": "calendar-month:blue",
+     "iconType": "icon"
+    },
+    {
+     "id": "row-2",
+     "dataSourceId": "source",
+     "position": "a00000002",
+     "subitemParentId": null,
+     "values": {
+      "property-name": {
+       "type": "title",
+       "value": "Customer feedback report"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-1"
+       ]
+      }
+     },
+     "icon": "groups:blue",
+     "iconType": "icon"
+    }
+   ],
+   "rowBodies": [
+    {
+     "id": "rowPageBlock-0",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Implementation"
+       }
+      ],
+      "text": "Implementation"
+     }
+    },
+    {
+     "id": "rowPageBlock-1",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items, timeline, and resource requirements"
+       }
+      ],
+      "text": "Action items, timeline, and resource requirements"
+     }
+    },
+    {
+     "id": "rowPageBlock-2",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Research findings, data insights, and key considerations"
+       }
+      ],
+      "text": "Research findings, data insights, and key considerations"
+     }
+    },
+    {
+     "id": "rowPageBlock-3",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Analysis"
+       }
+      ],
+      "text": "Analysis"
+     }
+    },
+    {
+     "id": "rowPageBlock-4",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Background"
+       }
+      ],
+      "text": "Background"
+     }
+    },
+    {
+     "id": "rowPageBlock-5",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Context, objectives, and scope of the document"
+       }
+      ],
+      "text": "Context, objectives, and scope of the document"
+     }
+    },
+    {
+     "id": "rowPageBlock-6",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Recommendations"
+       }
+      ],
+      "text": "Recommendations"
+     }
+    },
+    {
+     "id": "rowPageBlock-7",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Proposed solutions, strategies, and next steps"
+       }
+      ],
+      "text": "Proposed solutions, strategies, and next steps"
+     }
+    },
+    {
+     "id": "rowPageBlock-8",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Proposed solutions, strategies, and next steps"
+       }
+      ],
+      "text": "Proposed solutions, strategies, and next steps"
+     }
+    },
+    {
+     "id": "rowPageBlock-9",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Analysis"
+       }
+      ],
+      "text": "Analysis"
+     }
+    },
+    {
+     "id": "rowPageBlock-10",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Research findings, data insights, and key considerations"
+       }
+      ],
+      "text": "Research findings, data insights, and key considerations"
+     }
+    },
+    {
+     "id": "rowPageBlock-11",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Recommendations"
+       }
+      ],
+      "text": "Recommendations"
+     }
+    },
+    {
+     "id": "rowPageBlock-12",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items, timeline, and resource requirements"
+       }
+      ],
+      "text": "Action items, timeline, and resource requirements"
+     }
+    },
+    {
+     "id": "rowPageBlock-13",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Background"
+       }
+      ],
+      "text": "Background"
+     }
+    },
+    {
+     "id": "rowPageBlock-14",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Implementation"
+       }
+      ],
+      "text": "Implementation"
+     }
+    },
+    {
+     "id": "rowPageBlock-15",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Context, objectives, and scope of the document"
+       }
+      ],
+      "text": "Context, objectives, and scope of the document"
+     }
+    },
+    {
+     "id": "rowPageBlock-16",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Context, objectives, and scope of the document"
+       }
+      ],
+      "text": "Context, objectives, and scope of the document"
+     }
+    },
+    {
+     "id": "rowPageBlock-17",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Implementation"
+       }
+      ],
+      "text": "Implementation"
+     }
+    },
+    {
+     "id": "rowPageBlock-18",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Recommendations"
+       }
+      ],
+      "text": "Recommendations"
+     }
+    },
+    {
+     "id": "rowPageBlock-19",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Research findings, data insights, and key considerations"
+       }
+      ],
+      "text": "Research findings, data insights, and key considerations"
+     }
+    },
+    {
+     "id": "rowPageBlock-20",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Analysis"
+       }
+      ],
+      "text": "Analysis"
+     }
+    },
+    {
+     "id": "rowPageBlock-21",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Proposed solutions, strategies, and next steps"
+       }
+      ],
+      "text": "Proposed solutions, strategies, and next steps"
+     }
+    },
+    {
+     "id": "rowPageBlock-22",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_1",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Background"
+       }
+      ],
+      "text": "Background"
+     }
+    },
+    {
+     "id": "rowPageBlock-23",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Action items, timeline, and resource requirements"
+       }
+      ],
+      "text": "Action items, timeline, and resource requirements"
+     }
+    }
+   ],
+   "templates": [
+    {
+     "id": "template-0",
+     "dataSourceId": "source",
+     "name": "New doc",
+     "icon": "document:red",
+     "title": "",
+     "properties": {},
+     "propertySpans": {},
+     "blocks": [
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Background"
+         }
+        ],
+        "text": "Background"
+       },
+       "id": "templateBody-0",
+       "parentId": null,
+       "position": "p0000000000",
+       "type": "heading_1"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Context, objectives, and scope of the document"
+         }
+        ],
+        "text": "Context, objectives, and scope of the document"
+       },
+       "id": "templateBody-1",
+       "parentId": null,
+       "position": "p0000000001",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Analysis"
+         }
+        ],
+        "text": "Analysis"
+       },
+       "id": "templateBody-2",
+       "parentId": null,
+       "position": "p0000000002",
+       "type": "heading_1"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Research findings, data insights, and key considerations"
+         }
+        ],
+        "text": "Research findings, data insights, and key considerations"
+       },
+       "id": "templateBody-3",
+       "parentId": null,
+       "position": "p0000000003",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Recommendations"
+         }
+        ],
+        "text": "Recommendations"
+       },
+       "id": "templateBody-4",
+       "parentId": null,
+       "position": "p0000000004",
+       "type": "heading_1"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Proposed solutions, strategies, and next steps"
+         }
+        ],
+        "text": "Proposed solutions, strategies, and next steps"
+       },
+       "id": "templateBody-5",
+       "parentId": null,
+       "position": "p0000000005",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Implementation"
+         }
+        ],
+        "text": "Implementation"
+       },
+       "id": "templateBody-6",
+       "parentId": null,
+       "position": "p0000000006",
+       "type": "heading_1"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Action items, timeline, and resource requirements"
+         }
+        ],
+        "text": "Action items, timeline, and resource requirements"
+       },
+       "id": "templateBody-7",
+       "parentId": null,
+       "position": "p0000000007",
+       "type": "paragraph"
+      }
+     ],
+     "isDefault": true,
+     "position": "a00000000"
+    }
+   ],
+   "pageLayout": {
+    "heading": {
+     "pinned": [
+      "property-category",
+      "property-creator"
+     ],
+     "labels": true,
+     "backlinks": ""
+    },
+    "page": [
+     {
+      "id": "reviewer",
+      "kind": "property",
+      "propertyId": "property-reviewer"
+     },
+     {
+      "id": "comments",
+      "kind": "comments"
+     },
+     {
+      "id": "content",
+      "kind": "content"
+     }
+    ],
+    "panel": [
+     {
+      "id": "properties",
+      "kind": "properties"
+     }
+    ],
+    "panelOpen": false,
+    "propertyGroup": [
+     {
+      "kind": "property",
+      "propertyId": "property-created"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-editor"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-updated"
+     }
+    ],
+    "structure": "simple",
+    "tabs": [],
+    "options": {
+     "inlineComments": "default",
+     "pageComments": true,
+     "propertyIcons": true,
+     "fullWidth": false,
+     "templates": true
+    }
+   }
+  },
+  {
+   "key": "brainstorm",
+   "name": "Brainstorm Session",
+   "untitledName": "New idea",
+   "icon": "light-bulb:orange",
+   "tone": "orange",
+   "description": "Spark new ideas together.",
+   "previewPropertyIds": [
+    "property-name",
+    "property-creator",
+    "property-priority"
+   ],
+   "features": [
+    {
+     "key": "creator",
+     "name": "Created by",
+     "defaultOn": true,
+     "properties": [
+      "property-creator"
+     ]
+    },
+    {
+     "key": "priority",
+     "name": "Priority",
+     "defaultOn": true,
+     "properties": [
+      "property-priority"
+     ]
+    },
+    {
+     "key": "agree",
+     "name": "Upvote",
+     "defaultOn": true,
+     "properties": [
+      "property-agree",
+      "property-voters",
+      "property-votes"
+     ]
+    },
+    {
+     "key": "status",
+     "name": "Status",
+     "defaultOn": false,
+     "properties": [
+      "property-status"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "All Ideas",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    },
+    {
+     "key": "category",
+     "name": "By category",
+     "defaultOn": true,
+     "id": "view-category",
+     "retainedProperties": []
+    },
+    {
+     "key": "top",
+     "name": "Top Ideas",
+     "defaultOn": false,
+     "id": "view-top",
+     "retainedProperties": []
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Brainstorm Session",
+     "icon": "light-bulb:orange",
+     "iconType": "icon"
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Idea",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-category",
+     "dataSourceId": "source",
+     "type": "multi_select",
+     "name": "Category",
+     "position": "a00000001",
+     "config": {
+      "options": [
+       {
+        "color": "yellow",
+        "id": "option-0",
+        "name": "Top of funnel"
+       },
+       {
+        "color": "orange",
+        "id": "option-1",
+        "name": "Activation"
+       },
+       {
+        "color": "blue",
+        "id": "option-2",
+        "name": "Conversion"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-creator",
+     "dataSourceId": "source",
+     "type": "created_by",
+     "name": "Created by",
+     "position": "a00000002",
+     "config": {}
+    },
+    {
+     "id": "property-priority",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Priority",
+     "position": "a00000003",
+     "config": {
+      "options": [
+       {
+        "color": "red",
+        "id": "option-0",
+        "name": "High"
+       },
+       {
+        "color": "yellow",
+        "id": "option-1",
+        "name": "Medium"
+       },
+       {
+        "color": "green",
+        "id": "option-2",
+        "name": "Low"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-agree",
+     "dataSourceId": "source",
+     "type": "button",
+     "name": "Upvote",
+     "position": "a00000004",
+     "config": {
+      "button": {
+       "actions": [
+        {
+         "id": "agree-action",
+         "propertyId": "property-voters",
+         "target": "trigger_page",
+         "type": "edit_property",
+         "value": {
+          "expression": "prop(\"Upvoted by\").concat([executionActor]).unique()",
+          "kind": "formula"
+         }
+        }
+       ],
+       "label": "Upvote",
+       "version": 1
+      }
+     }
+    },
+    {
+     "id": "property-voters",
+     "dataSourceId": "source",
+     "type": "person",
+     "name": "Upvoted by",
+     "position": "a00000005",
+     "config": {}
+    },
+    {
+     "id": "property-votes",
+     "dataSourceId": "source",
+     "type": "formula",
+     "name": "Total votes",
+     "position": "a00000006",
+     "config": {
+      "formula": "prop(\"Upvoted by\").length()",
+      "icon": "arrow-up:gray"
+     }
+    },
+    {
+     "id": "property-status",
+     "dataSourceId": "source",
+     "type": "status",
+     "name": "Status",
+     "position": "a00000007",
+     "config": {
+      "options": [
+       {
+        "color": "yellow",
+        "group": "To-do",
+        "id": "more",
+        "name": "Need more info"
+       },
+       {
+        "color": "default",
+        "group": "To-do",
+        "id": "new",
+        "name": "New idea"
+       },
+       {
+        "color": "brown",
+        "group": "In progress",
+        "id": "discuss",
+        "name": "Under discussion"
+       },
+       {
+        "color": "blue",
+        "group": "In progress",
+        "id": "review",
+        "name": "In review"
+       },
+       {
+        "color": "green",
+        "group": "Complete",
+        "id": "accepted",
+        "name": "Committed"
+       },
+       {
+        "color": "red",
+        "group": "Complete",
+        "id": "rejected",
+        "name": "Rejected"
+       },
+       {
+        "color": "gray",
+        "group": "Complete",
+        "id": "archived",
+        "name": "Archived"
+       }
+      ],
+      "statusGroups": [
+       {
+        "color": "gray",
+        "id": "todo-group",
+        "name": "To-do",
+        "optionIds": [
+         "more",
+         "new"
+        ]
+       },
+       {
+        "color": "blue",
+        "id": "doing-group",
+        "name": "In progress",
+        "optionIds": [
+         "discuss",
+         "review"
+        ]
+       },
+       {
+        "color": "green",
+        "id": "done-group",
+        "name": "Complete",
+        "optionIds": [
+         "accepted",
+         "rejected",
+         "archived"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All Ideas",
+     "position": "a00000000",
+     "config": {
+      "icon": "brightness-high:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-creator",
+       "property-priority",
+       "property-category",
+       "property-agree",
+       "property-votes",
+       "property-voters"
+      ],
+      "showPageIcons": false
+     }
+    },
+    {
+     "id": "view-category",
+     "dataSourceId": "source",
+     "type": "board",
+     "name": "By category",
+     "position": "a00000001",
+     "config": {
+      "groupBy": "property-category",
+      "groupCountsHidden": true,
+      "groupOrder": [
+       "option-1",
+       "option-2",
+       "option-0",
+       "__none"
+      ],
+      "icon": "kind:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-creator",
+       "property-priority",
+       "property-category",
+       "property-agree",
+       "property-votes",
+       "property-voters"
+      ],
+      "visibleProperties": [
+       "property-name"
+      ]
+     }
+    },
+    {
+     "id": "view-top",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "Top Ideas",
+     "position": "a00000002",
+     "config": {
+      "hiddenProperties": [
+       "property-status",
+       "property-priority",
+       "property-category",
+       "property-agree",
+       "property-votes",
+       "property-voters"
+      ],
+      "icon": "chat:gray",
+      "propertyOrder": [
+       "property-name",
+       "property-status",
+       "property-creator",
+       "property-priority",
+       "property-category",
+       "property-agree",
+       "property-votes",
+       "property-voters"
+      ],
+      "sorts": [
+       {
+        "direction": "asc",
+        "propertyId": "property-votes"
+       }
+      ]
+     }
+    }
+   ],
+   "rows": [
+    {
+     "id": "row-0",
+     "dataSourceId": "source",
+     "position": "a00000000",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "discuss"
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Launch back to school campaign"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-1"
+       ]
+      },
+      "property-voters": {
+       "type": "person",
+       "value": []
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-0"
+      }
+     },
+     "icon": "light-bulb:orange",
+     "iconType": "icon"
+    },
+    {
+     "id": "row-1",
+     "dataSourceId": "source",
+     "position": "a00000001",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "review"
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Simplify onboarding experience"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-2"
+       ]
+      },
+      "property-voters": {
+       "type": "person",
+       "value": []
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-1"
+      }
+     },
+     "icon": "light-bulb:orange",
+     "iconType": "icon"
+    },
+    {
+     "id": "row-2",
+     "dataSourceId": "source",
+     "position": "a00000002",
+     "subitemParentId": null,
+     "values": {
+      "property-status": {
+       "type": "status",
+       "value": "new"
+      },
+      "property-name": {
+       "type": "title",
+       "value": "Improve SEO"
+      },
+      "property-category": {
+       "type": "multi_select",
+       "value": [
+        "option-0"
+       ]
+      },
+      "property-voters": {
+       "type": "person",
+       "value": []
+      },
+      "property-priority": {
+       "type": "select",
+       "value": "option-2"
+      }
+     },
+     "icon": "light-bulb:orange",
+     "iconType": "icon"
+    }
+   ],
+   "rowBodies": [
+    {
+     "id": "rowPageBlock-0",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-1",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-2",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting data"
+       }
+      ],
+      "text": "Supporting data"
+     }
+    },
+    {
+     "id": "rowPageBlock-3",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Why do you think it’s important?"
+       }
+      ],
+      "text": "Why do you think it’s important?"
+     }
+    },
+    {
+     "id": "rowPageBlock-4",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-5",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide a 2-3 sentence description."
+       }
+      ],
+      "text": "Provide a 2-3 sentence description."
+     }
+    },
+    {
+     "id": "rowPageBlock-6",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Describe your idea"
+       }
+      ],
+      "text": "Describe your idea"
+     }
+    },
+    {
+     "id": "rowPageBlock-7",
+     "rowId": "row-0",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Link slack threads, data reports, etc."
+       }
+      ],
+      "text": "Link slack threads, data reports, etc."
+     }
+    },
+    {
+     "id": "rowPageBlock-8",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Link slack threads, data reports, etc."
+       }
+      ],
+      "text": "Link slack threads, data reports, etc."
+     }
+    },
+    {
+     "id": "rowPageBlock-9",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting data"
+       }
+      ],
+      "text": "Supporting data"
+     }
+    },
+    {
+     "id": "rowPageBlock-10",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Describe your idea"
+       }
+      ],
+      "text": "Describe your idea"
+     }
+    },
+    {
+     "id": "rowPageBlock-11",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-12",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Why do you think it’s important?"
+       }
+      ],
+      "text": "Why do you think it’s important?"
+     }
+    },
+    {
+     "id": "rowPageBlock-13",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide a 2-3 sentence description."
+       }
+      ],
+      "text": "Provide a 2-3 sentence description."
+     }
+    },
+    {
+     "id": "rowPageBlock-14",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-15",
+     "rowId": "row-1",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-16",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000007",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Link slack threads, data reports, etc."
+       }
+      ],
+      "text": "Link slack threads, data reports, etc."
+     }
+    },
+    {
+     "id": "rowPageBlock-17",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000002",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Why do you think it’s important?"
+       }
+      ],
+      "text": "Why do you think it’s important?"
+     }
+    },
+    {
+     "id": "rowPageBlock-18",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000005",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-19",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000006",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Supporting data"
+       }
+      ],
+      "text": "Supporting data"
+     }
+    },
+    {
+     "id": "rowPageBlock-20",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000001",
+     "type": "paragraph",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Provide a 2-3 sentence description."
+       }
+      ],
+      "text": "Provide a 2-3 sentence description."
+     }
+    },
+    {
+     "id": "rowPageBlock-21",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000004",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-22",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000003",
+     "type": "bulleted_list_item",
+     "content": {}
+    },
+    {
+     "id": "rowPageBlock-23",
+     "rowId": "row-2",
+     "parentId": "",
+     "position": "p0000000000",
+     "type": "heading_2",
+     "content": {
+      "notionRichTextSpans": [
+       {
+        "text": "Describe your idea"
+       }
+      ],
+      "text": "Describe your idea"
+     }
+    }
+   ],
+   "templates": [
+    {
+     "id": "template-0",
+     "dataSourceId": "source",
+     "name": "New idea",
+     "icon": "light-bulb:orange",
+     "title": "",
+     "properties": {},
+     "propertySpans": {},
+     "blocks": [
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Describe your idea"
+         }
+        ],
+        "text": "Describe your idea"
+       },
+       "id": "templateBody-0",
+       "parentId": null,
+       "position": "p0000000000",
+       "type": "heading_2"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Provide a 2-3 sentence description."
+         }
+        ],
+        "text": "Provide a 2-3 sentence description."
+       },
+       "id": "templateBody-1",
+       "parentId": null,
+       "position": "p0000000001",
+       "type": "paragraph"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Why do you think it’s important?"
+         }
+        ],
+        "text": "Why do you think it’s important?"
+       },
+       "id": "templateBody-2",
+       "parentId": null,
+       "position": "p0000000002",
+       "type": "heading_2"
+      },
+      {
+       "content": {},
+       "id": "templateBody-3",
+       "parentId": null,
+       "position": "p0000000003",
+       "type": "bulleted_list_item"
+      },
+      {
+       "content": {},
+       "id": "templateBody-4",
+       "parentId": null,
+       "position": "p0000000004",
+       "type": "bulleted_list_item"
+      },
+      {
+       "content": {},
+       "id": "templateBody-5",
+       "parentId": null,
+       "position": "p0000000005",
+       "type": "bulleted_list_item"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Supporting data"
+         }
+        ],
+        "text": "Supporting data"
+       },
+       "id": "templateBody-6",
+       "parentId": null,
+       "position": "p0000000006",
+       "type": "heading_2"
+      },
+      {
+       "content": {
+        "rich": [
+         {
+          "text": "Link slack threads, data reports, etc."
+         }
+        ],
+        "text": "Link slack threads, data reports, etc."
+       },
+       "id": "templateBody-7",
+       "parentId": null,
+       "position": "p0000000007",
+       "type": "paragraph"
+      }
+     ],
+     "isDefault": true,
+     "position": "a00000000"
+    }
+   ],
+   "pageLayout": {
+    "heading": {
+     "pinned": [
+      "property-priority",
+      "property-status",
+      "property-creator"
+     ],
+     "labels": true,
+     "backlinks": ""
+    },
+    "page": [
+     {
+      "id": "comments",
+      "kind": "comments"
+     },
+     {
+      "id": "content",
+      "kind": "content"
+     }
+    ],
+    "panel": [
+     {
+      "id": "properties",
+      "kind": "properties"
+     }
+    ],
+    "panelOpen": false,
+    "propertyGroup": [
+     {
+      "kind": "property",
+      "propertyId": "property-agree"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-votes"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-category"
+     },
+     {
+      "kind": "property",
+      "propertyId": "property-voters"
+     }
+    ],
+    "structure": "simple",
+    "tabs": [],
+    "options": {
+     "inlineComments": "default",
+     "pageComments": true,
+     "propertyIcons": true,
+     "fullWidth": false,
+     "templates": true
+    }
+   }
+  },
+  {
+   "key": "meetings",
+   "name": "Meeting Notes",
+   "untitledName": "New meeting",
+   "icon": "calendar:yellow",
+   "tone": "yellow",
+   "description": "Turn meetings into action.",
+   "features": [],
+   "viewChoices": [
+    {
+     "key": "table",
+     "name": "Table",
+     "defaultOn": true,
+     "id": "view-table",
+     "retainedProperties": []
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-table"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Meeting Notes",
+     "icon": "calendar:yellow",
+     "iconType": "icon"
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-name",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Meeting name",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-date",
+     "dataSourceId": "source",
+     "type": "date",
+     "name": "Date",
+     "position": "a00000001",
+     "config": {
+      "dateFormat": "relative",
+      "timeFormat": "hidden",
+      "icon": "clock:gray"
+     }
+    },
+    {
+     "id": "property-attendees",
+     "dataSourceId": "source",
+     "type": "person",
+     "name": "Attendees",
+     "position": "a00000002",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-table",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "Table",
+     "position": "a00000000",
+     "config": {
+      "propertyOrder": [
+       "property-name",
+       "property-date",
+       "property-attendees"
+      ],
+      "sorts": [
+       {
+        "direction": "desc",
+        "propertyId": "property-date"
+       }
+      ],
+      "filterBarHidden": true
+     }
+    }
+   ],
+   "rows": [],
+   "rowBodies": [],
+   "templates": [],
+   "previewPropertyIds": [
+    "property-name"
+   ],
+   "pageLayout": {
+    "heading": {
+     "pinned": [
+      "property-date",
+      "property-attendees"
+     ],
+     "labels": true,
+     "backlinks": ""
+    },
+    "page": [
+     {
+      "id": "comments",
+      "kind": "comments"
+     },
+     {
+      "id": "content",
+      "kind": "content"
+     }
+    ],
+    "panel": [
+     {
+      "id": "properties",
+      "kind": "properties"
+     }
+    ],
+    "panelOpen": false,
+    "propertyGroup": [],
+    "structure": "simple",
+    "tabs": [],
+    "options": {
+     "inlineComments": "default",
+     "pageComments": false,
+     "propertyIcons": true,
+     "fullWidth": false,
+     "templates": true
+    }
+   }
+  },
+  {
+   "key": "memory",
+   "name": "Memory",
+   "hidden": true,
+   "features": [
+    {
+     "key": "all",
+     "name": "Memory",
+     "defaultOn": true,
+     "properties": [
+      "property-description",
+      "property-kind",
+      "property-core",
+      "property-confirmation",
+      "property-validity",
+      "property-supersedes",
+      "property-source",
+      "property-learned",
+      "property-creator",
+      "property-created"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "All memories",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    },
+    {
+     "key": "agent",
+     "name": "Recently remembered by agents",
+     "defaultOn": true,
+     "id": "view-agent",
+     "retainedProperties": [
+      "property-source",
+      "property-created"
+     ]
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Memory",
+     "icon": "🧠",
+     "iconType": "emoji"
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-title",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Title",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-description",
+     "dataSourceId": "source",
+     "type": "rich_text",
+     "name": "Description",
+     "position": "a00000001",
+     "config": {}
+    },
+    {
+     "id": "property-kind",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Kind",
+     "position": "a00000002",
+     "config": {
+      "options": [
+       {
+        "color": "blue",
+        "id": "person",
+        "name": "Person"
+       },
+       {
+        "color": "purple",
+        "id": "way",
+        "name": "How to work"
+       },
+       {
+        "color": "green",
+        "id": "project",
+        "name": "Project"
+       },
+       {
+        "color": "gray",
+        "id": "reference",
+        "name": "Reference"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-core",
+     "dataSourceId": "source",
+     "type": "checkbox",
+     "name": "Core",
+     "position": "a00000003",
+     "config": {}
+    },
+    {
+     "id": "property-confirmation",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Confirmation",
+     "position": "a00000004",
+     "config": {
+      "options": [
+       {
+        "color": "yellow",
+        "id": "inferred",
+        "name": "Inferred"
+       },
+       {
+        "color": "green",
+        "id": "confirmed",
+        "name": "Confirmed"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-validity",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Validity",
+     "position": "a00000005",
+     "config": {
+      "options": [
+       {
+        "color": "green",
+        "id": "valid",
+        "name": "Valid"
+       },
+       {
+        "color": "gray",
+        "id": "superseded",
+        "name": "Superseded"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-supersedes",
+     "dataSourceId": "source",
+     "type": "relation",
+     "name": "Supersedes",
+     "position": "a00000006",
+     "config": {
+      "relationDatabaseId": "source"
+     }
+    },
+    {
+     "id": "property-source",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Source",
+     "position": "a00000007",
+     "config": {
+      "options": [
+       {
+        "color": "blue",
+        "id": "person",
+        "name": "Person"
+       },
+       {
+        "color": "orange",
+        "id": "agent",
+        "name": "Agent"
+       },
+       {
+        "color": "pink",
+        "id": "app",
+        "name": "Outside app"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-learned",
+     "dataSourceId": "source",
+     "type": "url",
+     "name": "Learned at",
+     "position": "a00000008",
+     "config": {}
+    },
+    {
+     "id": "property-creator",
+     "dataSourceId": "source",
+     "type": "created_by",
+     "name": "Created by",
+     "position": "a00000009",
+     "config": {}
+    },
+    {
+     "id": "property-created",
+     "dataSourceId": "source",
+     "type": "created_time",
+     "name": "Created time",
+     "position": "a00000010",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "All memories",
+     "position": "a00000000",
+     "config": {
+      "propertyOrder": [
+       "property-title",
+       "property-description",
+       "property-kind",
+       "property-confirmation",
+       "property-validity",
+       "property-core",
+       "property-source",
+       "property-creator",
+       "property-created"
+      ]
+     }
+    },
+    {
+     "id": "view-agent",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "Recently remembered by agents",
+     "position": "a00000001",
+     "config": {
+      "filters": [
+       {
+        "operator": "equals",
+        "propertyId": "property-source",
+        "value": "agent"
+       }
+      ],
+      "sorts": [
+       {
+        "direction": "desc",
+        "propertyId": "property-created"
+       }
+      ],
+      "propertyOrder": [
+       "property-title",
+       "property-description",
+       "property-kind",
+       "property-confirmation",
+       "property-validity",
+       "property-core",
+       "property-source",
+       "property-creator",
+       "property-created"
+      ]
+     }
+    }
+   ],
+   "rows": [],
+   "rowBodies": [],
+   "templates": []
+  },
+  {
+   "key": "journal",
+   "name": "Journal",
+   "hidden": true,
+   "features": [
+    {
+     "key": "all",
+     "name": "Journal",
+     "defaultOn": true,
+     "properties": [
+      "property-kind",
+      "property-work",
+      "property-creator",
+      "property-created"
+     ]
+    }
+   ],
+   "viewChoices": [
+    {
+     "key": "all",
+     "name": "Newest first",
+     "defaultOn": true,
+     "id": "view-all",
+     "retainedProperties": []
+    }
+   ],
+   "blocks": [
+    {
+     "id": "block-0",
+     "parentId": null,
+     "position": "p0000000000",
+     "type": "inline_database",
+     "content": {
+      "dataSourceId": "source",
+      "viewId": "view-all"
+     }
+    }
+   ],
+   "sources": [
+    {
+     "id": "source",
+     "title": "Journal",
+     "icon": "📓",
+     "iconType": "emoji"
+    }
+   ],
+   "properties": [
+    {
+     "id": "property-title",
+     "dataSourceId": "source",
+     "type": "title",
+     "name": "Line",
+     "position": "a00000000",
+     "config": {}
+    },
+    {
+     "id": "property-kind",
+     "dataSourceId": "source",
+     "type": "select",
+     "name": "Kind",
+     "position": "a00000001",
+     "config": {
+      "options": [
+       {
+        "color": "green",
+        "id": "did",
+        "name": "Did"
+       },
+       {
+        "color": "blue",
+        "id": "doing",
+        "name": "Doing"
+       },
+       {
+        "color": "purple",
+        "id": "note",
+        "name": "Thought"
+       }
+      ]
+     }
+    },
+    {
+     "id": "property-work",
+     "dataSourceId": "source",
+     "type": "rich_text",
+     "name": "Work",
+     "position": "a00000002",
+     "config": {}
+    },
+    {
+     "id": "property-creator",
+     "dataSourceId": "source",
+     "type": "created_by",
+     "name": "Written by",
+     "position": "a00000003",
+     "config": {}
+    },
+    {
+     "id": "property-created",
+     "dataSourceId": "source",
+     "type": "created_time",
+     "name": "Written at",
+     "position": "a00000004",
+     "config": {}
+    }
+   ],
+   "views": [
+    {
+     "id": "view-all",
+     "dataSourceId": "source",
+     "type": "table",
+     "name": "Newest first",
+     "position": "a00000000",
+     "config": {
+      "sorts": [
+       {
+        "direction": "desc",
+        "propertyId": "property-created"
+       }
+      ],
+      "propertyOrder": [
+       "property-title",
+       "property-kind",
+       "property-work",
+       "property-created"
+      ]
+     }
+    }
+   ],
+   "rows": [],
+   "rowBodies": [],
+   "templates": []
+  }
+ ],
+ "translations": {
+  "ko": {
+   "Tasks": "작업",
+   "Due": "마감일",
+   "Owner": "소유자",
+   "Dates": "날짜",
+   "Backlog": "백로그",
+   "Paused": "중단됨",
+   "Cancelled": "취소됨",
+   "Projects": "프로젝트",
+   "Task name": "작업 이름",
+   "Status": "상태",
+   "Assignee": "담당자",
+   "Due date": "마감일",
+   "Priority": "우선순위",
+   "Task type": "작업 유형",
+   "Description": "설명",
+   "Last updated time": "최종 업데이트 시간",
+   "Last updated": "업데이트 시간",
+   "Files": "파일 첨부",
+   "Project name": "프로젝트 이름",
+   "Team": "팀",
+   "Start date": "시작일",
+   "End date": "종료일",
+   "Start and end dates": "시작일과 종료일",
+   "Start value": "시작 값",
+   "End value": "종료 값",
+   "Progress": "진행 상황",
+   "Budget": "예산",
+   "Created by": "생성자",
+   "Created time": "생성 일시",
+   "Category": "카테고리",
+   "Last edited by": "최종 편집자:",
+   "Idea": "아이디어",
+   "Total votes": "총 투표 수",
+   "Meeting name": "회의 이름",
+   "Date": "날짜",
+   "Attendees": "참석자",
+   "High": "높음",
+   "Medium": "보통",
+   "Low": "낮음",
+   "Small": "작게",
+   "Large": "크게",
+   "🐞 Bug": "🐞 버그",
+   "💬 Feature request": "💬 기능 요청",
+   "💅 Polish": "💅 다듬기",
+   "Not started": "시작 전",
+   "In progress": "진행 중",
+   "To-do": "할 일",
+   "Complete": "완료",
+   "Proposal": "제안",
+   "Customer research": "고객 리서치",
+   "Planning": "계획 중",
+   "Top of funnel": "유입 경로 상단",
+   "Activation": "활성화",
+   "Conversion": "전환",
+   "Quick meeting": "짧은 회의",
+   "Presentation": "프레젠테이션",
+   "Retrospective": "회고",
+   "Customer call": "고객 전화",
+   "New idea": "새 아이디어",
+   "In review": "검토 중",
+   "Rejected": "거부됨",
+   "Archived": "보관됨",
+   "Checklist": "체크리스트",
+   "Gantt": "간트",
+   "By category": "카테고리별",
+   "All meetings": "모든 회의",
+   "My notes": "내 메모",
+   "New page": "새 페이지",
+   "Improve website copy": "웹사이트 카피 개선",
+   "Publish release notes": "릴리스 노트 게시",
+   "Launch the mobile app": "모바일 앱 공식 출시",
+   "Company mission and strategy": "회사의 미션과 전략",
+   "Customer feedback report": "고객 피드백 보고서",
+   "Product launch retrospective": "제품 출시 사후 검토",
+   "Weekly team meeting": "주간 팀 미팅",
+   "Go-to-market strategy": "GTM 전략 발표",
+   "Task description": "작업 설명",
+   "New task": "신규 작업",
+   "Supporting files": "지원 파일",
+   "Action items": "액션 아이템",
+   "Documents": "문서",
+   "Background": "배경",
+   "Analysis": "분석",
+   "Recommendations": "권장 사항",
+   "Describe your idea": "아이디어를 설명하세요.",
+   "Supporting data": "뒷받침하는 데이터",
+   "Agenda": "의제",
+   "Notes": "메모",
+   "Plan tasks, assign owners and follow progress.": "작업을 계획하고 담당자를 정해 진행 상황을 확인하세요.",
+   "Coordinate project owners, dates and milestones.": "프로젝트 담당자와 일정, 주요 목표를 관리하세요.",
+   "Keep team documents and their authors in one place.": "팀 문서와 작성자를 한곳에서 관리하세요.",
+   "Collect ideas, discuss them and show support.": "아이디어를 모으고 토론하며 동의를 표시하세요.",
+   "Record agendas, participants and decisions.": "회의 안건과 참석자, 결정 사항을 기록하세요.",
+   "Describe the outcome and the work required.": "목표와 필요한 작업을 적으세요.",
+   "Add relevant files and links here.": "관련 파일과 링크를 추가하세요.",
+   "Describe the project and its goals.": "프로젝트와 목표를 설명하세요.",
+   "Add the documents needed for this project.": "프로젝트에 필요한 문서를 추가하세요.",
+   "Explain the context and purpose.": "배경과 목적을 설명하세요.",
+   "Add the evidence and your findings.": "근거와 분석 내용을 적으세요.",
+   "Describe the proposed next steps.": "제안하는 다음 단계를 적으세요.",
+   "List the owners and milestones.": "담당자와 주요 일정을 적으세요.",
+   "Explain what you would like to try.": "시도하고 싶은 아이디어를 설명하세요.",
+   "Add evidence or links that support the idea.": "아이디어를 뒷받침하는 근거와 링크를 추가하세요.",
+   "List the topics to discuss.": "논의할 주제를 적으세요.",
+   "Record decisions and action items.": "결정 사항과 실행 항목을 적으세요.",
+   "Clarify the main message.": "핵심 메시지를 명확하게 하세요.",
+   "Answer common questions.": "자주 묻는 질문에 답하세요.",
+   "Share the latest improvements.": "최근 개선 사항을 공유하세요.",
+   "What topics should be discussed?": "논의할 주제는 무엇인가요?",
+   "Add notes that provide further context and details.": "추가 맥락과 상세정보를 제공하는 메모를 추가하세요.",
+   "Create and collaborate on documents in one place.": "한곳에서 문서를 작성하고 협업하세요.",
+   "Memory": "기억",
+   "All memories": "모든 기억",
+   "Recently remembered by agents": "최근 에이전트가 기억한 것",
+   "Title": "제목",
+   "Kind": "종류",
+   "Person": "사람",
+   "How to work": "작업 방식",
+   "Project": "프로젝트",
+   "Reference": "참고",
+   "Core": "핵심",
+   "Confirmation": "확인 상태",
+   "Inferred": "추론",
+   "Confirmed": "확인됨",
+   "Validity": "유효",
+   "Valid": "유효",
+   "Superseded": "대체됨",
+   "Supersedes": "대체한 기억",
+   "Source": "출처",
+   "Agent": "에이전트",
+   "Outside app": "외부 앱",
+   "Learned at": "알게 된 곳",
+   "Skills": "스킬",
+   "Store reusable instructions for agents.": "에이전트를 위한 재사용 가능한 지침을 저장하세요.",
+   "Store reusable instructions agents can apply across the workspace.": "에이전트가 워크스페이스 전체에서 적용할 수 있는 재사용 가능한 지침을 저장하세요.",
+   "All skills": "모든 스킬",
+   "Skill name": "스킬 이름",
+   "Tags": "태그",
+   "Journal": "일지",
+   "Line": "내용",
+   "Doing": "하는 중",
+   "Thought": "느낀 점",
+   "Work": "일",
+   "Written by": "쓴 이",
+   "Written at": "쓴 시각",
+   "Newest first": "최신순",
+   "Did": "한 일",
+   "How long will it take?": "시간이 얼마나 걸릴까요?",
+   "Table": "표",
+   "New project": "신규 프로젝트",
+   "New doc": "신규 문서",
+   "New meeting": "신규 회의",
+   "Flags tasks that missed their due date": "마감일을 놓친 작업에 플래그를 지정합니다",
+   "Calculated as start value divided by end value": "시작 값을 끝 값으로 나눠 계산됨",
+   "item:New idea": "신규  아이디어",
+   "Tasks Tracker": "작업 트래커",
+   "Stay organized with tasks, your way.": "나만의 방식으로 작업을 체계적으로 관리하세요.",
+   "Effort level": "노력 수준",
+   "Updated at": "업데이트 시간",
+   "Past due": "기한 경과",
+   "Attach file": "파일 첨부",
+   "All Tasks": "모든 작업",
+   "By Status": "상태별",
+   "My Tasks": "내 작업",
+   "Who’s responsible for the project?": "프로젝트 책임자는 누구인가요?",
+   "Change header text to better reflect our latest product offerings.": "최신 제품 제공사항을 더 잘 반영하도록 헤더 텍스트를 변경합니다.",
+   "Update help center & FAQ": "도움말 센터 및 자주 묻는 질문 업데이트",
+   "Update support documents to reflect new product releases.": "신제품 출시를 반영하도록 지원 문서를 업데이트합니다.",
+   "Include product updates in next release note.": "다음 릴리스 노트에 제품 업데이트를 포함합니다.",
+   "Provide an overview of the task and related details.": "작업에 대한 개요와 관련 상세정보를 제공하세요.",
+   "Sub-tasks": "하위 작업",
+   "Manage projects start to finish.": "프로젝트를 처음부터 끝까지 관리합니다.",
+   "Manage and execute projects from start to finish.": "프로젝트를 처음부터 끝까지 관리하고 실행합니다.",
+   "All Projects": "모든 프로젝트",
+   "My Projects": "내 프로젝트",
+   "Account Management": "계정 관리",
+   "Business Development": "사업 개발",
+   "Product Design": "프로덕트 디자인",
+   "Human Resources": "인사",
+   "Public launch of iOS app": "iOS 앱 공식 출시",
+   "Revamp new hire onboarding": "신입 사원 온보딩 개선",
+   "Quarterly sales planning": "분기별 영업 계획",
+   "About project": "프로젝트 정보",
+   "Provide an overview of the project’s goals and context": "프로젝트의 목표와 맥락에 대한 개요를 제공합니다.",
+   "Document Hub": "문서 허브",
+   "Collaborate on docs in one hub.": "하나의 허브에 있는 문서에서 협업하세요.",
+   "Reviewers": "검토자",
+   "All Docs": "모든 문서",
+   "My Docs": "내 문서",
+   "By Category": "카테고리별",
+   "Doc name": "문서 이름",
+   "Strategy doc": "전략 문서",
+   "Proposal for new year campaign": "새해 캠페인 제안",
+   "Context, objectives, and scope of the document": "문서의 맥락, 목표, 범위",
+   "Research findings, data insights, and key considerations": "연구 결과, 데이터 인사이트, 주요 고려 사항",
+   "Proposed solutions, strategies, and next steps": "제안된 솔루션, 전략 및 다음 단계",
+   "Implementation": "실행",
+   "Action items, timeline, and resource requirements": "액션 아이템, 타임라인, 리소스 요구 사항",
+   "Brainstorm Session": "브레인스토밍 세션",
+   "Spark new ideas together.": "함께 새로운 아이디어를 모색해 보세요.",
+   "Upvote": "동의",
+   "Upvoted by": "동의자:",
+   "All Ideas": "모든 아이디어",
+   "Top Ideas": "최상위 아이디어",
+   "Need more info": "추가 정보 필요",
+   "Under discussion": "토론 중",
+   "Committed": "확정됨",
+   "Launch back to school campaign": "학교 복귀 캠페인 론칭",
+   "Simplify onboarding experience": "온보딩 경험 간소화",
+   "Improve SEO": "SEO 개선",
+   "Provide a 2-3 sentence description.": "2~3문장으로 설명해 주세요.",
+   "Why do you think it’s important?": "어떤 이유로 중요하다고 생각하시나요?",
+   "Link slack threads, data reports, etc.": "Slack 스레드, 데이터 리포트 등을 연결합니다.",
+   "Meeting Notes": "회의록",
+   "Turn meetings into action.": "회의록을 액션 아이템으로 옮기세요."
+  },
+  "he": {
+   "Tasks": "משימות",
+   "Due": "תאריך יעד",
+   "Owner": "בעלים",
+   "Dates": "תאריכים",
+   "Backlog": "רשימת משימות",
+   "Paused": "מושהה",
+   "Cancelled": "בוטל",
+   "Projects": "פרויקטים",
+   "Task name": "שם המשימה",
+   "Status": "סטטוס",
+   "Assignee": "מקבל/ת ההקצאה",
+   "Due date": "תאריך יעד",
+   "Priority": "עדיפות",
+   "Task type": "סוג משימה",
+   "Description": "תיאור",
+   "Last updated time": "זמן עדכון אחרון",
+   "Last updated": "עדכון אחרון",
+   "Files": "קבצים",
+   "Project name": "שם הפרויקט",
+   "Team": "צוות",
+   "Start date": "תאריך התחלה",
+   "End date": "תאריך סיום",
+   "Start and end dates": "תאריכי התחלה וסיום",
+   "Start value": "ערך התחלתי",
+   "End value": "ערך סופי",
+   "Progress": "התקדמות",
+   "Budget": "תקציב",
+   "Created by": "נוצר על ידי",
+   "Created time": "נוצר בשעה",
+   "Category": "קטגוריה",
+   "Last edited by": "נערך לאחרונה על ידי",
+   "Idea": "רעיון",
+   "Total votes": "סה\"כ הצבעות",
+   "Meeting name": "שם הפגישה",
+   "Date": "תאריך",
+   "Attendees": "משתתפים",
+   "High": "גבוהה",
+   "Medium": "בינוני",
+   "Low": "נמוכה",
+   "Small": "קטן",
+   "Large": "גדול",
+   "🐞 Bug": "🐞 באג",
+   "💬 Feature request": "💬 בקשה לתכונה",
+   "💅 Polish": "✨ ליטוש",
+   "Not started": "לא התחיל",
+   "In progress": "בתהליך",
+   "To-do": "משימות לביצוע",
+   "Complete": "הושלם",
+   "Done": "סיום",
+   "Proposal": "הצעה",
+   "Customer research": "מחקר לקוחות",
+   "Planning": "תכנון",
+   "Top of funnel": "החלק העליון של המשפך",
+   "Activation": "הפעלה",
+   "Conversion": "המרה",
+   "Quick meeting": "פגישה קצרה",
+   "Presentation": "מצגת",
+   "Retrospective": "רטרוספקטיבה",
+   "Customer call": "שיחת לקוח/ה",
+   "New idea": "רעיון חדש",
+   "In review": "בבדיקה",
+   "Rejected": "נדחתה",
+   "Archived": "הועבר לארכיון",
+   "Checklist": "רשימת משימות",
+   "Gantt": "גאנט",
+   "By category": "לפי קטגוריה",
+   "All meetings": "כל הפגישות",
+   "My notes": "ההערות שלי",
+   "New page": "דף חדש",
+   "Improve website copy": "שיפור הטקסט באתר",
+   "Publish release notes": "פרסום הערות גרסה",
+   "Launch the mobile app": "השקת אפליקציה לנייד",
+   "Company mission and strategy": "הייעוד והאסטרטגיה של החברה",
+   "Customer feedback report": "דוח משוב לקוחות",
+   "Product launch retrospective": "רטרוספקטיבה על השקת המוצר",
+   "Weekly team meeting": "פגישת צוות שבועית",
+   "Go-to-market strategy": "אסטרטגיית יציאה לשוק",
+   "Task description": "תיאור משימה",
+   "New task": "משימה חדשה",
+   "Supporting files": "קבצים תומכים",
+   "Action items": "משימות",
+   "Documents": "מסמכים",
+   "Background": "רקע",
+   "Analysis": "ניתוח",
+   "Recommendations": "המלצות",
+   "Describe your idea": "יש לתאר את הרעיון",
+   "Supporting data": "נתונים תומכים",
+   "Agenda": "סדר יום",
+   "Notes": "הערות",
+   "Plan tasks, assign owners and follow progress.": "יש לתכנן משימות, להקצות בעלים ולעקוב אחר ההתקדמות.",
+   "Coordinate project owners, dates and milestones.": "יש לתאם בעלי פרויקטים, תאריכים ואבני דרך.",
+   "Keep team documents and their authors in one place.": "יש לשמור את מסמכי הצוות ואת מחבריהם במקום אחד.",
+   "Collect ideas, discuss them and show support.": "יש לאסוף רעיונות, לדון בהם ולהביע תמיכה.",
+   "Record agendas, participants and decisions.": "יש לתעד סדרי יום, משתתפים והחלטות.",
+   "Describe the outcome and the work required.": "יש לתאר את התוצאה ואת העבודה הנדרשת.",
+   "Add relevant files and links here.": "יש להוסיף כאן קבצים וקישורים רלוונטיים.",
+   "Describe the project and its goals.": "יש לתאר את הפרויקט ואת יעדיו.",
+   "Add the documents needed for this project.": "יש להוסיף את המסמכים הנדרשים לפרויקט הזה.",
+   "Explain the context and purpose.": "יש להסביר את ההקשר ואת המטרה.",
+   "Add the evidence and your findings.": "יש להוסיף את הראיות ואת הממצאים.",
+   "Describe the proposed next steps.": "יש לתאר את השלבים הבאים המוצעים.",
+   "List the owners and milestones.": "יש לפרט את הבעלים ואת אבני הדרך.",
+   "Explain what you would like to try.": "יש להסביר מה היית רוצה לנסות.",
+   "Add evidence or links that support the idea.": "יש להוסיף ראיות או קישורים התומכים ברעיון.",
+   "List the topics to discuss.": "יש לפרט את הנושאים לדיון.",
+   "Record decisions and action items.": "יש לתעד החלטות ומשימות לביצוע.",
+   "Clarify the main message.": "יש לנסח בבירור את המסר המרכזי.",
+   "Answer common questions.": "יש לענות על שאלות נפוצות.",
+   "Share the latest improvements.": "יש לשתף את השיפורים האחרונים.",
+   "What topics should be discussed?": "מה הם הנושאים לדיון?",
+   "Add notes that provide further context and details.": "יש להוסיף הערות המספקות הקשר ופרטים נוספים.",
+   "Create and collaborate on documents in one place.": "אפשר ליצור מסמכים ולבצע עריכה משותפת שלהם במקום אחד.",
+   "Memory": "זיכרון",
+   "All memories": "כל הזיכרונות",
+   "Recently remembered by agents": "נשמר בזיכרון לאחרונה על ידי סוכנים",
+   "Title": "כותרת",
+   "Kind": "סוג",
+   "Person": "אדם",
+   "How to work": "דרך העבודה",
+   "Project": "פרויקט",
+   "Reference": "מקור מידע",
+   "Core": "ליבה",
+   "Confirmation": "אישור",
+   "Inferred": "משוער",
+   "Confirmed": "אושר",
+   "Validity": "תקינות",
+   "Valid": "תקין",
+   "Superseded": "הוחלף",
+   "Supersedes": "מחליף את",
+   "Source": "מקור",
+   "Agent": "סוכן",
+   "Outside app": "מחוץ לאפליקציה",
+   "Learned at": "נלמד ב-",
+   "Skills": "מיומנויות",
+   "Store reusable instructions for agents.": "אפשר לשמור הוראות לשימוש חוזר עבור סוכנים.",
+   "Store reusable instructions agents can apply across the workspace.": "אפשר לשמור הוראות לשימוש חוזר שהסוכנים יוכלו להחיל בכל רחבי סביבת העבודה.",
+   "All skills": "כל המיומנויות",
+   "Skill name": "שם המיומנות",
+   "Tags": "תגיות",
+   "Journal": "יומן",
+   "Line": "קו",
+   "Doing": "בביצוע",
+   "Thought": "מחשבה",
+   "Work": "עבודה",
+   "Written by": "נכתב על ידי",
+   "Written at": "נכתב ב-",
+   "Newest first": "החדש ביותר קודם",
+   "Did": "בוצע",
+   "How long will it take?": "כמה זמן יהיה דרוש?",
+   "New project": "פרויקט חדש",
+   "New doc": "מסמך חדש",
+   "New meeting": "פגישה חדשה",
+   "Tasks Tracker": "מעקב אחר משימות",
+   "Stay organized with tasks, your way.": "אפשר לארגן משימות בדרך שלכם.",
+   "Effort level": "מאמץ",
+   "Updated at": "עדכון אחרון",
+   "Past due": "באיחור",
+   "Attach file": "קבצים",
+   "All Tasks": "כל המשימות",
+   "By Status": "לפי סטטוס",
+   "My Tasks": "המשימות שלי",
+   "Who’s responsible for the project?": "מי אחראי/ת על הפרויקט?",
+   "Change header text to better reflect our latest product offerings.": "אפשר לשנות את טקסט הכותרת העליונה כך שישקף בצורה טובה יותר את הצעות המוצרים העדכניות.",
+   "Update help center & FAQ": "עדכון מרכז העזרה והשאלות הנפוצות",
+   "Update support documents to reflect new product releases.": "אפשר לעדכן את מסמכי התמיכה כך שישקפו את השקת המוצר החדש.",
+   "Include product updates in next release note.": "יש לכלול עדכוני מוצר בהערות הגרסה הבאות.",
+   "Provide an overview of the task and related details.": "יש לספק סקירה כללית של המשימה ואת הפרטים הרלוונטיים לגביה.",
+   "Sub-tasks": "משימות משנה",
+   "Manage projects start to finish.": "ניהול פרויקטים מתחילתם ועד סופם.",
+   "Manage and execute projects from start to finish.": "ניהול והוצאה לפועל של פרויקטים מתחילתם ועד סופם.",
+   "All Projects": "כל הפרויקטים",
+   "My Projects": "הפרויקטים שלי",
+   "Account Management": "ניהול חשבון",
+   "Business Development": "פיתוח עסקי",
+   "Product Design": "עיצוב מוצר",
+   "Human Resources": "אנשים",
+   "Public launch of iOS app": "השקת אפליקציית iOS",
+   "Revamp new hire onboarding": "שיפור הצטרפות העובדים",
+   "Quarterly sales planning": "תוכנית מכירות רבעונית",
+   "About project": "פרטי הפרויקט",
+   "Provide an overview of the project’s goals and context": "יש לספק סקירה כללית של יעדי הפרויקט וההקשר שלו.",
+   "Document Hub": "מרכז המסמכים",
+   "Collaborate on docs in one hub.": "עריכת מסמכים משותפת במרכז אחד.",
+   "Reviewers": "בודק/ת",
+   "All Docs": "כל המסמכים",
+   "My Docs": "המסמכים שלי",
+   "By Category": "לפי קטגוריה",
+   "Doc name": "שם המסמך",
+   "Strategy doc": "מסמך אסטרטגיה",
+   "Proposal for new year campaign": "הצעה לקמפיין לשנה החדשה",
+   "Context, objectives, and scope of the document": "הקשר, יעדים והיקף המסמך",
+   "Research findings, data insights, and key considerations": "ממצאי המחקר, תובנות מתוך הנתונים ושיקולים מרכזיים",
+   "Proposed solutions, strategies, and next steps": "פתרונות מוצעים, אסטרטגיות והשלבים הבאים",
+   "Implementation": "ביצוע",
+   "Action items, timeline, and resource requirements": "משימות, צירי זמן ודרישות משאבים",
+   "Brainstorm Session": "סיעור מוחות",
+   "Spark new ideas together.": "אפשר לבחון רעיונות חדשים יחד.",
+   "Upvote": "הסכמה",
+   "Upvoted by": "הסכימו/ה:",
+   "All Ideas": "כל הרעיונות",
+   "Top Ideas": "רעיונות מובילים",
+   "Need more info": "נדרש מידע נוסף",
+   "Under discussion": "בדיון",
+   "Committed": "אושרו",
+   "Launch back to school campaign": "השקת קמפיין 'חזרה לבית הספר'",
+   "Simplify onboarding experience": "פישוט ההצטרפות",
+   "Improve SEO": "שיפור החשיפה בחיפוש",
+   "Provide a 2-3 sentence description.": "יש להסביר זאת בשניים או שלושה משפטים.",
+   "Why do you think it’s important?": "למה זה חשוב?",
+   "Link slack threads, data reports, etc.": "יש לקשר שרשורי Slack, דוחות נתונים ומידע תומך נוסף.",
+   "Meeting Notes": "סיכומי פגישה",
+   "Turn meetings into action.": "להפוך סיכומי פגישות למשימות לביצוע."
+  },
+  "ar": {
+   "Tasks": "المهام",
+   "Due": "مستحق",
+   "Owner": "المالك",
+   "Dates": "التواريخ",
+   "Backlog": "المهام غير المنجزة",
+   "Paused": "متوقف مؤقتاً",
+   "Cancelled": "تم الإلغاء",
+   "Projects": "المشاريع",
+   "Task name": "اسم المهمة",
+   "Status": "الحالة",
+   "Assignee": "المُكلف",
+   "Due date": "تاريخ الاستحقاق",
+   "Priority": "الأولوية",
+   "Task type": "نوع المهمة",
+   "Description": "الوصف",
+   "Last updated time": "توقيت آخر تحديث",
+   "Last updated": "آخر تحديث",
+   "Files": "الملفات",
+   "Project name": "اسم المشروع",
+   "Team": "الفريق",
+   "Start date": "تاريخ البدء",
+   "End date": "تاريخ الانتهاء",
+   "Start and end dates": "تواريخ البدء والانتهاء",
+   "Start value": "قيمة البدء",
+   "End value": "القيمة النهائية",
+   "Progress": "التقدم",
+   "Budget": "الميزانية",
+   "Created by": "تم الإنشاء بواسطة",
+   "Created time": "وقت الإنشاء",
+   "Category": "الفئة",
+   "Last edited by": "آخر تحرير بواسطة",
+   "Idea": "فكرة",
+   "Total votes": "إجمالي الأصوات",
+   "Meeting name": "اسم الاجتماع",
+   "Date": "التاريخ",
+   "Attendees": "المشاركون",
+   "High": "مرتفع",
+   "Medium": "متوسط",
+   "Low": "منخفض",
+   "Small": "صغير",
+   "Large": "كبير",
+   "🐞 Bug": "🐞 خطأ",
+   "💬 Feature request": "💬 طلب ميزة",
+   "💅 Polish": "💅 تحسين",
+   "Not started": "لم تبدأ",
+   "In progress": "قيد التنفيذ",
+   "To-do": "المهام",
+   "Complete": "مكتمل",
+   "Done": "تم",
+   "Proposal": "المقترح",
+   "Customer research": "بحث العملاء",
+   "Planning": "التخطيط",
+   "Top of funnel": "أعلى القمع",
+   "Activation": "التنشيط",
+   "Conversion": "التحويل",
+   "Quick meeting": "اجتماع سريع",
+   "Presentation": "عرض تقديمي",
+   "Retrospective": "مراجعة بأثر رجعي",
+   "Customer call": "مكالمة عميل",
+   "New idea": "فكرة جديدة",
+   "In review": "قيد المراجعة",
+   "Rejected": "مرفوض",
+   "Archived": "مؤرشف",
+   "Checklist": "قائمة التحقق",
+   "Gantt": "جانت",
+   "By category": "حسب الفئة",
+   "All meetings": "كل الاجتماعات",
+   "My notes": "ملاحظاتي",
+   "New page": "صفحة جديدة",
+   "Improve website copy": "تحسين نسخة الموقع الإلكتروني",
+   "Publish release notes": "نشر ملاحظات الإصدار",
+   "Launch the mobile app": "إطلاق تطبيق الهاتف المحمول",
+   "Company mission and strategy": "مهمة الشركة واستراتيجيتها",
+   "Customer feedback report": "تقرير ملاحظات العملاء",
+   "Product launch retrospective": "مراجعة بأثر رجعي لإطلاق المنتج",
+   "Weekly team meeting": "الاجتماع الأسبوعي للفريق",
+   "Go-to-market strategy": "استراتيجية دخول السوق",
+   "Task description": "وصف المهمة",
+   "New task": "مهمة جديدة",
+   "Supporting files": "الملفات الداعمة",
+   "Action items": "البحث عن بنود إجراء",
+   "Documents": "المستندات",
+   "Background": "الخلفية",
+   "Analysis": "التحليل",
+   "Recommendations": "التوصيات",
+   "Describe your idea": "صف فكرتك",
+   "Supporting data": "البيانات الداعمة",
+   "Agenda": "جدول الأعمال",
+   "Notes": "الملاحظات",
+   "Plan tasks, assign owners and follow progress.": "خطّط المهام، وعيّن المالكين، وتابع التقدم.",
+   "Coordinate project owners, dates and milestones.": "نسّق بين مالكي المشاريع والتواريخ والمراحل الرئيسية.",
+   "Keep team documents and their authors in one place.": "احتفظ بمستندات الفريق ومنشئيها في مكان واحد.",
+   "Collect ideas, discuss them and show support.": "اجمع الأفكار وناقشها وأظهر دعمك لها.",
+   "Record agendas, participants and decisions.": "سجّل جداول الأعمال والمشاركين والقرارات.",
+   "Describe the outcome and the work required.": "صف النتيجة والعمل المطلوب.",
+   "Add relevant files and links here.": "أضف هنا الملفات والروابط ذات الصلة.",
+   "Describe the project and its goals.": "صف المشروع وأهدافه.",
+   "Add the documents needed for this project.": "أضف المستندات المطلوبة لهذا المشروع.",
+   "Explain the context and purpose.": "اشرح السياق والغرض.",
+   "Add the evidence and your findings.": "أضف الأدلة ونتائجك.",
+   "Describe the proposed next steps.": "صف الخطوات التالية المقترحة.",
+   "List the owners and milestones.": "اذكر المالكين والمراحل الرئيسية.",
+   "Explain what you would like to try.": "اشرح ما تود تجربته.",
+   "Add evidence or links that support the idea.": "أضف أدلة أو روابط تدعم الفكرة.",
+   "List the topics to discuss.": "اذكر الموضوعات التي ستتم مناقشتها.",
+   "Record decisions and action items.": "سجّل القرارات وبنود الإجراءات.",
+   "Clarify the main message.": "وضّح الرسالة الرئيسية.",
+   "Answer common questions.": "أجب عن الأسئلة الشائعة.",
+   "Share the latest improvements.": "شارك أحدث التحسينات.",
+   "What topics should be discussed?": "ما هي الموضوعات التي ستتم مناقشتها؟",
+   "Add notes that provide further context and details.": "أضف ملاحظات توفر سياقاً وتفاصيل إضافية.",
+   "Create and collaborate on documents in one place.": "إنشاء المستندات والتعاون فيها في مكان واحد.",
+   "Memory": "الذاكرة",
+   "All memories": "كل الذكريات",
+   "Recently remembered by agents": "ما تذكّره الوكلاء مؤخراً",
+   "Title": "العنوان",
+   "Kind": "النوع",
+   "Person": "شخص",
+   "How to work": "طريقة العمل",
+   "Project": "المشروع",
+   "Reference": "المرجع",
+   "Core": "أساسي",
+   "Confirmation": "التأكيد",
+   "Inferred": "مستنتَج",
+   "Confirmed": "تم التأكيد",
+   "Validity": "الصلاحية",
+   "Valid": "صالح",
+   "Superseded": "تم الاستبدال",
+   "Supersedes": "يحل محل",
+   "Source": "المصدر",
+   "Agent": "الوكيل",
+   "Outside app": "خارج التطبيق",
+   "Learned at": "تم التعلّم في",
+   "Skills": "المهارات",
+   "Store reusable instructions for agents.": "احفظ التعليمات القابلة لإعادة الاستخدام للوكلاء.",
+   "Store reusable instructions agents can apply across the workspace.": "احفظ التعليمات القابلة لإعادة الاستخدام التي يمكن للوكلاء تطبيقها عبر مساحة العمل.",
+   "All skills": "كل المهارات",
+   "Skill name": "اسم المهارة",
+   "Tags": "العلامات",
+   "Journal": "دفتر اليومية",
+   "Line": "خط",
+   "Doing": "قيد التنفيذ",
+   "Thought": "تم التفكير",
+   "Work": "العمل",
+   "Written by": "كُتب بواسطة",
+   "Written at": "كُتب في",
+   "Newest first": "الأحدث أولاً",
+   "Did": "تم",
+   "How long will it take?": "كم سيستغرق ذلك؟",
+   "New project": "مشروع جديد",
+   "New doc": "مستند جديد",
+   "New meeting": "اجتماع جديد",
+   "Tasks Tracker": "متتبع المهام",
+   "Stay organized with tasks, your way.": "نظّم المهام بالطريقة التي تناسبك.",
+   "Effort level": "الجهد",
+   "Updated at": "آخر تحديث",
+   "Past due": "متأخر",
+   "Attach file": "الملفات",
+   "All Tasks": "كل المهام",
+   "By Status": "حسب الحالة",
+   "My Tasks": "مهامي",
+   "Who’s responsible for the project?": "من المسؤول عن المشروع؟",
+   "Change header text to better reflect our latest product offerings.": "تغيير نص الترويسة ليعكس بشكل أفضل أحدث عروض المنتجات.",
+   "Update help center & FAQ": "تحديث مركز المساعدة والأسئلة الشائعة",
+   "Update support documents to reflect new product releases.": "تحديث مستندات الدعم لتعكس إطلاق المنتج الجديد.",
+   "Include product updates in next release note.": "تضمين تحديثات المنتج في ملاحظات الإصدار التالية.",
+   "Provide an overview of the task and related details.": "قدّم لمحة عامة عن المهمة والتفاصيل ذات الصلة.",
+   "Sub-tasks": "المهام الفرعية",
+   "Manage projects start to finish.": "إدارة المشاريع من البداية إلى النهاية.",
+   "Manage and execute projects from start to finish.": "إدارة المشاريع وتنفيذها من البداية إلى النهاية.",
+   "All Projects": "كل المشاريع",
+   "My Projects": "مشاريعي",
+   "Account Management": "إدارة الحساب",
+   "Business Development": "تطوير الأعمال",
+   "Product Design": "تصميم المُنتج",
+   "Human Resources": "الأشخاص",
+   "Public launch of iOS app": "إطلاق تطبيق iOS",
+   "Revamp new hire onboarding": "تحسين تأهيل الموظفين الجدد",
+   "Quarterly sales planning": "خطة المبيعات ربع السنوية",
+   "About project": "معلومات المشروع",
+   "Provide an overview of the project’s goals and context": "قدّم لمحة عامة عن أهداف المشروع وسياقه.",
+   "Document Hub": "مركز المستندات",
+   "Collaborate on docs in one hub.": "التعاون في المستندات في مركز واحد.",
+   "Reviewers": "المراجع",
+   "All Docs": "كل المستندات",
+   "My Docs": "مستنداتي",
+   "By Category": "حسب الفئة",
+   "Doc name": "اسم المستند",
+   "Strategy doc": "مستند الاستراتيجية",
+   "Proposal for new year campaign": "اقتراح لحملة العام الجديد",
+   "Context, objectives, and scope of the document": "سياق المستند وأهدافه ونطاقه",
+   "Research findings, data insights, and key considerations": "نتائج البحث، ورؤى البيانات، والاعتبارات الرئيسية",
+   "Proposed solutions, strategies, and next steps": "الحلول المقترحة، والاستراتيجيات، والخطوات التالية",
+   "Implementation": "التنفيذ",
+   "Action items, timeline, and resource requirements": "بنود الإجراءات والخطوط الزمنية والموارد المطلوبة",
+   "Brainstorm Session": "تبادل الأفكار",
+   "Spark new ideas together.": "استكشفوا الأفكار الجديدة معاً.",
+   "Upvote": "موافقة",
+   "Upvoted by": "وافق عليه",
+   "All Ideas": "كل الأفكار",
+   "Top Ideas": "أفضل الأفكار",
+   "Need more info": "مطلوب المزيد من المعلومات",
+   "Under discussion": "قيد المناقشة",
+   "Committed": "تمت الموافقة",
+   "Launch back to school campaign": "إطلاق حملة العودة إلى المدرسة",
+   "Simplify onboarding experience": "تبسيط التأهيل",
+   "Improve SEO": "تحسين الظهور في البحث",
+   "Provide a 2-3 sentence description.": "اشرح ذلك في جملتين أو ثلاث جمل.",
+   "Why do you think it’s important?": "لماذا هذا مهم؟",
+   "Link slack threads, data reports, etc.": "اربط سلاسل رسائل Slack وتقارير البيانات وغيرها من المعلومات الداعمة.",
+   "Meeting Notes": "ملاحظات الاجتماع",
+   "Turn meetings into action.": "حوّل ملاحظات الاجتماع إلى بنود إجراءات."
+  }
+ }
+}

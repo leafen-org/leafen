@@ -1,0 +1,236 @@
+/* A desktop menu of the automation dialog, as Notion's (seen 2026-10-24 at
+   1280px, 2026-11-10): 28px rows 4px in, a 20px mark 8px in and the words 8px
+   after it (36px in; a property's mark a 24px box, its words 40px in), groups
+   under a 12px grey name, two-line rows 45px. */
+.popover {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-menu);
+  background: var(--bg-elevated);
+  box-shadow: var(--shadow-menu);
+}
+
+.searchRow {
+  padding: 8px 8px 4px;
+}
+
+/* "+ 새 조건"'s: the 242px search 12px in, the list 12px under it (Notion's, seen 2026-11-02). */
+.popover[data-flush] .searchRow {
+  padding: 12px 12px 8px;
+}
+
+/* A page line's properties: the search 16px under the top, 12px in, and
+   "제거" 4px under a line 4px under the last (Notion's, seen 2026-11-10). */
+.popover[data-flush][data-properties] .searchRow {
+  padding-top: 16px;
+}
+
+.popover[data-properties] .rule,
+.popover[data-tight-rules] .rule {
+  margin: 3px 8px;
+}
+
+.search {
+  width: 100%;
+  height: 28px;
+  min-height: 0;
+  box-sizing: border-box;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.search:focus {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+/* The people's search with those picked before its words, wrapping, as
+   Notion's (seen 2026-11-08): the ringed box grows a line at a time, "⊗" at
+   its end. */
+.searchBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  min-height: 28px;
+  box-sizing: border-box;
+  padding-block: 3px;
+  padding-inline: 6px 26px;
+  position: relative;
+  border-radius: 6px;
+  background: var(--name-field-bg);
+  box-shadow: var(--name-field-ring);
+  cursor: text;
+}
+
+.searchBox:focus-within {
+  box-shadow: var(--name-field-ring-focus);
+}
+
+.searchInBox {
+  flex: 1 0 40px;
+  min-width: 40px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-default);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.clear {
+  position: absolute;
+  top: 5px;
+  inset-inline-end: 6px;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--icon-tertiary);
+}
+
+.list {
+  display: grid;
+  gap: 1px;
+  min-height: 0;
+  padding: 4px;
+  overflow-y: auto;
+}
+
+/* A group's line over it, the group before it empty (Notion's condition "⋯": its "삭제" 5px under the top). */
+.popover[data-after-empty-group] .list {
+  padding-top: 5px;
+}
+
+.group {
+  padding: 6px 8px 9px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 14px;
+}
+
+/* The next group's line 8px under the last row, its name 12px under the line. */
+.rule {
+  margin: 8px 8px 4px;
+  border-top: 1px solid var(--border-default);
+}
+
+.item,
+.tallItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  height: 28px;
+  padding-block: 0;
+  padding-inline: 10px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-default);
+  font-size: 14px;
+  text-align: start;
+}
+
+.tallItem {
+  height: 45px;
+}
+
+.item[data-focused="true"],
+.tallItem[data-focused="true"],
+.item:hover,
+.tallItem:hover {
+  background: var(--bg-hover);
+}
+
+.item:has(> .icon),
+.tallItem:has(> .icon) {
+  gap: 8px;
+  padding-inline-start: 8px;
+}
+
+/* A menu's mark in its words' colour, as Notion's (seen 2026-11-11: a
+   condition's "⋯"'s "삭제" rgb(240, 239, 237) dark); a list of what to add
+   ("+ 새 조건") draws its marks grey (rgb(173, 169, 163) dark). */
+.icon {
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 20px;
+  color: inherit;
+}
+
+.popover[data-grey-marks] .icon {
+  color: var(--icon-secondary);
+}
+
+/* A property's mark in its 24px box sits 2px from the box's end, as Notion's
+   (seen 2026-11-10: the 19.2px mark 12.4px into the row). */
+.icon[data-wide] {
+  width: 24px;
+  box-sizing: border-box;
+  justify-content: flex-end;
+  padding-inline-end: 2px;
+}
+
+/* A property's 16px mark a fifth larger and grey, as Notion draws it in these
+   lists (seen 2026-11-11: "+ 새 조건"'s and "속성 편집..."'s rgb(173, 169, 163)
+   dark, rgb(142, 139, 134) on a light phone). */
+.propertyMark {
+  display: inline-flex;
+  color: var(--icon-secondary);
+  transform: scale(1.2);
+}
+
+.words {
+  display: grid;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.words > span,
+.words > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.words > small {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.more {
+  flex: none;
+  color: var(--icon-tertiary);
+}
+
+.rule + .group {
+  padding-top: 7px;
+}
+
+/* Where a page opens (the open action's "에서"), as Notion's (seen
+   2026-11-05): its words run to two lines, the mark and the ✓ on the first. */
+.popover[data-stacked] .tallItem {
+  align-items: flex-start;
+  height: auto;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.popover[data-stacked] .icon,
+.popover[data-stacked] .tallItem > svg {
+  margin-top: 2px;
+}
+.popover[data-stacked] .words > small {
+  white-space: normal;
+}
