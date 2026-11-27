@@ -4,11 +4,14 @@
 
 <h1 align="center">Leafen</h1>
 
-<p align="center">English · <a href="README.ko.md">한국어</a></p>
-
 <p align="center"><b>Notion, rebuilt as open source.</b></p>
 
 <p align="center"><img src="assets/readme/leafen-en.png" alt="A Leafen page with a to-do list and a table database" width="800" /></p>
+
+Leafen is an early release (0.1). If something breaks or gets in your way, tell the
+agent you connected to Leafen: "report this as an issue." It writes the report with
+made-up data and shows it to you; once you say yes, it files the issue, or gives you
+a link to file it yourself.
 
 ## Why we made it
 
@@ -223,6 +226,9 @@ them with the agent you use: paste this line to it.
 ```text
 Read https://github.com/leafen-org/leafen/blob/main/docs/bug-reports.md and write a bug report.
 ```
+
+An agent connected to Leafen already has its bug report tool (`leafen_bug_report`),
+so "report this as an issue" is enough, without the line above.
 
 A report holds only what reproduction needs, as the
 [bug report guide](docs/bug-reports.md) says: made-up data that shows the
