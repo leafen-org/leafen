@@ -1,6 +1,6 @@
 # Contributing to Leafen
 
-Leafen is made by a small team, and for now we take part in it this way:
+Leafen is made by one person with Claude, so for now we take part in it this way:
 
 - **Bug reports** go in the repository's issues, through the bug form. We
   strongly encourage writing the report with the agent you use: paste this

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="web/public/icon-96.png" alt="Leafen" width="96" />
+  <img src="web/public/icon-192.png" alt="Leafen" width="128" />
 </p>
 
 <h1 align="center">Leafen</h1>
@@ -8,8 +8,9 @@
 
 <p align="center"><img src="assets/readme/leafen-en.png" alt="A Leafen page with a to-do list and a table database" width="800" /></p>
 
-Leafen is an early release (0.1). If something breaks or gets in your way, tell the
-agent you connected to Leafen: "report this as an issue." It writes the report with
+Leafen is an early release (0.1). We have run our own company's daily work on it
+for several weeks, along with a few friends. If something breaks or gets in your
+way, tell the agent you connected to Leafen: "report this as an issue." It writes the report with
 made-up data and shows it to you; once you say yes, it files the issue, or gives you
 a link to file it yourself.
 
@@ -20,6 +21,9 @@ a link to file it yourself.
 - **Desktop app:** download the macOS or Windows build from the
   [latest release](../../releases/latest).
 - **Docker:** `docker compose up -d` with the repository's [compose.yaml](compose.yaml).
+- **Railway:** one click, with a volume for your data.
+
+  [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/leafen?referralCode=clR_3T&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 More in [Install](#install) and the [install guide](docs/install.md).
 
@@ -93,27 +97,34 @@ Have Notion's features, and add what Notion can't do.
 
 ## Where it is now
 
-This is the 0.1.0 pre-release, recommended for trying out.
+This is the 0.1.0 pre-release. Our company already runs on it: our Notion
+workspace came in through Leafen's Notion import, our staff use it, and
+agents work in it over MCP.
+
+Every area below is built. The table says how far each one has been compared,
+screen by screen, with Notion:
 
 | | |
 | --- | --- |
-| Finished polishing | Editing pages and blocks, files and media, getting around (sidebar, search, links) |
-| Being polished | Databases — properties, views, filters and sorts, forms, templates, automations, task management |
-| Next | Setup and accounts, members and teamspaces, Notion import, API and MCP connections and permissions, sharing and publishing, offline, organization features, apps, document apps, many tabs and dropped connections |
+| Compared and matched | Editing pages and blocks, files and media, getting around (sidebar, search, links) |
+| Being compared now | Databases — properties, views, filters and sorts, forms, templates, automations, task management |
+| Compared next | Setup and accounts, members and teamspaces, Notion import, API and MCP connections and permissions, sharing and publishing, offline, organization features, apps, document apps, many tabs and dropped connections |
 
 - It runs as a desktop app (macOS, Windows) and in Docker; on Linux, run it in
   Docker and use it in a browser. The Mac app is signed and notarized by
   Apple; the Windows build is not signed yet, so Windows warns the first time
   you open it.
-- Areas still being polished have places that look or behave differently from
+- Areas not yet compared may have places that look or behave differently from
   Notion.
-- One server (10 cores) carries an organization of 300,000 typical users (p95
-  48 ms, measured 2026-10-22). How it was measured, and how to measure it
-  again, is in the [benchmark](docs/benchmark.md).
+- One 10-core server answered 295 requests a second at p95 48 ms (measured
+  2026-10-22, synthetic data, live co-editing not in the load). Under Microsoft's
+  typical capacity-planning model that is an organization of about 300,000
+  people. How it was measured, its limits, and how to measure it again are in
+  the [benchmark](docs/benchmark.md).
 
 ## What comes next
 
-1. Finish polishing area by area, in the order above.
+1. Finish comparing area by area, in the order above.
 2. Check everything again from the start.
 3. **1.0** — from then on, your data carries over across updates. Signed
    desktop builds and the Docker image are already out with 0.1.0.
@@ -121,7 +132,10 @@ This is the 0.1.0 pre-release, recommended for trying out.
 
 ## Install
 
-Before 1.0 there is no guarantee that your data carries over after an update.
+We update our own server, with our company's data in it, on every new build,
+and the data has come through each time. Before an update changes how data is
+stored, Leafen first saves a copy of the whole data folder. The promise that
+data carries over starts at 1.0, so until then keep a backup before you update.
 
 ### Let your agent do it
 
@@ -160,6 +174,8 @@ On a new data folder, the log shows a setup address with a one-time code
 (`docker compose logs leafen`). Open it and enter the first administrator's name.
 Reverse proxies, backups, restores and settings are in the
 [self-hosting guide](docs/self-hosting.md).
+
+One-click hosting templates are in [hosting templates](docs/hosting-templates.md).
 
 ### From source
 
@@ -260,15 +276,14 @@ Leafen is free. Sponsors pay for its development through
 contributor is named in [the people backing Leafen](docs/sponsors.md). Inside
 Leafen, a sponsor list (up to a hundred, largest amount first, company logos)
 and a row of the top ten companies at the bottom of Home come in an early
-update after the first release; names link to the sponsors' GitHub profiles. One-click hosting templates are
-in [hosting templates](docs/hosting-templates.md).
+update after the first release; names link to the sponsors' GitHub profiles.
 We're also looking for official partners who help organizations in each
 country adopt Leafen, from installation to support and operations.
 [Partners](https://leafen.org/partners)
 
 <p align="center"><img src="assets/readme/claudia-leafen.png" alt="Leafen's mascot winking, with an orange streak and a star clip" width="200" /></p>
 
-<p align="center"><sub>Leafen is built by one person with Claude. The orange streak and star clip are borrowed from
+<p align="center"><sub>Leafen is designed and built by one person, using Claude. The orange streak and star clip are borrowed from
 <a href="https://claudia.gallery">Claudia</a>, an open character by anabology. AI-generated image.</sub></p>
 
 ## License
