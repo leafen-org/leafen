@@ -22,7 +22,11 @@ for (const entry of ['./cmd/leafen', './desktop']) {
   }
 }
 try {
-  go('build', '-tags', 'leafen_core', '-o', process.platform === 'win32' ? 'NUL' : '/dev/null', './desktop')
+  // There is no Linux desktop app, and building one needs GTK: on Linux (the
+  // CI) the core-only desktop app is built as Windows builds it.
+  const env = process.platform === 'linux' ? { ...process.env, GOOS: 'windows', CGO_ENABLED: '0' } : process.env
+  execFileSync('go', ['build', '-tags', 'leafen_core', '-o', process.platform === 'win32' ? 'NUL' : '/dev/null', './desktop'],
+    { cwd: productRoot, encoding: 'utf8', env })
 } catch (error) {
   problems.push(`the core-only build fails: ${error.message}`)
 }
