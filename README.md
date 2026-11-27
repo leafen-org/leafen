@@ -115,8 +115,8 @@ This is the 0.1.0 pre-release, recommended for trying out.
 
 1. Finish polishing area by area, in the order above.
 2. Check everything again from the start.
-3. **1.0** — signed desktop builds and a Docker release. From then on, your
-   data carries over across updates.
+3. **1.0** — from then on, your data carries over across updates. Signed
+   desktop builds and the Docker image are already out with 0.1.0.
 4. After that — app store releases.
 
 ## Install
@@ -150,6 +150,7 @@ Leafen in Docker (below) and open it in a browser.
 ### Docker
 
 One container runs the server ([self-hosting](docs/self-hosting.md#docker-compose)).
+The image is `ghcr.io/leafen-org/leafen`, also on Docker Hub as `leafenorg/leafen`.
 
 ```sh
 docker compose up -d
