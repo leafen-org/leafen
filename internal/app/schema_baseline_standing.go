@@ -86,9 +86,9 @@ var schemaBaselineRetired = map[string]struct {
 }{
 	// 832: the list an earlier wiki made of its pages (wiki_earlier_listing.go),
 	// with its indexes and triggers.
-	"leafen_wiki_pages":               earlierWikiListingRetired,
-	"idx_leafen_wiki_pages_root":      earlierWikiListingRetired,
-	"idx_leafen_wiki_pages_root_page": earlierWikiListingRetired,
+	"leafen_wiki_pages":                                                earlierWikiListingRetired,
+	"idx_leafen_wiki_pages_root":                                       earlierWikiListingRetired,
+	"idx_leafen_wiki_pages_root_page":                                  earlierWikiListingRetired,
 	"leafen_instance_product_export_revision_leafen_wiki_pages_insert": earlierWikiListingRetired,
 	"leafen_instance_product_export_revision_leafen_wiki_pages_update": earlierWikiListingRetired,
 	"leafen_instance_product_export_revision_leafen_wiki_pages_delete": earlierWikiListingRetired,

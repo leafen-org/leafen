@@ -256,10 +256,10 @@ func resolveDataSourceMoveTarget(
 	}
 	blockID := uuid.NewString()
 	return notionDataSourceMoveTarget{
-			ContainerID: blockID, OwnerID: page.Workspace.OwnerID, WorkspaceID: identity.WorkspaceID, PageID: request.PageID,
-		}, dataSourceMoveSpec{
-			TargetID: blockID, NewDatabase: true, MoveViews: request.MoveViews, ViewID: viewID,
-		}, nil
+		ContainerID: blockID, OwnerID: page.Workspace.OwnerID, WorkspaceID: identity.WorkspaceID, PageID: request.PageID,
+	}, dataSourceMoveSpec{
+		TargetID: blockID, NewDatabase: true, MoveViews: request.MoveViews, ViewID: viewID,
+	}, nil
 }
 
 // dataSourceMoveViewName is the name a move made in the app gives the table
