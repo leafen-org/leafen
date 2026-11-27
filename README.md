@@ -13,6 +13,16 @@ agent you connected to Leafen: "report this as an issue." It writes the report w
 made-up data and shows it to you; once you say yes, it files the issue, or gives you
 a link to file it yourself.
 
+## Get started
+
+- **Let your agent do it:** paste this to the agent you use:
+  `Read https://github.com/leafen-org/leafen/blob/main/docs/install.md, install Leafen on this computer and take me through its setup.`
+- **Desktop app:** download the macOS or Windows build from the
+  [latest release](../../releases/latest).
+- **Docker:** `docker compose up -d` with the repository's [compose.yaml](compose.yaml).
+
+More in [Install](#install) and the [install guide](docs/install.md).
+
 ## Why we made it
 
 For years, both my company's work and the small records of my own life piled
